@@ -1,11 +1,18 @@
-# RAG Support Assistant
+# RAG_new — Verifiable Resolution OS
 
-[![CI](https://github.com/brownjuly2003-code/RAG_Support_Assistant/actions/workflows/ci.yml/badge.svg)](https://github.com/brownjuly2003-code/RAG_Support_Assistant/actions/workflows/ci.yml)
+> `RAG_new` is an architecture-first successor to `RAG_Support_Assistant`.
+> It keeps the verified RAG runtime as a migration baseline and adds a
+> deterministic resolution kernel for versioned procedures, evidence,
+> governed actions, and business-state verification. Start with
+> [`docs/architecture/README.md`](docs/architecture/README.md) and the short
+> [`rag-new-architecture.md`](rag-new-architecture.md) implementation plan.
 
-Answers support questions against a knowledge base and decides whether a
-request can be resolved automatically or should be escalated to a human.
+The inherited runtime still answers support questions against a knowledge
+base and decides whether a request can be resolved automatically or should be
+escalated to a human. Until the staged migration gates are green, those legacy
+paths remain the compatibility baseline rather than the new product boundary.
 
-**Project status:** audit remediation in progress (revalidated 2026-08-03;
+**Inherited runtime status:** audit remediation in progress (revalidated 2026-08-03;
 index lifecycle work remains incomplete after local slice 4.8d3e). The active
 consolidated plan contains only remaining audit DoD plus the 2026-08-03 LLM/RAG
 gaps: project/production release is not complete. See
