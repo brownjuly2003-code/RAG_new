@@ -1,0 +1,27 @@
+{
+  "expected_error": "unreachable steps",
+  "operations": [
+    {
+      "op": "add",
+      "path": "/steps/-",
+      "value": {
+        "id": "orphan-step",
+        "kind": "input",
+        "transitions": {
+          "complete": {
+            "type": "terminal",
+            "outcome": "escalated"
+          },
+          "missing": {
+            "type": "terminal",
+            "outcome": "clarification_required"
+          },
+          "failure": {
+            "type": "terminal",
+            "outcome": "escalated"
+          }
+        }
+      }
+    }
+  ]
+}

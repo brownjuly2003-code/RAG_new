@@ -1,0 +1,10 @@
+{
+  "expected_error": "extra inputs are not permitted",
+  "operations": [
+    {
+      "op": "add",
+      "path": "/unexpected",
+      "value": true
+    }
+  ]
+}

@@ -1,0 +1,1247 @@
+{
+  "$defs": {
+    "ActionDeclaration": {
+      "additionalProperties": false,
+      "properties": {
+        "confirmation": {
+          "$ref": "#/$defs/ConfirmationRequirement"
+        },
+        "idempotency": {
+          "$ref": "#/$defs/IdempotencyRequirement"
+        },
+        "input_fields": {
+          "items": {
+            "maxLength": 256,
+            "minLength": 3,
+            "pattern": "^(?:inputs|evidence|case|actor|tenant)\\.[a-z][a-z0-9_-]*(?:\\.[a-z][a-z0-9_-]*)*$",
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Input Fields",
+          "type": "array"
+        },
+        "manifest_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$",
+          "title": "Manifest Id",
+          "type": "string"
+        },
+        "manifest_schema_digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Manifest Schema Digest",
+          "type": "string"
+        },
+        "manifest_version": {
+          "maxLength": 128,
+          "minLength": 5,
+          "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-(?:0|[1-9][0-9]*|[0-9A-Za-z-]*[A-Za-z-][0-9A-Za-z-]*)(?:\\.(?:0|[1-9][0-9]*|[0-9A-Za-z-]*[A-Za-z-][0-9A-Za-z-]*))*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+          "title": "Manifest Version",
+          "type": "string"
+        },
+        "output_evidence_requirement_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[_-][a-z0-9]+)*$",
+          "title": "Output Evidence Requirement Id",
+          "type": "string"
+        },
+        "postcondition_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[_-][a-z0-9]+)*$",
+          "title": "Postcondition Id",
+          "type": "string"
+        },
+        "reconciliation_checker": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SafeReference"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "required_scopes": {
+          "items": {
+            "maxLength": 128,
+            "minLength": 3,
+            "pattern": "^[a-z][a-z0-9]*(?:[.:_-][a-z0-9]+)*$",
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Required Scopes",
+          "type": "array"
+        },
+        "risk": {
+          "$ref": "#/$defs/ActionRisk"
+        },
+        "timeout_seconds": {
+          "exclusiveMinimum": 0,
+          "maximum": 300,
+          "title": "Timeout Seconds",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "manifest_id",
+        "manifest_version",
+        "manifest_schema_digest",
+        "risk",
+        "required_scopes",
+        "input_fields",
+        "output_evidence_requirement_id",
+        "timeout_seconds",
+        "confirmation",
+        "idempotency",
+        "postcondition_id"
+      ],
+      "title": "ActionDeclaration",
+      "type": "object"
+    },
+    "ActionRisk": {
+      "enum": [
+        "read",
+        "reversible_write",
+        "irreversible_write"
+      ],
+      "title": "ActionRisk",
+      "type": "string"
+    },
+    "ClaimPolicy": {
+      "enum": [
+        "supported_only",
+        "no_material_claims"
+      ],
+      "title": "ClaimPolicy",
+      "type": "string"
+    },
+    "ConfirmationMode": {
+      "enum": [
+        "not_required",
+        "explicit",
+        "supervisor"
+      ],
+      "title": "ConfirmationMode",
+      "type": "string"
+    },
+    "ConfirmationRequirement": {
+      "additionalProperties": false,
+      "properties": {
+        "mode": {
+          "$ref": "#/$defs/ConfirmationMode"
+        },
+        "ttl_seconds": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "maximum": 86400,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ttl Seconds"
+        }
+      },
+      "required": [
+        "mode"
+      ],
+      "title": "ConfirmationRequirement",
+      "type": "object"
+    },
+    "ContractBudgets": {
+      "additionalProperties": false,
+      "properties": {
+        "max_action_attempts": {
+          "exclusiveMinimum": 0,
+          "maximum": 5,
+          "title": "Max Action Attempts",
+          "type": "integer"
+        },
+        "max_clarification_turns": {
+          "maximum": 10,
+          "minimum": 0,
+          "title": "Max Clarification Turns",
+          "type": "integer"
+        },
+        "max_evidence_items": {
+          "exclusiveMinimum": 0,
+          "maximum": 200,
+          "title": "Max Evidence Items",
+          "type": "integer"
+        },
+        "max_input_tokens": {
+          "maximum": 200000,
+          "minimum": 0,
+          "title": "Max Input Tokens",
+          "type": "integer"
+        },
+        "max_llm_calls": {
+          "maximum": 20,
+          "minimum": 0,
+          "title": "Max Llm Calls",
+          "type": "integer"
+        },
+        "max_output_tokens": {
+          "maximum": 20000,
+          "minimum": 0,
+          "title": "Max Output Tokens",
+          "type": "integer"
+        },
+        "max_rerank_candidates": {
+          "maximum": 100,
+          "minimum": 0,
+          "title": "Max Rerank Candidates",
+          "type": "integer"
+        },
+        "max_retrieval_candidates": {
+          "exclusiveMinimum": 0,
+          "maximum": 200,
+          "title": "Max Retrieval Candidates",
+          "type": "integer"
+        },
+        "wall_clock_seconds": {
+          "exclusiveMinimum": 0,
+          "maximum": 600,
+          "title": "Wall Clock Seconds",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "wall_clock_seconds",
+        "max_llm_calls",
+        "max_input_tokens",
+        "max_output_tokens",
+        "max_retrieval_candidates",
+        "max_rerank_candidates",
+        "max_action_attempts",
+        "max_clarification_turns",
+        "max_evidence_items"
+      ],
+      "title": "ContractBudgets",
+      "type": "object"
+    },
+    "ContractRiskTier": {
+      "enum": [
+        "read_only",
+        "reversible_write",
+        "irreversible_write"
+      ],
+      "title": "ContractRiskTier",
+      "type": "string"
+    },
+    "ContractStep": {
+      "additionalProperties": false,
+      "properties": {
+        "action": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ActionDeclaration"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "evidence_requirement_ids": {
+          "default": [],
+          "items": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-z][a-z0-9]*(?:[_-][a-z0-9]+)*$",
+            "type": "string"
+          },
+          "title": "Evidence Requirement Ids",
+          "type": "array"
+        },
+        "id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[_-][a-z0-9]+)*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "$ref": "#/$defs/StepKind"
+        },
+        "postcondition_ids": {
+          "default": [],
+          "items": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-z][a-z0-9]*(?:[_-][a-z0-9]+)*$",
+            "type": "string"
+          },
+          "title": "Postcondition Ids",
+          "type": "array"
+        },
+        "rule_id": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[a-z][a-z0-9]*(?:[_-][a-z0-9]+)*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Rule Id"
+        },
+        "transitions": {
+          "additionalProperties": {
+            "discriminator": {
+              "mapping": {
+                "step": "#/$defs/StepTransitionTarget",
+                "terminal": "#/$defs/TerminalTransitionTarget"
+              },
+              "propertyName": "type"
+            },
+            "oneOf": [
+              {
+                "$ref": "#/$defs/StepTransitionTarget"
+              },
+              {
+                "$ref": "#/$defs/TerminalTransitionTarget"
+              }
+            ]
+          },
+          "minProperties": 1,
+          "propertyNames": {
+            "$ref": "#/$defs/TransitionEvent"
+          },
+          "title": "Transitions",
+          "type": "object"
+        }
+      },
+      "required": [
+        "id",
+        "kind",
+        "transitions"
+      ],
+      "title": "ContractStep",
+      "type": "object"
+    },
+    "DateTimeOperand": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "datetime",
+          "title": "Kind",
+          "type": "string"
+        },
+        "value": {
+          "format": "date-time",
+          "title": "Value",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "value"
+      ],
+      "title": "DateTimeOperand",
+      "type": "object"
+    },
+    "DateTimeRangeOperand": {
+      "additionalProperties": false,
+      "properties": {
+        "from": {
+          "format": "date-time",
+          "title": "From",
+          "type": "string"
+        },
+        "kind": {
+          "const": "datetime_range",
+          "title": "Kind",
+          "type": "string"
+        },
+        "to": {
+          "format": "date-time",
+          "title": "To",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "from",
+        "to"
+      ],
+      "title": "DateTimeRangeOperand",
+      "type": "object"
+    },
+    "DisclosurePolicy": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[_-][a-z0-9]+)*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "locales": {
+          "items": {
+            "pattern": "^[a-z]{2,3}(?:-[A-Z]{2})?$",
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Locales",
+          "type": "array"
+        },
+        "required": {
+          "const": true,
+          "title": "Required",
+          "type": "boolean"
+        },
+        "version": {
+          "maxLength": 128,
+          "minLength": 5,
+          "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-(?:0|[1-9][0-9]*|[0-9A-Za-z-]*[A-Za-z-][0-9A-Za-z-]*)(?:\\.(?:0|[1-9][0-9]*|[0-9A-Za-z-]*[A-Za-z-][0-9A-Za-z-]*))*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "required",
+        "locales"
+      ],
+      "title": "DisclosurePolicy",
+      "type": "object"
+    },
+    "EffectiveRange": {
+      "additionalProperties": false,
+      "properties": {
+        "from": {
+          "format": "date-time",
+          "title": "From",
+          "type": "string"
+        },
+        "to": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "To"
+        }
+      },
+      "required": [
+        "from",
+        "to"
+      ],
+      "title": "EffectiveRange",
+      "type": "object"
+    },
+    "EscalationPolicy": {
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "const": true,
+          "title": "Enabled",
+          "type": "boolean"
+        },
+        "reason_codes": {
+          "items": {
+            "pattern": "^[A-Z][A-Z0-9_]{1,63}$",
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Reason Codes",
+          "type": "array"
+        },
+        "required_payload_fields": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$",
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Required Payload Fields",
+          "type": "array"
+        }
+      },
+      "required": [
+        "enabled",
+        "reason_codes",
+        "required_payload_fields"
+      ],
+      "title": "EscalationPolicy",
+      "type": "object"
+    },
+    "EvidenceFailureAction": {
+      "enum": [
+        "clarify",
+        "escalate",
+        "deny"
+      ],
+      "title": "EvidenceFailureAction",
+      "type": "string"
+    },
+    "EvidenceRequirement": {
+      "additionalProperties": false,
+      "properties": {
+        "authority": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$",
+          "title": "Authority",
+          "type": "string"
+        },
+        "freshness": {
+          "$ref": "#/$defs/FreshnessRequirement"
+        },
+        "id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[_-][a-z0-9]+)*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "on_conflict": {
+          "$ref": "#/$defs/EvidenceFailureAction"
+        },
+        "on_missing": {
+          "$ref": "#/$defs/EvidenceFailureAction"
+        },
+        "on_stale": {
+          "$ref": "#/$defs/EvidenceFailureAction"
+        },
+        "source_kind": {
+          "$ref": "#/$defs/EvidenceSourceKind"
+        },
+        "valid_time": {
+          "$ref": "#/$defs/ValidTimeRequirement"
+        }
+      },
+      "required": [
+        "id",
+        "source_kind",
+        "authority",
+        "freshness",
+        "valid_time",
+        "on_missing",
+        "on_stale",
+        "on_conflict"
+      ],
+      "title": "EvidenceRequirement",
+      "type": "object"
+    },
+    "EvidenceSourceKind": {
+      "enum": [
+        "source_system",
+        "knowledge",
+        "user_assertion"
+      ],
+      "title": "EvidenceSourceKind",
+      "type": "string"
+    },
+    "FieldOperand": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "field",
+          "title": "Kind",
+          "type": "string"
+        },
+        "path": {
+          "maxLength": 256,
+          "minLength": 3,
+          "pattern": "^(?:inputs|evidence|case|actor|tenant)\\.[a-z][a-z0-9_-]*(?:\\.[a-z][a-z0-9_-]*)*$",
+          "title": "Path",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "path"
+      ],
+      "title": "FieldOperand",
+      "type": "object"
+    },
+    "FreshnessRequirement": {
+      "additionalProperties": false,
+      "properties": {
+        "max_age_seconds": {
+          "exclusiveMinimum": 0,
+          "maximum": 31536000,
+          "title": "Max Age Seconds",
+          "type": "integer"
+        },
+        "observed_at": {
+          "maxLength": 256,
+          "minLength": 3,
+          "pattern": "^(?:inputs|evidence|case|actor|tenant)\\.[a-z][a-z0-9_-]*(?:\\.[a-z][a-z0-9_-]*)*$",
+          "title": "Observed At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "observed_at",
+        "max_age_seconds"
+      ],
+      "title": "FreshnessRequirement",
+      "type": "object"
+    },
+    "IdempotencyRequirement": {
+      "additionalProperties": false,
+      "properties": {
+        "key_fields": {
+          "items": {
+            "maxLength": 256,
+            "minLength": 3,
+            "pattern": "^(?:inputs|evidence|case|actor|tenant)\\.[a-z][a-z0-9_-]*(?:\\.[a-z][a-z0-9_-]*)*$",
+            "type": "string"
+          },
+          "title": "Key Fields",
+          "type": "array"
+        },
+        "strategy": {
+          "$ref": "#/$defs/IdempotencyStrategy"
+        }
+      },
+      "required": [
+        "strategy",
+        "key_fields"
+      ],
+      "title": "IdempotencyRequirement",
+      "type": "object"
+    },
+    "IdempotencyStrategy": {
+      "enum": [
+        "not_required",
+        "connector_key",
+        "reconcile_by_state"
+      ],
+      "title": "IdempotencyStrategy",
+      "type": "string"
+    },
+    "InputRequirement": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[_-][a-z0-9]+)*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "required": {
+          "title": "Required",
+          "type": "boolean"
+        },
+        "sensitive": {
+          "title": "Sensitive",
+          "type": "boolean"
+        },
+        "type": {
+          "$ref": "#/$defs/InputType"
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "required",
+        "sensitive"
+      ],
+      "title": "InputRequirement",
+      "type": "object"
+    },
+    "InputType": {
+      "enum": [
+        "string",
+        "integer",
+        "number",
+        "boolean",
+        "date",
+        "datetime"
+      ],
+      "title": "InputType",
+      "type": "string"
+    },
+    "LiteralOperand": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "literal",
+          "title": "Kind",
+          "type": "string"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Value"
+        }
+      },
+      "required": [
+        "kind",
+        "value"
+      ],
+      "title": "LiteralOperand",
+      "type": "object"
+    },
+    "PostconditionDeclaration": {
+      "additionalProperties": false,
+      "properties": {
+        "checker": {
+          "$ref": "#/$defs/SafeReference"
+        },
+        "evidence_requirement_ids": {
+          "items": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-z][a-z0-9]*(?:[_-][a-z0-9]+)*$",
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Evidence Requirement Ids",
+          "type": "array"
+        },
+        "id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[_-][a-z0-9]+)*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "on_unknown": {
+          "$ref": "#/$defs/EvidenceFailureAction"
+        },
+        "required_for": {
+          "items": {
+            "$ref": "#/$defs/TerminalOutcome"
+          },
+          "minItems": 1,
+          "title": "Required For",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "checker",
+        "evidence_requirement_ids",
+        "required_for",
+        "on_unknown"
+      ],
+      "title": "PostconditionDeclaration",
+      "type": "object"
+    },
+    "Predicate": {
+      "additionalProperties": false,
+      "properties": {
+        "args": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/Predicate"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Args"
+        },
+        "field": {
+          "anyOf": [
+            {
+              "maxLength": 256,
+              "minLength": 3,
+              "pattern": "^(?:inputs|evidence|case|actor|tenant)\\.[a-z][a-z0-9_-]*(?:\\.[a-z][a-z0-9_-]*)*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Field"
+        },
+        "left": {
+          "anyOf": [
+            {
+              "discriminator": {
+                "mapping": {
+                  "datetime": "#/$defs/DateTimeOperand",
+                  "datetime_range": "#/$defs/DateTimeRangeOperand",
+                  "field": "#/$defs/FieldOperand",
+                  "literal": "#/$defs/LiteralOperand"
+                },
+                "propertyName": "kind"
+              },
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/FieldOperand"
+                },
+                {
+                  "$ref": "#/$defs/LiteralOperand"
+                },
+                {
+                  "$ref": "#/$defs/DateTimeOperand"
+                },
+                {
+                  "$ref": "#/$defs/DateTimeRangeOperand"
+                }
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Left"
+        },
+        "op": {
+          "$ref": "#/$defs/PredicateOperator"
+        },
+        "right": {
+          "anyOf": [
+            {
+              "discriminator": {
+                "mapping": {
+                  "datetime": "#/$defs/DateTimeOperand",
+                  "datetime_range": "#/$defs/DateTimeRangeOperand",
+                  "field": "#/$defs/FieldOperand",
+                  "literal": "#/$defs/LiteralOperand"
+                },
+                "propertyName": "kind"
+              },
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/FieldOperand"
+                },
+                {
+                  "$ref": "#/$defs/LiteralOperand"
+                },
+                {
+                  "$ref": "#/$defs/DateTimeOperand"
+                },
+                {
+                  "$ref": "#/$defs/DateTimeRangeOperand"
+                }
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Right"
+        },
+        "values": {
+          "anyOf": [
+            {
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Values"
+        }
+      },
+      "required": [
+        "op"
+      ],
+      "title": "Predicate",
+      "type": "object"
+    },
+    "PredicateOperator": {
+      "enum": [
+        "all",
+        "any",
+        "not",
+        "eq",
+        "in",
+        "exists",
+        "lt",
+        "lte",
+        "gt",
+        "gte",
+        "date_before",
+        "date_after",
+        "range_contains"
+      ],
+      "title": "PredicateOperator",
+      "type": "string"
+    },
+    "RuleDefinition": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[_-][a-z0-9]+)*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "predicate": {
+          "$ref": "#/$defs/Predicate"
+        }
+      },
+      "required": [
+        "id",
+        "predicate"
+      ],
+      "title": "RuleDefinition",
+      "type": "object"
+    },
+    "SafeReference": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "schema_digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Schema Digest",
+          "type": "string"
+        },
+        "version": {
+          "maxLength": 128,
+          "minLength": 5,
+          "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-(?:0|[1-9][0-9]*|[0-9A-Za-z-]*[A-Za-z-][0-9A-Za-z-]*)(?:\\.(?:0|[1-9][0-9]*|[0-9A-Za-z-]*[A-Za-z-][0-9A-Za-z-]*))*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "schema_digest"
+      ],
+      "title": "SafeReference",
+      "type": "object"
+    },
+    "StepKind": {
+      "enum": [
+        "input",
+        "reasoning",
+        "gather_evidence",
+        "policy",
+        "read_action",
+        "write_action",
+        "postcondition",
+        "response"
+      ],
+      "title": "StepKind",
+      "type": "string"
+    },
+    "StepTransitionTarget": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[_-][a-z0-9]+)*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "type": {
+          "const": "step",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "id"
+      ],
+      "title": "StepTransitionTarget",
+      "type": "object"
+    },
+    "TerminalOutcome": {
+      "enum": [
+        "verified",
+        "partial",
+        "clarification_required",
+        "escalated",
+        "failed",
+        "cancelled"
+      ],
+      "title": "TerminalOutcome",
+      "type": "string"
+    },
+    "TerminalOutcomeDefinition": {
+      "additionalProperties": false,
+      "properties": {
+        "claim_policy": {
+          "$ref": "#/$defs/ClaimPolicy"
+        },
+        "disclosure_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[_-][a-z0-9]+)*$",
+          "title": "Disclosure Id",
+          "type": "string"
+        },
+        "handoff_required": {
+          "title": "Handoff Required",
+          "type": "boolean"
+        },
+        "requires_all_postconditions": {
+          "title": "Requires All Postconditions",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "claim_policy",
+        "requires_all_postconditions",
+        "handoff_required",
+        "disclosure_id"
+      ],
+      "title": "TerminalOutcomeDefinition",
+      "type": "object"
+    },
+    "TerminalTransitionTarget": {
+      "additionalProperties": false,
+      "properties": {
+        "outcome": {
+          "$ref": "#/$defs/TerminalOutcome"
+        },
+        "type": {
+          "const": "terminal",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "outcome"
+      ],
+      "title": "TerminalTransitionTarget",
+      "type": "object"
+    },
+    "TransitionEvent": {
+      "enum": [
+        "complete",
+        "missing",
+        "stale",
+        "conflict",
+        "success",
+        "timeout",
+        "failure",
+        "allow",
+        "clarify",
+        "deny",
+        "escalate",
+        "pass",
+        "fail",
+        "unknown",
+        "unsupported"
+      ],
+      "title": "TransitionEvent",
+      "type": "string"
+    },
+    "ValidTimeRequirement": {
+      "additionalProperties": false,
+      "properties": {
+        "reference": {
+          "maxLength": 256,
+          "minLength": 3,
+          "pattern": "^(?:inputs|evidence|case|actor|tenant)\\.[a-z][a-z0-9_-]*(?:\\.[a-z][a-z0-9_-]*)*$",
+          "title": "Reference",
+          "type": "string"
+        },
+        "require_overlap": {
+          "const": true,
+          "title": "Require Overlap",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "reference",
+        "require_overlap"
+      ],
+      "title": "ValidTimeRequirement",
+      "type": "object"
+    }
+  },
+  "$id": "https://rag-new.local/schemas/resolution-contract/v0.1",
+  "additionalProperties": false,
+  "properties": {
+    "budgets": {
+      "$ref": "#/$defs/ContractBudgets"
+    },
+    "disclosure": {
+      "$ref": "#/$defs/DisclosurePolicy"
+    },
+    "effective": {
+      "$ref": "#/$defs/EffectiveRange"
+    },
+    "eligibility": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Predicate"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "entrypoint": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[a-z][a-z0-9]*(?:[_-][a-z0-9]+)*$",
+      "title": "Entrypoint",
+      "type": "string"
+    },
+    "escalation": {
+      "$ref": "#/$defs/EscalationPolicy"
+    },
+    "evidence_requirements": {
+      "items": {
+        "$ref": "#/$defs/EvidenceRequirement"
+      },
+      "minItems": 1,
+      "title": "Evidence Requirements",
+      "type": "array"
+    },
+    "id": {
+      "maxLength": 128,
+      "minLength": 3,
+      "pattern": "^[a-z][a-z0-9]*(?:[.-][a-z0-9]+)*$",
+      "title": "Id",
+      "type": "string"
+    },
+    "owner": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$",
+      "title": "Owner",
+      "type": "string"
+    },
+    "postconditions": {
+      "items": {
+        "$ref": "#/$defs/PostconditionDeclaration"
+      },
+      "minItems": 1,
+      "title": "Postconditions",
+      "type": "array"
+    },
+    "required_inputs": {
+      "items": {
+        "$ref": "#/$defs/InputRequirement"
+      },
+      "minItems": 1,
+      "title": "Required Inputs",
+      "type": "array"
+    },
+    "risk_tier": {
+      "$ref": "#/$defs/ContractRiskTier"
+    },
+    "rules": {
+      "items": {
+        "$ref": "#/$defs/RuleDefinition"
+      },
+      "title": "Rules",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "resolution-contract/v0.1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "steps": {
+      "items": {
+        "$ref": "#/$defs/ContractStep"
+      },
+      "minItems": 1,
+      "title": "Steps",
+      "type": "array"
+    },
+    "terminal_outcomes": {
+      "additionalProperties": {
+        "$ref": "#/$defs/TerminalOutcomeDefinition"
+      },
+      "minProperties": 1,
+      "propertyNames": {
+        "$ref": "#/$defs/TerminalOutcome"
+      },
+      "title": "Terminal Outcomes",
+      "type": "object"
+    },
+    "version": {
+      "maxLength": 128,
+      "minLength": 5,
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-(?:0|[1-9][0-9]*|[0-9A-Za-z-]*[A-Za-z-][0-9A-Za-z-]*)(?:\\.(?:0|[1-9][0-9]*|[0-9A-Za-z-]*[A-Za-z-][0-9A-Za-z-]*))*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+      "title": "Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "id",
+    "version",
+    "owner",
+    "risk_tier",
+    "effective",
+    "entrypoint",
+    "required_inputs",
+    "evidence_requirements",
+    "rules",
+    "steps",
+    "postconditions",
+    "terminal_outcomes",
+    "escalation",
+    "disclosure",
+    "budgets"
+  ],
+  "title": "ResolutionContract",
+  "type": "object"
+}

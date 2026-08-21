@@ -8,7 +8,7 @@ Evolve the inherited RAG assistant into a self-hosted, verifiable support-resolu
 
 - [x] Freeze provenance and architecture drivers from source commit `bd07179` and `D:\New_steps\rag.md` -> Verify: baseline counts, hotspots, open remediation gates, and source-to-target boundaries are recorded.
 - [x] Define the modular-monolith target, deterministic resolution kernel, data ownership, trust boundaries, and failure semantics -> Verify: architecture diagrams and ADRs agree on every component owner.
-- [ ] Add `ResolutionContract` v0.1 as Pydantic models plus exported JSON Schema and positive/negative fixtures -> Verify: unknown fields and missing safety fields fail validation.
+- [x] Add `ResolutionContract` v0.1 as Pydantic models plus exported JSON Schema and positive/negative fixtures -> Verify: unknown fields and missing safety fields fail validation.
 - [ ] Add an append-only case/evidence data model behind repository ports -> Verify: Alembic round trip, tenant isolation, immutability rules, and temporal-conflict tests pass.
 - [ ] Implement one read-only `shipment-status` contract in shadow mode -> Verify: happy, clarify, stale, conflict, timeout, and escalation scenarios have deterministic terminal outcomes.
 - [ ] Add the governed action gateway and wrap `create_ticket` as the first reversible/idempotent write -> Verify: retries and disconnects cannot create duplicate side effects; denial never calls the connector.
@@ -23,4 +23,8 @@ Evolve the inherited RAG assistant into a self-hosted, verifiable support-resolu
 
 ## Notes
 
-The next named implementation slice is **Resolution Contract schema v0.1**. Domain-owner approval of journey postconditions and access to a real shipment source of truth remain product prerequisites, not details for the LLM to infer.
+The completed schema contract and compatibility policy are documented in
+`docs/architecture/resolution-contract-schema-v0.1.md`. The next named
+implementation slice is **Case and evidence persistence**. Domain-owner
+approval of journey postconditions and access to a real shipment source of
+truth remain product prerequisites, not details for the LLM to infer.

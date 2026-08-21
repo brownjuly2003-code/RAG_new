@@ -1,0 +1,10 @@
+{
+  "expected_error": "checker.id",
+  "operations": [
+    {
+      "op": "replace",
+      "path": "/postconditions/0/checker/id",
+      "value": "os.system"
+    }
+  ]
+}

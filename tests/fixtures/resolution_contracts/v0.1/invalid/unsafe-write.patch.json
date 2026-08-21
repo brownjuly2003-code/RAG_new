@@ -1,0 +1,20 @@
+{
+  "expected_error": "write actions require explicit confirmation",
+  "operations": [
+    {
+      "op": "replace",
+      "path": "/risk_tier",
+      "value": "reversible_write"
+    },
+    {
+      "op": "replace",
+      "path": "/steps/1/kind",
+      "value": "write_action"
+    },
+    {
+      "op": "replace",
+      "path": "/steps/1/action/risk",
+      "value": "reversible_write"
+    }
+  ]
+}

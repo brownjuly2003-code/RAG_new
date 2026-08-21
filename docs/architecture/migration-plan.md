@@ -39,7 +39,7 @@ Deliverables are the project clone, independent repository boundary, architectur
 
 Verification: source provenance and counts are recorded; architecture links resolve; decisions agree on ownership, state, data, and failure semantics; project runtime is unchanged.
 
-### Slice B — Resolution Contract schema v0.1 (next)
+### Slice B — Resolution Contract schema v0.1 (complete)
 
 Add strict Pydantic authoring models, exported JSON Schema, canonical serialization/digest, closed predicate AST, lifecycle enums, and fixtures. No database or runtime routing yet.
 
@@ -50,7 +50,7 @@ Verification:
 - referenced safe operators are allowlisted; no `eval`/dynamic import path exists;
 - schema snapshot and compatibility policy are documented.
 
-### Slice C — Case and evidence persistence
+### Slice C — Case and evidence persistence (next)
 
 Add domain entities, ports, PostgreSQL models/migrations, append-only events, optimistic versioning, repository adapters, tenant RLS, and a protected evidence reference abstraction.
 

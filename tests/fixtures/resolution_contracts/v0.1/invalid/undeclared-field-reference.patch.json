@@ -1,0 +1,10 @@
+{
+  "expected_error": "undeclared field paths",
+  "operations": [
+    {
+      "op": "replace",
+      "path": "/rules/0/predicate/args/0/field",
+      "value": "inputs.unknown"
+    }
+  ]
+}

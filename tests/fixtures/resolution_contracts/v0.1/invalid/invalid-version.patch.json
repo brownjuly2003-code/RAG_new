@@ -1,0 +1,10 @@
+{
+  "expected_error": "version",
+  "operations": [
+    {
+      "op": "replace",
+      "path": "/version",
+      "value": "v1"
+    }
+  ]
+}

@@ -48,6 +48,7 @@ source = [
     "ingestion",
     "llm",
     "monitoring",
+    "resolution",
     "tasks",
     "tracing",
     "utils",
@@ -175,6 +176,15 @@ disallow_incomplete_defs = true
 module = ["evaluation.*"]
 disallow_untyped_defs = true
 disallow_incomplete_defs = true
+
+# resolution.* — strict scope from its first slice. Contracts and the future
+# deterministic kernel are authority boundaries rather than LLM adapters.
+[[tool.mypy.overrides]]
+module = ["resolution.*"]
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+no_implicit_optional = true
+warn_return_any = true
 
 # agent modules — strict scope (Step 9).
 [[tool.mypy.overrides]]

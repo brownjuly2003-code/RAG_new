@@ -1,0 +1,10 @@
+{
+  "expected_error": "wall_clock_seconds",
+  "operations": [
+    {
+      "op": "replace",
+      "path": "/budgets/wall_clock_seconds",
+      "value": 999999
+    }
+  ]
+}

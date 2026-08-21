@@ -1,0 +1,9 @@
+{
+  "expected_error": "on_conflict",
+  "operations": [
+    {
+      "op": "remove",
+      "path": "/evidence_requirements/0/on_conflict"
+    }
+  ]
+}
