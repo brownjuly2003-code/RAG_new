@@ -1,5 +1,92 @@
 # Agent State
 
+## 2026-08-22 Update-211 — RAG_new Resolution Product: Slice B и C1 завершены; C2 следующий ✅ START HERE
+
+> **Текущий routing для `D:\RAG_new`:** этот блок заменяет Update-210 и все
+> более старые `START HERE` для нового потока Resolution Product. Update-210
+> и ниже сохранены после этого блока только как история унаследованного Trust
+> Foundation.
+>
+> **Actual Git перед этим docs-only slice:** ветка `master`, HEAD `1d7e786`;
+> рабочее дерево было чистым; Git remote не настроен. Активного implementation
+> writer/WIP не было. Этот Update меняет только `AGENT_STATE.md` и
+> `docs/SESSION_HANDOFF.md`; пока они не закоммичены, ровно эти два `M`
+> ожидаемы. SHA документации определять через Actual Git. Этот Update не
+> означает push, deploy, применение миграций, изменение runtime routing или
+> live-провайдеров.
+
+### 211A. Что действительно доставлено
+
+| Slice | Статус | Проверяемый результат |
+|-------|--------|-----------------------|
+| A — architecture foundation | ✅ `d53e8e7` | Зафиксированы drivers, границы modular monolith, trust/data ownership, failure semantics, ADR и migration plan. Product runtime не менялся. |
+| B — Resolution Contract schema v0.1 | ✅ `f484347` | Строгие Pydantic-модели, закрытый predicate AST, canonical JSON/digest, экспортированный JSON Schema, positive/negative fixtures и compatibility policy. |
+| C1 — pure case/evidence domain + ports | ✅ `1d7e786` | Неизменяемые `SupportCase`, `CaseEvent`, `EvidenceSnapshot`/link/conflict types, optimistic transitions и tenant-scoped append-only repository/unit-of-work protocols. Infrastructure не требуется. |
+| C — persistence целиком | ⏳ открыто | Корневая галочка `Add an append-only case/evidence data model...` намеренно не отмечена: PostgreSQL/Alembic/adapters/RLS/restore gates ещё не реализованы. |
+
+Канонический scope результата:
+
+- контракт: `resolution/contracts/`, schema snapshot
+  `resolution/contracts/schemas/resolution-contract-v0.1.schema.json`, fixtures
+  `tests/fixtures/resolution_contracts/v0.1/`;
+- домен и ports: `resolution/domain/`, `resolution/ports/repositories.py`;
+- focused contracts: `tests/test_resolution_contract_schema.py` и
+  `tests/test_resolution_case_domain.py`;
+- решения и статус: `rag-new-architecture.md`,
+  `docs/architecture/migration-plan.md` и
+  `docs/architecture/resolution-contract-schema-v0.1.md`.
+
+### 211B. Последняя зелёная проверка
+
+- `python -m resolution.contracts.schema --check` — snapshot совпадает с
+  authoring models.
+- Combined focused gate (`test_resolution_contract_schema.py`,
+  `test_resolution_case_domain.py`, `test_docs_quality.py`) — **34 passed**,
+  одно существующее Starlette deprecation warning; package `resolution`
+  coverage **79.51%** при gate `--cov-fail-under=72`.
+- `python -m ruff check resolution tests\test_resolution_contract_schema.py tests\test_resolution_case_domain.py`
+  и соответствующий `ruff format --check` — green.
+- `python -m mypy resolution --follow-imports=skip` — green по 12 source files.
+- C1 шёл tests-first: первый focused run был красным с ожидаемым
+  `ModuleNotFoundError: resolution.domain`, затем 8 domain tests стали green.
+
+### 211C. Следующий один atomic slice
+
+**C2 — PostgreSQL case/evidence persistence.** Начать с focused failing tests,
+затем добавить только:
+
+1. SQLAlchemy/PostgreSQL models и одну Alembic revision для case, append-only
+   event, evidence snapshot/link и нужных ownership/version constraints;
+2. repository adapters с атомарным append события и compare-and-swap версии;
+3. пропорциональную проверку migration round trip на реальном PostgreSQL и
+   concurrency/tenant-negative contracts, которые входят именно в C2.
+
+После C2 **не закрывать Slice C и корневую галочку автоматически**. C2 должен
+дать real-PostgreSQL round trip своей revision и repository adapters; для
+полного Slice C останутся RLS/tenant negatives, append immutability, temporal
+constraints, encryption/redaction и restore smoke в объёме, заданном migration
+plan. Любой незелёный пункт сохраняет slice открытым. SQLite-only
+доказательство не принимается.
+
+### 211D. Границы и routing следующей сессии
+
+1. Сначала `git status --short --branch` и `git log -5 --oneline`.
+2. Затем этот блок и верхняя капсула `docs/SESSION_HANDOFF.md`.
+3. Очередь продукта: `rag-new-architecture.md`; точный slice/DoD:
+   `docs/architecture/migration-plan.md`.
+4. Архитектурные детали: `docs/architecture/README.md` и связанные ADR.
+5. Update-210 и старый backlog ниже — контекст Trust Foundation, а не текущая
+   очередь Resolution Product.
+
+Унаследованный продукт по-прежнему не объявлен production/release-ready:
+новые slices не применяли DB migrations, не включали runtime routing, не
+проводили deploy/push/live-provider работу и не закрывали прежние production
+gates.
+
+---
+
+## Унаследованная история Trust Foundation (Update-210 и ниже)
+
 ## 2026-08-18 Update-210 — first CI in 2.5 months: red → green on branch, PR #2 for migrations/helm ✅ START HERE
 
 > **Actual Git:** `master` = `752488b` (fix(ci)) on top of `837578a`; pushed

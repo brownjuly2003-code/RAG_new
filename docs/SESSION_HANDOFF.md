@@ -1,5 +1,81 @@
 # Session handoff
 
+## CURRENT — 2026-08-22 / Update-211 / RAG_new Resolution Product
+
+**Назначение:** самодостаточный старт следующей сессии по новой архитектуре,
+без чтения исторических Update-210 и ниже.
+
+### 0. Первые действия
+
+```powershell
+Set-Location -LiteralPath D:\RAG_new
+git status --short --branch
+git log -5 --oneline
+```
+
+Ожидаемая проверенная база перед этим docs-only update: `master` на
+`1d7e786`, рабочее дерево было чистым, Git remote не настроен. Если Actual Git
+отличается, он имеет приоритет. Активного implementation WIP или writer нет.
+До docs-коммита ожидаемы ровно два `M`: `AGENT_STATE.md` и этот файл; любое
+другое изменение требует отдельной проверки происхождения.
+
+Далее читать в таком порядке:
+
+1. верхний Update-211 в [`AGENT_STATE.md`](../AGENT_STATE.md);
+2. [`rag-new-architecture.md`](../rag-new-architecture.md) — текущая очередь;
+3. [`architecture/migration-plan.md`](architecture/migration-plan.md) — scope,
+   verification и условия закрытия slice;
+4. [`architecture/README.md`](architecture/README.md) — ADR и остальные
+   архитектурные документы.
+
+Update-210 ниже — сохранённая история Trust Foundation. Он не является
+текущим routing для Resolution Product.
+
+### 1. Текущий delivery status
+
+| Commit | Что завершено |
+|--------|---------------|
+| `d53e8e7` | Slice A: architecture foundation; только docs/decisions, без runtime change. |
+| `f484347` | Slice B: строгий Resolution Contract v0.1, JSON Schema snapshot, canonical digest, fixtures и compatibility policy. |
+| `1d7e786` | Slice C1: immutable case/evidence domain и tenant-scoped append-only repository/UoW ports. |
+
+Последний combined gate: **34 passed**, одно существующее Starlette warning,
+`resolution` coverage **79.51%** при минимуме 72%; Ruff lint/format и MyPy по
+12 source files green. Schema snapshot check также green. Точные команды и
+пути перечислены в Update-211 [`AGENT_STATE.md`](../AGENT_STATE.md).
+
+### 2. Следующий named slice: C2
+
+**C2 — PostgreSQL case/evidence persistence:** tests-first добавить
+SQLAlchemy/PostgreSQL models, одну Alembic revision и repository adapters с
+атомарным append `CaseEvent` и compare-and-swap версии. Проверка должна
+включать реальный PostgreSQL migration round trip и focused repository
+concurrency/tenant-negative contracts; SQLite-only доказательство не подходит.
+
+Граница завершения: C2 — часть Slice C. Его real-PostgreSQL migration/repository
+round trip не закрывает корневую галочку `Add an append-only case/evidence data
+model...`. Для полного закрытия остаются RLS/tenant isolation, append
+immutability, temporal constraints, encryption/redaction и restore smoke из
+migration plan; любой незелёный gate сохраняет Slice C открытым.
+
+### 3. Явно не сделано и не разрешено считать сделанным
+
+- нет PostgreSQL models/migration/repository adapters для нового домена;
+- никакая migration не применялась и runtime routing не включался;
+- не выполнялись push, deploy, live-provider вызовы или production mutation;
+- новый архитектурный поток не закрыл унаследованные Trust Foundation и
+  release gates;
+- remote в этом checkout не настроен, поэтому утверждать remote/CI status по
+  этому checkout нельзя.
+
+На один пользовательский turn брать не более одного atomic slice. После
+зелёной focused проверки и одной пропорциональной независимой проверки —
+зафиксировать status один раз и вернуть управление пользователю.
+
+---
+
+## Унаследованный handoff Trust Foundation (Update-210 и ниже)
+
 **Обновлено:** 2026-08-18 — **Update-210** (first CI in 2.5 months: branch `ci-check-20260818` red→green 8/8 at `752488b`; PR #2 exercises migrations/helm before fast-forwarding `master`). Update-209 = stage closed (suite green 1870/7, lock gate root-caused = WSL idle-shutdown, INDEX-DIM activated on Windows).
 **Назначение:** самодостаточный старт **следующей** сессии без чтения всей
 истории `AGENT_STATE.md`.
