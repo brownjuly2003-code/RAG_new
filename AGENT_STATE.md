@@ -1,6 +1,59 @@
 # Agent State
 
-## 2026-08-22 Update-227 — G2 replay manifest and impact report locally complete in containing commit ✅ START HERE
+## 2026-08-22 Update-228 — G3 replay trials locally complete in containing scoped commit ✅ START HERE
+
+> **Канонический старт для `D:\RAG_new`:** читать этот блок, затем верхнюю
+> CURRENT-капсулу `docs/SESSION_HANDOFF.md` и
+> `g3-manifest-bound-replay-trials.md`. Они заменяют Update-227 как routing
+> truth. Exact delivery SHA брать из Actual Git; не переписывать его вручную.
+
+### 228A. Actual Git и delivery state
+
+- G3 implementation, tests и durable docs доставлены scoped
+  explicit-pathspec commit, содержащим этот Update-228; точный SHA определяет
+  Actual Git.
+- Remote не настроен. Push, deploy, runtime, live и external actions не
+  выполнялись.
+- Tests-first RED остановился на ожидаемом `ImportError`.
+
+### 228B. Доставленный G3 contract
+
+- Pure local callback replay принимает только manifest/impact-bound plan и
+  fixtures. Каждый planned scenario получает ровно 3 deterministic
+  derived-seed trials.
+- Immutable plans, trial records, structural issues и summaries имеют
+  canonical serialization и hashes. Structural failures сохраняются как
+  явные `ERROR` records/evidence.
+- Fail-closed denominators фиксированы: `pass^1 = successful_trials / (3 * N)`
+  и `pass^3 = all_three_success_scenarios / N`. Missing, duplicate, extra,
+  foreign, drifted или callback-failed evidence не улучшает numerator и не
+  уменьшает denominator.
+- Raw candidate/world/fault/hidden/response compartments не попадают в
+  canonical records.
+
+### 228C. Verification и QA truth
+
+- Focused до QA: **19 passed**.
+- QA follow-up 1/1 исправил structural records и public journey-contract gate;
+  final: **20 passed**, Ruff/format/focused MyPy green.
+- Independent gate: **108 passed**, одно известное предупреждение
+  Starlette/httpx2; Ruff green; **8 files formatted**; focused MyPy green по 4
+  sources; `git diff --check` green.
+
+### 228D. Границы и следующий slice
+
+- Полный Slice G остаётся открыт. G3 не добавляет runtime/live execution,
+  persistent DB, business KPIs, `ShipmentStatusShadowLoop` integration,
+  shadow/canary, promotion, deploy или push.
+- Следующий один named slice — **G4: versioned persona/adversarial/fault corpus
+  + manifest-bound branch/fault coverage completeness**, всё ещё без
+  runtime/live/business KPI/promotion.
+- Содержащий этот Update-228 scoped commit закрывает G3. Не создавать второй
+  G3 commit, не повторять green gates и не начинать G4 в этом turn.
+
+---
+
+## Superseded — 2026-08-22 Update-227 — G2 replay manifest and impact report locally complete in containing commit
 
 > **Канонический старт для `D:\RAG_new`:** читать этот блок, затем верхнюю
 > CURRENT-капсулу `docs/SESSION_HANDOFF.md` и

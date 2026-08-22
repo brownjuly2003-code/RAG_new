@@ -463,6 +463,16 @@ def canonical_replay_manifest_json(manifest: ReplayManifest) -> str:
     return _canonical_json(manifest.as_dict())
 
 
+def canonical_scenario_binding_json(binding: ScenarioReplayBinding) -> str:
+    if not isinstance(binding, ScenarioReplayBinding):
+        raise ValueError("binding must be a ScenarioReplayBinding")
+    return _canonical_json(binding.as_dict())
+
+
+def scenario_binding_digest(binding: ScenarioReplayBinding) -> str:
+    return hashlib.sha256(canonical_scenario_binding_json(binding).encode("utf-8")).hexdigest()
+
+
 def replay_manifest_digest(manifest: ReplayManifest) -> str:
     return hashlib.sha256(canonical_replay_manifest_json(manifest).encode("utf-8")).hexdigest()
 
@@ -636,7 +646,9 @@ __all__ = [
     "build_replay_manifest",
     "canonical_impact_report_json",
     "canonical_replay_manifest_json",
+    "canonical_scenario_binding_json",
     "impact_report_digest",
     "replay_manifest_digest",
+    "scenario_binding_digest",
     "select_impacted_scenarios",
 ]

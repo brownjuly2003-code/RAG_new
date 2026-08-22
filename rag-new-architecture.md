@@ -14,7 +14,7 @@ Evolve the inherited RAG assistant into a self-hosted, verifiable support-resolu
 - [x] Add a pure temporal-knowledge and projection-binding contract -> Verify: bitemporal selection, exact applicability, fail-closed conflicts, tenant/config drift, and rebuild/rollback known cases pass without changing runtime defaults.
 - [x] Persist and integrate temporal knowledge authority -> Verify: revision `029` round trip, forced RLS, immutability/system-close guards, bitemporal exclusion, exact approved identities, and retrieval allowlisting pass on real PostgreSQL.
 - [x] Add the governed action gateway and wrap `create_ticket` as the first reversible/idempotent write -> Delivered locally at `ed82d6a`; retries and disconnects cannot create duplicate side effects, and denial never calls the connector.
-- [ ] Add scenario compilation, state grading, replay manifests, and VR/VRY reporting -> G1 deterministic compilation/grading and G2 offline replay-manifest/impact selection are locally complete in their containing scoped commits; G3 local replay execution/trial records is next. Full Slice G remains open.
+- [ ] Add scenario compilation, state grading, replay manifests, and VR/VRY reporting -> G1, G2, and G3 are locally committed; G4 versioned persona/adversarial/fault coverage is next. Full Slice G remains open.
 - [ ] Promote one journey through shadow and canary only after the inherited remediation stream is green -> Verify: rollback, SLO, security, and outcome gates are backed by fresh non-skipped evidence.
 
 ## Done when
@@ -83,8 +83,16 @@ known dependency impact narrowly, global impact fully, and structural,
 membership, or unexplained drift fully fail closed. The report has no replay
 outcome, promotion/release verdict, or business-metric semantics.
 
-Full Slice G remains open. G3 manifest-bound local replay execution, immutable
-trial records, and deterministic fail-closed `pass^1`/`pass^3` is next.
-Repeated trials beyond that contract, business metrics, loop integration,
-database, shadow/canary, live promotion, external connector, deploy and push
-remain outside G2.
+G3 is locally complete in the scoped commit containing this update; resolve its
+exact SHA from Actual Git. The manifest/impact-bound callback executor records
+exactly three deterministic derived-seed trials per planned scenario as
+immutable canonical hashes.
+Structural failures remain explicit `ERROR` evidence; fixed fail-closed
+denominators define `pass^1` over `3 * N` planned trials and `pass^3` over `N`
+planned scenarios. Raw candidate/world/fault/hidden/response payloads remain
+compartmentalized outside canonical records.
+
+Full Slice G remains open. G4 versioned persona/adversarial/fault corpus plus
+manifest-bound branch/fault coverage completeness is next. Runtime/live
+execution, business KPIs, loop integration, database, shadow/canary, live
+promotion, external connector, deploy and push remain outside G3.

@@ -206,11 +206,31 @@ no replay outcome, promotion/release verdict, or VR/VRY/recontact/cost
 semantics. QA fixed three major boundary issues in one batch; focused and
 independent verification passed.
 
-The next named slice is **G3: manifest-bound local replay executor, immutable
-trial records, and deterministic fail-closed `pass^1`/`pass^3`**, still
-without business metrics or live promotion. G2 does not execute replay, create
-trial records, integrate `ShipmentStatusShadowLoop`, persist database state,
-run shadow/canary, promote, deploy or push.
+Delivery status (2026-08-22): **G3 manifest-bound replay trials are locally
+complete in the scoped commit containing this update; resolve its exact SHA
+from Actual Git; full Slice G remains open.**
+The pure local callback executor binds plans and fixtures to the replay
+manifest and impact selection, then creates exactly three deterministic
+derived-seed trials per planned scenario. Immutable canonical hashed
+plans/records/issues/summaries preserve structural failures as explicit
+`ERROR` evidence. Fixed fail-closed denominators define
+`pass^1 = successful_trials / (3 * N)` and
+`pass^3 = all_three_success_scenarios / N`; incomplete, duplicate, extra,
+foreign, drifted, or callback-failed evidence cannot improve a numerator or
+shrink a denominator. Raw candidate/world/fault/hidden/response compartments
+are not serialized into canonical records.
+
+Focused verification passed 19 tests before QA. The single QA follow-up fixed
+structural records and the public journey-contract gate, then reported 20
+passed with Ruff/format/MyPy green. Independent verification passed 108 tests
+with one known Starlette/httpx2 warning; Ruff, eight-file format, focused MyPy
+over four sources, and diff check were green.
+
+The next named slice is **G4: versioned persona/adversarial/fault corpus plus
+manifest-bound branch/fault coverage completeness**, still without
+runtime/live execution, business KPIs, or promotion. G3 does not integrate
+`ShipmentStatusShadowLoop`, persist database state, run shadow/canary, deploy
+or push.
 
 ### Slice H — Operator surfaces and pilot
 

@@ -5,39 +5,34 @@
 Текущая выбранная владельцем очередь находится в
 [`rag-new-architecture.md`](rag-new-architecture.md), а точный scope и DoD — в
 [`docs/architecture/migration-plan.md`](docs/architecture/migration-plan.md).
-Срезы C1–C8, D, E1, E2, F и G1 завершены; G2 начат от clean `master` at
-`5085c99` без remote и **локально завершён scoped commit, содержащим этот
-блок**. Exact G2 SHA определяется через Actual Git; push не выполнялся.
+Срезы C1–C8, D, E1, E2, F, G1 и G2 завершены. G3 pure local replay
+implementation/tests/docs локально завершены в scoped commit, содержащем этот
+update; точный SHA определяет Actual Git. Remote отсутствует;
+push/deploy/live/external actions не выполнялись. Tests-first RED был
+ожидаемым `ImportError`.
 
-Measured G2 baseline: no `evaluation/resolution/replay.py`, one legacy
-`curated_cases.manifest.json`, while G1 retained 30 fixture scenarios and 22
-branch targets. Tests-first RED был ожидаемым `ImportError: ArtifactKey`.
-Pure offline immutable manifest pins exact 40-char code revision, global
-contract/compiler/grader/candidate/scenario-set identities, participating
-dependency version+SHA256 и per-scenario candidate/world/fault/hidden/coverage
-compartment digests/identities. Canonical payload не раскрывает raw candidate
-messages, world reference, fault IDs или hidden oracle.
+Manifest/impact-bound callback replay выполняет ровно 3 deterministic
+derived-seed trials на planned scenario. Immutable plans, trial records,
+structural issues и summaries canonical/hash-bound; structural failures дают
+явное `ERROR` evidence. Denominators фиксированы fail closed:
+`pass^1 = successful_trials / (3 * N)` и
+`pass^3 = all_three_success_scenarios / N`. Missing, duplicate, extra,
+foreign, drifted или callback-failed evidence не улучшает numerator и не
+уменьшает denominator. Raw candidate/world/fault/hidden/response compartments
+не сериализуются в canonical records.
 
-Impact selection сравнивает baseline/candidate manifests напрямую: same=no
-change, known dependency=targeted, global=full, а dependency graph, scenario
-membership или unexplained drift=`FULL_FAIL_CLOSED`; changed manifests никогда
-не дают empty selection. Report не содержит replay outcome,
-promotion/release verdict или VR/VRY/recontact/cost semantics.
+Focused до QA: 19 passed. QA follow-up 1/1 исправил structural records и public
+journey-contract gate; final 20 passed, Ruff/format/MyPy green. Independent
+gate: 108 passed + one known Starlette/httpx2 warning; Ruff green; 8 files
+formatted; focused MyPy 4 sources green; diff check green.
 
-QA follow-up исправил одним batch три major issues: unbound world reference,
-raw fault IDs и leaked `promotion_status`; final 20 passed, Ruff, 3 formatted,
-focused MyPy 2 sources. Independent final: 88 passed + one known
-Starlette/httpx2 warning; Ruff clean; 6 formatted; strict focused MyPy 4
-sources; diff clean.
-
-Полный Slice G остаётся открыт. Следующий named slice — **G3:
-manifest-bound local replay executor + immutable trial records + deterministic
-fail-closed `pass^1`/`pass^3`**, всё ещё без business metrics/live promotion.
-G2 не исполняет replay, не создаёт trials, не интегрирует
-`ShipmentStatusShadowLoop`, не пишет DB и не выполняет shadow/canary,
-promotion, deploy или push. Полная truth — в
+Полный Slice G остаётся открыт. Следующий named slice — **G4: versioned
+persona/adversarial/fault corpus + manifest-bound branch/fault coverage
+completeness**, всё ещё без runtime/live/business KPI/promotion. G3 также не
+добавляет DB persistence, loop integration, shadow/canary, deploy или push.
+Полная truth — в
 [`docs/SESSION_HANDOFF.md`](docs/SESSION_HANDOFF.md) и
-[`g2-replay-manifest-impact-report.md`](g2-replay-manifest-impact-report.md).
+[`g3-manifest-bound-replay-trials.md`](g3-manifest-bound-replay-trials.md).
 
 Закрывающие C7/C8-капсулы:
 [`c7-resolution-restore-smoke.md`](c7-resolution-restore-smoke.md) и

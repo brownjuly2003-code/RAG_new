@@ -1,6 +1,73 @@
 # Session handoff
 
-## CURRENT — 2026-08-22 / Update-227 G2 replay manifest and impact report locally complete in containing commit
+## CURRENT — 2026-08-22 / Update-228 G3 replay trials locally complete in containing scoped commit
+
+**Назначение:** восстановить точный delivery SHA из Actual Git и направить
+следующую сессию к G4 без повторения green gates или завышения runtime/release
+claims.
+
+### 0. Actual Git и обязательная первая проверка
+
+```powershell
+Set-Location -LiteralPath D:\RAG_new
+git status --short --branch
+git log -5 --oneline
+git remote -v
+```
+
+G3 implementation, tests и docs доставлены scoped commit, содержащим этот
+Update-228; точный SHA определяет Actual Git. Remote отсутствует;
+push/deploy/live/external actions не выполнялись.
+
+### 0A. Один экран истины
+
+| Поле | Проверенный факт |
+|------|-----------------|
+| G3 status | Locally complete in the explicit-pathspec commit containing Update-228; RED was expected `ImportError` |
+| Binding | Pure local callback replay accepts only manifest/impact-bound plans and fixtures |
+| Trial topology | Exactly 3 deterministic derived-seed trials per planned scenario |
+| Records | Immutable canonical hashed plans/trials/issues/summaries; structural failures produce explicit `ERROR` evidence |
+| Fixed metrics | `pass^1 = successful_trials / (3 * N)`; `pass^3 = all_three_success_scenarios / N` |
+| Fail closed | Missing/duplicate/extra/foreign/drifted/callback-failed evidence cannot raise a numerator or shrink a denominator |
+| Compartment boundary | No raw candidate/world/fault/hidden/response payload in canonical records |
+| QA | Pre-QA focused 19 passed; QA fixed structural records + public journey gate; final 20 passed, Ruff/format/MyPy green |
+| Independent gate | 108 passed + 1 known Starlette/httpx2 warning; Ruff green; 8 formatted; focused MyPy 4 sources; diff green |
+| Следующий один slice | G4 versioned persona/adversarial/fault corpus + manifest-bound branch/fault coverage completeness; no runtime/live/business KPI/promotion |
+
+### 1. Доставленный contract
+
+- Pure callback executor recomputes fixture/plan/manifest and impact-selection
+  bindings before invoking the candidate with public journey input and a
+  deterministic derived seed.
+- Each planned scenario yields exactly three immutable hashed trial identities.
+  Structural defects become canonical `ERROR` evidence and remain in the fixed
+  denominators.
+- Summary derives both ratios only from complete planned topology; raw
+  candidate, world, fault, hidden-oracle, and response compartments stay
+  outside canonical records.
+
+### 2. Verification evidence
+
+- Tests-first RED: expected `ImportError`; focused pre-QA gate: **19 passed**.
+- QA follow-up 1/1 fixed structural records and the public journey-contract
+  gate; final: **20 passed**, Ruff/format/focused MyPy green.
+- Independent final: **108 passed**, one known Starlette/httpx2 warning; Ruff
+  green; **8 files formatted**; focused MyPy green по 4 sources;
+  `git diff --check` green.
+
+### 3. Точный stop/resume contract
+
+1. Подтвердить содержащий Update-228 G3 commit через Actual Git; не создавать
+   второй delivery commit и не переписывать SHA вручную.
+2. Не повторять tests/Ruff/format/MyPy/diff без нового diff или fresh failing
+   evidence; QA follow-up исчерпан.
+3. Полный Slice G остаётся открыт. Следующий named slice — G4 corpus +
+   branch/fault coverage completeness. Не начинать runtime/live execution,
+   business KPI, DB, shadow/canary, promotion, deploy/push.
+
+---
+
+## Superseded — 2026-08-22 / Update-227 G2 replay manifest and impact report locally complete in containing commit
 
 **Назначение:** восстановить локально завершённый G2 без повторения green
 gates и без завышения replay/release claims.
