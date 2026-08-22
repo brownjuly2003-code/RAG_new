@@ -93,7 +93,8 @@ Delivery status:
   data, encrypted locator behavior, RLS, append guards, temporal exclusion,
   and the protection constraint. Closing evidence is recorded in
   [`../../c7-resolution-restore-smoke.md`](../../c7-resolution-restore-smoke.md).
-- **C8 complete on the authorized Mac target:** a dedicated PostgreSQL 16
+- **C8 complete on the authorized Mac target (`c78da01`):** a dedicated
+  PostgreSQL 16
   cluster runs only on `127.0.0.1:55432`, separately from the existing service
   on `5432`. Database `ragnew_prod` is at head `028`; schema-owner, migrator,
   and direct runtime identities match the exact no-admin/no-inherit/non-owner

@@ -5,8 +5,9 @@
 Текущая выбранная владельцем очередь находится в
 [`rag-new-architecture.md`](rag-new-architecture.md), а точный scope и DoD — в
 [`docs/architecture/migration-plan.md`](docs/architecture/migration-plan.md).
-Срезы C1–C8 завершены. В C8 владелец явно авторизовал Mac и PostgreSQL role
-mutations: отдельный PostgreSQL 16 на `127.0.0.1:55432` мигрирован до `028`,
+Срезы C1–C8 завершены delivery commit `c78da01`. В C8 владелец явно
+авторизовал Mac и изменения ролей PostgreSQL: отдельный PostgreSQL 16 на
+`127.0.0.1:55432` мигрирован до `028`,
 точная минимальная runtime ACL и revoke/restore/restart contracts зелёные;
 старый сервис `5432` не изменён. C8 не переключал общий `DATABASE_URL` и не
 включал API/runtime routing.

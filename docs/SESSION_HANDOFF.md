@@ -1,9 +1,10 @@
 # Session handoff
 
-## CURRENT — 2026-08-22 / Update-220 C8 Mac role boundary complete
+## CURRENT — 2026-08-22 / Update-221 exact post-C8 checkpoint
 
 **Назначение:** самодостаточный старт после завершения Resolution Product
-Slice C; более старые C8 authorization-gate капсулы ниже superseded.
+Slice C с точной привязкой к Git и явной границей актуальности; более старые
+капсулы C8 ниже помечены superseded.
 
 ### 0. Первые действия
 
@@ -14,19 +15,22 @@ git log -5 --oneline
 git remote -v
 ```
 
-Baseline перед C8 — `5719520` на `master`; итоговый C8 commit содержит эту
-капсулу и определяется по Actual Git. Remote перед работой отсутствовал; push
-не выполнялся.
+В начале этой docs-only сверки worktree был clean: `master` на точном C8
+delivery commit `c78da01 feat(resolution): provision Mac runtime roles`.
+`git remote -v` не вывел настроенных remote. Итоговый Update-221 docs SHA
+следует после `c78da01` и определяется по Actual Git; push не выполнялся.
 
 ### 0A. Один экран истины
 
 | Поле | Проверенный факт |
 |------|-----------------|
+| C8 delivery commit | `c78da01 feat(resolution): provision Mac runtime roles` |
+| Git до Update-221 | clean `master` на `c78da01`; remote отсутствует |
 | Завершено | Resolution Product C1–C8; Slice C complete; Alembic head `028` |
-| Mac target | PostgreSQL `16.15`, только `127.0.0.1:55432`, LaunchAgent `com.rag-new.postgresql` |
+| Mac target, last live check | PostgreSQL `16.15`, только `127.0.0.1:55432`, LaunchAgent `com.rag-new.postgresql` |
 | Role boundary | schema owner non-login; migrator no-admin/no-inherit; runtime direct non-owner/no-bypass login |
 | Runtime ACL | 4 Resolution tables `SELECT/INSERT`; только 3 CAS columns `UPDATE`; 2 pgcrypto functions |
-| Проверка C8 | 25 focused tests; Ruff green; exact ACL/RLS/settings verify; runtime/revoke/restart smoke green |
+| C8 delivery gate | 25 focused tests; Ruff/compile/Bandit green; exact ACL/RLS/settings verify; runtime/revoke/restart smoke green |
 | Сохранено | старый PostgreSQL `5432` ready; старый Mac checkout не менялся; secrets вне Git (`0600`) |
 | Не сделано | legacy `DATABASE_URL` switch, API/runtime routing, Slice D, canary, push/release |
 | Следующий slice | D — read-only `shipment-status` shadow loop, только отдельным turn |
@@ -39,9 +43,22 @@ Baseline перед C8 — `5719520` на `master`; итоговый C8 commit �
    — service, apply, verify и kill-switch runbook;
 3. [`architecture/migration-plan.md`](architecture/migration-plan.md) —
    закрытый Slice C и scope Slice D;
-4. [`../AGENT_STATE.md`](../AGENT_STATE.md) — Update-220 durable state.
+4. [`../AGENT_STATE.md`](../AGENT_STATE.md) — Update-221 durable state.
 
-### 1. C8 operational state
+### 1. Freshness и границы этого handoff
+
+- Приведённые ниже live-данные Mac/DB получены в C8 delivery turn перед commit
+  `c78da01`. Update-221 — только документационная сверка: Mac повторно не
+  опрашивался, поэтому новый uptime claim не делается.
+- Перед задачей, которая зависит от текущего Mac state, выполнить read-only
+  `launchctl print`, `pg_isready` и `resolution_role_ops.py inventory/verify`
+  по operator runbook. Не запускать mutation «для проверки».
+- C8 SSH-туннель был закрыт до commit `c78da01`; Update-221 не запускал tunnel,
+  background writer, tests, deploy или delegated agent.
+- Значения credentials/DSN/key не записаны в Git. В handoff остаются только
+  безопасные role names, paths, port и команды без secret values.
+
+### 2. C8 operational state
 
 - Dedicated data: `~/.local/share/rag-new/postgresql-16`; socket:
   `~/.local/share/rag-new/postgresql-socket`; secrets:
@@ -59,7 +76,7 @@ Baseline перед C8 — `5719520` на `master`; итоговый C8 commit �
 - Tenant GUC остаётся application trust boundary и не защищает от полностью
   скомпрометированного процесса с runtime credential.
 
-### 2. Acceptance evidence
+### 3. Acceptance evidence
 
 - `base -> 028` выполнен migrator login с `SET ROLE ragnew_schema_owner`;
   single head `028` подтверждён после restart.
@@ -74,10 +91,10 @@ Baseline перед C8 — `5719520` на `master`; итоговый C8 commit �
   Они исправлены одним batch; 13 новых red cases стали green, итоговый focused
   файл — **25 passed**.
 
-### 3. Следующий named slice
+### 4. Следующий named slice
 
-**Slice D — read-only `shipment-status` shadow loop.** На этом C8 turn его не
-начинать из-за one-slice budget. В следующем turn не добавлять canary,
+**Slice D — read-only `shipment-status` shadow loop.** Этот docs-only
+checkpoint его не начинает. На отдельном user turn не добавлять canary,
 governed writes, legacy runtime routing или Trust Foundation backlog. Реальный
 shipment source и journey postconditions требуют owner-approved inputs;
 ограниченные fixtures не закрывают production/release gates.

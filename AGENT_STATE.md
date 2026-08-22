@@ -1,6 +1,55 @@
 # Agent State
 
-## 2026-08-22 Update-220 — C8 Mac PostgreSQL roles complete ✅ START HERE
+## 2026-08-22 Update-221 — exact post-C8 checkpoint ✅ START HERE
+
+> **Канонический старт для `D:\RAG_new`:** читать этот блок, затем верхнюю
+> CURRENT-капсулу `docs/SESSION_HANDOFF.md`. Они заменяют Update-220 и все
+> более старые routing-блоки.
+
+### 221A. Actual Git и scope этого checkpoint
+
+- В начале docs-only сверки: `master`, HEAD
+  `c78da01 feat(resolution): provision Mac runtime roles`, clean worktree;
+  `git remote -v` не вывел настроенных remote.
+- `c78da01` — точный C8 delivery commit: 9 scoped files, включая provisioning
+  CLI/tests, Mac closing capsule, operator runbook и durable state updates.
+- Этот Update-221 меняет только документацию. Он не подключается к Mac, не
+  меняет PostgreSQL, роли, grants, secrets, application routing или runtime.
+  Итоговый docs-only SHA следует после `c78da01` и определяется по Actual Git.
+- Push не выполнялся и не разрешён. SSH-туннель C8 был закрыт до delivery
+  commit; этот checkpoint не запускал новый туннель, writer или delegated run.
+
+### 221B. Evidence freshness без скрытых claims
+
+- Последняя live-проверка Mac выполнена в C8 delivery turn перед `c78da01`:
+  PostgreSQL `16.15`/LaunchAgent на `127.0.0.1:55432`, старый PostgreSQL на
+  `5432`, exact role/RLS/ACL verify, direct runtime smoke, revoke/restore,
+  restart и Alembic head `028` были green.
+- Локальный delivery gate тогда дал **25 passed**, Ruff format/check,
+  compileall, Bandit, LF/secret-pattern/staged-diff checks green. Независимый
+  QA сначала был RED; все blocking/major findings исправлены до commit.
+- Update-221 не повторяет live probe, поэтому не выдаёт last-known-good за
+  новый uptime claim. Если следующая задача зависит от текущего Mac state,
+  выполнить только read-only команды из
+  `docs/operations/resolution-postgres-roles.md` перед mutation.
+- Secrets остаются вне checkout; docs содержат только имена переменных и пути,
+  не значения DSN/password/key. Старый Mac checkout и его два untracked файла
+  C8 не менял.
+
+### 221C. Однозначный следующий slice и открытые границы
+
+- Slice C (C1–C8) завершён delivery commit `c78da01`.
+- Следующий named slice — **Slice D: read-only `shipment-status` shadow loop**.
+  Начинать его только отдельным user turn и не смешивать с canary, governed
+  writes, legacy `DATABASE_URL` switching или Trust Foundation backlog.
+- Owner-approved shipment source и journey postconditions остаются входами
+  для real-source evidence. Fixtures допустимы только как явно ограниченная
+  локальная поверхность и не закрывают production/release gates.
+- Full production release, API/runtime routing, canary и push не выполнены.
+
+---
+
+## Superseded — 2026-08-22 Update-220 — C8 Mac PostgreSQL roles complete
 
 > **Канонический старт для `D:\RAG_new`:** читать этот блок, затем верхнюю
 > CURRENT-капсулу `docs/SESSION_HANDOFF.md`. Они заменяют Update-219 и все

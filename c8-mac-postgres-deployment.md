@@ -19,6 +19,21 @@ on port `5432` or enabling API/runtime routing.
 
 - [x] The Mac target is restart-stable, the existing PostgreSQL service is untouched, runtime is non-owner/`NOSUPERUSER`/`NOBYPASSRLS`, and C8 evidence is reproducible without exposing credentials.
 
+## Delivery record
+
+- Exact delivery commit: `c78da01 feat(resolution): provision Mac runtime roles`.
+- Baseline: clean `master` at `5719520`; delivery ended with clean `master` at
+  `c78da01`, no configured remote and no push.
+- Delivery scope: 9 files, 1,943 insertions and 44 deletions. Four new files
+  contain this capsule, the operator runbook, provisioning CLI, and focused
+  tests; five durable planning/handoff files were updated.
+- Final local gate: **25 passed**, Ruff format/check, compileall, Bandit,
+  LF/secret-pattern and staged `git diff --check` green. Project MyPy excludes
+  `scripts/` and `tests/`, so no MyPy-green claim is made for C8.
+- Live Mac evidence was collected during the delivery turn before `c78da01`.
+  Later docs-only checkpoints must label it last-known-good unless they run a
+  fresh read-only probe from the operator runbook.
+
 ## Closing evidence
 
 - Baseline: existing PostgreSQL on `5432` was accepting connections; the C8

@@ -30,9 +30,10 @@ persistence, forced tenant RLS, append immutability, temporal exclusion,
 protected evidence references, and a real disposable source-to-target restore
 smoke. Exact C7 evidence is in `c7-resolution-restore-smoke.md`.
 
-For C8 the owner authorized the Mac target and PostgreSQL role mutations. An
-isolated PostgreSQL 16 cluster now runs on loopback port `55432`, is migrated
-to head `028`, and has the exact schema-owner/migrator/runtime topology and
+For C8 the owner authorized the Mac target and PostgreSQL role mutations.
+Delivery commit `c78da01` records the provisioning contract and evidence. An
+isolated PostgreSQL 16 cluster was verified on loopback port `55432`, migrated
+to head `028`, with the exact schema-owner/migrator/runtime topology and
 minimum Resolution grants documented in `c8-mac-postgres-deployment.md` and
 `docs/operations/resolution-postgres-roles.md`. The pre-existing PostgreSQL on
 `5432` remains available. C8 did not switch the legacy application
