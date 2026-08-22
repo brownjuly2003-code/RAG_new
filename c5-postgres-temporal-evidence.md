@@ -17,4 +17,8 @@ Reject overlapping evidence validity windows for the same tenant, logical fact, 
 
 ## Notes
 
+Completed in local implementation commit `98c2f09`. The next slice is tracked
+separately in `c6-protected-evidence-encryption-redaction.md`; C6 work was not
+part of this plan.
+
 Do not add knowledge-plane tables, Slice D/runtime/API routing, encryption/restore, production-role provisioning, push, deploy, or changes to the working `rag_assistant` database in this slice.

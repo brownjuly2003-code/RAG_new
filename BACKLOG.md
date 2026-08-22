@@ -5,12 +5,15 @@
 Текущая выбранная владельцем очередь находится в
 [`rag-new-architecture.md`](rag-new-architecture.md), а точный scope и DoD — в
 [`docs/architecture/migration-plan.md`](docs/architecture/migration-plan.md).
-Срезы C1–C5 завершены локально; следующий и ещё не начатый срез — **C6
-protected evidence reference encryption/redaction execution**, ограниченный
-§9 domain data model и существующей encryption abstraction. Корневая Slice C
+Срезы C1–C5 завершены локально (`C5`: `98c2f09`); следующий и ещё не начатый
+срез — **C6 protected evidence reference encryption/redaction execution**.
+Его scope ограничен §9 domain data model и существующей encryption
+abstraction. Корневая Slice C
 остаётся открытой; restore, production runtime-role operations,
 Slice D/runtime/API в C6 не включать.
-Стартовая капсула:
+Стартовая C6-капсула:
+[`c6-protected-evidence-encryption-redaction.md`](c6-protected-evidence-encryption-redaction.md).
+Общая session-капсула:
 [`docs/SESSION_HANDOFF.md`](docs/SESSION_HANDOFF.md).
 
 Разделы ниже относятся к унаследованному Trust Foundation remediation stream.

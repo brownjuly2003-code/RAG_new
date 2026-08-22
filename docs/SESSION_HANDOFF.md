@@ -1,6 +1,6 @@
 # Session handoff
 
-## CURRENT — 2026-08-22 / Update-215 reconciled after C5 / RAG_new Resolution Product
+## CURRENT — 2026-08-22 / Update-216 post-C5 transparency / RAG_new Resolution Product
 
 **Назначение:** самодостаточный старт следующей сессии по новой архитектуре,
 без чтения исторических Update-210 и ниже.
@@ -14,19 +14,21 @@ git log -5 --oneline
 git remote -v
 ```
 
-Baseline перед C5: `master` на `4dd0c74`, remote отсутствует. C5 завершён
-локально поверх этого baseline; итоговый SHA определять по Actual Git.
-Активного writer, disposable DB, temporary admin role или WSL keepalive после
-проверки нет.
+Последний implementation commit — `98c2f09` на `master`. Перед этим docs-only
+reconciliation worktree был clean, remote отсутствовал; итоговый docs SHA
+определять по Actual Git. Активного writer, disposable DB, temporary admin
+role или WSL keepalive нет. `rag_assistant` не мигрировалась и не очищалась.
 
 Далее читать в таком порядке:
 
-1. эта CURRENT-капсула и верхний Update-215 в
+1. эта CURRENT-капсула и верхний Update-216 в
    [`AGENT_STATE.md`](../AGENT_STATE.md);
-2. [`rag-new-architecture.md`](../rag-new-architecture.md) — текущая очередь;
-3. [`architecture/migration-plan.md`](architecture/migration-plan.md) — scope,
+2. [`../c6-protected-evidence-encryption-redaction.md`](../c6-protected-evidence-encryption-redaction.md)
+   — точная стартовая поверхность, открытые решения, non-goals и gates C6;
+3. [`rag-new-architecture.md`](../rag-new-architecture.md) — текущая очередь;
+4. [`architecture/migration-plan.md`](architecture/migration-plan.md) — scope,
    verification и условия закрытия Slice C;
-4. [`architecture/domain-data-model.md`](architecture/domain-data-model.md) §9
+5. [`architecture/domain-data-model.md`](architecture/domain-data-model.md) §9
    — граница следующего encryption/redaction slice.
 
 Верхний banner [`BACKLOG.md`](../BACKLOG.md) должен направлять сюда. Его старый
@@ -43,8 +45,8 @@ Trust Foundation backlog, Update-210 ниже и историческая час
 | `1d7e786` | Slice C1: immutable case/evidence domain и tenant-scoped append-only repository/UoW ports. |
 | `538ea6e` | Slice C2: PostgreSQL models, revision `024`, tenant-scoped repository adapters, atomic event append/CAS. |
 | `1b5265a` | Slice C3: revision `025`, forced RLS, transaction-local tenant context и non-owner role contracts. |
-| `4dd0c74` baseline | Slice C4: revision `026`, append-immutability guards; `support_cases` CAS сохранён. |
-| C5 over `4dd0c74` (SHA: Actual Git) | Revision `027` и matching PostgreSQL-only GiST temporal exclusion metadata. |
+| `4dd0c74` | Slice C4: revision `026`, append-immutability guards; `support_cases` CAS сохранён. |
+| `98c2f09` | Slice C5: revision `027` и matching PostgreSQL-only GiST temporal exclusion metadata. |
 
 Revision `027` ограничивает overlap по `tenant_id`, `logical_key`,
 `applicability_key`, `authority` и
@@ -78,6 +80,26 @@ tests-first contract из §9
 выходных границах. Сначала сверить точную storage/adapter поверхность с
 существующей реализацией. Не включать restore, production runtime-role
 operations, API/runtime routing или Slice D.
+
+Проверенная стартовая поверхность и ещё не принятые решения записаны в
+[`c6-protected-evidence-encryption-redaction.md`](../c6-protected-evidence-encryption-redaction.md).
+Критические факты: domain уже требует `encryption_profile` для durable
+reference, но `reference_locator` в ORM/revision `024` остаётся plaintext
+`String(512)`; adapter round-trip возвращает его напрямую; общий
+`EncryptedText` и `utils.pii.redact_pii` существуют, но evidence/profile
+execution к ним не подключён. Это baseline для tests-first C6, не заявление о
+готовой защите.
+
+Порядок старта C6:
+
+1. проверить Actual Git и отсутствие неожиданного dirty WIP;
+2. прочитать C6-капсулу и перечисленные там существующие owner boundaries;
+3. сначала зафиксировать failing contract для выбранной protected value и
+   profile behavior;
+4. реализовать только этот контракт и выполнить focused плюс один
+   пропорциональный PostgreSQL/migration gate;
+5. удалить disposable resources, сделать scoped local commit и один раз
+   обновить handoff.
 
 ### 3. Явно не сделано и не разрешено считать сделанным
 

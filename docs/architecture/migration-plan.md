@@ -73,13 +73,15 @@ Delivery status:
   immutability guards for append-only events, evidence snapshots, and
   case/evidence links while preserving legal `SupportCase` compare-and-swap
   updates.
-- **C5 complete locally:** revision `027` and matching PostgreSQL-only ORM
-  metadata reject overlapping `[valid_from, valid_to)` windows for the same
-  tenant/logical key/applicability/authority while accepting adjacency,
+- **C5 complete locally (`98c2f09`):** revision `027` and matching
+  PostgreSQL-only ORM metadata reject overlapping `[valid_from, valid_to)`
+  windows for the same tenant/logical key/applicability/authority while
+  accepting adjacency,
   cross-authority, and different-applicability windows.
 - **C6 next:** protected evidence reference encryption/redaction execution,
   derived from §9 of the domain data model and the existing encryption
-  abstraction.
+  abstraction; the verified starting inventory and gates are recorded in
+  [`../../c6-protected-evidence-encryption-redaction.md`](../../c6-protected-evidence-encryption-redaction.md).
 - Slice C remains open until encryption/redaction execution, restore smoke,
   and production runtime-role operations are green.
 

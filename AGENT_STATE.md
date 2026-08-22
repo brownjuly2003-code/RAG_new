@@ -1,5 +1,55 @@
 # Agent State
 
+## 2026-08-22 Update-216 — C5 committed; C6 start capsule ready ✅ START HERE
+
+> **Текущий routing для `D:\RAG_new`:** этот блок и верхняя CURRENT-капсула
+> `docs/SESSION_HANDOFF.md` заменяют Update-215 и более старые `START HERE` для
+> Resolution Product. Последний implementation commit — `98c2f09` на
+> `master`; worktree перед этим docs-only reconciliation был clean, remote
+> отсутствовал. Итоговый docs SHA определять по Actual Git. В Update-216 код,
+> тесты, schema, runtime и внешние системы не менялись.
+
+### 216A. Достоверное состояние после C5
+
+- C1–C5 завершены локально. C5 в `98c2f09` добавил revision `027` и matching
+  PostgreSQL-only temporal exclusion metadata; подробный контракт и evidence
+  остаются в Update-215 ниже.
+- Свежая C5 evidence: focused real-PostgreSQL **2 passed**; combined
+  schema/domain/PostgreSQL/docs **44 passed**, coverage `resolution` **81.45%**
+  при gate 72%; docs **13 passed**; Ruff, format, strict MyPy по 15 source
+  files, schema check и Alembic single head `027` green; полный
+  `base -> 027 -> base -> 027` round trip подтвердил 23 таблицы.
+- Доверенный tests-first red для C5 не сохранён и не заявляется. Disposable
+  DB, temporary admin role и WSL keepalive удалены; рабочая `rag_assistant`
+  не затрагивалась. Push/deploy/production migration не выполнялись.
+
+### 216B. Проверенная стартовая поверхность C6
+
+- `ProtectedEvidenceReference` уже несёт `storage`, `locator`,
+  `encryption_profile`, `redaction_profile`, `retention_class`; durable storage
+  требует непустой `encryption_profile` на уровне domain validation.
+- `evidence_snapshots.reference_locator` сейчас обычный `String(512)`, а
+  `encryption_profile`/`redaction_profile` — строковые metadata. PostgreSQL
+  adapter сохраняет и возвращает locator напрямую.
+- Общий `db.crypto.EncryptedText` уже использует PostgreSQL `pgcrypto` и ключ
+  `DB_ENCRYPTION_KEY` из settings для других sensitive columns, но evidence
+  locator к нему не подключён. `utils.pii.redact_pii` — общий pattern masker,
+  не executor именованных Resolution redaction profiles.
+- Поэтому C6 ещё **не начат**: какие данные шифровать, как исполнять profile и
+  где проходит safe export boundary — открытые решения, а не завершённая
+  функциональность. Их стартовая капсула:
+  `c6-protected-evidence-encryption-redaction.md`.
+
+### 216C. Следующий один atomic slice
+
+**C6 — protected evidence reference encryption/redaction execution.** Сначала
+проверить Actual Git и пройти checklist новой C6-капсулы; затем tests-first
+закрыть один согласованный storage/redaction contract. Не включать restore,
+production runtime-role operations, API/runtime routing, object-store rollout
+или Slice D.
+
+---
+
 ## 2026-08-22 Update-215 — Resolution Product C5 PostgreSQL temporal evidence complete; C6 encryption/redaction next ✅ START HERE
 
 > **Текущий routing для `D:\RAG_new`:** этот блок и верхняя CURRENT-капсула
