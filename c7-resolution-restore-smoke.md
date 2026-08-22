@@ -1,5 +1,9 @@
 # C7 Resolution restore smoke
 
+- Status: complete locally
+- Delivery commit: `f1103bb fix(restore): verify exact postgres snapshots`
+- Production impact: none
+
 ## Goal
 
 Prove on disposable PostgreSQL that a head-`028` snapshot restores the exact
@@ -43,3 +47,9 @@ C1-C6 schema and representative Resolution data without touching
 Never run `pg_restore --clean` against `rag_assistant` or any working/production
 DSN. C7 does not include production grants, API/runtime routing, Slice D,
 push, deploy, or live-provider calls.
+
+For the next session, use the CURRENT capsule in
+`docs/SESSION_HANDOFF.md`. C8 requires explicit authorization for a named
+production target plus approved role ownership, minimum grants, maintenance
+window, and rollback/revoke ownership; this closing C7 record grants none of
+those permissions.

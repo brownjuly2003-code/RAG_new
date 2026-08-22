@@ -1,5 +1,59 @@
 # Agent State
 
+## 2026-08-22 Update-219 — next-session transparency checkpoint ✅ START HERE
+
+> **Канонический старт для `D:\RAG_new`:** читать этот блок, затем верхнюю
+> CURRENT-капсулу `docs/SESSION_HANDOFF.md`. Они заменяют Update-218 и все
+> более старые `START HERE` для выбора следующей работы. C7 доставлен commit
+> `f1103bb`; эта docs-only сверка не меняет код, schema или runtime.
+
+### 219A. Actual Git и локальное состояние
+
+- Перед docs-only сверкой: ветка `master`, HEAD `f1103bb`, clean worktree;
+  `git remote -v` не вывел настроенных remote.
+- Push/deploy не выполнялись и не разрешены. Активных writer/keepalive нет;
+  disposable C7 databases/roles = `0`, dump/verifier отсутствуют.
+- Единственная Alembic head для Resolution остаётся `028`. Рабочая
+  `rag_assistant`, staging и production не мигрировались и не очищались.
+
+### 219B. Что доказано, а что остаётся открытым
+
+- C1–C7 завершены локально. Точная C7 evidence находится в
+  [`c7-resolution-restore-smoke.md`](c7-resolution-restore-smoke.md), а
+  операторский restore contract — в
+  [`docs/operations/backup-restore.md`](docs/operations/backup-restore.md).
+- Корневая Slice C остаётся открытой **только из-за C8 production
+  runtime-role operations/grants**. Это не production/release-ready claim.
+- Slice D, API/runtime routing и унаследованный Trust Foundation backlog не
+  становятся следующей работой автоматически.
+
+### 219C. C8 — жёсткий authorization gate
+
+- Обычного `продолжи` в новой сессии недостаточно для production mutation.
+  Последнее сообщение владельца должно явно назвать целевую среду и разрешить
+  создание/изменение ролей и выдачу/revoke grants именно там.
+- До записи нужны утверждённые имена/владельцы schema-owner, migrator и runtime
+  roles, минимальная grant matrix, окно работ и rollback/revoke owner. DSN и
+  credentials передаются только через secret/environment channel и никогда не
+  записываются в handoff или command output.
+- Blanket `SELECT, INSERT, UPDATE, DELETE` из disposable integration fixture —
+  тестовая поверхность для доказательства DB guards, а не утверждённая
+  production grant matrix.
+
+### 219D. Однозначный старт следующей сессии
+
+1. Выполнить `git status --short --branch`, `git log -5 --oneline` и
+   `git remote -v`; Actual Git имеет приоритет над ожидаемым clean `master`.
+2. Если явной C8-авторизации и входов из 219C нет — сообщить внешний гейт и
+   ждать; не выбирать Slice D или старый backlog вместо него.
+3. Если авторизация есть — сначала провести read-only inventory фактических
+   owners/roles/grants и подготовить exact rollback. Runtime должен остаться
+   non-owner, `NOSUPERUSER`, `NOBYPASSRLS`; forced RLS/default-deny,
+   own-/cross-tenant и append/CAS contracts должны быть проверены после
+   минимальных grants.
+
+---
+
 ## 2026-08-22 Update-218 — C7 restore smoke locally complete; C8 externally gated ✅ START HERE
 
 > **Текущий routing для `D:\RAG_new`:** этот блок и верхняя CURRENT-капсула

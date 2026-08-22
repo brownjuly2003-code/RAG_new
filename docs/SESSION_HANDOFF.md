@@ -1,6 +1,6 @@
 # Session handoff
 
-## CURRENT — 2026-08-22 / Update-218 C7 complete locally / RAG_new Resolution Product
+## CURRENT — 2026-08-22 / Update-219 C7 committed / C8 authorization gate
 
 **Назначение:** самодостаточный старт следующей сессии по новой архитектуре,
 без чтения superseded Resolution Product capsules и унаследованной истории.
@@ -14,15 +14,28 @@ git log -5 --oneline
 git remote -v
 ```
 
-Baseline HEAD перед C7 — C6 commit `ac8e5bc` на `master`. C7 завершён локально
-в текущем scoped slice; итоговый implementation/docs SHA определять по Actual
-Git. Активного writer или keepalive нет. После cleanup disposable databases и
-roles = `0`; dump и verifier отсутствуют. `rag_assistant` и production не
-затрагивались.
+C7 доставлен commit `f1103bb` на `master`. Перед этой docs-only сверкой
+worktree был clean, а `git remote -v` не показал настроенных remote. Эта сверка
+не меняет код, schema или runtime; её commit следует сразу после `f1103bb` и
+определяется по Actual Git. Активного writer или keepalive нет. После cleanup
+disposable databases и roles = `0`; dump и verifier отсутствуют.
+`rag_assistant`, staging и production не затрагивались.
+
+### 0A. Один экран истины
+
+| Поле | Проверенный факт |
+|------|-----------------|
+| Последний delivery commit | `f1103bb fix(restore): verify exact postgres snapshots` |
+| Локально завершено | Resolution Product C1–C7; Alembic head `028`; exact restore inventory 23 tables |
+| Проверка C7 | 16 passed, 2 skipped, 1 deselected; Ruff/format/diff green; PostgreSQL 14 source-to-target smoke green |
+| Cleanup | disposable DB/roles `0`; dump/verifier отсутствуют; keepalive остановлен |
+| Не сделано | production roles/grants, staging/production restore, API/runtime routing, Slice D, push/deploy |
+| Текущий блокер | C8 требует явной авторизации и production ownership/grant inputs |
+| Разрешённое действие без C8-входов | Только сообщить гейт и ждать; не выбирать альтернативный backlog автоматически |
 
 Далее читать в таком порядке:
 
-1. эта CURRENT-капсула и верхний Update-218 в
+1. эта CURRENT-капсула и верхний Update-219 в
    [`AGENT_STATE.md`](../AGENT_STATE.md);
 2. [`../c7-resolution-restore-smoke.md`](../c7-resolution-restore-smoke.md)
    — закрывающий C7 contract и verification evidence;
@@ -45,7 +58,7 @@ Actual Git и эти current sections имеют приоритет над super
 | `4dd0c74` | Slice C4: revision `026`, append-immutability guards; `support_cases` CAS сохранён. |
 | `98c2f09` | Slice C5: revision `027` и matching PostgreSQL-only GiST temporal exclusion metadata. |
 | `ac8e5bc` | Slice C6: encrypted evidence locator, fail-closed protection profile и customer-safe redaction boundary. |
-| поверх `ac8e5bc`; SHA — Actual Git | Slice C7: exact-set restore verification и реальный disposable PostgreSQL source-to-target smoke. |
+| `f1103bb` | Slice C7: exact-set restore verification и реальный disposable PostgreSQL source-to-target smoke. |
 
 Stale restore verifier ожидал **18** public-таблиц. Head `028` фактически
 содержит точные **23**: 17 ORM, 5 migration-owned и `alembic_version`. C7
@@ -78,6 +91,28 @@ Cleanup подтверждён: disposable databases/roles = `0`, dump/verifier
 **C8 — production runtime-role operations/grants.** Начинать только после
 требуемого внешнего разрешения. Не включать Slice D, API/runtime routing,
 deploy или другие production mutations без отдельной авторизации.
+
+Authorization contract для следующей сессии:
+
+1. Последнее сообщение владельца явно называет целевую среду и разрешает
+   создание/изменение production roles и grant/revoke operations именно там.
+   Обычное `продолжи` не расширяет полномочия до production mutation.
+2. До записи предоставлены или подтверждены role names/ownership для
+   schema-owner, migrator/maintenance и runtime, минимальная grant matrix,
+   окно работ и rollback/revoke owner. Секреты/DSN не записывать в docs и не
+   выводить в команды или отчёт.
+3. Сначала снять read-only inventory фактических owners, role attributes и
+   grants. В текущем checkout production provisioning artifact не найден;
+   `CREATE ROLE`/blanket grants существуют только в disposable integration
+   fixture и не являются production design.
+4. После утверждённых минимальных grants доказать: runtime — non-owner,
+   `NOSUPERUSER`, `NOBYPASSRLS`; forced RLS/default-deny на четырёх Resolution
+   tables; own-tenant доступ разрешён, cross-tenant write отклонён; append-only
+   mutation даёт `55000`, а legal `support_cases` CAS остаётся разрешён.
+
+Если любого входа нет, C8 остаётся внешне заблокированным: зафиксировать это в
+ответе и ждать владельца, не переходя к Slice D или старому Trust Foundation
+backlog.
 
 ### 3. Явно не сделано и не разрешено считать сделанным
 

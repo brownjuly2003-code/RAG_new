@@ -25,15 +25,18 @@ Evolve the inherited RAG assistant into a self-hosted, verifiable support-resolu
 
 The completed schema contract and compatibility policy are documented in
 `docs/architecture/resolution-contract-schema-v0.1.md`. Slice C is active:
-its C1 domain/repository-port boundary, C2 PostgreSQL persistence, C3 tenant
-RLS enforcement, C4 append-immutability guards, and C5 PostgreSQL temporal
-evidence exclusion (`98c2f09`) are complete locally. The root checkbox stays
-open for encryption/redaction execution, restore, and production runtime-role
-operations. The next named implementation slice is **C6 protected evidence
-reference encryption/redaction execution**, derived from §9 of the domain data
-model and the existing encryption abstraction. Its verified starting surface,
-open decisions, gates, and non-goals are in
-`c6-protected-evidence-encryption-redaction.md`; restore, production-role work,
-Slice D, and runtime/API wiring are not part of C6. Domain-owner approval of
-journey postconditions and access to a real shipment source of truth remain
-product prerequisites, not details for the LLM to infer.
+C1–C7 are complete locally through C7 commit `f1103bb`. This includes the
+domain/repository boundary, PostgreSQL persistence, forced tenant RLS, append
+immutability, temporal exclusion, protected evidence references, and a real
+disposable source-to-target restore smoke. Exact C7 evidence is in
+`c7-resolution-restore-smoke.md`.
+
+The root checkbox stays open only for **C8 production runtime-role
+operations/grants**. C8 is externally gated: a generic continuation request
+does not authorize production mutation. The owner must identify the target
+environment and explicitly authorize role/grant changes, confirm ownership,
+the minimum grant matrix, maintenance window, and rollback/revoke owner. Until
+then, do not select Slice D, runtime/API wiring, or an inherited backlog item
+as a substitute. Domain-owner approval of journey postconditions and access
+to a real shipment source of truth remain later product prerequisites, not
+details for the LLM to infer.

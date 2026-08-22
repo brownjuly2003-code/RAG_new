@@ -5,12 +5,16 @@
 Текущая выбранная владельцем очередь находится в
 [`rag-new-architecture.md`](rag-new-architecture.md), а точный scope и DoD — в
 [`docs/architecture/migration-plan.md`](docs/architecture/migration-plan.md).
-Срезы C1–C7 завершены локально; C7 выполнен поверх C6 commit `ac8e5bc`, а
-итоговый SHA определять по Actual Git. Следующий один atomic slice —
+Срезы C1–C7 завершены локально; C7 зафиксирован commit `f1103bb`. Следующий
+один atomic slice —
 **C8 production runtime-role operations/grants**, только после требуемого
-внешнего разрешения. Корневая Slice C остаётся открытой: локальный C7 restore
-smoke не создавал и не менял production roles/grants. Также не включать Slice
-D, API/runtime routing, working/production mutation, push или deploy.
+внешнего разрешения на конкретную целевую среду и role/grant mutations.
+Обычное `продолжи` не даёт такого разрешения. Пока не подтверждены role
+ownership, минимальная grant matrix, окно и rollback/revoke owner, сообщить
+гейт и ждать — не выбирать Slice D или старый backlog. Корневая Slice C
+остаётся открытой: локальный C7 restore smoke не создавал и не менял
+production roles/grants. Также не включать API/runtime routing,
+working/production mutation, push или deploy.
 Закрывающая C7-капсула:
 [`c7-resolution-restore-smoke.md`](c7-resolution-restore-smoke.md).
 Общая session-капсула:

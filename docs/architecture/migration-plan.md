@@ -1,7 +1,7 @@
 # RAG_new migration and delivery architecture
 
 - Status: Active architecture plan
-- Last updated: 2026-08-21
+- Last updated: 2026-08-22
 - Strategy: compatibility-preserving strangler with shadow-first promotion
 
 ## 1. Starting point
@@ -86,7 +86,7 @@ Delivery status:
   restricted, and support-only paths fail closed without a locator. Closing
   evidence is recorded in
   [`../../c6-protected-evidence-encryption-redaction.md`](../../c6-protected-evidence-encryption-redaction.md).
-- **C7 complete locally:** the restore verifier now compares the exact head
+- **C7 complete locally (`f1103bb`):** the restore verifier now compares the exact head
   inventory (**17 ORM + 5 migration-owned + `alembic_version` = 23 tables**)
   and fails closed on missing or extra tables. A real PostgreSQL 14 disposable
   source-to-target custom-format restore preserved representative Resolution
@@ -94,8 +94,15 @@ Delivery status:
   and the protection constraint. Closing evidence is recorded in
   [`../../c7-resolution-restore-smoke.md`](../../c7-resolution-restore-smoke.md).
 - **C8 next, externally gated:** provision and verify production runtime-role
-  operations/grants only after the required authorization. C7 did not create
-  or change production roles or grants.
+  operations/grants only after the latest owner message explicitly names the
+  target environment and authorizes those mutations. The current checkout has
+  disposable role/grant test fixtures but no approved production provisioning
+  artifact or grant matrix. Inventory actual owners/roles/grants read-only
+  first; do not promote the fixture's blanket grants into production design.
+  The runtime invariant is non-owner, `NOSUPERUSER`, `NOBYPASSRLS`, forced
+  RLS/default-deny, own-tenant access, cross-tenant denial, append-only guards,
+  and legal `support_cases` CAS after the approved minimum grants. C7 did not
+  create or change production roles or grants.
 - Slice C remains open until production runtime-role operations are green.
   Local C7 completion is not a production/release-ready claim.
 
