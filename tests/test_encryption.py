@@ -4,7 +4,9 @@ import importlib.util
 from pathlib import Path
 from types import SimpleNamespace
 
+import pytest
 import sqlalchemy as sa
+from sqlalchemy.dialects.postgresql.asyncpg import dialect as asyncpg_dialect
 
 
 def test_encrypted_text_uses_pgcrypto_for_bind_and_select(monkeypatch) -> None:
@@ -25,23 +27,44 @@ def test_encrypted_text_uses_pgcrypto_for_bind_and_select(monkeypatch) -> None:
     assert "cipher-algo=aes256" in bind_sql
 
 
+def test_encrypted_text_binds_plaintext_as_text_for_asyncpg() -> None:
+    from db.crypto import EncryptedText
+
+    table = sa.table("encrypted_values", sa.column("content", EncryptedText()))
+    statement = sa.insert(table).values(content="secret-marker")
+
+    compiled = str(statement.compile(dialect=asyncpg_dialect()))
+
+    assert "pgp_sym_encrypt" in compiled
+    assert "::VARCHAR" in compiled
+    assert "::BYTEA" not in compiled
+
+
 def test_sensitive_models_use_encrypted_text() -> None:
     from db.crypto import EncryptedText
-    from db.models import AuditLog, EscalatedTicket, Message
+    from db.models import AuditLog, EscalatedTicket, Message, ResolutionEvidenceSnapshot
 
     assert isinstance(Message.__table__.c.content.type, EncryptedText)
     assert isinstance(AuditLog.__table__.c.detail.type, EncryptedText)
     assert isinstance(EscalatedTicket.__table__.c.user_question.type, EncryptedText)
     assert isinstance(EscalatedTicket.__table__.c.ai_draft.type, EncryptedText)
     assert isinstance(EscalatedTicket.__table__.c.operator_response.type, EncryptedText)
+    assert isinstance(
+        ResolutionEvidenceSnapshot.__table__.c.reference_locator.type,
+        EncryptedText,
+    )
+    protection_constraint = next(
+        constraint
+        for constraint in ResolutionEvidenceSnapshot.__table__.constraints
+        if isinstance(constraint, sa.CheckConstraint)
+        and constraint.name == "ck_evidence_snapshots_protection_profile"
+    )
+    assert "encryption_profile IS NOT NULL" in str(protection_constraint.sqltext)
 
 
 def test_pgcrypto_migration_encrypts_sensitive_columns(monkeypatch) -> None:
     migration_path = (
-        Path(__file__).resolve().parent.parent
-        / "alembic"
-        / "versions"
-        / "008_enable_pgcrypto.py"
+        Path(__file__).resolve().parent.parent / "alembic" / "versions" / "008_enable_pgcrypto.py"
     )
     spec = importlib.util.spec_from_file_location("migration_008_enable_pgcrypto", migration_path)
     assert spec is not None and spec.loader is not None
@@ -66,3 +89,25 @@ def test_pgcrypto_migration_encrypts_sensitive_columns(monkeypatch) -> None:
     assert "ALTER TABLE escalated_tickets" in sql_blob
     assert "pgp_sym_encrypt" in sql_blob
     assert any(params == {"key": "super-secret-key"} for _sql, params in statements)
+
+
+def test_resolution_evidence_migration_requires_external_key(monkeypatch) -> None:
+    migration_path = (
+        Path(__file__).resolve().parent.parent
+        / "alembic"
+        / "versions"
+        / "028_encrypt_resolution_evidence_locator.py"
+    )
+    spec = importlib.util.spec_from_file_location(
+        "migration_028_encrypt_resolution_evidence_locator",
+        migration_path,
+    )
+    assert spec is not None and spec.loader is not None
+    migration_module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(migration_module)
+    assert "encryption_profile IS NOT NULL" in migration_module._PROFILE_CHECK
+
+    monkeypatch.delenv("DB_ENCRYPTION_KEY", raising=False)
+
+    with pytest.raises(RuntimeError, match="DB_ENCRYPTION_KEY"):
+        migration_module._require_key()

@@ -16,6 +16,8 @@ from resolution.domain.values import (
     require_uuid,
 )
 
+EVIDENCE_ENCRYPTION_PROFILE = "tenant-envelope-v1"
+
 
 class EvidenceSourceType(StrEnum):
     SOURCE_SYSTEM = "source_system"
@@ -81,12 +83,16 @@ class ProtectedEvidenceReference:
                 "evidence_reference.encryption_profile",
                 max_length=128,
             )
+            if self.encryption_profile != EVIDENCE_ENCRYPTION_PROFILE:
+                raise InvalidDomainValue("unsupported evidence_reference.encryption_profile")
         elif self.encryption_profile is not None:
             require_text(
                 self.encryption_profile,
                 "evidence_reference.encryption_profile",
                 max_length=128,
             )
+            if self.encryption_profile != EVIDENCE_ENCRYPTION_PROFILE:
+                raise InvalidDomainValue("unsupported evidence_reference.encryption_profile")
 
 
 @dataclass(frozen=True, slots=True)
@@ -212,6 +218,7 @@ class EvidenceLink:
 
 
 __all__ = [
+    "EVIDENCE_ENCRYPTION_PROFILE",
     "EvidenceConflict",
     "EvidenceConflictKind",
     "EvidenceLink",

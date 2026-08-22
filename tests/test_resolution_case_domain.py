@@ -23,6 +23,7 @@ from resolution.domain import (
     EvidenceVisibility,
     FreshnessStatus,
     InvalidCaseTransition,
+    InvalidDomainValue,
     ProtectedEvidenceReference,
     SupportCase,
     TenantBoundaryViolation,
@@ -207,6 +208,34 @@ def test_case_and_evidence_records_are_frozen() -> None:
         snapshot.authority = "rewritten"  # type: ignore[misc]
     with pytest.raises(FrozenInstanceError):
         snapshot.reference.locator = "rewritten"  # type: ignore[misc]
+
+
+@pytest.mark.parametrize(
+    ("storage", "profile"),
+    [
+        (EvidenceStorage.POSTGRES_ENCRYPTED, None),
+        (EvidenceStorage.POSTGRES_ENCRYPTED, "unknown-envelope-profile"),
+        (EvidenceStorage.OBJECT_STORE, None),
+        (EvidenceStorage.OBJECT_STORE, "unknown-envelope-profile"),
+    ],
+)
+def test_durable_evidence_rejects_missing_or_unknown_encryption_profile_without_echoing_locator(
+    storage: EvidenceStorage,
+    profile: str | None,
+) -> None:
+    locator = "secret://customer-record-marker"
+
+    with pytest.raises(InvalidDomainValue) as exc_info:
+        ProtectedEvidenceReference(
+            storage=storage,
+            locator=locator,
+            encryption_profile=profile,
+            redaction_profile="customer-safe-v1",
+            retention_class="case-evidence-90d",
+        )
+
+    assert "encryption_profile" in str(exc_info.value)
+    assert locator not in str(exc_info.value)
 
 
 def test_evidence_link_rejects_cross_tenant_snapshots() -> None:

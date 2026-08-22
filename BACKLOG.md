@@ -5,13 +5,13 @@
 Текущая выбранная владельцем очередь находится в
 [`rag-new-architecture.md`](rag-new-architecture.md), а точный scope и DoD — в
 [`docs/architecture/migration-plan.md`](docs/architecture/migration-plan.md).
-Срезы C1–C5 завершены локально (`C5`: `98c2f09`); следующий и ещё не начатый
-срез — **C6 protected evidence reference encryption/redaction execution**.
-Его scope ограничен §9 domain data model и существующей encryption
-abstraction. Корневая Slice C
-остаётся открытой; restore, production runtime-role operations,
-Slice D/runtime/API в C6 не включать.
-Стартовая C6-капсула:
+Срезы C1–C6 завершены локально; C6 выполнен поверх baseline `1b57427`, а
+итоговый SHA определять по Actual Git. Следующий один atomic slice —
+**C7 Resolution restore smoke на disposable PostgreSQL**. Корневая Slice C
+остаётся открытой; production runtime-role operations идут позже и не входят
+в C7. Также не включать Slice D, API/runtime routing, working/production
+mutation, push или deploy.
+Закрывающая C6-капсула:
 [`c6-protected-evidence-encryption-redaction.md`](c6-protected-evidence-encryption-redaction.md).
 Общая session-капсула:
 [`docs/SESSION_HANDOFF.md`](docs/SESSION_HANDOFF.md).

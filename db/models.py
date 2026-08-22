@@ -493,6 +493,15 @@ class ResolutionEvidenceSnapshot(Base):
             "valid_to IS NULL OR valid_to > valid_from",
             name="ck_evidence_snapshots_valid_range",
         ),
+        CheckConstraint(
+            "((reference_storage = 'development_file' AND "
+            "(encryption_profile IS NULL OR "
+            "encryption_profile = 'tenant-envelope-v1')) OR "
+            "(reference_storage IN ('postgres_encrypted', 'object_store') AND "
+            "encryption_profile IS NOT NULL AND "
+            "encryption_profile = 'tenant-envelope-v1'))",
+            name="ck_evidence_snapshots_protection_profile",
+        ),
         Index(
             "ix_evidence_snapshots_tenant_logical_key",
             "tenant_id",
@@ -523,7 +532,7 @@ class ResolutionEvidenceSnapshot(Base):
     applicability_key: Mapped[str] = mapped_column(String(256), nullable=False)
     visibility: Mapped[str] = mapped_column(String(32), nullable=False)
     reference_storage: Mapped[str] = mapped_column(String(32), nullable=False)
-    reference_locator: Mapped[str] = mapped_column(String(512), nullable=False)
+    reference_locator: Mapped[str] = mapped_column(EncryptedText, nullable=False)
     encryption_profile: Mapped[str | None] = mapped_column(String(128), nullable=True)
     redaction_profile: Mapped[str] = mapped_column(String(128), nullable=False)
     retention_class: Mapped[str] = mapped_column(String(128), nullable=False)

@@ -1,5 +1,68 @@
 # Agent State
 
+## 2026-08-22 Update-217 — C6 locally complete; C7 restore smoke next ✅ START HERE
+
+> **Текущий routing для `D:\RAG_new`:** этот блок и верхняя CURRENT-капсула
+> `docs/SESSION_HANDOFF.md` заменяют Update-216 и более старые `START HERE`
+> для Resolution Product. Baseline HEAD перед C6 — `1b57427` на `master`;
+> C6 завершён локально в текущем scoped slice поверх baseline, а итоговый SHA
+> определять по Actual Git. Push, deploy, production migration, API/runtime
+> routing и restore не выполнялись.
+
+### 217A. Что доставлено в C6
+
+- Только `evidence_snapshots.reference_locator` защищён существующим
+  PostgreSQL `pgcrypto`-типом `EncryptedText` с ключом
+  `DB_ENCRYPTION_KEY`; остальные evidence fields и новые payload/object-store
+  поверхности C6 не добавлял.
+- Additive revision `028` мигрирует locator `VARCHAR(512) -> BYTEA`,
+  возвращает его в `VARCHAR(512)` при downgrade и добавляет fail-closed
+  protection-profile `CHECK`.
+- Domain допускает для durable storage только
+  `encryption_profile=tenant-envelope-v1`; неизвестные profile отклоняются.
+- Application boundary `customer-safe-v1` возвращает точный safe allowlist
+  `id`, `digest`, `visibility`, `profile`. Неизвестный profile,
+  `restricted` и `support-only` fail closed без locator.
+
+### 217B. Проверенная evidence
+
+- Tests-first baseline-red сохранён в detached worktree: два domain-теста
+  unknown profiles завершились `DID NOT RAISE`; ORM contract показал
+  `String` вместо `EncryptedText`; redaction test collection завершился
+  `ModuleNotFoundError`. Временный worktree удалён.
+- Implementation-focused gate: **22 passed**; Ruff, format и diff check green.
+- Primary independent behavior/docs/PostgreSQL batch: **46 passed**.
+  Непересекающийся contract-schema append: ещё **13 passed**, итого **59
+  passed**; одно существующее Starlette warning. Coverage `resolution` —
+  **81.91%** при gate 72%.
+- Strict MyPy green по **18 source files**; Ruff/format green по **11 files**;
+  schema check green; единственная Alembic head — `028`.
+- Полный disposable-PostgreSQL round trip
+  `base -> 028 -> base -> 028` green и подтвердил точные **23 таблицы**.
+  C3 RLS, C4 append immutability и C5 temporal constraints остались green.
+- После cleanup `DB_COUNT=0`, `ROLE_COUNT=0`, keepalive остановлен;
+  `rag_assistant` и production не затрагивались. QA writer был остановлен на
+  лимите poll 6/6 без code changes или финальных findings; один точно
+  идентифицированный оставшийся disposable QA DB/role удалён.
+
+### 217C. Границы и статус
+
+- C6 локально завершён, но корневая галочка Slice C остаётся открытой:
+  restore smoke и более поздние production runtime-role operations ещё не
+  закрыты.
+- Это не production/release-ready claim. Не выполнялись push, deploy,
+  API/runtime wiring, restore, live-provider вызовы или production mutation.
+
+### 217D. Следующий один atomic slice
+
+**C7 — Resolution restore smoke на disposable PostgreSQL.** Проверить
+восстановление C1–C6 schema/data guarantees в одноразовой PostgreSQL-среде и
+полностью удалить временные ресурсы. Production runtime-role provisioning,
+grants и operations оставить за пределами C7 и не включать API/runtime
+routing или Slice D.
+
+---
+
 ## 2026-08-22 Update-216 — C5 committed; C6 start capsule ready ✅ START HERE
 
 > **Текущий routing для `D:\RAG_new`:** этот блок и верхняя CURRENT-капсула

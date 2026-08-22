@@ -1,15 +1,16 @@
 # C6 protected evidence encryption/redaction
 
-**Status:** not started. Last reconciled 2026-08-22 after C5 implementation
-commit `98c2f09`; a later docs-only commit may be the Actual Git HEAD.
+**Status:** complete locally in the current scoped slice over baseline HEAD
+`1b57427`. The final implementation/docs SHA must be read from Actual Git.
+This is not a production/release-ready claim.
 
 ## Goal
 
-Turn the existing protected-reference metadata into one executable,
-tests-first encryption/redaction contract without adding runtime/API routing or
+Implement one executable, tests-first encryption/redaction contract for the
+existing protected-reference abstraction without adding runtime/API routing or
 claiming that all of Slice C is complete.
 
-## Verified starting surface
+## Tests-first baseline
 
 - `resolution/domain/evidence.py` defines `ProtectedEvidenceReference` with
   `storage`, `locator`, `encryption_profile`, `redaction_profile`, and
@@ -27,47 +28,52 @@ claiming that all of Slice C is complete.
   dispatch named Resolution `redaction_profile` values, and no Resolution
   evidence export/profile executor exists in the current C1–C5 surface.
 
-## Open decisions — do not assume silently
+The baseline-red was captured in a detached worktree before implementation:
 
-- Which value is protected in this slice: the locator, an inline payload, or a
-  separately owned reference record. Do not add a new payload table or object
-  store adapter without repository evidence and a bounded contract.
-- How `encryption_profile` maps to the existing key abstraction, including
-  unknown-profile and missing-key behavior. A metadata string alone is not
-  encryption.
-- Which non-API boundary executes `redaction_profile` while Slice D/API wiring
-  remains out of scope. Unknown profiles and restricted evidence must not fall
-  back to raw output.
-- Whether migration `028` is appropriate. Resolve this from fresh `alembic
-  heads`; `027` is the current head only at baseline `98c2f09`.
+- two domain unknown-profile tests failed with `DID NOT RAISE`;
+- the ORM locator contract failed once because it found `String` instead of
+  `EncryptedText`;
+- redaction test collection failed with `ModuleNotFoundError`.
 
-## Candidate owner files
+The detached worktree was removed after preserving this evidence.
 
-Inspect before editing; this list is a boundary, not permission to change every
-file:
+## Delivered contract
 
-- `resolution/domain/evidence.py`
-- `resolution/adapters/postgres.py`
-- `db/models.py` and `db/crypto.py`
-- the next additive Alembic revision, only if storage changes require it
-- `tests/test_encryption.py`, `tests/test_resolution_case_domain.py`, and the
-  focused Resolution PostgreSQL integration contract
+- C6 protects only `evidence_snapshots.reference_locator`. It uses the
+  existing PostgreSQL `pgcrypto`-backed `EncryptedText` and
+  `DB_ENCRYPTION_KEY`; no new evidence payload table or object-store adapter
+  was added.
+- Domain validation accepts only
+  `encryption_profile=tenant-envelope-v1` for durable storage. Unknown
+  profiles fail closed.
+- Additive revision `028` migrates
+  `reference_locator VARCHAR(512) -> BYTEA`, restores
+  `BYTEA -> VARCHAR(512)` on downgrade, and adds a fail-closed
+  protection-profile `CHECK`.
+- The non-API `customer-safe-v1` application boundary emits exactly
+  `id`, `digest`, `visibility`, and `profile`. Unknown profiles,
+  `restricted`, and `support-only` evidence fail closed without exposing
+  the locator.
 
-## Required verification
+## Verification evidence
 
-- Demonstrate a focused failing test before implementation and retain the red
-  evidence.
-- Prove the selected durable value is not stored as plaintext and round-trips
-  only through the intended key/profile contract; missing or unknown protection
-  configuration fails closed without leaking the value.
-- Prove deterministic redaction for the selected safe boundary and no raw
-  fallback for restricted/unknown profiles.
-- If schema changes, run a real-PostgreSQL upgrade/downgrade catalog contract,
-  preserve C3 RLS, C4 immutability, and C5 temporal exclusion, then run the full
-  migration round trip on a disposable database.
-- Run scoped Ruff/format, strict MyPy, schema/head checks, the focused tests,
-  and one proportional independent Resolution/docs gate. Remove every
-  disposable database, role, and keepalive afterward.
+- Implementation-focused gate: **22 passed**; Ruff, format, and diff check
+  green.
+- Primary independent behavior/docs/PostgreSQL batch: **46 passed**.
+  A non-overlapping contract-schema coverage append added **13 passed**, for
+  **59 passed** total. The only warning was the existing Starlette warning.
+  Coverage for `resolution` was **81.91%**, above the 72% gate.
+- Strict MyPy passed for **18 source files**; Ruff/format passed for **11
+  files**; schema check passed; Alembic reported the single head `028`.
+- A full disposable PostgreSQL
+  `base -> 028 -> base -> 028` round trip passed and retained exactly **23
+  tables**. C3 RLS, C4 append immutability, and C5 temporal constraints
+  remained green.
+- Cleanup finished with `DB_COUNT=0`, `ROLE_COUNT=0`, and the keepalive
+  stopped. `rag_assistant` and production were untouched.
+- The QA writer was stopped at its 6/6 poll limit without code changes or
+  final findings. One precisely identified leftover disposable QA DB/role was
+  then removed.
 
 ## Non-goals
 
@@ -79,8 +85,15 @@ file:
 
 ## Done when
 
-- [ ] One explicit protected-reference value and one named redaction boundary
+- [x] One explicit protected-reference value and one named redaction boundary
   have tests-first, fail-closed behavior backed by real PostgreSQL evidence.
-- [ ] Existing C3–C5 database guarantees remain green, temporary resources are
+- [x] Existing C3–C5 database guarantees remain green, temporary resources are
   removed, and handoff truth distinguishes local C6 completion from the still
   open root Slice C.
+
+## Next routing
+
+C6 is complete locally, but root Slice C remains open. The next one atomic
+slice is **C7 Resolution restore smoke on disposable PostgreSQL**. Production
+runtime-role provisioning/grants remain later work outside C7. Do not fold
+API/runtime routing, Slice D, push, deploy, or production mutation into C7.

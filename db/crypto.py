@@ -1,9 +1,10 @@
 """Transparent pgcrypto helpers for SQLAlchemy models."""
+
 from __future__ import annotations
 
 from typing import Any
 
-from sqlalchemy import String, Text, bindparam, cast, func, literal_column
+from sqlalchemy import String, Text, bindparam, cast, func, literal_column, type_coerce
 from sqlalchemy.sql.elements import ClauseElement, ColumnElement
 from sqlalchemy.types import LargeBinary, TypeDecorator
 
@@ -27,7 +28,7 @@ def _get_encryption_key() -> str:
 
 def encrypt(plaintext: ClauseElement) -> ColumnElement[Any]:
     return func.pgp_sym_encrypt(
-        cast(plaintext, Text()),
+        cast(type_coerce(plaintext, Text()), Text()),
         bindparam(
             "db_encryption_key",
             callable_=_get_encryption_key,

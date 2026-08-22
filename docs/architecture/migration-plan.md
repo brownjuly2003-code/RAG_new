@@ -78,12 +78,20 @@ Delivery status:
   windows for the same tenant/logical key/applicability/authority while
   accepting adjacency,
   cross-authority, and different-applicability windows.
-- **C6 next:** protected evidence reference encryption/redaction execution,
-  derived from §9 of the domain data model and the existing encryption
-  abstraction; the verified starting inventory and gates are recorded in
+- **C6 complete locally (current slice over baseline `1b57427`):** revision
+  `028` encrypts only `evidence_snapshots.reference_locator` through the
+  existing `EncryptedText`/`DB_ENCRYPTION_KEY` contract, durable storage
+  accepts only `tenant-envelope-v1`, and the `customer-safe-v1` boundary
+  emits only `id`, `digest`, `visibility`, and `profile`; unknown,
+  restricted, and support-only paths fail closed without a locator. Closing
+  evidence is recorded in
   [`../../c6-protected-evidence-encryption-redaction.md`](../../c6-protected-evidence-encryption-redaction.md).
-- Slice C remains open until encryption/redaction execution, restore smoke,
-  and production runtime-role operations are green.
+- **C7 next:** run the Resolution restore smoke on disposable PostgreSQL and
+  remove all temporary resources afterward. Production runtime-role operations
+  remain later work outside C7.
+- Slice C remains open until restore smoke and production runtime-role
+  operations are green. Local C6 completion is not a production/release-ready
+  claim.
 
 ### Slice D — Read-only shipment-status shadow loop
 

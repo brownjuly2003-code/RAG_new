@@ -17,6 +17,7 @@ from resolution.domain.errors import (
     TenantBoundaryViolation,
 )
 from resolution.domain.evidence import (
+    EVIDENCE_ENCRYPTION_PROFILE,
     EvidenceConflict,
     EvidenceConflictKind,
     EvidenceLink,
@@ -40,6 +41,7 @@ __all__ = [
     "CaseStatus",
     "CaseVersionConflict",
     "ContractVersionRef",
+    "EVIDENCE_ENCRYPTION_PROFILE",
     "EvidenceConflict",
     "EvidenceConflictKind",
     "EvidenceLink",

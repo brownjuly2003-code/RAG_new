@@ -9,6 +9,7 @@ from contextlib import contextmanager
 from dataclasses import replace
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
+from types import SimpleNamespace
 from uuid import UUID, uuid4
 
 import pytest
@@ -27,6 +28,10 @@ from db.models import (
 from resolution.adapters.postgres import (
     PostgresResolutionUnitOfWork,
     set_resolution_tenant_context,
+)
+from resolution.application.evidence_redaction import (
+    RedactedEvidenceReference,
+    redact_evidence_reference,
 )
 from resolution.domain import (
     CaseStatus,
@@ -63,6 +68,28 @@ _APPEND_GUARD_TRIGGERS = tuple(
 _APPEND_GUARD_FUNCTION_NAME = "resolution_reject_append_only_mutation"
 _APPEND_GUARD_FUNCTION = f"{_RESOLUTION_SCHEMA}.{_APPEND_GUARD_FUNCTION_NAME}()"
 _EVIDENCE_TEMPORAL_CONSTRAINT_NAME = "ex_evidence_snapshots_temporal_identity"
+_EVIDENCE_PROTECTION_CONSTRAINT_NAME = "ck_evidence_snapshots_protection_profile"
+_EVIDENCE_ENCRYPTION_PROFILE = "tenant-envelope-v1"
+_TEST_ENCRYPTION_KEY = "resolution-test-key-32-characters-long"
+_MIGRATION_EVIDENCE_ID = UUID("00000000-0000-0000-0000-000000000828")
+_MIGRATION_REFERENCE_LOCATOR = "evidence/secret-existing-locator-marker"
+
+
+@pytest.fixture(scope="module", autouse=True)
+def resolution_encryption_environment() -> Iterator[None]:
+    from db import crypto as crypto_module
+
+    patcher = pytest.MonkeyPatch()
+    patcher.setenv("DB_ENCRYPTION_KEY", _TEST_ENCRYPTION_KEY)
+    patcher.setattr(
+        crypto_module,
+        "get_settings",
+        lambda: SimpleNamespace(db_encryption_key=_TEST_ENCRYPTION_KEY),
+    )
+    try:
+        yield
+    finally:
+        patcher.undo()
 
 
 def _sync_url(raw_url: str) -> URL:
@@ -79,7 +106,7 @@ def _async_url(url: URL) -> str:
 def _run_alembic(database_url: URL, *arguments: str) -> None:
     environment = os.environ.copy()
     environment["DATABASE_URL"] = database_url.render_as_string(hide_password=False)
-    environment.setdefault("DB_ENCRYPTION_KEY", "resolution-test-key-32-characters-long")
+    environment["DB_ENCRYPTION_KEY"] = _TEST_ENCRYPTION_KEY
     process = subprocess.run(
         ["alembic", *arguments],
         cwd=PROJECT_ROOT,
@@ -270,8 +297,8 @@ def _snapshot(tenant_id: UUID, *, evidence_id: UUID | None = None) -> EvidenceSn
         reference=ProtectedEvidenceReference(
             storage=EvidenceStorage.POSTGRES_ENCRYPTED,
             locator="evidence/020-12345675/event-4431",
-            encryption_profile="tenant-envelope-v1",
-            redaction_profile="shipment-status-v1",
+            encryption_profile=_EVIDENCE_ENCRYPTION_PROFILE,
+            redaction_profile="customer-safe-v1",
             retention_class="support-case-90d",
         ),
     )
@@ -308,6 +335,50 @@ def test_resolution_revision_round_trips_on_real_postgresql(
     engine = create_engine(migration_database_url)
     try:
         assert tables.isdisjoint(inspect(engine).get_table_names())
+
+        _run_alembic(migration_database_url, "upgrade", "027")
+        migration_tenant_id = UUID("00000000-0000-0000-0000-000000000128")
+        valid_from = datetime(2026, 8, 22, 10, 0, tzinfo=timezone.utc)
+        with engine.begin() as connection:
+            connection.execute(
+                text("SELECT set_config('app.current_tenant_id', :tenant_id, true)"),
+                {"tenant_id": str(migration_tenant_id)},
+            )
+            connection.execute(
+                text(
+                    "INSERT INTO evidence_snapshots ("
+                    "id, tenant_id, logical_key, source_type, source_id, source_version, "
+                    "content_digest, valid_from, valid_to, recorded_at, authority, "
+                    "applicability_key, visibility, reference_storage, reference_locator, "
+                    "encryption_profile, redaction_profile, retention_class"
+                    ") VALUES ("
+                    ":id, :tenant_id, :logical_key, :source_type, :source_id, :source_version, "
+                    ":content_digest, :valid_from, :valid_to, :recorded_at, :authority, "
+                    ":applicability_key, :visibility, :reference_storage, :reference_locator, "
+                    ":encryption_profile, :redaction_profile, :retention_class"
+                    ")"
+                ),
+                {
+                    "id": _MIGRATION_EVIDENCE_ID,
+                    "tenant_id": migration_tenant_id,
+                    "logical_key": "shipment:migration:status",
+                    "source_type": "source_system",
+                    "source_id": "migration-source",
+                    "source_version": "migration-v1",
+                    "content_digest": "e" * 64,
+                    "valid_from": valid_from,
+                    "valid_to": valid_from + timedelta(hours=1),
+                    "recorded_at": valid_from + timedelta(minutes=1),
+                    "authority": "migration-tms",
+                    "applicability_key": "shipment:migration",
+                    "visibility": "customer_safe",
+                    "reference_storage": "postgres_encrypted",
+                    "reference_locator": _MIGRATION_REFERENCE_LOCATOR,
+                    "encryption_profile": _EVIDENCE_ENCRYPTION_PROFILE,
+                    "redaction_profile": "customer-safe-v1",
+                    "retention_class": "support-case-90d",
+                },
+            )
 
         _run_alembic(migration_database_url, "upgrade", "head")
         inspector = inspect(engine)
@@ -379,6 +450,40 @@ def test_resolution_revision_round_trips_on_real_postgresql(
             btree_gist_extension = connection.exec_driver_sql(
                 "SELECT extname FROM pg_extension WHERE extname = 'btree_gist'"
             ).scalar_one_or_none()
+            protection_constraint = connection.exec_driver_sql(
+                "SELECT constraints.contype FROM pg_constraint AS constraints "
+                "JOIN pg_class AS tables ON tables.oid = constraints.conrelid "
+                "JOIN pg_namespace AS namespaces ON namespaces.oid = tables.relnamespace "
+                "WHERE namespaces.nspname = %s "
+                "AND tables.relname = 'evidence_snapshots' "
+                "AND constraints.conname = %s",
+                (_RESOLUTION_SCHEMA, _EVIDENCE_PROTECTION_CONSTRAINT_NAME),
+            ).scalar_one_or_none()
+            reference_locator_type = connection.exec_driver_sql(
+                "SELECT format_type(attributes.atttypid, attributes.atttypmod) "
+                "FROM pg_attribute AS attributes "
+                "JOIN pg_class AS tables ON tables.oid = attributes.attrelid "
+                "JOIN pg_namespace AS namespaces ON namespaces.oid = tables.relnamespace "
+                "WHERE namespaces.nspname = %s "
+                "AND tables.relname = 'evidence_snapshots' "
+                "AND attributes.attname = 'reference_locator'",
+                (_RESOLUTION_SCHEMA,),
+            ).scalar_one()
+            connection.execute(
+                text("SELECT set_config('app.current_tenant_id', :tenant_id, true)"),
+                {"tenant_id": str(migration_tenant_id)},
+            )
+            encrypted_locator, decrypted_locator = connection.execute(
+                text(
+                    "SELECT reference_locator, "
+                    "pgp_sym_decrypt(reference_locator, :key) "
+                    "FROM evidence_snapshots WHERE id = :evidence_id"
+                ),
+                {
+                    "key": _TEST_ENCRYPTION_KEY,
+                    "evidence_id": _MIGRATION_EVIDENCE_ID,
+                },
+            ).one()
         assert rls_rows == [
             ("case_events", True, True),
             ("case_evidence_links", True, True),
@@ -404,6 +509,63 @@ def test_resolution_revision_round_trips_on_real_postgresql(
             ["=", "=", "=", "=", "&&"],
         )
         assert btree_gist_extension == "btree_gist"
+        assert protection_constraint == "c"
+        assert reference_locator_type == "bytea"
+        assert _MIGRATION_REFERENCE_LOCATOR.encode() not in bytes(encrypted_locator)
+        assert decrypted_locator == _MIGRATION_REFERENCE_LOCATOR
+
+        _run_alembic(migration_database_url, "downgrade", "027")
+        with engine.connect() as connection:
+            assert (
+                connection.exec_driver_sql(
+                    "SELECT format_type(attributes.atttypid, attributes.atttypmod) "
+                    "FROM pg_attribute AS attributes "
+                    "JOIN pg_class AS tables ON tables.oid = attributes.attrelid "
+                    "JOIN pg_namespace AS namespaces ON namespaces.oid = tables.relnamespace "
+                    "WHERE namespaces.nspname = %s "
+                    "AND tables.relname = 'evidence_snapshots' "
+                    "AND attributes.attname = 'reference_locator'",
+                    (_RESOLUTION_SCHEMA,),
+                ).scalar_one()
+                == "character varying(512)"
+            )
+            assert (
+                connection.exec_driver_sql(
+                    "SELECT COUNT(*) FROM pg_constraint AS constraints "
+                    "JOIN pg_class AS tables ON tables.oid = constraints.conrelid "
+                    "JOIN pg_namespace AS namespaces ON namespaces.oid = tables.relnamespace "
+                    "WHERE namespaces.nspname = %s "
+                    "AND tables.relname = 'evidence_snapshots' "
+                    "AND constraints.conname = %s",
+                    (_RESOLUTION_SCHEMA, _EVIDENCE_PROTECTION_CONSTRAINT_NAME),
+                ).scalar_one()
+                == 0
+            )
+            assert (
+                connection.exec_driver_sql(
+                    "SELECT COUNT(*) FROM pg_constraint AS constraints "
+                    "JOIN pg_class AS tables ON tables.oid = constraints.conrelid "
+                    "JOIN pg_namespace AS namespaces ON namespaces.oid = tables.relnamespace "
+                    "WHERE namespaces.nspname = %s "
+                    "AND tables.relname = 'evidence_snapshots' "
+                    "AND constraints.conname = %s",
+                    (_RESOLUTION_SCHEMA, _EVIDENCE_TEMPORAL_CONSTRAINT_NAME),
+                ).scalar_one()
+                == 1
+            )
+            connection.execute(
+                text("SELECT set_config('app.current_tenant_id', :tenant_id, true)"),
+                {"tenant_id": str(migration_tenant_id)},
+            )
+            assert (
+                connection.execute(
+                    text(
+                        "SELECT reference_locator FROM evidence_snapshots WHERE id = :evidence_id"
+                    ),
+                    {"evidence_id": _MIGRATION_EVIDENCE_ID},
+                ).scalar_one()
+                == _MIGRATION_REFERENCE_LOCATOR
+            )
 
         _run_alembic(migration_database_url, "downgrade", "026")
         assert tables <= set(inspect(engine).get_table_names())
@@ -529,6 +691,45 @@ def test_resolution_revision_round_trips_on_real_postgresql(
 
 
 @pytest.mark.asyncio
+async def test_durable_evidence_storage_rejects_missing_encryption_profile(
+    resolution_session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    context = _context(uuid4())
+    valid_from = datetime(2026, 8, 22, 10, 0, tzinfo=timezone.utc)
+    record = ResolutionEvidenceSnapshot(
+        id=uuid4(),
+        tenant_id=context.tenant_id,
+        logical_key="shipment:missing-profile:status",
+        source_type="source_system",
+        source_id="missing-profile-source",
+        source_version="missing-profile-v1",
+        content_digest="f" * 64,
+        valid_from=valid_from,
+        valid_to=valid_from + timedelta(hours=1),
+        recorded_at=valid_from + timedelta(minutes=1),
+        authority="missing-profile-tms",
+        applicability_key="shipment:missing-profile",
+        visibility="customer_safe",
+        reference_storage="postgres_encrypted",
+        reference_locator="evidence/secret-missing-profile-marker",
+        encryption_profile=None,
+        redaction_profile="customer-safe-v1",
+        retention_class="support-case-90d",
+    )
+
+    with pytest.raises(IntegrityError) as exc_info:
+        async with resolution_session_factory() as session, session.begin():
+            await set_resolution_tenant_context(session, context)
+            session.add(record)
+            await session.flush()
+
+    assert (
+        getattr(exc_info.value.orig.__cause__, "constraint_name", None)
+        == _EVIDENCE_PROTECTION_CONSTRAINT_NAME
+    )
+
+
+@pytest.mark.asyncio
 async def test_evidence_temporal_identity_exclusion_preserves_allowed_conflicts(
     resolution_session_factory: async_sessionmaker[AsyncSession],
 ) -> None:
@@ -622,10 +823,31 @@ async def test_case_and_evidence_round_trip_through_tenant_scoped_repositories(
         assert await work.evidence.append_link(context, link) == link
         await work.commit()
 
+    async with resolution_session_factory() as session:
+        async with session.begin():
+            await set_resolution_tenant_context(session, context)
+            encrypted_locator = await session.scalar(
+                text(
+                    "SELECT reference_locator FROM evidence_snapshots "
+                    "WHERE tenant_id = :tenant_id AND id = :evidence_id"
+                ),
+                {"tenant_id": context.tenant_id, "evidence_id": snapshot.id},
+            )
+    assert encrypted_locator is not None
+    assert snapshot.reference.locator.encode() not in bytes(encrypted_locator)
+
     async with PostgresResolutionUnitOfWork(resolution_session_factory, context) as work:
         assert await work.cases.get(context, opened.case.id) == opened.case
         assert await work.cases.list_events(context, opened.case.id) == (opened.event,)
-        assert await work.evidence.get_snapshot(context, snapshot.id) == snapshot
+        loaded_snapshot = await work.evidence.get_snapshot(context, snapshot.id)
+        assert loaded_snapshot == snapshot
+        assert loaded_snapshot is not None
+        assert redact_evidence_reference(loaded_snapshot) == RedactedEvidenceReference(
+            evidence_id=snapshot.id,
+            content_digest=snapshot.content_digest,
+            visibility=EvidenceVisibility.CUSTOMER_SAFE,
+            redaction_profile="customer-safe-v1",
+        )
         assert await work.evidence.list_for_case(context, opened.case.id) == (link,)
 
 
