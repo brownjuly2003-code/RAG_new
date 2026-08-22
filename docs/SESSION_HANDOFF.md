@@ -1,6 +1,6 @@
 # Session handoff
 
-## CURRENT — 2026-08-22 / Update-217 C6 complete locally / RAG_new Resolution Product
+## CURRENT — 2026-08-22 / Update-218 C7 complete locally / RAG_new Resolution Product
 
 **Назначение:** самодостаточный старт следующей сессии по новой архитектуре,
 без чтения superseded Resolution Product capsules и унаследованной истории.
@@ -14,23 +14,23 @@ git log -5 --oneline
 git remote -v
 ```
 
-Baseline HEAD перед C6 — `1b57427` на `master`. C6 завершён локально в
-текущем scoped slice поверх baseline; итоговый implementation/docs SHA
-определять по Actual Git. Активного QA writer или keepalive нет. После cleanup
-`DB_COUNT=0` и `ROLE_COUNT=0`; `rag_assistant` и production не
+Baseline HEAD перед C7 — C6 commit `ac8e5bc` на `master`. C7 завершён локально
+в текущем scoped slice; итоговый implementation/docs SHA определять по Actual
+Git. Активного writer или keepalive нет. После cleanup disposable databases и
+roles = `0`; dump и verifier отсутствуют. `rag_assistant` и production не
 затрагивались.
 
 Далее читать в таком порядке:
 
-1. эта CURRENT-капсула и верхний Update-217 в
+1. эта CURRENT-капсула и верхний Update-218 в
    [`AGENT_STATE.md`](../AGENT_STATE.md);
-2. [`../c6-protected-evidence-encryption-redaction.md`](../c6-protected-evidence-encryption-redaction.md)
-   — закрывающий C6 contract и verification evidence;
+2. [`../c7-resolution-restore-smoke.md`](../c7-resolution-restore-smoke.md)
+   — закрывающий C7 contract и verification evidence;
 3. [`architecture/migration-plan.md`](architecture/migration-plan.md) —
-   текущий scope Slice C и граница следующего C7;
+   текущий scope Slice C и externally gated граница C8;
 4. [`../BACKLOG.md`](../BACKLOG.md) — короткий routing override.
 
-Actual Git и эти current sections имеют приоритет над superseded C6 routing
+Actual Git и эти current sections имеют приоритет над superseded C7 routing
 ниже и старой Trust Foundation очередью.
 
 ### 1. Текущий delivery status
@@ -44,60 +44,54 @@ Actual Git и эти current sections имеют приоритет над super
 | `1b5265a` | Slice C3: revision `025`, forced RLS, transaction-local tenant context и non-owner role contracts. |
 | `4dd0c74` | Slice C4: revision `026`, append-immutability guards; `support_cases` CAS сохранён. |
 | `98c2f09` | Slice C5: revision `027` и matching PostgreSQL-only GiST temporal exclusion metadata. |
-| поверх baseline `1b57427`; SHA — Actual Git | Slice C6: encrypted evidence locator, fail-closed protection profile и customer-safe redaction boundary. |
+| `ac8e5bc` | Slice C6: encrypted evidence locator, fail-closed protection profile и customer-safe redaction boundary. |
+| поверх `ac8e5bc`; SHA — Actual Git | Slice C7: exact-set restore verification и реальный disposable PostgreSQL source-to-target smoke. |
 
-C6 защищает только `evidence_snapshots.reference_locator` через существующий
-PostgreSQL `pgcrypto`-тип `EncryptedText` и `DB_ENCRYPTION_KEY`. Revision
-`028` мигрирует `VARCHAR(512) <-> BYTEA` и добавляет fail-closed
-protection-profile `CHECK`. Durable storage принимает только
-`tenant-envelope-v1`.
+Stale restore verifier ожидал **18** public-таблиц. Head `028` фактически
+содержит точные **23**: 17 ORM, 5 migration-owned и `alembic_version`. C7
+заменил count-only проверку на fail-closed exact-set comparison и сохранил ORM
+schema probes. Verifier поддерживает `PG_RESTORE_PATH`, не помещает пароль в
+argv, передаёт его через `PGPASSWORD` и редактирует чувствительные данные в
+ошибках.
 
-Application boundary `customer-safe-v1` возвращает exact allowlist:
-`id`, `digest`, `visibility`, `profile`. Unknown profile,
-`restricted` и `support-only` fail closed и никогда не возвращают locator.
+Focused gate прошёл: **16 passed, 2 skipped, 1 deselected**; scoped Ruff
+check/format и `git diff --check` green. Дополнительный необязательный MyPy
+probe остановился до анализа C7 на известном env drift: NumPy 2.5.1 stub
+использует Python 3.12 `type`, а mypy target — 3.11 и lock — NumPy 2.4.4.
+`scripts/` исключён из обязательного проектного MyPy gate; MyPy green здесь не
+заявляется.
 
-Tests-first baseline-red в удалённом после проверки detached worktree:
-domain unknown-profile contracts — **2 failed** с `DID NOT RAISE`; ORM
-locator contract — **1 failed** (`String` вместо `EncryptedText`);
-redaction module collection — `ModuleNotFoundError`.
+Реальный PostgreSQL 14 WSL smoke мигрировал disposable source `base -> 028`,
+seed-ил по одному case/event/evidence snapshot/link, создал custom-format dump
+с `--no-owner --no-privileges` и восстановил отдельную target через
+`--clean --if-exists --no-owner --no-privileges --exit-on-error`. Target
+подтвердил revision `028`, exact 23 tables, 4 seed rows, ciphertext/decryption,
+RLS default-deny и tenant isolation, append guard `55000`, temporal exclusion
+`23P01` и protection constraint `23514`.
 
-Implementation-focused gate: **22 passed**; Ruff/format/diff check green.
-Primary independent behavior/docs/PostgreSQL batch: **46 passed**; отдельный
-непересекающийся contract-schema append: **13 passed**, всего **59 passed**.
-Сохранено одно существующее Starlette warning; coverage `resolution` —
-**81.91%** при gate 72%.
+Cleanup подтверждён: disposable databases/roles = `0`, dump/verifier
+отсутствуют, keepalive остановлен. Рабочая `rag_assistant` и production не
+затрагивались.
 
-Strict MyPy green по **18 source files**; Ruff/format green по **11 files**;
-schema check green; Alembic single head `028`. Полный disposable PostgreSQL
-`base -> 028 -> base -> 028` round trip green с точными **23 таблицами**;
-C3 RLS, C4 append immutability и C5 temporal constraints green.
+### 2. Следующий named slice: C8 (externally gated)
 
-QA writer был остановлен после poll 6/6 без code changes и финальных findings.
-Один точно идентифицированный оставшийся disposable QA DB/role удалён;
-`DB_COUNT=0`, `ROLE_COUNT=0`, keepalive остановлен.
-
-### 2. Следующий named slice: C7
-
-**C7 — Resolution restore smoke на disposable PostgreSQL.** Доказать
-восстановление C1–C6 schema/data guarantees в одноразовой PostgreSQL-среде,
-зафиксировать focused restore evidence и удалить все временные DB/roles/process.
-Не включать в C7 production runtime-role provisioning/grants, API/runtime
-routing, Slice D или working/production mutation.
+**C8 — production runtime-role operations/grants.** Начинать только после
+требуемого внешнего разрешения. Не включать Slice D, API/runtime routing,
+deploy или другие production mutations без отдельной авторизации.
 
 ### 3. Явно не сделано и не разрешено считать сделанным
 
-- C1–C6 завершены локально, но корневая галочка Slice C остаётся открытой до
-  restore smoke и более поздних production runtime-role operations;
-- C6 не выполнял restore и не применял revision `028` к рабочей или
-  production базе;
+- C1–C7 завершены локально, но корневая галочка Slice C остаётся открытой до
+  production runtime-role operations/grants;
+- C7 не выполнял restore в staging/production и не применял revision `028` к
+  рабочей или production базе;
 - production roles/grants не создавались, API/runtime routing не включался;
 - не выполнялись push, deploy, live-provider вызовы или production mutation;
 - это не production/release-ready claim и не закрытие унаследованных Trust
   Foundation/release gates.
 
-На следующий пользовательский turn брать только один atomic slice C7. После
-focused restore проверки и одной пропорциональной независимой проверки
-обновить status один раз и вернуть управление пользователю.
+На следующий пользовательский turn не начинать C8 без требуемого внешнего
+разрешения на production runtime-role operations/grants.
 
 ---
 

@@ -747,10 +747,25 @@ python scripts/restore_verify_integration.py \
 Postgres-ветка внутри `scripts/restore_verify.py` делает не smoke-layout, а
 реальный restore:
 
-- `pg_restore --clean --if-exists --dbname=<url> <snapshot>/postgres/postgres.dump`
+- запускает `pg_restore --clean --if-exists --dbname=<url>` для
+  `<snapshot>/postgres/postgres.dump`; альтернативный бинарник можно задать
+  через `PG_RESTORE_PATH`
+- передаёт пароль только через `PGPASSWORD`, не помещая его в argv, и
+  редактирует чувствительные данные в сообщениях об ошибках
 - проверяет `alembic_version.version_num` против `snapshot_manifest.json`
-- проверяет количество таблиц в `public`
+- fail-closed сравнивает точный набор таблиц `public`: все ORM-таблицы,
+  migration-owned `review_queue`, `trace_evaluations`,
+  `experiment_deployments`, `experiment_assignments`, `curated_case_status`
+  и `alembic_version`; для head `028` это **23 таблицы**
 - делает `SELECT * LIMIT 0` для всех ORM-таблиц из `db.models.Base.metadata`
+
+Локальный C7 smoke на PostgreSQL 14 доказал restore revision `028` из
+custom-format dump в отдельную disposable target DB. Он сохранил четыре
+репрезентативные Resolution-записи, защищённый/decryptable locator, forced RLS,
+append guards, temporal exclusion и protection constraint. После проверки
+source/target DB, временная роль, dump и verifier были удалены, keepalive
+остановлен. Это локальная evidence, а не staging/production restore, измерение
+RPO/RTO или разрешение на production `pg_restore --clean`.
 
 Коды возврата:
 

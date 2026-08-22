@@ -6,6 +6,7 @@ ephemeral project-root-shaped directory, runs smoke checks against the
 restored layout (SQLite queryable, tarballs unpackable, manifest sane),
 and emits a markdown report. Does not touch the live deployment.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -27,6 +28,7 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 from db.models import Base  # noqa: E402
+from scripts.backup_snapshot import _normalize_postgres_dsn  # noqa: E402
 
 EXIT_OK = 0
 EXIT_RESTORE_FAILED = 1
@@ -34,8 +36,19 @@ EXIT_SMOKE_FAILED = 2
 EXIT_INFRA_ERROR = 3
 EXIT_POSTGRES_VERIFY_FAILED = 4
 EXIT_DECRYPT_FAILED = 5
-EXPECTED_PUBLIC_TABLE_COUNT = 18
 EXPECTED_MODEL_TABLES = tuple(sorted(Base.metadata.tables))
+MIGRATION_OWNED_TABLES = frozenset(
+    {
+        "review_queue",
+        "trace_evaluations",
+        "experiment_deployments",
+        "experiment_assignments",
+        "curated_case_status",
+    }
+)
+EXPECTED_PUBLIC_TABLES = (
+    frozenset(EXPECTED_MODEL_TABLES) | MIGRATION_OWNED_TABLES | {"alembic_version"}
+)
 DECRYPTED_COMPONENT_FILENAMES = {
     "postgres": "postgres.dump",
     "sqlite_traces": "traces.sqlite",
@@ -154,7 +167,10 @@ def _decrypt_component(
         )
     if result.returncode != 0:
         target.unlink(missing_ok=True)
-        detail = result.stderr.decode("utf-8", errors="replace").strip() or f"age exit {result.returncode}"
+        detail = (
+            result.stderr.decode("utf-8", errors="replace").strip()
+            or f"age exit {result.returncode}"
+        )
         return None, StepResult(label, passed=False, detail=f"decrypt failed: {detail}")
     return target, None
 
@@ -206,7 +222,9 @@ def _restore_tarball(
 
 
 def _run_layout_smoke(target_root: Path, manifest: dict[str, Any]) -> StepResult:
-    expected_components = {c.get("name") for c in (manifest.get("components") or []) if c.get("status") == "ok"}
+    expected_components = {
+        c.get("name") for c in (manifest.get("components") or []) if c.get("status") == "ok"
+    }
     found = []
     if "sqlite_traces" in expected_components:
         found.append((target_root / "data" / "tracing" / "traces.db").exists())
@@ -218,7 +236,9 @@ def _run_layout_smoke(target_root: Path, manifest: dict[str, Any]) -> StepResult
     if not found:
         return StepResult("layout_smoke", passed=False, detail="no restorable components present")
     if not all(found):
-        return StepResult("layout_smoke", passed=False, detail="some restored paths missing post-extract")
+        return StepResult(
+            "layout_smoke", passed=False, detail="some restored paths missing post-extract"
+        )
     return StepResult("layout_smoke", passed=True, detail=f"{len(found)} layout checks passed")
 
 
@@ -227,11 +247,24 @@ def _verify_postgres(
     manifest: dict[str, Any],
     postgres_url: str,
 ) -> StepResult:
+    restore_binary = os.environ.get("PG_RESTORE_PATH") or shutil.which("pg_restore") or "pg_restore"
     try:
-        restore = subprocess.run(
+        restore_dsn, restore_password = _normalize_postgres_dsn(postgres_url)
+    except Exception as exc:
+        return StepResult(
+            "postgres",
+            passed=False,
+            detail=f"postgres configuration invalid: {type(exc).__name__}",
+        )
+    restore_env = os.environ.copy()
+    if restore_password is not None:
+        restore_env["PGPASSWORD"] = restore_password
+    try:
+        subprocess.run(
             [
-                "pg_restore",
-                f"--dbname={postgres_url}",
+                restore_binary,
+                "--dbname",
+                restore_dsn,
                 "--clean",
                 "--if-exists",
                 str(source),
@@ -239,18 +272,26 @@ def _verify_postgres(
             check=True,
             capture_output=True,
             text=True,
+            env=restore_env,
         )
     except FileNotFoundError:
         return StepResult("postgres", passed=False, detail="pg_restore binary not found")
     except subprocess.CalledProcessError as exc:
-        detail = (exc.stderr or exc.stdout or "").strip() or f"pg_restore exit {exc.returncode}"
-        return StepResult("postgres", passed=False, detail=f"pg_restore failed: {detail}")
+        return StepResult(
+            "postgres",
+            passed=False,
+            detail=f"pg_restore failed: exit {exc.returncode}",
+        )
 
     try:
         import psycopg2
         from psycopg2 import sql
     except Exception as exc:
-        return StepResult("postgres", passed=False, detail=f"psycopg2 import failed: {exc}")
+        return StepResult(
+            "postgres",
+            passed=False,
+            detail=f"psycopg2 import failed: {type(exc).__name__}",
+        )
 
     manifest_revision = manifest.get("alembic_revision")
     if not isinstance(manifest_revision, str) or not manifest_revision:
@@ -270,33 +311,41 @@ def _verify_postgres(
                     )
 
                 cur.execute(
-                    "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'public'"
+                    "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'"
                 )
-                table_count = cur.fetchone()[0]
-                if table_count != EXPECTED_PUBLIC_TABLE_COUNT:
+                actual_tables = {row[0] for row in cur.fetchall()}
+                missing_tables = sorted(EXPECTED_PUBLIC_TABLES - actual_tables)
+                extra_tables = sorted(actual_tables - EXPECTED_PUBLIC_TABLES)
+                if missing_tables or extra_tables:
                     return StepResult(
                         "postgres",
                         passed=False,
                         detail=(
-                            "unexpected public table count: "
-                            f"expected {EXPECTED_PUBLIC_TABLE_COUNT}, got {table_count}"
+                            "public table set mismatch: "
+                            f"missing={','.join(missing_tables) or '<none>'}; "
+                            f"extra={','.join(extra_tables) or '<none>'}"
                         ),
                     )
 
                 for table_name in EXPECTED_MODEL_TABLES:
                     cur.execute(
-                        sql.SQL("SELECT * FROM public.{} LIMIT 0").format(sql.Identifier(table_name))
+                        sql.SQL("SELECT * FROM public.{} LIMIT 0").format(
+                            sql.Identifier(table_name)
+                        )
                     )
     except Exception as exc:
-        return StepResult("postgres", passed=False, detail=f"postgres verify failed: {exc}")
+        return StepResult(
+            "postgres",
+            passed=False,
+            detail=f"postgres verify failed: {type(exc).__name__}",
+        )
 
-    restore_note = restore.stderr.strip() if restore.stderr else "pg_restore ok"
     return StepResult(
         "postgres",
         passed=True,
         detail=(
-            f"{restore_note}; alembic={manifest_revision}; "
-            f"tables={EXPECTED_PUBLIC_TABLE_COUNT}; model_tables={len(EXPECTED_MODEL_TABLES)}"
+            f"pg_restore ok; alembic={manifest_revision}; "
+            f"tables={len(EXPECTED_PUBLIC_TABLES)}; model_tables={len(EXPECTED_MODEL_TABLES)}"
         ),
     )
 
@@ -328,7 +377,13 @@ def verify_snapshot(
             report.exit_code = EXIT_RESTORE_FAILED
             return report
 
-        report.steps.append(StepResult("manifest", passed=True, detail=f"{len(manifest.get('components') or [])} components"))
+        report.steps.append(
+            StepResult(
+                "manifest",
+                passed=True,
+                detail=f"{len(manifest.get('components') or [])} components",
+            )
+        )
 
         components = {c.get("name"): c for c in (manifest.get("components") or [])}
 

@@ -5,14 +5,14 @@
 Текущая выбранная владельцем очередь находится в
 [`rag-new-architecture.md`](rag-new-architecture.md), а точный scope и DoD — в
 [`docs/architecture/migration-plan.md`](docs/architecture/migration-plan.md).
-Срезы C1–C6 завершены локально; C6 выполнен поверх baseline `1b57427`, а
+Срезы C1–C7 завершены локально; C7 выполнен поверх C6 commit `ac8e5bc`, а
 итоговый SHA определять по Actual Git. Следующий один atomic slice —
-**C7 Resolution restore smoke на disposable PostgreSQL**. Корневая Slice C
-остаётся открытой; production runtime-role operations идут позже и не входят
-в C7. Также не включать Slice D, API/runtime routing, working/production
-mutation, push или deploy.
-Закрывающая C6-капсула:
-[`c6-protected-evidence-encryption-redaction.md`](c6-protected-evidence-encryption-redaction.md).
+**C8 production runtime-role operations/grants**, только после требуемого
+внешнего разрешения. Корневая Slice C остаётся открытой: локальный C7 restore
+smoke не создавал и не менял production roles/grants. Также не включать Slice
+D, API/runtime routing, working/production mutation, push или deploy.
+Закрывающая C7-капсула:
+[`c7-resolution-restore-smoke.md`](c7-resolution-restore-smoke.md).
 Общая session-капсула:
 [`docs/SESSION_HANDOFF.md`](docs/SESSION_HANDOFF.md).
 

@@ -1,5 +1,59 @@
 # Agent State
 
+## 2026-08-22 Update-218 — C7 restore smoke locally complete; C8 externally gated ✅ START HERE
+
+> **Текущий routing для `D:\RAG_new`:** этот блок и верхняя CURRENT-капсула
+> `docs/SESSION_HANDOFF.md` заменяют Update-217 и более старые `START HERE`
+> для Resolution Product. Baseline HEAD перед C7 — C6 commit `ac8e5bc` на
+> `master`; C7 завершён локально в текущем scoped slice, а итоговый SHA
+> определять по Actual Git. Push, deploy, production restore, production-role
+> mutation и API/runtime routing не выполнялись.
+
+### 218A. Что доставлено в C7
+
+- Stale restore baseline ожидал только **18** public-таблиц, тогда как head
+  `028` содержит точный набор из **23**: 17 ORM, 5 migration-owned и
+  `alembic_version`. Restore verifier теперь fail closed на любой missing или
+  extra table, сохраняя ORM schema probes.
+- `PG_RESTORE_PATH` позволяет выбрать portable `pg_restore`. Пароль не попадает
+  в argv и передаётся через `PGPASSWORD`; ошибки редактируют чувствительные
+  части DSN и не раскрывают credential.
+
+### 218B. Проверенная evidence
+
+- Focused gate: **16 passed, 2 skipped, 1 deselected**; scoped Ruff check,
+  Ruff format и `git diff --check` green.
+- Реальный PostgreSQL 14 WSL smoke мигрировал disposable source
+  `base -> 028`, создал по одной записи `support_cases`, `case_events`,
+  `evidence_snapshots`, `case_evidence_links`, выполнил
+  `pg_dump -Fc --no-owner --no-privileges` и восстановил отдельную disposable target через
+  `pg_restore --clean --if-exists --no-owner --no-privileges --exit-on-error`.
+- Target подтвердил revision `028`, точные **23 таблицы** и 4 seed rows.
+  Locator остался ciphertext и расшифровался тестовым ключом; RLS default-deny
+  и tenant isolation, append guard (`55000`), temporal exclusion (`23P01`) и
+  protection constraint (`23514`) прошли.
+- После cleanup disposable databases/roles = **0**, dump/verifier отсутствуют,
+  keepalive остановлен; `rag_assistant` и production не затрагивались.
+- Дополнительный необязательный MyPy probe не дошёл до анализа C7: локальный
+  NumPy 2.5.1 stub использует Python 3.12 `type`, тогда как mypy target — 3.11
+  и lock фиксирует NumPy 2.4.4. `scripts/` исключён из обязательного проектного
+  MyPy gate; MyPy green для C7 не заявляется.
+
+### 218C. Границы и статус
+
+- C1–C7 завершены локально, но корневая галочка Slice C остаётся открытой до
+  production runtime-role operations/grants.
+- C7 не разрешал и не выполнял production restore, provisioning или grants.
+  Это не production/release-ready claim.
+
+### 218D. Следующий один atomic slice
+
+**C8 — production runtime-role operations/grants, только после требуемого
+внешнего разрешения.** Не включать Slice D, API/runtime routing, deploy или
+иные production mutations без отдельной авторизации.
+
+---
+
 ## 2026-08-22 Update-217 — C6 locally complete; C7 restore smoke next ✅ START HERE
 
 > **Текущий routing для `D:\RAG_new`:** этот блок и верхняя CURRENT-капсула

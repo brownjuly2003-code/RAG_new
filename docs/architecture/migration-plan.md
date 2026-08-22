@@ -78,7 +78,7 @@ Delivery status:
   windows for the same tenant/logical key/applicability/authority while
   accepting adjacency,
   cross-authority, and different-applicability windows.
-- **C6 complete locally (current slice over baseline `1b57427`):** revision
+- **C6 complete locally (`ac8e5bc`):** revision
   `028` encrypts only `evidence_snapshots.reference_locator` through the
   existing `EncryptedText`/`DB_ENCRYPTION_KEY` contract, durable storage
   accepts only `tenant-envelope-v1`, and the `customer-safe-v1` boundary
@@ -86,12 +86,18 @@ Delivery status:
   restricted, and support-only paths fail closed without a locator. Closing
   evidence is recorded in
   [`../../c6-protected-evidence-encryption-redaction.md`](../../c6-protected-evidence-encryption-redaction.md).
-- **C7 next:** run the Resolution restore smoke on disposable PostgreSQL and
-  remove all temporary resources afterward. Production runtime-role operations
-  remain later work outside C7.
-- Slice C remains open until restore smoke and production runtime-role
-  operations are green. Local C6 completion is not a production/release-ready
-  claim.
+- **C7 complete locally:** the restore verifier now compares the exact head
+  inventory (**17 ORM + 5 migration-owned + `alembic_version` = 23 tables**)
+  and fails closed on missing or extra tables. A real PostgreSQL 14 disposable
+  source-to-target custom-format restore preserved representative Resolution
+  data, encrypted locator behavior, RLS, append guards, temporal exclusion,
+  and the protection constraint. Closing evidence is recorded in
+  [`../../c7-resolution-restore-smoke.md`](../../c7-resolution-restore-smoke.md).
+- **C8 next, externally gated:** provision and verify production runtime-role
+  operations/grants only after the required authorization. C7 did not create
+  or change production roles or grants.
+- Slice C remains open until production runtime-role operations are green.
+  Local C7 completion is not a production/release-ready claim.
 
 ### Slice D — Read-only shipment-status shadow loop
 
