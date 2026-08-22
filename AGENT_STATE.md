@@ -1,6 +1,73 @@
 # Agent State
 
-## 2026-08-22 Update-222 — Slice D fixture shadow complete ✅ START HERE
+## 2026-08-22 Update-223 — Slice E1 temporal knowledge contract complete ✅ START HERE
+
+> **Канонический старт для `D:\RAG_new`:** читать этот блок, затем верхнюю
+> CURRENT-капсулу `docs/SESSION_HANDOFF.md`. Они заменяют Update-222 и все
+> более старые routing-блоки.
+
+### 223A. Actual Git, owner approval и scope
+
+- Срез начат на `master` от
+  `466b593 feat(resolution): add shipment status shadow loop`; remote не
+  настроен. Итоговый E1 delivery SHA определяется по Actual Git.
+- Владелец явно подтвердил локальный baseline: authoritative knowledge source
+  `logistics-policy-primary`, source observation `shipment-source-primary`,
+  postcondition `shipment-observation-current`, exact typed applicability без
+  wildcard/fallback и fail-closed material conflict между authorities без
+  скрытого ranking.
+- Подтверждение разрешило только локальный E1 contract. Оно не разрешало live
+  source connection, PostgreSQL/Mac mutation, migration `029`, runtime routing,
+  deploy, push или production grants.
+
+### 223B. Что доставлено в E1
+
+- Новый stdlib-only `knowledge` package задаёт immutable objects/versions,
+  half-open valid/system ranges, exact five-dimension applicability,
+  supersession/conflict records и tenant-safe deterministic selection.
+- Within-source overlap нельзя обойти сменой authority label. Явный unresolved
+  cross-authority conflict и незафиксированное material digest divergence
+  прекращают selection без выбора победителя.
+- Projection binding fail closed связывает exact tenant, Chroma active
+  collection/generation, ordered knowledge version IDs/content digests,
+  embedding model/dimension и index-config digest. Verification получает
+  ожидаемый runtime context отдельно и отклоняет tenant, source, manifest или
+  config drift.
+- Legacy `vectordb/index_manifest.py` schema v1 не менялась. Локальные
+  rebuild/rollback tests используют существующие lock/manifest primitives и
+  подтверждают сохранение pinned point-in-time policy cases.
+
+### 223C. Verification и process truth
+
+- Tests-first RED: новый focused файл сначала остановился на ожидаемом
+  `ModuleNotFoundError: knowledge`. После реализации и Python 3.11-compatible
+  typing первый focused gate дал 15 passed.
+- Единственный QA/fix follow-up нашёл два major: authority-label overlap bypass
+  для одного source и self-trusted projection tenant/config. Оба исправлены
+  одним batch; QA focused gate дал **20 passed**.
+- Независимый объединённый gate: **67 passed** для temporal knowledge,
+  adjacent index-manifest и shipment-shadow tests. Ruff check/format и strict
+  MyPy по трём `knowledge` source files green.
+- Единственное предупреждение — известный host-level Starlette/httpx2 drift;
+  dependency manifests E1 не менял. Активных delegated writers нет.
+
+### 223D. Незакрытая граница и следующий slice
+
+- E1 — только pure domain/projection-binding contract. Он не добавляет
+  PostgreSQL tables/repository, durable conflict/projection rows, forced RLS,
+  migration `029`, application retrieval allowlist или shipment-loop identity
+  enforcement. Это не live shadow и не production/release-ready evidence.
+- Следующий один named atomic slice — **E2: PostgreSQL temporal knowledge
+  authority**: six-table schema, revision `029`, composite tenant ownership,
+  forced RLS/default deny, append/system-close guards, bitemporal exclusion,
+  repository/application seam и real PostgreSQL round-trip evidence.
+- Любое изменение production role grants или Mac runtime требует отдельной
+  явной авторизации точной среды. Не начинать Slice F, canary, legacy routing
+  или inherited Trust Foundation backlog вместо E2.
+
+---
+
+## Superseded — 2026-08-22 Update-222 — Slice D fixture shadow complete
 
 > **Канонический старт для `D:\RAG_new`:** читать этот блок, затем верхнюю
 > CURRENT-капсулу `docs/SESSION_HANDOFF.md`. Они заменяют Update-221 и все

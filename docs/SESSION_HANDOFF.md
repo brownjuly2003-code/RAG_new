@@ -1,6 +1,90 @@
 # Session handoff
 
-## CURRENT — 2026-08-22 / Update-222 Slice D fixture shadow complete
+## CURRENT — 2026-08-22 / Update-223 Slice E1 temporal knowledge contract complete
+
+**Назначение:** самодостаточный старт после локального завершения pure-Python
+части Slice E без завышения PostgreSQL, live-shadow или production claims.
+
+### 0. Actual Git
+
+```powershell
+Set-Location -LiteralPath D:\RAG_new
+git status --short --branch
+git log -5 --oneline
+git remote -v
+```
+
+E1 начат на clean `master` от
+`466b593 feat(resolution): add shipment status shadow loop`; remote отсутствовал.
+Итоговый delivery SHA определяется по Actual Git; push не выполнялся.
+
+### 0A. Один экран истины
+
+| Поле | Проверенный факт |
+|------|-----------------|
+| Завершено | Resolution C1–C8, fixture-backed Slice D и локальный E1 pure temporal-knowledge/projection-binding contract |
+| Owner baseline | knowledge `logistics-policy-primary`; observation `shipment-source-primary`; postcondition `shipment-observation-current`; exact applicability; cross-authority conflict fail closed без ranking |
+| E1 domain | immutable bitemporal objects/versions, exact applicability, supersession/conflict validation, tenant-safe deterministic selection |
+| E1 projection | exact tenant + Chroma collection/generation + ordered version/content digests + embedding/index config; stale/mismatch fail closed |
+| Gate | 20 focused after QA; 67 independent combined; Ruff check/format and strict MyPy green |
+| Legacy/runtime | Chroma manifest schema v1, Alembic head `028`, `/api/ask`, DB, Mac, providers and production settings unchanged |
+| Не сделано | PostgreSQL knowledge schema/repository/RLS/migration `029`, runtime retrieval allowlist, shipment identity enforcement, live source, canary, push/deploy |
+| Следующий один slice | E2 PostgreSQL temporal knowledge authority; no Slice F/canary/inherited backlog |
+
+### 1. Подтверждённая семантика
+
+- `logistics-policy-primary` — approved authoritative knowledge source identity.
+- `shipment-source-primary` — approved shipment observation identity.
+- `shipment-observation-current` — exact required postcondition identity.
+- Applicability содержит exact typed dimensions `product`, `region`,
+  `customer_plan`, `cargo_type`, `channel`; отсутствующий/лишний dimension,
+  другой type/value/case и wildcard не получают fallback.
+- Authorities не ранжируются скрыто. Material conflict собирается до выбора
+  primary и завершает verified path fail closed.
+- Это approval локальной semantics baseline, а не разрешение подключать live
+  source, менять PostgreSQL/Mac или выдавать production grants.
+
+### 2. Доставленный E1 contract
+
+- [`../knowledge/domain.py`](../knowledge/domain.py) — half-open business/system
+  time, immutable knowledge graph, ownership/overlap/supersession/conflict
+  invariants и deterministic query selection.
+- [`../knowledge/projection.py`](../knowledge/projection.py) — canonical binding
+  к существующему Chroma manifest через exact tenant, active collection,
+  generation, source version/content digests и embedding/index configuration.
+- [`../tests/test_temporal_knowledge_projection.py`](../tests/test_temporal_knowledge_projection.py)
+  — boundary/replay, exact applicability, conflict, tenant/config drift и
+  rebuild/rollback known-case contracts.
+- `vectordb/index_manifest.py` не менялся: E1 не расширяет его strict schema v1
+  и не переключает legacy collection.
+
+### 3. Verification и QA evidence
+
+- Tests-first RED: `ModuleNotFoundError: knowledge` до реализации.
+- QA/fix run 2/3, единственный follow-up 1/1, нашёл и закрыл два major:
+  same-source overlap через смену authority label и self-trusted tenant/config
+  во verifier. QA result: **20 passed**, Ruff/format/MyPy green.
+- Независимый Codex gate: **67 passed** по E1 + adjacent manifest/shadow tests;
+  Ruff check/format и strict MyPy по трём source files green.
+- Известный Starlette/httpx2 warning относится к host environment; manifests
+  зависимостей не менялись. Активных writer нет.
+
+### 4. Следующий named slice и hard boundaries
+
+**E2 — PostgreSQL temporal knowledge authority.** Tests-first добавить ровно
+six-table knowledge schema и revision `029`, composite tenant FKs, forced RLS,
+append/system-close guards, bitemporal exclusion, repository/application seam
+и real PostgreSQL migration/tenant/immutability evidence. Затем отдельно
+привязать approved authority/source/postcondition identities и exact eligible
+version allowlist до Chroma retrieval.
+
+E1 не закрывает PostgreSQL persistence, live source, production shadow,
+canary, release или inherited Trust Foundation gates. Production grant matrix
+для новых tables и любые Mac mutations требуют отдельной явной авторизации.
+
+---
+
+## Superseded — 2026-08-22 / Update-222 Slice D fixture shadow complete
 
 **Назначение:** самодостаточный старт после локального завершения Resolution
 Product Slice D без завышения live/production claims.

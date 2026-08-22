@@ -135,6 +135,28 @@ Add one authoritative knowledge source with valid/system ranges, applicability, 
 
 Verification: queries before/after a policy change select the correct version; within-source overlap is rejected; cross-authority conflict is represented and fails closed; projection rebuild/rollback preserves known cases.
 
+Delivery status (2026-08-22): **E1 pure contract complete locally.** The owner
+approved `logistics-policy-primary` as the knowledge-source identity,
+`shipment-source-primary` as the observation identity,
+`shipment-observation-current` as the pinned postcondition, exact typed
+applicability, and conflict-before-authority fail-closed semantics without
+ranking. The stdlib-only domain implements half-open valid/system selection,
+ownership, supersession/conflict and within-source overlap invariants. The
+projection contract binds exact tenant, active Chroma collection/generation,
+ordered knowledge version/content digests and embedding/index configuration;
+runtime context drift fails closed. Legacy manifest schema v1 is unchanged.
+Focused QA passed 20 tests after one batch fix; the independent adjacent gate
+passed 67 tests plus Ruff/format/strict MyPy.
+
+**E2 remains open:** add the six PostgreSQL knowledge tables and revision
+`029`, composite tenant FKs, forced RLS/default deny, append-only and single
+system-close guards, bitemporal exclusion, durable conflict/projection
+records, repository/application adapters, exact approved identity enforcement
+and Chroma eligible-version allowlisting. Real PostgreSQL
+`028 -> 029 -> 028 -> 029`, tenant, RLS, immutability and exclusion evidence is
+required. E1 changed no DB, Mac runtime, legacy routing, live source, provider,
+production grants or deployment.
+
 ### Slice F — Governed ticket/escalation action
 
 Add manifests, registry, PDP binding, confirmation model, action run/attempt/outbox records, worker lease, reconciliation, postcondition, and kill switches. Wrap existing `create_ticket`/escalation as the first reversible/idempotent write.
