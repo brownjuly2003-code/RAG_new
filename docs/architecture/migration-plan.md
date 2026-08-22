@@ -165,11 +165,34 @@ Add manifests, registry, PDP binding, confirmation model, action run/attempt/out
 
 Verification: denial never invokes connector; same key and canonical input return one action; same key with different input conflicts; timeout/disconnect/worker restart create no duplicate; source-system ticket identity is verified; compensation is independently governed.
 
+Delivery status (2026-08-22): **Slice F complete locally at `ed82d6a`.** The
+isolated governed-action domain/gateway, revision `030` with eight PostgreSQL
+tables, and ticket adapter passed focused unit, real-PostgreSQL, restore,
+type/lint/format and diff gates. Legacy runtime routing, external connector,
+Mac/production grants, deploy and push were not changed.
+
 ### Slice G — Simulator, replay, and release control
 
 Compile contract branches into coverage targets, add deterministic state graders, personas, adversarial/fault cases, repeated trials, release manifests, impact selection, VR precision/VRY/coverage/recontact/cost reports, shadow comparison, and canary controls.
 
 Verification: intentionally broken contract, policy, retriever, connector, postcondition, disclosure, and evaluator infrastructure each fail the release gate. Candidate generation cannot read hidden expected state.
+
+Delivery status (2026-08-22): **G1 deterministic resolution grader complete
+locally in its containing scoped commit; full Slice G remains open.** Starting
+from 30 fixture scenarios and a pinned 6-step/22-edge shipment contract, the
+pure compiler emits 22 stable contract-id/version/digest-bound targets and
+validates connected hidden paths from entrypoint to the expected terminal.
+Candidates receive only `CandidateScenarioInput`; grading requires exact
+contract, branch, terminal, reasons, and canonical flat state, while evaluator
+`ERROR`/`SKIPPED` fails closed. Focused 18-test and adjacent 68-test gates plus
+Ruff, format, focused strict MyPy and diff checks passed.
+
+The next named slice is **G2: replay manifest plus impact
+selection/reporting only**, still without live promotion. G1 does not claim
+`ShipmentStatusShadowLoop` trace/disclosure integration, runtime execution of
+all 22 edges, replay/release manifests, repeated trials,
+VR/VRY/recontact/cost reports, impact selection, shadow/canary, database,
+external connector, deploy or push work.
 
 ### Slice H — Operator surfaces and pilot
 

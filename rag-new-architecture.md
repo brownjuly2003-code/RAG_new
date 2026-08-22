@@ -13,8 +13,8 @@ Evolve the inherited RAG assistant into a self-hosted, verifiable support-resolu
 - [x] Implement one read-only `shipment-status` contract in shadow mode -> Verify: happy, clarify, stale, conflict, timeout, and escalation scenarios have deterministic terminal outcomes.
 - [x] Add a pure temporal-knowledge and projection-binding contract -> Verify: bitemporal selection, exact applicability, fail-closed conflicts, tenant/config drift, and rebuild/rollback known cases pass without changing runtime defaults.
 - [x] Persist and integrate temporal knowledge authority -> Verify: revision `029` round trip, forced RLS, immutability/system-close guards, bitemporal exclusion, exact approved identities, and retrieval allowlisting pass on real PostgreSQL.
-- [ ] Add the governed action gateway and wrap `create_ticket` as the first reversible/idempotent write -> Verify: retries and disconnects cannot create duplicate side effects; denial never calls the connector.
-- [ ] Add scenario compilation, state grading, replay manifests, and VR/VRY reporting -> Verify: deliberately broken policy, evidence, connector, postcondition, and disclosure cases fail the gate.
+- [x] Add the governed action gateway and wrap `create_ticket` as the first reversible/idempotent write -> Delivered locally at `ed82d6a`; retries and disconnects cannot create duplicate side effects, and denial never calls the connector.
+- [ ] Add scenario compilation, state grading, replay manifests, and VR/VRY reporting -> G1 deterministic compilation/grading is locally complete in its containing scoped commit; G2 replay manifest plus impact selection/reporting is next. Full Slice G remains open.
 - [ ] Promote one journey through shadow and canary only after the inherited remediation stream is green -> Verify: rollback, SLO, security, and outcome gates are backed by fresh non-skipped evidence.
 
 ## Done when
@@ -62,5 +62,18 @@ append/system-close guards and bitemporal exclusion. The repository and
 application seam authorize only exact persisted versions bound to the current
 projection; the legacy retrieval adapter applies that allowlist without
 switching production routing. Head `029`, 23 ORM tables and the exact 29-table
-public restore inventory are verified. Slice F is the next named slice. Live
-sources, Mac/production grants, canary, deploy and push remain separate gates.
+public restore inventory are verified.
+
+Slice F is locally complete at `ed82d6a`. It delivers the governed action
+domain/gateway, PostgreSQL revision `030` with eight action tables, and the
+isolated ticket adapter without switching the runtime route or invoking an
+external connector.
+
+G1 is locally complete in the scoped commit containing its status docs. The
+pure evaluator compiles the pinned 6-step shipment contract into 22 stable
+contract-bound targets, hides expected paths/state from candidate generation,
+grades exact terminal state, and fails closed on evaluator error/skip. This is
+not runtime execution of all edges or release evidence. G2 replay manifest plus
+impact selection/reporting is next; repeated trials, VR/VRY/recontact/cost,
+loop trace/disclosure integration, shadow/canary, live promotion, database,
+external connector, deploy and push remain outside G1.

@@ -5,26 +5,34 @@
 Текущая выбранная владельцем очередь находится в
 [`rag-new-architecture.md`](rag-new-architecture.md), а точный scope и DoD — в
 [`docs/architecture/migration-plan.md`](docs/architecture/migration-plan.md).
-Срезы C1–C8, D, E1 и E2 завершены; Slice F начат от baseline `18d47e6` и
-**локально завершён содержащим этот блок explicit-pathspec commit**. Exact
-delivery SHA определяется через Actual Git; push не выполнялся.
+Срезы C1–C8, D, E1, E2 и F завершены; точный Slice F delivery —
+`ed82d6a feat(actions): govern ticket creation`. G1 deterministic resolution
+grader начат от clean `ed82d6a` без remote и **локально завершён scoped commit,
+содержащим этот блок**. Exact G1 SHA определяется через Actual Git; push не
+выполнялся.
 
-В WIP уже есть isolated action gateway, ticket adapter, PostgreSQL store,
-revision `030`, восемь action tables и tests. Focused strict MyPy после
-type-only fixes green по 6 source files; scoped Ruff lint green. Initial format
-check нашёл только новые Slice F additions в `db/models.py`, formatter применён,
-final scoped check сообщил 13 files already formatted, а lint `db/models.py`
-green. Unit/restore — 18 passed, 1 skipped, с одним известным предупреждением
-Starlette/httpx2; `git diff --check` green. Ранее подтверждённый PostgreSQL gate
-4/4 не повторяли, потому что финальный diff был только type/format. Head и
-inventory на disk — 030 и 31 ORM / 37 public.
+Измеренный baseline: 30 fixture scenarios; pinned shipment contract содержит
+6 steps и 22 explicit branch edges; `evaluation/resolution` до G1 отсутствовал.
+Tests-first RED был ожидаемым `ModuleNotFoundError`. Pure compiler теперь
+создаёт 22 stable contract-id/version/digest-bound targets и валидирует hidden
+connected entrypoint-to-terminal paths. Candidate видит только public
+`CandidateScenarioInput`; grader требует exact contract, branch, terminal,
+reasons и canonical flat state. Fluent wrong и evaluator `ERROR`/`SKIPPED`
+fail closed.
 
-QA follow-up 1/1 остаётся исчерпанным и не дал findings; повторять его нельзя.
-После containing commit этот turn заканчивается: Slice G, canary, legacy
-routing, external connector, production grants, Mac/production DB, inherited
-Trust Foundation backlog, deploy и push не начинать. Полная truth — в
+Focused gate — 18 passed; independent adjacent gate — 68 passed с одним
+известным Starlette/httpx2 warning. Ruff, 4-file format check, focused strict
+MyPy по 3 source files и `git diff --check` green. Design run complete; QA
+follow-up 1/1 не нашёл blocking/major issues и внёс только import/format
+changes.
+
+Полный Slice G остаётся открыт. Следующий named slice — **G2: replay manifest
+and impact selection/reporting only**, всё ещё без live promotion. Не заявлены
+`ShipmentStatusShadowLoop` trace/disclosure integration, runtime execution всех
+22 edges, release manifests, repeated trials, VR/VRY/recontact/cost reports,
+shadow/canary, DB/external/deploy/push work. Полная truth — в
 [`docs/SESSION_HANDOFF.md`](docs/SESSION_HANDOFF.md) и
-[`f-governed-ticket-action.md`](f-governed-ticket-action.md).
+[`g1-deterministic-resolution-grader.md`](g1-deterministic-resolution-grader.md).
 
 Закрывающие C7/C8-капсулы:
 [`c7-resolution-restore-smoke.md`](c7-resolution-restore-smoke.md) и

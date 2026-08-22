@@ -1,6 +1,60 @@
 # Agent State
 
-## 2026-08-22 Update-225 — Slice F locally complete in containing commit ✅ START HERE
+## 2026-08-22 Update-226 — G1 deterministic resolution grader locally complete in containing commit ✅ START HERE
+
+> **Канонический старт для `D:\RAG_new`:** читать этот блок, затем верхнюю
+> CURRENT-капсулу `docs/SESSION_HANDOFF.md` и
+> `g1-deterministic-resolution-grader.md`. Они заменяют Update-225 как routing
+> truth; exact delivery SHA определяется через Actual Git содержащего их
+> commit.
+
+### 226A. Actual Git и baseline
+
+- G1 начат от clean `master` commit
+  `ed82d6a feat(actions): govern ticket creation`; remote не настроен.
+- Измеренный исходный fixture baseline — 30 scenarios. Pinned shipment
+  contract содержит 6 steps и 22 explicit branch edges;
+  `evaluation/resolution` до G1 отсутствовал.
+- Tests-first RED остановился на ожидаемом `ModuleNotFoundError`. G1 доставлен
+  локально scoped commit, содержащим implementation, tests и эти durable docs;
+  exact SHA определяется через Actual Git. Push не выполнялся.
+
+### 226B. Доставленный G1 contract
+
+- Pure `evaluation/resolution` compiler создаёт ровно 22 stable targets,
+  связанные с exact contract id/version/digest, и валидирует connected hidden
+  path от entrypoint до правильного terminal.
+- Candidate получает только public `CandidateScenarioInput`; hidden expected
+  path/state не раскрываются.
+- Grader требует exact contract, branch, terminal, reasons и canonical flat
+  state. Fluent text не компенсирует неверное состояние; infrastructure
+  `ERROR`/`SKIPPED` fail closed.
+
+### 226C. Verification и process truth
+
+- Focused final gate: **18 passed**. Независимый adjacent gate: **68 passed**
+  и одно известное предупреждение Starlette/httpx2.
+- Ruff check green; format check: **4 files already formatted**; focused strict
+  MyPy с `--follow-imports=skip` green по 3 source files;
+  `git diff --check` green.
+- Design run завершён. Единственный QA follow-up не нашёл blocking/major
+  issues и внёс только import/format changes; повторять QA нельзя.
+
+### 226D. Границы и следующий slice
+
+- G1 не интегрирован с `ShipmentStatusShadowLoop` tracing/disclosure, не
+  доказывает runtime execution всех 22 edges и не добавляет replay/release
+  manifests, repeated trials, VR/VRY/recontact/cost reports, impact selection,
+  shadow/canary, database/external/deploy/push work.
+- Полный Slice G остаётся открыт. Следующий один named atomic slice — **G2:
+  replay manifest + impact selection/reporting only**, всё ещё без live
+  promotion.
+- После содержащего этот блок scoped commit завершить turn; не повторять green
+  gates и не начинать G2 в этом turn.
+
+---
+
+## Superseded — 2026-08-22 Update-225 — Slice F locally complete in containing commit
 
 > **Канонический старт для `D:\RAG_new`:** читать этот блок, затем верхнюю
 > CURRENT-капсулу `docs/SESSION_HANDOFF.md` и

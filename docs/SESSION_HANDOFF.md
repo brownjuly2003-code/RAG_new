@@ -1,6 +1,74 @@
 # Session handoff
 
-## CURRENT — 2026-08-22 / Update-225 Slice F locally complete in containing commit
+## CURRENT — 2026-08-22 / Update-226 G1 deterministic resolution grader locally complete in containing commit
+
+**Назначение:** восстановить локально завершённый G1 без повторения green
+gates и без завышения runtime/release claims.
+
+### 0. Actual Git и обязательная первая проверка
+
+```powershell
+Set-Location -LiteralPath D:\RAG_new
+git status --short --branch
+git log -5 --oneline
+git remote -v
+```
+
+G1 начат от clean `master` на
+`ed82d6a feat(actions): govern ticket creation`; remote отсутствует. Code,
+tests и docs доставлены scoped commit, содержащим эту капсулу. Exact delivery
+SHA определяется через Actual Git; push не выполнялся.
+
+### 0A. Один экран истины
+
+| Поле | Проверенный факт |
+|------|-----------------|
+| Baseline | 30 existing fixture scenarios; pinned contract: 6 steps / 22 explicit branch edges; `evaluation/resolution` отсутствовал |
+| G1 status | Locally complete in containing scoped commit; tests-first RED был ожидаемым `ModuleNotFoundError` |
+| Compiler | Ровно 22 stable targets, bound to exact contract id/version/digest; connected entrypoint-to-terminal hidden-path validation |
+| Isolation/grading | Candidate видит только `CandidateScenarioInput`; exact contract/branch/terminal/reasons/canonical flat state; fluent wrong fails |
+| Fail-closed | Evaluator infrastructure `ERROR`/`SKIPPED` не может закрыть gate |
+| Verification | focused 18 passed; adjacent 68 passed + 1 known Starlette/httpx2 warning; Ruff, 4-file format, strict MyPy 3 sources, diff check green |
+| QA truth | Design run complete; QA follow-up 1/1 found no blocking/major issue and made import/format-only changes |
+| Не заявлено | runtime 22-edge execution, loop trace/disclosure integration, replay/release manifests, repeated trials, VR/VRY/recontact/cost, impact selection, shadow/canary, DB/external/deploy/push |
+| Следующий один slice | G2 replay manifest + impact selection/reporting only; still no live promotion |
+
+### 1. Доставленный contract
+
+- [`../evaluation/resolution/scenarios.py`](../evaluation/resolution/scenarios.py)
+  компилирует 22 contract-bound coverage targets и проверяет скрытый connected
+  path от entrypoint до terminal.
+- [`../evaluation/resolution/grading.py`](../evaluation/resolution/grading.py)
+  сравнивает exact branch/terminal/reasons и canonical flat state; неверный
+  state нельзя компенсировать fluent text.
+- Public candidate boundary ограничен `CandidateScenarioInput`; expected path
+  и state остаются внутри grader. Infrastructure error/skip fail closed.
+
+### 2. Verification evidence
+
+- Focused final: **18 passed**.
+- Independent adjacent gate: **68 passed**, одно известное предупреждение
+  Starlette/httpx2.
+- Ruff check green; format check сообщил **4 files already formatted**;
+  focused strict MyPy с `--follow-imports=skip` green по 3 source files;
+  `git diff --check` green.
+- Design run завершён. QA follow-up 1/1 не нашёл blocking/major issues и
+  ограничился import/format changes.
+
+### 3. Точный stop/resume contract
+
+1. Считать содержащий эту капсулу scoped commit локальной delivery G1 и
+   завершить текущий turn.
+2. Не повторять focused/adjacent, Ruff, format, MyPy или diff gates без нового
+   diff либо fresh failing evidence; QA follow-up исчерпан.
+3. Полный Slice G остаётся открыт. Следующий named slice — G2: replay manifest
+   + impact selection/reporting only. Не начинать live promotion,
+   `ShipmentStatusShadowLoop` integration, repeated trials, canary,
+   DB/external/deploy/push work.
+
+---
+
+## Superseded — 2026-08-22 / Update-225 Slice F locally complete in containing commit
 
 **Назначение:** восстановить локально завершённый Slice F без повторения уже
 green gates и без завышения external/release claims.
