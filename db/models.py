@@ -20,7 +20,7 @@ from sqlalchemy import (
     UniqueConstraint,
     text,
 )
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.dialects.postgresql import UUID, ExcludeConstraint
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 from db.crypto import EncryptedText
@@ -499,6 +499,14 @@ class ResolutionEvidenceSnapshot(Base):
             "logical_key",
             "applicability_key",
         ),
+        ExcludeConstraint(
+            ("tenant_id", "="),
+            ("logical_key", "="),
+            ("applicability_key", "="),
+            ("authority", "="),
+            (text("tstzrange(valid_from, valid_to, '[)')"), "&&"),
+            name="ex_evidence_snapshots_temporal_identity",
+        ).ddl_if(dialect="postgresql"),
     )
 
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True)

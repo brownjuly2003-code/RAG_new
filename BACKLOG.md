@@ -5,10 +5,11 @@
 Текущая выбранная владельцем очередь находится в
 [`rag-new-architecture.md`](rag-new-architecture.md), а точный scope и DoD — в
 [`docs/architecture/migration-plan.md`](docs/architecture/migration-plan.md).
-Срезы C1–C4 завершены локально; следующий и ещё не начатый срез — **C5
-PostgreSQL temporal evidence overlap/conflict constraints**: отклонение
-within-source/applicability overlap при сохранении cross-authority conflict.
-Корневая Slice C остаётся открытой; к Slice D/runtime/API пока не переходить.
+Срезы C1–C5 завершены локально; следующий и ещё не начатый срез — **C6
+protected evidence reference encryption/redaction execution**, ограниченный
+§9 domain data model и существующей encryption abstraction. Корневая Slice C
+остаётся открытой; restore, production runtime-role operations,
+Slice D/runtime/API в C6 не включать.
 Стартовая капсула:
 [`docs/SESSION_HANDOFF.md`](docs/SESSION_HANDOFF.md).
 

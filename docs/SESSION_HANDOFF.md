@@ -1,6 +1,6 @@
 # Session handoff
 
-## CURRENT — 2026-08-22 / Update-214 reconciled after C4 / RAG_new Resolution Product
+## CURRENT — 2026-08-22 / Update-215 reconciled after C5 / RAG_new Resolution Product
 
 **Назначение:** самодостаточный старт следующей сессии по новой архитектуре,
 без чтения исторических Update-210 и ниже.
@@ -14,20 +14,20 @@ git log -5 --oneline
 git remote -v
 ```
 
-Baseline перед C4: `master` на `f0917a3`, remote отсутствовал. C4 завершён
+Baseline перед C5: `master` на `4dd0c74`, remote отсутствует. C5 завершён
 локально поверх этого baseline; итоговый SHA определять по Actual Git.
-Активного writer, disposable DB, runtime-role, temporary test-admin или WSL
-keepalive после проверки нет.
+Активного writer, disposable DB, temporary admin role или WSL keepalive после
+проверки нет.
 
 Далее читать в таком порядке:
 
-1. эта CURRENT-капсула и верхний Update-214 в
+1. эта CURRENT-капсула и верхний Update-215 в
    [`AGENT_STATE.md`](../AGENT_STATE.md);
 2. [`rag-new-architecture.md`](../rag-new-architecture.md) — текущая очередь;
 3. [`architecture/migration-plan.md`](architecture/migration-plan.md) — scope,
    verification и условия закрытия Slice C;
-4. [`architecture/README.md`](architecture/README.md) — ADR и остальные
-   архитектурные документы.
+4. [`architecture/domain-data-model.md`](architecture/domain-data-model.md) §9
+   — граница следующего encryption/redaction slice.
 
 Верхний banner [`BACKLOG.md`](../BACKLOG.md) должен направлять сюда. Его старый
 Trust Foundation backlog, Update-210 ниже и историческая часть этого файла не
@@ -43,44 +43,47 @@ Trust Foundation backlog, Update-210 ниже и историческая час
 | `1d7e786` | Slice C1: immutable case/evidence domain и tenant-scoped append-only repository/UoW ports. |
 | `538ea6e` | Slice C2: PostgreSQL models, revision `024`, tenant-scoped repository adapters, atomic event append/CAS. |
 | `1b5265a` | Slice C3: revision `025`, forced RLS, transaction-local tenant context и non-owner role contracts. |
-| C4 over `f0917a3` (SHA: Actual Git) | Revision `026`, fixed-search-path append-immutability function и три row trigger; `support_cases` CAS сохранён. |
+| `4dd0c74` baseline | Slice C4: revision `026`, append-immutability guards; `support_cases` CAS сохранён. |
+| C5 over `4dd0c74` (SHA: Actual Git) | Revision `027` и matching PostgreSQL-only GiST temporal exclusion metadata. |
 
-Revision `026` поверх `025` запрещает `UPDATE`/`DELETE` для `case_events`,
-`evidence_snapshots` и `case_evidence_links` через три `BEFORE ... FOR EACH
-ROW` trigger с фиксированным SQLSTATE `55000`. Tests-first real-PostgreSQL red
-против head `025`: **1 failed**, catalog показал `0` trigger вместо ожидаемых
-`3`. После реализации focused файл: **9 passed**, одно существующее Starlette
-warning, **308.45s**.
+Revision `027` ограничивает overlap по `tenant_id`, `logical_key`,
+`applicability_key`, `authority` и
+`tstzrange(valid_from, valid_to, '[)')`. `source_id` намеренно исключён:
+same-authority changed-source overlap отклоняется, а adjacency,
+cross-authority и different-applicability окна принимаются. Downgrade удаляет
+только именованный constraint, оставляет shared `btree_gist` extension и не
+ослабляет C3 RLS/C4 guards.
 
-Независимый combined schema/domain/PostgreSQL/docs gate: **43 passed**, одно
-warning, **165.18s**, coverage `resolution` **81.38%** при минимуме 72%. Ruff
-lint/format green на двух изменённых Python-файлах; strict MyPy green по 14
-source files; schema check green; единственная Alembic head — `026`. Полный
-`migration_round_trip` прошёл `upgrade -> downgrade base -> re-upgrade` и
-подтвердил точный set из 23 таблиц. Disposable DB, runtime-role, temporary
-test-admin и WSL keepalive удалены; `rag_assistant` не мигрировалась и не
-очищалась.
+Доверенный tests-first red не сохранён и здесь не заявляется. Root focused
+real-PostgreSQL gate: **2 passed**, одно существующее Starlette warning,
+**52.79s**. Независимый combined schema/domain/PostgreSQL/docs gate: **44
+passed**, одно warning, **123.11s**; coverage `resolution` **81.45%** при
+минимуме 72%.
 
-Implementation delegate оставил tests-first WIP из-за отсутствующего DSN; QA
-delegate частично усилил catalog assertions и получил внешний backend `403`.
-Primary Codex восстановил документированный WSL test path, доказал red, добавил
-`026` и выполнил свежие гейты. Подробности и границы — в Update-214
-[`AGENT_STATE.md`](../AGENT_STATE.md).
+Ruff lint/format green на трёх изменённых Python-файлах; strict MyPy green по
+15 source files; schema check green; единственная Alembic head — `027`.
+Полный `base -> 027 -> base -> 027` round trip подтвердил точный set из 23
+таблиц. QA structural catalog probe и PostgreSQL/SQLite DDL compile green; QA
+заменил хрупкую проверку `pg_get_constraintdef` на `conkey`/`conexclop`.
+Disposable DB, temporary admin role и WSL keepalive удалены; `rag_assistant`
+не затрагивалась.
 
-### 2. Следующий named slice: C5
+### 2. Следующий named slice: C6
 
-**C5 — PostgreSQL temporal evidence overlap/conflict constraints.** Вывести
-tests-first contract из существующих Slice C/domain-data-model границ:
-отклонять within-source/applicability overlap и сохранять cross-authority
-conflict. Точное представление сначала сверить с существующей моделью; не
-переходить к Slice D, runtime/API wiring и не расширять этот slice новыми
-temporal требованиями без evidence.
+**C6 — protected evidence reference encryption/redaction execution.** Вывести
+tests-first contract из §9
+[`architecture/domain-data-model.md`](architecture/domain-data-model.md) и
+существующей encryption abstraction: защищать evidence references/payloads с
+ключами вне БД и применять явные redaction profiles на документированных
+выходных границах. Сначала сверить точную storage/adapter поверхность с
+существующей реализацией. Не включать restore, production runtime-role
+operations, API/runtime routing или Slice D.
 
 ### 3. Явно не сделано и не разрешено считать сделанным
 
-- C1–C4 завершены локально, но корневая галочка Slice C остаётся открытой до
-  temporal conflict/exclusion, encryption/redaction, restore и production
-  runtime-role operations;
+- C1–C5 завершены локально, но корневая галочка Slice C остаётся открытой до
+  encryption/redaction execution, restore smoke и production runtime-role
+  operations;
 - рабочая/production migration не применялась, production roles/grants не
   создавались и runtime routing не включался;
 - не выполнялись push, deploy, live-provider вызовы или production mutation;

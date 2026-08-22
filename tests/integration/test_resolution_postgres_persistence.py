@@ -6,6 +6,7 @@ import re
 import subprocess
 from collections.abc import Iterator
 from contextlib import contextmanager
+from dataclasses import replace
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from uuid import UUID, uuid4
@@ -31,6 +32,7 @@ from resolution.domain import (
     CaseStatus,
     CaseVersionConflict,
     ContractVersionRef,
+    EvidenceConflictKind,
     EvidenceLink,
     EvidencePurpose,
     EvidenceSnapshot,
@@ -60,6 +62,7 @@ _APPEND_GUARD_TRIGGERS = tuple(
 )
 _APPEND_GUARD_FUNCTION_NAME = "resolution_reject_append_only_mutation"
 _APPEND_GUARD_FUNCTION = f"{_RESOLUTION_SCHEMA}.{_APPEND_GUARD_FUNCTION_NAME}()"
+_EVIDENCE_TEMPORAL_CONSTRAINT_NAME = "ex_evidence_snapshots_temporal_identity"
 
 
 def _sync_url(raw_url: str) -> URL:
@@ -347,6 +350,35 @@ def test_resolution_revision_round_trips_on_real_postgresql(
                 "WHERE routines.oid = to_regprocedure(%s)",
                 (_APPEND_GUARD_FUNCTION,),
             ).one_or_none()
+            temporal_constraint = connection.exec_driver_sql(
+                "SELECT constraints.conname, constraints.contype, "
+                "ARRAY("
+                "SELECT CASE WHEN keys.attnum = 0 THEN '<expression>' "
+                "ELSE attributes.attname END "
+                "FROM unnest(constraints.conkey) WITH ORDINALITY "
+                "AS keys(attnum, position) "
+                "LEFT JOIN pg_attribute AS attributes "
+                "ON attributes.attrelid = constraints.conrelid "
+                "AND attributes.attnum = keys.attnum "
+                "ORDER BY keys.position), "
+                "ARRAY("
+                "SELECT operators.oprname "
+                "FROM unnest(constraints.conexclop) WITH ORDINALITY "
+                "AS exclusion_ops(operator_oid, position) "
+                "JOIN pg_operator AS operators "
+                "ON operators.oid = exclusion_ops.operator_oid "
+                "ORDER BY exclusion_ops.position) "
+                "FROM pg_constraint AS constraints "
+                "JOIN pg_class AS tables ON tables.oid = constraints.conrelid "
+                "JOIN pg_namespace AS namespaces ON namespaces.oid = tables.relnamespace "
+                "WHERE namespaces.nspname = %s "
+                "AND tables.relname = 'evidence_snapshots' "
+                "AND constraints.conname = %s",
+                (_RESOLUTION_SCHEMA, _EVIDENCE_TEMPORAL_CONSTRAINT_NAME),
+            ).one_or_none()
+            btree_gist_extension = connection.exec_driver_sql(
+                "SELECT extname FROM pg_extension WHERE extname = 'btree_gist'"
+            ).scalar_one_or_none()
         assert rls_rows == [
             ("case_events", True, True),
             ("case_evidence_links", True, True),
@@ -359,6 +391,65 @@ def test_resolution_revision_round_trips_on_real_postgresql(
             _APPEND_GUARD_FUNCTION_NAME,
             "",
         )
+        assert temporal_constraint == (
+            _EVIDENCE_TEMPORAL_CONSTRAINT_NAME,
+            "x",
+            [
+                "tenant_id",
+                "logical_key",
+                "applicability_key",
+                "authority",
+                "<expression>",
+            ],
+            ["=", "=", "=", "=", "&&"],
+        )
+        assert btree_gist_extension == "btree_gist"
+
+        _run_alembic(migration_database_url, "downgrade", "026")
+        assert tables <= set(inspect(engine).get_table_names())
+        with engine.connect() as connection:
+            assert (
+                connection.exec_driver_sql(
+                    "SELECT COUNT(*) FROM pg_constraint AS constraints "
+                    "JOIN pg_class AS tables ON tables.oid = constraints.conrelid "
+                    "JOIN pg_namespace AS namespaces ON namespaces.oid = tables.relnamespace "
+                    "WHERE namespaces.nspname = %s "
+                    "AND tables.relname = 'evidence_snapshots' "
+                    "AND constraints.conname = %s",
+                    (_RESOLUTION_SCHEMA, _EVIDENCE_TEMPORAL_CONSTRAINT_NAME),
+                ).scalar_one()
+                == 0
+            )
+            assert (
+                connection.exec_driver_sql(
+                    "SELECT extname FROM pg_extension WHERE extname = 'btree_gist'"
+                ).scalar_one()
+                == "btree_gist"
+            )
+            assert connection.exec_driver_sql(
+                "SELECT relname, relrowsecurity, relforcerowsecurity "
+                "FROM pg_class WHERE relname IN "
+                "('support_cases', 'case_events', 'evidence_snapshots', "
+                "'case_evidence_links') ORDER BY relname"
+            ).all() == [
+                ("case_events", True, True),
+                ("case_evidence_links", True, True),
+                ("evidence_snapshots", True, True),
+                ("support_cases", True, True),
+            ]
+            assert connection.exec_driver_sql(
+                "SELECT tables.relname, triggers.tgname, "
+                "triggers.tgfoid = to_regprocedure(%s) "
+                "FROM pg_trigger AS triggers "
+                "JOIN pg_class AS tables ON tables.oid = triggers.tgrelid "
+                "JOIN pg_namespace AS namespaces ON namespaces.oid = tables.relnamespace "
+                "WHERE NOT triggers.tgisinternal "
+                "AND namespaces.nspname = %s "
+                "AND tables.relname IN "
+                "('support_cases', 'case_events', 'evidence_snapshots', "
+                "'case_evidence_links') ORDER BY tables.relname",
+                (_APPEND_GUARD_FUNCTION, _RESOLUTION_SCHEMA),
+            ).all() == [(*trigger, True) for trigger in _APPEND_GUARD_TRIGGERS]
 
         _run_alembic(migration_database_url, "downgrade", "025")
         assert tables <= set(inspect(engine).get_table_names())
@@ -435,6 +526,77 @@ def test_resolution_revision_round_trips_on_real_postgresql(
         assert tables <= set(inspect(engine).get_table_names())
     finally:
         engine.dispose()
+
+
+@pytest.mark.asyncio
+async def test_evidence_temporal_identity_exclusion_preserves_allowed_conflicts(
+    resolution_session_factory: async_sessionmaker[AsyncSession],
+) -> None:
+    context = _context(uuid4())
+    first = _snapshot(context.tenant_id)
+    assert first.valid_range.end is not None
+    overlapping_unbounded = replace(
+        first,
+        id=uuid4(),
+        source_id="tms-secondary",
+        source_version="event-4432",
+        content_digest="c" * 64,
+        valid_range=TimeRange(
+            start=first.valid_range.start + timedelta(hours=1),
+            end=None,
+        ),
+    )
+    adjacent = replace(
+        first,
+        id=uuid4(),
+        source_version="event-4433",
+        valid_range=TimeRange(
+            start=first.valid_range.end,
+            end=first.valid_range.end + timedelta(hours=12),
+        ),
+    )
+    cross_authority = replace(
+        first,
+        id=uuid4(),
+        source_id="tms-independent",
+        source_version="event-4434",
+        content_digest="d" * 64,
+        authority="tms-independent",
+    )
+    different_applicability = replace(
+        first,
+        id=uuid4(),
+        source_version="event-4435",
+        applicability_key="shipment:020-12345675:carrier",
+    )
+
+    assert first.conflict_kind(overlapping_unbounded) is EvidenceConflictKind.AUTHORITY_OVERLAP
+    assert first.conflict_kind(adjacent) is None
+    assert first.conflict_kind(cross_authority) is EvidenceConflictKind.CONTENT_CONFLICT
+    assert first.conflict_kind(different_applicability) is None
+
+    async with PostgresResolutionUnitOfWork(resolution_session_factory, context) as work:
+        await work.evidence.append_snapshot(context, first)
+        await work.commit()
+
+    with pytest.raises(IntegrityError) as exc_info:
+        async with PostgresResolutionUnitOfWork(resolution_session_factory, context) as work:
+            await work.evidence.append_snapshot(context, overlapping_unbounded)
+    assert getattr(exc_info.value.orig, "sqlstate", None) == "23P01"
+    assert (
+        getattr(exc_info.value.orig.__cause__, "constraint_name", None)
+        == _EVIDENCE_TEMPORAL_CONSTRAINT_NAME
+    )
+
+    accepted = (adjacent, cross_authority, different_applicability)
+    async with PostgresResolutionUnitOfWork(resolution_session_factory, context) as work:
+        for snapshot in accepted:
+            await work.evidence.append_snapshot(context, snapshot)
+        await work.commit()
+
+    async with PostgresResolutionUnitOfWork(resolution_session_factory, context) as work:
+        for snapshot in accepted:
+            assert await work.evidence.get_snapshot(context, snapshot.id) == snapshot
 
 
 @pytest.mark.asyncio

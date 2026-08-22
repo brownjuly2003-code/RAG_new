@@ -1,5 +1,67 @@
 # Agent State
 
+## 2026-08-22 Update-215 — Resolution Product C5 PostgreSQL temporal evidence complete; C6 encryption/redaction next ✅ START HERE
+
+> **Текущий routing для `D:\RAG_new`:** этот блок и верхняя CURRENT-капсула
+> `docs/SESSION_HANDOFF.md` заменяют Update-214 и более старые `START HERE` для
+> Resolution Product. Baseline HEAD перед C5 — `4dd0c74` на `master`; remote
+> отсутствует. C5 завершён локально поверх baseline; итоговый SHA определять
+> по Actual Git. Push, deploy, production migration и runtime routing не
+> выполнялись.
+
+### 215A. Что доставлено в C5
+
+- Additive Alembic revision `027` и matching ORM metadata добавляют только для
+  PostgreSQL GiST exclusion constraint на `evidence_snapshots` по
+  `tenant_id`, `logical_key`, `applicability_key`, `authority` и пересечению
+  `tstzrange(valid_from, valid_to, '[)')`.
+- `source_id` намеренно не входит в conflict identity: overlap для той же
+  authority отклоняется и при изменившемся source. Boundary-adjacent окна,
+  другая authority и другая applicability принимаются, поэтому явные
+  cross-authority conflicts сохраняются.
+- Downgrade удаляет только именованный C5 constraint и оставляет общую
+  extension `btree_gist`; C3 RLS и C4 append-immutability guards сохраняются.
+
+### 215B. Проверенная evidence
+
+- Доверенный tests-first red для C5 не сохранён, поэтому этот Update его не
+  заявляет.
+- Root focused real-PostgreSQL gate: **2 passed**, одно существующее Starlette
+  warning, **52.79s**.
+- Независимый combined schema/domain/PostgreSQL/docs gate: **44 passed**, одно
+  warning, **123.11s**; coverage пакета `resolution` **81.45%** при минимуме
+  72%.
+- Ruff lint/format green на трёх изменённых Python-файлах; strict MyPy green по
+  15 source files; schema check green; единственная Alembic head — `027`.
+- Полный round trip `base -> 027 -> base -> 027` green и подтвердил точный set
+  из **23** таблиц. QA structural catalog probe и PostgreSQL/SQLite DDL compile
+  green.
+- QA сделал одну хирургическую коррекцию catalog-test: проверка использует
+  `conkey`/`conexclop` вместо хрупкого текста `pg_get_constraintdef`.
+  Disposable DB, temporary admin role и WSL keepalive удалены; рабочая
+  `rag_assistant` не затрагивалась.
+
+### 215C. Границы C5
+
+- Локально завершены C1–C5, но корневая галочка Slice C остаётся открытой:
+  encryption/redaction execution, restore smoke и production runtime-role
+  operations ещё не закрыты.
+- C5 не добавлял restore, production-role provisioning, API/runtime wiring,
+  Slice D или knowledge-plane tables; live calls, push и deploy не
+  выполнялись.
+
+### 215D. Следующий один atomic slice
+
+**C6 — protected evidence reference encryption/redaction execution.** Вывести
+tests-first contract из §9 `docs/architecture/domain-data-model.md` и
+существующей encryption abstraction: защищать evidence references/payloads с
+ключами вне БД и применять явные redaction profiles на документированных
+выходных границах. Сначала сверить точную storage/adapter поверхность с
+существующей реализацией. Не включать restore, production runtime-role
+operations, API/runtime routing или Slice D.
+
+---
+
 ## 2026-08-22 Update-214 — Resolution Product C4 PostgreSQL append immutability complete; C5 temporal constraints next ✅ START HERE
 
 > **Текущий routing для `D:\RAG_new`:** этот блок и верхняя CURRENT-капсула
