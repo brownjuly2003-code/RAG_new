@@ -647,9 +647,9 @@ async def test_forced_rls_default_denies_and_composite_tenant_ownership_holds(
         await session.rollback()
 
 
-def test_restore_inventory_tracks_six_new_orm_tables() -> None:
+def test_restore_inventory_tracks_governed_action_orm_tables() -> None:
     from scripts.restore_verify import EXPECTED_MODEL_TABLES, EXPECTED_PUBLIC_TABLES
 
     assert set(_TABLES) <= set(EXPECTED_MODEL_TABLES)
-    assert len(EXPECTED_MODEL_TABLES) == 23
-    assert len(EXPECTED_PUBLIC_TABLES) == 29
+    assert len(EXPECTED_MODEL_TABLES) == 31
+    assert len(EXPECTED_PUBLIC_TABLES) == 37

@@ -159,9 +159,9 @@ def test_verify_postgres_accepts_exact_head_table_set(
         monkeypatch, tmp_path, expected_tables
     )
 
-    assert len(expected_tables) == 29
+    assert len(expected_tables) == 37
     assert result.passed is True
-    assert "tables=29" in result.detail
+    assert "tables=37" in result.detail
     model_selects = [query for query in queries if query.startswith("SELECT * FROM public.")]
     assert len(model_selects) == len(restore_verify.EXPECTED_MODEL_TABLES)
 

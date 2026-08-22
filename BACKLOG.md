@@ -5,20 +5,27 @@
 Текущая выбранная владельцем очередь находится в
 [`rag-new-architecture.md`](rag-new-architecture.md), а точный scope и DoD — в
 [`docs/architecture/migration-plan.md`](docs/architecture/migration-plan.md).
-Срезы C1–C8 завершены delivery commit `c78da01`; Slice D, E1 и E2 завершены
-локально. E2 delivery SHA определяется по Actual Git. Revision `029` добавляет
-ровно шесть tenant-owned knowledge tables, forced RLS/default deny,
-append/system-close guards, bitemporal exclusion, durable conflict/projection
-records и tenant-scoped repository/application allowlist seam. Disposable
-PostgreSQL round trip и поведение прошли 6 integration tests; adjacent focused
-gate прошёл 72 tests, а проверка итогового QA-пакета — 55 tests. Head `029`,
-23 ORM и точный public restore inventory из 29 tables подтверждены.
+Срезы C1–C8, D, E1 и E2 завершены; Slice F начат от baseline `18d47e6` и
+**локально завершён содержащим этот блок explicit-pathspec commit**. Exact
+delivery SHA определяется через Actual Git; push не выполнялся.
 
-Следующий один atomic slice — **Slice F: governed ticket/escalation action** по
-точному scope migration plan. Не смешивать его с canary, legacy routing,
-production grants или унаследованным Trust Foundation backlog. E2 не менял
-Mac/production PostgreSQL, live sources, Chroma manifest schema v1, runtime
-defaults, deploy или push; такие действия требуют отдельной явной авторизации.
+В WIP уже есть isolated action gateway, ticket adapter, PostgreSQL store,
+revision `030`, восемь action tables и tests. Focused strict MyPy после
+type-only fixes green по 6 source files; scoped Ruff lint green. Initial format
+check нашёл только новые Slice F additions в `db/models.py`, formatter применён,
+final scoped check сообщил 13 files already formatted, а lint `db/models.py`
+green. Unit/restore — 18 passed, 1 skipped, с одним известным предупреждением
+Starlette/httpx2; `git diff --check` green. Ранее подтверждённый PostgreSQL gate
+4/4 не повторяли, потому что финальный diff был только type/format. Head и
+inventory на disk — 030 и 31 ORM / 37 public.
+
+QA follow-up 1/1 остаётся исчерпанным и не дал findings; повторять его нельзя.
+После containing commit этот turn заканчивается: Slice G, canary, legacy
+routing, external connector, production grants, Mac/production DB, inherited
+Trust Foundation backlog, deploy и push не начинать. Полная truth — в
+[`docs/SESSION_HANDOFF.md`](docs/SESSION_HANDOFF.md) и
+[`f-governed-ticket-action.md`](f-governed-ticket-action.md).
+
 Закрывающие C7/C8-капсулы:
 [`c7-resolution-restore-smoke.md`](c7-resolution-restore-smoke.md) и
 [`c8-mac-postgres-deployment.md`](c8-mac-postgres-deployment.md).

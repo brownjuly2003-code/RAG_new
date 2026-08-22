@@ -1,6 +1,67 @@
 # Agent State
 
-## 2026-08-22 Update-224 — Slice E2 PostgreSQL knowledge authority complete ✅ START HERE
+## 2026-08-22 Update-225 — Slice F locally complete in containing commit ✅ START HERE
+
+> **Канонический старт для `D:\RAG_new`:** читать этот блок, затем верхнюю
+> CURRENT-капсулу `docs/SESSION_HANDOFF.md` и
+> `f-governed-ticket-action.md`. Они заменяют Update-224 как routing truth;
+> exact delivery SHA определяется через Actual Git содержащего их commit.
+
+### 225A. Actual Git и scoped delivery
+
+- Slice F начат от clean `master` commit
+  `18d47e6 feat(knowledge): persist temporal authority`; remote не настроен.
+- Slice F доставлен локально одним explicit-pathspec commit, содержащим code,
+  revision `030`, tests и эти durable status updates. Exact SHA определяется
+  через Actual Git; push не выполнялся.
+
+### 225B. Что уже реализовано и проверено поведением
+
+- Новый isolated `actions` package содержит immutable manifest/command/run
+  domain, process-local registry, PDP/confirmation/kill-switch gateway,
+  transactional outbox leases, dispatch, timeout-to-unknown,
+  reconciliation, postcondition и отдельно авторизуемую compensation.
+- `PostgresActionStore`, восемь ORM tables и Alembic `030` обеспечивают
+  composite tenant ownership, forced RLS/default deny, append/transition
+  guards, encrypted canonical input и replay/conflict semantics. Inventory на
+  head `030`: **31 ORM / 37 public** tables.
+- Legacy adapter вызывает существующий durable escalation insert с
+  `deliver_inbox=False`, стабильным 64-char connector key и проверяемым
+  `EscalatedTicket.id`; runtime route не переключён.
+- Реальный disposable PostgreSQL gate после explicit parent-first flush
+  прошёл **4 tests**: `029 -> 030 -> 029 -> 030`, exact schema/RLS/triggers,
+  transactional replay/postcondition, timeout reconciliation без второго
+  create и forced-RLS/ownership/illegal-transition negatives. Его не повторяли,
+  потому что финальный diff был только type/format.
+- Focused strict MyPy после type-only fixes green по **6 source files**.
+  Scoped Ruff lint green. Initial format check нашёл только форматирование
+  новых Slice F additions в `db/models.py`; formatter применён, final scoped
+  format check сообщил **13 files already formatted**, lint `db/models.py`
+  green.
+- Unit/restore gate: **18 passed, 1 skipped**, одно известное предупреждение
+  Starlette/httpx2. `git diff --check` green. Одноразовые `rag_actions_f_*`
+  БД/roles удалены, post-run inventory пуст.
+
+### 225C. Delivery status и честная process truth
+
+- QA follow-up остаётся израсходованным (`QA follow-up 1/1`) и не дал findings;
+  новый QA-agent для Slice F не запускать.
+- Slice F локально завершён содержащим этот блок scoped commit; отдельного
+  post-commit docs refresh не требуется.
+- Legacy runtime route, external connector, production/Mac DB и grants не
+  менялись и не запускались; push/deploy не выполнялись.
+
+### 225D. Stop condition этого turn
+
+1. После содержащего этот блок commit завершить turn; Slice F не повторять.
+2. Не повторять уже green PostgreSQL, MyPy, Ruff, format или unit/restore gates
+   без нового diff или failing evidence.
+3. Не начинать Slice G и не выполнять runtime route switch, external connector,
+   production/Mac DB work, push или deploy в этом turn.
+
+---
+
+## Superseded — 2026-08-22 Update-224 — Slice E2 PostgreSQL knowledge authority complete
 
 > **Канонический старт для `D:\RAG_new`:** читать этот блок, затем верхнюю
 > CURRENT-капсулу `docs/SESSION_HANDOFF.md`. Они заменяют Update-223 и все

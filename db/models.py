@@ -889,3 +889,455 @@ class TemporalKnowledgeProjectionBinding(Base):
     index_config_digest: Mapped[str] = mapped_column(String(64), nullable=False)
     digest: Mapped[str] = mapped_column(String(64), nullable=False)
     recorded_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+
+
+class GovernedActionManifest(Base):
+    """Immutable tenant-owned action manifest registered for execution."""
+
+    __tablename__ = "action_manifests"
+    __table_args__ = (
+        UniqueConstraint("record_id", "tenant_id", name="uq_action_manifests_id_tenant"),
+        UniqueConstraint(
+            "tenant_id",
+            "manifest_id",
+            "version",
+            name="uq_action_manifests_identity",
+        ),
+        CheckConstraint(
+            "manifest_id = trim(manifest_id) AND manifest_id <> ''", name="ck_action_manifests_id"
+        ),
+        CheckConstraint(
+            "version = trim(version) AND version <> ''", name="ck_action_manifests_version"
+        ),
+        CheckConstraint(
+            "schema_digest ~ '^[0-9a-f]{64}$'", name="ck_action_manifests_schema_digest"
+        ),
+        CheckConstraint(
+            "risk IN ('read', 'reversible_write', 'irreversible_write')",
+            name="ck_action_manifests_risk",
+        ),
+        CheckConstraint("timeout_seconds BETWEEN 1 AND 300", name="ck_action_manifests_timeout"),
+        CheckConstraint(
+            "confirmation_ttl_seconds IS NULL OR confirmation_ttl_seconds BETWEEN 1 AND 86400",
+            name="ck_action_manifests_confirmation_ttl",
+        ),
+        CheckConstraint(
+            "max_reconciliation_attempts BETWEEN 1 AND 20",
+            name="ck_action_manifests_reconciliation_attempts",
+        ),
+        CheckConstraint(
+            "jsonb_typeof(required_scopes) = 'array' AND jsonb_array_length(required_scopes) > 0",
+            name="ck_action_manifests_required_scopes",
+        ),
+        CheckConstraint(
+            "jsonb_typeof(input_fields) = 'array' AND jsonb_array_length(input_fields) > 0",
+            name="ck_action_manifests_input_fields",
+        ),
+    )
+
+    record_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True)
+    tenant_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), nullable=False)
+    manifest_id: Mapped[str] = mapped_column(String(128), nullable=False)
+    version: Mapped[str] = mapped_column(String(64), nullable=False)
+    connector_id: Mapped[str] = mapped_column(String(128), nullable=False)
+    action_id: Mapped[str] = mapped_column(String(128), nullable=False)
+    schema_digest: Mapped[str] = mapped_column(String(64), nullable=False)
+    risk: Mapped[str] = mapped_column(String(32), nullable=False)
+    required_scopes: Mapped[list[str]] = mapped_column(JSONB, nullable=False)
+    input_fields: Mapped[list[str]] = mapped_column(JSONB, nullable=False)
+    timeout_seconds: Mapped[int] = mapped_column(Integer, nullable=False)
+    confirmation_ttl_seconds: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    postcondition_id: Mapped[str] = mapped_column(String(128), nullable=False)
+    postcondition_version: Mapped[str] = mapped_column(String(64), nullable=False)
+    compensation_manifest_id: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    max_reconciliation_attempts: Mapped[int] = mapped_column(Integer, nullable=False)
+    recorded_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+
+
+class GovernedPolicyDecision(Base):
+    """Append-only PDP result bound to an exact action request."""
+
+    __tablename__ = "policy_decisions"
+    __table_args__ = (
+        ForeignKeyConstraint(
+            ["case_id", "tenant_id"],
+            ["support_cases.id", "support_cases.tenant_id"],
+            ondelete="RESTRICT",
+            name="fk_policy_decisions_case_owner",
+        ),
+        UniqueConstraint("id", "tenant_id", name="uq_policy_decisions_id_tenant"),
+        CheckConstraint(
+            "action_digest ~ '^[0-9a-f]{64}$'", name="ck_policy_decisions_action_digest"
+        ),
+        CheckConstraint("input_digest ~ '^[0-9a-f]{64}$'", name="ck_policy_decisions_input_digest"),
+        CheckConstraint(
+            "evidence_digest ~ '^[0-9a-f]{64}$'",
+            name="ck_policy_decisions_evidence_digest",
+        ),
+        CheckConstraint(
+            "result IN ('allow', 'deny', 'escalate')", name="ck_policy_decisions_result"
+        ),
+        CheckConstraint(
+            "jsonb_typeof(reason_codes) = 'array' AND jsonb_array_length(reason_codes) > 0",
+            name="ck_policy_decisions_reason_codes",
+        ),
+        CheckConstraint("expires_at > decided_at", name="ck_policy_decisions_expiry"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True)
+    tenant_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), nullable=False)
+    case_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), nullable=False)
+    action_digest: Mapped[str] = mapped_column(String(64), nullable=False)
+    input_digest: Mapped[str] = mapped_column(String(64), nullable=False)
+    evidence_digest: Mapped[str] = mapped_column(String(64), nullable=False)
+    result: Mapped[str] = mapped_column(String(32), nullable=False)
+    reason_codes: Mapped[list[str]] = mapped_column(JSONB, nullable=False)
+    policy_adapter: Mapped[str] = mapped_column(String(128), nullable=False)
+    policy_revision: Mapped[str] = mapped_column(String(128), nullable=False)
+    decided_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+
+
+class GovernedActionRun(Base):
+    """One logical external operation with monotonic execution state."""
+
+    __tablename__ = "action_runs"
+    __table_args__ = (
+        ForeignKeyConstraint(
+            ["case_id", "tenant_id"],
+            ["support_cases.id", "support_cases.tenant_id"],
+            ondelete="RESTRICT",
+            name="fk_action_runs_case_owner",
+        ),
+        ForeignKeyConstraint(
+            ["tenant_id", "manifest_id", "manifest_version"],
+            [
+                "action_manifests.tenant_id",
+                "action_manifests.manifest_id",
+                "action_manifests.version",
+            ],
+            ondelete="RESTRICT",
+            name="fk_action_runs_manifest_owner",
+        ),
+        ForeignKeyConstraint(
+            ["policy_decision_id", "tenant_id"],
+            ["policy_decisions.id", "policy_decisions.tenant_id"],
+            ondelete="RESTRICT",
+            name="fk_action_runs_policy_owner",
+        ),
+        ForeignKeyConstraint(
+            ["compensation_of_run_id", "tenant_id"],
+            ["action_runs.id", "action_runs.tenant_id"],
+            ondelete="RESTRICT",
+            name="fk_action_runs_compensation_owner",
+        ),
+        UniqueConstraint("id", "tenant_id", name="uq_action_runs_id_tenant"),
+        UniqueConstraint(
+            "tenant_id",
+            "operation_key_digest",
+            name="uq_action_runs_operation_key",
+        ),
+        UniqueConstraint("tenant_id", "action_digest", name="uq_action_runs_action_digest"),
+        UniqueConstraint(
+            "tenant_id",
+            "downstream_idempotency_key",
+            name="uq_action_runs_downstream_key",
+        ),
+        CheckConstraint(
+            "operation_key_digest ~ '^[0-9a-f]{64}$'", name="ck_action_runs_operation_digest"
+        ),
+        CheckConstraint("input_digest ~ '^[0-9a-f]{64}$'", name="ck_action_runs_input_digest"),
+        CheckConstraint("action_digest ~ '^[0-9a-f]{64}$'", name="ck_action_runs_action_digest"),
+        CheckConstraint(
+            "evidence_digest ~ '^[0-9a-f]{64}$'", name="ck_action_runs_evidence_digest"
+        ),
+        CheckConstraint(
+            "result_digest IS NULL OR result_digest ~ '^[0-9a-f]{64}$'",
+            name="ck_action_runs_result_digest",
+        ),
+        CheckConstraint(
+            "state IN ('awaiting_confirmation', 'ready', 'dispatched', 'succeeded', "
+            "'failed', 'outcome_unknown', 'reconciling', 'postcondition_passed', "
+            "'postcondition_failed', 'escalated', 'cancelled', 'expired')",
+            name="ck_action_runs_state",
+        ),
+        CheckConstraint("attempt_count >= 0", name="ck_action_runs_attempt_count"),
+        CheckConstraint(
+            "(lease_token IS NULL) = (lease_expires_at IS NULL)",
+            name="ck_action_runs_lease_pair",
+        ),
+        CheckConstraint(
+            "compensation_of_run_id IS NULL OR compensation_of_run_id <> id",
+            name="ck_action_runs_compensation_distinct",
+        ),
+        Index("ix_action_runs_tenant_state", "tenant_id", "state"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True)
+    tenant_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), nullable=False)
+    case_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), nullable=False)
+    manifest_id: Mapped[str] = mapped_column(String(128), nullable=False)
+    manifest_version: Mapped[str] = mapped_column(String(64), nullable=False)
+    manifest_schema_digest: Mapped[str] = mapped_column(String(64), nullable=False)
+    connector_id: Mapped[str] = mapped_column(String(128), nullable=False)
+    action_id: Mapped[str] = mapped_column(String(128), nullable=False)
+    operation_key_digest: Mapped[str] = mapped_column(String(64), nullable=False)
+    input_digest: Mapped[str] = mapped_column(String(64), nullable=False)
+    action_digest: Mapped[str] = mapped_column(String(64), nullable=False)
+    evidence_digest: Mapped[str] = mapped_column(String(64), nullable=False)
+    policy_decision_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), nullable=False)
+    downstream_idempotency_key: Mapped[str] = mapped_column(String(128), nullable=False)
+    state: Mapped[str] = mapped_column(String(32), nullable=False)
+    input_payload: Mapped[str] = mapped_column(EncryptedText, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    attempt_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    confirmation_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), nullable=True)
+    outbox_event_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), nullable=True)
+    lease_token: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    lease_expires_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    remote_operation_id: Mapped[str | None] = mapped_column(String(256), nullable=True)
+    remote_resource_id: Mapped[str | None] = mapped_column(String(256), nullable=True)
+    result_digest: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    compensation_of_run_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True),
+        nullable=True,
+    )
+
+
+class GovernedActionConfirmation(Base):
+    """Exact, expiring confirmation challenge with one legal decision."""
+
+    __tablename__ = "action_confirmations"
+    __table_args__ = (
+        ForeignKeyConstraint(
+            ["run_id", "tenant_id"],
+            ["action_runs.id", "action_runs.tenant_id"],
+            ondelete="RESTRICT",
+            name="fk_action_confirmations_run_owner",
+        ),
+        UniqueConstraint("id", "tenant_id", name="uq_action_confirmations_id_tenant"),
+        UniqueConstraint("tenant_id", "run_id", name="uq_action_confirmations_run"),
+        CheckConstraint("action_digest ~ '^[0-9a-f]{64}$'", name="ck_action_confirmations_digest"),
+        CheckConstraint(
+            "decision IN ('pending', 'approved', 'denied', 'expired')",
+            name="ck_action_confirmations_decision",
+        ),
+        CheckConstraint("expires_at > created_at", name="ck_action_confirmations_expiry"),
+        CheckConstraint(
+            "(decision = 'pending' AND decided_at IS NULL) OR "
+            "(decision <> 'pending' AND decided_at IS NOT NULL)",
+            name="ck_action_confirmations_decided_at",
+        ),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True)
+    tenant_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), nullable=False)
+    run_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), nullable=False)
+    action_digest: Mapped[str] = mapped_column(String(64), nullable=False)
+    actor_id: Mapped[str | None] = mapped_column(String(256), nullable=True)
+    decision: Mapped[str] = mapped_column(String(32), nullable=False)
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    decided_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+
+class GovernedActionAttempt(Base):
+    """One append-then-close connector dispatch or reconciliation attempt."""
+
+    __tablename__ = "action_attempts"
+    __table_args__ = (
+        ForeignKeyConstraint(
+            ["run_id", "tenant_id"],
+            ["action_runs.id", "action_runs.tenant_id"],
+            ondelete="RESTRICT",
+            name="fk_action_attempts_run_owner",
+        ),
+        UniqueConstraint("id", "tenant_id", name="uq_action_attempts_id_tenant"),
+        UniqueConstraint(
+            "tenant_id",
+            "run_id",
+            "attempt_number",
+            name="uq_action_attempts_run_number",
+        ),
+        CheckConstraint("attempt_number >= 1", name="ck_action_attempts_number"),
+        CheckConstraint("kind IN ('dispatch', 'reconcile')", name="ck_action_attempts_kind"),
+        CheckConstraint(
+            "request_digest ~ '^[0-9a-f]{64}$'", name="ck_action_attempts_request_digest"
+        ),
+        CheckConstraint(
+            "response_digest IS NULL OR response_digest ~ '^[0-9a-f]{64}$'",
+            name="ck_action_attempts_response_digest",
+        ),
+        CheckConstraint(
+            "transport_outcome IS NULL OR transport_outcome IN "
+            "('succeeded', 'rejected', 'timed_out', 'identity_mismatch', "
+            "'not_found', 'unavailable')",
+            name="ck_action_attempts_transport_outcome",
+        ),
+        CheckConstraint(
+            "(finished_at IS NULL AND transport_outcome IS NULL) OR "
+            "(finished_at IS NOT NULL AND transport_outcome IS NOT NULL)",
+            name="ck_action_attempts_finished_pair",
+        ),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True)
+    tenant_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), nullable=False)
+    run_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), nullable=False)
+    attempt_number: Mapped[int] = mapped_column(Integer, nullable=False)
+    kind: Mapped[str] = mapped_column(String(32), nullable=False)
+    request_digest: Mapped[str] = mapped_column(String(64), nullable=False)
+    started_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    finished_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    transport_outcome: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    response_digest: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    remote_operation_id: Mapped[str | None] = mapped_column(String(256), nullable=True)
+    remote_resource_id: Mapped[str | None] = mapped_column(String(256), nullable=True)
+
+
+class GovernedActionOutboxEvent(Base):
+    """Transactional action work event with bounded lease ownership."""
+
+    __tablename__ = "action_outbox_events"
+    __table_args__ = (
+        ForeignKeyConstraint(
+            ["run_id", "tenant_id"],
+            ["action_runs.id", "action_runs.tenant_id"],
+            ondelete="RESTRICT",
+            name="fk_action_outbox_events_run_owner",
+        ),
+        UniqueConstraint("id", "tenant_id", name="uq_action_outbox_events_id_tenant"),
+        UniqueConstraint(
+            "tenant_id",
+            "run_id",
+            "sequence",
+            name="uq_action_outbox_events_run_sequence",
+        ),
+        CheckConstraint("sequence >= 1", name="ck_action_outbox_events_sequence"),
+        CheckConstraint("kind IN ('dispatch', 'reconcile')", name="ck_action_outbox_events_kind"),
+        CheckConstraint(
+            "state IN ('pending', 'leased', 'delivered')", name="ck_action_outbox_events_state"
+        ),
+        CheckConstraint(
+            "payload_digest ~ '^[0-9a-f]{64}$'", name="ck_action_outbox_events_payload_digest"
+        ),
+        CheckConstraint("attempts >= 0", name="ck_action_outbox_events_attempts"),
+        CheckConstraint(
+            "(lease_token IS NULL) = (lease_expires_at IS NULL)",
+            name="ck_action_outbox_events_lease_pair",
+        ),
+        CheckConstraint(
+            "(state = 'delivered') = (delivered_at IS NOT NULL)",
+            name="ck_action_outbox_events_delivered_at",
+        ),
+        Index(
+            "ix_action_outbox_events_claim",
+            "tenant_id",
+            "state",
+            "available_at",
+        ),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True)
+    tenant_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), nullable=False)
+    run_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), nullable=False)
+    sequence: Mapped[int] = mapped_column(Integer, nullable=False)
+    kind: Mapped[str] = mapped_column(String(32), nullable=False)
+    state: Mapped[str] = mapped_column(String(32), nullable=False)
+    payload_digest: Mapped[str] = mapped_column(String(64), nullable=False)
+    available_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    attempts: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    lease_token: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    lease_expires_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    delivered_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+
+class GovernedActionPostconditionResult(Base):
+    """Immutable deterministic checker result for one action run."""
+
+    __tablename__ = "action_postcondition_results"
+    __table_args__ = (
+        ForeignKeyConstraint(
+            ["run_id", "tenant_id"],
+            ["action_runs.id", "action_runs.tenant_id"],
+            ondelete="RESTRICT",
+            name="fk_action_postcondition_results_run_owner",
+        ),
+        UniqueConstraint("id", "tenant_id", name="uq_action_postconditions_id_tenant"),
+        UniqueConstraint(
+            "tenant_id",
+            "run_id",
+            "checker_id",
+            "checker_version",
+            name="uq_action_postconditions_run_checker",
+        ),
+        CheckConstraint(
+            "observation_digest ~ '^[0-9a-f]{64}$'",
+            name="ck_action_postconditions_observation_digest",
+        ),
+        CheckConstraint(
+            "status IN ('pass', 'fail', 'unknown')", name="ck_action_postconditions_status"
+        ),
+        CheckConstraint(
+            "jsonb_typeof(reason_codes) = 'array' AND jsonb_array_length(reason_codes) > 0",
+            name="ck_action_postconditions_reason_codes",
+        ),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True)
+    tenant_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), nullable=False)
+    run_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), nullable=False)
+    checker_id: Mapped[str] = mapped_column(String(128), nullable=False)
+    checker_version: Mapped[str] = mapped_column(String(64), nullable=False)
+    observation_digest: Mapped[str] = mapped_column(String(64), nullable=False)
+    status: Mapped[str] = mapped_column(String(32), nullable=False)
+    reason_codes: Mapped[list[str]] = mapped_column(JSONB, nullable=False)
+    checked_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+
+
+class GovernedActionKillSwitch(Base):
+    """Append-only tenant/environment/connector/action execution control."""
+
+    __tablename__ = "action_kill_switches"
+    __table_args__ = (
+        UniqueConstraint("id", "tenant_id", name="uq_action_kill_switches_id_tenant"),
+        UniqueConstraint(
+            "tenant_id",
+            "environment",
+            "connector_id",
+            "action_id",
+            "version",
+            name="uq_action_kill_switches_scope_version",
+        ),
+        CheckConstraint("version >= 1", name="ck_action_kill_switches_version"),
+        CheckConstraint(
+            "environment = trim(environment) AND environment <> ''",
+            name="ck_action_kill_switches_environment",
+        ),
+        CheckConstraint(
+            "connector_id = trim(connector_id) AND connector_id <> ''",
+            name="ck_action_kill_switches_connector",
+        ),
+        CheckConstraint(
+            "action_id = trim(action_id) AND action_id <> ''", name="ck_action_kill_switches_action"
+        ),
+        CheckConstraint(
+            "reason_code = trim(reason_code) AND reason_code <> ''",
+            name="ck_action_kill_switches_reason",
+        ),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True)
+    tenant_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), nullable=False)
+    environment: Mapped[str] = mapped_column(String(64), nullable=False)
+    connector_id: Mapped[str] = mapped_column(String(128), nullable=False)
+    action_id: Mapped[str] = mapped_column(String(128), nullable=False)
+    version: Mapped[int] = mapped_column(Integer, nullable=False)
+    active: Mapped[bool] = mapped_column(Boolean, nullable=False)
+    reason_code: Mapped[str] = mapped_column(String(128), nullable=False)
+    recorded_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)

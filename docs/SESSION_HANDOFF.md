@@ -1,6 +1,86 @@
 # Session handoff
 
-## CURRENT — 2026-08-22 / Update-224 Slice E2 PostgreSQL knowledge authority complete
+## CURRENT — 2026-08-22 / Update-225 Slice F locally complete in containing commit
+
+**Назначение:** восстановить локально завершённый Slice F без повторения уже
+green gates и без завышения external/release claims.
+
+### 0. Actual Git и обязательная первая проверка
+
+```powershell
+Set-Location -LiteralPath D:\RAG_new
+git status --short --branch
+git log -5 --oneline
+git remote -v
+```
+
+Slice F начат от `18d47e6 feat(knowledge): persist temporal authority` на
+`master`; remote отсутствует. Code/tests/docs доставлены одним scoped commit,
+содержащим эту капсулу. Exact delivery SHA определяется через Actual Git;
+push не выполнялся.
+
+### 0A. Один экран истины
+
+| Поле | Проверенный факт |
+|------|-----------------|
+| Статус Slice F | Locally complete in containing scoped commit; behavior/DDL, strict MyPy и final scoped gate green |
+| Новый scope | `actions/`, revision `030`, 8 ORM tables, ticket adapter, unit/real-PG tests, restore count updates |
+| Schema на disk | head `030`; 31 ORM / 37 public tables |
+| PostgreSQL gate | Ранее подтверждённые 4 passed; не повторялся после type/format-only diff |
+| Type/lint/format | strict MyPy green по 6 source files; scoped Ruff lint green; после formatter final scoped check: 13 files already formatted, `db/models.py` lint green |
+| Unit/restore/diff | 18 passed, 1 skipped, 1 known Starlette/httpx2 warning; `git diff --check` green |
+| QA truth | Единственный QA follow-up остаётся исчерпанным и не дал findings; повторять нельзя |
+| Cleanup | post-run `rag_actions_f_*` database/role inventory пуст |
+| Runtime unchanged | legacy route/API/Celery/settings, Bitrix/external writes, Mac/production grants/DB, deploy/push |
+| Следующее действие | завершить текущий turn; Slice G не начинать автоматически |
+
+### 1. Локально доставленный contract
+
+- [`../actions/domain.py`](../actions/domain.py),
+  [`../actions/ports.py`](../actions/ports.py) и
+  [`../actions/application.py`](../actions/application.py) задают pinned
+  manifest/input identity, canonical operation/input/action digests, exact PDP
+  binding, confirmation TTL, kill-switch checks, replay/conflict, durable work,
+  outcome reconciliation, deterministic postcondition и independently
+  governed compensation.
+- [`../actions/postgres.py`](../actions/postgres.py),
+  [`../db/models.py`](../db/models.py) и
+  [`../alembic/versions/030_governed_actions.py`](../alembic/versions/030_governed_actions.py)
+  реализуют parent-first transaction, encrypted canonical input, eight-table
+  persistence, composite ownership, forced RLS и monotonic DB triggers.
+- [`../actions/ticket.py`](../actions/ticket.py) оборачивает только existing
+  durable escalation insert с `deliver_inbox=False`; source ticket UUID,
+  stable connector key и exact tenant/session/summary/priority-source
+  проверяются postcondition. Ни Bitrix, ни inbox, ни runtime route не вызваны.
+
+### 2. Verification evidence и диагностика окружения
+
+- Focused strict MyPy после type-only fixes: green по **6 source files**.
+- Scoped Ruff lint: green. Initial format check нашёл только новые Slice F
+  additions в `db/models.py`; formatter применён. Final scoped format check:
+  **13 files already formatted**; `db/models.py` lint green.
+- Unit/restore: **18 passed, 1 skipped**, с одним известным host-level
+  Starlette/httpx2 warning. `git diff --check` green.
+- Real PostgreSQL: ранее подтверждены **4 passed**, включая migration
+  round-trip, forced RLS/DB guards, replay/postcondition и timeout reconciliation
+  без второго create. Gate не повторяли: после него были только type/format
+  changes, без runtime behavior или DDL diff.
+- QA follow-up 1/1 остаётся исчерпанным и не дал findings; новый follow-up для
+  Slice F запрещён cycle budget.
+
+### 3. Точный stop/resume contract
+
+1. Считать содержащий эту капсулу scoped commit локальной delivery Slice F и
+   завершить текущий turn.
+2. Не повторять PostgreSQL, strict MyPy, Ruff, format или unit/restore gates без
+   нового diff либо fresh failing evidence.
+3. Не запускать новый QA follow-up или Slice G. Legacy runtime route, external
+   connectors, production/Mac DB и grants остаются вне scope; push/deploy не
+   выполнять.
+
+---
+
+## Superseded — 2026-08-22 / Update-224 Slice E2 PostgreSQL knowledge authority complete
 
 **Назначение:** самодостаточный старт после локального завершения E2 без
 завышения Mac/production, live-source, routing или release claims.
