@@ -1,6 +1,90 @@
 # Session handoff
 
-## CURRENT — 2026-08-22 / Update-219 C7 committed / C8 authorization gate
+## CURRENT — 2026-08-22 / Update-220 C8 Mac role boundary complete
+
+**Назначение:** самодостаточный старт после завершения Resolution Product
+Slice C; более старые C8 authorization-gate капсулы ниже superseded.
+
+### 0. Первые действия
+
+```powershell
+Set-Location -LiteralPath D:\RAG_new
+git status --short --branch
+git log -5 --oneline
+git remote -v
+```
+
+Baseline перед C8 — `5719520` на `master`; итоговый C8 commit содержит эту
+капсулу и определяется по Actual Git. Remote перед работой отсутствовал; push
+не выполнялся.
+
+### 0A. Один экран истины
+
+| Поле | Проверенный факт |
+|------|-----------------|
+| Завершено | Resolution Product C1–C8; Slice C complete; Alembic head `028` |
+| Mac target | PostgreSQL `16.15`, только `127.0.0.1:55432`, LaunchAgent `com.rag-new.postgresql` |
+| Role boundary | schema owner non-login; migrator no-admin/no-inherit; runtime direct non-owner/no-bypass login |
+| Runtime ACL | 4 Resolution tables `SELECT/INSERT`; только 3 CAS columns `UPDATE`; 2 pgcrypto functions |
+| Проверка C8 | 25 focused tests; Ruff green; exact ACL/RLS/settings verify; runtime/revoke/restart smoke green |
+| Сохранено | старый PostgreSQL `5432` ready; старый Mac checkout не менялся; secrets вне Git (`0600`) |
+| Не сделано | legacy `DATABASE_URL` switch, API/runtime routing, Slice D, canary, push/release |
+| Следующий slice | D — read-only `shipment-status` shadow loop, только отдельным turn |
+
+Канонические C8 файлы:
+
+1. [`../c8-mac-postgres-deployment.md`](../c8-mac-postgres-deployment.md) —
+   closing evidence;
+2. [`operations/resolution-postgres-roles.md`](operations/resolution-postgres-roles.md)
+   — service, apply, verify и kill-switch runbook;
+3. [`architecture/migration-plan.md`](architecture/migration-plan.md) —
+   закрытый Slice C и scope Slice D;
+4. [`../AGENT_STATE.md`](../AGENT_STATE.md) — Update-220 durable state.
+
+### 1. C8 operational state
+
+- Dedicated data: `~/.local/share/rag-new/postgresql-16`; socket:
+  `~/.local/share/rag-new/postgresql-socket`; secrets:
+  `~/.config/rag-new/postgres-secrets.env`; service plist:
+  `~/Library/LaunchAgents/com.rag-new.postgresql.plist`.
+- LaunchAgent должен сохранять `LC_ALL=C`/`LANG=C`; без этого PostgreSQL 16 на
+  данном macOS завершался locale guard во время postmaster startup. Не
+  запускать Homebrew default cluster через `brew services`.
+- Exact verifier охватывает role flags/settings, PG16 membership options,
+  database/schema/table/column/sequence/function ACL, PUBLIC/default ACL,
+  owners, exact RLS policy expressions и forced RLS.
+- `revoke-runtime` сначала ставит `NOLOGIN`, отзывает `CONNECT`, завершает
+  только runtime sessions, затем очищает ACL. `grant` держит runtime disabled
+  до последнего `CONNECT`/`LOGIN`. Alembic downgrade не является rollback.
+- Tenant GUC остаётся application trust boundary и не защищает от полностью
+  скомпрометированного процесса с runtime credential.
+
+### 2. Acceptance evidence
+
+- `base -> 028` выполнен migrator login с `SET ROLE ragnew_schema_owner`;
+  single head `028` подтверждён после restart.
+- Direct runtime smoke: no-context и tenant-B не видят tenant-A rows; own
+  access и CAS разрешены; cross-tenant insert, forbidden column update и
+  delete дают `42501`; owner-level append mutation даёт `55000`; pgcrypto
+  round trip и transaction rollback зелёные.
+- Kill-switch drill: новый runtime login отклонён при `NOLOGIN`; grants
+  восстановлены; exact verify и smoke повторены после LaunchAgent restart.
+- Первый QA pass был RED и выявил ложноположительные RLS/ACL проверки,
+  небезопасный enable order, membership options, endpoint и settings gaps.
+  Они исправлены одним batch; 13 новых red cases стали green, итоговый focused
+  файл — **25 passed**.
+
+### 3. Следующий named slice
+
+**Slice D — read-only `shipment-status` shadow loop.** На этом C8 turn его не
+начинать из-за one-slice budget. В следующем turn не добавлять canary,
+governed writes, legacy runtime routing или Trust Foundation backlog. Реальный
+shipment source и journey postconditions требуют owner-approved inputs;
+ограниченные fixtures не закрывают production/release gates.
+
+---
+
+## Superseded — 2026-08-22 / Update-219 C7 committed / C8 authorization gate
 
 **Назначение:** самодостаточный старт следующей сессии по новой архитектуре,
 без чтения superseded Resolution Product capsules и унаследованной истории.

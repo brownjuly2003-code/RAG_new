@@ -5,18 +5,21 @@
 Текущая выбранная владельцем очередь находится в
 [`rag-new-architecture.md`](rag-new-architecture.md), а точный scope и DoD — в
 [`docs/architecture/migration-plan.md`](docs/architecture/migration-plan.md).
-Срезы C1–C7 завершены локально; C7 зафиксирован commit `f1103bb`. Следующий
-один atomic slice —
-**C8 production runtime-role operations/grants**, только после требуемого
-внешнего разрешения на конкретную целевую среду и role/grant mutations.
-Обычное `продолжи` не даёт такого разрешения. Пока не подтверждены role
-ownership, минимальная grant matrix, окно и rollback/revoke owner, сообщить
-гейт и ждать — не выбирать Slice D или старый backlog. Корневая Slice C
-остаётся открытой: локальный C7 restore smoke не создавал и не менял
-production roles/grants. Также не включать API/runtime routing,
-working/production mutation, push или deploy.
-Закрывающая C7-капсула:
-[`c7-resolution-restore-smoke.md`](c7-resolution-restore-smoke.md).
+Срезы C1–C8 завершены. В C8 владелец явно авторизовал Mac и PostgreSQL role
+mutations: отдельный PostgreSQL 16 на `127.0.0.1:55432` мигрирован до `028`,
+точная минимальная runtime ACL и revoke/restore/restart contracts зелёные;
+старый сервис `5432` не изменён. C8 не переключал общий `DATABASE_URL` и не
+включал API/runtime routing.
+
+Следующий один atomic slice на будущем пользовательском turn — **Slice D:
+read-only `shipment-status` shadow loop** по точному scope из migration plan.
+Не смешивать его с runtime routing, canary, governed writes или унаследованным
+Trust Foundation backlog. Для реального источника и journey postconditions
+нужны утверждённые owner inputs; при их отсутствии использовать только явно
+ограниченные fixtures и не делать production/release-ready claim.
+Закрывающие C7/C8-капсулы:
+[`c7-resolution-restore-smoke.md`](c7-resolution-restore-smoke.md) и
+[`c8-mac-postgres-deployment.md`](c8-mac-postgres-deployment.md).
 Общая session-капсула:
 [`docs/SESSION_HANDOFF.md`](docs/SESSION_HANDOFF.md).
 

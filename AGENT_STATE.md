@@ -1,6 +1,63 @@
 # Agent State
 
-## 2026-08-22 Update-219 — next-session transparency checkpoint ✅ START HERE
+## 2026-08-22 Update-220 — C8 Mac PostgreSQL roles complete ✅ START HERE
+
+> **Канонический старт для `D:\RAG_new`:** читать этот блок, затем верхнюю
+> CURRENT-капсулу `docs/SESSION_HANDOFF.md`. Они заменяют Update-219 и все
+> более старые routing-блоки. Baseline перед C8 — clean `master` на
+> `5719520`; итоговый scoped C8 SHA определяется по Actual Git.
+
+### 220A. Что доставлено
+
+- Владелец явно назвал Mac целевой машиной и разрешил развёртывание плюс
+  PostgreSQL role mutations. На Mac установлен отдельный PostgreSQL `16.15`:
+  `127.0.0.1:55432`, data checksums, SCRAM, отдельные data/socket/log paths и
+  пользовательский LaunchAgent `com.rag-new.postgresql`.
+- `ragnew_prod` мигрирован `base -> 028`. `ragnew_schema_owner` — non-login
+  owner; `ragnew_migrator` имеет только membership с
+  `ADMIN=false/INHERIT=false/SET=true`; `ragnew_resolution_runtime` — прямой
+  non-owner login, `NOSUPERUSER`, `NOINHERIT`, `NOBYPASSRLS` без memberships.
+- Runtime получил только `SELECT/INSERT` четырёх Resolution tables,
+  `UPDATE(status,version,updated_at)` для `support_cases` и два нужных
+  pgcrypto `EXECUTE`. PUBLIC, sequence, create/temp/delete и лишние current /
+  default ACL отсутствуют.
+- Код и operator contract находятся в `scripts/resolution_role_ops.py`,
+  `tests/test_resolution_role_ops.py` и
+  `docs/operations/resolution-postgres-roles.md`. Closing evidence —
+  `c8-mac-postgres-deployment.md`.
+
+### 220B. Проверенная evidence и границы
+
+- Direct runtime smoke доказал populated-row default-deny, own-tenant доступ,
+  cross-tenant invisibility и `42501`, legal case CAS, forbidden
+  update/delete `42501`, pgcrypto round trip, append guard `55000` и полный
+  rollback тестовых строк.
+- Revoke drill дал реальный отказ нового runtime login; grants восстановлены.
+  После принудительного restart LaunchAgent повторно прошли exact contract,
+  runtime smoke и single Alembic head `028`.
+- Независимый QA нашёл policy/ACL/default-ACL/membership/settings/order gaps в
+  первой версии. Усиленный verifier сначала fail-closed обнаружил прежний
+  global default ACL; после safe-order reconciliation прошёл. Focused tests:
+  **25 passed**, scoped Ruff green; финальный commit gate смотреть в Actual
+  Git/C8 capsule.
+- Старый PostgreSQL на `5432` остаётся accepting connections; старый Mac
+  checkout не менялся. Homebrew default cluster не запущен. Секреты находятся
+  только вне checkout в Mac-файле `0600`; значения в docs/logs/Git не
+  записывались.
+- Общий `DATABASE_URL`, API/runtime routing, Slice D, push и remote Git state
+  не менялись. Это завершает Slice C, но не закрывает full production release.
+
+### 220C. Следующий один named slice
+
+На следующем пользовательском turn — **Slice D: read-only
+`shipment-status` shadow loop**. Не смешивать с canary, governed writes,
+legacy DSN switching или унаследованным backlog. Для реального shipment source
+и journey postconditions требуются утверждённые owner inputs; fixtures не
+дают production-ready evidence.
+
+---
+
+## Superseded — 2026-08-22 Update-219 — C8 authorization gate
 
 > **Канонический старт для `D:\RAG_new`:** читать этот блок, затем верхнюю
 > CURRENT-капсулу `docs/SESSION_HANDOFF.md`. Они заменяют Update-218 и все

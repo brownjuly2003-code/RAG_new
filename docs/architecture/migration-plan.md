@@ -50,7 +50,7 @@ Verification:
 - referenced safe operators are allowlisted; no `eval`/dynamic import path exists;
 - schema snapshot and compatibility policy are documented.
 
-### Slice C — Case and evidence persistence (active)
+### Slice C — Case and evidence persistence (complete)
 
 Add domain entities, ports, PostgreSQL models/migrations, append-only events, optimistic versioning, repository adapters, tenant RLS, and a protected evidence reference abstraction.
 
@@ -93,18 +93,20 @@ Delivery status:
   data, encrypted locator behavior, RLS, append guards, temporal exclusion,
   and the protection constraint. Closing evidence is recorded in
   [`../../c7-resolution-restore-smoke.md`](../../c7-resolution-restore-smoke.md).
-- **C8 next, externally gated:** provision and verify production runtime-role
-  operations/grants only after the latest owner message explicitly names the
-  target environment and authorizes those mutations. The current checkout has
-  disposable role/grant test fixtures but no approved production provisioning
-  artifact or grant matrix. Inventory actual owners/roles/grants read-only
-  first; do not promote the fixture's blanket grants into production design.
-  The runtime invariant is non-owner, `NOSUPERUSER`, `NOBYPASSRLS`, forced
-  RLS/default-deny, own-tenant access, cross-tenant denial, append-only guards,
-  and legal `support_cases` CAS after the approved minimum grants. C7 did not
-  create or change production roles or grants.
-- Slice C remains open until production runtime-role operations are green.
-  Local C7 completion is not a production/release-ready claim.
+- **C8 complete on the authorized Mac target:** a dedicated PostgreSQL 16
+  cluster runs only on `127.0.0.1:55432`, separately from the existing service
+  on `5432`. Database `ragnew_prod` is at head `028`; schema-owner, migrator,
+  and direct runtime identities match the exact no-admin/no-inherit/non-owner
+  contract. Runtime has only Resolution table/column/function grants. Exact
+  RLS policy expressions, current and default ACLs, role settings, tenant
+  negatives, append guard, revoke/restore, and restart persistence passed.
+  Closing evidence is in
+  [`../../c8-mac-postgres-deployment.md`](../../c8-mac-postgres-deployment.md)
+  and the operator contract is in
+  [`../operations/resolution-postgres-roles.md`](../operations/resolution-postgres-roles.md).
+- Slice C is complete. This is not a full production/release-ready claim: C8
+  did not switch the legacy application DSN or enable Resolution API/runtime
+  routing.
 
 ### Slice D — Read-only shipment-status shadow loop
 
