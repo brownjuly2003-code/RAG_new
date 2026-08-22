@@ -14,7 +14,7 @@ Evolve the inherited RAG assistant into a self-hosted, verifiable support-resolu
 - [x] Add a pure temporal-knowledge and projection-binding contract -> Verify: bitemporal selection, exact applicability, fail-closed conflicts, tenant/config drift, and rebuild/rollback known cases pass without changing runtime defaults.
 - [x] Persist and integrate temporal knowledge authority -> Verify: revision `029` round trip, forced RLS, immutability/system-close guards, bitemporal exclusion, exact approved identities, and retrieval allowlisting pass on real PostgreSQL.
 - [x] Add the governed action gateway and wrap `create_ticket` as the first reversible/idempotent write -> Delivered locally at `ed82d6a`; retries and disconnects cannot create duplicate side effects, and denial never calls the connector.
-- [ ] Add scenario compilation, state grading, replay manifests, and VR/VRY reporting -> G1 deterministic compilation/grading is locally complete in its containing scoped commit; G2 replay manifest plus impact selection/reporting is next. Full Slice G remains open.
+- [ ] Add scenario compilation, state grading, replay manifests, and VR/VRY reporting -> G1 deterministic compilation/grading and G2 offline replay-manifest/impact selection are locally complete in their containing scoped commits; G3 local replay execution/trial records is next. Full Slice G remains open.
 - [ ] Promote one journey through shadow and canary only after the inherited remediation stream is green -> Verify: rollback, SLO, security, and outcome gates are backed by fresh non-skipped evidence.
 
 ## Done when
@@ -73,7 +73,18 @@ G1 is locally complete in the scoped commit containing its status docs. The
 pure evaluator compiles the pinned 6-step shipment contract into 22 stable
 contract-bound targets, hides expected paths/state from candidate generation,
 grades exact terminal state, and fails closed on evaluator error/skip. This is
-not runtime execution of all edges or release evidence. G2 replay manifest plus
-impact selection/reporting is next; repeated trials, VR/VRY/recontact/cost,
-loop trace/disclosure integration, shadow/canary, live promotion, database,
-external connector, deploy and push remain outside G1.
+not runtime execution of all edges or release evidence.
+
+G2 is locally complete in the scoped commit containing its status docs. Its
+pure offline immutable manifest pins code, global evaluator identities,
+versioned SHA256 dependencies, and digested scenario compartments without raw
+candidate/world/fault/hidden data. Baseline-versus-candidate comparison selects
+known dependency impact narrowly, global impact fully, and structural,
+membership, or unexplained drift fully fail closed. The report has no replay
+outcome, promotion/release verdict, or business-metric semantics.
+
+Full Slice G remains open. G3 manifest-bound local replay execution, immutable
+trial records, and deterministic fail-closed `pass^1`/`pass^3` is next.
+Repeated trials beyond that contract, business metrics, loop integration,
+database, shadow/canary, live promotion, external connector, deploy and push
+remain outside G2.

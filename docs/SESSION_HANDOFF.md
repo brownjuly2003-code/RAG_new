@@ -1,6 +1,73 @@
 # Session handoff
 
-## CURRENT — 2026-08-22 / Update-226 G1 deterministic resolution grader locally complete in containing commit
+## CURRENT — 2026-08-22 / Update-227 G2 replay manifest and impact report locally complete in containing commit
+
+**Назначение:** восстановить локально завершённый G2 без повторения green
+gates и без завышения replay/release claims.
+
+### 0. Actual Git и обязательная первая проверка
+
+```powershell
+Set-Location -LiteralPath D:\RAG_new
+git status --short --branch
+git log -5 --oneline
+git remote -v
+```
+
+G2 начат от clean `master` на `5085c99`; remote отсутствует. Code, tests и
+docs доставлены scoped commit, содержащим эту капсулу. Exact delivery SHA
+определяется через Actual Git; push не выполнялся.
+
+### 0A. Один экран истины
+
+| Поле | Проверенный факт |
+|------|-----------------|
+| Baseline | No `evaluation/resolution/replay.py`; one legacy `curated_cases.manifest.json`; G1 retained 30 fixture scenarios / 22 branch targets |
+| G2 status | Locally complete in containing scoped commit; tests-first RED был ожидаемым `ImportError: ArtifactKey` |
+| Global pins | Exact 40-char code revision plus contract/compiler/grader/candidate/scenario-set identities |
+| Dependency/scenario pins | Participating dependency version+SHA256; candidate/world/fault/hidden/coverage compartments as digests/identities |
+| Canonical privacy | No raw candidate messages, world reference, fault IDs, or hidden oracle in canonical JSON/digest payload |
+| Impact selection | Same=no change; known dependency=targeted; global=full; graph/membership/unexplained=`FULL_FAIL_CLOSED`; changed is never empty |
+| Report semantics | No replay outcome, promotion/release verdict, VR/VRY, recontact or cost semantics |
+| QA | Three major findings fixed in one batch; final 20 passed, Ruff, 3 formatted, focused MyPy 2 sources |
+| Independent gate | 88 passed + 1 known Starlette/httpx2 warning; Ruff clean; 6 formatted; strict focused MyPy 4 sources; diff clean |
+| Следующий один slice | G3 manifest-bound local replay executor + immutable trial records + deterministic fail-closed `pass^1`/`pass^3`; no business metrics/live promotion |
+
+### 1. Доставленный contract
+
+- [`../evaluation/resolution/replay.py`](../evaluation/resolution/replay.py)
+  строит immutable offline manifest с canonical JSON/digest и exact global,
+  dependency, scenario-compartment pins.
+- Сравнение baseline/candidate manifests само определяет impact. Structural,
+  membership или unexplained drift выбирает full set fail closed; changed
+  manifests не могут вернуть empty selection.
+- Report ограничен manifest identities, change classification и selected
+  scenario IDs; он не является replay result, promotion status или release
+  verdict.
+
+### 2. Verification evidence
+
+- Tests-first RED: expected `ImportError: ArtifactKey`.
+- QA follow-up 1/1 исправил unbound world reference, raw fault-ID disclosure и
+  leaked `promotion_status`; final: **20 passed**, Ruff, **3 formatted**,
+  focused MyPy по 2 sources.
+- Independent final: **88 passed**, одно известное предупреждение
+  Starlette/httpx2; Ruff clean; **6 formatted**; strict focused MyPy по 4
+  sources; diff check clean.
+
+### 3. Точный stop/resume contract
+
+1. Считать содержащий эту капсулу scoped commit локальной delivery G2 и
+   завершить текущий turn.
+2. Не повторять tests/Ruff/format/MyPy/diff без нового diff или fresh failing
+   evidence; QA follow-up исчерпан.
+3. Полный Slice G остаётся открыт. Следующий named slice — G3 local replay
+   executor/trial records/fail-closed `pass^1`/`pass^3`. Не начинать business
+   metrics, live promotion, loop integration, DB, shadow/canary, deploy/push.
+
+---
+
+## Superseded — 2026-08-22 / Update-226 G1 deterministic resolution grader locally complete in containing commit
 
 **Назначение:** восстановить локально завершённый G1 без повторения green
 gates и без завышения runtime/release claims.

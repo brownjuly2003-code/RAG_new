@@ -187,12 +187,30 @@ contract, branch, terminal, reasons, and canonical flat state, while evaluator
 `ERROR`/`SKIPPED` fails closed. Focused 18-test and adjacent 68-test gates plus
 Ruff, format, focused strict MyPy and diff checks passed.
 
-The next named slice is **G2: replay manifest plus impact
-selection/reporting only**, still without live promotion. G1 does not claim
-`ShipmentStatusShadowLoop` trace/disclosure integration, runtime execution of
-all 22 edges, replay/release manifests, repeated trials,
-VR/VRY/recontact/cost reports, impact selection, shadow/canary, database,
-external connector, deploy or push work.
+Delivery status (2026-08-22): **G2 replay manifest and impact report complete
+locally in its containing scoped commit; full Slice G remains open.** Starting
+from no `evaluation/resolution/replay.py`, one legacy
+`curated_cases.manifest.json`, and the retained G1 baseline of 30 fixture
+scenarios/22 branch targets, the pure offline immutable manifest pins an exact
+40-char code revision, global contract/compiler/grader/candidate/scenario-set
+identities, version+SHA256 participating dependencies, and digested/identified
+scenario candidate/world/fault/hidden/coverage compartments. Canonical payloads
+contain no raw candidate messages, world reference, fault IDs, or hidden
+oracle.
+
+Impact selection compares baseline and candidate manifests directly: equal is
+no change, known dependency changes are targeted, global changes select all,
+and dependency-graph, scenario-membership, or unexplained changes select all as
+`FULL_FAIL_CLOSED`; changed manifests never select nothing. The report carries
+no replay outcome, promotion/release verdict, or VR/VRY/recontact/cost
+semantics. QA fixed three major boundary issues in one batch; focused and
+independent verification passed.
+
+The next named slice is **G3: manifest-bound local replay executor, immutable
+trial records, and deterministic fail-closed `pass^1`/`pass^3`**, still
+without business metrics or live promotion. G2 does not execute replay, create
+trial records, integrate `ShipmentStatusShadowLoop`, persist database state,
+run shadow/canary, promote, deploy or push.
 
 ### Slice H — Operator surfaces and pilot
 

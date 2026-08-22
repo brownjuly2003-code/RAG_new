@@ -1,6 +1,64 @@
 # Agent State
 
-## 2026-08-22 Update-226 — G1 deterministic resolution grader locally complete in containing commit ✅ START HERE
+## 2026-08-22 Update-227 — G2 replay manifest and impact report locally complete in containing commit ✅ START HERE
+
+> **Канонический старт для `D:\RAG_new`:** читать этот блок, затем верхнюю
+> CURRENT-капсулу `docs/SESSION_HANDOFF.md` и
+> `g2-replay-manifest-impact-report.md`. Они заменяют Update-226 как routing
+> truth; exact delivery SHA определяется через Actual Git содержащего их
+> commit.
+
+### 227A. Actual Git и baseline
+
+- G2 начат от clean `master` commit `5085c99`; remote не настроен.
+- До G2 не было `evaluation/resolution/replay.py`; существовал один legacy
+  `curated_cases.manifest.json`. Baseline G1 остаётся равным 30 fixture
+  scenarios и 22 branch targets.
+- Tests-first RED остановился на ожидаемом `ImportError: ArtifactKey`. G2
+  доставлен локально scoped commit, содержащим implementation, tests и эти
+  durable docs; exact SHA определяется через Actual Git. Push не выполнялся.
+
+### 227B. Доставленный G2 contract
+
+- Pure offline immutable manifest требует exact 40-char code revision, global
+  contract/compiler/grader/candidate/scenario-set pins и version+SHA256 для
+  каждой participating dependency.
+- Scenario candidate/world/fault/hidden/coverage compartments представлены
+  digests/identities. Canonical JSON/digest не содержит raw candidate messages,
+  world reference, fault IDs или hidden oracle.
+- Impact selection сравнивает baseline и candidate manifests напрямую:
+  identical означает no change, known dependency changes выбирают только
+  bound scenarios, global changes — все scenarios. Dependency-graph change,
+  scenario-membership change или unexplained change даёт `FULL_FAIL_CLOSED`;
+  changed manifests никогда не дают empty selection.
+- Impact report не содержит replay outcome, promotion/release verdict или
+  VR/VRY/recontact/cost semantics.
+
+### 227C. Verification и QA truth
+
+- QA follow-up 1/1 нашёл и исправил одним batch три major issues: unbound world
+  reference, serialized raw fault IDs и out-of-scope `promotion_status`. Final
+  QA: **20 passed**, Ruff green, **3 files formatted**, focused MyPy green по
+  2 sources.
+- Independent final: **88 passed**, одно известное предупреждение
+  Starlette/httpx2; Ruff clean; **6 files formatted**; strict focused MyPy
+  green по 4 sources; diff check clean.
+
+### 227D. Границы и следующий slice
+
+- Полный Slice G остаётся открыт. G2 не исполняет replay, не создаёт trial
+  records или `pass^1`/`pass^3`, не интегрирует `ShipmentStatusShadowLoop`, не
+  считает business metrics, не пишет в DB и не выполняет shadow/canary,
+  promotion, deploy или push.
+- Следующий один named slice — **G3: manifest-bound local replay executor +
+  immutable trial records + deterministic fail-closed `pass^1`/`pass^3`**,
+  всё ещё без business metrics/live promotion.
+- После содержащего этот блок scoped commit завершить turn; не повторять green
+  gates и не начинать G3 в этом turn.
+
+---
+
+## Superseded — 2026-08-22 Update-226 — G1 deterministic resolution grader locally complete in containing commit
 
 > **Канонический старт для `D:\RAG_new`:** читать этот блок, затем верхнюю
 > CURRENT-капсулу `docs/SESSION_HANDOFF.md` и

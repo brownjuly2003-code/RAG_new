@@ -5,34 +5,39 @@
 Текущая выбранная владельцем очередь находится в
 [`rag-new-architecture.md`](rag-new-architecture.md), а точный scope и DoD — в
 [`docs/architecture/migration-plan.md`](docs/architecture/migration-plan.md).
-Срезы C1–C8, D, E1, E2 и F завершены; точный Slice F delivery —
-`ed82d6a feat(actions): govern ticket creation`. G1 deterministic resolution
-grader начат от clean `ed82d6a` без remote и **локально завершён scoped commit,
-содержащим этот блок**. Exact G1 SHA определяется через Actual Git; push не
-выполнялся.
+Срезы C1–C8, D, E1, E2, F и G1 завершены; G2 начат от clean `master` at
+`5085c99` без remote и **локально завершён scoped commit, содержащим этот
+блок**. Exact G2 SHA определяется через Actual Git; push не выполнялся.
 
-Измеренный baseline: 30 fixture scenarios; pinned shipment contract содержит
-6 steps и 22 explicit branch edges; `evaluation/resolution` до G1 отсутствовал.
-Tests-first RED был ожидаемым `ModuleNotFoundError`. Pure compiler теперь
-создаёт 22 stable contract-id/version/digest-bound targets и валидирует hidden
-connected entrypoint-to-terminal paths. Candidate видит только public
-`CandidateScenarioInput`; grader требует exact contract, branch, terminal,
-reasons и canonical flat state. Fluent wrong и evaluator `ERROR`/`SKIPPED`
-fail closed.
+Measured G2 baseline: no `evaluation/resolution/replay.py`, one legacy
+`curated_cases.manifest.json`, while G1 retained 30 fixture scenarios and 22
+branch targets. Tests-first RED был ожидаемым `ImportError: ArtifactKey`.
+Pure offline immutable manifest pins exact 40-char code revision, global
+contract/compiler/grader/candidate/scenario-set identities, participating
+dependency version+SHA256 и per-scenario candidate/world/fault/hidden/coverage
+compartment digests/identities. Canonical payload не раскрывает raw candidate
+messages, world reference, fault IDs или hidden oracle.
 
-Focused gate — 18 passed; independent adjacent gate — 68 passed с одним
-известным Starlette/httpx2 warning. Ruff, 4-file format check, focused strict
-MyPy по 3 source files и `git diff --check` green. Design run complete; QA
-follow-up 1/1 не нашёл blocking/major issues и внёс только import/format
-changes.
+Impact selection сравнивает baseline/candidate manifests напрямую: same=no
+change, known dependency=targeted, global=full, а dependency graph, scenario
+membership или unexplained drift=`FULL_FAIL_CLOSED`; changed manifests никогда
+не дают empty selection. Report не содержит replay outcome,
+promotion/release verdict или VR/VRY/recontact/cost semantics.
 
-Полный Slice G остаётся открыт. Следующий named slice — **G2: replay manifest
-and impact selection/reporting only**, всё ещё без live promotion. Не заявлены
-`ShipmentStatusShadowLoop` trace/disclosure integration, runtime execution всех
-22 edges, release manifests, repeated trials, VR/VRY/recontact/cost reports,
-shadow/canary, DB/external/deploy/push work. Полная truth — в
+QA follow-up исправил одним batch три major issues: unbound world reference,
+raw fault IDs и leaked `promotion_status`; final 20 passed, Ruff, 3 formatted,
+focused MyPy 2 sources. Independent final: 88 passed + one known
+Starlette/httpx2 warning; Ruff clean; 6 formatted; strict focused MyPy 4
+sources; diff clean.
+
+Полный Slice G остаётся открыт. Следующий named slice — **G3:
+manifest-bound local replay executor + immutable trial records + deterministic
+fail-closed `pass^1`/`pass^3`**, всё ещё без business metrics/live promotion.
+G2 не исполняет replay, не создаёт trials, не интегрирует
+`ShipmentStatusShadowLoop`, не пишет DB и не выполняет shadow/canary,
+promotion, deploy или push. Полная truth — в
 [`docs/SESSION_HANDOFF.md`](docs/SESSION_HANDOFF.md) и
-[`g1-deterministic-resolution-grader.md`](g1-deterministic-resolution-grader.md).
+[`g2-replay-manifest-impact-report.md`](g2-replay-manifest-impact-report.md).
 
 Закрывающие C7/C8-капсулы:
 [`c7-resolution-restore-smoke.md`](c7-resolution-restore-smoke.md) и

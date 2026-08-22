@@ -9,6 +9,23 @@ from evaluation.resolution.grading import (
     evaluate_scenario,
     grade_state,
 )
+from evaluation.resolution.replay import (
+    ArtifactKey,
+    ArtifactKind,
+    ArtifactPin,
+    ImpactReason,
+    ImpactSelectionReport,
+    ReplayManifest,
+    ScenarioReplayBinding,
+    SelectionMode,
+    bind_scenario,
+    build_replay_manifest,
+    canonical_impact_report_json,
+    canonical_replay_manifest_json,
+    impact_report_digest,
+    replay_manifest_digest,
+    select_impacted_scenarios,
+)
 from evaluation.resolution.scenarios import (
     BranchCoverageTarget,
     BranchRef,
@@ -22,6 +39,9 @@ from evaluation.resolution.scenarios import (
 )
 
 __all__ = [
+    "ArtifactKey",
+    "ArtifactKind",
+    "ArtifactPin",
     "BranchCoverageTarget",
     "BranchRef",
     "CandidateScenarioInput",
@@ -32,10 +52,22 @@ __all__ = [
     "GradeFailureCode",
     "GradeResult",
     "HiddenExpectedState",
+    "ImpactReason",
+    "ImpactSelectionReport",
     "ObservedResolutionState",
+    "ReplayManifest",
+    "ScenarioReplayBinding",
     "ScenarioWorld",
+    "SelectionMode",
+    "bind_scenario",
+    "build_replay_manifest",
+    "canonical_impact_report_json",
+    "canonical_replay_manifest_json",
     "compile_branch_targets",
     "compile_scenario",
     "evaluate_scenario",
     "grade_state",
+    "impact_report_digest",
+    "replay_manifest_digest",
+    "select_impacted_scenarios",
 ]
