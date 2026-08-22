@@ -5,22 +5,20 @@
 Текущая выбранная владельцем очередь находится в
 [`rag-new-architecture.md`](rag-new-architecture.md), а точный scope и DoD — в
 [`docs/architecture/migration-plan.md`](docs/architecture/migration-plan.md).
-Срезы C1–C8 завершены delivery commit `c78da01`; Slice D завершён локально на
-fixtures. E1 pure temporal-knowledge/projection-binding contract также
-завершён локально; его delivery SHA определяется по Actual Git. Владелец
-подтвердил identities `logistics-policy-primary`, `shipment-source-primary`,
-`shipment-observation-current`, exact typed applicability и fail-closed
-cross-authority conflict без ranking. E1 gate: 20 focused после единственного
-QA/fix pass, 67 independent combined; Ruff/format/strict MyPy green.
+Срезы C1–C8 завершены delivery commit `c78da01`; Slice D, E1 и E2 завершены
+локально. E2 delivery SHA определяется по Actual Git. Revision `029` добавляет
+ровно шесть tenant-owned knowledge tables, forced RLS/default deny,
+append/system-close guards, bitemporal exclusion, durable conflict/projection
+records и tenant-scoped repository/application allowlist seam. Disposable
+PostgreSQL round trip и поведение прошли 6 integration tests; adjacent focused
+gate прошёл 72 tests, а проверка итогового QA-пакета — 55 tests. Head `029`,
+23 ORM и точный public restore inventory из 29 tables подтверждены.
 
-Следующий один atomic slice — **E2: PostgreSQL temporal knowledge authority**
-по точному scope из migration plan: six-table schema, revision `029`, tenant
-ownership/RLS, immutability/system-close guards, bitemporal exclusion,
-repository/application seam и real PostgreSQL evidence. E1 не добавлял БД,
-live source, runtime routing или production grants; Chroma manifest schema v1
-и Alembic head `028` не менялись. Не смешивать E2 с Slice F, canary, legacy
-routing или унаследованным Trust Foundation backlog. Production/Mac mutation
-требует отдельной явной авторизации.
+Следующий один atomic slice — **Slice F: governed ticket/escalation action** по
+точному scope migration plan. Не смешивать его с canary, legacy routing,
+production grants или унаследованным Trust Foundation backlog. E2 не менял
+Mac/production PostgreSQL, live sources, Chroma manifest schema v1, runtime
+defaults, deploy или push; такие действия требуют отдельной явной авторизации.
 Закрывающие C7/C8-капсулы:
 [`c7-resolution-restore-smoke.md`](c7-resolution-restore-smoke.md) и
 [`c8-mac-postgres-deployment.md`](c8-mac-postgres-deployment.md).

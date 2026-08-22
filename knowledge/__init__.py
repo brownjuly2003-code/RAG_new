@@ -1,5 +1,15 @@
 """Deterministic temporal knowledge authority and projection contracts."""
 
+from knowledge.application import (
+    APPROVED_KNOWLEDGE_SOURCE_ID,
+    APPROVED_OBSERVATION_SOURCE_ID,
+    APPROVED_POSTCONDITION_ID,
+    KnowledgeRetrievalAllowlist,
+    KnowledgeRetrievalDenied,
+    KnowledgeRetrievalRequest,
+    allowlist_chroma_candidates,
+    authorize_knowledge_retrieval,
+)
 from knowledge.domain import (
     ApplicabilityDimension,
     ApplicabilityTerm,
@@ -19,12 +29,16 @@ from knowledge.domain import (
 )
 from knowledge.projection import (
     KnowledgeProjectionBinding,
+    KnowledgeProjectionRecord,
     ProjectionBindingMismatch,
     bind_projection_manifest,
     verify_projection_manifest,
 )
 
 __all__ = [
+    "APPROVED_KNOWLEDGE_SOURCE_ID",
+    "APPROVED_OBSERVATION_SOURCE_ID",
+    "APPROVED_POSTCONDITION_ID",
     "ApplicabilityDimension",
     "ApplicabilityTerm",
     "ConflictStatus",
@@ -34,7 +48,11 @@ __all__ = [
     "KnowledgeDomainError",
     "KnowledgeObject",
     "KnowledgeProjectionBinding",
+    "KnowledgeProjectionRecord",
     "KnowledgeQuery",
+    "KnowledgeRetrievalAllowlist",
+    "KnowledgeRetrievalDenied",
+    "KnowledgeRetrievalRequest",
     "KnowledgeSelection",
     "KnowledgeSelectionStatus",
     "KnowledgeSupersession",
@@ -42,6 +60,8 @@ __all__ = [
     "KnowledgeVersion",
     "ProjectionBindingMismatch",
     "TimeRange",
+    "allowlist_chroma_candidates",
+    "authorize_knowledge_retrieval",
     "bind_projection_manifest",
     "verify_projection_manifest",
 ]

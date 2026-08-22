@@ -4,6 +4,7 @@ import hashlib
 import json
 import re
 from dataclasses import dataclass
+from datetime import datetime
 from typing import Protocol
 from uuid import UUID
 
@@ -140,6 +141,24 @@ class KnowledgeProjectionBinding:
         return {**payload, "digest": self.digest}
 
 
+@dataclass(frozen=True, slots=True)
+class KnowledgeProjectionRecord:
+    id: UUID
+    tenant_id: UUID
+    binding: KnowledgeProjectionBinding
+    recorded_at: datetime
+
+    def __post_init__(self) -> None:
+        if not isinstance(self.id, UUID) or self.id.int == 0:
+            raise ProjectionBindingMismatch("projection record id must be a non-nil UUID")
+        if not isinstance(self.tenant_id, UUID) or self.tenant_id.int == 0:
+            raise ProjectionBindingMismatch("projection record tenant must be a non-nil UUID")
+        if self.binding.tenant_id != self.tenant_id:
+            raise ProjectionBindingMismatch("projection record tenant does not own its binding")
+        if self.recorded_at.tzinfo is None or self.recorded_at.utcoffset() is None:
+            raise ProjectionBindingMismatch("projection recorded_at must be timezone-aware")
+
+
 def bind_projection_manifest(
     *,
     tenant_id: UUID,
@@ -226,6 +245,7 @@ def verify_projection_manifest(
 __all__ = [
     "IndexManifestLike",
     "KnowledgeProjectionBinding",
+    "KnowledgeProjectionRecord",
     "ProjectionBindingMismatch",
     "bind_projection_manifest",
     "verify_projection_manifest",

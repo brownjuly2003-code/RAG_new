@@ -148,14 +148,16 @@ runtime context drift fails closed. Legacy manifest schema v1 is unchanged.
 Focused QA passed 20 tests after one batch fix; the independent adjacent gate
 passed 67 tests plus Ruff/format/strict MyPy.
 
-**E2 remains open:** add the six PostgreSQL knowledge tables and revision
-`029`, composite tenant FKs, forced RLS/default deny, append-only and single
-system-close guards, bitemporal exclusion, durable conflict/projection
-records, repository/application adapters, exact approved identity enforcement
-and Chroma eligible-version allowlisting. Real PostgreSQL
-`028 -> 029 -> 028 -> 029`, tenant, RLS, immutability and exclusion evidence is
-required. E1 changed no DB, Mac runtime, legacy routing, live source, provider,
-production grants or deployment.
+Delivery status (2026-08-22): **E2 complete locally.** Revision `029` adds
+exactly six PostgreSQL knowledge tables with composite tenant ownership,
+forced RLS/default deny, append-only and single system-close guards,
+bitemporal exclusion, durable conflicts and projection bindings. The
+tenant-scoped repository/application seam reuses E1 validation and produces an
+exact version/digest allowlist before legacy Chroma policy mapping. Disposable
+PostgreSQL `028 -> 029 -> 028 -> 029`, repository, RLS, immutability and
+exclusion tests passed; head is `029`, with 23 ORM and 29 public restore
+tables. Mac runtime, production grants, live sources, legacy routing, canary,
+deployment and push remain unchanged and are not implied by this delivery.
 
 ### Slice F — Governed ticket/escalation action
 

@@ -1,6 +1,65 @@
 # Agent State
 
-## 2026-08-22 Update-223 — Slice E1 temporal knowledge contract complete ✅ START HERE
+## 2026-08-22 Update-224 — Slice E2 PostgreSQL knowledge authority complete ✅ START HERE
+
+> **Канонический старт для `D:\RAG_new`:** читать этот блок, затем верхнюю
+> CURRENT-капсулу `docs/SESSION_HANDOFF.md`. Они заменяют Update-223 и все
+> более старые routing-блоки.
+
+### 224A. Actual Git и границы
+
+- E2 начат на clean `master` от
+  `053f766 feat(knowledge): add temporal projection contract`; remote не
+  настроен. Итоговый E2 delivery SHA определяется по Actual Git.
+- Работа ограничена локальным кодом и disposable PostgreSQL 14 в WSL. Mac и
+  production roles/grants, live sources, runtime defaults, legacy routing,
+  Chroma manifest schema v1, deploy и push не изменялись.
+
+### 224B. Что доставлено
+
+- Alembic revision `029` и SQLAlchemy metadata добавляют ровно шесть таблиц:
+  objects, exact-five applicability, versions, supersessions, conflicts и
+  projection bindings. Head — `029`; inventory — 23 ORM / 29 public tables.
+- Composite tenant ownership, forced RLS/default deny, append-only guards,
+  единственное допустимое закрытие `system_to`, conflict/projection validation
+  и GiST bitemporal exclusion обеспечиваются PostgreSQL.
+- Tenant-scoped async repository/UoW сохраняет и загружает E1 domain records.
+  Application seam проверяет approved knowledge/observation/postcondition
+  identities, conflict-before-authority и persisted projection binding, затем
+  выдаёт exact `(knowledge_version_id, content_digest)` allowlist.
+- Опциональная интеграция legacy shipment retrieval сначала ограничивает raw
+  top-k, затем отбрасывает tenant/source/projection/version/digest drift. Без
+  allowlist прежнее fixture-backed поведение не меняется.
+
+### 224C. Verification и process truth
+
+- Tests-first RED зафиксировал отсутствующие application/ORM seams. Реальный
+  disposable PostgreSQL gate прошёл **6 tests**, включая
+  `028 -> 029 -> 028 -> 029`, repository, RLS, ownership, system-close и
+  exclusion behavior; disposable role/database удалены.
+- Adjacent application/projection/shipment/restore gate: **72 passed,
+  1 skipped**. Остановленный на лимите QA writer оставил scoped allowlist и
+  restore assertions; Codex проверил их отдельно: **55 passed, 1 skipped**.
+  Финального отчёта агент не вернул; активных writers нет.
+- Ruff check/format по 12 E2 Python files и `git diff --check` green. Strict
+  MyPy с `--follow-imports=skip` green по 5 source files. Обычный import-follow
+  на host Python 3.13 останавливается на уже документированном внешнем NumPy
+  stub/target-3.11 mismatch, не на E2 source.
+- Единственное pytest warning — известный host-level Starlette/httpx2 drift;
+  dependency manifests не менялись.
+
+### 224D. Следующий slice
+
+- Следующий один named atomic slice — **F: governed ticket/escalation action**
+  по `docs/architecture/migration-plan.md`. Этот turn его не начинает.
+- Production grants для новых knowledge tables, Mac migration, live source,
+  runtime route switch, shadow/canary/release остаются отдельными явно
+  авторизуемыми gates. Не возвращаться автоматически к inherited Trust
+  Foundation backlog.
+
+---
+
+## Superseded — 2026-08-22 Update-223 — Slice E1 temporal knowledge contract complete
 
 > **Канонический старт для `D:\RAG_new`:** читать этот блок, затем верхнюю
 > CURRENT-капсулу `docs/SESSION_HANDOFF.md`. Они заменяют Update-222 и все

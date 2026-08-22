@@ -1,6 +1,82 @@
 # Session handoff
 
-## CURRENT — 2026-08-22 / Update-223 Slice E1 temporal knowledge contract complete
+## CURRENT — 2026-08-22 / Update-224 Slice E2 PostgreSQL knowledge authority complete
+
+**Назначение:** самодостаточный старт после локального завершения E2 без
+завышения Mac/production, live-source, routing или release claims.
+
+### 0. Actual Git
+
+```powershell
+Set-Location -LiteralPath D:\RAG_new
+git status --short --branch
+git log -5 --oneline
+git remote -v
+```
+
+E2 начат на clean `master` от
+`053f766 feat(knowledge): add temporal projection contract`; remote отсутствовал.
+Итоговый delivery SHA определяется по Actual Git; push не выполнялся.
+
+### 0A. Один экран истины
+
+| Поле | Проверенный факт |
+|------|-----------------|
+| Завершено | Resolution C1–C8, fixture Slice D, E1 pure contract и локальный E2 PostgreSQL authority/persistence |
+| Schema | revision/head `029`; ровно 6 новых knowledge tables; 23 ORM / 29 public restore tables |
+| PostgreSQL policy | composite tenant ownership, forced RLS/default deny, append-only/single-system-close guards, conflict/projection validation, bitemporal exclusion |
+| Application seam | exact approved identities + conflict-before-authority + persisted projection/version/digest allowlist before legacy mapping |
+| Gate | disposable PostgreSQL 6 passed; adjacent 72 passed, 1 skipped; post-QA 55 passed, 1 skipped; Ruff/format/diff green; strict MyPy 5 sources green with imports skipped |
+| Runtime unchanged | Mac/production DB and grants, live sources, Chroma manifest schema v1, legacy route/defaults, deploy and push |
+| Не сделано | production grants/migration, live-source integration, route switch, shadow/canary/release evidence |
+| Следующий один slice | F governed ticket/escalation action; no canary/inherited backlog |
+
+### 1. Доставленный E2 contract
+
+- [`../alembic/versions/029_temporal_knowledge_authority.py`](../alembic/versions/029_temporal_knowledge_authority.py)
+  и [`../db/models.py`](../db/models.py) задают шесть tenant-owned таблиц,
+  PostgreSQL constraints, triggers и forced RLS.
+- [`../knowledge/postgres.py`](../knowledge/postgres.py) и
+  [`../knowledge/ports.py`](../knowledge/ports.py) реализуют tenant-scoped async
+  repository/UoW поверх неизменяемого E1 domain contract.
+- [`../knowledge/application.py`](../knowledge/application.py) проверяет exact
+  approved identities, материализованный conflict и persisted projection
+  binding до выдачи version/digest allowlist.
+- [`../resolution/adapters/shipment_status.py`](../resolution/adapters/shipment_status.py)
+  применяет опциональный allowlist после bounded raw top-k и до policy mapping;
+  legacy path без allowlist сохраняет прежнее поведение.
+
+### 2. Verification и QA evidence
+
+- Tests-first RED: отсутствующие application и ORM seams не позволяли собрать
+  новые тесты. После реализации disposable PostgreSQL gate дал **6 passed** и
+  подтвердил `028 -> 029 -> 028 -> 029`, schema, repository, RLS, ownership,
+  system close и bitemporal exclusion. Временные роль и база удалены.
+- Adjacent E1/E2/shipment/restore gate: **72 passed, 1 skipped**. QA writer
+  достиг лимита без финального отчёта и был остановлен; оставленные scoped
+  allowlist/restore changes прочитаны и независимо проверены: **55 passed,
+  1 skipped**. Активных writers нет.
+- Ruff check/format по 12 files и `git diff --check` green. Strict MyPy с
+  `--follow-imports=skip` green по 5 source files. Полный import-follow на
+  текущем host блокирует известный внешний NumPy PEP 695 stub при project
+  target Python 3.11; этот environment drift уже документирован и E2 code не
+  затрагивает.
+- Единственное pytest warning — известный Starlette/httpx2 host drift.
+
+### 3. Следующий named slice и hard boundaries
+
+**Slice F — governed ticket/escalation action.** Добавить manifest/registry,
+PDP/confirmation, idempotent action run/attempt/outbox, lease/reconciliation,
+postcondition и kill switches вокруг первого reversible `create_ticket` write.
+Этот handoff не разрешает начинать canary или выполнять внешний write.
+
+Production grants для новых knowledge tables, Mac migration, live source,
+runtime route switch, shadow/canary, deploy и push требуют отдельной явной
+авторизации. E2 — локальная engineering completion, не production release.
+
+---
+
+## Superseded — 2026-08-22 / Update-223 Slice E1 temporal knowledge contract complete
 
 **Назначение:** самодостаточный старт после локального завершения pure-Python
 части Slice E без завышения PostgreSQL, live-shadow или production claims.

@@ -20,7 +20,7 @@ from sqlalchemy import (
     UniqueConstraint,
     text,
 )
-from sqlalchemy.dialects.postgresql import UUID, ExcludeConstraint
+from sqlalchemy.dialects.postgresql import JSONB, UUID, ExcludeConstraint
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 from db.crypto import EncryptedText
@@ -573,3 +573,319 @@ class ResolutionEvidenceLink(Base):
     purpose: Mapped[str] = mapped_column(String(32), nullable=False)
     gathered_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
     freshness: Mapped[str] = mapped_column(String(32), nullable=False)
+
+
+class TemporalKnowledgeObject(Base):
+    """Immutable tenant-owned identity for one authoritative knowledge source."""
+
+    __tablename__ = "knowledge_objects"
+    __table_args__ = (
+        UniqueConstraint("id", "tenant_id", name="uq_knowledge_objects_id_tenant"),
+        UniqueConstraint(
+            "tenant_id",
+            "source_id",
+            "logical_key",
+            name="uq_knowledge_objects_source_identity",
+        ),
+        CheckConstraint(
+            "logical_key = trim(logical_key) AND logical_key <> ''",
+            name="ck_knowledge_objects_logical_key",
+        ),
+        CheckConstraint(
+            "source_id = trim(source_id) AND source_id <> ''",
+            name="ck_knowledge_objects_source_id",
+        ),
+        CheckConstraint(
+            "owner = trim(owner) AND owner <> ''",
+            name="ck_knowledge_objects_owner",
+        ),
+        CheckConstraint(
+            "authority = trim(authority) AND authority <> ''",
+            name="ck_knowledge_objects_authority",
+        ),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True)
+    tenant_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), nullable=False)
+    logical_key: Mapped[str] = mapped_column(String(256), nullable=False)
+    source_id: Mapped[str] = mapped_column(String(256), nullable=False)
+    owner: Mapped[str] = mapped_column(String(128), nullable=False)
+    authority: Mapped[str] = mapped_column(String(128), nullable=False)
+
+
+class TemporalKnowledgeApplicability(Base):
+    """Normalized exact-five applicability tuple shared by knowledge versions."""
+
+    __tablename__ = "knowledge_applicability"
+    __table_args__ = (
+        UniqueConstraint("id", "tenant_id", name="uq_knowledge_applicability_id_tenant"),
+        UniqueConstraint(
+            "tenant_id",
+            "product",
+            "region",
+            "customer_plan",
+            "cargo_type",
+            "channel",
+            name="uq_knowledge_applicability_exact_dimensions",
+        ),
+        CheckConstraint(
+            "product = trim(product) AND product <> '' AND product NOT LIKE '%*%'",
+            name="ck_knowledge_applicability_product",
+        ),
+        CheckConstraint(
+            "region = trim(region) AND region <> '' AND region NOT LIKE '%*%'",
+            name="ck_knowledge_applicability_region",
+        ),
+        CheckConstraint(
+            "customer_plan = trim(customer_plan) AND customer_plan <> '' "
+            "AND customer_plan NOT LIKE '%*%'",
+            name="ck_knowledge_applicability_customer_plan",
+        ),
+        CheckConstraint(
+            "cargo_type = trim(cargo_type) AND cargo_type <> '' AND cargo_type NOT LIKE '%*%'",
+            name="ck_knowledge_applicability_cargo_type",
+        ),
+        CheckConstraint(
+            "channel = trim(channel) AND channel <> '' AND channel NOT LIKE '%*%'",
+            name="ck_knowledge_applicability_channel",
+        ),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True)
+    tenant_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), nullable=False)
+    product: Mapped[str] = mapped_column(String(128), nullable=False)
+    region: Mapped[str] = mapped_column(String(128), nullable=False)
+    customer_plan: Mapped[str] = mapped_column(String(128), nullable=False)
+    cargo_type: Mapped[str] = mapped_column(String(128), nullable=False)
+    channel: Mapped[str] = mapped_column(String(128), nullable=False)
+
+
+class TemporalKnowledgeVersion(Base):
+    """Immutable bitemporal knowledge version with one legal system close."""
+
+    __tablename__ = "knowledge_versions"
+    __table_args__ = (
+        ForeignKeyConstraint(
+            ["object_id", "tenant_id"],
+            ["knowledge_objects.id", "knowledge_objects.tenant_id"],
+            ondelete="RESTRICT",
+            name="fk_knowledge_versions_object_owner",
+        ),
+        ForeignKeyConstraint(
+            ["applicability_id", "tenant_id"],
+            ["knowledge_applicability.id", "knowledge_applicability.tenant_id"],
+            ondelete="RESTRICT",
+            name="fk_knowledge_versions_applicability_owner",
+        ),
+        UniqueConstraint("id", "tenant_id", name="uq_knowledge_versions_id_tenant"),
+        UniqueConstraint(
+            "id",
+            "tenant_id",
+            "object_id",
+            name="uq_knowledge_versions_id_tenant_object",
+        ),
+        UniqueConstraint(
+            "id",
+            "tenant_id",
+            "content_digest",
+            name="uq_knowledge_versions_id_tenant_digest",
+        ),
+        CheckConstraint(
+            "source_revision = trim(source_revision) AND source_revision <> ''",
+            name="ck_knowledge_versions_source_revision",
+        ),
+        CheckConstraint(
+            "content_digest ~ '^[0-9a-f]{64}$'",
+            name="ck_knowledge_versions_content_digest",
+        ),
+        CheckConstraint(
+            "valid_to IS NULL OR valid_to > valid_from",
+            name="ck_knowledge_versions_valid_range",
+        ),
+        CheckConstraint(
+            "system_to IS NULL OR system_to > system_from",
+            name="ck_knowledge_versions_system_range",
+        ),
+        CheckConstraint(
+            "locale = trim(locale) AND locale <> ''",
+            name="ck_knowledge_versions_locale",
+        ),
+        ExcludeConstraint(
+            ("tenant_id", "="),
+            ("object_id", "="),
+            ("applicability_id", "="),
+            ("locale", "="),
+            (text("tstzrange(valid_from, valid_to, '[)')"), "&&"),
+            (text("tstzrange(system_from, system_to, '[)')"), "&&"),
+            name="ex_knowledge_versions_bitemporal_identity",
+        ).ddl_if(dialect="postgresql"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True)
+    tenant_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), nullable=False)
+    object_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), nullable=False)
+    applicability_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), nullable=False)
+    source_revision: Mapped[str] = mapped_column(String(256), nullable=False)
+    content_digest: Mapped[str] = mapped_column(String(64), nullable=False)
+    valid_from: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    valid_to: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    system_from: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    system_to: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    locale: Mapped[str] = mapped_column(String(32), nullable=False)
+
+
+class TemporalKnowledgeSupersession(Base):
+    """Immutable relationship between two versions of the same object."""
+
+    __tablename__ = "knowledge_supersessions"
+    __table_args__ = (
+        ForeignKeyConstraint(
+            ["predecessor_version_id", "tenant_id", "object_id"],
+            [
+                "knowledge_versions.id",
+                "knowledge_versions.tenant_id",
+                "knowledge_versions.object_id",
+            ],
+            ondelete="RESTRICT",
+            name="fk_knowledge_supersessions_predecessor_owner",
+        ),
+        ForeignKeyConstraint(
+            ["successor_version_id", "tenant_id", "object_id"],
+            [
+                "knowledge_versions.id",
+                "knowledge_versions.tenant_id",
+                "knowledge_versions.object_id",
+            ],
+            ondelete="RESTRICT",
+            name="fk_knowledge_supersessions_successor_owner",
+        ),
+        CheckConstraint(
+            "predecessor_version_id <> successor_version_id",
+            name="ck_knowledge_supersessions_distinct_versions",
+        ),
+    )
+
+    tenant_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True)
+    predecessor_version_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
+        primary_key=True,
+    )
+    successor_version_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
+        primary_key=True,
+    )
+    object_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), nullable=False)
+    reason: Mapped[str] = mapped_column(String(128), nullable=False)
+    recorded_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+
+
+class TemporalKnowledgeConflict(Base):
+    """Immutable material conflict between distinct knowledge authorities."""
+
+    __tablename__ = "knowledge_conflicts"
+    __table_args__ = (
+        ForeignKeyConstraint(
+            ["left_version_id", "tenant_id"],
+            ["knowledge_versions.id", "knowledge_versions.tenant_id"],
+            ondelete="RESTRICT",
+            name="fk_knowledge_conflicts_left_owner",
+        ),
+        ForeignKeyConstraint(
+            ["right_version_id", "tenant_id"],
+            ["knowledge_versions.id", "knowledge_versions.tenant_id"],
+            ondelete="RESTRICT",
+            name="fk_knowledge_conflicts_right_owner",
+        ),
+        UniqueConstraint("id", "tenant_id", name="uq_knowledge_conflicts_id_tenant"),
+        UniqueConstraint(
+            "tenant_id",
+            "left_version_id",
+            "right_version_id",
+            name="uq_knowledge_conflicts_version_pair",
+        ),
+        CheckConstraint(
+            "left_version_id < right_version_id",
+            name="ck_knowledge_conflicts_canonical_pair",
+        ),
+        CheckConstraint(
+            "status IN ('unresolved', 'resolved')",
+            name="ck_knowledge_conflicts_status",
+        ),
+        CheckConstraint(
+            "fact_key = trim(fact_key) AND fact_key <> ''",
+            name="ck_knowledge_conflicts_fact_key",
+        ),
+        CheckConstraint(
+            "owner = trim(owner) AND owner <> ''",
+            name="ck_knowledge_conflicts_owner",
+        ),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True)
+    tenant_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), nullable=False)
+    fact_key: Mapped[str] = mapped_column(String(256), nullable=False)
+    left_version_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), nullable=False)
+    right_version_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), nullable=False)
+    status: Mapped[str] = mapped_column(String(16), nullable=False)
+    owner: Mapped[str] = mapped_column(String(128), nullable=False)
+
+
+class TemporalKnowledgeProjectionBinding(Base):
+    """Immutable binding between a Chroma generation and knowledge versions."""
+
+    __tablename__ = "knowledge_projection_bindings"
+    __table_args__ = (
+        UniqueConstraint(
+            "id",
+            "tenant_id",
+            name="uq_knowledge_projection_bindings_id_tenant",
+        ),
+        UniqueConstraint(
+            "tenant_id",
+            "manifest_generation",
+            name="uq_knowledge_projection_bindings_generation",
+        ),
+        UniqueConstraint(
+            "tenant_id",
+            "digest",
+            name="uq_knowledge_projection_bindings_digest",
+        ),
+        CheckConstraint(
+            "active_collection ~ '^[A-Za-z0-9](?:[A-Za-z0-9._-]*[A-Za-z0-9])?$'",
+            name="ck_knowledge_projection_bindings_collection",
+        ),
+        CheckConstraint(
+            "manifest_generation >= 1",
+            name="ck_knowledge_projection_bindings_generation",
+        ),
+        CheckConstraint(
+            "embedding_model = trim(embedding_model) AND embedding_model <> ''",
+            name="ck_knowledge_projection_bindings_embedding_model",
+        ),
+        CheckConstraint(
+            "embedding_dimension >= 1",
+            name="ck_knowledge_projection_bindings_embedding_dimension",
+        ),
+        CheckConstraint(
+            "index_config_digest ~ '^[0-9a-f]{64}$'",
+            name="ck_knowledge_projection_bindings_index_digest",
+        ),
+        CheckConstraint(
+            "digest ~ '^[0-9a-f]{64}$'",
+            name="ck_knowledge_projection_bindings_digest",
+        ),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True)
+    tenant_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), nullable=False)
+    active_collection: Mapped[str] = mapped_column(String(63), nullable=False)
+    manifest_generation: Mapped[int] = mapped_column(Integer, nullable=False)
+    source_versions: Mapped[list[list[str]]] = mapped_column(
+        JSON().with_variant(JSONB(), "postgresql"),
+        nullable=False,
+    )
+    embedding_model: Mapped[str] = mapped_column(String(128), nullable=False)
+    embedding_dimension: Mapped[int] = mapped_column(Integer, nullable=False)
+    index_config_digest: Mapped[str] = mapped_column(String(64), nullable=False)
+    digest: Mapped[str] = mapped_column(String(64), nullable=False)
+    recorded_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)

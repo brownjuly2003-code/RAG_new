@@ -9,6 +9,11 @@ from datetime import datetime
 from itertools import islice
 from typing import cast
 
+from knowledge.application import (
+    KnowledgeRetrievalAllowlist,
+    allowlist_chroma_candidates,
+)
+
 _SHA256_PATTERN = re.compile(r"^[0-9a-f]{64}$")
 
 
@@ -147,7 +152,13 @@ _RetrieveDocuments = Callable[[str], Iterable[object] | None]
 class LegacyRetrievalPolicyAdapter:
     """Typed adapter over the inherited ``get_relevant_documents`` boundary."""
 
-    def __init__(self, retriever: object, *, max_candidates: int = 20) -> None:
+    def __init__(
+        self,
+        retriever: object,
+        *,
+        max_candidates: int = 20,
+        knowledge_allowlist: KnowledgeRetrievalAllowlist | None = None,
+    ) -> None:
         if max_candidates < 1:
             raise ValueError("max_candidates must be positive")
         retrieve = getattr(retriever, "get_relevant_documents", None)
@@ -155,6 +166,7 @@ class LegacyRetrievalPolicyAdapter:
             raise TypeError("retriever must expose get_relevant_documents")
         self._retrieve = cast(_RetrieveDocuments, retrieve)
         self._max_candidates = max_candidates
+        self._knowledge_allowlist = knowledge_allowlist
 
     def gather(
         self,
@@ -165,12 +177,19 @@ class LegacyRetrievalPolicyAdapter:
     ) -> tuple[PolicyEvidence, ...]:
         if effective_at.tzinfo is None or effective_at.utcoffset() is None:
             raise ValueError("effective_at must be timezone-aware")
+        if self._knowledge_allowlist is not None and tenant_id != str(
+            self._knowledge_allowlist.tenant_id
+        ):
+            return ()
         raw_documents = self._retrieve(f"shipment status disclosure {shipment_id}")
         if raw_documents is None:
             return ()
+        documents: Iterable[object] = islice(raw_documents, self._max_candidates)
+        if self._knowledge_allowlist is not None:
+            documents = allowlist_chroma_candidates(documents, self._knowledge_allowlist)
         evidence: list[PolicyEvidence] = []
         seen: set[tuple[str, str]] = set()
-        for document in islice(raw_documents, self._max_candidates):
+        for document in documents:
             if isinstance(document, Mapping):
                 metadata_value = document.get("metadata", {})
             else:

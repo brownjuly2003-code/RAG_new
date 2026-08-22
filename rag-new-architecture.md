@@ -12,7 +12,7 @@ Evolve the inherited RAG assistant into a self-hosted, verifiable support-resolu
 - [x] Add an append-only case/evidence data model behind repository ports -> Verify: Alembic round trip, tenant isolation, immutability rules, and temporal-conflict tests pass.
 - [x] Implement one read-only `shipment-status` contract in shadow mode -> Verify: happy, clarify, stale, conflict, timeout, and escalation scenarios have deterministic terminal outcomes.
 - [x] Add a pure temporal-knowledge and projection-binding contract -> Verify: bitemporal selection, exact applicability, fail-closed conflicts, tenant/config drift, and rebuild/rollback known cases pass without changing runtime defaults.
-- [ ] Persist and integrate temporal knowledge authority -> Verify: revision `029` round trip, forced RLS, immutability/system-close guards, bitemporal exclusion, exact approved identities, and retrieval allowlisting pass on real PostgreSQL.
+- [x] Persist and integrate temporal knowledge authority -> Verify: revision `029` round trip, forced RLS, immutability/system-close guards, bitemporal exclusion, exact approved identities, and retrieval allowlisting pass on real PostgreSQL.
 - [ ] Add the governed action gateway and wrap `create_ticket` as the first reversible/idempotent write -> Verify: retries and disconnects cannot create duplicate side effects; denial never calls the connector.
 - [ ] Add scenario compilation, state grading, replay manifests, and VR/VRY reporting -> Verify: deliberately broken policy, evidence, connector, postcondition, and disclosure cases fail the gate.
 - [ ] Promote one journey through shadow and canary only after the inherited remediation stream is green -> Verify: rollback, SLO, security, and outcome gates are backed by fresh non-skipped evidence.
@@ -54,7 +54,13 @@ E1 is locally complete as a pure-Python temporal knowledge and Chroma manifest
 binding contract. It proves half-open valid/system selection, exact typed
 applicability, same-source overlap rejection, fail-closed cross-authority
 conflicts, exact tenant/manifest/source/config binding, and known-case
-rebuild/rollback behavior. It does not add PostgreSQL persistence, migration
-`029`, runtime retrieval, live shadow, canary or production grants. E2
-PostgreSQL authority/persistence is the next named slice; fixture and E1
-evidence do not close release gates.
+rebuild/rollback behavior.
+
+E2 is locally complete on disposable PostgreSQL. Revision `029` persists the
+contract in exactly six new tenant-owned tables with forced RLS,
+append/system-close guards and bitemporal exclusion. The repository and
+application seam authorize only exact persisted versions bound to the current
+projection; the legacy retrieval adapter applies that allowlist without
+switching production routing. Head `029`, 23 ORM tables and the exact 29-table
+public restore inventory are verified. Slice F is the next named slice. Live
+sources, Mac/production grants, canary, deploy and push remain separate gates.

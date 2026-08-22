@@ -8,6 +8,10 @@ from uuid import UUID
 
 import pytest
 
+from knowledge.application import (
+    APPROVED_KNOWLEDGE_SOURCE_ID,
+    KnowledgeRetrievalAllowlist,
+)
 from resolution.adapters.shipment_status import (
     FixtureShipmentSource,
     LegacyRetrievalPolicyAdapter,
@@ -427,6 +431,111 @@ def test_fixture_source_and_retrieval_adapter_do_not_cross_tenant_boundary() -> 
 
     assert source.lookup(tenant_id=TENANT, shipment_id="SHP-100", timeout_seconds=5) is None
     assert policy.gather(tenant_id=TENANT, shipment_id="SHP-100", effective_at=NOW) == ()
+
+
+def test_retrieval_adapter_applies_projection_version_allowlist_before_policy_mapping() -> None:
+    tenant_id = UUID("90000000-0000-0000-0000-000000000001")
+    allowed_version_id = UUID("91000000-0000-0000-0000-000000000001")
+    projection_digest = "e" * 64
+    allowlist = KnowledgeRetrievalAllowlist(
+        tenant_id=tenant_id,
+        active_collection="rag_docs_policy_v1",
+        manifest_generation=1,
+        projection_digest=projection_digest,
+        knowledge_source_id=APPROVED_KNOWLEDGE_SOURCE_ID,
+        versions=((allowed_version_id, "c" * 64),),
+    )
+    allowed = _policy_document(tenant_id=str(tenant_id), digest="c" * 64)
+    allowed_metadata = allowed["metadata"]
+    assert isinstance(allowed_metadata, dict)
+    allowed_metadata.update(
+        {
+            "knowledge_version_id": str(allowed_version_id),
+            "knowledge_content_digest": "c" * 64,
+            "knowledge_projection_digest": projection_digest,
+            "knowledge_source_id": APPROVED_KNOWLEDGE_SOURCE_ID,
+        }
+    )
+    stale = _policy_document(
+        tenant_id=str(tenant_id),
+        digest="d" * 64,
+        revision="policy-stale",
+    )
+    stale_metadata = stale["metadata"]
+    assert isinstance(stale_metadata, dict)
+    stale_metadata.update(
+        {
+            "knowledge_version_id": str(UUID("91000000-0000-0000-0000-000000000002")),
+            "knowledge_content_digest": "d" * 64,
+            "knowledge_projection_digest": projection_digest,
+            "knowledge_source_id": APPROVED_KNOWLEDGE_SOURCE_ID,
+        }
+    )
+    policy = LegacyRetrievalPolicyAdapter(
+        _Retriever((stale, allowed)),
+        knowledge_allowlist=allowlist,
+    )
+
+    evidence = policy.gather(
+        tenant_id=str(tenant_id),
+        shipment_id="SHP-100",
+        effective_at=NOW,
+    )
+
+    assert len(evidence) == 1
+    assert evidence[0].data_revision == "policy-2026.09-r1"
+    assert evidence[0].content_digest == "c" * 64
+
+
+def test_retrieval_allowlist_bounds_raw_candidates_and_denies_tenant_before_lookup() -> None:
+    tenant_id = UUID("90000000-0000-0000-0000-000000000001")
+    allowed_version_id = UUID("91000000-0000-0000-0000-000000000001")
+    allowlist = KnowledgeRetrievalAllowlist(
+        tenant_id=tenant_id,
+        active_collection="rag_docs_policy_v1",
+        manifest_generation=1,
+        projection_digest="e" * 64,
+        knowledge_source_id=APPROVED_KNOWLEDGE_SOURCE_ID,
+        versions=((allowed_version_id, "c" * 64),),
+    )
+
+    class _BoundedRetriever:
+        calls = 0
+
+        def get_relevant_documents(self, _query: str):
+            self.calls += 1
+
+            def _documents():
+                yield _policy_document(tenant_id=str(tenant_id), digest="d" * 64)
+                raise AssertionError("adapter consumed beyond max_candidates")
+
+            return _documents()
+
+    retriever = _BoundedRetriever()
+    policy = LegacyRetrievalPolicyAdapter(
+        retriever,
+        max_candidates=1,
+        knowledge_allowlist=allowlist,
+    )
+
+    assert (
+        policy.gather(
+            tenant_id=str(tenant_id),
+            shipment_id="SHP-100",
+            effective_at=NOW,
+        )
+        == ()
+    )
+    assert retriever.calls == 1
+    assert (
+        policy.gather(
+            tenant_id=str(UUID("90000000-0000-0000-0000-000000000002")),
+            shipment_id="SHP-100",
+            effective_at=NOW,
+        )
+        == ()
+    )
+    assert retriever.calls == 1
 
 
 def test_legacy_ask_shadow_hook_returns_the_exact_response_and_swallows_failure() -> None:
