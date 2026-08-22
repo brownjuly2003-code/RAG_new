@@ -10,7 +10,8 @@ Status: READY_WITH_GUARDRAILS
 
 ## Evidence
 
-- Repository is a Git repo on branch `master`, baseline HEAD `1d8ee96`, with clean status at assessment time.
+- Historical assessment baseline was `master` at `1d8ee96`; it must never
+  override Actual Git or the current Resolution Product handoff.
 - Stack is Python/FastAPI with LangGraph, ChromaDB, GraceKelly/Ollama provider routing, Postgres, Redis, OpenTelemetry, and static HTML UI.
 - Documentation exists in `README.md` and `docs/`; CI exists in `.github/workflows/ci.yml`.
 - Local and CI gates are identifiable: `ruff check .`, strict-scope `mypy`, unit tests, integration tests, Helm lint/render, Bandit, pip-audit, and pre-commit.
@@ -48,11 +49,13 @@ The runner must execute only commands available on the local machine.
 
 ### Mission Source Order
 
-1. `AGENT_STATE.md`
-2. `BACKLOG.md`
-3. `README.md`
-4. `docs/`
-5. Current `git status` and recent diff
+1. Current `git status`, recent log, and diff.
+2. The CURRENT capsule in `docs/SESSION_HANDOFF.md`.
+3. The top `START HERE` block in `AGENT_STATE.md`.
+4. `rag-new-architecture.md` and `docs/architecture/migration-plan.md`.
+5. `BACKLOG.md` only when its top routing banner or the owner explicitly
+   selects the inherited Trust Foundation stream.
+6. `README.md` and other `docs/` for supporting context, not queue selection.
 
 ### pi.dev Planner
 

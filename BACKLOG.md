@@ -1,8 +1,22 @@
 # Backlog
 
-## Active source (2026-08-03) — step 4.8d3e locally verified @ `f899ba5`
+## Current routing override — Resolution Product
 
-**Sole active backlog:**
+Текущая выбранная владельцем очередь находится в
+[`rag-new-architecture.md`](rag-new-architecture.md), а точный scope и DoD — в
+[`docs/architecture/migration-plan.md`](docs/architecture/migration-plan.md).
+Срезы C1–C3 завершены локально; следующий и ещё не начатый срез — **C4
+PostgreSQL append immutability guards**. Стартовая капсула:
+[`docs/SESSION_HANDOFF.md`](docs/SESSION_HANDOFF.md).
+
+Разделы ниже относятся к унаследованному Trust Foundation remediation stream.
+Не выбирать их автоматически, пока текущий handoff не вернёт routing к этому
+потоку или владелец не попросит об этом явно. Они сохраняются как открытый
+product/release debt и не считаются закрытыми.
+
+## Inherited Trust Foundation source (2026-08-03) — step 4.8d3e locally verified @ `f899ba5`
+
+**Inherited backlog source:**
 [`rag-remediation-plan-2026-08-03.md`](rag-remediation-plan-2026-08-03.md).
 It contains only open DoD from `plan_sol_23_07_26` plus the 2026-08-03 LLM/RAG
 gaps; the old plan remains historical implementation evidence. Audit finding

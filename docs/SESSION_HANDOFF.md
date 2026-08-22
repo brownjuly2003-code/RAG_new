@@ -1,6 +1,6 @@
 # Session handoff
 
-## CURRENT — 2026-08-22 / Update-213 / RAG_new Resolution Product
+## CURRENT — 2026-08-22 / Update-213 reconciled after C3 / RAG_new Resolution Product
 
 **Назначение:** самодостаточный старт следующей сессии по новой архитектуре,
 без чтения исторических Update-210 и ниже.
@@ -11,25 +11,29 @@
 Set-Location -LiteralPath D:\RAG_new
 git status --short --branch
 git log -5 --oneline
+git remote -v
 ```
 
-Проверенная база перед C3: `master` на `538ea6e`, рабочее дерево было чистым,
-Git remote не настроен. Если Actual Git отличается, он имеет приоритет.
-Итоговый C3 SHA определять через Actual Git: implementation и status docs
-зафиксированы одним scoped slice. Активного writer или test DB после slice
-нет.
+Последний implementation baseline: `master` на `1b5265a`, рабочее дерево было
+чистым, а `git remote -v` не возвращал remote. Если этот handoff закоммичен
+отдельно, HEAD будет docs-only commit поверх `1b5265a`; это не новый
+implementation slice. Actual Git имеет приоритет. Активного writer, test DB,
+temporary role или WSL keepalive после C3 нет.
 
 Далее читать в таком порядке:
 
-1. верхний Update-213 в [`AGENT_STATE.md`](../AGENT_STATE.md);
+1. эта CURRENT-капсула и верхний Update-213 в
+   [`AGENT_STATE.md`](../AGENT_STATE.md);
 2. [`rag-new-architecture.md`](../rag-new-architecture.md) — текущая очередь;
 3. [`architecture/migration-plan.md`](architecture/migration-plan.md) — scope,
    verification и условия закрытия slice;
 4. [`architecture/README.md`](architecture/README.md) — ADR и остальные
    архитектурные документы.
 
-Update-210 ниже — сохранённая история Trust Foundation. Он не является
-текущим routing для Resolution Product.
+Верхний banner [`BACKLOG.md`](../BACKLOG.md) должен направлять сюда. Его старый
+Trust Foundation backlog, Update-210 ниже и историческая часть этого файла не
+являются текущей Resolution Product очередью и не должны выбираться
+автоматически.
 
 ### 1. Текущий delivery status
 
@@ -39,13 +43,17 @@ Update-210 ниже — сохранённая история Trust Foundation. 
 | `f484347` | Slice B: строгий Resolution Contract v0.1, JSON Schema snapshot, canonical digest, fixtures и compatibility policy. |
 | `1d7e786` | Slice C1: immutable case/evidence domain и tenant-scoped append-only repository/UoW ports. |
 | `538ea6e` | Slice C2: PostgreSQL models, revision `024`, tenant-scoped repository adapters, atomic event append/CAS. |
-| Actual Git после `538ea6e` | Slice C3: revision `025`, forced RLS, transaction-local tenant context и non-owner role contracts. |
+| `1b5265a` | Slice C3: revision `025`, forced RLS, transaction-local tenant context и non-owner role contracts. |
 
 Последний combined gate: **42 passed**, одно существующее Starlette warning,
 `resolution` coverage **81.38%** при минимуме 72%; Ruff lint/format, MyPy,
 schema snapshot и Alembic head `025` green. Полный real-PostgreSQL migration audit
-прошёл `upgrade -> downgrade base -> re-upgrade` и сверил 23 таблицы. Точные
-границы и команды перечислены в Update-213
+прошёл `upgrade -> downgrade base -> re-upgrade` и сверил 23 таблицы. Отдельный
+docs gate после C3: **13 passed**. Disposable DB
+`rag_resolution_migration_c3a1b2c3d4e5` и
+`rag_resolution_repository_c3f6e7d8a9b0`, test role
+`rag_resolution_runtime_c3c4d5e6f7a8` и WSL keepalive были удалены; рабочая
+`rag_assistant` не мигрировалась. Точные границы перечислены в Update-213
 [`AGENT_STATE.md`](../AGENT_STATE.md).
 
 ### 2. Следующий named slice: C4
@@ -54,6 +62,23 @@ schema snapshot и Alembic head `025` green. Полный real-PostgreSQL migrat
 revision поверх `025`, запрещающую `UPDATE`/`DELETE` для `case_events`,
 `evidence_snapshots` и `case_evidence_links` под runtime role при сохранении
 легального CAS-update `support_cases`.
+
+Ожидаемая revision — `026` с `down_revision = "025"`, если Actual Git не
+показывает уже созданную следующую revision. Минимальный acceptance contract:
+
+- own-tenant append в каждую append-only таблицу по-прежнему разрешён;
+- runtime-role `UPDATE` и `DELETE` каждой из трёх таблиц fail closed;
+- обычный `SupportCase` compare-and-swap update по-прежнему проходит;
+- downgrade снимает только C4 guards и оставляет revision `025` RLS contract;
+- focused тест сначала демонстрирует отсутствие DB guard, затем проходит на
+  disposable real PostgreSQL под non-owner/non-`BYPASSRLS` ролью;
+- scoped Ruff/format, MyPy, Alembic single-head, combined Resolution gate и
+  один migration round trip зелёные; все временные DB/roles/processes удалены.
+
+Начальная точка реализации:
+`tests/integration/test_resolution_postgres_persistence.py`, затем новая
+revision рядом с `alembic/versions/025_resolution_tenant_rls.py`. Не применять
+эти миграции к рабочей `rag_assistant`.
 
 Граница завершения: C4 не добавляет temporal exclusion, encryption/restore
 или API/runtime routing. Даже зелёный C4 не закрывает
@@ -72,6 +97,8 @@ gates из migration plan сохраняют Slice C открытым.
   release gates;
 - remote в этом checkout не настроен, поэтому утверждать remote/CI status по
   этому checkout нельзя.
+- C4 implementation ещё не начат; на старте следующей сессии не должно быть
+  ожидаемого source/test WIP.
 
 На один пользовательский turn брать не более одного atomic slice. После
 зелёной focused проверки и одной пропорциональной независимой проверки —

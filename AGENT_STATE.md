@@ -2,12 +2,13 @@
 
 ## 2026-08-22 Update-213 — Resolution Product C3 PostgreSQL RLS complete; C4 immutability next ✅ START HERE
 
-> **Текущий routing для `D:\RAG_new`:** этот блок заменяет Update-212 и все
-> более старые `START HERE` для Resolution Product. База перед C3: ветка
-> `master`, HEAD `538ea6e`, clean worktree, remote не настроен. Итоговый SHA
-> C3 определять через Actual Git: implementation и status update входят в один
-> scoped slice. Push/deploy/production migration/runtime routing не
-> выполнялись.
+> **Текущий routing для `D:\RAG_new`:** этот блок и верхняя капсула
+> `docs/SESSION_HANDOFF.md` заменяют Update-212 и все более старые `START HERE`
+> для Resolution Product. Последний implementation commit — `1b5265a` на
+> `master`; после него worktree был clean, а `git remote -v` не возвращал
+> remote. Следующий docs-only commit может стать новым HEAD, но он не меняет
+> C3 delivery status. Actual Git всегда имеет приоритет. Push/deploy,
+> production migration и runtime routing не выполнялись.
 
 ### 213A. Что доставлено в C3
 
@@ -61,6 +62,26 @@ revision поверх `025`, запрещающую `UPDATE`/`DELETE` для `ca
 легального CAS-update `support_cases`. Проверить real-PostgreSQL allowed append,
 blocked mutation/delete и downgrade. Не добавлять temporal exclusion,
 encryption/restore или runtime/API routing в тот же slice.
+
+### 213E. Однозначный старт следующей сессии
+
+1. Выполнить `git status --short --branch`, `git log -5 --oneline` и
+   `git remote -v`; ожидается clean `master`, C3 в истории как `1b5265a` и
+   отсутствие remote. Docs-only commit поверх C3 допустим.
+2. Прочитать только верхнюю CURRENT-капсулу `docs/SESSION_HANDOFF.md`, затем
+   актуальные Slice C sections в `rag-new-architecture.md` и
+   `docs/architecture/migration-plan.md`. Старую Trust Foundation историю и
+   старый backlog не выбирать автоматически.
+3. Начать только C4 tests-first. Ожидаемая следующая Alembic revision — `026`
+   поверх `025`, если Actual Git не показывает уже добавленную revision.
+4. Переиспользовать non-owner/runtime-role и disposable-DB pattern из
+   `tests/integration/test_resolution_postgres_persistence.py`; никогда не
+   направлять migration/immutability gate на рабочую `rag_assistant`.
+5. C4 считается локально зелёным только если own-tenant append остаётся
+   разрешён, `UPDATE`/`DELETE` трёх append-only таблиц блокируются,
+   `SupportCase` CAS-update остаётся разрешён и downgrade удаляет только C4
+   guards. После проверки удалить временные DB/role/process и обновить status
+   один раз.
 
 ---
 
