@@ -1,5 +1,67 @@
 # Agent State
 
+## 2026-08-22 Update-212 — Resolution Product C2 PostgreSQL persistence complete; C3 RLS next ✅ START HERE
+
+> **Текущий routing для `D:\RAG_new`:** этот блок заменяет Update-211 и все
+> более старые `START HERE` для Resolution Product. База перед C2: ветка
+> `master`, HEAD `62aeacc`, clean worktree, remote не настроен. Итоговый SHA
+> C2 определять через Actual Git: implementation и этот status update входят в
+> один scoped slice. Push/deploy/runtime routing/live-provider работа не
+> выполнялись.
+
+### 212A. Что доставлено в C2
+
+- Alembic revision `024` добавляет `support_cases`, append-only на уровне
+  repository API `case_events`, `evidence_snapshots` и
+  `case_evidence_links`; downgrade удаляет только эти четыре таблицы.
+- ORM metadata в `db/models.py` соответствует revision: UUID ownership,
+  composite tenant/case/evidence foreign keys, positive version/sequence
+  checks и unique case event sequence/version/command constraints.
+- `resolution/adapters/postgres.py` реализует tenant-scoped case/evidence
+  repositories и unit of work. Case transition выполняется CAS по ожидаемой
+  версии, затем event append в той же транзакции; stale writer получает
+  `CaseVersionConflict` с фактической версией.
+- Новый real-PostgreSQL contract
+  `tests/integration/test_resolution_postgres_persistence.py` покрывает
+  revision round trip, case/evidence round trip, stale CAS, rollback case
+  update при неуспешном event insert и cross-tenant read/write negatives.
+
+### 212B. Проверенная evidence
+
+- Tests-first red: collection завершился ожидаемым
+  `ModuleNotFoundError: resolution.adapters`; база не создавалась.
+- Первый PostgreSQL run не дошёл до schema из-за подтверждённого WSL idle
+  shutdown (`connection refused`). После одной узкой коррекции — hidden WSL
+  keepalive + start PostgreSQL — focused gate: **5 passed**.
+- Независимый combined gate: **39 passed**, одно существующее Starlette
+  deprecation warning; `resolution` coverage **81.38%** при gate 72%.
+- Ruff lint/format, MyPy по `resolution` + `db/models.py`, schema snapshot и
+  `alembic heads` green; единственная head — `024`.
+- `scripts/migration_round_trip.py` на disposable PostgreSQL прошёл полный
+  `upgrade -> downgrade base -> re-upgrade` и подтвердил ровно **23** таблицы
+  ORM/migration set. Обе `rag_resolution_*` test DB удалены; keepalive
+  остановлен. Рабочая `rag_assistant` не мигрировалась и не очищалась.
+
+### 212C. Что C2 намеренно не закрывает
+
+- Корневая галочка Slice C в `rag-new-architecture.md` остаётся открытой.
+- PostgreSQL RLS/default-deny/runtime non-owner enforcement, DB-level event и
+  evidence immutability, полный temporal overlap contract,
+  encryption/redaction execution и restore smoke не входят в C2.
+- Production migrations, shadow traffic, API/runtime wiring, push и deploy не
+  выполнялись; унаследованные Trust Foundation/release gates не закрыты.
+
+### 212D. Следующий один atomic slice
+
+**C3 — PostgreSQL tenant RLS enforcement.** Tests-first добавить отдельную
+revision поверх `024`: RLS + `FORCE ROW LEVEL SECURITY`/default-deny policies
+для четырёх C2-таблиц, transaction-local tenant context и real-PostgreSQL
+allowed/cross-tenant negative contracts под non-owner runtime role. Не
+добавлять immutability triggers, temporal exclusion, encryption/restore или
+runtime/API routing в тот же slice.
+
+---
+
 ## 2026-08-22 Update-211 — RAG_new Resolution Product: Slice B и C1 завершены; C2 следующий ✅ START HERE
 
 > **Текущий routing для `D:\RAG_new`:** этот блок заменяет Update-210 и все

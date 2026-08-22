@@ -61,8 +61,12 @@ Delivery status:
 - **C1 complete locally:** stdlib-only immutable `SupportCase`, `CaseEvent`,
   protected `EvidenceSnapshot`/link/conflict types, optimistic transition
   mutations, and tenant-scoped append-only repository/unit-of-work ports.
-- **C2 next:** PostgreSQL models, Alembic revision, and repository adapters with
-  atomic event append plus compare-and-swap.
+- **C2 complete locally:** PostgreSQL models, revision `024`, and repository
+  adapters with atomic event append plus compare-and-swap passed a real
+  PostgreSQL round trip, stale-writer conflict, transaction rollback, and
+  application-level tenant-negative contracts.
+- **C3 next:** PostgreSQL RLS/default-deny policies, transaction-local tenant
+  context, and allowed/cross-tenant tests under a non-owner runtime role.
 - Slice C remains open until real PostgreSQL round-trip, RLS/tenant negatives,
   immutability, temporal constraints, encryption/redaction, and restore smoke
   are green.

@@ -25,8 +25,9 @@ Evolve the inherited RAG assistant into a self-hosted, verifiable support-resolu
 
 The completed schema contract and compatibility policy are documented in
 `docs/architecture/resolution-contract-schema-v0.1.md`. Slice C is active:
-its pure domain/repository-port boundary is complete locally, while the root
-checkbox stays open. The next named implementation slice is **C2 PostgreSQL
-case/evidence persistence**. Domain-owner approval of journey postconditions
-and access to a real shipment source of truth remain product prerequisites,
-not details for the LLM to infer.
+its pure domain/repository-port boundary and C2 PostgreSQL models, revision,
+and repository adapters are complete locally, while the root checkbox stays
+open. The next named implementation slice is **C3 PostgreSQL tenant RLS
+enforcement**. Domain-owner approval of journey postconditions and access to a
+real shipment source of truth remain product prerequisites, not details for
+the LLM to infer.

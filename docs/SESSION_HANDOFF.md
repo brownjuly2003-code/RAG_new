@@ -1,6 +1,6 @@
 # Session handoff
 
-## CURRENT — 2026-08-22 / Update-211 / RAG_new Resolution Product
+## CURRENT — 2026-08-22 / Update-212 / RAG_new Resolution Product
 
 **Назначение:** самодостаточный старт следующей сессии по новой архитектуре,
 без чтения исторических Update-210 и ниже.
@@ -13,15 +13,15 @@ git status --short --branch
 git log -5 --oneline
 ```
 
-Ожидаемая проверенная база перед этим docs-only update: `master` на
-`1d7e786`, рабочее дерево было чистым, Git remote не настроен. Если Actual Git
-отличается, он имеет приоритет. Активного implementation WIP или writer нет.
-До docs-коммита ожидаемы ровно два `M`: `AGENT_STATE.md` и этот файл; любое
-другое изменение требует отдельной проверки происхождения.
+Проверенная база перед C2: `master` на `62aeacc`, рабочее дерево было чистым,
+Git remote не настроен. Если Actual Git отличается, он имеет приоритет.
+Итоговый C2 SHA определять через Actual Git: implementation и status docs
+зафиксированы одним scoped slice. Активного writer или test DB после slice
+нет.
 
 Далее читать в таком порядке:
 
-1. верхний Update-211 в [`AGENT_STATE.md`](../AGENT_STATE.md);
+1. верхний Update-212 в [`AGENT_STATE.md`](../AGENT_STATE.md);
 2. [`rag-new-architecture.md`](../rag-new-architecture.md) — текущая очередь;
 3. [`architecture/migration-plan.md`](architecture/migration-plan.md) — scope,
    verification и условия закрытия slice;
@@ -38,30 +38,33 @@ Update-210 ниже — сохранённая история Trust Foundation. 
 | `d53e8e7` | Slice A: architecture foundation; только docs/decisions, без runtime change. |
 | `f484347` | Slice B: строгий Resolution Contract v0.1, JSON Schema snapshot, canonical digest, fixtures и compatibility policy. |
 | `1d7e786` | Slice C1: immutable case/evidence domain и tenant-scoped append-only repository/UoW ports. |
+| Actual Git после `62aeacc` | Slice C2: PostgreSQL models, revision `024`, tenant-scoped repository adapters, atomic event append/CAS. |
 
-Последний combined gate: **34 passed**, одно существующее Starlette warning,
-`resolution` coverage **79.51%** при минимуме 72%; Ruff lint/format и MyPy по
-12 source files green. Schema snapshot check также green. Точные команды и
-пути перечислены в Update-211 [`AGENT_STATE.md`](../AGENT_STATE.md).
+Последний combined gate: **39 passed**, одно существующее Starlette warning,
+`resolution` coverage **81.38%** при минимуме 72%; Ruff lint/format, MyPy,
+schema snapshot и Alembic head green. Полный real-PostgreSQL migration audit
+прошёл `upgrade -> downgrade base -> re-upgrade` и сверил 23 таблицы. Точные
+границы и команды перечислены в Update-212
+[`AGENT_STATE.md`](../AGENT_STATE.md).
 
-### 2. Следующий named slice: C2
+### 2. Следующий named slice: C3
 
-**C2 — PostgreSQL case/evidence persistence:** tests-first добавить
-SQLAlchemy/PostgreSQL models, одну Alembic revision и repository adapters с
-атомарным append `CaseEvent` и compare-and-swap версии. Проверка должна
-включать реальный PostgreSQL migration round trip и focused repository
-concurrency/tenant-negative contracts; SQLite-only доказательство не подходит.
+**C3 — PostgreSQL tenant RLS enforcement:** tests-first добавить отдельную
+revision поверх `024` с RLS/default-deny policies для четырёх C2-таблиц,
+transaction-local tenant context и real-PostgreSQL allowed/cross-tenant
+negative contracts под non-owner runtime role.
 
-Граница завершения: C2 — часть Slice C. Его real-PostgreSQL migration/repository
-round trip не закрывает корневую галочку `Add an append-only case/evidence data
-model...`. Для полного закрытия остаются RLS/tenant isolation, append
-immutability, temporal constraints, encryption/redaction и restore smoke из
-migration plan; любой незелёный gate сохраняет Slice C открытым.
+Граница завершения: C3 не добавляет immutability triggers, temporal exclusion,
+encryption/restore или API/runtime routing. Даже зелёный C3 не закрывает
+корневую галочку `Add an append-only case/evidence data model...`: остальные
+gates из migration plan сохраняют Slice C открытым.
 
 ### 3. Явно не сделано и не разрешено считать сделанным
 
-- нет PostgreSQL models/migration/repository adapters для нового домена;
-- никакая migration не применялась и runtime routing не включался;
+- нет PostgreSQL RLS/runtime non-owner enforcement, DB-level immutability,
+  полного temporal/encryption/redaction/restore evidence;
+- revision `024` проверялась только на disposable test DB; рабочая/production
+  migration не применялась и runtime routing не включался;
 - не выполнялись push, deploy, live-provider вызовы или production mutation;
 - новый архитектурный поток не закрыл унаследованные Trust Foundation и
   release gates;

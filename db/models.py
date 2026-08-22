@@ -408,3 +408,151 @@ class IngestionJob(Base):
     )
     started_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     finished_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+
+class ResolutionSupportCase(Base):
+    """Durable tenant-owned support-case aggregate."""
+
+    __tablename__ = "support_cases"
+    __table_args__ = (
+        UniqueConstraint("id", "tenant_id", name="uq_support_cases_id_tenant"),
+        CheckConstraint("version >= 1", name="ck_support_cases_version_positive"),
+        Index("ix_support_cases_tenant_status", "tenant_id", "status"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True)
+    tenant_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), nullable=False)
+    contract_id: Mapped[str] = mapped_column(String(128), nullable=False)
+    contract_version: Mapped[str] = mapped_column(String(128), nullable=False)
+    contract_digest: Mapped[str] = mapped_column(String(64), nullable=False)
+    correlation_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), nullable=False)
+    status: Mapped[str] = mapped_column(String(32), nullable=False)
+    version: Mapped[int] = mapped_column(Integer, nullable=False)
+    opened_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    effective_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+
+
+class ResolutionCaseEvent(Base):
+    """Append-only case event persisted with its resulting case version."""
+
+    __tablename__ = "case_events"
+    __table_args__ = (
+        ForeignKeyConstraint(
+            ["case_id", "tenant_id"],
+            ["support_cases.id", "support_cases.tenant_id"],
+            ondelete="RESTRICT",
+            name="fk_case_events_case_owner",
+        ),
+        UniqueConstraint(
+            "tenant_id",
+            "case_id",
+            "sequence",
+            name="uq_case_events_tenant_case_sequence",
+        ),
+        UniqueConstraint(
+            "tenant_id",
+            "case_id",
+            "case_version",
+            name="uq_case_events_tenant_case_version",
+        ),
+        UniqueConstraint(
+            "tenant_id",
+            "case_id",
+            "command_id",
+            name="uq_case_events_tenant_case_command",
+        ),
+        CheckConstraint("sequence >= 1", name="ck_case_events_sequence_positive"),
+        CheckConstraint("case_version >= 1", name="ck_case_events_version_positive"),
+        CheckConstraint("sequence = case_version", name="ck_case_events_sequence_version"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True)
+    tenant_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), nullable=False)
+    case_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), nullable=False)
+    sequence: Mapped[int] = mapped_column(Integer, nullable=False)
+    case_version: Mapped[int] = mapped_column(Integer, nullable=False)
+    event_type: Mapped[str] = mapped_column(String(32), nullable=False)
+    command_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), nullable=False)
+    actor_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), nullable=False)
+    correlation_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), nullable=False)
+    from_status: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    to_status: Mapped[str] = mapped_column(String(32), nullable=False)
+    reason_code: Mapped[str] = mapped_column(String(64), nullable=False)
+    occurred_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    recorded_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+
+
+class ResolutionEvidenceSnapshot(Base):
+    """Immutable evidence metadata and protected-content reference."""
+
+    __tablename__ = "evidence_snapshots"
+    __table_args__ = (
+        UniqueConstraint("id", "tenant_id", name="uq_evidence_snapshots_id_tenant"),
+        CheckConstraint(
+            "valid_to IS NULL OR valid_to > valid_from",
+            name="ck_evidence_snapshots_valid_range",
+        ),
+        Index(
+            "ix_evidence_snapshots_tenant_logical_key",
+            "tenant_id",
+            "logical_key",
+            "applicability_key",
+        ),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True)
+    tenant_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), nullable=False)
+    logical_key: Mapped[str] = mapped_column(String(256), nullable=False)
+    source_type: Mapped[str] = mapped_column(String(32), nullable=False)
+    source_id: Mapped[str] = mapped_column(String(256), nullable=False)
+    source_version: Mapped[str] = mapped_column(String(256), nullable=False)
+    content_digest: Mapped[str] = mapped_column(String(64), nullable=False)
+    valid_from: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    valid_to: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    recorded_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    authority: Mapped[str] = mapped_column(String(128), nullable=False)
+    applicability_key: Mapped[str] = mapped_column(String(256), nullable=False)
+    visibility: Mapped[str] = mapped_column(String(32), nullable=False)
+    reference_storage: Mapped[str] = mapped_column(String(32), nullable=False)
+    reference_locator: Mapped[str] = mapped_column(String(512), nullable=False)
+    encryption_profile: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    redaction_profile: Mapped[str] = mapped_column(String(128), nullable=False)
+    retention_class: Mapped[str] = mapped_column(String(128), nullable=False)
+
+
+class ResolutionEvidenceLink(Base):
+    """Append-only relation from a case version to an evidence snapshot."""
+
+    __tablename__ = "case_evidence_links"
+    __table_args__ = (
+        ForeignKeyConstraint(
+            ["tenant_id", "case_id", "case_version"],
+            ["case_events.tenant_id", "case_events.case_id", "case_events.case_version"],
+            ondelete="RESTRICT",
+            name="fk_case_evidence_links_case_version_owner",
+        ),
+        ForeignKeyConstraint(
+            ["evidence_id", "tenant_id"],
+            ["evidence_snapshots.id", "evidence_snapshots.tenant_id"],
+            ondelete="RESTRICT",
+            name="fk_case_evidence_links_evidence_owner",
+        ),
+        CheckConstraint("case_version >= 1", name="ck_case_evidence_links_version_positive"),
+        Index(
+            "ix_case_evidence_links_tenant_case_version",
+            "tenant_id",
+            "case_id",
+            "case_version",
+        ),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True)
+    tenant_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), nullable=False)
+    case_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), nullable=False)
+    case_version: Mapped[int] = mapped_column(Integer, nullable=False)
+    evidence_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), nullable=False)
+    requirement_id: Mapped[str] = mapped_column(String(128), nullable=False)
+    purpose: Mapped[str] = mapped_column(String(32), nullable=False)
+    gathered_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    freshness: Mapped[str] = mapped_column(String(32), nullable=False)
