@@ -46,14 +46,20 @@ from resolution.domain import (
 )
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
+_RESOLUTION_SCHEMA = "public"
 _DATABASE_NAME_PATTERN = re.compile(r"^rag_resolution_(?:migration|repository)_[0-9a-f]{12}$")
 _RUNTIME_ROLE_PATTERN = re.compile(r"^rag_resolution_runtime_[0-9a-f]{12}$")
-_RESOLUTION_TABLES = (
-    "support_cases",
+_APPEND_ONLY_TABLES = (
     "case_events",
     "evidence_snapshots",
     "case_evidence_links",
 )
+_RESOLUTION_TABLES = ("support_cases", *_APPEND_ONLY_TABLES)
+_APPEND_GUARD_TRIGGERS = tuple(
+    sorted((table_name, f"trg_{table_name}_append_only") for table_name in _APPEND_ONLY_TABLES)
+)
+_APPEND_GUARD_FUNCTION_NAME = "resolution_reject_append_only_mutation"
+_APPEND_GUARD_FUNCTION = f"{_RESOLUTION_SCHEMA}.{_APPEND_GUARD_FUNCTION_NAME}()"
 
 
 def _sync_url(raw_url: str) -> URL:
@@ -320,12 +326,86 @@ def test_resolution_revision_round_trips_on_real_postgresql(
                 "('support_cases', 'case_events', 'evidence_snapshots', "
                 "'case_evidence_links') ORDER BY relname"
             ).all()
+            append_guard_triggers = connection.exec_driver_sql(
+                "SELECT tables.relname, triggers.tgname, "
+                "triggers.tgfoid = to_regprocedure(%s) "
+                "FROM pg_trigger AS triggers "
+                "JOIN pg_class AS tables ON tables.oid = triggers.tgrelid "
+                "JOIN pg_namespace AS namespaces ON namespaces.oid = tables.relnamespace "
+                "WHERE NOT triggers.tgisinternal "
+                "AND namespaces.nspname = %s "
+                "AND tables.relname IN "
+                "('support_cases', 'case_events', 'evidence_snapshots', "
+                "'case_evidence_links') ORDER BY tables.relname",
+                (_APPEND_GUARD_FUNCTION, _RESOLUTION_SCHEMA),
+            ).all()
+            append_guard_function = connection.exec_driver_sql(
+                "SELECT namespaces.nspname, routines.proname, "
+                "pg_get_function_identity_arguments(routines.oid) "
+                "FROM pg_proc AS routines "
+                "JOIN pg_namespace AS namespaces ON namespaces.oid = routines.pronamespace "
+                "WHERE routines.oid = to_regprocedure(%s)",
+                (_APPEND_GUARD_FUNCTION,),
+            ).one_or_none()
         assert rls_rows == [
             ("case_events", True, True),
             ("case_evidence_links", True, True),
             ("evidence_snapshots", True, True),
             ("support_cases", True, True),
         ]
+        assert append_guard_triggers == [(*trigger, True) for trigger in _APPEND_GUARD_TRIGGERS]
+        assert append_guard_function == (
+            _RESOLUTION_SCHEMA,
+            _APPEND_GUARD_FUNCTION_NAME,
+            "",
+        )
+
+        _run_alembic(migration_database_url, "downgrade", "025")
+        assert tables <= set(inspect(engine).get_table_names())
+        with engine.connect() as connection:
+            assert (
+                connection.exec_driver_sql(
+                    "SELECT COUNT(*) FROM pg_trigger AS triggers "
+                    "JOIN pg_class AS tables ON tables.oid = triggers.tgrelid "
+                    "JOIN pg_namespace AS namespaces ON namespaces.oid = tables.relnamespace "
+                    "WHERE NOT triggers.tgisinternal "
+                    "AND namespaces.nspname = %s "
+                    "AND tables.relname IN "
+                    "('support_cases', 'case_events', 'evidence_snapshots', "
+                    "'case_evidence_links')",
+                    (_RESOLUTION_SCHEMA,),
+                ).scalar_one()
+                == 0
+            )
+            assert (
+                connection.exec_driver_sql(
+                    "SELECT to_regprocedure(%s)",
+                    (_APPEND_GUARD_FUNCTION,),
+                ).scalar_one()
+                is None
+            )
+            assert connection.exec_driver_sql(
+                "SELECT relname, relrowsecurity, relforcerowsecurity "
+                "FROM pg_class WHERE relname IN "
+                "('support_cases', 'case_events', 'evidence_snapshots', "
+                "'case_evidence_links') ORDER BY relname"
+            ).all() == [
+                ("case_events", True, True),
+                ("case_evidence_links", True, True),
+                ("evidence_snapshots", True, True),
+                ("support_cases", True, True),
+            ]
+            assert (
+                connection.exec_driver_sql(
+                    "SELECT COUNT(*) FROM pg_policies "
+                    "WHERE tablename IN "
+                    "('support_cases', 'case_events', 'evidence_snapshots', 'case_evidence_links') "
+                    "AND policyname = 'resolution_tenant_isolation'"
+                ).scalar_one()
+                == 4
+            )
+
+        _run_alembic(migration_database_url, "upgrade", "head")
 
         _run_alembic(migration_database_url, "downgrade", "024")
         assert tables <= set(inspect(engine).get_table_names())
@@ -613,3 +693,56 @@ async def test_rls_with_check_allows_own_and_rejects_cross_tenant_insert(
         with pytest.raises(DBAPIError) as exc_info:
             await session.flush()
         assert getattr(exc_info.value.orig, "sqlstate", None) == "42501"
+
+
+@pytest.mark.asyncio
+async def test_runtime_role_enforces_append_only_records_while_case_cas_remains_legal(
+    runtime_session_factory: async_sessionmaker[AsyncSession],
+    resolution_runtime_role: str,
+) -> None:
+    context = _context(uuid4())
+
+    async with runtime_session_factory() as session:
+        role_state = (
+            await session.execute(
+                text(
+                    "SELECT current_user, roles.rolsuper, roles.rolbypassrls, "
+                    "pg_get_userbyid(tables.relowner) "
+                    "FROM pg_roles AS roles CROSS JOIN pg_class AS tables "
+                    "WHERE roles.rolname = current_user "
+                    "AND tables.oid = 'case_events'::regclass"
+                )
+            )
+        ).one()
+        assert role_state[:3] == (resolution_runtime_role, False, False)
+        assert role_state[3] != resolution_runtime_role
+
+    opened, _, _ = await _append_case_evidence(runtime_session_factory, context)
+    transitioned = opened.transition(
+        to_status=CaseStatus.ROUTED,
+        expected_version=1,
+        event_id=uuid4(),
+        command_id=uuid4(),
+        actor_id=context.actor_id,
+        reason_code="APPEND_GUARD_CAS_PROBE",
+        occurred_at=opened.updated_at + timedelta(seconds=1),
+        recorded_at=opened.updated_at + timedelta(seconds=2),
+    )
+    async with PostgresResolutionUnitOfWork(runtime_session_factory, context) as work:
+        assert await work.cases.append(context, transitioned) == transitioned.case
+        await work.commit()
+    async with PostgresResolutionUnitOfWork(runtime_session_factory, context) as work:
+        assert await work.cases.get(context, opened.id) == transitioned.case
+
+    for table_name in _APPEND_ONLY_TABLES:
+        for statement in (
+            f'UPDATE "{table_name}" SET tenant_id = tenant_id',
+            f'DELETE FROM "{table_name}"',
+        ):
+            async with runtime_session_factory() as session:
+                await set_resolution_tenant_context(session, context)
+                assert await session.scalar(text(f'SELECT COUNT(*) FROM "{table_name}"')) > 0
+                with pytest.raises(DBAPIError) as exc_info:
+                    await session.execute(text(statement))
+                assert getattr(exc_info.value.orig, "sqlstate", None) == "55000"
+                await session.rollback()

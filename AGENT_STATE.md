@@ -1,5 +1,66 @@
 # Agent State
 
+## 2026-08-22 Update-214 — Resolution Product C4 PostgreSQL append immutability complete; C5 temporal constraints next ✅ START HERE
+
+> **Текущий routing для `D:\RAG_new`:** этот блок и верхняя CURRENT-капсула
+> `docs/SESSION_HANDOFF.md` заменяют Update-213 и более старые `START HERE` для
+> Resolution Product. Baseline HEAD перед C4 — `f0917a3` на `master`; remote
+> отсутствовал. C4 завершён локально поверх этого baseline; итоговый SHA
+> определять по Actual Git. Push, deploy, production migration и runtime
+> routing не выполнялись.
+
+### 214A. Что доставлено в C4
+
+- Additive Alembic revision `026` поверх `025` добавляет schema-qualified
+  PL/pgSQL trigger function с фиксированным `search_path` и SQLSTATE `55000`.
+- Три `BEFORE UPDATE OR DELETE FOR EACH ROW` trigger запрещают изменение и
+  удаление строк из `case_events`, `evidence_snapshots` и
+  `case_evidence_links`; новые строки по-прежнему можно добавлять.
+- `support_cases` намеренно не защищена этим guard: легальный
+  compare-and-swap update остаётся разрешён. Downgrade удаляет только три C4
+  trigger и их функцию, сохраняя revision `025` RLS contract.
+
+### 214B. Проверенная evidence
+
+- Tests-first red на реальном PostgreSQL: exact round-trip contract против
+  head `025` завершился **1 failed** — catalog вернул `0` trigger при ожидаемых
+  `3`.
+- Focused файл: **9 passed**, одно существующее Starlette warning,
+  **308.45s**.
+- Независимый combined schema/domain/PostgreSQL/docs gate: **43 passed**, одно
+  существующее warning, **165.18s**; coverage пакета `resolution` **81.38%**
+  при минимуме 72%.
+- Ruff lint/format green на двух изменённых Python-файлах; strict
+  `mypy resolution --follow-imports=skip --no-incremental` green по 14 source
+  files; schema check green; единственная Alembic head — `026`.
+- Полный `migration_round_trip` прошёл `upgrade -> downgrade base ->
+  re-upgrade` и подтвердил точный set из **23** таблиц. Disposable DB,
+  runtime-role, temporary test-admin и WSL keepalive удалены; рабочая
+  `rag_assistant` не мигрировалась и не очищалась.
+
+### 214C. Делегирование и границы
+
+- Implementation delegate подготовил tests-first WIP, но остановился из-за
+  отсутствующего DSN. QA delegate успел частично усилить catalog assertions,
+  после чего backend вернул внешний `403`. Primary Codex восстановил
+  документированный WSL test path, доказал red, добавил revision `026` и
+  выполнил свежие гейты.
+- Локально завершены C1–C4, но корневая галочка Slice C остаётся открытой:
+  temporal conflict/exclusion, encryption/redaction, restore и production
+  runtime-role operations ещё не закрыты.
+- Live calls, push, deploy, runtime/API routing и production-role provisioning
+  не выполнялись.
+
+### 214D. Следующий один atomic slice
+
+**C5 — PostgreSQL temporal evidence overlap/conflict constraints.** Вывести
+tests-first contract из существующих Slice C/domain-data-model границ: отклонять
+within-source/applicability overlap и сохранять cross-authority conflict. Не
+переходить к Slice D, runtime/API wiring и не расширять C5 сверх этих
+temporal/conflict условий без новой evidence.
+
+---
+
 ## 2026-08-22 Update-213 — Resolution Product C3 PostgreSQL RLS complete; C4 immutability next ✅ START HERE
 
 > **Текущий routing для `D:\RAG_new`:** этот блок и верхняя капсула

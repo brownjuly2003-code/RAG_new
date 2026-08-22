@@ -25,9 +25,13 @@ Evolve the inherited RAG assistant into a self-hosted, verifiable support-resolu
 
 The completed schema contract and compatibility policy are documented in
 `docs/architecture/resolution-contract-schema-v0.1.md`. Slice C is active:
-its pure domain/repository-port boundary, C2 PostgreSQL persistence, and C3
-tenant RLS enforcement are complete locally, while the root checkbox stays
-open. The next named implementation slice is **C4 PostgreSQL append
-immutability guards**. Domain-owner approval of journey postconditions and
-access to a real shipment source of truth remain product prerequisites, not
-details for the LLM to infer.
+its C1 domain/repository-port boundary, C2 PostgreSQL persistence, C3 tenant
+RLS enforcement, and C4 PostgreSQL append-immutability guards are complete
+locally. The root checkbox stays open for temporal conflict/exclusion,
+encryption/redaction, restore, and production runtime-role operations. The
+next named implementation slice is **C5 PostgreSQL temporal evidence
+overlap/conflict constraints**, limited to rejecting within-source/applicability
+overlap while preserving cross-authority conflict; Slice D/runtime/API work is
+not next. Domain-owner approval of journey postconditions and access to a real
+shipment source of truth remain product prerequisites, not details for the LLM
+to infer.

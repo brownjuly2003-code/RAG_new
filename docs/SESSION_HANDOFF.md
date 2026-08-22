@@ -1,6 +1,6 @@
 # Session handoff
 
-## CURRENT — 2026-08-22 / Update-213 reconciled after C3 / RAG_new Resolution Product
+## CURRENT — 2026-08-22 / Update-214 reconciled after C4 / RAG_new Resolution Product
 
 **Назначение:** самодостаточный старт следующей сессии по новой архитектуре,
 без чтения исторических Update-210 и ниже.
@@ -14,19 +14,18 @@ git log -5 --oneline
 git remote -v
 ```
 
-Последний implementation baseline: `master` на `1b5265a`, рабочее дерево было
-чистым, а `git remote -v` не возвращал remote. Если этот handoff закоммичен
-отдельно, HEAD будет docs-only commit поверх `1b5265a`; это не новый
-implementation slice. Actual Git имеет приоритет. Активного writer, test DB,
-temporary role или WSL keepalive после C3 нет.
+Baseline перед C4: `master` на `f0917a3`, remote отсутствовал. C4 завершён
+локально поверх этого baseline; итоговый SHA определять по Actual Git.
+Активного writer, disposable DB, runtime-role, temporary test-admin или WSL
+keepalive после проверки нет.
 
 Далее читать в таком порядке:
 
-1. эта CURRENT-капсула и верхний Update-213 в
+1. эта CURRENT-капсула и верхний Update-214 в
    [`AGENT_STATE.md`](../AGENT_STATE.md);
 2. [`rag-new-architecture.md`](../rag-new-architecture.md) — текущая очередь;
 3. [`architecture/migration-plan.md`](architecture/migration-plan.md) — scope,
-   verification и условия закрытия slice;
+   verification и условия закрытия Slice C;
 4. [`architecture/README.md`](architecture/README.md) — ADR и остальные
    архитектурные документы.
 
@@ -37,68 +36,58 @@ Trust Foundation backlog, Update-210 ниже и историческая час
 
 ### 1. Текущий delivery status
 
-| Commit | Что завершено |
-|--------|---------------|
+| Commit/baseline | Что завершено |
+|-----------------|---------------|
 | `d53e8e7` | Slice A: architecture foundation; только docs/decisions, без runtime change. |
 | `f484347` | Slice B: строгий Resolution Contract v0.1, JSON Schema snapshot, canonical digest, fixtures и compatibility policy. |
 | `1d7e786` | Slice C1: immutable case/evidence domain и tenant-scoped append-only repository/UoW ports. |
 | `538ea6e` | Slice C2: PostgreSQL models, revision `024`, tenant-scoped repository adapters, atomic event append/CAS. |
 | `1b5265a` | Slice C3: revision `025`, forced RLS, transaction-local tenant context и non-owner role contracts. |
+| C4 over `f0917a3` (SHA: Actual Git) | Revision `026`, fixed-search-path append-immutability function и три row trigger; `support_cases` CAS сохранён. |
 
-Последний combined gate: **42 passed**, одно существующее Starlette warning,
-`resolution` coverage **81.38%** при минимуме 72%; Ruff lint/format, MyPy,
-schema snapshot и Alembic head `025` green. Полный real-PostgreSQL migration audit
-прошёл `upgrade -> downgrade base -> re-upgrade` и сверил 23 таблицы. Отдельный
-docs gate после C3: **13 passed**. Disposable DB
-`rag_resolution_migration_c3a1b2c3d4e5` и
-`rag_resolution_repository_c3f6e7d8a9b0`, test role
-`rag_resolution_runtime_c3c4d5e6f7a8` и WSL keepalive были удалены; рабочая
-`rag_assistant` не мигрировалась. Точные границы перечислены в Update-213
+Revision `026` поверх `025` запрещает `UPDATE`/`DELETE` для `case_events`,
+`evidence_snapshots` и `case_evidence_links` через три `BEFORE ... FOR EACH
+ROW` trigger с фиксированным SQLSTATE `55000`. Tests-first real-PostgreSQL red
+против head `025`: **1 failed**, catalog показал `0` trigger вместо ожидаемых
+`3`. После реализации focused файл: **9 passed**, одно существующее Starlette
+warning, **308.45s**.
+
+Независимый combined schema/domain/PostgreSQL/docs gate: **43 passed**, одно
+warning, **165.18s**, coverage `resolution` **81.38%** при минимуме 72%. Ruff
+lint/format green на двух изменённых Python-файлах; strict MyPy green по 14
+source files; schema check green; единственная Alembic head — `026`. Полный
+`migration_round_trip` прошёл `upgrade -> downgrade base -> re-upgrade` и
+подтвердил точный set из 23 таблиц. Disposable DB, runtime-role, temporary
+test-admin и WSL keepalive удалены; `rag_assistant` не мигрировалась и не
+очищалась.
+
+Implementation delegate оставил tests-first WIP из-за отсутствующего DSN; QA
+delegate частично усилил catalog assertions и получил внешний backend `403`.
+Primary Codex восстановил документированный WSL test path, доказал red, добавил
+`026` и выполнил свежие гейты. Подробности и границы — в Update-214
 [`AGENT_STATE.md`](../AGENT_STATE.md).
 
-### 2. Следующий named slice: C4
+### 2. Следующий named slice: C5
 
-**C4 — PostgreSQL append immutability guards:** tests-first добавить отдельную
-revision поверх `025`, запрещающую `UPDATE`/`DELETE` для `case_events`,
-`evidence_snapshots` и `case_evidence_links` под runtime role при сохранении
-легального CAS-update `support_cases`.
-
-Ожидаемая revision — `026` с `down_revision = "025"`, если Actual Git не
-показывает уже созданную следующую revision. Минимальный acceptance contract:
-
-- own-tenant append в каждую append-only таблицу по-прежнему разрешён;
-- runtime-role `UPDATE` и `DELETE` каждой из трёх таблиц fail closed;
-- обычный `SupportCase` compare-and-swap update по-прежнему проходит;
-- downgrade снимает только C4 guards и оставляет revision `025` RLS contract;
-- focused тест сначала демонстрирует отсутствие DB guard, затем проходит на
-  disposable real PostgreSQL под non-owner/non-`BYPASSRLS` ролью;
-- scoped Ruff/format, MyPy, Alembic single-head, combined Resolution gate и
-  один migration round trip зелёные; все временные DB/roles/processes удалены.
-
-Начальная точка реализации:
-`tests/integration/test_resolution_postgres_persistence.py`, затем новая
-revision рядом с `alembic/versions/025_resolution_tenant_rls.py`. Не применять
-эти миграции к рабочей `rag_assistant`.
-
-Граница завершения: C4 не добавляет temporal exclusion, encryption/restore
-или API/runtime routing. Даже зелёный C4 не закрывает
-корневую галочку `Add an append-only case/evidence data model...`: остальные
-gates из migration plan сохраняют Slice C открытым.
+**C5 — PostgreSQL temporal evidence overlap/conflict constraints.** Вывести
+tests-first contract из существующих Slice C/domain-data-model границ:
+отклонять within-source/applicability overlap и сохранять cross-authority
+conflict. Точное представление сначала сверить с существующей моделью; не
+переходить к Slice D, runtime/API wiring и не расширять этот slice новыми
+temporal требованиями без evidence.
 
 ### 3. Явно не сделано и не разрешено считать сделанным
 
-- нет DB-level append immutability, полного
-  temporal/encryption/redaction/restore evidence и production runtime-role
-  provisioning/grants;
-- revisions `024`/`025` проверялись только на disposable test DB; рабочая/production
-  migration не применялась и runtime routing не включался;
+- C1–C4 завершены локально, но корневая галочка Slice C остаётся открытой до
+  temporal conflict/exclusion, encryption/redaction, restore и production
+  runtime-role operations;
+- рабочая/production migration не применялась, production roles/grants не
+  создавались и runtime routing не включался;
 - не выполнялись push, deploy, live-provider вызовы или production mutation;
 - новый архитектурный поток не закрыл унаследованные Trust Foundation и
   release gates;
-- remote в этом checkout не настроен, поэтому утверждать remote/CI status по
-  этому checkout нельзя.
-- C4 implementation ещё не начат; на старте следующей сессии не должно быть
-  ожидаемого source/test WIP.
+- remote в этом checkout не настроен, поэтому remote/CI status по нему
+  неизвестен.
 
 На один пользовательский turn брать не более одного atomic slice. После
 зелёной focused проверки и одной пропорциональной независимой проверки —

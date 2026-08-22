@@ -69,12 +69,15 @@ Delivery status:
   four C2 tables; transaction-local context, default deny, own-tenant
   read/write, and cross-tenant negatives passed under a non-owner,
   non-`BYPASSRLS` role.
-- **C4 next:** DB-level `UPDATE`/`DELETE` immutability guards for append-only
-  events, evidence snapshots, and case/evidence links while preserving legal
-  `SupportCase` compare-and-swap updates.
-- Slice C remains open until append immutability, temporal constraints,
-  encryption/redaction, restore smoke, and production runtime-role operations
-  are green.
+- **C4 complete locally:** revision `026` adds DB-level `UPDATE`/`DELETE`
+  immutability guards for append-only events, evidence snapshots, and
+  case/evidence links while preserving legal `SupportCase` compare-and-swap
+  updates.
+- **C5 next:** PostgreSQL temporal evidence overlap/conflict constraints,
+  limited to rejecting within-source/applicability overlap while preserving
+  cross-authority conflict.
+- Slice C remains open until temporal conflict/exclusion, encryption/redaction,
+  restore smoke, and production runtime-role operations are green.
 
 ### Slice D — Read-only shipment-status shadow loop
 

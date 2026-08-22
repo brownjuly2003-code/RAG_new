@@ -5,8 +5,11 @@
 Текущая выбранная владельцем очередь находится в
 [`rag-new-architecture.md`](rag-new-architecture.md), а точный scope и DoD — в
 [`docs/architecture/migration-plan.md`](docs/architecture/migration-plan.md).
-Срезы C1–C3 завершены локально; следующий и ещё не начатый срез — **C4
-PostgreSQL append immutability guards**. Стартовая капсула:
+Срезы C1–C4 завершены локально; следующий и ещё не начатый срез — **C5
+PostgreSQL temporal evidence overlap/conflict constraints**: отклонение
+within-source/applicability overlap при сохранении cross-authority conflict.
+Корневая Slice C остаётся открытой; к Slice D/runtime/API пока не переходить.
+Стартовая капсула:
 [`docs/SESSION_HANDOFF.md`](docs/SESSION_HANDOFF.md).
 
 Разделы ниже относятся к унаследованному Trust Foundation remediation stream.
