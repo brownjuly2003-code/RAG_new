@@ -1,5 +1,56 @@
 # Agent State
 
+## 2026-08-22 Update-229 — G4 versioned corpus coverage locally complete in containing scoped commit ✅ START HERE
+
+> **Канонический старт для `D:\RAG_new`:** читать этот блок, затем верхнюю
+> CURRENT-капсулу `docs/SESSION_HANDOFF.md` и
+> `g4-versioned-resolution-corpus-coverage.md`. Они заменяют Update-228 как
+> routing truth. Exact delivery SHA брать из Actual Git.
+
+### 229A. Actual Git и delivery state
+
+- G4 implementation, tests, canonical snapshot и durable docs доставлены
+  scoped explicit-pathspec commit, содержащим этот Update-229; точный SHA
+  определяет Actual Git.
+- Remote не настроен. Push, deploy, runtime, live и external actions не
+  выполнялись. Tests-first RED был ожидаемым `ImportError`.
+
+### 229B. Доставленный G4 contract
+
+- Immutable versioned corpus содержит 3 persona, 4 adversarial intent, 7
+  required fault surfaces и 17 synthetic terminal-path scenarios.
+- Compiler повторно валидирует hidden paths против exact contract и сам
+  выводит coverage; caller не может заявить произвольный target.
+- Structural denominators фиксированы на 22 branch targets и 7 fault targets.
+  Coverage учитывается только при exact manifest contract/scenario-set pins,
+  membership и full scenario binding. Foreign pins дают zero numerators;
+  missing/extra/drifted scenarios не засчитываются.
+- Canonical snapshot/SHA и reports содержат только identities, digests,
+  counts/issues: без raw candidate/world/fault/oracle/response payload и без
+  business KPI, promotion или release verdict.
+
+### 229C. Verification и QA truth
+
+- Focused final: **9 passed**.
+- QA follow-up 1/1 нашёл и исправил foreign-pin numerator credit, подтвердил
+  свой RED и завершил focused/Ruff/format/one-source MyPy green.
+- Independent gate: **117 passed**, одно известное предупреждение
+  Starlette/httpx2; Ruff green; **12 files formatted**; strict MyPy green по 5
+  sources; `git diff --check` green.
+
+### 229D. Границы и следующий slice
+
+- Полный Slice G остаётся открыт. G4 не добавляет runtime/live outcomes,
+  business metrics, DB, `ShipmentStatusShadowLoop`, shadow/canary, promotion,
+  deploy или push.
+- Следующий named slice — **G5: versioned synthetic outcome ledger +
+  deterministic VR precision/VRY/eligibility coverage report with fixed
+  denominators**, всё ещё без live outcome claims или promotion.
+- Содержащий этот Update-229 commit закрывает G4. Не повторять его green gates
+  и не начинать G5 в этом turn.
+
+---
+
 ## 2026-08-22 Update-228 — G3 replay trials locally complete in containing scoped commit ✅ START HERE
 
 > **Канонический старт для `D:\RAG_new`:** читать этот блок, затем верхнюю

@@ -1,0 +1,297 @@
+{
+  "adversarial_intents": [
+    {
+      "content_digest": "213c906c31985d9c60a6f8f7bdceebfdf75ce6ca07eeb0d8e3d6b74743b77b82",
+      "intent_id": "intent-cross-tenant",
+      "version": "1.0.0"
+    },
+    {
+      "content_digest": "1cd9f8cf44e76bf83a9d86afb12f7e5d6e5e9fc9003c6bc861ae58f71c3f4e74",
+      "intent_id": "intent-pii-exfiltration",
+      "version": "1.0.0"
+    },
+    {
+      "content_digest": "a1832071b0f5ae2b3f98b9948dc788edc3f95e0193539f5247781ca94a6b0b06",
+      "intent_id": "intent-prompt-injection",
+      "version": "1.0.0"
+    },
+    {
+      "content_digest": "c70941c0b8e0eae37c0a7108b207de46bc9fc38eac0f7eedbf9ffb2dd1baded5",
+      "intent_id": "intent-success-pressure",
+      "version": "1.0.0"
+    }
+  ],
+  "contract_pin": {
+    "artifact_id": "aircargo.shipment-status",
+    "digest": "5d4d069f317df0c18f9e132b6fdbf9649bd6136808b2dc14507a0f2b10c99e38",
+    "kind": "contract",
+    "version": "0.1.0"
+  },
+  "corpus_id": "shipment-status-synthetic",
+  "evidence_class": "synthetic_local",
+  "faults": [
+    {
+      "content_digest": "bce325b05d0fc1e20013f6d62aaac31757d0735bd48f1da836c00dec6889fdfc",
+      "coverage_target_id": "fcov-1023456789abcdef1023456789abcdef",
+      "fault_id_digest": "998c2adf21505f5845b1827080671e754f448712dbc96d4d7e00ec9a96ad15ce",
+      "required": true,
+      "surface": "contract",
+      "version": "1.0.0"
+    },
+    {
+      "content_digest": "67f60b1217e25566c863c72aa26bd1684d2bd35fbbcf0c08ddea8703a3ad6413",
+      "coverage_target_id": "fcov-213456789abcdef0213456789abcdef0",
+      "fault_id_digest": "1625098077ba54b51eff2c5290f3fccdb992c986cb3c5429bb96ebdbf2efe2b1",
+      "required": true,
+      "surface": "policy",
+      "version": "1.0.0"
+    },
+    {
+      "content_digest": "b9da422b34a9646bc7016fcd4956f35d2648c756c189904ab90f544247ad0927",
+      "coverage_target_id": "fcov-32456789abcdef0132456789abcdef01",
+      "fault_id_digest": "fa6ff2937d6551adc2e37056735efab1f934296de401e3337931842e259e14db",
+      "required": true,
+      "surface": "retriever",
+      "version": "1.0.0"
+    },
+    {
+      "content_digest": "b167906e2a45003531b02af96f5692fff075903dc58bdfb1ad3c38743be07bc9",
+      "coverage_target_id": "fcov-4356789abcdef0124356789abcdef012",
+      "fault_id_digest": "359515a301b331ce044011dbd3110287ae5d42ab90a7f204fe66f01b0f4ca0d9",
+      "required": true,
+      "surface": "connector",
+      "version": "1.0.0"
+    },
+    {
+      "content_digest": "a40e72d0a346ce7662265cbe027e1b8fd3a2fd833c78a6008154d7addb328a8f",
+      "coverage_target_id": "fcov-546789abcdef0123546789abcdef0123",
+      "fault_id_digest": "f9472ca64c46ffdc3fcc38f4f28c75fa73dc08242402d00481665a684abf2a2e",
+      "required": true,
+      "surface": "postcondition",
+      "version": "1.0.0"
+    },
+    {
+      "content_digest": "2ec25b94078cb49b358bef18304a03748fd55c4cc01cb3dd5f144b62936b871a",
+      "coverage_target_id": "fcov-65789abcdef0123465789abcdef01234",
+      "fault_id_digest": "792c43eede640a7230857adb4192f61c0bd1188051f97afb1df333377650b592",
+      "required": true,
+      "surface": "disclosure",
+      "version": "1.0.0"
+    },
+    {
+      "content_digest": "4ebb1195a962962836d50c385ccd9f25557a55c1b6beeee4547a6db110b8a07c",
+      "coverage_target_id": "fcov-7689abcdef0123457689abcdef012345",
+      "fault_id_digest": "6c17a8c1c177b5ca2463219e3894bdc7b7e30de223a96522d260db54329fa403",
+      "required": true,
+      "surface": "evaluator_infrastructure",
+      "version": "1.0.0"
+    }
+  ],
+  "personas": [
+    {
+      "content_digest": "61b9d4a87cbcc013bb8c2651136d8c85ce5a5cf0a0b360fdccbdbf7cdb819b6d",
+      "persona_id": "persona-ambiguous",
+      "version": "1.0.0"
+    },
+    {
+      "content_digest": "c3ccffd9e4026c8575540d2d6d054e5818bb7bf6a6a86d7baad100184bee9e77",
+      "persona_id": "persona-correction",
+      "version": "1.0.0"
+    },
+    {
+      "content_digest": "8f4de6519ee8619624312f6312d1fe5cc28c8256e3929687fff3fbee5158757c",
+      "persona_id": "persona-direct",
+      "version": "1.0.0"
+    }
+  ],
+  "required_branch_target_count": 22,
+  "required_branch_target_ids_digest": "61f98579300c708c319120f801bdeeaf50d30f80e8d1d6ea11bb74a186a6a3ff",
+  "required_fault_target_ids": [
+    "fcov-1023456789abcdef1023456789abcdef",
+    "fcov-213456789abcdef0213456789abcdef0",
+    "fcov-32456789abcdef0132456789abcdef01",
+    "fcov-4356789abcdef0124356789abcdef012",
+    "fcov-546789abcdef0123546789abcdef0123",
+    "fcov-65789abcdef0123465789abcdef01234",
+    "fcov-7689abcdef0123457689abcdef012345"
+  ],
+  "scenarios": [
+    {
+      "adversarial_intent_ids": [
+        "intent-prompt-injection"
+      ],
+      "coverage_target_count": 4,
+      "coverage_target_ids_digest": "de6516452453328ba3b093bea5c3ab90a5e518d8b4e38dee674935052317d290",
+      "fault_coverage_target_ids": [
+        "fcov-1023456789abcdef1023456789abcdef"
+      ],
+      "persona_id": "persona-direct",
+      "scenario_binding_digest": "bd60cb851950713ac6cf3691cd39ec195946511c3a5c16a3da20dd01d6540eff",
+      "scenario_id": "case-01"
+    },
+    {
+      "adversarial_intent_ids": [
+        "intent-cross-tenant"
+      ],
+      "coverage_target_count": 4,
+      "coverage_target_ids_digest": "6048cc672206046aa5e3a45f5fb9535e96995ef1e987d6cab756120da8e83370",
+      "fault_coverage_target_ids": [
+        "fcov-213456789abcdef0213456789abcdef0"
+      ],
+      "persona_id": "persona-ambiguous",
+      "scenario_binding_digest": "6d492c3b9988230c5612f6a9bde4df1355f3785b2a2338b424610bc502dc2a5e",
+      "scenario_id": "case-02"
+    },
+    {
+      "adversarial_intent_ids": [
+        "intent-pii-exfiltration"
+      ],
+      "coverage_target_count": 4,
+      "coverage_target_ids_digest": "d4803fe042c44917d81f523b4fd25ffb28b1af6701b330069acc629aab1a938f",
+      "fault_coverage_target_ids": [
+        "fcov-32456789abcdef0132456789abcdef01"
+      ],
+      "persona_id": "persona-correction",
+      "scenario_binding_digest": "d64f6b5bf0b7a7cf8457d08a41b7c85e6b3f6aaa05d8d55a9a6f36e12ff0bf91",
+      "scenario_id": "case-03"
+    },
+    {
+      "adversarial_intent_ids": [
+        "intent-success-pressure"
+      ],
+      "coverage_target_count": 4,
+      "coverage_target_ids_digest": "67f356593099a7327896844f0bbf6e199d4eb24f827e59a07a37a5bbcfdb2680",
+      "fault_coverage_target_ids": [
+        "fcov-4356789abcdef0124356789abcdef012"
+      ],
+      "persona_id": "persona-direct",
+      "scenario_binding_digest": "ad731a52f9cb47bae1e931c8241b5bcb7158643d6e85b252772146a282289af5",
+      "scenario_id": "case-04"
+    },
+    {
+      "adversarial_intent_ids": [],
+      "coverage_target_count": 5,
+      "coverage_target_ids_digest": "5f2ebd0a21c558f6c05012766d5554b095e686c351ee3025338a4329a10c1f88",
+      "fault_coverage_target_ids": [
+        "fcov-546789abcdef0123546789abcdef0123"
+      ],
+      "persona_id": "persona-ambiguous",
+      "scenario_binding_digest": "d2cd273dd34c5d862c4205eb0898ae6b4ed27fc748a375134c130e4109f05608",
+      "scenario_id": "case-05"
+    },
+    {
+      "adversarial_intent_ids": [],
+      "coverage_target_count": 5,
+      "coverage_target_ids_digest": "40cdc2682cb55e69c3554f86fdf5c86efe09760eee50bd21d5e1e50fbae3b789",
+      "fault_coverage_target_ids": [
+        "fcov-65789abcdef0123465789abcdef01234"
+      ],
+      "persona_id": "persona-correction",
+      "scenario_binding_digest": "75098bc0285af76c757f39c56fce11c7abaa8a6e07b8323e595427636f9d322b",
+      "scenario_id": "case-06"
+    },
+    {
+      "adversarial_intent_ids": [],
+      "coverage_target_count": 6,
+      "coverage_target_ids_digest": "c3544d3432a7274d4facfc8740bc87d1fb8ee74a8d93dc1c68db48837ce5d507",
+      "fault_coverage_target_ids": [
+        "fcov-7689abcdef0123457689abcdef012345"
+      ],
+      "persona_id": "persona-direct",
+      "scenario_binding_digest": "782a610be8ef7df37a5f438dfdc9a3817e955412b1275f8ef14dc3c45ae9740b",
+      "scenario_id": "case-07"
+    },
+    {
+      "adversarial_intent_ids": [],
+      "coverage_target_count": 6,
+      "coverage_target_ids_digest": "cfdebdc353f6e09712fc704a341a98f29b8ee4f6f5a77c44032cdecd695e5f63",
+      "fault_coverage_target_ids": [],
+      "persona_id": "persona-ambiguous",
+      "scenario_binding_digest": "f3492fc35d27c95a31336bf832ffbcb8aec4fc2119a9a733944768d73a14b5bc",
+      "scenario_id": "case-08"
+    },
+    {
+      "adversarial_intent_ids": [],
+      "coverage_target_count": 6,
+      "coverage_target_ids_digest": "0015e609c043229eae9094f2b8c48a28f92b64c4fbb5fc12ade4b9b8afa98931",
+      "fault_coverage_target_ids": [],
+      "persona_id": "persona-correction",
+      "scenario_binding_digest": "ed025e85f0cd1d1170785507acb7afcbc3ae649fd27c3e0d0642a0e5177713ea",
+      "scenario_id": "case-09"
+    },
+    {
+      "adversarial_intent_ids": [],
+      "coverage_target_count": 3,
+      "coverage_target_ids_digest": "c634c3146d79f655f3b9347a1d66c5fd19a76683882ffa9bafbed951f47f70da",
+      "fault_coverage_target_ids": [],
+      "persona_id": "persona-direct",
+      "scenario_binding_digest": "85a2afb424e7a06247b14261eb87120904369bb728c3d6b3468736ee29458dbf",
+      "scenario_id": "case-10"
+    },
+    {
+      "adversarial_intent_ids": [],
+      "coverage_target_count": 3,
+      "coverage_target_ids_digest": "b6f6a785547e8f5470cc54a1e77f1ef1fa74651dade0b40f2625845fe4977fdd",
+      "fault_coverage_target_ids": [],
+      "persona_id": "persona-ambiguous",
+      "scenario_binding_digest": "c8ed7b76fb8489300b1c213f6518f77fcb5db4141b2a6f590978bfad6e1cb69d",
+      "scenario_id": "case-11"
+    },
+    {
+      "adversarial_intent_ids": [],
+      "coverage_target_count": 3,
+      "coverage_target_ids_digest": "f382a486cfe7561ab2001704d403865ffe5fecb548bda02ce2a08dc5104a27f9",
+      "fault_coverage_target_ids": [],
+      "persona_id": "persona-correction",
+      "scenario_binding_digest": "6d53010f1c5daad3434cc000a8d5637a5f506fd76b62076f8f99c069a9c25680",
+      "scenario_id": "case-12"
+    },
+    {
+      "adversarial_intent_ids": [],
+      "coverage_target_count": 3,
+      "coverage_target_ids_digest": "7e9a6a39dc2515d3abf000ab0104537481ae2419cb2fc3a93892eaec5cab26dd",
+      "fault_coverage_target_ids": [],
+      "persona_id": "persona-direct",
+      "scenario_binding_digest": "0dfe669390a0dd991399184f4d183aa35ddec0358a3cde222e9cd61c93656037",
+      "scenario_id": "case-13"
+    },
+    {
+      "adversarial_intent_ids": [],
+      "coverage_target_count": 2,
+      "coverage_target_ids_digest": "4eab3d452031d48e9614c63f843a13f43e9bb58b3dda574797e0811dfd9f1252",
+      "fault_coverage_target_ids": [],
+      "persona_id": "persona-ambiguous",
+      "scenario_binding_digest": "f05c22b33e949cfb7a863beae84643f66b8c5166d3f9cdc8285d4e8e3d9a3f29",
+      "scenario_id": "case-14"
+    },
+    {
+      "adversarial_intent_ids": [],
+      "coverage_target_count": 2,
+      "coverage_target_ids_digest": "37730581d3b29dfa6c70cfb10bc4ce2663237843ada39e9f13e3160b4a1582c2",
+      "fault_coverage_target_ids": [],
+      "persona_id": "persona-correction",
+      "scenario_binding_digest": "f0f880127c78d625a71d5cbe022005e420a7cd5113c94114cc2aa5d9494399fa",
+      "scenario_id": "case-15"
+    },
+    {
+      "adversarial_intent_ids": [],
+      "coverage_target_count": 1,
+      "coverage_target_ids_digest": "468b1dd464eea10cb72efddc7fa2ac92c89f95f7605d66b4d5be420ef9aec450",
+      "fault_coverage_target_ids": [],
+      "persona_id": "persona-direct",
+      "scenario_binding_digest": "aeaa607ed52f2c2d899c31f5ea5fc40928b230666cf86df2ec061f5deecb1e1e",
+      "scenario_id": "case-16"
+    },
+    {
+      "adversarial_intent_ids": [],
+      "coverage_target_count": 1,
+      "coverage_target_ids_digest": "1394ee9b24be5979a79d2c820734f803d911019f95044fc6eb7bafddf83164ad",
+      "fault_coverage_target_ids": [],
+      "persona_id": "persona-ambiguous",
+      "scenario_binding_digest": "7b8174708f15d698ec33dcc69a0fd9b1acdec8a313935ea8044b7d4a5de4e082",
+      "scenario_id": "case-17"
+    }
+  ],
+  "schema_version": "resolution-scenario-corpus/v0.1",
+  "version": "2026.08.22-g4"
+}

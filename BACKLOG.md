@@ -5,34 +5,32 @@
 Текущая выбранная владельцем очередь находится в
 [`rag-new-architecture.md`](rag-new-architecture.md), а точный scope и DoD — в
 [`docs/architecture/migration-plan.md`](docs/architecture/migration-plan.md).
-Срезы C1–C8, D, E1, E2, F, G1 и G2 завершены. G3 pure local replay
-implementation/tests/docs локально завершены в scoped commit, содержащем этот
-update; точный SHA определяет Actual Git. Remote отсутствует;
-push/deploy/live/external actions не выполнялись. Tests-first RED был
-ожидаемым `ImportError`.
+Срезы C1–C8, D, E1, E2, F и G1–G4 завершены локально. G4 versioned
+corpus/coverage implementation, tests, snapshot и docs доставлены scoped
+commit, содержащим этот update; точный SHA определяет Actual Git. Remote
+отсутствует; push/deploy/live/external actions не выполнялись. Tests-first RED
+был ожидаемым `ImportError`.
 
-Manifest/impact-bound callback replay выполняет ровно 3 deterministic
-derived-seed trials на planned scenario. Immutable plans, trial records,
-structural issues и summaries canonical/hash-bound; structural failures дают
-явное `ERROR` evidence. Denominators фиксированы fail closed:
-`pass^1 = successful_trials / (3 * N)` и
-`pass^3 = all_three_success_scenarios / N`. Missing, duplicate, extra,
-foreign, drifted или callback-failed evidence не улучшает numerator и не
-уменьшает denominator. Raw candidate/world/fault/hidden/response compartments
-не сериализуются в canonical records.
+G4 компилирует 17 synthetic terminal-path scenarios и выводит coverage только
+из revalidated hidden contract paths. Versioned corpus содержит 3 persona, 4
+adversarial intent и 7 required fault surfaces; canonical snapshot и SHA guard
+не сериализуют raw candidate/world/fault/oracle/response payload. Structural
+denominators фиксированы: 22 pinned contract branches и 7 required fault
+targets. Coverage учитывается только при exact contract/scenario-set pins,
+membership и full scenario binding; foreign pins обнуляют numerators, а
+missing/extra/drifted scenarios не могут закрыть completeness.
 
-Focused до QA: 19 passed. QA follow-up 1/1 исправил structural records и public
-journey-contract gate; final 20 passed, Ruff/format/MyPy green. Independent
-gate: 108 passed + one known Starlette/httpx2 warning; Ruff green; 8 files
-formatted; focused MyPy 4 sources green; diff check green.
+Focused final: 9 passed. QA follow-up 1/1 нашёл и исправил foreign-pin
+numerator credit, подтвердил RED и завершился green. Independent gate: 117
+passed + one known Starlette/httpx2 warning; Ruff green; 12 files formatted;
+strict MyPy 5 sources green; diff check green.
 
-Полный Slice G остаётся открыт. Следующий named slice — **G4: versioned
-persona/adversarial/fault corpus + manifest-bound branch/fault coverage
-completeness**, всё ещё без runtime/live/business KPI/promotion. G3 также не
-добавляет DB persistence, loop integration, shadow/canary, deploy или push.
-Полная truth — в
-[`docs/SESSION_HANDOFF.md`](docs/SESSION_HANDOFF.md) и
-[`g3-manifest-bound-replay-trials.md`](g3-manifest-bound-replay-trials.md).
+Полный Slice G остаётся открыт. Следующий named slice — **G5: versioned
+synthetic outcome ledger + deterministic VR precision/VRY/eligibility coverage
+report with fixed denominators**, всё ещё без live outcome claims,
+runtime/DB/loop integration, shadow/canary, promotion, deploy или push. Полная
+truth — в [`docs/SESSION_HANDOFF.md`](docs/SESSION_HANDOFF.md) и
+[`g4-versioned-resolution-corpus-coverage.md`](g4-versioned-resolution-corpus-coverage.md).
 
 Закрывающие C7/C8-капсулы:
 [`c7-resolution-restore-smoke.md`](c7-resolution-restore-smoke.md) и

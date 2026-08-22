@@ -1,6 +1,73 @@
 # Session handoff
 
-## CURRENT — 2026-08-22 / Update-228 G3 replay trials locally complete in containing scoped commit
+## CURRENT — 2026-08-22 / Update-229 G4 versioned corpus coverage locally complete in containing scoped commit
+
+**Назначение:** восстановить exact delivery SHA из Actual Git и направить
+следующую сессию к G5 без повторения green gates или завышения runtime/business
+claims.
+
+### 0. Actual Git и обязательная первая проверка
+
+```powershell
+Set-Location -LiteralPath D:\RAG_new
+git status --short --branch
+git log -5 --oneline
+git remote -v
+```
+
+G4 implementation, tests, canonical snapshot и docs доставлены scoped commit,
+содержащим этот Update-229; точный SHA определяет Actual Git. Remote
+отсутствует; push/deploy/live/external actions не выполнялись.
+
+### 0A. Один экран истины
+
+| Поле | Проверенный факт |
+|------|-----------------|
+| G4 status | Locally complete in containing explicit-pathspec commit; RED был expected `ImportError` |
+| Corpus | 3 versioned personas, 4 adversarial intents, 7 required fault surfaces, 17 synthetic terminal paths |
+| Derived coverage | Hidden paths revalidated against exact contract; caller cannot supply branch coverage |
+| Fixed denominators | 22 pinned branch targets + 7 required fault targets |
+| Manifest binding | Exact contract/scenario-set pins, membership and full scenario binding required; foreign pins zero numerators |
+| Canonical privacy | Snapshot/SHA/report exclude raw candidate/world/fault/oracle/response payload |
+| QA | Follow-up 1/1 fixed foreign-pin numerator credit after RED; final focused 9 + Ruff/format/MyPy green |
+| Independent gate | 117 passed + 1 known Starlette/httpx2 warning; Ruff, 12 formatted, strict MyPy 5 sources, diff green |
+| Следующий один slice | G5 versioned synthetic outcome ledger + deterministic VR precision/VRY/eligibility coverage; no live outcome/promotion |
+
+### 1. Доставленный contract
+
+- [`../evaluation/resolution/corpus.py`](../evaluation/resolution/corpus.py)
+  задаёт immutable authoring/compiled corpus, versioned asset pins, derived
+  branch/fault coverage и canonical structural reports.
+- [`../evaluation/resolution/corpora/v0.1/shipment-status.json`](../evaluation/resolution/corpora/v0.1/shipment-status.json)
+  фиксирует privacy-safe canonical snapshot; соседний SHA guard проверяется
+  тестом.
+- Completeness вычисляется, а не задаётся caller. Missing, extra, foreign или
+  drifted evidence оставляет denominators неизменными и добавляет явные issues.
+
+### 2. Verification evidence
+
+- Tests-first RED: expected `ImportError` нового public corpus API.
+- Focused final: **9 passed**.
+- QA follow-up 1/1: foreign identity раньше сохраняла 22/7 numerators; mutation
+  RED это доказал, consolidated fix обнуляет numerators при fixed denominators.
+- Independent final: **117 passed**, одно известное предупреждение
+  Starlette/httpx2; Ruff clean; **12 files already formatted**; strict MyPy
+  green по 5 sources; `git diff --check` green.
+
+### 3. Точный stop/resume contract
+
+1. Считать содержащий Update-229 scoped commit локальной delivery G4; exact
+   SHA брать из Actual Git и не переписывать вручную.
+2. Не повторять focused/adjacent, Ruff, format, MyPy или diff gates без нового
+   diff либо fresh failing evidence; QA follow-up исчерпан.
+3. Полный Slice G остаётся открыт. Следующий named slice — G5 versioned
+   synthetic outcome ledger + deterministic VR precision/VRY/eligibility
+   coverage with fixed denominators. Не начинать live outcomes, runtime/DB,
+   shadow/canary, promotion, deploy/push.
+
+---
+
+## Superseded — 2026-08-22 / Update-228 G3 replay trials locally complete in containing scoped commit
 
 **Назначение:** восстановить точный delivery SHA из Actual Git и направить
 следующую сессию к G4 без повторения green gates или завышения runtime/release

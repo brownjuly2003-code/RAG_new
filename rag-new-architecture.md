@@ -14,7 +14,7 @@ Evolve the inherited RAG assistant into a self-hosted, verifiable support-resolu
 - [x] Add a pure temporal-knowledge and projection-binding contract -> Verify: bitemporal selection, exact applicability, fail-closed conflicts, tenant/config drift, and rebuild/rollback known cases pass without changing runtime defaults.
 - [x] Persist and integrate temporal knowledge authority -> Verify: revision `029` round trip, forced RLS, immutability/system-close guards, bitemporal exclusion, exact approved identities, and retrieval allowlisting pass on real PostgreSQL.
 - [x] Add the governed action gateway and wrap `create_ticket` as the first reversible/idempotent write -> Delivered locally at `ed82d6a`; retries and disconnects cannot create duplicate side effects, and denial never calls the connector.
-- [ ] Add scenario compilation, state grading, replay manifests, and VR/VRY reporting -> G1, G2, and G3 are locally committed; G4 versioned persona/adversarial/fault coverage is next. Full Slice G remains open.
+- [ ] Add scenario compilation, state grading, replay manifests, and VR/VRY reporting -> G1 through G4 are locally complete; G5 versioned synthetic outcome/VR reporting is next. Full Slice G remains open.
 - [ ] Promote one journey through shadow and canary only after the inherited remediation stream is green -> Verify: rollback, SLO, security, and outcome gates are backed by fresh non-skipped evidence.
 
 ## Done when
@@ -92,7 +92,15 @@ denominators define `pass^1` over `3 * N` planned trials and `pass^3` over `N`
 planned scenarios. Raw candidate/world/fault/hidden/response payloads remain
 compartmentalized outside canonical records.
 
-Full Slice G remains open. G4 versioned persona/adversarial/fault corpus plus
-manifest-bound branch/fault coverage completeness is next. Runtime/live
-execution, business KPIs, loop integration, database, shadow/canary, live
-promotion, external connector, deploy and push remain outside G3.
+G4 is locally complete in the scoped commit containing this update; resolve its
+exact SHA from Actual Git. It adds an immutable versioned synthetic
+persona/adversarial/fault corpus, derives branch coverage from revalidated
+hidden contract paths, fixes denominators at all 22 pinned branches and seven
+required fault surfaces, and credits coverage only for exact manifest and
+scenario bindings. A privacy-safe canonical snapshot and SHA guard contain no
+raw candidate/world/fault/oracle/response payload.
+
+Full Slice G remains open. G5 versioned synthetic outcome ledger plus
+deterministic VR precision/VRY/eligibility coverage reporting is next. Runtime
+and live outcomes, loop integration, database, shadow/canary, promotion,
+external connector, deploy and push remain outside G4.

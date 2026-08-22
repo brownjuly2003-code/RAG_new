@@ -226,11 +226,32 @@ passed with Ruff/format/MyPy green. Independent verification passed 108 tests
 with one known Starlette/httpx2 warning; Ruff, eight-file format, focused MyPy
 over four sources, and diff check were green.
 
-The next named slice is **G4: versioned persona/adversarial/fault corpus plus
-manifest-bound branch/fault coverage completeness**, still without
-runtime/live execution, business KPIs, or promotion. G3 does not integrate
-`ShipmentStatusShadowLoop`, persist database state, run shadow/canary, deploy
-or push.
+Delivery status (2026-08-22): **G4 versioned Resolution corpus and structural
+coverage are locally complete in the scoped commit containing this update;
+resolve its exact SHA from Actual Git; full Slice G remains open.** The pure
+compiler revalidates 17 synthetic terminal paths against the exact pinned
+contract and derives coverage instead of accepting caller-supplied targets.
+Three versioned personas, four adversarial intents, and seven required fault
+surfaces are bound through privacy-safe canonical digests and an exact
+scenario-set pin.
+
+The structural report fixes denominators at all 22 contract branches and all
+seven required fault targets. Coverage is credited only when contract pin,
+scenario-set pin, membership, and complete scenario bindings match the
+compiled corpus. Foreign pins zero both numerators; missing, extra, or drifted
+scenarios cannot count. The canonical snapshot contains no raw
+candidate/world/fault/hidden-oracle/response payload and is not a business,
+promotion, or release verdict.
+
+Focused verification passed nine tests. The single QA follow-up found and
+fixed foreign-pin numerator credit and finished green; independent verification
+passed 117 adjacent tests with one known Starlette/httpx2 warning, plus Ruff,
+12-file format check, strict MyPy over five sources, and diff check.
+
+The next named slice is **G5: versioned synthetic outcome ledger plus
+deterministic VR precision/VRY/eligibility coverage reporting with fixed
+denominators**, still without live outcome claims, runtime integration,
+shadow/canary, promotion, deploy, or push.
 
 ### Slice H — Operator surfaces and pilot
 
