@@ -1,5 +1,69 @@
 # Agent State
 
+## 2026-08-22 Update-213 — Resolution Product C3 PostgreSQL RLS complete; C4 immutability next ✅ START HERE
+
+> **Текущий routing для `D:\RAG_new`:** этот блок заменяет Update-212 и все
+> более старые `START HERE` для Resolution Product. База перед C3: ветка
+> `master`, HEAD `538ea6e`, clean worktree, remote не настроен. Итоговый SHA
+> C3 определять через Actual Git: implementation и status update входят в один
+> scoped slice. Push/deploy/production migration/runtime routing не
+> выполнялись.
+
+### 213A. Что доставлено в C3
+
+- Additive Alembic revision `025` включает `ENABLE ROW LEVEL SECURITY` и
+  `FORCE ROW LEVEL SECURITY` для `support_cases`, `case_events`,
+  `evidence_snapshots` и `case_evidence_links`.
+- Одна policy `resolution_tenant_isolation` на каждой таблице действует для
+  `PUBLIC` и проверяет существующие/новые строки по transaction-local
+  `app.current_tenant_id`; отсутствующий или сброшенный GUC fail-closed в
+  нулевую видимость.
+- `PostgresResolutionUnitOfWork` теперь требует `TenantContext`, выставляет его
+  через `set_config(..., true)` и запрещает использовать другой tenant context
+  внутри того же UoW. Repository predicates и composite ownership constraints
+  остаются дополнительными слоями.
+- Real-PostgreSQL tests создают отдельную non-owner роль с
+  `NOSUPERUSER`/`NOBYPASSRLS`, подтверждают default deny без context,
+  own-tenant read/write, cross-tenant write SQLSTATE `42501`, reset после
+  commit и upgrade/downgrade catalog contract.
+
+### 213B. Проверенная evidence
+
+- Tests-first red: ожидаемый import error отсутствующего
+  `set_resolution_tenant_context`; PostgreSQL не запускался.
+- Focused real-PostgreSQL gate: **8 passed**.
+- Единственный QA follow-up добавил недостающий allowed own-tenant write
+  assertion; после него independent combined gate: **42 passed**, одно
+  существующее Starlette warning, coverage `resolution` **81.38%** при gate
+  72%.
+- Ruff lint/format, strict MyPy по `resolution`, schema/head checks green;
+  единственная Alembic head — `025`.
+- `scripts/migration_round_trip.py` прошёл полный `upgrade -> downgrade base ->
+  re-upgrade` и подтвердил прежний точный set из **23** таблиц. Две disposable
+  DB, temporary runtime role и WSL keepalive удалены; рабочая `rag_assistant`
+  не мигрировалась и не очищалась.
+
+### 213C. Границы C3
+
+- Revision не создаёт cluster-level production role и не выдаёт production
+  grants: runtime/migration role provisioning остаётся явной ops-задачей.
+- DB-level append immutability, temporal exclusion/conflict constraints,
+  encryption/redaction execution и restore smoke ещё открыты; корневая галочка
+  Slice C остаётся незакрытой.
+- API/shadow traffic, production migrations, push/deploy и унаследованные
+  Trust Foundation/release gates не менялись.
+
+### 213D. Следующий один atomic slice
+
+**C4 — PostgreSQL append immutability guards.** Tests-first добавить отдельную
+revision поверх `025`, запрещающую `UPDATE`/`DELETE` для `case_events`,
+`evidence_snapshots` и `case_evidence_links` под runtime role, при сохранении
+легального CAS-update `support_cases`. Проверить real-PostgreSQL allowed append,
+blocked mutation/delete и downgrade. Не добавлять temporal exclusion,
+encryption/restore или runtime/API routing в тот же slice.
+
+---
+
 ## 2026-08-22 Update-212 — Resolution Product C2 PostgreSQL persistence complete; C3 RLS next ✅ START HERE
 
 > **Текущий routing для `D:\RAG_new`:** этот блок заменяет Update-211 и все

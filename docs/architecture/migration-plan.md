@@ -65,10 +65,15 @@ Delivery status:
   adapters with atomic event append plus compare-and-swap passed a real
   PostgreSQL round trip, stale-writer conflict, transaction rollback, and
   application-level tenant-negative contracts.
-- **C3 next:** PostgreSQL RLS/default-deny policies, transaction-local tenant
-  context, and allowed/cross-tenant tests under a non-owner runtime role.
-- Slice C remains open until real PostgreSQL round-trip, RLS/tenant negatives,
-  immutability, temporal constraints, encryption/redaction, and restore smoke
+- **C3 complete locally:** revision `025` enables and forces tenant RLS on all
+  four C2 tables; transaction-local context, default deny, own-tenant
+  read/write, and cross-tenant negatives passed under a non-owner,
+  non-`BYPASSRLS` role.
+- **C4 next:** DB-level `UPDATE`/`DELETE` immutability guards for append-only
+  events, evidence snapshots, and case/evidence links while preserving legal
+  `SupportCase` compare-and-swap updates.
+- Slice C remains open until append immutability, temporal constraints,
+  encryption/redaction, restore smoke, and production runtime-role operations
   are green.
 
 ### Slice D — Read-only shipment-status shadow loop

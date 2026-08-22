@@ -4,7 +4,7 @@ from collections.abc import Callable
 from typing import cast
 from uuid import UUID
 
-from sqlalchemy import select, update
+from sqlalchemy import select, text, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from db.models import (
@@ -36,6 +36,17 @@ from resolution.domain import (
 )
 
 AsyncSessionFactory = Callable[[], AsyncSession]
+
+
+async def set_resolution_tenant_context(
+    session: AsyncSession,
+    context: TenantContext,
+) -> None:
+    """Bind the tenant UUID to the current PostgreSQL transaction only."""
+    await session.execute(
+        text("SELECT set_config('app.current_tenant_id', :tenant_id, true)"),
+        {"tenant_id": str(context.tenant_id)},
+    )
 
 
 def _require_tenant(context: TenantContext, tenant_id: UUID) -> None:
@@ -196,10 +207,15 @@ def _link_domain(record: ResolutionEvidenceLink) -> EvidenceLink:
 
 
 class PostgresSupportCaseRepository:
-    def __init__(self, session: AsyncSession) -> None:
+    def __init__(self, session: AsyncSession, tenant_id: UUID) -> None:
         self._session = session
+        self._tenant_id = tenant_id
+
+    def _require_context(self, context: TenantContext) -> None:
+        _require_tenant(context, self._tenant_id)
 
     async def get(self, context: TenantContext, case_id: UUID) -> SupportCase | None:
+        self._require_context(context)
         record = await self._session.scalar(
             select(ResolutionSupportCase).where(
                 ResolutionSupportCase.tenant_id == context.tenant_id,
@@ -209,6 +225,7 @@ class PostgresSupportCaseRepository:
         return _case_domain(record) if record is not None else None
 
     async def append(self, context: TenantContext, mutation: CaseMutation) -> SupportCase:
+        self._require_context(context)
         _require_tenant(context, mutation.case.tenant_id)
         _require_tenant(context, mutation.event.tenant_id)
         if mutation.expected_version is None:
@@ -252,6 +269,7 @@ class PostgresSupportCaseRepository:
         after_sequence: int = 0,
         limit: int = 100,
     ) -> tuple[CaseEvent, ...]:
+        self._require_context(context)
         _validate_page(after=after_sequence, limit=limit)
         records = (
             await self._session.scalars(
@@ -269,14 +287,19 @@ class PostgresSupportCaseRepository:
 
 
 class PostgresEvidenceRepository:
-    def __init__(self, session: AsyncSession) -> None:
+    def __init__(self, session: AsyncSession, tenant_id: UUID) -> None:
         self._session = session
+        self._tenant_id = tenant_id
+
+    def _require_context(self, context: TenantContext) -> None:
+        _require_tenant(context, self._tenant_id)
 
     async def get_snapshot(
         self,
         context: TenantContext,
         evidence_id: UUID,
     ) -> EvidenceSnapshot | None:
+        self._require_context(context)
         record = await self._session.scalar(
             select(ResolutionEvidenceSnapshot).where(
                 ResolutionEvidenceSnapshot.tenant_id == context.tenant_id,
@@ -290,12 +313,14 @@ class PostgresEvidenceRepository:
         context: TenantContext,
         snapshot: EvidenceSnapshot,
     ) -> EvidenceSnapshot:
+        self._require_context(context)
         _require_tenant(context, snapshot.tenant_id)
         self._session.add(_snapshot_record(snapshot))
         await self._session.flush()
         return snapshot
 
     async def append_link(self, context: TenantContext, link: EvidenceLink) -> EvidenceLink:
+        self._require_context(context)
         _require_tenant(context, link.tenant_id)
         self._session.add(_link_record(link))
         await self._session.flush()
@@ -309,6 +334,7 @@ class PostgresEvidenceRepository:
         after_case_version: int = 0,
         limit: int = 100,
     ) -> tuple[EvidenceLink, ...]:
+        self._require_context(context)
         _validate_page(after=after_case_version, limit=limit)
         records = (
             await self._session.scalars(
@@ -333,17 +359,29 @@ class PostgresResolutionUnitOfWork:
     cases: PostgresSupportCaseRepository
     evidence: PostgresEvidenceRepository
 
-    def __init__(self, session_factory: AsyncSessionFactory) -> None:
+    def __init__(
+        self,
+        session_factory: AsyncSessionFactory,
+        context: TenantContext,
+    ) -> None:
         self._session_factory = session_factory
+        self._context = context
         self._session: AsyncSession | None = None
         self._committed = False
 
     async def __aenter__(self) -> PostgresResolutionUnitOfWork:
         if self._session is not None:
             raise RuntimeError("resolution unit of work cannot be entered twice")
-        self._session = self._session_factory()
-        self.cases = PostgresSupportCaseRepository(self._session)
-        self.evidence = PostgresEvidenceRepository(self._session)
+        session = self._session_factory()
+        try:
+            await set_resolution_tenant_context(session, self._context)
+        except BaseException:
+            await session.rollback()
+            await session.close()
+            raise
+        self._session = session
+        self.cases = PostgresSupportCaseRepository(session, self._context.tenant_id)
+        self.evidence = PostgresEvidenceRepository(session, self._context.tenant_id)
         self._committed = False
         return self
 
@@ -382,4 +420,5 @@ __all__ = [
     "PostgresEvidenceRepository",
     "PostgresResolutionUnitOfWork",
     "PostgresSupportCaseRepository",
+    "set_resolution_tenant_context",
 ]
