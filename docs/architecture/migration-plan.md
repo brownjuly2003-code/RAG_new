@@ -50,11 +50,22 @@ Verification:
 - referenced safe operators are allowlisted; no `eval`/dynamic import path exists;
 - schema snapshot and compatibility policy are documented.
 
-### Slice C — Case and evidence persistence (next)
+### Slice C — Case and evidence persistence (active)
 
 Add domain entities, ports, PostgreSQL models/migrations, append-only events, optimistic versioning, repository adapters, tenant RLS, and a protected evidence reference abstraction.
 
 Verification: domain tests require no infrastructure; PostgreSQL migration round trip, concurrency conflict, append immutability, tenant isolation/RLS, encryption/redaction, and restore smoke pass. SQLite-only evidence cannot close the slice.
+
+Delivery status:
+
+- **C1 complete locally:** stdlib-only immutable `SupportCase`, `CaseEvent`,
+  protected `EvidenceSnapshot`/link/conflict types, optimistic transition
+  mutations, and tenant-scoped append-only repository/unit-of-work ports.
+- **C2 next:** PostgreSQL models, Alembic revision, and repository adapters with
+  atomic event append plus compare-and-swap.
+- Slice C remains open until real PostgreSQL round-trip, RLS/tenant negatives,
+  immutability, temporal constraints, encryption/redaction, and restore smoke
+  are green.
 
 ### Slice D — Read-only shipment-status shadow loop
 
