@@ -10,7 +10,7 @@ Evolve the inherited RAG assistant into a self-hosted, verifiable support-resolu
 - [x] Define the modular-monolith target, deterministic resolution kernel, data ownership, trust boundaries, and failure semantics -> Verify: architecture diagrams and ADRs agree on every component owner.
 - [x] Add `ResolutionContract` v0.1 as Pydantic models plus exported JSON Schema and positive/negative fixtures -> Verify: unknown fields and missing safety fields fail validation.
 - [x] Add an append-only case/evidence data model behind repository ports -> Verify: Alembic round trip, tenant isolation, immutability rules, and temporal-conflict tests pass.
-- [ ] Implement one read-only `shipment-status` contract in shadow mode -> Verify: happy, clarify, stale, conflict, timeout, and escalation scenarios have deterministic terminal outcomes.
+- [x] Implement one read-only `shipment-status` contract in shadow mode -> Verify: happy, clarify, stale, conflict, timeout, and escalation scenarios have deterministic terminal outcomes.
 - [ ] Add the governed action gateway and wrap `create_ticket` as the first reversible/idempotent write -> Verify: retries and disconnects cannot create duplicate side effects; denial never calls the connector.
 - [ ] Add scenario compilation, state grading, replay manifests, and VR/VRY reporting -> Verify: deliberately broken policy, evidence, connector, postcondition, and disclosure cases fail the gate.
 - [ ] Promote one journey through shadow and canary only after the inherited remediation stream is green -> Verify: rollback, SLO, security, and outcome gates are backed by fresh non-skipped evidence.
@@ -37,7 +37,14 @@ to head `028`, with the exact schema-owner/migrator/runtime topology and
 minimum Resolution grants documented in `c8-mac-postgres-deployment.md` and
 `docs/operations/resolution-postgres-roles.md`. The pre-existing PostgreSQL on
 `5432` remains available. C8 did not switch the legacy application
-`DATABASE_URL` or enable API/runtime routing. Slice D is the next architecture
-slice on a future turn; domain-owner approval of journey postconditions and an
-approved shipment source of truth remain product prerequisites, not details
-for the LLM to infer.
+`DATABASE_URL` or enable API/runtime routing.
+
+Slice D is locally complete on an explicitly fixture-backed shadow surface.
+It adds tenant-scoped source lookup, bounded typed policy retrieval,
+freshness/conflict/claim/postcondition gates, JSON-safe evidence export and an
+exact-response legacy compatibility hook. Thirty deterministic/multi-turn
+scenario rows and five boundary tests pass; no live source, DB, provider,
+legacy router or production setting changed. Domain-owner approval of the
+authoritative source, policy hierarchy and journey postconditions remains a
+product prerequisite for live shadow evidence. Slice E is next only after
+those inputs; fixture evidence does not close canary or release gates.

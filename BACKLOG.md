@@ -5,19 +5,24 @@
 Текущая выбранная владельцем очередь находится в
 [`rag-new-architecture.md`](rag-new-architecture.md), а точный scope и DoD — в
 [`docs/architecture/migration-plan.md`](docs/architecture/migration-plan.md).
-Срезы C1–C8 завершены delivery commit `c78da01`. В C8 владелец явно
+Срезы C1–C8 завершены delivery commit `c78da01`. Slice D завершён локально на
+fixtures; итоговый delivery SHA определяется по Actual Git. В C8 владелец явно
 авторизовал Mac и изменения ролей PostgreSQL: отдельный PostgreSQL 16 на
 `127.0.0.1:55432` мигрирован до `028`,
 точная минимальная runtime ACL и revoke/restore/restart contracts зелёные;
 старый сервис `5432` не изменён. C8 не переключал общий `DATABASE_URL` и не
-включал API/runtime routing.
+включал API/runtime routing. Slice D также не менял legacy router: он добавил
+tenant-scoped fixture source, bounded typed retrieval adapter, deterministic
+shadow loop/evidence export и exact-response compatibility hook. Gate: 30
+scenario rows, 35 focused и 65 combined passed; Ruff, strict MyPy и schema
+check green.
 
-Следующий один atomic slice на будущем пользовательском turn — **Slice D:
-read-only `shipment-status` shadow loop** по точному scope из migration plan.
-Не смешивать его с runtime routing, canary, governed writes или унаследованным
-Trust Foundation backlog. Для реального источника и journey postconditions
-нужны утверждённые owner inputs; при их отсутствии использовать только явно
-ограниченные fixtures и не делать production/release-ready claim.
+Следующий один atomic slice на будущем пользовательском turn — **Slice E:
+temporal knowledge projection** по точному scope из migration plan, только
+после owner-approved authoritative knowledge/source inputs, policy hierarchy
+и applicability semantics. Не смешивать его с canary, governed writes,
+legacy routing или унаследованным Trust Foundation backlog. Fixture-backed
+Slice D не является live shadow или production/release-ready evidence.
 Закрывающие C7/C8-капсулы:
 [`c7-resolution-restore-smoke.md`](c7-resolution-restore-smoke.md) и
 [`c8-mac-postgres-deployment.md`](c8-mac-postgres-deployment.md).

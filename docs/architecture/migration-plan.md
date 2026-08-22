@@ -117,6 +117,18 @@ Required scenarios include happy path, missing shipment ID, unknown shipment, st
 
 Verification: at least 30 deterministic and multi-turn cases have explicit terminal state; every verified result has contract, source observation, policy, claim links, and postcondition versions; legacy behavior is unchanged.
 
+Local delivery status (2026-08-22): complete on the explicitly fixture-backed
+shadow surface. The implementation provides tenant-scoped source lookup,
+bounded typed retrieval, deterministic freshness/conflict/policy/claim checks,
+response compilation, version-pinned evidence export, and an isolated hook
+that returns the exact legacy response object even when shadow observation
+fails. The gate contains 30 deterministic/multi-turn scenario rows and 5
+boundary tests; the final adjacent Resolution batch passed 65 tests. No live
+source, database, provider, `/api/ask` router, or production setting changed.
+Owner-approved source/postcondition/policy inputs and production shadow
+registration remain promotion prerequisites, so this status is not live or
+release-ready evidence.
+
 ### Slice E — Temporal knowledge projection
 
 Add one authoritative knowledge source with valid/system ranges, applicability, authority, supersession, conflict records, and Chroma projection manifest binding.

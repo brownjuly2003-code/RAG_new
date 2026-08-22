@@ -1,8 +1,73 @@
 # Session handoff
 
-## CURRENT — 2026-08-22 / Update-221 exact post-C8 checkpoint
+## CURRENT — 2026-08-22 / Update-222 Slice D fixture shadow complete
 
-**Назначение:** самодостаточный старт после завершения Resolution Product
+**Назначение:** самодостаточный старт после локального завершения Resolution
+Product Slice D без завышения live/production claims.
+
+### 0. Actual Git
+
+```powershell
+Set-Location -LiteralPath D:\RAG_new
+git status --short --branch
+git log -5 --oneline
+git remote -v
+```
+
+Baseline Slice D: clean `master` на
+`1f3a0cc docs: record exact post-C8 handoff`; remote отсутствовал. Итоговый
+delivery SHA определяется по Actual Git; push не выполнялся.
+
+### 0A. Один экран истины
+
+| Поле | Проверенный факт |
+|------|-----------------|
+| Завершено | Resolution Product C1–C8 и локальный fixture-backed Slice D |
+| Slice D runtime | pinned contract + tenant fixture source + bounded legacy retrieval policy + deterministic shadow loop |
+| Scenario gate | 30 deterministic/multi-turn rows; 35 focused tests; final adjacent gate 65 passed |
+| Static gate | Ruff check/format, strict MyPy по 2 source files, schema snapshot green |
+| Legacy contract | `/api/ask` и `api/routers/conversation.py` не менялись; hook возвращает exact response object |
+| External/runtime changes | нет: DB/Mac/deploy/network/provider/secrets не затрагивались |
+| Не закрыто | approved live shipment source, owner postconditions/policy hierarchy, production shadow registration, replay/canary/release |
+| Следующий slice | E — temporal knowledge projection, только после owner-approved authoritative inputs |
+
+### 1. Delivered contract
+
+- Source observation и policy evidence проходят tenant, authority, valid-time,
+  freshness и digest checks до решения.
+- `verified` требует pinned contract, current source, единственную применимую
+  policy, deterministic postcondition и exact supported claims с evidence
+  links. Unknown/stale/conflict/timeout/tenant mismatch/unsupported claim
+  fail closed.
+- Evidence export JSON-safe и содержит contract/source/policy/claims /
+  postcondition versions. Escalation brief содержит `case_id`,
+  `contract_version`, `evidence_summary`, `reason_codes`.
+- `run_legacy_ask_shadow` — изолированный compatibility seam; production
+  observer намеренно не зарегистрирован без утверждённого source/owner input.
+
+### 2. Verification and boundaries
+
+- Red: новый test module не собирался без application runtime
+  (`ModuleNotFoundError`). Green: 35 focused; final combined gate 65 passed.
+- Ruff check/format, strict MyPy и frozen schema check green. Известное
+  Starlette/httpx2 warning относится к host environment, не к Slice D.
+- Два delegated writers остановлены на `poll 6/6`; QA не оставил изменений
+  или финального отчёта. Активных writer нет.
+- Последняя Mac/PostgreSQL live evidence остаётся C8 evidence перед `c78da01`;
+  Slice D не перепроверял и не менял этот runtime.
+
+### 3. Следующий named slice
+
+**Slice E — temporal knowledge projection**, только после подтверждения
+authoritative knowledge/source, policy hierarchy и applicability semantics
+domain owner. Не подменять отсутствующие product inputs выдуманными production
+fixtures и не начинать governed writes, canary или inherited backlog.
+
+---
+
+## Superseded — 2026-08-22 / Update-221 exact post-C8 checkpoint
+
+**Предыдущее назначение:** самодостаточный старт после завершения Resolution Product
 Slice C с точной привязкой к Git и явной границей актуальности; более старые
 капсулы C8 ниже помечены superseded.
 

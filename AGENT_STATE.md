@@ -1,8 +1,71 @@
 # Agent State
 
-## 2026-08-22 Update-221 — exact post-C8 checkpoint ✅ START HERE
+## 2026-08-22 Update-222 — Slice D fixture shadow complete ✅ START HERE
 
 > **Канонический старт для `D:\RAG_new`:** читать этот блок, затем верхнюю
+> CURRENT-капсулу `docs/SESSION_HANDOFF.md`. Они заменяют Update-221 и все
+> более старые routing-блоки.
+
+### 222A. Actual Git и scope
+
+- Старт: clean `master` на `1f3a0cc docs: record exact post-C8 handoff`;
+  `git remote -v` не вывел настроенных remote. Итоговый Slice D delivery SHA
+  определяется по Actual Git.
+- Slice D добавляет только fixture-backed read-only shipment adapter,
+  deterministic application loop и локальные тесты; frozen
+  `ResolutionContract` v0.1 и schema snapshot не менялись.
+- `api/routers/conversation.py`, `/api/ask`, БД, Mac, PostgreSQL, deploy,
+  secrets и внешние shipment/provider systems не изменялись. Push не
+  выполнялся и не разрешён.
+
+### 222B. Что доставлено
+
+- `FixtureShipmentSource` выполняет bounded tenant-scoped lookup без сети;
+  `LegacyRetrievalPolicyAdapter` ограничивает retrieval candidates, принимает
+  только typed tenant/authority/time/digest metadata и не исполняет динамический
+  код.
+- `ShipmentStatusShadowLoop` привязан к точному contract id/version/digest,
+  детерминированно обрабатывает input, source, freshness, policy conflict /
+  denial, postcondition и claim compilation. Unknown, stale, conflict,
+  timeout, wrong-tenant и unsupported claim не могут стать `verified`.
+- Verified export закрепляет contract, source observation, policy revision,
+  claim/evidence links и postcondition versions. Escalation export содержит
+  точные четыре contract-required handoff fields. Изолированный legacy hook
+  возвращает тот же response object и поглощает shadow failure.
+- Матрица содержит ровно **30** deterministic/multi-turn scenario rows плюс
+  5 contract/boundary tests. Она включает happy, clarify, unknown, stale
+  source/policy, policy conflict/deny, wrong tenant, provider timeout,
+  retrieval empty, unsupported claim и complete escalation brief.
+
+### 222C. Проверка и process truth
+
+- Tests-first RED воспроизведён как `ModuleNotFoundError` для отсутствующего
+  application runtime; после реализации focused файл дал **35 passed**.
+- Финальный объединённый gate: **65 passed** для Slice D + adjacent frozen
+  contract/case-domain/evidence-redaction tests. Ruff check/format, strict
+  MyPy по двум новым source files и schema snapshot check — green.
+- Единственное предупреждение — известный host-level Starlette/httpx2 drift;
+  Slice D dependency manifests не менял.
+- Implementation и QA delegated runs были остановлены после `poll 6/6` по
+  cycle budget. QA writer не оставил code changes или финальный отчёт; основной
+  агент независимо проверил сохранённый WIP. Активных writer нет.
+
+### 222D. Границы и следующий slice
+
+- Slice D завершён **локально на fixtures**. Это не live shadow evidence и не
+  production/release-ready claim: approved shipment source, domain-owner
+  postconditions/policy hierarchy, production observer registration, replay,
+  canary и promotion остаются открыты.
+- Следующий architecture slice — **Slice E: temporal knowledge projection**,
+  только с owner-approved authoritative knowledge/source inputs. Не начинать
+  Slice F/governed writes, canary, legacy routing или унаследованный Trust
+  Foundation backlog вместо отсутствующих входов.
+
+---
+
+## Superseded — 2026-08-22 Update-221 — exact post-C8 checkpoint
+
+> **Предыдущий checkpoint для `D:\RAG_new`:** читать Update-222 выше, затем верхнюю
 > CURRENT-капсулу `docs/SESSION_HANDOFF.md`. Они заменяют Update-220 и все
 > более старые routing-блоки.
 
