@@ -1,6 +1,108 @@
 # Session handoff
 
-## CURRENT — 2026-08-23 / Update-238 REL-03C fenced terminal commit locally complete in containing scoped commit
+## CURRENT — 2026-08-23 / Update-239 transparent next-session handoff after REL-03C
+
+**Назначение:** дать следующему разработчику один проверяемый стартовый экран:
+Actual Git, что действительно landed, какие claims запрещены и какой ровно один
+slice разрешён следующим.
+
+### 0. Actual Git и authority order
+
+На момент docs-only аудита worktree был clean на `master` at **`49bc966`**
+(`feat(session): add fenced terminal commit`). `git remote -v` был пуст: push
+target не настроен и push authority не подразумевается. Exact SHA containing
+Update-239 всегда брать из Actual Git, потому что документ не может надёжно
+содержать собственный будущий commit hash.
+
+Следующая сессия восстанавливает state только в таком порядке:
+
+```powershell
+Set-Location -LiteralPath D:\RAG_new
+git status --short --branch
+git log -4 --oneline --decorate
+Get-Content -Encoding UTF8 -TotalCount 150 AGENT_STATE.md
+Get-Content -Encoding UTF8 -TotalCount 180 docs\SESSION_HANDOFF.md
+```
+
+Если required-файл неожиданно dirty, не перетирать его. Старые `START HERE` и
+superseded CURRENT-блоки ниже — архив, а не backlog authority.
+
+### 0A. Landed implementation truth
+
+| Поле | Проверенный факт |
+|------|-----------------|
+| Decision | ADR 0006 accepted on `2d9008a`: PostgreSQL primary owns session admission/version/terminal commit |
+| Admission base | `818eef4`: revision `031`, `SessionTurn`, exact admission/replay/abort and forced turn RLS |
+| Terminal base | `49bc966`: request-bound `commit_turn` + versioned `load_history` |
+| Atomic success | ordered user/assistant pair + session version `+1` + turn `COMMITTED` in one transaction |
+| Replay primitive | exact request/content retry is `changed=False`; drift conflicts without mutation |
+| History primitive | tenant predicate + session `FOR SHARE`; messages ordered by monotonic `Message.id` |
+| Current schema | Alembic head `031`; REL-03C added no migration |
+| Current runtime | primitives exist but sync `/api/ask` and SSE are **not wired** to them |
+| Remote/external | no configured Git remote; no push, deploy, live migration or promotion |
+
+### 0B. Evidence attached to `49bc966`
+
+Эти результаты получены перед commit `49bc966`. Docs-only Update-239 не меняет
+их и не делает вид, что повторно запускал code gates.
+
+| Gate | Exact result |
+|------|--------------|
+| Tests-first request binding | expected **1 failed** (`request_digest` absent) -> fixed |
+| `tests/integration/test_session_service_postgres.py` | **13 passed** in 14.93 s on disposable PostgreSQL |
+| Adjacent session/conversation/tenant command | **12 passed** in 3.40 s |
+| Docs/backlog command | **18 passed** in 0.68 s |
+| Ruff / format / diff | clean; **2 files already formatted**; `git diff --check` green |
+| Strict type gate | Python 3.12 / Mypy 1.19.1, target 3.11: **1 changed production source**, no issues |
+| QA | one independent batch; follow-up 1/1 fixed request binding, deterministic lock tests and terminal rollback matrix |
+| Cleanup | observed relay / temporary `rag_session_admin_03c_*` roles / disposable `rag_session_turns_b_*` DBs = **0** |
+
+Known host baseline remains explicit: raw Python-3.13 MyPy stops in an external
+NumPy stub; the Python-3.12 integration-test probe reaches an unchanged untyped
+SQLAlchemy callback introduced by `818eef4`. Neither baseline invalidates the
+green changed-production-source gate, and neither may be reported as full
+repository type-green.
+
+### 0C. Open gaps — do not overclaim
+
+1. Sync `/api/ask` and SSE still use legacy lifecycle/persistence ownership;
+   production traffic does not yet receive durable multi-replica ordering.
+2. `TurnCommitOutcome` exposes the durable turn, not the exact stored response
+   payload. `load_history` exposes whole-session history. Exact replay of an
+   older `turn_id` after later commits therefore needs an explicit per-turn
+   response mapping before the ADR lost-response claim is implemented.
+3. HTTP `Idempotency-Key`, `If-Match`, `ETag`, `428`, `412`, `409` and `503`
+   semantics are not wired.
+4. Forced RLS covers `session_turns`; legacy `sessions`/`messages` rely on
+   service ownership predicates until every API path binds tenant context.
+5. SSE terminal semantics, timeout/disconnect abort wiring, compatibility
+   removal, metrics/SLO evidence, two replicas and the 1,000-attempt promotion
+   floor remain open. REL-03 and production readiness are **not closed**.
+
+### 0D. Next exact slice and stop boundary
+
+Only **REL-03D sync `/api/ask` durable lifecycle wiring** is next. Start with a
+short plan and RED sync-route contract covering the smallest coherent path from
+admission through explicit history to terminal commit/replay. Resolve the
+per-turn stored-response mapping before claiming lost-response replay.
+
+Do not include SSE/timeout wiring, compatibility removal, a speculative schema
+change, live PostgreSQL, remote setup, push, deploy or promotion in REL-03D.
+Do not raw-repeat the REL-03C PostgreSQL suite unless a relevant service/test
+diff or fresh failure exists.
+
+### 0E. Disposable PostgreSQL note
+
+The proven local gate used WSL `Ubuntu-22.04`; WSL idle shutdown requires a
+managed keepalive/relay while Windows pytest runs. Tests accept only a
+disposable `rag_session_turns_b_*` database and create/drop it themselves.
+Temporary role/relay credentials must remain ephemeral and unlogged. Do not
+touch `rag_assistant`, live/production databases, firewall/auth settings or the
+pre-existing non-superuser `rag_session_admin_031b00000001`.
+
+---
+
+## Superseded — 2026-08-23 / Update-238 REL-03C fenced terminal commit locally complete in containing scoped commit
 
 **Назначение:** зафиксировать exact terminal/history primitives, fresh
 PostgreSQL evidence и следующий узкий Trust Foundation boundary.

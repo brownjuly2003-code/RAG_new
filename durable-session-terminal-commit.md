@@ -9,6 +9,9 @@ versioned snapshot.
 
 ## Completion status — 2026-08-23
 
+- Implementation delivered by `49bc966` (`feat(session): add fenced terminal
+  commit`). The top CURRENT handoff documents runtime and replay gaps that are
+  intentionally outside REL-03C.
 - [x] Tests-first request-binding regression completed **1 failed -> 13 passed**
   on disposable PostgreSQL, including deterministic lock and rollback evidence.
 - [x] Adjacent tests passed **12**; Ruff/format/diff and strict changed-source

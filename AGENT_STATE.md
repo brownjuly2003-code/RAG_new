@@ -1,6 +1,52 @@
 # Agent State
 
-## 2026-08-23 Update-238 — REL-03C fenced terminal commit locally complete in containing scoped commit ✅ START HERE
+## 2026-08-23 Update-239 — transparent next-session handoff after REL-03C ✅ START HERE
+
+> **Канонический старт для `D:\RAG_new`:** Actual Git, этот короткий блок,
+> затем верхняя CURRENT-капсула `docs/SESSION_HANDOFF.md`, ADR 0006 и
+> `durable-session-terminal-commit.md`. Старые `START HERE` ниже — архив.
+
+### 239A. Actual Git и docs-only scope
+
+- Последний implementation commit: **`49bc966`** (`feat(session): add fenced
+  terminal commit`) поверх `818eef4` и `2d9008a`.
+- Перед этим docs-only update `master` был clean на `49bc966`; `git remote -v`
+  не вернул ни одного remote. Exact commit с Update-239 брать из Actual Git.
+- В этом update меняются только durable handoff/docs. Product code, schema,
+  tests, WSL/PostgreSQL, API, SSE, deploy, promotion и push не запускались и не
+  менялись. Evidence ниже унаследована от проверенного `49bc966`, не выдаётся за
+  повторный test run.
+
+### 239B. Что реально landed и что ещё нет
+
+- Landed: revision `031`; durable admission/abort; request-bound fenced
+  terminal pair commit; exact no-op terminal retry; tenant-scoped versioned
+  history snapshot; real PostgreSQL concurrency/fence/rollback tests.
+- **Не wired:** текущие sync `/api/ask` и SSE ещё не используют эти primitives.
+  Legacy process-local lifecycle и direct message persistence не удалены.
+- **Replay gap:** `TurnCommitOutcome` возвращает turn snapshot, а
+  `load_history` — всю session history; exact stored response конкретного
+  старого `turn_id` пока не экспонируется. До lost-response replay claim REL-03D
+  должен определить и протестировать per-turn response mapping.
+- Forced RLS пока относится к `session_turns`; legacy `sessions`/`messages`
+  остаются на service predicates до отдельного compatibility/API tenant-GUC
+  wiring. REL-03, production readiness и two-replica promotion открыты.
+
+### 239C. Exact resume contract
+
+1. Выполнить `git status --short --branch` и `git log -4 --oneline`; Actual Git
+   сильнее embedded SHA. При неожиданном dirty conflict остановиться.
+2. Прочитать верхнюю CURRENT-капсулу `docs/SESSION_HANDOFF.md`, затем sections
+   Decision/Ownership/Verification ADR 0006. Не выбирать работу по старым
+   `START HERE` ниже.
+3. Единственный следующий candidate: **REL-03D sync `/api/ask` durable
+   lifecycle wiring**, tests-first и sync-only.
+4. Не включать в этот slice SSE/timeout wiring, compatibility removal, новую
+   schema, live replicas, promotion, deploy, remote setup или push.
+5. Не повторять green REL-03C PostgreSQL gate без нового service/test diff или
+   fresh failure. Exact evidence и local PostgreSQL caveats записаны в CURRENT.
+
+## Superseded — 2026-08-23 Update-238 REL-03C fenced terminal commit locally complete in containing scoped commit
 
 > **Канонический старт для `D:\RAG_new`:** Actual Git, этот блок, затем
 > верхняя CURRENT-капсула `docs/SESSION_HANDOFF.md` и
