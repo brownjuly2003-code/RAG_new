@@ -1,5 +1,44 @@
 # Agent State
 
+## 2026-08-23 Update-231 — next-session transparency capsule in containing docs-only commit ✅ START HERE
+
+> **Канонический старт для `D:\RAG_new`:** читать этот короткий блок, затем
+> верхнюю CURRENT-капсулу `docs/SESSION_HANDOFF.md` и раздел `Artifact truth` в
+> `g5-versioned-synthetic-outcome-ledger.md`. Они уточняют, но не изменяют
+> доставленный G5 contract. Exact docs-only SHA брать из Actual Git.
+
+### 231A. Exact delivery и scope
+
+- G5 code/test delivery — exact local commit **`8030716`**
+  (`feat(evaluation): add synthetic outcome metrics`).
+- Update-231 — только документация: project code, tests и runtime не менялись;
+  code gates `8030716` не повторялись без нового code diff.
+- До Update-231 Actual Git был clean `master`; remote отсутствовал. Push,
+  deploy, live/runtime и external actions не выполнялись.
+
+### 231B. Главная граница, которую нельзя потерять
+
+- Доставлены immutable schemas, canonical serializers/digests и fail-closed
+  report builder для provisional synthetic VR precision/VRY/eligibility
+  coverage.
+- **Не доставлены** checked-in 17-case G5 outcome-ledger/report snapshot,
+  baseline/candidate pair или фактический численный VR/VRY результат для G4
+  canonical corpus. G5 tests используют отдельный 3-case synthetic fixture.
+- Поэтому `8030716` доказывает accounting contract, а не empirical/live
+  outcome. Definition остаётся с `owner_status="unconfirmed"` и
+  `business_claimable=false`.
+
+### 231C. Следующая сессия
+
+1. Выполнить Actual Git commands из CURRENT handoff и доверять им больше prose.
+2. Не повторять G5 code gates без нового code diff/failure evidence.
+3. При явном продолжении начать только G6: exact-definition-bound synthetic
+   baseline/candidate comparison. Сначала материализовать полные bound inputs;
+   comparison не может сам объявлять threshold, promotion или live shadow.
+4. Не начинать G6 в docs-only turn, содержащем Update-231.
+
+---
+
 ## 2026-08-23 Update-230 — G5 synthetic outcome metrics locally complete in containing scoped commit ✅ START HERE
 
 > **Канонический старт для `D:\RAG_new`:** читать этот блок, затем верхнюю

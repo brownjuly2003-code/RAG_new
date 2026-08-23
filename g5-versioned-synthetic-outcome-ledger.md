@@ -52,8 +52,10 @@ promotion, deploy, push, and production defaults remain out of scope.
 
 ## Delivery status
 
-G5 is locally complete in the scoped commit containing this document. The
-metric definition is permanently explicit about its provisional v0.1 status,
+G5 code/test delivery is exact local commit `8030716`. This document may also
+appear in a later docs-only transparency commit; that does not change the code
+delivery identity. The metric definition is permanently explicit about its
+provisional v0.1 status,
 seven normalized VR checks, synthetic evidence class, assumed recontact window,
 and `business_claimable=false` boundary.
 
@@ -81,3 +83,27 @@ Full Slice G remains open. The next safe named slice is G6: an exact-definition-
 bound synthetic baseline/candidate outcome comparison and case-disposition
 breakdown, still without live shadow claims, thresholds, promotion, deploy, or
 push.
+
+## Artifact truth
+
+Delivered at `8030716`:
+
+- immutable versioned Python models for the metric definition, outcome record,
+  ledger, metrics, issues, and report;
+- canonical JSON and SHA-256 helpers;
+- a fail-closed report builder with exact corpus/manifest/coverage/plan/result,
+  scenario-binding, and three-trial bindings;
+- seven focused tests using a constructed three-case synthetic corpus.
+
+Not delivered by G5:
+
+- a checked-in metric-definition JSON/SHA instance;
+- a checked-in 17-case outcome-ledger or outcome-report snapshot for the G4
+  canonical corpus;
+- a baseline/candidate pair or comparison report;
+- an empirical numeric VR precision, VRY, or eligibility-coverage result for
+  the canonical 17 cases;
+- owner-approved eligibility/recontact semantics or any live/business outcome.
+
+Therefore G5 proves the deterministic accounting contract. It does not claim a
+materialized full-corpus run, a business baseline, or release readiness.

@@ -1,6 +1,115 @@
 # Session handoff
 
-## CURRENT — 2026-08-23 / Update-230 G5 synthetic outcome metrics locally complete in containing scoped commit
+## CURRENT — 2026-08-23 / Update-231 next-session transparency capsule in containing docs-only commit
+
+**Назначение:** за один экран отделить доставленный G5 accounting contract от
+ещё не материализованных outcome artifacts и дать следующей сессии однозначный
+recovery/entry path без повторения green work.
+
+### 0. Actual Git — единственный источник текущего состояния
+
+```powershell
+Set-Location -LiteralPath D:\RAG_new
+git status --short --branch
+git log -5 --oneline
+git remote -v
+```
+
+Проверенный G5 code/test delivery commit: **`8030716`**
+(`feat(evaluation): add synthetic outcome metrics`). Update-231 меняет только
+документацию; его exact containing SHA определяется Actual Git после commit.
+До docs edit дерево было clean на `master`, remote отсутствовал. Push, deploy,
+runtime/live и external actions не выполнялись.
+
+### 0A. Один экран истины
+
+| Вопрос | Точный ответ |
+|--------|--------------|
+| Что реально доставлено? | Versioned immutable metric definition/outcome record/ledger/report models, canonical JSON/SHA-256 helpers и fail-closed report builder |
+| Какова единица метрики? | Один corpus scenario = один synthetic case; три trials — обязательное evidence одного case, не три business cases |
+| Какой universe? | Полный переданный compiled corpus; G4 canonical corpus содержит 17 scenarios |
+| Где numeric result по этим 17 cases? | Его нет: checked-in full-corpus G5 ledger/report snapshot не создавался |
+| Что проверяют G5 tests? | Accounting/binding/privacy на отдельном 3-case synthetic fixture; это contract test, не результат G4 corpus run |
+| Можно ли считать метрики business/live? | Нет: owner status `unconfirmed`, evidence `synthetic_local`, `business_claimable=false` |
+| Code verification provenance | На `8030716`: focused 7; Resolution 129; Ruff/format; strict MyPy 6 sources; diff green; одна известная Starlette/httpx2 warning |
+| Что не повторять? | G5 code gates без нового code diff или fresh failing evidence; QA follow-up 1/1 исчерпан |
+| Следующий safe slice | G6 exact-definition-bound synthetic baseline/candidate comparison с материализованными full-corpus inputs; без threshold/promotion/live shadow |
+
+### 0B. Artifact truth
+
+| Артефакт | Статус | Что он доказывает |
+|----------|--------|-------------------|
+| [`../evaluation/resolution/outcomes.py`](../evaluation/resolution/outcomes.py) | Delivered at `8030716` | Schemas, exact bindings, derived metrics, fail-closed accounting |
+| [`../evaluation/resolution/__init__.py`](../evaluation/resolution/__init__.py) | Delivered at `8030716` | Public G5 API exports |
+| [`../tests/test_resolution_outcomes.py`](../tests/test_resolution_outcomes.py) | Delivered at `8030716` | Seven focused tests over a constructed 3-case corpus |
+| [`../evaluation/resolution/corpora/v0.1/shipment-status.json`](../evaluation/resolution/corpora/v0.1/shipment-status.json) | Delivered by G4 | Canonical 17-case corpus structure, not G5 outcomes |
+| Checked-in G5 metric-definition instance | **Absent** | No independently pinned owner-approved definition asset exists |
+| Checked-in 17-case outcome ledger/report + SHA | **Absent** | No numeric VR precision/VRY/eligibility result is claimed |
+| Baseline/candidate ledger pair | **Absent** | G6 comparison has not started |
+| Runtime/live outcome or recontact evidence | **Absent / out of scope** | No business, shadow, canary, or promotion claim is possible |
+
+### 0C. Exact provisional metric semantics
+
+| Метрика | Formula | Fail-closed denominator rule |
+|---------|---------|------------------------------|
+| VR precision | verified claimed-auto / all claimed-auto | Missing, duplicate, foreign, drifted or unknown case is conservatively presumed claimed |
+| VRY | verified claimed-auto / all eligible cases | Missing, malformed or unknown eligibility is conservatively presumed eligible |
+| Eligibility coverage | confirmed eligible / all corpus cases | Denominator is always full compiled corpus |
+
+Verified credit выводится кодом; caller не может передать `verified`. Case
+получает credit только при exact global/record identities, `ELIGIBLE`,
+`CLAIMED_AUTO`, всех семи checks `PASS` и всех трёх exact replay trials
+`PASSED`. Correct clarification/escalation может пройти replay, но не становится
+verified auto resolution.
+
+`MetricKind.EXACT` означает отсутствие structural/unknown issues;
+`LOWER_BOUND` — conservative result при issue; `UNDEFINED` — нулевой conditional
+denominator, а не 100%. Assumed recontact window входит в definition digest, но
+не является наблюдаемым live recontact.
+
+### 0D. Verification provenance и известные ограничения
+
+- Tests-first RED на G5: expected public `ImportError`.
+- Focused final на delivery diff: **7 passed**.
+- Единственный QA follow-up не нашёл semantic blocking/major defect и сделал
+  только unused-import/format correction.
+- Independent delivery gate: **129 passed**, одна известная
+  Starlette/httpx2 deprecation warning; Ruff clean; 3 files formatted; strict
+  MyPy green по 6 pure Resolution sources; `git diff --check` green.
+- Это recorded evidence commit `8030716`, а не новый test run Update-231.
+  Docs-only сессия намеренно не повторяет code gates без code diff.
+
+### 0E. G6 entry contract — не расширять молча
+
+Следующий safe named slice может начаться только после fresh Actual Git check и
+явного work/continue request. Минимальный G6 scope:
+
+1. Materialize versioned synthetic baseline и candidate inputs на полном
+   canonical corpus, с exact same metric-definition/corpus identities.
+2. Сравнивать только compatible ledger/report artifacts; definition, universe,
+   manifest/plan/result drift должен fail closed.
+3. Выводить count-pair deltas и case-disposition breakdown без caller-supplied
+   success, threshold, release или promotion verdict.
+4. Сохранить raw candidate/world/fault/oracle/response payload вне canonical
+   comparison artifacts.
+
+Не входят в G6 без отдельной authority: runtime/DB/loop integration, live
+shadow traffic, owner approval, business baseline, confidence thresholds,
+canary, promotion, deploy, push или external connector.
+
+### 0F. Точный stop/resume contract
+
+1. Если Actual Git clean и HEAD содержит Update-231, не создавать второй
+   transparency update и не повторять docs/code gates.
+2. Если есть unexpected dirty files, сначала определить ownership; не
+   перезаписывать пользовательские изменения.
+3. Если latest user message — hard stop, не выбирать G6 и не запускать tools.
+4. Если пользователь явно продолжает работу, выбрать только G6 scope из 0E и
+   соблюдать one-slice cycle budget.
+
+---
+
+## Superseded — 2026-08-23 / Update-230 G5 synthetic outcome metrics locally complete in containing scoped commit
 
 **Назначение:** восстановить exact delivery SHA из Actual Git и направить
 следующую сессию к G6 без повторения green gates или завышения synthetic

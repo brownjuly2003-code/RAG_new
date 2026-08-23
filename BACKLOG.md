@@ -26,6 +26,12 @@ blocking/major issue и сделал только unused-import/format correctio
 Independent gate: 129 passed + one known Starlette/httpx2 warning; Ruff green;
 3 files formatted; strict MyPy 6 sources green; diff check green.
 
+Transparency note: exact G5 code/test delivery — `8030716`. Он доставляет
+accounting schemas/builder, но не checked-in 17-case outcome-ledger/report
+snapshot и не numeric result для G4 canonical corpus; focused tests используют
+отдельный 3-case fixture. Baseline/candidate materialization является входом
+следующего comparison slice, а не уже полученным evidence.
+
 Полный Slice G остаётся открыт. Следующий safe named slice — **G6:
 exact-definition-bound synthetic baseline/candidate outcome comparison +
 case-disposition breakdown**, всё ещё без live shadow claims, runtime/DB/loop
