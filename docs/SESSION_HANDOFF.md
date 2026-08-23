@@ -1,6 +1,99 @@
 # Session handoff
 
-## CURRENT — 2026-08-23 / Update-235 REL-03A durable multi-replica session SLA accepted in containing scoped commit
+## CURRENT — 2026-08-23 / Update-237 REL-03B durable session admission locally complete in containing scoped commit
+
+**Назначение:** зафиксировать точный PostgreSQL admission/abort delivery,
+fresh non-skipped evidence и границу следующего Trust Foundation slice.
+
+### 0. Actual Git и scope
+
+REL-03B code/tests/docs доставляются одним scoped explicit-pathspec commit,
+содержащим этот update; exact SHA определяет Actual Git. Runtime ask/SSE,
+terminal pair commit, live/production DB, deploy, promotion и push не менялись.
+
+### 0A. Один экран истины
+
+| Поле | Проверенный факт |
+|------|-----------------|
+| Schema | revision/head `031`; 32 ORM / 38 public restore tables |
+| Authority | PostgreSQL row lock + DB clock + monotonic epoch; one `RUNNING` partial unique index |
+| Replay | tenant-wide key/digest; explicit session mismatch conflicts; `None` recovers first server-created session |
+| Abort | exact current session/turn/epoch only; stale/wrong/terminal token fails closed |
+| Tenant boundary | composite ownership + forced RLS/default deny on new `session_turns`; service predicates on legacy `sessions` |
+| PostgreSQL gate | **6 passed** in 208.59 s; real migration/concurrency/RLS/idempotency/expiry/abort |
+| Adjacent gate | **26 passed, 1 skipped**; one known Starlette/httpx2 warning |
+| Static gates | Alembic `031`; Ruff clean; 7 formatted; strict MyPy 2 sources + project `db.models` green |
+| Cleanup | temporary relay/helper, random superuser and disposable DB removed; pre-existing local admin role preserved |
+| Not delivered | terminal commit/history owner, `/api/ask`, SSE, timeout, compatibility removal, live replicas/promotion |
+
+### 0B. QA and claim boundary
+
+QA follow-up 1/1 исправил explicit-session replay binding, DB-clock ordering,
+cross-test RLS contamination и FK-masked policy negative; добавлены concurrent
+same-key, wrong-turn abort и explicit restore assertions. Green focused evidence
+закрывает REL-03B local engineering scope, но не REL-03, production readiness
+или multi-replica promotion.
+
+### 0C. Next exact slice
+
+Следующий safe local-only candidate — **REL-03C fenced terminal message-pair
+commit + durable history snapshot primitives** с real PostgreSQL tests. Не
+добавлять API/SSE wiring, timeout integration, compatibility removal, live
+replicas, deploy, promotion или push в тот же slice.
+
+---
+
+## Superseded — 2026-08-23 / Update-236 REL-03B scoped WIP blocked before real PostgreSQL gate
+
+**Назначение:** сохранить точный uncommitted REL-03B WIP, принятый QA batch и
+два environment blockers без ложного implementation-complete claim.
+
+### 0. Actual Git и scope
+
+REL-03B остаётся единственным active slice. Dirty scope: revision `031`,
+`Session`/`SessionTurn`, `SessionService`, focused/restore tests и этот durable
+status. `/api/ask`, SSE, terminal message-pair commit, compatibility removal,
+live/production DB, deploy и push не менялись.
+
+### 0A. Fresh evidence
+
+| Gate | Точный результат |
+|------|------------------|
+| Pure RED | 2 expected failures: explicit session mismatch replayed; DB clock preceded active-row lock |
+| Pure GREEN | **2 passed**, one known Starlette/httpx2 host warning |
+| Adjacent | **26 passed, 1 skipped**, same known warning |
+| Alembic discovery | single head **`031`** |
+| Ruff / format | clean / **7 files already formatted** |
+| Real PostgreSQL | **not reached**: missing Windows `DATABASE_URL`; WSL later returned `HCS_E_CONNECTION_TIMEOUT` |
+| Strict MyPy | **not green**: narrowed rerun stopped in installed NumPy stub using Python-3.12 syntax under project target 3.11 |
+| Commit | **none**; required DB evidence is absent |
+
+### 0B. QA batch applied once
+
+1. Existing idempotency replay now rejects a different explicit `session_id`,
+   while `session_id=None` still recovers a server-created first session.
+2. PostgreSQL clock is read only after the active-turn row lock returns.
+3. RLS test data is isolated; the negative insert has a valid tenant-B parent
+   and asserts SQLSTATE `42501`, so a composite FK cannot fake the result.
+4. Tests add concurrent same-key admission, wrong-turn exact abort and explicit
+   `session_turns` restore inventory coverage.
+5. Existing `sessions` RLS remains outside REL-03B because current legacy
+   ask/history paths do not bind the tenant GUC. Enabling it before the later
+   compatibility wiring slice would change forbidden runtime behavior.
+
+### 0C. Resume contract
+
+1. Do not repeat QA; `QA follow-up 1/1` is consumed.
+2. Restore a disposable local PostgreSQL endpoint/toolchain without touching
+   production, then run the focused integration file once.
+3. Use the established project MyPy boundary; do not raw-retry the installed
+   NumPy/Python-target mismatch.
+4. Commit only after fresh PostgreSQL, adjacent/static and diff gates are green.
+5. Do not start REL-03C in the same turn that closes this WIP.
+
+---
+
+## Superseded — 2026-08-23 / Update-235 REL-03A durable multi-replica session SLA accepted in containing scoped commit
 
 **Назначение:** за один экран зафиксировать owner-authorized Trust Foundation
 reroute, принятое consistency/SLA решение и точную границу следующего

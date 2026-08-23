@@ -7,6 +7,7 @@ from datetime import datetime, timezone
 
 from sqlalchemy import (
     JSON,
+    BigInteger,
     Boolean,
     CheckConstraint,
     DateTime,
@@ -32,7 +33,11 @@ class Base(DeclarativeBase):
 
 class Session(Base):
     __tablename__ = "sessions"
-    __table_args__ = (UniqueConstraint("id", "tenant_id", name="uq_sessions_id_tenant_id"),)
+    __table_args__ = (
+        UniqueConstraint("id", "tenant_id", name="uq_sessions_id_tenant_id"),
+        CheckConstraint("version >= 0", name="ck_sessions_version_nonnegative"),
+        CheckConstraint("turn_epoch >= 0", name="ck_sessions_turn_epoch_nonnegative"),
+    )
 
     id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),
@@ -53,11 +58,112 @@ class Session(Base):
         server_default="default",
         index=True,
     )
+    version: Mapped[int] = mapped_column(
+        BigInteger,
+        nullable=False,
+        default=0,
+        server_default=text("0"),
+    )
+    turn_epoch: Mapped[int] = mapped_column(
+        BigInteger,
+        nullable=False,
+        default=0,
+        server_default=text("0"),
+    )
 
     messages: Mapped[list["Message"]] = relationship(
         back_populates="session",
         cascade="all, delete-orphan",
     )
+    turns: Mapped[list["SessionTurn"]] = relationship(
+        back_populates="session",
+        cascade="all, delete-orphan",
+    )
+
+
+class SessionTurn(Base):
+    __tablename__ = "session_turns"
+    __table_args__ = (
+        ForeignKeyConstraint(
+            ["session_id", "tenant_id"],
+            ["sessions.id", "sessions.tenant_id"],
+            ondelete="CASCADE",
+            name="fk_session_turns_session_tenant",
+        ),
+        UniqueConstraint(
+            "tenant_id",
+            "session_id",
+            "turn_epoch",
+            name="uq_session_turns_tenant_session_epoch",
+        ),
+        CheckConstraint(
+            "tenant_id <> '' AND turn_id <> ''",
+            name="ck_session_turns_identity_nonempty",
+        ),
+        CheckConstraint(
+            "request_digest ~ '^[0-9a-f]{64}$'",
+            name="ck_session_turns_request_digest",
+        ),
+        CheckConstraint(
+            "result_digest IS NULL OR result_digest ~ '^[0-9a-f]{64}$'",
+            name="ck_session_turns_result_digest",
+        ),
+        CheckConstraint(
+            "expected_version >= 0",
+            name="ck_session_turns_expected_version_nonnegative",
+        ),
+        CheckConstraint("turn_epoch > 0", name="ck_session_turns_epoch_positive"),
+        CheckConstraint(
+            "status IN ('RUNNING', 'COMMITTED', 'ABORTED', 'EXPIRED')",
+            name="ck_session_turns_status",
+        ),
+        CheckConstraint(
+            "deadline_at > admitted_at",
+            name="ck_session_turns_deadline_after_admission",
+        ),
+        CheckConstraint(
+            "terminal_at IS NULL OR terminal_at >= admitted_at",
+            name="ck_session_turns_terminal_after_admission",
+        ),
+        CheckConstraint(
+            "(status = 'RUNNING' AND terminal_at IS NULL "
+            "AND result_digest IS NULL AND committed_version IS NULL) OR "
+            "(status = 'COMMITTED' AND terminal_at IS NOT NULL "
+            "AND result_digest IS NOT NULL "
+            "AND committed_version = expected_version + 1) OR "
+            "(status IN ('ABORTED', 'EXPIRED') AND terminal_at IS NOT NULL "
+            "AND result_digest IS NULL AND committed_version IS NULL)",
+            name="ck_session_turns_terminal_shape",
+        ),
+        Index(
+            "uq_session_turns_one_running",
+            "tenant_id",
+            "session_id",
+            unique=True,
+            postgresql_where=text("status = 'RUNNING'"),
+        ),
+        Index(
+            "ix_session_turns_tenant_session_admitted",
+            "tenant_id",
+            "session_id",
+            "admitted_at",
+        ),
+    )
+
+    tenant_id: Mapped[str] = mapped_column(String(50), primary_key=True)
+    turn_id: Mapped[str] = mapped_column(String(128), primary_key=True)
+    session_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), nullable=False)
+    request_digest: Mapped[str] = mapped_column(String(64), nullable=False)
+    expected_version: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    turn_epoch: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    status: Mapped[str] = mapped_column(String(16), nullable=False)
+    admitted_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    deadline_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    terminal_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    result_digest: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    committed_version: Mapped[int | None] = mapped_column(BigInteger, nullable=True)
+
+    session: Mapped["Session"] = relationship(back_populates="turns")
 
 
 class User(Base):

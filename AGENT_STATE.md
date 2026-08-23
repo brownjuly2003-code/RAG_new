@@ -1,5 +1,106 @@
 # Agent State
 
+## 2026-08-23 Update-237 — REL-03B durable session admission locally complete in containing scoped commit ✅ START HERE
+
+> **Канонический старт для `D:\RAG_new`:** Actual Git, этот блок, затем
+> верхняя CURRENT-капсула `docs/SESSION_HANDOFF.md` и
+> `durable-session-admission-contract.md`. Exact SHA брать из Actual Git.
+
+### 237A. Delivery и exact scope
+
+- Revision `031`, matching ORM, `SessionService` admission/replay/abort,
+  disposable PostgreSQL tests, restore inventory assertions и durable docs
+  доставляются одним explicit-pathspec commit, содержащим этот update.
+- `sessions.version` и `turn_epoch` неотрицательны; tenant-owned
+  `session_turns` фиксирует request digest, expected version, monotonic epoch,
+  database timestamps и terminal shape. Partial unique index разрешает ровно
+  один `RUNNING` turn на tenant/session.
+- `/api/ask`, SSE, terminal message-pair commit, compatibility ownership,
+  live/production migration, promotion, deploy и push не менялись.
+
+### 237B. Admission safety contract
+
+- Admission сериализует session row, использует PostgreSQL clock, истекает
+  overdue active turn, increment-ит epoch и завершает transaction до reasoning.
+- Tenant-wide same-key replay сериализован advisory transaction lock; digest
+  drift и другая explicit session дают idempotency conflict, а
+  `session_id=None` восстанавливает server-created first session.
+- Abort меняет только exact current session/turn/epoch token и идемпотентен для
+  уже `ABORTED`; stale/wrong/terminal tokens fail closed без message/version
+  mutation.
+- Forced RLS относится к новой `session_turns`. Legacy `sessions` RLS остаётся
+  отдельным compatibility/API tenant-GUC wiring slice, чтобы не сломать текущие
+  ask/history paths.
+
+### 237C. Fresh verification и cleanup
+
+- Tests-first pure regression: **2 failed → 2 passed**.
+- Disposable PostgreSQL 14 gate: **6 passed** за 208.59 s, включая
+  `base/head/030/031` round-trip, two-connection contention, independent
+  sessions, RLS SQLSTATE `42501`, idempotency, expiry и exact abort.
+- Final adjacent gate: **26 passed, 1 skipped**; единственное предупреждение —
+  известный host Starlette/httpx2 drift. Alembic head — `031`.
+- Ruff clean; **7 files already formatted**. Python 3.12/Mypy 1.19.1 при
+  project target 3.11: strict **2 source files** green с отключением только
+  подтверждённого pre-existing `db.models` `type-arg`; отдельный project gate
+  `db/models.py` green без issues.
+- QA follow-up 1/1 применён одним батчем. Temporary WSL relay/helper, random
+  superuser и `rag_session_turns_b_*` DB удалены; предсуществующий non-superuser
+  `rag_session_admin_031b00000001` сохранён.
+
+### 237D. Следующая граница
+
+- Следующий safe local-only candidate: **REL-03C fenced terminal message-pair
+  commit + durable history snapshot primitives**, с PostgreSQL tests only.
+- Не совмещать REL-03C с `/api/ask`, SSE/timeout wiring, compatibility removal,
+  live replicas, deploy, promotion или push. REL-03 в целом остаётся open.
+
+## Superseded — 2026-08-23 Update-236 REL-03B scoped WIP blocked before real PostgreSQL gate
+
+> **Канонический старт для `D:\RAG_new`:** Actual Git, этот блок, затем
+> верхняя CURRENT-капсула `docs/SESSION_HANDOFF.md` и
+> `durable-session-admission-contract.md`.
+
+### 236A. Текущий WIP и принятый QA batch
+
+- Uncommitted REL-03B WIP содержит revision `031`, `Session` counters,
+  tenant-owned `SessionTurn`, `SessionService` admission/abort и focused tests.
+- Единственный independent QA follow-up 1/1 нашёл cross-test RLS false positive,
+  replay без explicit-session binding и DB clock до active-turn lock. В WIP
+  исправлены эти дефекты; также добавлены concurrent same-key, wrong-turn abort,
+  policy-not-FK и explicit restore-inventory assertions.
+- Forced RLS добавляется только новой `session_turns`. Включение RLS на legacy
+  `sessions` отложено до отдельного compatibility/API tenant-GUC wiring slice:
+  делать это сейчас означало бы сломать запрещённые к изменению ask/history paths.
+
+### 236B. Fresh verification truth
+
+- Tests-first pure regression: **2 failed** до service fix, затем **2 passed**.
+- Adjacent session/restore inventory gate: **26 passed, 1 skipped**; одно
+  известное host warning Starlette/httpx2.
+- Alembic discovery: single head **`031`**. Scoped Ruff clean; **7 files already
+  formatted**.
+- Обязательный real-PostgreSQL gate не выполнил test body: Windows process не
+  имел `DATABASE_URL`, поэтому module fixture дал 6 setup errors. WSL PostgreSQL
+  сначала ответил на `pg_isready`, но WSL Python 3.10 не имел project test stack,
+  а следующая bounded probe завершилась `HCS_E_CONNECTION_TIMEOUT`. Relay,
+  listen/auth, package install и WSL restart не менялись и не повторялись.
+- Strict MyPy сначала встретил `DeclarativeBase=Any` под ошибочной skip-boundary;
+  единственный narrowed rerun без skip остановился до project source на
+  installed NumPy stub с Python-3.12-only `type` syntax при target 3.11.
+
+### 236C. Delivery boundary и следующий exact action
+
+- REL-03B **не завершён и не закоммичен**: required fresh non-skipped PostgreSQL
+  concurrency/RLS/migration evidence отсутствует. Push/deploy/live/production
+  migration не выполнялись.
+- Следующий ход продолжает тот же REL-03B WIP: восстановить уже разрешённый
+  disposable local PostgreSQL test endpoint/toolchain, один раз запустить
+  `tests/integration/test_session_service_postgres.py`, затем применить
+  established project MyPy boundary и commit только при green gates.
+- Не начинать REL-03C, terminal pair commit, `/api/ask`, SSE или compatibility
+  removal до закрытия этого WIP.
+
 ## 2026-08-23 Update-235 — REL-03A durable multi-replica session SLA accepted in containing scoped commit ✅ START HERE
 
 > **Канонический старт для `D:\RAG_new`:** Actual Git, этот блок, затем
