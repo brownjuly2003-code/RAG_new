@@ -1,6 +1,24 @@
 # Backlog
 
-## Current routing override — Resolution Product
+## Current routing override — Trust Foundation REL-03
+
+Владелец явно поручил Codex решить маршрут самостоятельно и найти необходимые
+данные в сети. Выбран отложенный REL-03 consistency/SLA gate. REL-03A
+design-only decision доставляется scoped commit, содержащим этот update:
+PostgreSQL primary становится authority для fenced same-session turns, а
+process memory/Redis остаются non-authoritative. Точный контракт, primary web
+sources и promotion thresholds находятся в
+[`docs/adr/0006-durable-multi-replica-session-turns.md`](docs/adr/0006-durable-multi-replica-session-turns.md).
+
+Следующий local-only candidate: **REL-03B durable session admission contract** —
+migration, models и `SessionService` admission/abort primitives с tests-first
+real PostgreSQL concurrency coverage. Не добавлять `/api/ask`/SSE wiring,
+compatibility removal, live promotion, deploy или push в тот же slice.
+
+Resolution Product G8 остаётся локально завершённым на `82137c8`; full Slice G
+остаётся open beyond synthetic evidence и не считается release-approved.
+
+## Paused routing — Resolution Product
 
 Текущая выбранная владельцем очередь находится в
 [`rag-new-architecture.md`](rag-new-architecture.md), а точный scope и DoD — в

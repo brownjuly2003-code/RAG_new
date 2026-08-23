@@ -1,6 +1,53 @@
 # Session handoff
 
-## CURRENT — 2026-08-23 / Update-234 G8 deterministic synthetic release-safety gate locally complete in containing scoped commit
+## CURRENT — 2026-08-23 / Update-235 REL-03A durable multi-replica session SLA accepted in containing scoped commit
+
+**Назначение:** за один экран зафиксировать owner-authorized Trust Foundation
+reroute, принятое consistency/SLA решение и точную границу следующего
+implementation slice.
+
+### 0. Actual Git и routing
+
+Перед продолжением выполнить `git status --short --branch` и
+`git log -5 --oneline`; Actual Git сильнее embedded SHA. Владелец сказал
+`реши сам`, затем разрешил найти необходимые данные в сети. Это явно выбрало
+отложенный REL-03 product decision. Resolution G8 остаётся завершённым на
+`82137c8` и не переоткрывается.
+
+### 0A. Один экран истины
+
+| Поле | Проверенный факт |
+|------|-----------------|
+| Slice | REL-03A, design-only; no runtime/schema/API behavior change |
+| Decision | PostgreSQL primary owns durable same-session admission/version/commit; process memory and Redis are non-authoritative |
+| Safety | One running turn; monotonic `turn_epoch`; exact version/token terminal CAS; timeout/expired/stale workers cannot commit |
+| HTTP | `Idempotency-Key`; strong `ETag`/`If-Match`; `428` missing, `412` stale, `409` active/digest conflict, `503` authority unavailable |
+| SLO | zero lost/duplicate/reordered/late commits; coordination p95 ≤100 ms / p99 ≤250 ms |
+| Promotion evidence | ≥1,000 contended attempts, ≥100 sessions, ≥2 replicas, fresh and non-skipped |
+| Artifacts | `docs/adr/0006-durable-multi-replica-session-turns.md`, D-10 in architecture index, root short plan |
+| Web evidence | Primary RFC, PostgreSQL, Google Research and Kubernetes sources linked in ADR; numeric targets are project decisions, not borrowed benchmarks |
+| Verification | Pre-handoff docs-quality **13 passed**; decision IDs/link/Mermaid/UTF-8/diff checks green; one known host-env Starlette/httpx2 warning |
+| Not delivered | Migration, models, `SessionService`, `/api/ask`, SSE, live DB/replicas, promotion, deploy, push |
+
+### 0B. Next exact slice
+
+Only **REL-03B durable session admission contract**: add the migration, models,
+and `SessionService` admission/abort primitives with tests-first real
+PostgreSQL concurrency evidence. Do not wire sync/SSE or remove compatibility
+ownership in the same slice. REL-03 remains open until later implementation and
+two-replica promotion evidence is fresh and non-skipped.
+
+### 0C. Stop/resume contract
+
+1. Do not repeat REL-03A research/docs gates without a new doc diff or failure.
+2. Do not infer implemented multi-replica safety from an accepted ADR.
+3. Keep G8 synthetic evidence separate from Trust Foundation release evidence.
+4. No live services, migration execution, push, deploy or promotion without
+   their separate authority.
+
+---
+
+## Superseded — 2026-08-23 / Update-234 G8 deterministic synthetic release-safety gate locally complete in containing scoped commit
 
 **Назначение:** за один экран зафиксировать exact G7-bound safety gate,
 обязательные семь deterministic surfaces, candidate-outcome floor и границу

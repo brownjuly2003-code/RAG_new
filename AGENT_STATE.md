@@ -1,5 +1,58 @@
 # Agent State
 
+## 2026-08-23 Update-235 — REL-03A durable multi-replica session SLA accepted in containing scoped commit ✅ START HERE
+
+> **Канонический старт для `D:\RAG_new`:** Actual Git, этот блок, затем
+> верхняя CURRENT-капсула `docs/SESSION_HANDOFF.md` и
+> `docs/adr/0006-durable-multi-replica-session-turns.md`.
+
+### 235A. Routing и scope
+
+- Команды владельца `реши сам` и `нужные данные найди в сети` явно вернули
+  routing к унаследованному Trust Foundation debt и дали authority принять
+  отложенное REL-03 consistency/SLA решение.
+- REL-03A — design-only atomic slice. Runtime, schema, migration, API, SSE,
+  live services, push и deploy не менялись.
+- Resolution Product G8 остаётся локально завершённым на `82137c8`; его green
+  gates не повторялись и synthetic evidence не повышено до release claim.
+
+### 235B. Принятое решение
+
+- PostgreSQL primary — единственная authority для same-session admission,
+  version, turn state и terminal message-pair commit. Redis/process memory не
+  могут быть correctness owner.
+- Контракт использует tenant-scoped session version, monotonic turn fencing,
+  one-running-turn invariant, idempotency key и exact terminal CAS. Долгая
+  retrieval/LLM работа выполняется вне DB transaction.
+- HTTP boundary: strong `ETag`/`If-Match`; missing precondition = `428`, stale
+  version = `412`, competing active turn = `409`, unavailable durable authority
+  = `503`.
+- Promotion floor: zero lost/duplicate/reordered/late commits; DB coordination
+  target p95 ≤100 ms / p99 ≤250 ms; at least 1,000 contended attempts across
+  at least 100 sessions and two replicas before REL-03 closure.
+
+### 235C. Artifacts и verification
+
+- ADR: `docs/adr/0006-durable-multi-replica-session-turns.md`.
+- Decision register: `docs/architecture/README.md`, D-10.
+- Short root plan: `multi-replica-session-consistency-sla.md`.
+- Primary web evidence is linked in the ADR: RFC 9110/6585, PostgreSQL locking,
+  conditional update/partial-index docs, Google Chubby and Kubernetes
+  resource-version semantics. External facts and project-selected targets are
+  explicitly separated.
+- Pre-handoff docs-quality gate: **13 passed**, one known host-env
+  Starlette/httpx2 warning. Decision IDs are unique/ordered; ADR link,
+  Mermaid fences, UTF-8 and pre-handoff `git diff --check` are green.
+
+### 235D. Следующая граница
+
+- Следующий safe named slice: **REL-03B durable session admission contract** —
+  migration, models and `SessionService` admission/abort primitives with real
+  PostgreSQL concurrency tests only.
+- Не совмещать REL-03B с `/api/ask`, SSE, timeout integration, compatibility
+  removal или live multi-replica promotion. REL-03 остаётся open until fresh
+  non-skipped implementation and promotion evidence exists.
+
 ## 2026-08-23 Update-234 — G8 deterministic synthetic release-safety gate locally complete in containing scoped commit ✅ START HERE
 
 > **Канонический старт для `D:\RAG_new`:** читать этот короткий блок, затем

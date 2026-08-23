@@ -62,6 +62,7 @@ flowchart LR
 | D-07 | Keep the policy engine behind `PolicyDecisionPoint`. | Typed Python rules fit the MVP; OPA remains an adapter when independent policy distribution is justified. | [System architecture](system-architecture.md#11-policy-decision-point) |
 | D-08 | Grade state and postconditions before language quality. | A fluent answer is not evidence that the business outcome occurred. | [Security and reliability](security-reliability.md#9-promotion-gates) |
 | D-09 | Migrate by strangler/shadow, preserving existing APIs. | The inherited remediation stream and new product stream can advance without masking each other. | [Migration plan](migration-plan.md) |
+| D-10 | Fence same-session turns in PostgreSQL before multi-replica rollout. | Process locks and sticky routing cannot reject stale workers after timeout or replica failover. | [ADR 0006](../adr/0006-durable-multi-replica-session-turns.md) |
 
 ## Non-negotiable runtime invariants
 
