@@ -1,5 +1,57 @@
 # Agent State
 
+## 2026-08-23 Update-230 — G5 synthetic outcome metrics locally complete in containing scoped commit ✅ START HERE
+
+> **Канонический старт для `D:\RAG_new`:** читать этот блок, затем верхнюю
+> CURRENT-капсулу `docs/SESSION_HANDOFF.md` и
+> `g5-versioned-synthetic-outcome-ledger.md`. Они заменяют Update-229 как
+> routing truth. Exact delivery SHA брать из Actual Git.
+
+### 230A. Actual Git и delivery state
+
+- G5 implementation, tests и durable docs доставлены scoped explicit-pathspec
+  commit, содержащим этот Update-230; точный SHA определяет Actual Git.
+- Remote не настроен. Push, deploy, runtime, live и external actions не
+  выполнялись. Tests-first RED был ожидаемым public `ImportError`.
+
+### 230B. Доставленный G5 contract
+
+- Immutable versioned ledger/report работает на case level; full compiled
+  corpus фиксирует reporting universe, а каждая запись связывает exact
+  manifest/result/scenario binding и три ordered replay-trial digest.
+- Verified numerator требует `ELIGIBLE`, `CLAIMED_AUTO`, все семь provisional
+  VR checks `PASS` и все три exact trials `PASSED`.
+- VR precision, VRY и eligibility coverage публикуются вместе как count pairs
+  с `EXACT`/`LOWER_BOUND`/`UNDEFINED`. Missing, duplicate, extra, foreign,
+  drifted или unknown evidence не может улучшить numerator или сузить
+  conservative denominator; global identity failure использует full corpus и
+  zero credit.
+- Definition остаётся `UNCONFIRMED`, `synthetic_local`, с explicit assumed
+  recontact window и `business_claimable=false`. Canonical artifacts не
+  содержат raw candidate/world/fault/oracle/response payload.
+
+### 230C. Verification и QA truth
+
+- Focused final: **7 passed**.
+- QA follow-up 1/1 не нашёл semantic blocking/major defect; удалил один unused
+  import и механически отформатировал implementation/test.
+- Independent gate: **129 passed**, одно известное предупреждение
+  Starlette/httpx2; Ruff green; **3 files formatted**; strict MyPy green по 6
+  pure Resolution sources; `git diff --check` green.
+
+### 230D. Границы и следующий slice
+
+- Полный Slice G остаётся открыт. G5 не добавляет live outcome/recontact,
+  business thresholds/baselines, runtime/DB/loop integration, shadow/canary,
+  promotion, deploy или push.
+- Следующий safe named slice — **G6: exact-definition-bound synthetic
+  baseline/candidate outcome comparison + case-disposition breakdown**, без
+  live shadow claims или promotion.
+- Содержащий этот Update-230 commit закрывает G5. Не повторять его green gates
+  и не начинать G6 в этом turn.
+
+---
+
 ## 2026-08-22 Update-229 — G4 versioned corpus coverage locally complete in containing scoped commit ✅ START HERE
 
 > **Канонический старт для `D:\RAG_new`:** читать этот блок, затем верхнюю

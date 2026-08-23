@@ -248,10 +248,32 @@ fixed foreign-pin numerator credit and finished green; independent verification
 passed 117 adjacent tests with one known Starlette/httpx2 warning, plus Ruff,
 12-file format check, strict MyPy over five sources, and diff check.
 
-The next named slice is **G5: versioned synthetic outcome ledger plus
-deterministic VR precision/VRY/eligibility coverage reporting with fixed
-denominators**, still without live outcome claims, runtime integration,
-shadow/canary, promotion, deploy, or push.
+Delivery status (2026-08-23): **G5 versioned synthetic outcome ledger and
+deterministic metrics are locally complete in the scoped commit containing this
+update; resolve its exact SHA from Actual Git; full Slice G remains open.** The
+full compiled corpus is the fixed case-level reporting universe. Each record
+binds exact manifest/result/scenario identities and all three ordered replay
+trial digests. Verified credit requires explicit eligible and claimed-auto
+dispositions, seven normalized VR checks, and three passing trials.
+
+The report publishes VR precision, VRY, and eligibility coverage together as
+exact count pairs with `EXACT`, `LOWER_BOUND`, or `UNDEFINED` semantics.
+Missing, duplicate, extra, foreign, drifted, or unknown evidence cannot raise a
+numerator or narrow a conservative denominator; global identity failures zero
+all metric credit. The metric definition is owner-unconfirmed,
+`synthetic_local`, and `business_claimable=false`; its recontact-window check is
+not live outcome evidence or a promotion verdict.
+
+Tests-first RED was the expected import failure. Focused verification passed
+seven tests. The single QA follow-up found no semantic blocking/major defect
+and made only import/format corrections. Independent verification passed 129
+Resolution tests with one known Starlette/httpx2 warning; Ruff, three-file
+format check, strict MyPy over six sources, and diff check were green.
+
+The next safe named slice is **G6: exact-definition-bound synthetic
+baseline/candidate outcome comparison plus case-disposition breakdown**, still
+without live shadow claims, runtime integration, thresholds, canary,
+promotion, deploy, or push.
 
 ### Slice H — Operator surfaces and pilot
 

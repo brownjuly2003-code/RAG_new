@@ -14,7 +14,7 @@ Evolve the inherited RAG assistant into a self-hosted, verifiable support-resolu
 - [x] Add a pure temporal-knowledge and projection-binding contract -> Verify: bitemporal selection, exact applicability, fail-closed conflicts, tenant/config drift, and rebuild/rollback known cases pass without changing runtime defaults.
 - [x] Persist and integrate temporal knowledge authority -> Verify: revision `029` round trip, forced RLS, immutability/system-close guards, bitemporal exclusion, exact approved identities, and retrieval allowlisting pass on real PostgreSQL.
 - [x] Add the governed action gateway and wrap `create_ticket` as the first reversible/idempotent write -> Delivered locally at `ed82d6a`; retries and disconnects cannot create duplicate side effects, and denial never calls the connector.
-- [ ] Add scenario compilation, state grading, replay manifests, and VR/VRY reporting -> G1 through G4 are locally complete; G5 versioned synthetic outcome/VR reporting is next. Full Slice G remains open.
+- [ ] Add scenario compilation, state grading, replay manifests, and VR/VRY reporting -> G1 through G5 are locally complete; G6 synthetic baseline/candidate comparison is next. Full Slice G remains open.
 - [ ] Promote one journey through shadow and canary only after the inherited remediation stream is green -> Verify: rollback, SLO, security, and outcome gates are backed by fresh non-skipped evidence.
 
 ## Done when
@@ -100,7 +100,16 @@ required fault surfaces, and credits coverage only for exact manifest and
 scenario bindings. A privacy-safe canonical snapshot and SHA guard contain no
 raw candidate/world/fault/oracle/response payload.
 
-Full Slice G remains open. G5 versioned synthetic outcome ledger plus
-deterministic VR precision/VRY/eligibility coverage reporting is next. Runtime
-and live outcomes, loop integration, database, shadow/canary, promotion,
-external connector, deploy and push remain outside G4.
+G5 is locally complete in the scoped commit containing this update; resolve its
+exact SHA from Actual Git. Its immutable versioned case ledger binds exact
+manifest, corpus, structural coverage, full replay plan/result, scenario and
+three-trial identities. Deterministic VR precision, VRY, and eligibility
+coverage use conservative fixed-denominator accounting. Only an eligible,
+claimed-auto case with all seven provisional VR checks and all three replay
+trials passing receives verified credit. Definitions remain owner-unconfirmed,
+synthetic-only, and explicitly non-business-claimable.
+
+Full Slice G remains open. G6 exact-definition-bound synthetic
+baseline/candidate comparison and case-disposition breakdown is next. Runtime
+and live shadow outcomes, loop/database integration, thresholds, canary,
+promotion, external connector, deploy and push remain outside G5.

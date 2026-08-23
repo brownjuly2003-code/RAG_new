@@ -5,32 +5,33 @@
 Текущая выбранная владельцем очередь находится в
 [`rag-new-architecture.md`](rag-new-architecture.md), а точный scope и DoD — в
 [`docs/architecture/migration-plan.md`](docs/architecture/migration-plan.md).
-Срезы C1–C8, D, E1, E2, F и G1–G4 завершены локально. G4 versioned
-corpus/coverage implementation, tests, snapshot и docs доставлены scoped
+Срезы C1–C8, D, E1, E2, F и G1–G5 завершены локально. G5 versioned synthetic
+outcome-ledger/report implementation, tests и docs доставлены scoped
 commit, содержащим этот update; точный SHA определяет Actual Git. Remote
 отсутствует; push/deploy/live/external actions не выполнялись. Tests-first RED
 был ожидаемым `ImportError`.
 
-G4 компилирует 17 synthetic terminal-path scenarios и выводит coverage только
-из revalidated hidden contract paths. Versioned corpus содержит 3 persona, 4
-adversarial intent и 7 required fault surfaces; canonical snapshot и SHA guard
-не сериализуют raw candidate/world/fault/oracle/response payload. Structural
-denominators фиксированы: 22 pinned contract branches и 7 required fault
-targets. Coverage учитывается только при exact contract/scenario-set pins,
-membership и full scenario binding; foreign pins обнуляют numerators, а
-missing/extra/drifted scenarios не могут закрыть completeness.
+G5 фиксирует full compiled corpus как case-level reporting universe и связывает
+каждую synthetic outcome запись с exact manifest/corpus/G4 coverage/full replay
+plan/result, scenario binding и тремя ordered trial digests. Verified credit
+требует `ELIGIBLE`, `CLAIMED_AUTO`, всех семи provisional VR checks `PASS` и
+трёх exact passing trials. Missing/duplicate/foreign/drifted evidence
+консервативно сохраняет denominators; global identity drift обнуляет numerators.
+Нулевой denominator даёт `UNDEFINED`, а не ложные 100%.
 
-Focused final: 9 passed. QA follow-up 1/1 нашёл и исправил foreign-pin
-numerator credit, подтвердил RED и завершился green. Independent gate: 117
-passed + one known Starlette/httpx2 warning; Ruff green; 12 files formatted;
-strict MyPy 5 sources green; diff check green.
+Metric definition остаётся `UNCONFIRMED`, `synthetic_local` и
+`business_claimable=false`; normalized recontact check не является live
+наблюдением. Focused final: 7 passed. QA follow-up 1/1 не нашёл semantic
+blocking/major issue и сделал только unused-import/format correction.
+Independent gate: 129 passed + one known Starlette/httpx2 warning; Ruff green;
+3 files formatted; strict MyPy 6 sources green; diff check green.
 
-Полный Slice G остаётся открыт. Следующий named slice — **G5: versioned
-synthetic outcome ledger + deterministic VR precision/VRY/eligibility coverage
-report with fixed denominators**, всё ещё без live outcome claims,
-runtime/DB/loop integration, shadow/canary, promotion, deploy или push. Полная
-truth — в [`docs/SESSION_HANDOFF.md`](docs/SESSION_HANDOFF.md) и
-[`g4-versioned-resolution-corpus-coverage.md`](g4-versioned-resolution-corpus-coverage.md).
+Полный Slice G остаётся открыт. Следующий safe named slice — **G6:
+exact-definition-bound synthetic baseline/candidate outcome comparison +
+case-disposition breakdown**, всё ещё без live shadow claims, runtime/DB/loop
+integration, thresholds, promotion, deploy или push. Полная truth — в
+[`docs/SESSION_HANDOFF.md`](docs/SESSION_HANDOFF.md) и
+[`g5-versioned-synthetic-outcome-ledger.md`](g5-versioned-synthetic-outcome-ledger.md).
 
 Закрывающие C7/C8-капсулы:
 [`c7-resolution-restore-smoke.md`](c7-resolution-restore-smoke.md) и

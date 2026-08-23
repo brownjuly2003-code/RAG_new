@@ -1,6 +1,76 @@
 # Session handoff
 
-## CURRENT — 2026-08-22 / Update-229 G4 versioned corpus coverage locally complete in containing scoped commit
+## CURRENT — 2026-08-23 / Update-230 G5 synthetic outcome metrics locally complete in containing scoped commit
+
+**Назначение:** восстановить exact delivery SHA из Actual Git и направить
+следующую сессию к G6 без повторения green gates или завышения synthetic
+метрик до live/business evidence.
+
+### 0. Actual Git и обязательная первая проверка
+
+```powershell
+Set-Location -LiteralPath D:\RAG_new
+git status --short --branch
+git log -5 --oneline
+git remote -v
+```
+
+G5 implementation, tests и docs доставлены scoped commit, содержащим этот
+Update-230; точный SHA определяет Actual Git. Remote отсутствует;
+push/deploy/live/external actions не выполнялись.
+
+### 0A. Один экран истины
+
+| Поле | Проверенный факт |
+|------|-----------------|
+| G5 status | Locally complete in containing explicit-pathspec commit; RED был expected public `ImportError` |
+| Unit/universe | Case-level; full compiled corpus is the fixed reporting universe |
+| Verified credit | Exact eligible + claimed-auto record, seven checks PASS, all three bound replay trials PASSED |
+| Exact binding | Metric definition, manifest, corpus, G4 coverage report, full replay plan/result, scenario and trial digests |
+| Fixed accounting | Malformed/unknown evidence is conservatively presumed eligible/claimed; global drift gives full-corpus denominators and zero credit |
+| Metric shape | VR precision, VRY, eligibility coverage; `EXACT`, `LOWER_BOUND`, or `UNDEFINED` count pairs |
+| Claim boundary | `UNCONFIRMED`, `synthetic_local`, explicit assumed recontact window, `business_claimable=false` |
+| QA | Follow-up 1/1 found no semantic blocking/major defect; import/format-only changes |
+| Independent gate | 129 passed + 1 known Starlette/httpx2 warning; Ruff, 3 formatted, strict MyPy 6 sources, diff green |
+| Следующий safe slice | G6 exact-definition-bound synthetic baseline/candidate comparison + case-disposition breakdown; no live shadow/promotion |
+
+### 1. Доставленный contract
+
+- [`../evaluation/resolution/outcomes.py`](../evaluation/resolution/outcomes.py)
+  задаёт immutable provisional metric definition, normalized outcome records,
+  canonical ledger/report identities и fail-closed accounting.
+- Caller не передаёт `verified`: report выводит его только из exact artifact
+  pins, eligibility/resolution dispositions, семи checks и трёх replay trials.
+- Correct clarification/escalation может быть replay `PASSED`, но не становится
+  verified auto resolution. Zero-claim/zero-eligible ratio равен `UNDEFINED`,
+  не 100%.
+- Canonical payload содержит только opaque IDs/digests, enums, booleans,
+  counts/issues; raw candidate/world/fault/oracle/response compartments остаются
+  снаружи.
+
+### 2. Verification evidence
+
+- Tests-first RED: expected public `ImportError`.
+- Focused final: **7 passed**.
+- QA follow-up 1/1: semantic blocking/major findings отсутствуют; исправлены
+  unused import и механическое форматирование; focused/Ruff/format/MyPy green.
+- Independent final: **129 passed**, одно известное предупреждение
+  Starlette/httpx2; Ruff clean; **3 files already formatted**; strict MyPy
+  green по 6 pure Resolution sources; `git diff --check` green.
+
+### 3. Точный stop/resume contract
+
+1. Считать содержащий Update-230 scoped commit локальной delivery G5; exact
+   SHA брать из Actual Git и не переписывать вручную.
+2. Не повторять focused/adjacent, Ruff, format, MyPy или diff gates без нового
+   diff либо fresh failing evidence; QA follow-up исчерпан.
+3. Полный Slice G остаётся открыт. Следующий safe named slice — G6 synthetic
+   baseline/candidate outcome comparison + disposition breakdown. Не начинать
+   live shadow outcomes, runtime/DB, thresholds, canary, promotion, deploy/push.
+
+---
+
+## Superseded — 2026-08-22 / Update-229 G4 versioned corpus coverage locally complete in containing scoped commit
 
 **Назначение:** восстановить exact delivery SHA из Actual Git и направить
 следующую сессию к G5 без повторения green gates или завышения runtime/business
