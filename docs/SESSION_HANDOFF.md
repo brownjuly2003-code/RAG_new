@@ -1,6 +1,54 @@
 # Session handoff
 
-## CURRENT — 2026-08-23 / Update-237 REL-03B durable session admission locally complete in containing scoped commit
+## CURRENT — 2026-08-23 / Update-238 REL-03C fenced terminal commit locally complete in containing scoped commit
+
+**Назначение:** зафиксировать exact terminal/history primitives, fresh
+PostgreSQL evidence и следующий узкий Trust Foundation boundary.
+
+### 0. Actual Git и scope
+
+REL-03C service/tests/docs доставляются одним scoped explicit-pathspec commit,
+содержащим этот update; exact SHA определяет Actual Git. Revision остаётся
+`031`. `/api/ask`, SSE, timeout wiring, compatibility state, live/production
+DB, deploy, promotion и push не менялись.
+
+### 0A. Один экран истины
+
+| Поле | Проверенный факт |
+|------|-----------------|
+| Terminal authority | exact tenant/session/turn/epoch/request digest; `Session -> SessionTurn` row locks; PostgreSQL clock |
+| Atomic success | ordered user/assistant pair + version `+1` + `COMMITTED` in one transaction |
+| Replay | domain-separated request-bound result digest; exact retry no-op; request/content drift conflicts |
+| Fences | stale version/epoch, foreign token, elapsed deadline, `ABORTED`/`EXPIRED` cannot mutate history |
+| History snapshot | tenant predicate + session `FOR SHARE`; messages ordered by monotonic `Message.id` |
+| PostgreSQL gate | tests-first **1 failed -> 13 passed**; deterministic contention, blocker observation and fault rollback |
+| Adjacent gate | **12 passed**; one known Starlette/httpx2 warning |
+| Static gates | Ruff/format/diff green; strict Python 3.12/Mypy 1.19.1 **1 changed production source** green at target 3.11 |
+| Cleanup | active relay / temporary roles / disposable DBs = **0**; relay source and diagnostics removed |
+| Not delivered | sync/SSE wiring, HTTP preconditions/ETag, timeout integration, compatibility removal, live replicas/promotion |
+
+### 0B. QA and claim boundary
+
+Independent QA batch нашёл три majors. Follow-up 1/1 привязал terminal pair к
+admitted request digest, заменил false-sequential проверки deterministic
+two-connection barriers/`pg_blocking_pids` и добавил complete terminal fence +
+trigger rollback matrix. Green evidence закрывает REL-03C local engineering
+scope, но не sync/SSE integration, REL-03, production readiness или promotion.
+
+Raw host MyPy по-прежнему останавливается во внешнем NumPy stub; Python-3.12
+probe integration-файла отдельно обнаруживает pre-existing untyped SQLAlchemy
+event callback из `818eef4`. Финальный type claim относится только к изменённому
+production source и не выдаёт этот baseline за green.
+
+### 0C. Next exact slice
+
+Следующий safe local-only candidate — **REL-03D sync `/api/ask` durable
+lifecycle wiring**. Не добавлять SSE/timeout wiring, compatibility removal,
+live replicas, deploy, promotion или push в тот же slice.
+
+---
+
+## Superseded — 2026-08-23 / Update-237 REL-03B durable session admission locally complete in containing scoped commit
 
 **Назначение:** зафиксировать точный PostgreSQL admission/abort delivery,
 fresh non-skipped evidence и границу следующего Trust Foundation slice.

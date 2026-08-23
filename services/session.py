@@ -1,7 +1,9 @@
-"""Durable PostgreSQL admission and abort primitives for conversation turns."""
+"""Durable PostgreSQL lifecycle primitives for conversation turns."""
 
 from __future__ import annotations
 
+import hashlib
+import json
 import re
 from collections.abc import Callable
 from dataclasses import dataclass
@@ -12,7 +14,7 @@ from uuid import UUID, uuid4
 from sqlalchemy import func, select, text
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from db.models import Session, SessionTurn
+from db.models import Message, Session, SessionTurn
 
 AsyncSessionFactory = Callable[[], AsyncSession]
 _DIGEST_PATTERN = re.compile(r"^[0-9a-f]{64}$")
@@ -69,7 +71,7 @@ class SessionTurnFenceConflict(SessionTurnError):
 
 
 class SessionTurnTerminalConflict(SessionTurnError):
-    """A non-abort terminal state cannot be overwritten by abort cleanup."""
+    """A terminal turn cannot be overwritten by a different outcome."""
 
 
 @dataclass(frozen=True, slots=True)
@@ -96,6 +98,26 @@ class TurnAdmissionOutcome:
 
 @dataclass(frozen=True, slots=True)
 class TurnAbortOutcome:
+    turn: SessionTurnSnapshot
+    changed: bool
+
+
+@dataclass(frozen=True, slots=True)
+class SessionMessageSnapshot:
+    role: str
+    content: str
+
+
+@dataclass(frozen=True, slots=True)
+class SessionHistorySnapshot:
+    tenant_id: str
+    session_id: UUID
+    version: int
+    messages: tuple[SessionMessageSnapshot, ...]
+
+
+@dataclass(frozen=True, slots=True)
+class TurnCommitOutcome:
     turn: SessionTurnSnapshot
     changed: bool
 
@@ -130,6 +152,30 @@ def _require_deadline(value: datetime) -> datetime:
     if not isinstance(value, datetime) or value.tzinfo is None or value.utcoffset() is None:
         raise InvalidSessionTurn("deadline_at must be timezone-aware")
     return value
+
+
+def _require_message_content(value: str, *, field: str) -> str:
+    if not isinstance(value, str) or not value:
+        raise InvalidSessionTurn(f"{field} must be a non-empty string")
+    return value
+
+
+def _message_pair_digest(
+    request_digest: str,
+    user_content: str,
+    assistant_content: str,
+) -> str:
+    payload = json.dumps(
+        {
+            "domain": "session-terminal-pair-v1",
+            "request_digest": request_digest,
+            "messages": (("user", user_content), ("assistant", assistant_content)),
+        },
+        ensure_ascii=False,
+        separators=(",", ":"),
+        sort_keys=True,
+    ).encode("utf-8")
+    return hashlib.sha256(payload).hexdigest()
 
 
 def _snapshot(record: SessionTurn) -> SessionTurnSnapshot:
@@ -178,7 +224,7 @@ async def _database_now(session: AsyncSession) -> datetime:
 
 
 class SessionService:
-    """Short-transaction owner of durable session admission and abort."""
+    """Short-transaction owner of durable session-turn state and history."""
 
     def __init__(self, session_factory: AsyncSessionFactory) -> None:
         self._session_factory = session_factory
@@ -346,10 +392,156 @@ class SessionService:
             await db.flush()
             return TurnAbortOutcome(turn=_snapshot(turn), changed=True)
 
+    async def commit_turn(
+        self,
+        *,
+        tenant_id: str,
+        session_id: UUID,
+        turn_id: str,
+        turn_epoch: int,
+        request_digest: str,
+        user_content: str,
+        assistant_content: str,
+    ) -> TurnCommitOutcome:
+        tenant = _require_text(tenant_id, field="tenant_id", max_length=50)
+        identity = _require_text(turn_id, field="turn_id", max_length=128)
+        epoch = _require_turn_epoch(turn_epoch)
+        request = _require_digest(request_digest, field="request_digest")
+        user_message = _require_message_content(user_content, field="user_content")
+        assistant_message = _require_message_content(
+            assistant_content,
+            field="assistant_content",
+        )
+        if not isinstance(session_id, UUID):
+            raise InvalidSessionTurn("session_id must be a UUID")
+        result_digest = _message_pair_digest(request, user_message, assistant_message)
+
+        async with self._session_factory() as db, db.begin():
+            await set_session_tenant_context(db, tenant)
+            session_record = await db.scalar(
+                select(Session)
+                .where(
+                    Session.id == session_id,
+                    Session.tenant_id == tenant,
+                )
+                .with_for_update()
+            )
+            if session_record is None:
+                raise SessionNotFound("session was not found for tenant")
+
+            turn = await db.scalar(
+                select(SessionTurn)
+                .where(
+                    SessionTurn.tenant_id == tenant,
+                    SessionTurn.turn_id == identity,
+                )
+                .with_for_update()
+            )
+            if turn is None:
+                raise SessionTurnNotFound("turn was not found for tenant")
+            if turn.session_id != session_id or turn.turn_epoch != epoch:
+                raise SessionTurnFenceConflict("turn fencing token does not match")
+            if turn.request_digest != request:
+                raise SessionTurnIdempotencyConflict(
+                    "turn is already bound to another request digest"
+                )
+            if turn.status == TurnStatus.COMMITTED.value:
+                if turn.result_digest != result_digest:
+                    raise SessionTurnTerminalConflict(
+                        "committed turn is bound to a different terminal result"
+                    )
+                return TurnCommitOutcome(turn=_snapshot(turn), changed=False)
+            if turn.status != TurnStatus.RUNNING.value:
+                raise SessionTurnTerminalConflict(
+                    "aborted or expired turn cannot transition to committed"
+                )
+            if session_record.turn_epoch != epoch:
+                raise SessionTurnFenceConflict("session turn epoch no longer matches")
+            if session_record.version != turn.expected_version:
+                raise SessionVersionConflict(
+                    expected_version=turn.expected_version,
+                    actual_version=session_record.version,
+                )
+
+            database_now = await _database_now(db)
+            if turn.deadline_at <= database_now:
+                raise SessionTurnDeadlineElapsed(
+                    "turn deadline has elapsed on the PostgreSQL clock"
+                )
+
+            db.add_all(
+                (
+                    Message(
+                        session_id=session_id,
+                        tenant_id=tenant,
+                        role="user",
+                        content=user_message,
+                        created_at=database_now,
+                    ),
+                    Message(
+                        session_id=session_id,
+                        tenant_id=tenant,
+                        role="assistant",
+                        content=assistant_message,
+                        created_at=database_now,
+                    ),
+                )
+            )
+            session_record.version += 1
+            turn.status = TurnStatus.COMMITTED.value
+            turn.terminal_at = database_now
+            turn.result_digest = result_digest
+            turn.committed_version = session_record.version
+            await db.flush()
+            return TurnCommitOutcome(turn=_snapshot(turn), changed=True)
+
+    async def load_history(
+        self,
+        *,
+        tenant_id: str,
+        session_id: UUID,
+    ) -> SessionHistorySnapshot:
+        tenant = _require_text(tenant_id, field="tenant_id", max_length=50)
+        if not isinstance(session_id, UUID):
+            raise InvalidSessionTurn("session_id must be a UUID")
+
+        async with self._session_factory() as db, db.begin():
+            await set_session_tenant_context(db, tenant)
+            session_record = await db.scalar(
+                select(Session)
+                .where(
+                    Session.id == session_id,
+                    Session.tenant_id == tenant,
+                )
+                .with_for_update(read=True)
+            )
+            if session_record is None:
+                raise SessionNotFound("session was not found for tenant")
+            records = await db.scalars(
+                select(Message)
+                .where(
+                    Message.session_id == session_id,
+                    Message.tenant_id == tenant,
+                )
+                .order_by(Message.id)
+            )
+            messages = tuple(
+                SessionMessageSnapshot(role=record.role, content=record.content)
+                for record in records
+            )
+            return SessionHistorySnapshot(
+                tenant_id=tenant,
+                session_id=session_id,
+                version=session_record.version,
+                messages=messages,
+            )
+
 
 __all__ = [
     "InvalidSessionTurn",
     "SessionNotFound",
+    "SessionHistorySnapshot",
+    "SessionMessageSnapshot",
     "SessionService",
     "SessionTurnActive",
     "SessionTurnDeadlineElapsed",
@@ -362,6 +554,7 @@ __all__ = [
     "SessionVersionConflict",
     "TurnAbortOutcome",
     "TurnAdmissionOutcome",
+    "TurnCommitOutcome",
     "TurnStatus",
     "set_session_tenant_context",
 ]

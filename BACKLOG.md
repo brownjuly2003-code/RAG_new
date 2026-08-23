@@ -14,10 +14,14 @@ REL-03B durable session admission/abort contract доставляется scoped
 содержащим Update-237: revision `031`, ORM, `SessionService`, forced-RLS turn
 table и real PostgreSQL concurrency evidence. Exact SHA определяет Actual Git.
 
-Следующий local-only candidate: **REL-03C fenced terminal message-pair commit +
-durable history snapshot primitives**. Не добавлять `/api/ask`/SSE wiring,
-timeout integration, compatibility removal, live promotion, deploy или push в
-тот же slice.
+REL-03C fenced terminal message-pair commit + durable history snapshot
+primitives доставляется scoped commit, содержащим Update-238: exact
+request-bound fencing, atomic pair/version/turn transaction и deterministic
+PostgreSQL contention/rollback evidence. Exact SHA определяет Actual Git.
+
+Следующий local-only candidate: **REL-03D sync `/api/ask` durable lifecycle
+wiring**. Не добавлять SSE/timeout wiring, compatibility removal, live
+promotion, deploy или push в тот же slice.
 
 Resolution Product G8 остаётся локально завершённым на `82137c8`; full Slice G
 остаётся open beyond synthetic evidence и не считается release-approved.

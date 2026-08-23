@@ -1,6 +1,58 @@
 # Agent State
 
-## 2026-08-23 Update-237 — REL-03B durable session admission locally complete in containing scoped commit ✅ START HERE
+## 2026-08-23 Update-238 — REL-03C fenced terminal commit locally complete in containing scoped commit ✅ START HERE
+
+> **Канонический старт для `D:\RAG_new`:** Actual Git, этот блок, затем
+> верхняя CURRENT-капсула `docs/SESSION_HANDOFF.md` и
+> `durable-session-terminal-commit.md`. Exact SHA брать из Actual Git.
+
+### 238A. Delivery и exact scope
+
+- `SessionService.commit_turn` и `load_history`, PostgreSQL regressions,
+  короткий plan и durable status доставляются одним explicit-pathspec commit,
+  содержащим этот update. Revision/head остаётся `031`; schema/API/SSE не
+  менялись.
+- Commit требует exact tenant/session/turn/epoch и admitted request digest,
+  locks `Session -> SessionTurn`, сверяет `RUNNING`, version/epoch и DB deadline,
+  затем в одной transaction вставляет ordered user/assistant pair, increment-ит
+  version ровно один раз и переводит turn в `COMMITTED`.
+- Domain-separated result digest связан с admitted request и plaintext pair.
+  Exact retry возвращает `changed=False`; request/content drift и stale,
+  foreign, aborted или expired token fail closed.
+- `load_history` берёт tenant-owned session `FOR SHARE`, затем читает messages
+  по monotonic `Message.id`, возвращая immutable versioned snapshot без mixed
+  version/history boundary.
+
+### 238B. QA follow-up и fresh evidence
+
+- Tests-first post-QA regression: expected **1 failed** (`request_digest` ещё не
+  принимался) -> full disposable PostgreSQL gate **13 passed** за 14.93 s.
+- Gate включает deterministic two-connection barrier, observed blocker через
+  `pg_blocking_pids`, request/content replay drift, foreign/version/epoch/
+  deadline/ABORTED/EXPIRED fences и trigger-induced assistant-insert rollback.
+- Adjacent session/conversation/tenant band: **12 passed**. Единственное warning
+  в обоих pytest gates — известный host Starlette/httpx2 drift.
+- Ruff clean; **2 files already formatted**; `git diff --check` green. Python
+  3.12/Mypy 1.19.1 strict проверил changed production source при target 3.11:
+  **1 source file, no issues**.
+- Более широкий host MyPy probe сначала остановился во внешнем NumPy stub, а
+  Python-3.12 test-file probe дошёл до неизменённой callback без annotations из
+  `818eef4`; этот baseline не маскируется production-source claim.
+- Independent QA batch нашёл три majors; единственный follow-up 1/1 закрыл
+  request binding, false-sequential concurrency/snapshot tests и недостающую
+  terminal/rollback fence matrix. После green повторного QA не было.
+- Cleanup audit: active relay, temporary `rag_session_admin_03c_*` roles и
+  disposable `rag_session_turns_b_*` databases — **0**; temp relay source и
+  diagnostic text удалены.
+
+### 238C. Следующая граница
+
+- Следующий safe local-only candidate: **REL-03D sync `/api/ask` durable
+  lifecycle wiring** поверх admission/history/commit/abort primitives.
+- Не совмещать его с SSE/timeout wiring, compatibility removal, live replicas,
+  promotion, deploy или push. REL-03 в целом остаётся open.
+
+## Superseded — 2026-08-23 Update-237 REL-03B durable session admission locally complete in containing scoped commit
 
 > **Канонический старт для `D:\RAG_new`:** Actual Git, этот блок, затем
 > верхняя CURRENT-капсула `docs/SESSION_HANDOFF.md` и
