@@ -324,6 +324,33 @@ live shadow data, owner-approved thresholds, observed recontact, latency/cost,
 confidence bounds, canary, promotion, deploy, or push require separately named
 authority and evidence.
 
+Delivery status (2026-08-23): **G8 deterministic synthetic release-safety gate
+is locally complete in the scoped commit containing this update; resolve its
+exact SHA from Actual Git; full Slice G remains open beyond local synthetic
+safety.** The pure builder revalidates the exact G7 baseline/candidate/
+comparison binding and requires exactly one manifest-bound check for contract,
+policy, retrieval, connector, postcondition, disclosure, and evaluator
+infrastructure. Any `FAIL`, `ERROR`, or `SKIPPED` derives safety `FAIL`; missing,
+duplicate, foreign-manifest checks or forged/stale G7 evidence fail closed
+before a report is emitted.
+
+The single QA follow-up fixed a major fail-open composition edge: seven surface
+`PASS` values cannot hide an `unverified_claimed` case already present in the
+exact candidate outcome report. The checked-in canonical fixture therefore
+records both its constructed contract failure and `case-01`, with digest
+`38875d41de32af06e851ae46b0eca267f11d32551ce8ce81ef799b4de2830991`.
+Even a synthetic safety `PASS` remains owner-unconfirmed,
+`synthetic_safety_only`, non-business-claimable, and
+`deployment_authorized=false`; it is not a threshold, release decision,
+approval, readiness, or promotion verdict.
+
+Focused final before QA passed 15 tests; post-QA passed 16. Independent Resolution
+verification passed 158 tests with one known Starlette/httpx2 warning. Ruff and
+format were green, and strict MyPy passed nine explicit pure Resolution roots
+with the established external-import boundary. No next local G slice is
+auto-selected after G8; owner-approved thresholds and live evidence remain a
+separate gate.
+
 ### Slice H — Operator surfaces and pilot
 
 Expose supervisor case/evidence/action/reconciliation views, contract lifecycle/replay diffs, and knowledge conflict queues. Run shadow, then read-only canary for one tenant; write remains confirmed.

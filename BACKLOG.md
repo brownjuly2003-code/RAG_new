@@ -5,40 +5,39 @@
 Текущая выбранная владельцем очередь находится в
 [`rag-new-architecture.md`](rag-new-architecture.md), а точный scope и DoD — в
 [`docs/architecture/migration-plan.md`](docs/architecture/migration-plan.md).
-Срезы C1–C8, D, E1, E2, F и G1–G7 завершены локально. G7 synthetic release
-evidence manifest implementation, canonical artifact, tests и docs
+Срезы C1–C8, D, E1, E2, F и G1–G8 завершены локально. G8 deterministic
+synthetic release-safety gate implementation, canonical artifact, tests и docs
 доставляются scoped commit, содержащим этот update; точный SHA определяет
-Actual Git. Срез начат от clean `master` at `6524e28`; remote отсутствует.
+Actual Git. Срез начат от clean `master` at `2a23416`; remote отсутствует.
 Push/deploy/live/external actions не выполнялись. Tests-first RED был
 ожидаемым public `ImportError`.
 
-G7 builder принимает exact G6 baseline/candidate inputs и comparison report,
-заново детерминированно строит comparison и только при полном равенстве
-выпускает immutable receipt. Swapped roles, несовместимая pair, stale nested
-references и foreign/tampered report fail closed с typed issue codes. Manifest
-связывает оба input digest, их семь nested run/evidence identities и exact
-comparison-report digest; он не заменяет G2 replay-input manifest.
+G8 builder заново валидирует exact G7 manifest и требует полный set из семи
+manifest-bound surface checks: contract, policy, retrieval, connector,
+postcondition, disclosure и evaluator infrastructure. Любой `FAIL`, `ERROR`
+или `SKIPPED` даёт safety `FAIL`; missing/duplicate/foreign checks и
+forged/stale release evidence fail closed до materialization.
 
-Checked-in JSON/SHA-256 pair имеет digest
-`bf143ac41b1d25857d1f5dc945e41d3eecaf44b10d3bb246c5d3a0ed5916b9bc`.
-Artifact остаётся `unconfirmed`, `synthetic_local`,
-`decision_semantics=evidence_only`, `business_claimable=false`; raw payload,
-threshold, approval, readiness, release-decision и promotion verdict
-отсутствуют.
+QA follow-up 1/1 закрыл semantic major: all-surface `PASS` больше не может
+скрыть непустой candidate `unverified_claimed_scenario_ids`. Checked-in failing
+artifact содержит constructed contract failure и `case-01`; SHA-256
+`38875d41de32af06e851ae46b0eca267f11d32551ce8ce81ef799b4de2830991`.
+Даже synthetic safety `PASS` остаётся `unconfirmed`,
+`synthetic_safety_only`, `business_claimable=false` и
+`deployment_authorized=false`.
 
-Focused final и post-QA: 6 passed. QA follow-up 1/1 сделал только import/format
-corrections. Independent Resolution gate: 142 passed + одна известная
-Starlette/httpx2 warning; Ruff/three-file format green; strict MyPy проверил
-8 explicit source roots без issues с project boundary `--follow-imports=skip`.
-Final containing-diff check остаётся commit gate.
+Focused final before QA: 15 passed; post-QA: 16 passed. Independent Resolution gate: 158 passed +
+одна известная Starlette/httpx2 warning; Ruff/three-file format green; strict
+MyPy проверил 9 explicit source roots без issues с project boundary
+`--follow-imports=skip`. Final docs/diff checks остаются commit gate.
 
-Полный Slice G остаётся открыт beyond local synthetic evidence packaging.
-Следующий local G slice автоматически не выбран: runtime/DB release gate,
-live shadow evidence, owner-approved thresholds, observed recontact,
-latency/cost, confidence bounds, canary и promotion требуют отдельной
-authority. Полная truth — в
+Полный Slice G остаётся открыт beyond local deterministic synthetic safety.
+Следующий local G slice автоматически не выбран: owner-approved metric
+thresholds, live/shadow outcomes, observed recontact, latency/cost, confidence
+bounds, runtime/DB release decision, canary и promotion требуют отдельной
+authority и evidence. Полная truth — в
 [`docs/SESSION_HANDOFF.md`](docs/SESSION_HANDOFF.md) и
-[`g7-synthetic-release-evidence-manifest.md`](g7-synthetic-release-evidence-manifest.md).
+[`g8-synthetic-release-safety-gate.md`](g8-synthetic-release-safety-gate.md).
 
 Закрывающие C7/C8-капсулы:
 [`c7-resolution-restore-smoke.md`](c7-resolution-restore-smoke.md) и

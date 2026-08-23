@@ -1,6 +1,97 @@
 # Session handoff
 
-## CURRENT — 2026-08-23 / Update-233 G7 synthetic release evidence manifest locally complete in containing scoped commit
+## CURRENT — 2026-08-23 / Update-234 G8 deterministic synthetic release-safety gate locally complete in containing scoped commit
+
+**Назначение:** за один экран зафиксировать exact G7-bound safety gate,
+обязательные семь deterministic surfaces, candidate-outcome floor и границу
+между synthetic safety status и отсутствующим release authorization.
+
+### 0. Actual Git — единственный источник текущего состояния
+
+```powershell
+Set-Location -LiteralPath D:\RAG_new
+git status --short --branch
+git log -5 --oneline
+git remote -v
+```
+
+G8 code/tests/artifact/docs доставляются scoped explicit-pathspec commit,
+содержащим Update-234; exact SHA определяется Actual Git после commit. Срез
+начат от clean `master` at `2a23416`; remote отсутствовал. Push, deploy,
+runtime/live и external actions не выполнялись.
+
+### 0A. Один экран истины
+
+| Вопрос | Точный ответ |
+|--------|--------------|
+| Что доставлено? | Immutable seven-surface checks/report, typed compatibility failures, derived builder, canonical JSON/SHA helpers, public exports и checked-in failing artifact |
+| Exact binding | Builder пересобирает G7 manifest из exact baseline/candidate/comparison и требует равенства supplied receipt |
+| Required surfaces | Contract, policy, retrieval, connector, postcondition, disclosure, evaluator infrastructure — ровно по одному |
+| Status rule | Любой `FAIL/ERROR/SKIPPED` или любой exact candidate `unverified_claimed` даёт safety `FAIL` |
+| Structural fail closed | Missing, duplicate, foreign-manifest checks и forged/stale G7 manifest не materialize report |
+| Checked fixture | Constructed contract `FAIL` + unverified `case-01`; digest `38875d41de32af06e851ae46b0eca267f11d32551ce8ce81ef799b4de2830991` |
+| Claim boundary | Всегда `unconfirmed`, `synthetic_safety_only`, `business_claimable=false`, `deployment_authorized=false` |
+| Verification | focused 15, post-QA 16, Resolution 158; Ruff/3-file format; strict MyPy 9 roots; одна известная Starlette/httpx2 warning |
+| Следующая граница | Full Slice G открыт; owner-approved thresholds/live outcomes/runtime release decision отсутствуют |
+
+### 0B. Artifact truth
+
+| Артефакт | Что он доказывает |
+|----------|-------------------|
+| [`../evaluation/resolution/gate.py`](../evaluation/resolution/gate.py) | Exact G7 revalidation, mandatory surface set, derived status/outcome floor, fixed non-authorizing semantics |
+| [`../evaluation/resolution/__init__.py`](../evaluation/resolution/__init__.py) | Public G8 API exports |
+| [`../tests/test_resolution_gate.py`](../tests/test_resolution_gate.py) | Sixteen cases across every surface/status, binding drift, outcome floor, direct override, determinism and privacy |
+| [`../evaluation/resolution/gates/v0.1/shipment-status-synthetic-safety.json`](../evaluation/resolution/gates/v0.1/shipment-status-synthetic-safety.json) + SHA | G7-bound failing constructed fixture with normalized statuses/digests only |
+| Raw candidate/world/fault/oracle/response/check evidence payload | **Absent** |
+| Owner thresholds/live evidence/release approval/readiness/promotion | **Absent / out of scope** |
+
+### 0C. Exact safety semantics
+
+1. Gate builder rebuilds the G7 manifest before trusting its digest.
+2. It accepts only an exact seven-surface tuple bound to that manifest.
+3. Report status is derived; caller cannot pass or override it. Every non-pass
+   surface is retained in the canonical failed roster.
+4. Candidate outcome report contributes its exact unverified-claimed roster;
+   a surface matrix cannot mask an already failed auto-resolution.
+5. A fully passing clean synthetic fixture proves only deterministic safety
+   composition. `deployment_authorized` remains false by invariant.
+
+### 0D. Verification provenance
+
+- Tests-first RED: expected public `ImportError`.
+- First implementation run: **14 passed, 1 failed** only because the checked-in
+  artifact did not yet exist; one narrowed materialization correction closed it.
+- Focused final before QA: **15 passed**.
+- QA follow-up 1/1 found one semantic major: all-surface `PASS` masked existing
+  candidate `unverified_claimed`. Batched outcome-floor fix plus mechanical
+  import/format cleanup produced **16 passed**.
+- Independent Resolution gate: **158 passed**, one known Starlette/httpx2
+  warning. Ruff clean; **3 files already formatted**. Strict MyPy checked **9
+  explicit source roots** with `--follow-imports=skip`: no issues.
+- Containing commit requires final docs/diff/status checks.
+
+### 0E. Не доставлено и следующий authority gate
+
+Full Slice G remains open. G8 не добавляет owner-approved metric thresholds,
+live/shadow outcomes, observed recontact, latency/cost, confidence intervals,
+runtime/DB release decision, canary, promotion, deploy, push или external
+connector.
+
+Следующий local G slice автоматически не выбран. Продолжение release/live пути
+требует separately named scope, authority и доступных evidence/data; другой
+durable stream — явного reroute.
+
+### 0F. Stop/resume contract
+
+1. Доверять Actual Git больше prose и взять exact containing SHA после commit.
+2. Не повторять G8 green gates/QA без нового code diff или fresh failure.
+3. Не трактовать synthetic safety `PASS` как release approval/readiness.
+4. Не выполнять live/external/promotion/deploy/push действия без отдельной
+   authority.
+
+---
+
+## Superseded — 2026-08-23 / Update-233 G7 synthetic release evidence manifest locally complete in containing scoped commit
 
 **Назначение:** за один экран зафиксировать G7 evidence-only manifest, его
 exact G6 bindings, reproducibility и границу между локальным synthetic receipt

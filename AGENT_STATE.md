@@ -1,6 +1,63 @@
 # Agent State
 
-## 2026-08-23 Update-233 — G7 synthetic release evidence manifest locally complete in containing scoped commit ✅ START HERE
+## 2026-08-23 Update-234 — G8 deterministic synthetic release-safety gate locally complete in containing scoped commit ✅ START HERE
+
+> **Канонический старт для `D:\RAG_new`:** читать этот короткий блок, затем
+> верхнюю CURRENT-капсулу `docs/SESSION_HANDOFF.md` и
+> `g8-synthetic-release-safety-gate.md`. Exact containing SHA брать из Actual
+> Git.
+
+### 234A. Delivery и exact scope
+
+- G8 gate implementation, public exports, canonical JSON/SHA-256 artifact,
+  tests и durable docs доставляются одним scoped explicit-pathspec commit,
+  содержащим Update-234.
+- Срез начат от clean `master` at `2a23416`; remote отсутствовал. Push, deploy,
+  runtime/live и external actions не выполнялись.
+- Tests-first RED был ожидаемым public `ImportError`.
+
+### 234B. Deterministic safety-gate contract
+
+- Builder повторно валидирует exact G7 manifest через baseline, candidate и
+  comparison, затем требует ровно семь manifest-bound surface checks:
+  contract, policy, retrieval, connector, postcondition, disclosure и evaluator
+  infrastructure.
+- Любой `FAIL`, `ERROR` или `SKIPPED` детерминированно даёт safety `FAIL`.
+  Missing, duplicate, foreign-manifest checks и forged/stale G7 evidence не
+  materialize report.
+- QA добавил independent outcome floor: непустой exact candidate
+  `unverified_claimed_scenario_ids` даёт `FAIL`, даже когда все семь supplied
+  surface checks имеют `PASS`.
+
+### 234C. Artifact и claim boundary
+
+- Canonical artifact:
+  `evaluation/resolution/gates/v0.1/shipment-status-synthetic-safety.json` с
+  SHA-256 `38875d41de32af06e851ae46b0eca267f11d32551ce8ce81ef799b4de2830991`.
+- Checked-in fixture точно связан с G7 digest, содержит constructed contract
+  `FAIL` и один unverified claimed scenario `case-01`.
+- Даже synthetic safety `PASS` фиксирован как `unconfirmed`,
+  `synthetic_safety_only`, `business_claimable=false` и
+  `deployment_authorized=false`; это не release approval/readiness.
+
+### 234D. Verification и QA
+
+- Focused final до QA: **15 passed**; post-QA: **16 passed**.
+- QA follow-up 1/1 нашёл и исправил один semantic major: surface `PASS` больше
+  не маскирует candidate outcome failure. Остальное — import/format mechanics.
+- Independent Resolution gate: **158 passed**, одна известная Starlette/httpx2
+  warning. Ruff clean; 3-file format check green; strict MyPy с project
+  boundary `--follow-imports=skip` — **9 source files**, no issues.
+
+### 234E. Следующая граница
+
+- Full Slice G остаётся открыт beyond local deterministic synthetic safety.
+  No next local G slice is auto-selected.
+- Owner-approved metric thresholds, live/shadow outcomes, observed recontact,
+  latency/cost, confidence bounds, runtime/DB release decision, canary,
+  promotion, deploy и push требуют отдельной authority и evidence.
+
+## Superseded — 2026-08-23 Update-233 G7 synthetic release evidence manifest locally complete in containing scoped commit
 
 > **Канонический старт для `D:\RAG_new`:** читать этот короткий блок, затем
 > верхнюю CURRENT-капсулу `docs/SESSION_HANDOFF.md` и

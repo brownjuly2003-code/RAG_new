@@ -14,7 +14,7 @@ Evolve the inherited RAG assistant into a self-hosted, verifiable support-resolu
 - [x] Add a pure temporal-knowledge and projection-binding contract -> Verify: bitemporal selection, exact applicability, fail-closed conflicts, tenant/config drift, and rebuild/rollback known cases pass without changing runtime defaults.
 - [x] Persist and integrate temporal knowledge authority -> Verify: revision `029` round trip, forced RLS, immutability/system-close guards, bitemporal exclusion, exact approved identities, and retrieval allowlisting pass on real PostgreSQL.
 - [x] Add the governed action gateway and wrap `create_ticket` as the first reversible/idempotent write -> Delivered locally at `ed82d6a`; retries and disconnects cannot create duplicate side effects, and denial never calls the connector.
-- [x] Add scenario compilation, state grading, replay manifests, and synthetic VR/VRY reporting -> G1 through G6 are locally complete, including a full-corpus exact-bound comparison. Full Slice G remains open only beyond this local synthetic contract.
+- [x] Add scenario compilation, state grading, replay manifests, and synthetic VR/VRY reporting -> G1 through G8 are locally complete, including full-corpus comparison, exact release-evidence packaging, and a non-authorizing deterministic safety gate. Full Slice G remains open beyond this local synthetic evidence.
 - [ ] Promote one journey through shadow and canary only after the inherited remediation stream is green -> Verify: rollback, SLO, security, and outcome gates are backed by fresh non-skipped evidence.
 
 ## Done when
@@ -117,12 +117,24 @@ report identities. Their deterministic comparison emits only count-pair deltas
 and an exhaustive case-disposition transition partition. Checked-in canonical
 JSON/SHA-256 artifacts exclude raw candidate/world/fault/oracle/response data.
 
+G7 is locally complete at `2a23416`. Its immutable evidence-only manifest binds
+both exact G6 inputs, all nested run/evidence identities, and the reconstructed
+comparison-report digest. Forged/stale references fail closed; the artifact is
+owner-unconfirmed and cannot express a threshold or release/promotion verdict.
+
+G8 is locally complete in the scoped commit containing this update; resolve its
+exact SHA from Actual Git. It revalidates G7 and derives a deterministic safety
+status from exactly seven manifest-bound contract/policy/retrieval/connector/
+postcondition/disclosure/evaluator-infrastructure checks. Any non-pass status or
+candidate `unverified_claimed` outcome fails. Even safety `PASS` remains
+`deployment_authorized=false` and is not production readiness.
+
 The materialized numbers are constructed synthetic contract evidence, not
 measured candidate performance: VR precision changes from `0/1` to `1/2`, VRY
 from `0/17` to `1/17`, and eligibility coverage remains `17/17`. No rate delta,
 threshold, success, release, or promotion verdict is produced.
 
-Full Slice G remains open beyond the local synthetic contract. Runtime/live
+Full Slice G remains open beyond the local synthetic evidence/safety contract. Runtime/live
 shadow outcomes, owner-approved definitions and thresholds, observed recontact,
 latency/cost, confidence bounds, canary, promotion, external connector, deploy,
 and push require separate authority. No next local G slice is auto-selected.
