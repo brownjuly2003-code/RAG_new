@@ -5,39 +5,37 @@
 Текущая выбранная владельцем очередь находится в
 [`rag-new-architecture.md`](rag-new-architecture.md), а точный scope и DoD — в
 [`docs/architecture/migration-plan.md`](docs/architecture/migration-plan.md).
-Срезы C1–C8, D, E1, E2, F и G1–G5 завершены локально. G5 versioned synthetic
-outcome-ledger/report implementation, tests и docs доставлены scoped
-commit, содержащим этот update; точный SHA определяет Actual Git. Remote
-отсутствует; push/deploy/live/external actions не выполнялись. Tests-first RED
-был ожидаемым `ImportError`.
+Срезы C1–C8, D, E1, E2, F и G1–G6 завершены локально. G6 exact-bound
+synthetic comparison implementation, full-corpus artifacts, tests и docs
+доставляются scoped commit, содержащим этот update; точный SHA определяет
+Actual Git. Remote отсутствует; push/deploy/live/external actions не
+выполнялись. Tests-first RED был ожидаемым public `ImportError`.
 
-G5 фиксирует full compiled corpus как case-level reporting universe и связывает
-каждую synthetic outcome запись с exact manifest/corpus/G4 coverage/full replay
-plan/result, scenario binding и тремя ordered trial digests. Verified credit
-требует `ELIGIBLE`, `CLAIMED_AUTO`, всех семи provisional VR checks `PASS` и
-трёх exact passing trials. Missing/duplicate/foreign/drifted evidence
-консервативно сохраняет denominators; global identity drift обнуляет numerators.
-Нулевой denominator даёт `UNDEFINED`, а не ложные 100%.
+Два versioned comparison input содержат одну provisional metric definition и
+один exact canonical 17-case corpus identity, но независимо связывают разные
+manifest/coverage/plan/result/ledger/report identities. Internal binding drift
+и cross-pair definition/universe drift fail closed; различие manifest/plan/result
+между baseline и candidate разрешено намеренно. Comparison выводит только
+count-pair deltas и исчерпывающую case-disposition transition partition.
 
-Metric definition остаётся `UNCONFIRMED`, `synthetic_local` и
-`business_claimable=false`; normalized recontact check не является live
-наблюдением. Focused final: 7 passed. QA follow-up 1/1 не нашёл semantic
-blocking/major issue и сделал только unused-import/format correction.
-Independent gate: 129 passed + one known Starlette/httpx2 warning; Ruff green;
-3 files formatted; strict MyPy 6 sources green; diff check green.
+Checked-in JSON/SHA-256 материализуют полный constructed synthetic contract:
+VR precision `0/1 -> 1/2`, VRY `0/17 -> 1/17`, eligibility coverage
+`17/17 -> 17/17`. Это не empirical candidate performance, live/business
+baseline или promotion evidence. Definition остаётся owner-unconfirmed,
+`synthetic_local`, `business_claimable=false`; raw candidate/world/fault/oracle/
+response payload в canonical artifacts отсутствует.
 
-Transparency note: exact G5 code/test delivery — `8030716`. Он доставляет
-accounting schemas/builder, но не checked-in 17-case outcome-ledger/report
-snapshot и не numeric result для G4 canonical corpus; focused tests используют
-отдельный 3-case fixture. Baseline/candidate materialization является входом
-следующего comparison slice, а не уже полученным evidence.
+Focused final и post-QA: 7 passed. QA follow-up 1/1 исправил strict `StrEnum`
+guard и механический format drift одним batch. Independent Resolution gate:
+136 passed + one known Starlette/httpx2 warning; Ruff/three-file format green;
+strict MyPy 7 sources green. Final containing-diff check остаётся commit gate.
 
-Полный Slice G остаётся открыт. Следующий safe named slice — **G6:
-exact-definition-bound synthetic baseline/candidate outcome comparison +
-case-disposition breakdown**, всё ещё без live shadow claims, runtime/DB/loop
-integration, thresholds, promotion, deploy или push. Полная truth — в
-[`docs/SESSION_HANDOFF.md`](docs/SESSION_HANDOFF.md) и
-[`g5-versioned-synthetic-outcome-ledger.md`](g5-versioned-synthetic-outcome-ledger.md).
+Полный Slice G остаётся открыт за границей local synthetic contract. Следующий
+local G slice автоматически не выбран: runtime/live shadow evidence,
+owner-approved semantics/thresholds, observed recontact, latency/cost,
+confidence bounds, canary и promotion требуют отдельной authority. Полная
+truth — в [`docs/SESSION_HANDOFF.md`](docs/SESSION_HANDOFF.md) и
+[`g6-synthetic-outcome-comparison.md`](g6-synthetic-outcome-comparison.md).
 
 Закрывающие C7/C8-капсулы:
 [`c7-resolution-restore-smoke.md`](c7-resolution-restore-smoke.md) и

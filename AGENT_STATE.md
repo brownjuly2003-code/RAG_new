@@ -1,5 +1,57 @@
 # Agent State
 
+## 2026-08-23 Update-232 — G6 full-corpus synthetic comparison locally complete in containing scoped commit ✅ START HERE
+
+> **Канонический старт для `D:\RAG_new`:** читать этот короткий блок, затем
+> верхнюю CURRENT-капсулу `docs/SESSION_HANDOFF.md` и раздел Artifact truth в
+> `g6-synthetic-outcome-comparison.md`. Exact containing SHA брать из Actual
+> Git.
+
+### 232A. Delivery и exact scope
+
+- G6 implementation, full-corpus JSON/SHA-256 artifacts, tests и durable docs
+  доставляются одним scoped explicit-pathspec commit, содержащим Update-232.
+- Срез начат от clean `master` at `cab1f54`; remote отсутствовал. Push, deploy,
+  runtime/live и external actions не выполнялись.
+- Tests-first RED был ожидаемым public `ImportError`.
+
+### 232B. Доставленный comparison contract
+
+- Immutable versioned baseline/candidate inputs embed exact definition,
+  17-record ledger и derived report; builder сам пересобирает G5 report из
+  corpus/manifest/coverage/plan/result/ledger и не принимает success verdict.
+- Каждая сторона fail closed при internal definition/ledger/report или
+  manifest/coverage/plan/result drift. Между сторонами обязательны одинаковые
+  definition и corpus universe; разные exact run identities разрешены.
+- Comparison публикует только metric numerator/denominator pairs, arithmetic
+  deltas и mutually-exclusive exhaustive case-disposition transitions.
+
+### 232C. Artifact и numerical truth
+
+- Три canonical JSON + SHA-256 пары материализуют baseline input, candidate
+  input и comparison report на полном G4 17-case corpus.
+- Constructed synthetic значения: VR precision `0/1 -> 1/2`, VRY
+  `0/17 -> 1/17`, eligibility coverage `17/17 -> 17/17`.
+- Это contract evidence, не measured candidate performance, live/business
+  baseline, threshold, rate uplift, release или promotion verdict. Definition
+  остаётся `unconfirmed`, `synthetic_local`, `business_claimable=false`.
+
+### 232D. Verification и QA
+
+- Focused final и post-QA: **7 passed**.
+- QA follow-up 1/1 batched strict `StrEnum` type guards и mechanical formatting.
+- Independent gate: **136 passed**, одна известная Starlette/httpx2 warning;
+  Ruff и 3-file format green; strict MyPy green по 7 pure Resolution sources.
+  Containing commit требует финальный `git diff --check`.
+
+### 232E. Следующая граница
+
+- Full Slice G остаётся открыт beyond local synthetic contract. No next local G
+  slice is auto-selected.
+- Runtime/live shadow evidence, owner-approved semantics/thresholds, observed
+  recontact, latency/cost, confidence bounds, canary, promotion, deploy и push
+  требуют отдельного named authorization. Не придумывать G7 автоматически.
+
 ## 2026-08-23 Update-231 — next-session transparency capsule in containing docs-only commit ✅ START HERE
 
 > **Канонический старт для `D:\RAG_new`:** читать этот короткий блок, затем

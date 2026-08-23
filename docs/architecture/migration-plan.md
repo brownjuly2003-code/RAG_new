@@ -270,10 +270,35 @@ and made only import/format corrections. Independent verification passed 129
 Resolution tests with one known Starlette/httpx2 warning; Ruff, three-file
 format check, strict MyPy over six sources, and diff check were green.
 
-The next safe named slice is **G6: exact-definition-bound synthetic
-baseline/candidate outcome comparison plus case-disposition breakdown**, still
-without live shadow claims, runtime integration, thresholds, canary,
-promotion, deploy, or push.
+Delivery status (2026-08-23): **G6 exact-definition-bound synthetic outcome
+comparison is locally complete in the scoped commit containing this update;
+resolve its exact SHA from Actual Git; full Slice G remains open beyond the
+local synthetic contract.** Versioned baseline and candidate inputs each embed
+the same provisional metric definition and complete canonical 17-case universe
+while retaining independently bound manifest, coverage, replay-plan,
+replay-result, ledger, and report identities. Internal run drift and cross-pair
+definition/universe drift fail closed; cross-pair manifest/plan/result equality
+is intentionally not required.
+
+The comparison publishes only baseline/candidate numerator and denominator
+counts, arithmetic deltas, and an exhaustive per-case disposition transition
+partition. The checked-in input/report JSON and SHA-256 artifacts contain no
+raw candidate/world/fault/oracle/response payload. Their constructed synthetic
+values are VR precision `0/1 -> 1/2`, VRY `0/17 -> 1/17`, and eligibility
+coverage `17/17 -> 17/17`; these values are not empirical model performance or
+a business, threshold, release, or promotion verdict.
+
+Tests-first RED was the expected public import failure. Final focused and
+post-QA verification each passed seven tests. The single QA follow-up batched a
+strict `StrEnum` type guard with mechanical formatting. Independent Resolution
+verification passed 136 tests with one known Starlette/httpx2 warning; Ruff and
+three-file format checks were green, and strict MyPy passed seven pure
+Resolution sources. The containing commit still requires its final diff check.
+
+No next local G slice is auto-selected. Runtime/live shadow evidence,
+owner-approved metric semantics and thresholds, observed recontact,
+latency/cost, confidence bounds, canary, promotion, deploy, or push require a
+separately named and authorized slice.
 
 ### Slice H — Operator surfaces and pilot
 

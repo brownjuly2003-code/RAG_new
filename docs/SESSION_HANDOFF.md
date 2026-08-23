@@ -1,6 +1,114 @@
 # Session handoff
 
-## CURRENT — 2026-08-23 / Update-231 next-session transparency capsule in containing docs-only commit
+## CURRENT — 2026-08-23 / Update-232 G6 full-corpus synthetic comparison locally complete in containing scoped commit
+
+**Назначение:** за один экран зафиксировать доставленный G6 contract,
+материализованные 17-case artifacts, constructed-synthetic numeric truth и
+точную границу между локальным comparison evidence и ещё отсутствующим
+live/business release evidence.
+
+### 0. Actual Git — единственный источник текущего состояния
+
+```powershell
+Set-Location -LiteralPath D:\RAG_new
+git status --short --branch
+git log -5 --oneline
+git remote -v
+```
+
+G6 code/tests/assets/docs доставляются scoped explicit-pathspec commit,
+содержащим Update-232; exact SHA определяется Actual Git после commit. Срез
+начат от clean `master` at `cab1f54`; remote отсутствовал. Push, deploy,
+runtime/live и external actions не выполнялись.
+
+### 0A. Один экран истины
+
+| Вопрос | Точный ответ |
+|--------|--------------|
+| Что доставлено? | Immutable comparison input/reference/disposition/delta/report models, fail-closed builders, canonical JSON/SHA helpers, public exports и three checked-in JSON/SHA pairs |
+| Universe | Exact G4 canonical 17-case corpus; обе стороны имеют один corpus digest и полный roster |
+| Run identities | Baseline и candidate намеренно имеют разные manifest/coverage/plan/result/ledger/report identities |
+| Internal drift | Definition/ledger/report или manifest/coverage/plan/result mismatch одной стороны блокирует materialization |
+| Cross-pair drift | Definition или corpus/roster mismatch блокирует comparison; run-identity equality между сторонами не требуется |
+| Output | Только count-pair baseline/candidate values, integer deltas и exhaustive disposition transitions; caller не передаёт success/threshold/verdict |
+| Constructed numbers | VR precision `0/1 -> 1/2`; VRY `0/17 -> 1/17`; eligibility coverage `17/17 -> 17/17` |
+| Claim boundary | Synthetic contract fixture, не measured model/business performance; `unconfirmed`, `synthetic_local`, `business_claimable=false` |
+| Verification | focused/post-QA 7; Resolution 136; Ruff/3-file format; strict MyPy 7 sources; одна известная Starlette/httpx2 warning |
+| Следующая граница | Full Slice G ещё открыт, но следующий local G slice без owner/live authority автоматически не выбран |
+
+### 0B. Artifact truth
+
+| Артефакт | Что он доказывает |
+|----------|-------------------|
+| [`../evaluation/resolution/comparison.py`](../evaluation/resolution/comparison.py) | Exact input binding, compatibility, derived case dispositions/count deltas, canonical identity and privacy boundary |
+| [`../evaluation/resolution/__init__.py`](../evaluation/resolution/__init__.py) | Public G6 API exports |
+| [`../tests/test_resolution_comparison.py`](../tests/test_resolution_comparison.py) | Seven tests reconstruct both full-corpus runs, failure modes, exhaustive transitions, privacy and checked-in bytes/SHA |
+| [`../evaluation/resolution/comparisons/v0.1/shipment-status-baseline.json`](../evaluation/resolution/comparisons/v0.1/shipment-status-baseline.json) + SHA | Full 17-record constructed baseline definition/ledger/report input |
+| [`../evaluation/resolution/comparisons/v0.1/shipment-status-candidate.json`](../evaluation/resolution/comparisons/v0.1/shipment-status-candidate.json) + SHA | Full 17-record constructed candidate definition/ledger/report input with a distinct exact run |
+| [`../evaluation/resolution/comparisons/v0.1/shipment-status-comparison.json`](../evaluation/resolution/comparisons/v0.1/shipment-status-comparison.json) + SHA | Bound comparison references, three count-pair deltas and exhaustive 17-case transition partition |
+| Raw candidate/world/fault/oracle/response payload | **Absent from canonical artifacts**; only stable identities, digests, normalized dispositions/checks and counts are serialized |
+| Empirical/live/business baseline or promotion evidence | **Absent / out of scope** |
+
+The input JSON embeds the provisional metric-definition instance and complete
+ledger/report snapshots, closing the G5 artifact-absence boundary without
+claiming owner approval. Underlying raw fixtures remain outside canonical
+artifacts.
+
+### 0C. Exact comparison semantics
+
+1. `build_synthetic_outcome_comparison_input` receives exact G5 artifacts and
+   derives the report itself; a structurally incomplete report or internal
+   binding mismatch raises typed fail-closed issue codes.
+2. `build_synthetic_outcome_comparison_report` accepts only baseline/candidate
+   roles with identical canonical definition and corpus/roster identities.
+3. Each case maps to exact eligibility, resolution and derived verification
+   dispositions, then appears in exactly one baseline-to-candidate bucket.
+4. Metric output preserves `OutcomeMetric` count pairs and only computes
+   `candidate - baseline` numerator/denominator integers. No rate, preference,
+   threshold, success, release or promotion field exists.
+
+The materialized fixture deliberately contains one `unverified -> verified`
+transition and one `not_claimed -> unverified_claimed` transition. These rows
+exercise numerator and denominator deltas; they are not an empirical statement
+about a deployed candidate.
+
+### 0D. Verification provenance
+
+- Tests-first RED: expected public `ImportError`.
+- Первый implementation run exposed one test-fixture assumption: G4 has one,
+  not two, terminal `VERIFIED` path. One narrowed correction used the measured
+  corpus and preserved two distinct transition categories.
+- Focused final: **7 passed**; post-QA focused: **7 passed**.
+- QA follow-up 1/1 batched explicit strict `StrEnum` guards and mechanical
+  formatting; Ruff clean and **3 files already formatted** afterward.
+- Independent Resolution gate: **136 passed**, one known Starlette/httpx2
+  warning. Strict MyPy: no issues in **7 source files**.
+- Pre-doc `git diff --check` was green; containing commit requires a final
+  post-doc diff/status gate.
+
+### 0E. Не доставлено и следующий authority gate
+
+Full Slice G remains open beyond the local synthetic contract. G6 не добавляет
+runtime/DB/loop integration, live shadow traffic, observed recontact,
+latency/cost, confidence intervals, owner-approved definition/threshold,
+release gate, canary, promotion, deploy, push или external connector.
+
+Следующий local G slice автоматически не выбран. Новый turn может продолжить
+только по явно названному owner-authorized shadow/release scope с доступными
+данными либо по явному reroute к другому durable backlog stream. Не придумывать
+G7 из отсутствующих requirements.
+
+### 0F. Stop/resume contract
+
+1. Доверять Actual Git больше prose и взять exact containing SHA после commit.
+2. Не повторять G6 green gates/QA без нового code diff или fresh failure.
+3. Не выдавать constructed `0/1 -> 1/2` за uplift или readiness.
+4. Не выполнять live/external/promotion/deploy/push действия без отдельной
+   authority.
+
+---
+
+## Superseded — 2026-08-23 / Update-231 next-session transparency capsule in containing docs-only commit
 
 **Назначение:** за один экран отделить доставленный G5 accounting contract от
 ещё не материализованных outcome artifacts и дать следующей сессии однозначный
