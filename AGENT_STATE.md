@@ -1,6 +1,64 @@
 # Agent State
 
-## 2026-08-23 Update-232 — G6 full-corpus synthetic comparison locally complete in containing scoped commit ✅ START HERE
+## 2026-08-23 Update-233 — G7 synthetic release evidence manifest locally complete in containing scoped commit ✅ START HERE
+
+> **Канонический старт для `D:\RAG_new`:** читать этот короткий блок, затем
+> верхнюю CURRENT-капсулу `docs/SESSION_HANDOFF.md` и
+> `g7-synthetic-release-evidence-manifest.md`. Exact containing SHA брать из
+> Actual Git.
+
+### 233A. Delivery и exact scope
+
+- G7 implementation, public exports, canonical JSON/SHA-256 artifact, tests и
+  durable docs доставляются одним scoped explicit-pathspec commit, содержащим
+  Update-233.
+- Срез начат от clean `master` at `6524e28`; remote отсутствовал. Push, deploy,
+  runtime/live и external actions не выполнялись.
+- Tests-first RED был ожидаемым public `ImportError`.
+
+### 233B. Evidence-only manifest contract
+
+- Builder принимает exact G6 baseline input, candidate input и comparison
+  report, независимо пересобирает comparison из двух inputs и материализует
+  manifest только при полном равенстве.
+- Swapped roles, несовместимая input pair, stale nested references или любой
+  foreign/tampered report fail closed с typed issue codes.
+- Manifest связывает оба полных input digest, их manifest/coverage/plan/result/
+  ledger/report digests и exact comparison-report digest. Это post-run receipt,
+  а не замена G2 replay-input manifest.
+
+### 233C. Artifact и claim boundary
+
+- Canonical artifact:
+  `evaluation/resolution/releases/v0.1/shipment-status-synthetic-evidence.json`
+  с SHA-256 `bf143ac41b1d25857d1f5dc945e41d3eecaf44b10d3bb246c5d3a0ed5916b9bc`.
+- Семантически одинаковые reordered inputs воспроизводят те же canonical bytes
+  и digest.
+- Поля фиксированы как `unconfirmed`, `synthetic_local`,
+  `decision_semantics=evidence_only`, `business_claimable=false`. Нет threshold,
+  approval, readiness, release-decision или promotion verdict.
+
+### 233D. Verification и QA
+
+- Focused final и post-QA: **6 passed**.
+- QA follow-up 1/1 не нашёл semantic defects; исправлены только import ordering
+  и mechanical formatting.
+- Independent Resolution gate: **142 passed**, одна известная Starlette/httpx2
+  warning. Ruff clean; 3-file format check green; strict MyPy с установленной
+  project boundary `--follow-imports=skip` — **8 source files**, no issues.
+- Raw strict MyPy до target analysis встретил Python-3.12-only syntax в
+  установленном `numpy` stub при project target 3.11; один narrowed rerun
+  изолировал внешние imports и проверил все восемь explicit roots.
+
+### 233E. Следующая граница
+
+- Full Slice G остаётся открыт beyond local synthetic evidence packaging. No
+  next local G slice is auto-selected.
+- Runtime/DB release gate, live shadow evidence, owner-approved thresholds,
+  observed recontact, latency/cost, confidence bounds, canary, promotion,
+  deploy и push требуют отдельного named authorization.
+
+## Superseded — 2026-08-23 Update-232 G6 full-corpus synthetic comparison locally complete in containing scoped commit
 
 > **Канонический старт для `D:\RAG_new`:** читать этот короткий блок, затем
 > верхнюю CURRENT-капсулу `docs/SESSION_HANDOFF.md` и раздел Artifact truth в

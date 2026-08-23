@@ -1,6 +1,101 @@
 # Session handoff
 
-## CURRENT — 2026-08-23 / Update-232 G6 full-corpus synthetic comparison locally complete in containing scoped commit
+## CURRENT — 2026-08-23 / Update-233 G7 synthetic release evidence manifest locally complete in containing scoped commit
+
+**Назначение:** за один экран зафиксировать G7 evidence-only manifest, его
+exact G6 bindings, reproducibility и границу между локальным synthetic receipt
+и отсутствующим release decision/live evidence.
+
+### 0. Actual Git — единственный источник текущего состояния
+
+```powershell
+Set-Location -LiteralPath D:\RAG_new
+git status --short --branch
+git log -5 --oneline
+git remote -v
+```
+
+G7 code/tests/artifact/docs доставляются scoped explicit-pathspec commit,
+содержащим Update-233; exact SHA определяется Actual Git после commit. Срез
+начат от clean `master` at `6524e28`; remote отсутствовал. Push, deploy,
+runtime/live и external actions не выполнялись.
+
+### 0A. Один экран истины
+
+| Вопрос | Точный ответ |
+|--------|--------------|
+| Что доставлено? | Immutable synthetic release-evidence manifest, typed binding failures, reconstructing builder, canonical JSON/SHA helpers, public exports и checked-in artifact pair |
+| Exact inputs | Полные G6 baseline/candidate input digests плюс их manifest/coverage/plan/result/ledger/report references |
+| Comparison binding | Builder независимо пересобирает G6 comparison из exact inputs и требует полного равенства supplied report |
+| Fail closed | Swapped roles, incompatible pair, stale input reference или foreign/tampered report не materialize manifest |
+| Reproducibility | Семантически одинаковый reordered input даёт те же canonical bytes и SHA-256 |
+| Artifact digest | `bf143ac41b1d25857d1f5dc945e41d3eecaf44b10d3bb246c5d3a0ed5916b9bc` |
+| Claim boundary | `unconfirmed`, `synthetic_local`, `evidence_only`, `business_claimable=false`; не release decision/readiness/approval |
+| Verification | focused/post-QA 6; Resolution 142; Ruff/3-file format; strict MyPy 8 explicit roots; одна известная Starlette/httpx2 warning |
+| Следующая граница | Full Slice G открыт; следующий local G slice без owner/live authority автоматически не выбран |
+
+### 0B. Artifact truth
+
+| Артефакт | Что он доказывает |
+|----------|-------------------|
+| [`../evaluation/resolution/release.py`](../evaluation/resolution/release.py) | Exact three-artifact binding, independent comparison reconstruction, typed fail-closed issues и canonical identity |
+| [`../evaluation/resolution/__init__.py`](../evaluation/resolution/__init__.py) | Public G7 API exports |
+| [`../tests/test_resolution_release.py`](../tests/test_resolution_release.py) | Six tests over exact binding, drift, determinism, privacy and checked-in bytes/SHA |
+| [`../evaluation/resolution/releases/v0.1/shipment-status-synthetic-evidence.json`](../evaluation/resolution/releases/v0.1/shipment-status-synthetic-evidence.json) + SHA | Digest-only receipt over both G6 inputs and exact comparison report |
+| Raw candidate/world/fault/oracle/response payload | **Absent** |
+| Threshold/approval/readiness/release decision/promotion | **Absent / out of scope** |
+
+G7 is post-run evidence packaging. G2 `ReplayManifest` remains the immutable
+execution-input contract; G7 does not duplicate or replace it.
+
+### 0C. Exact manifest semantics
+
+1. Builder requires two complete `SyntheticOutcomeComparisonInput` values in
+   baseline/candidate roles and one `SyntheticOutcomeComparisonReport`.
+2. It calls the G6 comparison builder again with the supplied report identity.
+3. Exact nested references and the complete reconstructed report must equal
+   the supplied report; otherwise typed issue codes abort materialization.
+4. Output contains identities/digests and fixed evidence semantics only. Caller
+   cannot pass success, threshold, approval, readiness or promotion state.
+
+### 0D. Verification provenance
+
+- Tests-first RED: expected public `ImportError`.
+- First implementation run: **5 passed, 1 failed** only because the checked-in
+  artifact did not yet exist; one narrowed materialization correction closed it.
+- Focused final: **6 passed**; post-QA focused: **6 passed**.
+- QA follow-up 1/1 found no semantic defect and applied only import ordering and
+  mechanical formatting.
+- Independent Resolution gate: **142 passed**, one known Starlette/httpx2
+  warning. Ruff clean; **3 files already formatted**.
+- Raw strict MyPy reached an installed `numpy` stub using Python-3.12-only
+  syntax while the project target is 3.11. One narrowed rerun with the
+  established `--follow-imports=skip` boundary checked all **8 explicit source
+  roots**: no issues.
+- Containing commit requires final post-doc diff/status checks.
+
+### 0E. Не доставлено и следующий authority gate
+
+Full Slice G remains open. G7 не добавляет runtime/DB release gate, live shadow
+traffic, empirical metrics, owner-approved thresholds, observed recontact,
+latency/cost, confidence intervals, canary, promotion, deploy, push или
+external connector.
+
+Следующий local G slice автоматически не выбран. Продолжение release/live
+пути требует отдельно named scope, authority и доступных evidence/data; другой
+durable stream — явного reroute.
+
+### 0F. Stop/resume contract
+
+1. Доверять Actual Git больше prose и взять exact containing SHA после commit.
+2. Не повторять G7 green gates/QA без нового code diff или fresh failure.
+3. Не трактовать наличие manifest как release approval/readiness.
+4. Не выполнять live/external/promotion/deploy/push действия без отдельной
+   authority.
+
+---
+
+## Superseded — 2026-08-23 / Update-232 G6 full-corpus synthetic comparison locally complete in containing scoped commit
 
 **Назначение:** за один экран зафиксировать доставленный G6 contract,
 материализованные 17-case artifacts, constructed-synthetic numeric truth и

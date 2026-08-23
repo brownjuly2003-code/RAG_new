@@ -5,37 +5,40 @@
 Текущая выбранная владельцем очередь находится в
 [`rag-new-architecture.md`](rag-new-architecture.md), а точный scope и DoD — в
 [`docs/architecture/migration-plan.md`](docs/architecture/migration-plan.md).
-Срезы C1–C8, D, E1, E2, F и G1–G6 завершены локально. G6 exact-bound
-synthetic comparison implementation, full-corpus artifacts, tests и docs
+Срезы C1–C8, D, E1, E2, F и G1–G7 завершены локально. G7 synthetic release
+evidence manifest implementation, canonical artifact, tests и docs
 доставляются scoped commit, содержащим этот update; точный SHA определяет
-Actual Git. Remote отсутствует; push/deploy/live/external actions не
-выполнялись. Tests-first RED был ожидаемым public `ImportError`.
+Actual Git. Срез начат от clean `master` at `6524e28`; remote отсутствует.
+Push/deploy/live/external actions не выполнялись. Tests-first RED был
+ожидаемым public `ImportError`.
 
-Два versioned comparison input содержат одну provisional metric definition и
-один exact canonical 17-case corpus identity, но независимо связывают разные
-manifest/coverage/plan/result/ledger/report identities. Internal binding drift
-и cross-pair definition/universe drift fail closed; различие manifest/plan/result
-между baseline и candidate разрешено намеренно. Comparison выводит только
-count-pair deltas и исчерпывающую case-disposition transition partition.
+G7 builder принимает exact G6 baseline/candidate inputs и comparison report,
+заново детерминированно строит comparison и только при полном равенстве
+выпускает immutable receipt. Swapped roles, несовместимая pair, stale nested
+references и foreign/tampered report fail closed с typed issue codes. Manifest
+связывает оба input digest, их семь nested run/evidence identities и exact
+comparison-report digest; он не заменяет G2 replay-input manifest.
 
-Checked-in JSON/SHA-256 материализуют полный constructed synthetic contract:
-VR precision `0/1 -> 1/2`, VRY `0/17 -> 1/17`, eligibility coverage
-`17/17 -> 17/17`. Это не empirical candidate performance, live/business
-baseline или promotion evidence. Definition остаётся owner-unconfirmed,
-`synthetic_local`, `business_claimable=false`; raw candidate/world/fault/oracle/
-response payload в canonical artifacts отсутствует.
+Checked-in JSON/SHA-256 pair имеет digest
+`bf143ac41b1d25857d1f5dc945e41d3eecaf44b10d3bb246c5d3a0ed5916b9bc`.
+Artifact остаётся `unconfirmed`, `synthetic_local`,
+`decision_semantics=evidence_only`, `business_claimable=false`; raw payload,
+threshold, approval, readiness, release-decision и promotion verdict
+отсутствуют.
 
-Focused final и post-QA: 7 passed. QA follow-up 1/1 исправил strict `StrEnum`
-guard и механический format drift одним batch. Independent Resolution gate:
-136 passed + one known Starlette/httpx2 warning; Ruff/three-file format green;
-strict MyPy 7 sources green. Final containing-diff check остаётся commit gate.
+Focused final и post-QA: 6 passed. QA follow-up 1/1 сделал только import/format
+corrections. Independent Resolution gate: 142 passed + одна известная
+Starlette/httpx2 warning; Ruff/three-file format green; strict MyPy проверил
+8 explicit source roots без issues с project boundary `--follow-imports=skip`.
+Final containing-diff check остаётся commit gate.
 
-Полный Slice G остаётся открыт за границей local synthetic contract. Следующий
-local G slice автоматически не выбран: runtime/live shadow evidence,
-owner-approved semantics/thresholds, observed recontact, latency/cost,
-confidence bounds, canary и promotion требуют отдельной authority. Полная
-truth — в [`docs/SESSION_HANDOFF.md`](docs/SESSION_HANDOFF.md) и
-[`g6-synthetic-outcome-comparison.md`](g6-synthetic-outcome-comparison.md).
+Полный Slice G остаётся открыт beyond local synthetic evidence packaging.
+Следующий local G slice автоматически не выбран: runtime/DB release gate,
+live shadow evidence, owner-approved thresholds, observed recontact,
+latency/cost, confidence bounds, canary и promotion требуют отдельной
+authority. Полная truth — в
+[`docs/SESSION_HANDOFF.md`](docs/SESSION_HANDOFF.md) и
+[`g7-synthetic-release-evidence-manifest.md`](g7-synthetic-release-evidence-manifest.md).
 
 Закрывающие C7/C8-капсулы:
 [`c7-resolution-restore-smoke.md`](c7-resolution-restore-smoke.md) и

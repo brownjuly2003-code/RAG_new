@@ -300,6 +300,30 @@ owner-approved metric semantics and thresholds, observed recontact,
 latency/cost, confidence bounds, canary, promotion, deploy, or push require a
 separately named and authorized slice.
 
+Delivery status (2026-08-23): **G7 synthetic release evidence manifest is
+locally complete in the scoped commit containing this update; resolve its exact
+SHA from Actual Git; full Slice G remains open beyond local synthetic evidence
+packaging.** The immutable manifest binds exact G6 baseline/candidate input
+digests, their nested manifest/coverage/plan/result/ledger/report identities,
+and the exact comparison-report digest. Its builder independently reconstructs
+the comparison; swapped roles, incompatible pairs, stale references, or any
+foreign/tampered report fail closed before a manifest is emitted.
+
+The checked-in canonical JSON/SHA-256 pair is reproducible from semantically
+identical inputs and contains no raw candidate/world/fault/oracle/response
+payload. It is fixed to owner-unconfirmed `synthetic_local`,
+`decision_semantics=evidence_only`, and `business_claimable=false`; it is not a
+runtime release gate, approval, threshold, readiness, release decision, or
+promotion verdict. Focused and post-QA gates each passed six tests; independent
+Resolution verification passed 142 tests with one known Starlette/httpx2
+warning. Ruff/format were green, and strict MyPy passed eight explicit pure
+Resolution roots with the established external-import boundary.
+
+No next local G slice is auto-selected after G7. Runtime/DB release decisions,
+live shadow data, owner-approved thresholds, observed recontact, latency/cost,
+confidence bounds, canary, promotion, deploy, or push require separately named
+authority and evidence.
+
 ### Slice H — Operator surfaces and pilot
 
 Expose supervisor case/evidence/action/reconciliation views, contract lifecycle/replay diffs, and knowledge conflict queues. Run shadow, then read-only canary for one tenant; write remains confirmed.
