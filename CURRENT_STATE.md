@@ -37,14 +37,20 @@ carrying the inherited RAG runtime plus a deterministic resolution kernel:
   `knowledge/postgres.py` 0%, `resolution/adapters/postgres.py` 29%,
   `services/session.py` 44%) because the integration job exercises them and
   runs without `--cov`.
-- **First CI run is in flight** — the number above is local, not CI.
+- **CI has run. It is red, and the red is honest** (run 32775056817):
+  `lint`, `migrations`, `helm`, `regression-eval`, `test-unit` (3.11 + 3.13,
+  including the coverage gate) pass. `type-check`, `test-integration` (both
+  legs), `security` and `pre-commit` fail. `baseline/freeze-2026-08-23` — a
+  branch at the freeze tag, before any phase-0 commit — reproduces the
+  integration, security and pre-commit failures and passes `type-check`, so
+  three of the four reds are inherited and one is the widened type scope.
 
 ## Phase 0 — in progress
 
 | # | Item | Status |
 |---|---|---|
 | 0.1 | Private repo, push, `freeze-2026-08-23` tag | done — Q1 answered: separate private repo |
-| 0.1b | First CI run green/red, honestly recorded | **open** — `ci.yml` is on the remote but has not registered yet |
+| 0.1b | First CI run green/red, honestly recorded | done — red, with a freeze-tag baseline separating inherited from new |
 | 0.2.1 | Mistral pricing pinned to a dated snapshot + contract test | done — `c4b2d0c` |
 | 0.2.2 | README: real mypy scope, real CI job list | done |
 | 0.2.3 | mypy + coverage cover the kernel packages | done |
@@ -78,10 +84,26 @@ applies to agents and to autopilot, and it is the direct counter to FIN-01 /
 FIN-02 — seven layers of release machinery were built on synthetic fixtures
 because local provability was the path of least resistance.
 
+## Two inherited failures need a decision from Julia
+
+Detail and root-cause localisation in [`BACKLOG.md`](BACKLOG.md).
+
+- **CI-RED-1:** governed-action reconcile writes a second `GovernedActionRun`
+  row. The connector is not called twice, so no duplicate side effect — but
+  the ledger shows two runs for one logical action, and "never dispatches a
+  second create" is exactly what that slice claims. Fix before phase A, or
+  after phase B?
+- **CI-RED-2:** three chromadb CVEs, and 1.5.9 is the latest release — there
+  is nothing to upgrade to. Options: a dated ignore (the pattern three earlier
+  CVEs follow), stay red, or stop depending on chromadb — which is phase D
+  (the pgvector spike) arriving early with one more argument behind it.
+
+Until one of them is answered, CI stays red. That is preferable to unknown,
+and preferable to a green achieved by lowering a gate.
+
 ## Next action
 
-Get the first CI run to happen and record its result honestly — green or red,
-both acceptable; "unknown" is not. Then phase A (wire the shipment-status
+Phase A (wire the shipment-status
 shadow into `/api/ask`) and phase B (label 100 real cases) run in parallel;
 B needs Q2 answered, A does not.
 

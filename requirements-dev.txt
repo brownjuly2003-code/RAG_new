@@ -10,3 +10,6 @@ pytest-timeout==2.4.0
 ruff==0.15.11
 pre-commit==4.5.1
 mypy==1.19.1
+# Real stubs for requests, so integrations/bitrix.py is type-checked rather
+# than waved through with ignore_missing_imports (2026-08-24, FIN-07).
+types-requests==2.33.0.20260712

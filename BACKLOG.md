@@ -1,5 +1,56 @@
 # Backlog
 
+## 2026-08-24 — routing below is superseded
+
+Stream status now lives in [`ROADMAP.md`](ROADMAP.md); the next action lives
+in [`CURRENT_STATE.md`](CURRENT_STATE.md). Everything under "Current routing
+override" and "Paused routing" below is the pre-audit autopilot queue, kept
+for history. In particular **REL-03D is frozen** — do not pick it up as the
+next local-only candidate.
+
+## Known-red CI, inherited (not caused by the phase-0 work)
+
+Both reproduce on `baseline/freeze-2026-08-23`, a branch at the freeze tag
+that predates every phase-0 commit (run 32775953483). They were invisible for
+months because this repository had no remote and CI had never run.
+
+### CI-RED-1 — governed action reconcile writes a second run row
+
+`tests/integration/test_governed_actions_postgres.py::test_timeout_reconciliation_never_dispatches_a_second_create`
+fails `assert 2 == 1` on the `GovernedActionRun` count. The downstream
+connector is *not* called twice (`execute_calls == 1` passes), so this is a
+ledger defect rather than a duplicate side effect — but "never dispatches a
+second create" is the safety property this slice exists to demonstrate, and
+the audit trail now shows two runs for one logical action.
+
+Localised: run rows are inserted at exactly one site,
+`actions/postgres.py:407`, guarded by a lookup on
+`(tenant_id, operation_key_digest)`; `complete_event` only selects. A second
+row therefore means the reconcile path arrives with a different
+`operation_key_digest` than the request path computed.
+
+Not fixed here on purpose: it is kernel work with no `/api/ask` change, which
+the slice rule in [`CLAUDE.md`](CLAUDE.md) does not accept as a slice. Needs a
+decision from Julia — fix before phase A, or after phase B.
+
+### CI-RED-2 — three unpatched chromadb CVEs
+
+`security` and the `pip-audit` pre-commit hook both fail on chromadb 1.5.9:
+CVE-2026-45830, CVE-2026-45833, CVE-2026-45831. pip-audit reports no fix
+version, and PyPI confirms it independently: **1.5.9 is the latest chromadb
+release** (checked 2026-08-24). There is nothing to upgrade to.
+
+So there are three options, not two:
+
+1. dated `--ignore-vuln` entries with a review date — the pattern three
+   earlier CVEs already follow;
+2. leave CI red until upstream ships a fix;
+3. stop depending on chromadb — which is phase D of the plan (the pgvector
+   spike, FIN-09) arriving early with an extra argument behind it.
+
+A security decision, not an agent's call to make silently.
+
+
 ## Current routing override — Trust Foundation REL-03
 
 Владелец явно поручил Codex решить маршрут самостоятельно и найти необходимые
@@ -31,7 +82,7 @@ Resolution Product G8 остаётся локально завершённым �
 ## Paused routing — Resolution Product
 
 Текущая выбранная владельцем очередь находится в
-[`rag-new-architecture.md`](rag-new-architecture.md), а точный scope и DoD — в
+[`docs/architecture/rag-new-architecture.md`](docs/architecture/rag-new-architecture.md), а точный scope и DoD — в
 [`docs/architecture/migration-plan.md`](docs/architecture/migration-plan.md).
 Срезы C1–C8, D, E1, E2, F и G1–G8 завершены локально. G8 deterministic
 synthetic release-safety gate implementation, canonical artifact, tests и docs

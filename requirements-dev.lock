@@ -3998,6 +3998,10 @@ typer==0.25.0 \
     #   chromadb
     #   huggingface-hub
     #   transformers
+types-requests==2.33.0.20260712 \
+    --hash=sha256:2141b67ab534a5c5cd2dac5034f2a35f42e699c5bf185eee608c5246a069d7fb \
+    --hash=sha256:de027e28c171d3da529689cbfa023b0b4eab188c8dfa22fd834eebd2cee6e7bb
+    # via -r requirements-dev.txt
 typing-extensions==4.15.0 \
     --hash=sha256:0cea48d173cc12fa28ecabc3b837ea3cf6f38c6d1136f85cbaaf598984861466 \
     --hash=sha256:f0fa19c6845758ab08074a0cfa8b7aecb71c999ca73d62883bc25cc018c4e548
@@ -4058,6 +4062,7 @@ urllib3==2.7.0 \
     #   -r requirements.txt
     #   kubernetes
     #   requests
+    #   types-requests
 uuid-utils==0.14.1 \
     --hash=sha256:043fb58fde6cf1620a6c066382f04f87a8e74feb0f95a585e4ed46f5d44af57b \
     --hash=sha256:0972488e3f9b449e83f006ead5a0e0a33ad4a13e4462e865b7c286ab7d7566a3 \

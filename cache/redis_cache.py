@@ -11,7 +11,9 @@ from typing import Any
 
 logger = logging.getLogger(__name__)
 
-_redis_client = None
+# redis is an optional import, so the client is typed Any -- the same shape
+# monitoring/tracing use for their optional dependencies.
+_redis_client: Any = None
 _REDIS_RETRY_INITIAL_SECONDS = 1.0
 _REDIS_RETRY_MAX_SECONDS = 30.0
 _redis_retry_at = 0.0
@@ -92,8 +94,8 @@ def _record_redis_operation_failure(client: Any) -> None:
             _schedule_redis_retry_locked(time.monotonic())
 
 
-def _get_redis():
-    """Lazy init Redis connection."""
+def _get_redis() -> Any:
+    """Lazy init Redis connection. Returns a client, or None when degraded."""
     global _redis_client, _redis_retry_at, _redis_retry_delay_seconds
     global _use_fallback
 
