@@ -9,6 +9,11 @@ parallel (A does not wait on Julia; B does).
 
 ## Active
 
+**Before phase A resumes:** repair the two inherited CI failures, per
+[ADR 0008](docs/adr/0008-inherited-ci-red-disposition.md). Not a phase and not
+a slice — a repair, because a CI that cannot go green produces no signal, and
+phase A.5 lands a test in the job that is currently red.
+
 | Phase | What | Acceptance |
 |---|---|---|
 | **0** | Freeze, publish, truth about gates | root ≤ 8 md, remote exists, CI status known, pricing/README/eval-gate claims true |

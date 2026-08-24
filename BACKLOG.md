@@ -10,6 +10,10 @@ next local-only candidate.
 
 ## Known-red CI, inherited (not caused by the phase-0 work)
 
+Both are decided — [ADR 0008](docs/adr/0008-inherited-ci-red-disposition.md) —
+and their fixes are steps 1 and 2 of the next session, at the top of
+[`CURRENT_STATE.md`](CURRENT_STATE.md).
+
 Both reproduce on `baseline/freeze-2026-08-23`, a branch at the freeze tag
 that predates every phase-0 commit (run 32775953483). They were invisible for
 months because this repository had no remote and CI had never run.
@@ -29,9 +33,17 @@ Localised: run rows are inserted at exactly one site,
 row therefore means the reconcile path arrives with a different
 `operation_key_digest` than the request path computed.
 
-Not fixed here on purpose: it is kernel work with no `/api/ask` change, which
-the slice rule in [`CLAUDE.md`](CLAUDE.md) does not accept as a slice. Needs a
-decision from Julia — fix before phase A, or after phase B.
+**Decided 2026-08-24, [ADR 0008](docs/adr/0008-inherited-ci-red-disposition.md):
+fix it before any further phase-A work, timeboxed to one working session.** A.5
+lands a new test in this same job, and a new integration test cannot be
+verified inside a job that is already red. If the timebox expires without a
+root cause: `@pytest.mark.xfail(strict=True)` citing the ADR — never delete,
+never plain-`skip`, never weaken the assertion.
+
+This is a repair, not a slice, and it belongs in the corrections table of
+`EVIDENCE_INDEX.md`. The slice rule exists to stop agents choosing
+locally-provable kernel work over wiring and real data; it was never meant to
+forbid fixing a failing test.
 
 ### CI-RED-2 — three unpatched chromadb CVEs
 
@@ -48,7 +60,20 @@ So there are three options, not two:
 3. stop depending on chromadb — which is phase D of the plan (the pgvector
    spike, FIN-09) arriving early with an extra argument behind it.
 
-A security decision, not an agent's call to make silently.
+**Decided 2026-08-24, [ADR 0008](docs/adr/0008-inherited-ci-red-disposition.md):
+option 1 — ignore the three CVE ids, with a review date of 2026-09-24.**
+
+Staying red was rejected because these two jobs are the only supply-chain alarm
+here; held red by a finding nobody can act on, they stop reporting the ones
+that could be. Pulling phase D forward was rejected because replacing the
+vector store is an architectural decision phase D already schedules on measured
+numbers within weeks — three CVEs in a component already queued for
+re-evaluation is a bad reason to make a good decision early.
+
+The ignore is only honest if it expires and is visible: by CVE id only, never a
+blanket ignore, never dropping `--strict`, inline comment with the date, and
+listed as an accepted risk in `CURRENT_STATE.md`. A new chromadb CVE must still
+turn the job red.
 
 
 ## Current routing override — Trust Foundation REL-03
