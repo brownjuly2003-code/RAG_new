@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Q1 offline A/B: context_precision knob grid on the 100-case aircargo harness.
 
-Audit `audit_grok_16_07_26.md` (Q1 / §7.2 / §7.3): the free-RAGAS baseline
+Audit `docs/audits/audit_grok_16_07_26.md` (Q1 / §7.2 / §7.3): the free-RAGAS baseline
 (`reports/ragas/20260605T214926Z-e728353a-aircargo-ragas.md`) measures
 context_precision ~0.51 (weak звено — top-k шумит) while context_recall ~0.92
 (отлично). The audit's product bet is a *measured* A/B over the three retrieval

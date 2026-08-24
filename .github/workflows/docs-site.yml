@@ -13,7 +13,6 @@ on:
       - 'README.md'
       - 'AGENT_STATE.md'
       - 'BACKLOG.md'
-      - 'AUTOPILOT.md'
       - 'DEPRECATIONS.md'
       - '.github/workflows/docs-site.yml'
   workflow_dispatch:
