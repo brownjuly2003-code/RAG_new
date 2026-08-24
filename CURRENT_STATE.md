@@ -40,11 +40,13 @@ carrying the inherited RAG runtime plus a deterministic resolution kernel:
   `knowledge/postgres.py` 0%, `resolution/adapters/postgres.py` 29%,
   `services/session.py` 44%) because the integration job exercises them and
   runs without `--cov`.
-- **CI has run, and the red is now down to what was inherited** (run
-  32777742986): `type-check` went green once the two errors the widened scope
-  exposed were fixed. Three jobs stay red — `test-integration` (both legs),
-  `security`, `pre-commit` — all reproduced at the freeze tag. Earlier run
-  32775056817, before the type fixes:
+- **CI red is down to what was inherited, and phase A.1 added none of it**
+  (run 32780432073, on the shadow-wiring commit): `type-check`, `lint`,
+  `migrations`, `helm`, `regression-eval` and `test-unit` on both legs pass.
+  The same three jobs stay red — `test-integration` (both legs, the same one
+  test, `1 failed, 39 passed`), `security`, `pre-commit` — and all three
+  reproduce at the freeze tag. Earlier run 32775056817, before the type
+  fixes:
   `lint`, `migrations`, `helm`, `regression-eval`, `test-unit` (3.11 + 3.13,
   including the coverage gate) pass. `type-check`, `test-integration` (both
   legs), `security` and `pre-commit` fail. `baseline/freeze-2026-08-23` — a
