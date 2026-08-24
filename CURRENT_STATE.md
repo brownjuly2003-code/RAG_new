@@ -24,10 +24,13 @@ carrying the inherited RAG runtime plus a deterministic resolution kernel:
   Push over HTTPS with `gh` credentials — the account's git protocol is ssh
   and no key is loaded, so `git -c credential.helper='!gh auth git-credential'
   push` is the working form.
-- **The kernel is not wired into the product.** `/api/ask` has not changed
-  since the fork:
-  `grep -rlE "from (resolution|knowledge|actions)|services\.session" api/ agent/`
-  returns nothing. Phase A changes this.
+- **The kernel has a production caller as of 2026-08-24.** It had none for
+  the whole life of the fork; `/api/ask` now runs the shipment-status journey
+  as a read-only shadow behind `RESOLUTION_SHADOW_JOURNEYS`, off by default.
+  The phase-A gate command returns a file rather than nothing:
+  `grep -rlE 'from resolution|services\.session' api` →
+  `api/routers/conversation.py`. The answer itself is still the legacy one,
+  unchanged — that is the point of a shadow, and tests hold it to that.
 - **Zero real labelled cases.** All 17 resolution scenarios are synthetic;
   verified-resolution yield is 1/17. Phase B changes this.
 - **Full unit suite green locally** (2026-08-24, Windows): 2134 passed, 4
@@ -37,7 +40,11 @@ carrying the inherited RAG runtime plus a deterministic resolution kernel:
   `knowledge/postgres.py` 0%, `resolution/adapters/postgres.py` 29%,
   `services/session.py` 44%) because the integration job exercises them and
   runs without `--cov`.
-- **CI has run. It is red, and the red is honest** (run 32775056817):
+- **CI has run, and the red is now down to what was inherited** (run
+  32777742986): `type-check` went green once the two errors the widened scope
+  exposed were fixed. Three jobs stay red — `test-integration` (both legs),
+  `security`, `pre-commit` — all reproduced at the freeze tag. Earlier run
+  32775056817, before the type fixes:
   `lint`, `migrations`, `helm`, `regression-eval`, `test-unit` (3.11 + 3.13,
   including the coverage gate) pass. `type-check`, `test-integration` (both
   legs), `security` and `pre-commit` fail. `baseline/freeze-2026-08-23` — a
@@ -45,7 +52,22 @@ carrying the inherited RAG runtime plus a deterministic resolution kernel:
   integration, security and pre-commit failures and passes `type-check`, so
   three of the four reds are inherited and one is the widened type scope.
 
-## Phase 0 — in progress
+## Phase A — in progress
+
+| # | Item | Status |
+|---|---|---|
+| A.1 | Shadow wired into `/api/ask` behind a flag, evidence into the trace | done — flag, composition root, packaged contract + fixture TMS, 13 tests |
+| A.1b | Evidence into the Postgres tables (migrations 024–030) | open |
+| A.2 | `SessionService` admit/commit around sync `/api/ask` | open |
+| A.3 | Evidence tab on the trace in admin/agent UI | open |
+| A.4 | Characterisation test: legacy answer byte-identical, flag off vs on | partial — object identity is held by unit tests; the HTTP-level check is open |
+| A.5 | `tests/integration/test_shipment_status_e2e.py` | open |
+
+The fixture TMS is a stand-in, not a transport management system. Every number
+measured through it is fixture-sourced and has to say so — phase B is what
+replaces it with real labelled cases.
+
+## Phase 0 — done
 
 | # | Item | Status |
 |---|---|---|

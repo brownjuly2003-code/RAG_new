@@ -56,6 +56,23 @@ root — that habit is what produced 29 of them and is now closed.
 the 17 scenarios these gates cover: **1/17**. Both numbers are here rather
 than in a summary elsewhere, because they are the argument for phase B.
 
+## Phase A (2026-08-24) — the kernel gets a production caller
+
+| Slice | Evidence class | Evidence |
+|---|---|---|
+| A.1 shipment-status shadow behind `/api/ask` | `fixture` | `tests/test_resolution_shadow_wiring.py` (15 tests) |
+
+Not yet a slice under rule (a): the behaviour change is real — a
+`resolution_shadow` step now appears in the trace — but it is proven by unit
+tests, not by an E2E test against the running endpoint. A.5 is what closes
+that, and this row moves to `measured` only when a published number comes out
+of it.
+
+`fixture` is a fourth evidence class, weaker than `synthetic`: the journey
+runs against a fixture transport management system
+(`resolution/adapters/fixtures/shipment-status-v0.1.json`), so it demonstrates
+the wiring and proves nothing about air cargo. Phase B replaces it.
+
 ## Phase 0 corrections (2026-08-24)
 
 Not slices — these fix claims that were false, so they do not go in the table

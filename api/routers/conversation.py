@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import asyncio
+import contextvars
 import json as _json
 import logging
 import re
@@ -28,6 +29,116 @@ logger = logging.getLogger(__name__)
 
 # Plan §4.4: terminal routes that must carry a durable ticket (or explicit failure).
 _TERMINAL_ESCALATE_ROUTES = frozenset({"human", "error", "error_escalation"})
+
+# --- Resolution kernel shadow journeys (plan 2026-08-23, phase A) ------------
+# Off unless RESOLUTION_SHADOW_JOURNEYS names a journey. The shadow observes
+# the same question the legacy pipeline just answered and writes an evidence
+# bundle to the trace; the answer the caller receives is the same object,
+# unchanged. Before this seam existed the kernel had no production caller at
+# all, which is finding FIN-01 of the 2026-08-24 audit.
+_shadow_observers: dict[str, Any] = {}
+_shadow_observers_key: tuple[Any, tuple[str, ...]] | None = None
+
+# The observers are built once and reused, so the sink cannot close over a
+# per-request trace id. It reads it from here instead. Without this the
+# evidence would land under the kernel's own correlation UUID -- a trace
+# nobody can reach from the answer it belongs to, which would leave the
+# Evidence tab in phase A.3 with nothing to attach to.
+_shadow_trace_id: contextvars.ContextVar[str] = contextvars.ContextVar(
+    "resolution_shadow_trace_id", default=""
+)
+
+
+def _resolution_shadow_observers(journeys: tuple[str, ...], retriever: Any) -> dict[str, Any]:
+    """Build the observers once and reuse them; rebuild if the wiring changes.
+
+    Keyed on the retriever identity as well as the journey list because the
+    app swaps its retriever on reindex, and a shadow holding the old one would
+    silently gather policy evidence from a stale index.
+    """
+    global _shadow_observers, _shadow_observers_key
+    key = (id(retriever), journeys)
+    if _shadow_observers_key != key:
+        from resolution.composition import build_shadow_observers
+
+        _shadow_observers = build_shadow_observers(
+            journeys=journeys,
+            retriever=retriever,
+            sink=_record_shadow_evidence,
+        )
+        _shadow_observers_key = key
+    return _shadow_observers
+
+
+def _record_shadow_evidence(result: Any) -> None:
+    """Write one shadow result into the trace the legacy answer already owns."""
+    from tracing import log_step
+
+    trace_id = _shadow_trace_id.get()
+    if not trace_id:
+        logger.warning("shadow evidence has no trace to attach to, dropped")
+        return
+    export = result.evidence_export
+    log_step(
+        trace_id,
+        "resolution_shadow",
+        {
+            "journey": "shipment-status",
+            "evidence": export.as_dict(),
+            "terminal_state": result.terminal_state.value,
+            "reason_codes": list(result.reason_codes),
+            # The kernel's own case/correlation identity, kept alongside the
+            # legacy trace id rather than instead of it.
+            "case_id": str(export.case_id),
+            "kernel_correlation_id": str(export.correlation_id),
+            # The shadow's own answer, recorded for comparison only. It is
+            # never returned to anyone.
+            "shadow_response_text": result.response_text,
+        },
+    )
+
+
+def _run_resolution_shadows(
+    *,
+    response: Any,
+    tenant_id: str,
+    session_id: str,
+    correlation_id: str,
+    question: str,
+    trace_id: str = "",
+) -> Any:
+    """Run enabled shadows and return the legacy response object untouched.
+
+    Every failure path returns `response` unchanged: a shadow is not allowed
+    to turn an answered question into an error.
+    """
+    token = _shadow_trace_id.set(trace_id or correlation_id)
+    try:
+        _app = _app_module()
+        journeys = tuple(getattr(_app.get_settings(), "resolution_shadow_journeys", ()) or ())
+        if not journeys:
+            return response
+        retriever = getattr(_app, "_retriever", None)
+        if retriever is None:
+            return response
+
+        from resolution.application.shipment_status import run_legacy_ask_shadow
+
+        observers = _resolution_shadow_observers(journeys, retriever)
+        for observer in observers.values():
+            response = run_legacy_ask_shadow(
+                response=response,
+                tenant_id=tenant_id,
+                session_id=session_id,
+                correlation_id=correlation_id,
+                question=question,
+                observer=observer,
+            )
+    except Exception:
+        logger.warning("resolution shadow wiring failed", exc_info=True)
+    finally:
+        _shadow_trace_id.reset(token)
+    return response
 
 
 def _release_pipeline_capacity(semaphore: Any) -> None:
@@ -726,6 +837,14 @@ async def ask(
     prometheus_metrics.ACTIVE_SESSIONS.set(len(_app._sessions))
     if response.citations:
         spawn_tracked(_app._record_citation_stats(tenant, list(response.citations)))
+    response = _run_resolution_shadows(
+        response=response,
+        tenant_id=tenant,
+        session_id=session_id,
+        correlation_id=request_id or "",
+        question=question,
+        trace_id=getattr(response, "trace_id", "") or request_id or "",
+    )
     return JSONResponse(
         content=response.model_dump(),
         media_type="application/json; charset=utf-8",

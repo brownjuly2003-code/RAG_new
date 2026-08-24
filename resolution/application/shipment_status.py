@@ -17,26 +17,64 @@ _POLICY_IMPLEMENTATION_VERSION = "typed-shipment-policy/v0.1"
 
 
 class ShipmentObservationLike(Protocol):
-    tenant_id: str
-    shipment_id: str
-    status: str
-    location: str
-    estimated_delivery: str
-    observed_at: datetime
-    source_id: str
-    source_version: str
-    content_digest: str
+    # Read-only members. The concrete adapters return frozen dataclasses, and
+    # a Protocol declaring plain attributes demands settable ones -- so the
+    # real FixtureShipmentSource did not satisfy ShipmentSourcePort. Nothing
+    # caught it until phase A wired the loop up from typed production code:
+    # the tests construct it too, but tests are outside the mypy scope.
+    @property
+    def tenant_id(self) -> str: ...
+
+    @property
+    def shipment_id(self) -> str: ...
+
+    @property
+    def status(self) -> str: ...
+
+    @property
+    def location(self) -> str: ...
+
+    @property
+    def estimated_delivery(self) -> str: ...
+
+    @property
+    def observed_at(self) -> datetime: ...
+
+    @property
+    def source_id(self) -> str: ...
+
+    @property
+    def source_version(self) -> str: ...
+
+    @property
+    def content_digest(self) -> str: ...
 
 
 class PolicyEvidenceLike(Protocol):
-    tenant_id: str
-    authority: str
-    data_revision: str
-    recorded_at: datetime
-    valid_from: datetime
-    valid_to: datetime | None
-    status_disclosure_allowed: bool
-    content_digest: str
+    # Read-only members, same reason as ShipmentObservationLike above.
+    @property
+    def tenant_id(self) -> str: ...
+
+    @property
+    def authority(self) -> str: ...
+
+    @property
+    def data_revision(self) -> str: ...
+
+    @property
+    def recorded_at(self) -> datetime: ...
+
+    @property
+    def valid_from(self) -> datetime: ...
+
+    @property
+    def valid_to(self) -> datetime | None: ...
+
+    @property
+    def status_disclosure_allowed(self) -> bool: ...
+
+    @property
+    def content_digest(self) -> str: ...
 
 
 class ShipmentSourcePort(Protocol):

@@ -20,7 +20,7 @@ binds autopilot too.
 
 ## Repository rules
 
-- **Root holds at most 8 `.md` files.** Enforced by
+- **Root holds at most 9 `.md` files.** Enforced by
   `tests/test_docs_hygiene.py`. New evidence is a test plus one row in
   [`EVIDENCE_INDEX.md`](EVIDENCE_INDEX.md) — never a new capsule file in the
   root.
@@ -31,5 +31,12 @@ binds autopilot too.
   pass.
 - **Heavy runs do not go on the Windows laptop.** Models, the full test suite
   and Docker go to the iMac or Colab. Locally: focused gates only.
-- **Local commits are fine; pushing is not**, until Q1 in
-  [`plan_23_08_2026.md`](plan_23_08_2026.md) is answered.
+- **Push to `origin/master`** — `brownjuly2003-code/RAG_new`, private (Q1,
+  answered 2026-08-24). The account's git protocol is ssh with no key loaded,
+  so pushes go over HTTPS:
+  `git -c credential.helper='!gh auth git-credential' push origin master`.
+- **CI is red on three inherited jobs** (`test-integration`, `security`,
+  `pre-commit`), diagnosed in [`BACKLOG.md`](BACKLOG.md) and awaiting a
+  decision. Do not "fix" them by relaxing a gate, and do not read a red run as
+  permission to ignore a new failure — compare against
+  `baseline/freeze-2026-08-23` instead.
