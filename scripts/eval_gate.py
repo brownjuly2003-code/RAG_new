@@ -1,5 +1,16 @@
 #!/usr/bin/env python3
-"""CI evaluation gate for RAG quality."""
+"""Local evaluation gate for RAG quality -- requires a live Ollama pipeline.
+
+Exit codes: 0 = measured and passed, 1 = measured and failed, 2 = NOT_EVIDENCE
+(the pipeline was unavailable, so nothing was measured).
+
+Audit 2026-08-24 (FIN-11): this script used to answer an unavailable pipeline
+with ``{metric: 1.0}`` for every metric and print "EVAL GATE: PASSED (graceful
+skip)" -- a perfect score and a zero exit for a run that never happened. It is
+not wired into CI (no workflow references it); it is a local tool, and a
+skipped run now says so in both the exit code and
+evaluation/current_metrics.json ("evidence_class": "not_evidence").
+"""
 from __future__ import annotations
 
 import json
@@ -115,6 +126,8 @@ def _save_current_metrics(
     payload: dict[str, Any] = {
         "aggregate": scores,
         "skipped": skipped,
+        # Consumers must branch on this, not on the presence of "aggregate".
+        "evidence_class": "not_evidence" if skipped else "measured",
     }
     if reason:
         payload["reason"] = reason
@@ -164,11 +177,11 @@ def run_live_evaluation(test_cases: list[dict[str, Any]]) -> tuple[dict[str, flo
     try:
         from evaluation.ragas_eval import RAGEvaluator, TestCase
     except ImportError as exc:
-        return {metric: 1.0 for metric in THRESHOLDS}, f"evaluator import failed: {exc}"
+        return {}, f"evaluator import failed: {exc}"
 
     run_qa_pipeline, retriever, llm, reason = _load_pipeline_dependencies()
     if run_qa_pipeline is None or retriever is None or llm is None:
-        return {metric: 1.0 for metric in THRESHOLDS}, reason
+        return {}, reason
 
     try:
         from config.settings import get_settings
@@ -209,6 +222,13 @@ def run_live_evaluation(test_cases: list[dict[str, Any]]) -> tuple[dict[str, flo
         answers=answers,
         context_docs_list=context_docs_list,
     )
+    # A batch where any answer was copied from expected_answer scores the
+    # corpus, not the pipeline. Refuse it rather than gate on it (FIN-11).
+    evidence_class = results.get("evidence_class")
+    if evidence_class != "measured":
+        sources = ", ".join(results.get("answer_sources") or []) or "unknown"
+        return {}, f"batch is {evidence_class} (answer sources: {sources})"
+
     aggregate = results.get("aggregate", {})
 
     scores: dict[str, float] = {}
@@ -273,10 +293,11 @@ def main() -> int:
 
     if skipped:
         _print_safe(f"SKIP: {skip_reason}")
-        for metric, score in scores.items():
-            _print_safe(f"  {metric}: {score:.2f} (skipped) [PASS]")
-        _print_safe("EVAL GATE: PASSED (graceful skip)")
-        return 0
+        _print_safe(
+            "EVAL GATE: NOT_EVIDENCE -- the pipeline did not run, so there are "
+            "no scores. This is not a pass."
+        )
+        return 2
 
     passed, metric_lines = evaluate_gate(scores, baseline)
     for line in metric_lines:

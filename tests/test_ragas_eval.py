@@ -208,3 +208,79 @@ def test_run_benchmark_uses_invoke_fallback_and_handles_pipeline_errors(tmp_path
     assert failed_result["per_question"][0]["answer"] == ""
     assert failed_result["per_question"][0]["context_docs_count"] == 0
     assert failed_result["aggregate"]["faithfulness"] == 0.0
+
+
+def test_expected_answer_substitution_is_tagged_and_demotes_the_batch(tmp_path: Path) -> None:
+    """FIN-11: a copied reference answer is not a measurement of the system.
+
+    evaluate_batch falls back to TestCase.expected_answer when no generated
+    answer is supplied. Scoring that against the retrieved context measures
+    the corpus -- faithfulness is near-1 by construction -- so the row is
+    tagged answer_source="expected_copy" and the whole batch is demoted to
+    evidence_class="not_evidence".
+    """
+    from evaluation.ragas_eval import RAGEvaluator, TestCase
+
+    evaluator = RAGEvaluator(results_dir=tmp_path)
+    cases = [
+        TestCase(
+            question="Какой срок возврата?",
+            expected_keywords=["возврат"],
+            expected_answer="Возврат доступен в течение 14 дней.",
+        )
+    ]
+
+    result = evaluator.evaluate_batch(cases)
+
+    assert result["per_question"][0]["answer_source"] == "expected_copy"
+    assert result["answer_sources"] == ["expected_copy"]
+    assert result["evidence_class"] == "not_evidence"
+
+
+def test_generated_answers_are_marked_measured(tmp_path: Path) -> None:
+    from evaluation.ragas_eval import RAGEvaluator, TestCase
+
+    evaluator = RAGEvaluator(results_dir=tmp_path)
+    cases = [
+        TestCase(
+            question="Какой срок возврата?",
+            expected_keywords=["возврат"],
+            expected_answer="Возврат доступен в течение 14 дней.",
+        )
+    ]
+
+    result = evaluator.evaluate_batch(
+        cases,
+        answers=["Возврат оформляется за 14 дней."],
+        context_docs_list=[[{"page_content": "Возврат: 14 дней."}]],
+    )
+
+    assert result["per_question"][0]["answer_source"] == "generated"
+    assert result["evidence_class"] == "measured"
+
+
+def test_one_copied_answer_contaminates_a_mixed_batch(tmp_path: Path) -> None:
+    from evaluation.ragas_eval import RAGEvaluator, TestCase
+
+    evaluator = RAGEvaluator(results_dir=tmp_path)
+    cases = [
+        TestCase(question="q1", expected_keywords=["a"], expected_answer="a"),
+        TestCase(question="q2", expected_keywords=["b"], expected_answer="b"),
+    ]
+
+    # Only the first case has a generated answer; the second falls back.
+    result = evaluator.evaluate_batch(cases, answers=["generated a"])
+
+    assert [row["answer_source"] for row in result["per_question"]] == [
+        "generated",
+        "expected_copy",
+    ]
+    assert result["evidence_class"] == "not_evidence"
+
+
+def test_empty_batch_is_not_evidence(tmp_path: Path) -> None:
+    from evaluation.ragas_eval import RAGEvaluator
+
+    result = RAGEvaluator(results_dir=tmp_path).evaluate_batch([])
+
+    assert result["evidence_class"] == "not_evidence"

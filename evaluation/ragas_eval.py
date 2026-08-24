@@ -406,13 +406,23 @@ class RAGEvaluator:
         If ``answers`` and ``context_docs_list`` are provided, they are used
         directly. Otherwise the test cases must include expected_answer.
 
+        Every per-question row carries ``answer_source``: "generated" when the
+        answer came from the pipeline, "expected_copy" when the reference
+        answer was substituted for a missing one, "empty" otherwise. The batch
+        is tagged ``evidence_class`` = "measured" only when every row is
+        "generated"; anything else is "not_evidence" and must not be quoted as
+        a release metric (FIN-11).
+
         Returns:
             {
                 "aggregate": {metric: mean_score, ...},
                 "per_question": [
-                    {"question": ..., "scores": {...}, "category": ...},
+                    {"question": ..., "scores": {...}, "category": ...,
+                     "answer_source": ...},
                     ...
                 ],
+                "answer_sources": [...],
+                "evidence_class": "measured" | "not_evidence",
                 "num_cases": int,
                 "timestamp": str,
             }
@@ -428,11 +438,18 @@ class RAGEvaluator:
         for i, tc in enumerate(test_cases):
             answer = ""
             ctx = []
+            answer_source = "empty"
 
             if answers is not None and i < len(answers):
                 answer = answers[i]
+                answer_source = "generated"
             elif tc.expected_answer:
+                # Scoring the reference answer against the retrieved context
+                # measures the corpus, not the system: faithfulness is near-1
+                # by construction. Tag it so no release metric can quote it
+                # (FIN-11, 2026-08-24).
                 answer = tc.expected_answer
+                answer_source = "expected_copy"
 
             if context_docs_list is not None and i < len(context_docs_list):
                 ctx = context_docs_list[i]
@@ -448,6 +465,7 @@ class RAGEvaluator:
             per_question.append({
                 "question": tc.question,
                 "category": tc.category,
+                "answer_source": answer_source,
                 "scores": scores,
             })
 
@@ -457,10 +475,20 @@ class RAGEvaluator:
         n = max(len(test_cases), 1)
         aggregate = {k: round(v / n, 4) for k, v in totals.items()}
 
+        sources = {row["answer_source"] for row in per_question}
+        # "measured" only when every answer came from the pipeline. One copied
+        # reference answer contaminates the aggregate, so the whole batch is
+        # demoted -- release metrics must refuse anything but "measured".
+        evidence_class = (
+            "measured" if per_question and sources == {"generated"} else "not_evidence"
+        )
+
         return {
             "aggregate": aggregate,
             "per_question": per_question,
             "num_cases": len(test_cases),
+            "answer_sources": sorted(sources),
+            "evidence_class": evidence_class,
             "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S"),
         }
 
