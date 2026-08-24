@@ -64,6 +64,13 @@ providers:
     kind: paid
     enabled: true
     api_key_env: MISTRAL_API_KEY
+    # Prices below are the published la Plateforme rates as of the snapshot
+    # date. Audit 2026-08-24 (FIN-08) found the previous values wrong in both
+    # directions: mistral-large overstated 4x (2.00/6.00 vs 0.50/1.50) and
+    # ministral-3b understated 2.5x (0.04 vs 0.10). Any change here must move
+    # pricing_snapshot_date with it -- test_provider_pricing_snapshot.py fails
+    # otherwise.
+    pricing_snapshot_date: "2026-08-24"
     default_models:
       fast: ministral-3b-latest
       strong: mistral-small-latest
@@ -79,20 +86,20 @@ providers:
     models:
       - name: ministral-3b-latest
         aliases: [ministral-3b, mistral-tiny]
-        input_price_per_1m_tokens: 0.04
-        output_price_per_1m_tokens: 0.04
-      - name: ministral-8b-latest
-        aliases: [ministral-8b]
         input_price_per_1m_tokens: 0.10
         output_price_per_1m_tokens: 0.10
+      - name: ministral-8b-latest
+        aliases: [ministral-8b]
+        input_price_per_1m_tokens: 0.15
+        output_price_per_1m_tokens: 0.15
       - name: mistral-small-latest
         aliases: [mistral-small]
-        input_price_per_1m_tokens: 0.20
+        input_price_per_1m_tokens: 0.15
         output_price_per_1m_tokens: 0.60
       - name: mistral-large-latest
         aliases: [mistral-large]
-        input_price_per_1m_tokens: 2.00
-        output_price_per_1m_tokens: 6.00
+        input_price_per_1m_tokens: 0.50
+        output_price_per_1m_tokens: 1.50
 
   - id: opencode-zen
     label: OpenCode Zen

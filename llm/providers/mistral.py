@@ -159,6 +159,11 @@ class MistralProvider:
                 "rate_limit_remaining_tokens": headers.get(
                     "x-ratelimit-remaining-tokens"
                 ),
+                # The registry pins "*-latest" aliases, so the model we asked
+                # for is not the model that answered. Mistral echoes the
+                # concrete build back; record it, otherwise a trace cannot say
+                # which weights produced a number (FIN-08, 2026-08-24).
+                "resolved_model": str(data.get("model") or "") or None,
             },
         )
 

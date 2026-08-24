@@ -61,6 +61,8 @@ def _write_registry(path: Path, *, paid: bool = False) -> None:
                 "id": "mistral",
                 "label": "Mistral",
                 "kind": "paid",
+                # Required for paid providers since 2026-08-24 (FIN-08).
+                "pricing_snapshot_date": "2026-08-24",
                 "enabled": True,
                 "api_key_env": "MISTRAL_API_KEY",
                 "default_models": {

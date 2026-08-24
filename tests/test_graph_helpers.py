@@ -195,3 +195,52 @@ def test_llm_capability_detection_uses_flags_and_static_methods() -> None:
         is True
     )
     assert graph._llm_supports_structured_output(SchemaMethodLLM()) is True
+
+
+def test_capture_llm_usage_carries_resolved_model_into_trace_state() -> None:
+    """FIN-08: the concrete build behind a "*-latest" alias reaches the trace.
+
+    log_step serialises the whole usage dict into trace_steps.state_json, so
+    adding the key here is what makes "which weights produced this number"
+    answerable after the fact -- no schema change involved.
+    """
+    import agent.graph as graph
+
+    llm = SimpleNamespace(
+        provider_id="mistral",
+        model_name="mistral-small-latest",
+        last_response=SimpleNamespace(
+            provider="mistral",
+            model="mistral-small-latest",
+            input_tokens=10,
+            output_tokens=5,
+            cost_usd=0.0001,
+            metadata={"resolved_model": "mistral-small-2506"},
+        ),
+    )
+
+    captured = graph._capture_llm_usage(llm, "generate")
+    assert captured["resolved_model_name"] == "mistral-small-2506"
+
+    total = graph._new_llm_usage("total")
+    graph._merge_llm_usage(total, captured)
+    assert total["resolved_model_name"] == "mistral-small-2506"
+
+
+def test_capture_llm_usage_resolved_model_absent_for_providers_that_omit_it() -> None:
+    import agent.graph as graph
+
+    llm = SimpleNamespace(
+        provider_id="ollama",
+        model_name="qwen2.5:7b",
+        last_response=SimpleNamespace(
+            provider="ollama",
+            model="qwen2.5:7b",
+            input_tokens=10,
+            output_tokens=5,
+            cost_usd=0.0,
+            metadata={},
+        ),
+    )
+
+    assert graph._capture_llm_usage(llm, "generate")["resolved_model_name"] is None

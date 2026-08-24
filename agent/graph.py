@@ -828,6 +828,9 @@ def _new_llm_usage(node_name: str) -> dict[str, Any]:
     return {
         "provider_name": None,
         "model_name": None,
+        # Concrete build behind a "*-latest" alias, when the provider reports
+        # one. Lands in trace state_json; no schema change needed.
+        "resolved_model_name": None,
         "prompt_tokens": None,
         "completion_tokens": None,
         "cost_usd": None,
@@ -852,6 +855,11 @@ def _capture_llm_usage(llm: SupportsInvoke, node_name: str) -> dict[str, Any]:
     usage["model_name"] = (
         _normalize_optional_str(getattr(response, "model", None)) or usage["model_name"]
     )
+    response_metadata = getattr(response, "metadata", None)
+    if isinstance(response_metadata, dict):
+        usage["resolved_model_name"] = _normalize_optional_str(
+            response_metadata.get("resolved_model")
+        )
     usage["prompt_tokens"] = prompt_tokens
     usage["completion_tokens"] = completion_tokens
     usage["cost_usd"] = _normalize_optional_float(getattr(response, "cost_usd", None))
@@ -869,6 +877,8 @@ def _merge_llm_usage(total: dict[str, Any], snapshot: dict[str, Any]) -> dict[st
         total["provider_name"] = snapshot["provider_name"]
     if snapshot.get("model_name"):
         total["model_name"] = snapshot["model_name"]
+    if snapshot.get("resolved_model_name"):
+        total["resolved_model_name"] = snapshot["resolved_model_name"]
 
     snapshot_prompt_tokens = snapshot.get("prompt_tokens")
     if snapshot_prompt_tokens is not None:

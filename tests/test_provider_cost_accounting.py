@@ -40,7 +40,10 @@ def test_trace_log_step_persists_provider_name_and_cost(monkeypatch, tmp_path) -
     assert row[1] == "mistral-small-latest"
     assert row[2] == 1000
     assert row[3] == 500
-    assert row[4] == pytest.approx(0.0005)
+    # 1000 in @ $0.15/1M + 500 out @ $0.60/1M. Was 0.0005 until the 2026-08-24
+    # pricing correction (FIN-08) dropped mistral-small input 0.20 -> 0.15;
+    # config/pricing_snapshot.json is the source of truth for these rates.
+    assert row[4] == pytest.approx(0.00045)
 
 
 def test_prometheus_metrics_expose_provider_cost_counter(client, monkeypatch, tmp_path) -> None:

@@ -1,0 +1,16 @@
+{
+  "_comment": "Pinned vendor prices, USD per 1M tokens. This file is the contract; config/providers.yml is the runtime copy. tests/test_provider_pricing_snapshot.py fails when the two drift. Changing a price means re-checking the vendor page, updating BOTH files, and moving snapshot_date.",
+  "providers": {
+    "mistral": {
+      "snapshot_date": "2026-08-24",
+      "source": "https://mistral.ai/pricing (la Plateforme, pay-as-you-go)",
+      "verified_by": "audit_final_23_08_2026.md FIN-08, independent web check 2026-08-24",
+      "models": {
+        "ministral-3b-latest": {"input": 0.10, "output": 0.10},
+        "ministral-8b-latest": {"input": 0.15, "output": 0.15},
+        "mistral-small-latest": {"input": 0.15, "output": 0.60},
+        "mistral-large-latest": {"input": 0.50, "output": 1.50}
+      }
+    }
+  }
+}

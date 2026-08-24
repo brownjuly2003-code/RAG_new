@@ -305,3 +305,58 @@ def test_mistral_provider_generate_with_schema_returns_structured_output(
 
     assert captured["json"]["response_format"]["type"] == "json_schema"
     assert response.structured_output == {"complexity": "simple"}
+
+
+def test_mistral_provider_records_resolved_model_behind_latest_alias(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """A "*-latest" alias hides which weights answered; the trace must not.
+
+    Audit 2026-08-24 (FIN-08): every Mistral entry in config/providers.yml is a
+    "*-latest" alias, so a published number could not be tied to a concrete
+    build. Mistral echoes the resolved model back in the response body; it is
+    carried into LLMResponse.metadata and from there into trace state_json.
+    """
+
+    def _fake_post(url: str, *, headers: dict[str, str], json: dict[str, Any], timeout: float):
+        return _FakeResponse(
+            payload={
+                "model": "mistral-small-2506",
+                "choices": [
+                    {"message": {"content": "hi"}, "finish_reason": "stop"}
+                ],
+                "usage": {"prompt_tokens": 10, "completion_tokens": 5},
+            },
+            headers={},
+        )
+
+    monkeypatch.setenv("MISTRAL_API_KEY", "mistral-test-key")
+    monkeypatch.setattr("httpx.post", _fake_post)
+
+    response = _build_provider().generate([{"role": "user", "content": "hi"}])
+
+    # The requested alias stays the pricing key; the resolved build rides along.
+    assert response.model == "mistral-small-latest"
+    assert response.metadata["resolved_model"] == "mistral-small-2506"
+
+
+def test_mistral_provider_resolved_model_is_none_when_absent(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    def _fake_post(url: str, *, headers: dict[str, str], json: dict[str, Any], timeout: float):
+        return _FakeResponse(
+            payload={
+                "choices": [
+                    {"message": {"content": "hi"}, "finish_reason": "stop"}
+                ],
+                "usage": {"prompt_tokens": 10, "completion_tokens": 5},
+            },
+            headers={},
+        )
+
+    monkeypatch.setenv("MISTRAL_API_KEY", "mistral-test-key")
+    monkeypatch.setattr("httpx.post", _fake_post)
+
+    response = _build_provider().generate([{"role": "user", "content": "hi"}])
+
+    assert response.metadata["resolved_model"] is None

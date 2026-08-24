@@ -43,6 +43,7 @@ def tiny_registry_path(tmp_path: Path) -> Path:
               - id: mistral
                 label: Mistral
                 kind: paid
+                pricing_snapshot_date: "2026-08-24"
                 enabled: true
                 api_key_env: MISTRAL_API_KEY
                 default_models:

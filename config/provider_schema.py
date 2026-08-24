@@ -1,9 +1,12 @@
 from __future__ import annotations
 
+import re
 from pathlib import Path
 
 import yaml
 from pydantic import BaseModel, Field, ValidationError, model_validator
+
+_SNAPSHOT_DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_PROVIDER_REGISTRY_PATH = PROJECT_ROOT / "config" / "providers.yml"
@@ -45,11 +48,28 @@ class ProviderConfig(BaseModel):
     capabilities: ProviderCapabilities = Field(default_factory=ProviderCapabilities)
     rate_limits: ProviderRateLimits = Field(default_factory=ProviderRateLimits)
     models: list[ProviderModel] = Field(default_factory=list)
+    # Date the published prices below were last verified against the vendor's
+    # public price list. Required for kind == "paid": audit 2026-08-24 (FIN-08)
+    # found unverifiable prices that had drifted 4x from the vendor's rates and
+    # fed a cost-per-resolution claim. Undated prices are not evidence.
+    pricing_snapshot_date: str | None = None
 
     @model_validator(mode="after")
     def _validate_models(self) -> "ProviderConfig":
         if not self.models:
             raise ValueError(f"provider '{self.id}' must define at least one model")
+
+        if self.kind == "paid" and not self.pricing_snapshot_date:
+            raise ValueError(
+                f"provider '{self.id}' is paid and must declare pricing_snapshot_date"
+            )
+        if self.pricing_snapshot_date and not _SNAPSHOT_DATE_RE.match(
+            self.pricing_snapshot_date
+        ):
+            raise ValueError(
+                f"provider '{self.id}' pricing_snapshot_date "
+                f"'{self.pricing_snapshot_date}' is not YYYY-MM-DD"
+            )
 
         known_names = {model.name for model in self.models}
         known_aliases: set[str] = set()
