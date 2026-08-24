@@ -3,7 +3,7 @@ from __future__ import annotations
 from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
 from datetime import datetime, timezone
-from typing import Protocol, cast
+from typing import Protocol
 from uuid import UUID, uuid4
 
 from sqlalchemy import select
@@ -28,9 +28,16 @@ LEGACY_CREATE_TICKET_ACTION_ID = "create_ticket"
 
 
 class _EscalationOutcome(Protocol):
-    ticket_id: str | None
-    durable: bool
-    already_existed: bool
+    # Read-only members: the concrete EscalationOutcome is a frozen dataclass,
+    # and a Protocol declaring plain attributes demands settable ones.
+    @property
+    def ticket_id(self) -> str | None: ...
+
+    @property
+    def durable(self) -> bool: ...
+
+    @property
+    def already_existed(self) -> bool: ...
 
 
 CreateEscalation = Callable[..., Awaitable[_EscalationOutcome]]
@@ -88,10 +95,35 @@ def legacy_create_ticket_manifest(
     )
 
 
-async def _default_create_escalation(**kwargs: object) -> _EscalationOutcome:
+async def _default_create_escalation(
+    *,
+    tenant_id: str,
+    session_id: str,
+    question: str,
+    source: str = "manual",
+    reason: str = "",
+    trace_id: str = "",
+    deliver_inbox: bool = True,
+    idempotency_key: str | None = None,
+) -> _EscalationOutcome:
+    """Bind the legacy escalation service behind the CreateEscalation seam.
+
+    Spelled out keyword by keyword rather than forwarded as ``**kwargs``: an
+    untyped splat silently accepts a renamed or dropped parameter and fails at
+    runtime instead of in mypy (2026-08-24, actions/* promoted to type-check).
+    """
     from services.escalation import create_escalation
 
-    return cast(_EscalationOutcome, await create_escalation(**kwargs))
+    return await create_escalation(
+        tenant_id=tenant_id,
+        session_id=session_id,
+        question=question,
+        source=source,
+        reason=reason,
+        trace_id=trace_id,
+        deliver_inbox=deliver_inbox,
+        idempotency_key=idempotency_key,
+    )
 
 
 async def _default_ticket_lookup(

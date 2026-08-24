@@ -4,7 +4,7 @@ import argparse
 import json
 from collections.abc import Sequence
 from pathlib import Path
-from typing import Any, cast
+from typing import Any
 
 from resolution.contracts.models import ResolutionContract
 
@@ -14,7 +14,7 @@ DEFAULT_JSON_SCHEMA_PATH = (
 
 
 def resolution_contract_json_schema() -> dict[str, Any]:
-    return cast(dict[str, Any], ResolutionContract.model_json_schema(mode="validation"))
+    return ResolutionContract.model_json_schema(mode="validation")
 
 
 def resolution_contract_schema_json() -> str:

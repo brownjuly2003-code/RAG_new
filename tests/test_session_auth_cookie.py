@@ -141,9 +141,19 @@ def test_cookie_auth_refused_for_cross_site_post(client_with_key: TestClient) ->
     same_origin = client_with_key.post(UNSAFE_URL, headers={"Origin": "http://testserver"})
     assert same_origin.status_code in (200, 409), same_origin.text
 
-    # Origin-less requests (curl, non-browser clients) are unaffected.
+    # Origin-less unsafe requests are refused too (fail-closed, 2026-08-24
+    # FIN-12): returning True on a missing header handed the CSRF check to
+    # whoever could arrange for it not to arrive. Non-browser clients are not
+    # locked out -- the next assertion shows the bearer path still works.
     no_origin = client_with_key.post(UNSAFE_URL)
-    assert no_origin.status_code in (200, 409), no_origin.text
+    assert no_origin.status_code == 401, no_origin.text
+
+    token = _login(client_with_key).json()["access_token"]
+    client_with_key.cookies.clear()
+    with_bearer = client_with_key.post(
+        UNSAFE_URL, headers={"Authorization": f"Bearer {token}"}
+    )
+    assert with_bearer.status_code in (200, 409), with_bearer.text
 
 
 def test_establish_session_rejects_missing_token(client: TestClient) -> None:

@@ -173,6 +173,15 @@ EXPECTED_MYPY_STRICT_PATHS = {
     "tracing",
     "ingestion",
     "evaluation",
+    # Kernel packages, promoted 2026-08-24 (FIN-07). They were outside every
+    # type gate while README claimed full strict coverage; the 8 errors they
+    # carried are fixed, so they went straight to blocking.
+    "actions",
+    "cache",
+    "integrations",
+    "knowledge",
+    "resolution",
+    "services",
 }
 
 

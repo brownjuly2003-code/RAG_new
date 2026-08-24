@@ -2037,14 +2037,20 @@ def _cookie_auth_origin_ok(request: Request) -> bool:
     the IdP redirect), so the SameSite posture of the shared cookie is bounded
     by the weakest writer: a cross-site top-level form POST may still carry the
     Lax SSO cookie. Requiring a matching Origin on unsafe methods closes that
-    for every writer. Requests without an Origin header (curl, non-browser
-    clients) and explicit Authorization headers are unaffected.
+    for every writer.
+
+    Fail-closed on a missing Origin (audit 2026-08-24, FIN-12): the gate used
+    to return True when the header was absent, which is the whole CSRF check
+    handed to whoever can arrange for the header not to arrive. Nothing is
+    locked out -- this only decides whether the cookie is promoted to a bearer
+    token, so non-browser clients keep working by sending Authorization
+    themselves, which is the header they already have.
     """
     if request.method not in _COOKIE_AUTH_UNSAFE_METHODS:
         return True
     origin = request.headers.get("origin")
     if not origin:
-        return True
+        return False
     return bool(urlparse(origin).netloc == request.headers.get("host", ""))
 
 

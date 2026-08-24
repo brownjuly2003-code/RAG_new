@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from collections.abc import Callable
-from typing import cast
 from uuid import UUID
 
 from sqlalchemy import select, text, update
@@ -413,7 +412,7 @@ class PostgresResolutionUnitOfWork:
     def _require_session(self) -> AsyncSession:
         if self._session is None:
             raise RuntimeError("resolution unit of work is not active")
-        return cast(AsyncSession, self._session)
+        return self._session
 
 
 __all__ = [

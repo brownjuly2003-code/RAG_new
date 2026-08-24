@@ -401,7 +401,7 @@ function Invoke-Gates {
     }
 
     if (Test-PythonModule "mypy") {
-        Invoke-Checked "mypy strict scope 1" "python" @("-m", "mypy", "auth", "db", "llm/providers/", "config/settings.py", "agent/state.py", "agent/prompts.py", "agent/prompt_registry.py", "agent/tools.py", "agent/graph.py", "tasks", "utils", "monitoring", "channels", "tracing", "ingestion", "evaluation", "--no-incremental", "--show-error-codes")
+        Invoke-Checked "mypy strict scope 1" "python" @("-m", "mypy", "auth", "db", "llm/providers/", "config/settings.py", "agent/state.py", "agent/prompts.py", "agent/prompt_registry.py", "agent/tools.py", "agent/graph.py", "tasks", "utils", "monitoring", "channels", "tracing", "ingestion", "evaluation", "actions", "cache", "integrations", "knowledge", "resolution", "services", "--no-incremental", "--show-error-codes")
         Invoke-Checked "mypy api.app" "python" @("-m", "mypy", "api/app.py", "api/_shared.py", "api/correlation.py", "api/rate_limit.py", "api/routers", "vectordb", "--no-incremental", "--follow-imports=skip", "--show-error-codes")
     }
     else {

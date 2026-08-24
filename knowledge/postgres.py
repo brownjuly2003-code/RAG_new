@@ -3,7 +3,6 @@ from __future__ import annotations
 import json
 from collections.abc import Callable
 from datetime import datetime
-from typing import cast
 from uuid import NAMESPACE_URL, UUID, uuid5
 
 from sqlalchemy import select, text, update
@@ -525,7 +524,7 @@ class PostgresKnowledgeUnitOfWork:
     def _require_session(self) -> AsyncSession:
         if self._session is None:
             raise RuntimeError("knowledge unit of work is not active")
-        return cast(AsyncSession, self._session)
+        return self._session
 
 
 __all__ = [

@@ -1,11 +1,16 @@
 # RAG_new — Verifiable Resolution OS
 
+> **Working on this repository?** Start at
+> [`CURRENT_STATE.md`](CURRENT_STATE.md), then [`ROADMAP.md`](ROADMAP.md).
+> This README describes the system; those two describe where it actually
+> stands. Agent conventions are in [`CLAUDE.md`](CLAUDE.md).
+
 > `RAG_new` is an architecture-first successor to `RAG_Support_Assistant`.
 > It keeps the verified RAG runtime as a migration baseline and adds a
 > deterministic resolution kernel for versioned procedures, evidence,
 > governed actions, and business-state verification. Start with
 > [`docs/architecture/README.md`](docs/architecture/README.md) and the short
-> [`rag-new-architecture.md`](rag-new-architecture.md) implementation plan.
+> [`docs/architecture/rag-new-architecture.md`](docs/architecture/rag-new-architecture.md) implementation plan.
 
 The inherited runtime still answers support questions against a knowledge
 base and decides whether a request can be resolved automatically or should be
@@ -16,8 +21,8 @@ paths remain the compatibility baseline rather than the new product boundary.
 index lifecycle work remains incomplete after local slice 4.8d3e). The active
 consolidated plan contains only remaining audit DoD plus the 2026-08-03 LLM/RAG
 gaps: project/production release is not complete. See
-[`audit_gpt_23_07_26.md`](audit_gpt_23_07_26.md) and
-[`rag-remediation-plan-2026-08-03.md`](rag-remediation-plan-2026-08-03.md).
+[`docs/audits/audit_gpt_23_07_26.md`](docs/audits/audit_gpt_23_07_26.md) and
+[`docs/plans/rag-remediation-plan-2026-08-03.md`](docs/plans/rag-remediation-plan-2026-08-03.md).
 The earlier
 [docs/PROJECT_CLOSURE.md](docs/PROJECT_CLOSURE.md) note is historical and
 **superseded** by that revalidation.
@@ -91,7 +96,31 @@ User / Email / Widget
 - `ingestion/` — loaders, pipeline, categorizer, contextual headers.
 - `scripts/` — operational CLIs (regression eval, KB builders, chunking eval, nightly tasks).
 
-All production packages are `mypy --strict` clean (CI-enforced).
+### Type checking
+
+Mypy runs as a blocking CI job over a named scope, not over the whole tree.
+In scope: `auth`, `db`, `llm/providers`, `config/settings.py`, `tasks`,
+`utils`, `monitoring`, `channels`, `tracing`, `ingestion`, `evaluation`,
+`actions`, `cache`, `integrations`, `knowledge`, `resolution`, `services`,
+the five promoted `agent` modules (`state`, `prompts`, `prompt_registry`,
+`tools`, `graph`), and — with `--follow-imports=skip` — `api/app.py`,
+`api/_shared.py`, `api/correlation.py`, `api/rate_limit.py`, `api/routers`,
+`vectordb`.
+
+Out of scope: the rest of `agent/` (`doc_grade`, `grounding`, `relevance`,
+`response_safety`, `judge_policy`, `calibration`, `graph_stream`,
+`agentic_*`), `api/body_limit.py`, `scripts/`, `alembic/`, `data/`, and
+`archive-legacy/`.
+
+The scope list is kept in sync across `.github/workflows/ci.yml`,
+`scripts/local-gate.ps1` and `scripts/autopilot.ps1` by
+`tests/test_precommit_config.py::test_mypy_strict_scope_is_synced_across_gates`.
+
+> This section used to read "All production packages are `mypy --strict` clean
+> (CI-enforced)". That was false in both halves: several packages were outside
+> every gate, and the in-scope ones get per-module strictness from
+> `[[tool.mypy.overrides]]`, not a global `--strict`. Corrected 2026-08-24
+> (audit FIN-07).
 
 > For a complete audit and an implementation log of recent hardening work,
 > see `docs/audits/audit_opus_2026-04-26.md` (especially section 12) and
@@ -436,8 +465,13 @@ Playwright dependencies are not installed.
 
 ## CI
 
-GitHub Actions runs `lint`, `test-unit`, `test-integration`, and `pre-commit`
-on every push and pull request.
+GitHub Actions (`.github/workflows/ci.yml`) runs on every push and pull
+request. Jobs that always run: `lint`, `type-check`, `test-unit` (Python 3.11
+and 3.13; the 3.13 leg adds the coverage gate), `test-integration`,
+`pre-commit`, and `security` (bandit + pip-audit against the locked deps).
+Conditional jobs: `migrations` and `helm` run when their inputs change, and
+`regression-eval` runs on pull requests and pushes to `master` when prompt,
+settings, or evaluation inputs change.
 Install local tooling with `pip install --require-hashes -r requirements-dev.lock`.
 Run `pre-commit run --all-files`, `pytest tests/ -q --ignore=tests/integration -p no:cacheprovider`, and `pytest tests/integration -q`.
 Workflow history and logs are available on the repository `Actions -> CI` page.
