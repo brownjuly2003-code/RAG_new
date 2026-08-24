@@ -30,7 +30,14 @@ carrying the inherited RAG runtime plus a deterministic resolution kernel:
   returns nothing. Phase A changes this.
 - **Zero real labelled cases.** All 17 resolution scenarios are synthetic;
   verified-resolution yield is 1/17. Phase B changes this.
-- **CI status unknown** — never run, because there is no remote.
+- **Full unit suite green locally** (2026-08-24, Windows): 2134 passed, 4
+  skipped, coverage 76.05% against a gate of 72. Widening the coverage source
+  to the kernel packages raised the number, not lowered it. The Postgres
+  adapters read low in unit scope (`actions/postgres.py` 0%,
+  `knowledge/postgres.py` 0%, `resolution/adapters/postgres.py` 29%,
+  `services/session.py` 44%) because the integration job exercises them and
+  runs without `--cov`.
+- **First CI run is in flight** — the number above is local, not CI.
 
 ## Phase 0 — in progress
 

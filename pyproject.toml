@@ -85,6 +85,18 @@ omit = [
 # 73.30% (886 passed / 24 skipped). Raise 70 -> 72 against that CI figure only
 # (~1.3 pp headroom for ordinary churn; still catches a real drop). Do not
 # raise further without a fresh CI measurement.
+#
+# 2026-08-24 (FIN-07): source widened by actions/cache/integrations/knowledge/
+# services. Local full unit run (2134 passed / 4 skipped, Windows) measured
+# 76.05% -- the kernel packages came in above the mean, so widening the source
+# raised the number rather than lowering it. Threshold left at 72: the rule
+# above says raise only against a CI figure, and this is a local one.
+#
+# The unit-scope figure understates the Postgres adapters, which are exercised
+# by the integration job (no --cov there): actions/postgres.py 0%,
+# knowledge/postgres.py 0%, resolution/adapters/postgres.py 29%,
+# services/session.py 44%. Do not "fix" those by deleting them from source --
+# their absence is what FIN-07 was about.
 fail_under = 72
 show_missing = true
 skip_covered = false
