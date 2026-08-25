@@ -25,11 +25,14 @@ out of this journey is fixture-sourced and has to say so.
 
 from __future__ import annotations
 
+import asyncio
 import sqlite3
 import uuid
 from typing import Any
 
 import pytest
+
+from api.routers.conversation import _persist_shadow_evidence as _REAL_PERSIST
 
 pytestmark = pytest.mark.integration
 
@@ -114,6 +117,27 @@ def _reset_shadow_observer_cache():
     yield
     conversation._shadow_observers = {}
     conversation._shadow_observers_key = None
+
+
+@pytest.fixture(autouse=True)
+def persisted(monkeypatch: pytest.MonkeyPatch) -> list:
+    """Capture what the router hands to A.1b persistence instead of writing it.
+
+    These tests are about the endpoint and the trace. What the resolution
+    tables receive is asserted against real Postgres in
+    `test_resolution_shadow_postgres.py`; leaving the write live here would
+    make every test in this file depend on a reachable database, which is
+    exactly the coupling the shadow is supposed not to introduce.
+    """
+    from api.routers import conversation
+
+    recorded: list = []
+
+    async def _record(results: list) -> None:
+        recorded.extend(results)
+
+    monkeypatch.setattr(conversation, "_persist_shadow_evidence", _record)
+    return recorded
 
 
 @pytest.fixture
@@ -295,3 +319,91 @@ def test_a_shadow_that_raises_still_returns_the_legacy_answer(
     assert response.status_code == 200
     assert response.json()["answer"] == _LEGACY_ANSWER
     assert _count_shadow_steps(_isolated_trace_store) == 0
+
+
+# --- phase A.1b: the same run, on its way to the resolution tables -----------
+
+
+def test_the_run_that_reached_the_trace_is_handed_to_persistence(
+    wired_app,
+    integration_client,
+    integration_headers,
+    persisted,
+) -> None:
+    """A.1b's wiring: the endpoint offers the observation to the tables too.
+
+    `run_legacy_ask_shadow` returns the legacy response rather than the
+    observation, so the result reaching persistence at all is a claim worth
+    holding — it travels out of the sink through a context variable, and a
+    reset in the wrong place would silently empty it.
+    """
+    enable_shadow = wired_app()
+    enable_shadow()
+
+    response = integration_client.post(
+        "/api/ask",
+        json={"question": _QUESTION},
+        headers=integration_headers("acme", "admin"),
+    )
+
+    assert response.status_code == 200
+    assert len(persisted) == 1
+    export = persisted[0].evidence_export
+    assert export.contract.contract_id == "aircargo.shipment-status"
+    assert export.tenant_id == "acme"
+
+
+def test_nothing_is_handed_to_persistence_when_the_shadow_is_off(
+    wired_app,
+    integration_client,
+    integration_headers,
+    persisted,
+) -> None:
+    wired_app()
+
+    response = integration_client.post(
+        "/api/ask",
+        json={"question": _QUESTION},
+        headers=integration_headers("acme", "admin"),
+    )
+
+    assert response.status_code == 200
+    assert persisted == []
+
+
+def test_a_database_that_never_answers_does_not_hang_the_endpoint(
+    monkeypatch: pytest.MonkeyPatch,
+    wired_app,
+    integration_client,
+    integration_headers,
+) -> None:
+    """The regression this slice actually caused, before the write was bounded.
+
+    Connecting to an absent database does not fail fast, it hangs. The first
+    wiring of A.1b awaited it unbounded, and every request running a shadow
+    hung with it — a shadow taking the answer down, which is the one thing it
+    may never do.
+    """
+    from api.routers import conversation
+
+    async def _never_answers(*args: Any, **kwargs: Any) -> bool:
+        await asyncio.sleep(30)
+        return True
+
+    monkeypatch.setattr("resolution.persistence.persist_shipment_shadow", _never_answers)
+    monkeypatch.setattr(conversation, "_SHADOW_PERSIST_TIMEOUT_SECONDS", 0.05)
+    # Put the real writer back: the autouse fixture swaps in a recorder, and a
+    # recorder cannot hang.
+    monkeypatch.setattr(conversation, "_persist_shadow_evidence", _REAL_PERSIST)
+
+    enable_shadow = wired_app()
+    enable_shadow()
+
+    response = integration_client.post(
+        "/api/ask",
+        json={"question": _QUESTION},
+        headers=integration_headers("acme", "admin"),
+    )
+
+    assert response.status_code == 200
+    assert response.json()["answer"] == _LEGACY_ANSWER

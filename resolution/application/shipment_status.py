@@ -185,14 +185,25 @@ class PolicyDecisionExport:
     authority: str
     content_digest: str
     decision: str
+    # The policy's own time, not the shadow run's. Phase A.1b persists this
+    # evidence as a bitemporal snapshot, and a snapshot stamped with the
+    # instant it happened to be read would claim the policy became true when
+    # the question was asked. The loop already held these values; it simply
+    # was not exporting them.
+    recorded_at: datetime
+    valid_from: datetime
+    valid_to: datetime | None
 
-    def as_dict(self) -> dict[str, str]:
+    def as_dict(self) -> dict[str, str | None]:
         return {
             "implementation_version": self.implementation_version,
             "data_revision": self.data_revision,
             "authority": self.authority,
             "content_digest": self.content_digest,
             "decision": self.decision,
+            "recorded_at": self.recorded_at.isoformat(),
+            "valid_from": self.valid_from.isoformat(),
+            "valid_to": None if self.valid_to is None else self.valid_to.isoformat(),
         }
 
 
@@ -590,6 +601,9 @@ class ShipmentStatusShadowLoop:
             authority=policy.authority,
             content_digest=policy.content_digest,
             decision="allow" if policy.status_disclosure_allowed else "deny",
+            recorded_at=policy.recorded_at,
+            valid_from=policy.valid_from,
+            valid_to=policy.valid_to,
         )
 
     @staticmethod
@@ -670,7 +684,16 @@ def run_legacy_ask_shadow(
     try:
         request = ShipmentShadowRequest(
             tenant_id=tenant_id,
-            case_id=uuid5(NAMESPACE_URL, f"rag-new:shipment-shadow:{tenant_id}:{session_id}"),
+            # One question, one case. The loop runs once per question and
+            # produces exactly one terminal outcome, so a case keyed on the
+            # session alone would reach a terminal status on the first turn and
+            # have nowhere to go on the second — phase A.1b persists these as
+            # real cases with a real transition graph, and that graph forbids
+            # leaving a terminal state.
+            case_id=uuid5(
+                NAMESPACE_URL,
+                f"rag-new:shipment-shadow:{tenant_id}:{session_id}:{correlation_id}",
+            ),
             correlation_id=uuid5(NAMESPACE_URL, f"rag-new:correlation:{correlation_id}"),
             messages=(question,),
             effective_at=instant,

@@ -1,4 +1,5 @@
 """Conversation ask/chat endpoints."""
+
 from __future__ import annotations
 
 import asyncio
@@ -46,6 +47,15 @@ _shadow_observers_key: tuple[Any, tuple[str, ...]] | None = None
 # Evidence tab in phase A.3 with nothing to attach to.
 _shadow_trace_id: contextvars.ContextVar[str] = contextvars.ContextVar(
     "resolution_shadow_trace_id", default=""
+)
+
+# Same reason, for the same reason: the cached sink is the only place a shadow
+# result surfaces -- `run_legacy_ask_shadow` returns the legacy response, not
+# the observation -- so phase A.1b collects results here to persist them after
+# the request path is done with them. `None` means nobody is collecting, which
+# is what every caller that only wants the trace step gets.
+_shadow_collect: contextvars.ContextVar[list[Any] | None] = contextvars.ContextVar(
+    "resolution_shadow_collect", default=None
 )
 
 
@@ -96,6 +106,49 @@ def _record_shadow_evidence(result: Any) -> None:
             "shadow_response_text": result.response_text,
         },
     )
+    collected = _shadow_collect.get()
+    if collected is not None:
+        collected.append(result)
+
+
+# A shadow may cost the answer a little time; it may not cost it forever.
+# Connecting to a database that is not there does not fail fast -- it hangs,
+# and without this bound every /api/ask running a shadow would hang with it.
+# That is exactly the failure a shadow is forbidden to cause, and it is not
+# hypothetical: it is what the phase A.5 end-to-end tests did the first time
+# this write was wired in.
+_SHADOW_PERSIST_TIMEOUT_SECONDS = 2.0
+
+
+async def _persist_shadow_evidence(results: list[Any]) -> None:
+    """Write each shadow result into the resolution tables (phase A.1b).
+
+    The trace makes the evidence visible; this makes it queryable, which is
+    what the Evidence tab in A.3 reads. Every failure is swallowed: the answer
+    has already gone out, and a database that is down is not a reason to turn
+    an answered question into a 500. It is a reason for a warning in the log.
+    """
+    if not results:
+        return
+    try:
+        from db.engine import async_session
+        from resolution.persistence import persist_shipment_shadow
+    except Exception:
+        logger.warning("resolution persistence is unavailable", exc_info=True)
+        return
+    for result in results:
+        try:
+            await asyncio.wait_for(
+                persist_shipment_shadow(async_session, result.evidence_export),
+                timeout=_SHADOW_PERSIST_TIMEOUT_SECONDS,
+            )
+        except (TimeoutError, asyncio.TimeoutError):
+            logger.warning(
+                "shadow evidence persistence timed out after %ss",
+                _SHADOW_PERSIST_TIMEOUT_SECONDS,
+            )
+        except Exception:
+            logger.warning("shadow evidence was not persisted", exc_info=True)
 
 
 def _run_resolution_shadows(
@@ -106,13 +159,19 @@ def _run_resolution_shadows(
     correlation_id: str,
     question: str,
     trace_id: str = "",
+    collect: list[Any] | None = None,
 ) -> Any:
     """Run enabled shadows and return the legacy response object untouched.
 
     Every failure path returns `response` unchanged: a shadow is not allowed
     to turn an answered question into an error.
+
+    `collect`, when given, receives each shadow result so the caller can
+    persist it afterwards. It stays optional so that running a shadow for the
+    trace alone remains exactly what it was.
     """
     token = _shadow_trace_id.set(trace_id or correlation_id)
+    collect_token = _shadow_collect.set(collect)
     try:
         _app = _app_module()
         journeys = tuple(getattr(_app.get_settings(), "resolution_shadow_journeys", ()) or ())
@@ -138,6 +197,7 @@ def _run_resolution_shadows(
         logger.warning("resolution shadow wiring failed", exc_info=True)
     finally:
         _shadow_trace_id.reset(token)
+        _shadow_collect.reset(collect_token)
     return response
 
 
@@ -215,40 +275,40 @@ def _graph_result_sources_and_citations(
             for item in graph_citations_raw
             if isinstance(item, dict)
         ]
-    graph_graded = (
-        graph_result.get("graded_docs")
-        or graph_result.get("context_docs")
-        or []
-    )
+    graph_graded = graph_result.get("graded_docs") or graph_result.get("context_docs") or []
     if graph_graded:
         for idx, item in enumerate(graph_graded, start=1):
             if not isinstance(item, dict):
                 continue
             metadata = item.get("metadata", {}) or {}
             content = item.get("page_content", "") or ""
-            sources.append({
-                "source": metadata.get("source") or metadata.get("file_name") or "",
-                "page_content": content,
-            })
+            sources.append(
+                {
+                    "source": metadata.get("source") or metadata.get("file_name") or "",
+                    "page_content": content,
+                }
+            )
             if not graph_citations_raw:
-                citations.append({
-                    "index": idx,
-                    "doc_id": str(
-                        metadata.get("doc_id")
-                        or metadata.get("id")
-                        or metadata.get("source")
-                        or metadata.get("file_name")
-                        or f"doc_{idx}"
-                    ),
-                    "title": str(
-                        metadata.get("title")
-                        or metadata.get("source")
-                        or metadata.get("file_name")
-                        or metadata.get("doc_id")
-                        or f"doc_{idx}"
-                    ),
-                    "excerpt": str(content)[:300],
-                })
+                citations.append(
+                    {
+                        "index": idx,
+                        "doc_id": str(
+                            metadata.get("doc_id")
+                            or metadata.get("id")
+                            or metadata.get("source")
+                            or metadata.get("file_name")
+                            or f"doc_{idx}"
+                        ),
+                        "title": str(
+                            metadata.get("title")
+                            or metadata.get("source")
+                            or metadata.get("file_name")
+                            or metadata.get("doc_id")
+                            or f"doc_{idx}"
+                        ),
+                        "excerpt": str(content)[:300],
+                    }
+                )
     return sources, citations
 
 
@@ -436,8 +496,7 @@ async def ask(
     finally:
         session_finished_at = time.monotonic()
         logger.info(
-            "req_id=%s /api/ask session_setup boundary=end "
-            "monotonic=%.6f elapsed=%.6fs",
+            "req_id=%s /api/ask session_setup boundary=end monotonic=%.6f elapsed=%.6fs",
             request_id or "-",
             session_finished_at,
             session_finished_at - session_started_at,
@@ -526,7 +585,7 @@ async def ask(
                     session._history.append({"role": "assistant", "content": answer})
                     max_history = getattr(session, "_max_history", 20)
                     if len(session._history) > max_history * 2:
-                        session._history = session._history[-(max_history * 2):]
+                        session._history = session._history[-(max_history * 2) :]
                 elif isinstance(session, dict):
                     session["history"].append({"role": "user", "content": question})
                     session["history"].append({"role": "assistant", "content": answer})
@@ -550,9 +609,7 @@ async def ask(
                     pass
 
         if not cache_hit:
-            acquire_timeout = float(
-                getattr(settings, "pipeline_acquire_timeout_sec", 0.5)
-            )
+            acquire_timeout = float(getattr(settings, "pipeline_acquire_timeout_sec", 0.5))
             ask_kwargs: dict[str, Any] = {
                 "trace_id": request_id,
                 "tenant_id": tenant,
@@ -674,10 +731,7 @@ async def ask(
                         delivery_state = str(delivery_state) or None
 
                     route_norm = str(route or "auto").strip().lower() or "auto"
-                    if (
-                        route_norm in _TERMINAL_ESCALATE_ROUTES
-                        and not ticket_id
-                    ):
+                    if route_norm in _TERMINAL_ESCALATE_ROUTES and not ticket_id:
                         from services.escalation import create_escalation
 
                         try:
@@ -688,12 +742,8 @@ async def ask(
                                 source="human_route",
                                 ai_draft=answer or None,
                                 reason=f"route={route_norm}",
-                                trace_id=str(
-                                    result.get("trace_id") or request_id or ""
-                                ),
-                                project_root=Path(
-                                    getattr(_app, "PROJECT_ROOT", Path("."))
-                                ),
+                                trace_id=str(result.get("trace_id") or request_id or ""),
+                                project_root=Path(getattr(_app, "PROJECT_ROOT", Path("."))),
                             )
                             ticket_id = esc.ticket_id
                             delivery_state = esc.delivery_state
@@ -837,6 +887,7 @@ async def ask(
     prometheus_metrics.ACTIVE_SESSIONS.set(len(_app._sessions))
     if response.citations:
         spawn_tracked(_app._record_citation_stats(tenant, list(response.citations)))
+    shadow_results: list[Any] = []
     response = _run_resolution_shadows(
         response=response,
         tenant_id=tenant,
@@ -844,7 +895,9 @@ async def ask(
         correlation_id=request_id or "",
         question=question,
         trace_id=getattr(response, "trace_id", "") or request_id or "",
+        collect=shadow_results,
     )
+    await _persist_shadow_evidence(shadow_results)
     return JSONResponse(
         content=response.model_dump(),
         media_type="application/json; charset=utf-8",
@@ -879,10 +932,16 @@ async def ask_stream(
         question = (body.question or "").strip()
 
         if not question:
-            yield "data: " + _json.dumps({
-                "type": "error",
-                "detail": "question is required",
-            }) + "\n\n"
+            yield (
+                "data: "
+                + _json.dumps(
+                    {
+                        "type": "error",
+                        "detail": "question is required",
+                    }
+                )
+                + "\n\n"
+            )
             return
 
         await _app.log_audit(
@@ -924,9 +983,7 @@ async def ask_stream(
         # it must respect the same bounded-concurrency pool instead of
         # bypassing it (docs/audits/fable_com.md F-3).
         semaphore = _app._get_pipeline_semaphore()
-        acquire_timeout = float(
-            getattr(settings_pre, "pipeline_acquire_timeout_sec", 0.5)
-        )
+        acquire_timeout = float(getattr(settings_pre, "pipeline_acquire_timeout_sec", 0.5))
         try:
             await asyncio.wait_for(semaphore.acquire(), timeout=acquire_timeout)
         except asyncio.TimeoutError:
@@ -934,10 +991,16 @@ async def ask_stream(
                 prometheus_metrics.record_pipeline_rejection("busy")
             except Exception:
                 pass
-            yield "data: " + _json.dumps({
-                "type": "error",
-                "detail": "Server is busy processing other requests - retry in a moment",
-            }) + "\n\n"
+            yield (
+                "data: "
+                + _json.dumps(
+                    {
+                        "type": "error",
+                        "detail": "Server is busy processing other requests - retry in a moment",
+                    }
+                )
+                + "\n\n"
+            )
             return
         try:
             prometheus_metrics.INFLIGHT_PIPELINES.inc()
@@ -961,12 +1024,8 @@ async def ask_stream(
         )
         from utils.request_executor import get_request_executor
 
-        stream_deadline_obj = bind_request_deadline(
-            request_timeout, source="ask_stream"
-        )
-        stream_budget_obj = bind_llm_request_budget_from_settings(
-            settings_pre, source="ask_stream"
-        )
+        stream_deadline_obj = bind_request_deadline(request_timeout, source="ask_stream")
+        stream_budget_obj = bind_llm_request_budget_from_settings(settings_pre, source="ask_stream")
 
         def _session_ask_with_shared_limits() -> Any:
             if stream_deadline_obj is not None:
@@ -983,16 +1042,10 @@ async def ask_stream(
             # Plan §4.1–4.2: STREAMING_RAG_PARITY=true → single graph generation
             # (session.ask only). SSE tokens are UX chunks of the graph answer —
             # not a second LLM stream. Off by default keeps legacy direct stream.
-            graph_parity_enabled = bool(
-                getattr(settings_pre, "streaming_rag_parity", False)
-            )
-            graph_parity_timeout = float(
-                getattr(settings_pre, "request_timeout_sec", 60.0)
-            )
+            graph_parity_enabled = bool(getattr(settings_pre, "streaming_rag_parity", False))
+            graph_parity_timeout = float(getattr(settings_pre, "request_timeout_sec", 60.0))
             history_pre_len = (
-                len(getattr(session, "_history", []))
-                if hasattr(session, "_history")
-                else None
+                len(getattr(session, "_history", [])) if hasattr(session, "_history") else None
             )
             settings = _app.get_settings()
 
@@ -1035,16 +1088,10 @@ async def ask_stream(
                                 trace_id=request_id,
                                 confirm=body.confirm,
                             ):
-                                loop.call_soon_threadsafe(
-                                    event_queue.put_nowait, ("event", ev)
-                                )
-                            loop.call_soon_threadsafe(
-                                event_queue.put_nowait, ("done", None)
-                            )
+                                loop.call_soon_threadsafe(event_queue.put_nowait, ("event", ev))
+                            loop.call_soon_threadsafe(event_queue.put_nowait, ("done", None))
                         except Exception as worker_exc:  # noqa: BLE001
-                            loop.call_soon_threadsafe(
-                                event_queue.put_nowait, ("error", worker_exc)
-                            )
+                            loop.call_soon_threadsafe(event_queue.put_nowait, ("error", worker_exc))
 
                     graph_task = pipeline_runner.submit_stream_graph(
                         loop=loop,
@@ -1070,29 +1117,37 @@ async def ask_stream(
                                 )
                                 capacity_held_for_orphan = True
                                 try:
-                                    prometheus_metrics.record_request_timeout(
-                                        "/api/ask/stream"
-                                    )
+                                    prometheus_metrics.record_request_timeout("/api/ask/stream")
                                 except Exception:
                                     pass
-                                yield "data: " + _json.dumps({
-                                    "type": "error",
-                                    "detail": "Request deadline exceeded waiting for graph",
-                                    "route": "timeout",
-                                    "generation_source": "graph_only",
-                                }) + "\n\n"
+                                yield (
+                                    "data: "
+                                    + _json.dumps(
+                                        {
+                                            "type": "error",
+                                            "detail": "Request deadline exceeded waiting for graph",
+                                            "route": "timeout",
+                                            "generation_source": "graph_only",
+                                        }
+                                    )
+                                    + "\n\n"
+                                )
                                 return
 
                             if kind == "error":
-                                logger.warning(
-                                    "Streaming graph event path failed: %s", payload
+                                logger.warning("Streaming graph event path failed: %s", payload)
+                                yield (
+                                    "data: "
+                                    + _json.dumps(
+                                        {
+                                            "type": "error",
+                                            "detail": "Graph pipeline failed",
+                                            "route": "error",
+                                            "generation_source": "graph_only",
+                                        }
+                                    )
+                                    + "\n\n"
                                 )
-                                yield "data: " + _json.dumps({
-                                    "type": "error",
-                                    "detail": "Graph pipeline failed",
-                                    "route": "error",
-                                    "generation_source": "graph_only",
-                                }) + "\n\n"
                                 return
                             if kind == "done":
                                 break
@@ -1101,12 +1156,18 @@ async def ask_stream(
                             if payload.get("type") == "status":
                                 node_name = str(payload.get("node") or "unknown")
                                 graph_nodes.append(node_name)
-                                yield "data: " + _json.dumps({
-                                    "type": "status",
-                                    "node": node_name,
-                                    "source": "graph",
-                                    "phase": str(payload.get("phase") or "end"),
-                                }) + "\n\n"
+                                yield (
+                                    "data: "
+                                    + _json.dumps(
+                                        {
+                                            "type": "status",
+                                            "node": node_name,
+                                            "source": "graph",
+                                            "phase": str(payload.get("phase") or "end"),
+                                        }
+                                    )
+                                    + "\n\n"
+                                )
                             elif payload.get("type") == "token":
                                 # Live provider tokens from generate (§4.8).
                                 token_text = str(payload.get("token") or "")
@@ -1117,19 +1178,31 @@ async def ask_stream(
                                 )
                                 if not token_start_emitted:
                                     token_start_emitted = True
-                                    yield "data: " + _json.dumps({
-                                        "type": "token_start",
-                                        "source": "graph",
-                                        "token_source": token_source,
-                                    }) + "\n\n"
+                                    yield (
+                                        "data: "
+                                        + _json.dumps(
+                                            {
+                                                "type": "token_start",
+                                                "source": "graph",
+                                                "token_source": token_source,
+                                            }
+                                        )
+                                        + "\n\n"
+                                    )
                                 if token_source == "provider_generate":
                                     provider_tokens_seen = True
-                                yield "data: " + _json.dumps({
-                                    "type": "token",
-                                    "token": token_text,
-                                    "source": "graph",
-                                    "token_source": token_source,
-                                }) + "\n\n"
+                                yield (
+                                    "data: "
+                                    + _json.dumps(
+                                        {
+                                            "type": "token",
+                                            "token": token_text,
+                                            "source": "graph",
+                                            "token_source": token_source,
+                                        }
+                                    )
+                                    + "\n\n"
+                                )
                             elif payload.get("type") == "pipeline_result":
                                 state = payload.get("state")
                                 if isinstance(state, dict):
@@ -1141,15 +1214,19 @@ async def ask_stream(
                                         if name and name not in graph_nodes:
                                             graph_nodes.append(name)
                     except Exception as graph_exc:
-                        logger.warning(
-                            "Streaming graph event path failed: %s", graph_exc
+                        logger.warning("Streaming graph event path failed: %s", graph_exc)
+                        yield (
+                            "data: "
+                            + _json.dumps(
+                                {
+                                    "type": "error",
+                                    "detail": "Graph pipeline failed",
+                                    "route": "error",
+                                    "generation_source": "graph_only",
+                                }
+                            )
+                            + "\n\n"
                         )
-                        yield "data: " + _json.dumps({
-                            "type": "error",
-                            "detail": "Graph pipeline failed",
-                            "route": "error",
-                            "generation_source": "graph_only",
-                        }) + "\n\n"
                         return
                 else:
                     # Legacy §4.2 ask-only path (test doubles without events).
@@ -1177,30 +1254,48 @@ async def ask_stream(
                             prometheus_metrics.record_request_timeout("/api/ask/stream")
                         except Exception:
                             pass
-                        yield "data: " + _json.dumps({
-                            "type": "error",
-                            "detail": "Request deadline exceeded waiting for graph",
-                            "route": "timeout",
-                            "generation_source": "graph_only",
-                        }) + "\n\n"
+                        yield (
+                            "data: "
+                            + _json.dumps(
+                                {
+                                    "type": "error",
+                                    "detail": "Request deadline exceeded waiting for graph",
+                                    "route": "timeout",
+                                    "generation_source": "graph_only",
+                                }
+                            )
+                            + "\n\n"
+                        )
                         return
                     except Exception as graph_exc:
                         logger.warning("Streaming graph path failed: %s", graph_exc)
-                        yield "data: " + _json.dumps({
-                            "type": "error",
-                            "detail": "Graph pipeline failed",
-                            "route": "error",
-                            "generation_source": "graph_only",
-                        }) + "\n\n"
+                        yield (
+                            "data: "
+                            + _json.dumps(
+                                {
+                                    "type": "error",
+                                    "detail": "Graph pipeline failed",
+                                    "route": "error",
+                                    "generation_source": "graph_only",
+                                }
+                            )
+                            + "\n\n"
+                        )
                         return
 
                 if not isinstance(graph_result, dict):
-                    yield "data: " + _json.dumps({
-                        "type": "error",
-                        "detail": "Graph pipeline returned no result",
-                        "route": "error",
-                        "generation_source": "graph_only",
-                    }) + "\n\n"
+                    yield (
+                        "data: "
+                        + _json.dumps(
+                            {
+                                "type": "error",
+                                "detail": "Graph pipeline returned no result",
+                                "route": "error",
+                                "generation_source": "graph_only",
+                            }
+                        )
+                        + "\n\n"
+                    )
                     return
 
                 graph_appended_history = False
@@ -1219,18 +1314,30 @@ async def ask_stream(
                 else:
                     token_source_final = "graph_answer_chunks"
                     if not token_start_emitted:
-                        yield "data: " + _json.dumps({
-                            "type": "token_start",
-                            "source": "graph",
-                            "token_source": token_source_final,
-                        }) + "\n\n"
+                        yield (
+                            "data: "
+                            + _json.dumps(
+                                {
+                                    "type": "token_start",
+                                    "source": "graph",
+                                    "token_source": token_source_final,
+                                }
+                            )
+                            + "\n\n"
+                        )
                     for chunk in _chunk_text_for_sse(terminal_answer):
-                        yield "data: " + _json.dumps({
-                            "type": "token",
-                            "token": chunk,
-                            "source": "graph",
-                            "token_source": token_source_final,
-                        }) + "\n\n"
+                        yield (
+                            "data: "
+                            + _json.dumps(
+                                {
+                                    "type": "token",
+                                    "token": chunk,
+                                    "source": "graph",
+                                    "token_source": token_source_final,
+                                }
+                            )
+                            + "\n\n"
+                        )
 
                 if not graph_appended_history:
                     _append_stream_history(
@@ -1257,23 +1364,29 @@ async def ask_stream(
                     prometheus_metrics.record_quality_score_source(quality_source)
                 except Exception:
                     pass
-                yield "data: " + _json.dumps({
-                    "type": "result",
-                    "answer": terminal_answer,
-                    "answer_source": "graph",
-                    "generation_source": "graph_only",
-                    "events_source": "graph" if use_events else "ask",
-                    "token_source": token_source_final,
-                    "graph_nodes": graph_nodes,
-                    "quality_score": quality,
-                    "quality_source": quality_source,
-                    "route": route,
-                    "session_id": session_id,
-                    "sources": sources,
-                    "citations": citations,
-                    "trace_id": trace_id_value,
-                    "suggested_questions": suggested_questions,
-                }) + "\n\n"
+                yield (
+                    "data: "
+                    + _json.dumps(
+                        {
+                            "type": "result",
+                            "answer": terminal_answer,
+                            "answer_source": "graph",
+                            "generation_source": "graph_only",
+                            "events_source": "graph" if use_events else "ask",
+                            "token_source": token_source_final,
+                            "graph_nodes": graph_nodes,
+                            "quality_score": quality,
+                            "quality_source": quality_source,
+                            "route": route,
+                            "session_id": session_id,
+                            "sources": sources,
+                            "citations": citations,
+                            "trace_id": trace_id_value,
+                            "suggested_questions": suggested_questions,
+                        }
+                    )
+                    + "\n\n"
+                )
                 return
 
             # --- Legacy direct stream (parity off): single stream LLM path ---
@@ -1290,11 +1403,17 @@ async def ask_stream(
                         prometheus_metrics.record_request_timeout("/api/ask/stream")
                     except Exception:
                         pass
-                    yield "data: " + _json.dumps({
-                        "type": "error",
-                        "detail": "Request deadline exceeded before retrieval",
-                        "route": "timeout",
-                    }) + "\n\n"
+                    yield (
+                        "data: "
+                        + _json.dumps(
+                            {
+                                "type": "error",
+                                "detail": "Request deadline exceeded before retrieval",
+                                "route": "timeout",
+                            }
+                        )
+                        + "\n\n"
+                    )
                     return
                 docs = await asyncio.get_running_loop().run_in_executor(
                     None,
@@ -1315,10 +1434,12 @@ async def ask_stream(
                 plain_docs = []
                 for doc in docs[:5]:
                     if hasattr(doc, "page_content"):
-                        plain_docs.append({
-                            "page_content": getattr(doc, "page_content", ""),
-                            "metadata": getattr(doc, "metadata", {}) or {},
-                        })
+                        plain_docs.append(
+                            {
+                                "page_content": getattr(doc, "page_content", ""),
+                                "metadata": getattr(doc, "metadata", {}) or {},
+                            }
+                        )
                     elif isinstance(doc, dict):
                         plain_docs.append(doc)
 
@@ -1337,10 +1458,13 @@ async def ask_stream(
             settings = _app.get_settings()
             full_answer = ""
             streaming_llm = getattr(session, "_llm", None)
-            if not (
-                streaming_llm is not None
-                and callable(getattr(streaming_llm, "generate_stream", None))
-            ) and _app._build_provider_runtime is not None:
+            if (
+                not (
+                    streaming_llm is not None
+                    and callable(getattr(streaming_llm, "generate_stream", None))
+                )
+                and _app._build_provider_runtime is not None
+            ):
                 try:
                     runtime = _app._build_provider_runtime(settings)
                 except Exception as runtime_exc:
@@ -1359,15 +1483,23 @@ async def ask_stream(
             stream_truncated = False
             yield "data: " + _json.dumps({"type": "token_start"}) + "\n\n"
             try:
-                if streaming_llm is not None and callable(getattr(streaming_llm, "generate_stream", None)):
+                if streaming_llm is not None and callable(
+                    getattr(streaming_llm, "generate_stream", None)
+                ):
                     async for token in streaming_llm.generate_stream(
                         [{"role": "user", "content": prompt}],
                     ):
                         full_answer += token
-                        yield "data: " + _json.dumps({
-                            "type": "token",
-                            "token": token,
-                        }) + "\n\n"
+                        yield (
+                            "data: "
+                            + _json.dumps(
+                                {
+                                    "type": "token",
+                                    "token": token,
+                                }
+                            )
+                            + "\n\n"
+                        )
                         if time.monotonic() > stream_deadline:
                             stream_truncated = True
                             break
@@ -1378,10 +1510,16 @@ async def ask_stream(
                         settings.ollama_base_url,
                     ):
                         full_answer += token
-                        yield "data: " + _json.dumps({
-                            "type": "token",
-                            "token": token,
-                        }) + "\n\n"
+                        yield (
+                            "data: "
+                            + _json.dumps(
+                                {
+                                    "type": "token",
+                                    "token": token,
+                                }
+                            )
+                            + "\n\n"
+                        )
                         if time.monotonic() > stream_deadline:
                             stream_truncated = True
                             break
@@ -1407,36 +1545,42 @@ async def ask_stream(
             for idx, doc in enumerate(docs, start=1):
                 if hasattr(doc, "page_content"):
                     metadata = getattr(doc, "metadata", {}) or {}
-                    sources.append({
-                        "source": metadata.get("source") or metadata.get("file_name") or "",
-                        "page_content": getattr(doc, "page_content", ""),
-                    })
+                    sources.append(
+                        {
+                            "source": metadata.get("source") or metadata.get("file_name") or "",
+                            "page_content": getattr(doc, "page_content", ""),
+                        }
+                    )
                 elif isinstance(doc, dict):
                     metadata = doc.get("metadata", {}) or {}
-                    sources.append({
-                        "source": metadata.get("source") or metadata.get("file_name") or "",
-                        "page_content": doc.get("page_content", ""),
-                    })
+                    sources.append(
+                        {
+                            "source": metadata.get("source") or metadata.get("file_name") or "",
+                            "page_content": doc.get("page_content", ""),
+                        }
+                    )
                 else:
                     metadata = {}
-                citations.append({
-                    "index": idx,
-                    "doc_id": str(
-                        metadata.get("doc_id")
-                        or metadata.get("id")
-                        or metadata.get("source")
-                        or metadata.get("file_name")
-                        or f"doc_{idx}"
-                    ),
-                    "title": str(
-                        metadata.get("title")
-                        or metadata.get("source")
-                        or metadata.get("file_name")
-                        or metadata.get("doc_id")
-                        or f"doc_{idx}"
-                    ),
-                    "excerpt": str(sources[-1]["page_content"] if sources else "")[:300],
-                })
+                citations.append(
+                    {
+                        "index": idx,
+                        "doc_id": str(
+                            metadata.get("doc_id")
+                            or metadata.get("id")
+                            or metadata.get("source")
+                            or metadata.get("file_name")
+                            or f"doc_{idx}"
+                        ),
+                        "title": str(
+                            metadata.get("title")
+                            or metadata.get("source")
+                            or metadata.get("file_name")
+                            or metadata.get("doc_id")
+                            or f"doc_{idx}"
+                        ),
+                        "excerpt": str(sources[-1]["page_content"] if sources else "")[:300],
+                    }
+                )
 
             # Cheap RAG parity (docs/audits/fable_com.md F-3): one self-eval call over the
             # docs the stream actually used replaces the length heuristic, so
@@ -1483,7 +1627,11 @@ async def ask_stream(
                         eval_exc,
                     )
             if quality_source == "llm":
-                route = "auto" if quality >= int(getattr(settings, "quality_threshold", 80)) else "human"
+                route = (
+                    "auto"
+                    if quality >= int(getattr(settings, "quality_threshold", 80))
+                    else "human"
+                )
             else:
                 route = "auto" if quality >= 70 else "human"
             suggested_questions = []
@@ -1494,6 +1642,7 @@ async def ask_stream(
                     question_llm = getattr(session, "_llm", None)
                     if question_llm is None:
                         from agent.graph import LocalOllamaLLM  # noqa: PLC0415
+
                         question_llm = LocalOllamaLLM(model_name=settings.ollama_model_name)
 
                     context_snippet = "\n\n".join(
@@ -1592,19 +1741,19 @@ async def ask_stream(
                         if isinstance(item, dict)
                     ]
                 graph_graded = (
-                    graph_result.get("graded_docs")
-                    or graph_result.get("context_docs")
-                    or []
+                    graph_result.get("graded_docs") or graph_result.get("context_docs") or []
                 )
                 if graph_graded:
                     sources = []
                     for item in graph_graded:
                         metadata = item.get("metadata", {}) if isinstance(item, dict) else {}
                         content = item.get("page_content", "") if isinstance(item, dict) else ""
-                        sources.append({
-                            "source": metadata.get("source") or metadata.get("file_name") or "",
-                            "page_content": content,
-                        })
+                        sources.append(
+                            {
+                                "source": metadata.get("source") or metadata.get("file_name") or "",
+                                "page_content": content,
+                            }
+                        )
 
             await _persist_ask_messages(
                 session_id=session_id,
@@ -1617,22 +1766,30 @@ async def ask_stream(
                 prometheus_metrics.record_quality_score_source(quality_source)
             except Exception:
                 pass
-            yield "data: " + _json.dumps({
-                "type": "result",
-                "answer": terminal_answer,
-                "answer_source": answer_source,
-                "generation_source": "stream",
-                "quality_score": quality,
-                "quality_source": quality_source,
-                "route": route,
-                "session_id": session_id,
-                "sources": sources,
-                "citations": citations,
-                "trace_id": trace_id_value,
-                "suggested_questions": suggested_questions,
-            }) + "\n\n"
+            yield (
+                "data: "
+                + _json.dumps(
+                    {
+                        "type": "result",
+                        "answer": terminal_answer,
+                        "answer_source": answer_source,
+                        "generation_source": "stream",
+                        "quality_score": quality,
+                        "quality_source": quality_source,
+                        "route": route,
+                        "session_id": session_id,
+                        "sources": sources,
+                        "citations": citations,
+                        "trace_id": trace_id_value,
+                        "suggested_questions": suggested_questions,
+                    }
+                )
+                + "\n\n"
+            )
         except Exception as exc:
-            logger.warning("SSE streaming path failed, fallback to sync pipeline: %s", exc, exc_info=True)
+            logger.warning(
+                "SSE streaming path failed, fallback to sync pipeline: %s", exc, exc_info=True
+            )
             try:
                 # If we already kicked off the parity graph in parallel, reuse
                 # its result instead of running session.ask twice.
@@ -1662,28 +1819,32 @@ async def ask_stream(
                     for idx, item in enumerate(raw_sources, start=1):
                         metadata = item.get("metadata", {}) if isinstance(item, dict) else {}
                         content = item.get("page_content", "") if isinstance(item, dict) else ""
-                        sources.append({
-                            "source": metadata.get("source") or metadata.get("file_name") or "",
-                            "page_content": content,
-                        })
-                        citations.append({
-                            "index": idx,
-                            "doc_id": str(
-                                metadata.get("doc_id")
-                                or metadata.get("id")
-                                or metadata.get("source")
-                                or metadata.get("file_name")
-                                or f"doc_{idx}"
-                            ),
-                            "title": str(
-                                metadata.get("title")
-                                or metadata.get("source")
-                                or metadata.get("file_name")
-                                or metadata.get("doc_id")
-                                or f"doc_{idx}"
-                            ),
-                            "excerpt": str(content or "")[:300],
-                        })
+                        sources.append(
+                            {
+                                "source": metadata.get("source") or metadata.get("file_name") or "",
+                                "page_content": content,
+                            }
+                        )
+                        citations.append(
+                            {
+                                "index": idx,
+                                "doc_id": str(
+                                    metadata.get("doc_id")
+                                    or metadata.get("id")
+                                    or metadata.get("source")
+                                    or metadata.get("file_name")
+                                    or f"doc_{idx}"
+                                ),
+                                "title": str(
+                                    metadata.get("title")
+                                    or metadata.get("source")
+                                    or metadata.get("file_name")
+                                    or metadata.get("doc_id")
+                                    or f"doc_{idx}"
+                                ),
+                                "excerpt": str(content or "")[:300],
+                            }
+                        )
                     if result.get("citations"):
                         citations = [
                             {
@@ -1701,7 +1862,14 @@ async def ask_stream(
                     answer = "Сессия не инициализирована."
                     session["history"].append({"role": "user", "content": question})
                     session["history"].append({"role": "assistant", "content": answer})
-                    quality, route, sources, citations, trace_id, suggested_questions = 0, "human", [], [], "", []
+                    quality, route, sources, citations, trace_id, suggested_questions = (
+                        0,
+                        "human",
+                        [],
+                        [],
+                        "",
+                        [],
+                    )
                     quality_source = "heuristic"
 
                 await _persist_ask_messages(
@@ -1717,31 +1885,43 @@ async def ask_stream(
                         prometheus_metrics.record_quality_score_source(quality_source)
                 except Exception:
                     pass
-                yield "data: " + _json.dumps({
-                    "type": "result",
-                    "answer": answer,
-                    "quality_score": quality,
-                    "quality_source": quality_source,
-                    "route": route,
-                    "session_id": session_id,
-                    "sources": sources,
-                    "citations": citations,
-                    "trace_id": trace_id,
-                    "suggested_questions": suggested_questions,
-                }) + "\n\n"
+                yield (
+                    "data: "
+                    + _json.dumps(
+                        {
+                            "type": "result",
+                            "answer": answer,
+                            "quality_score": quality,
+                            "quality_source": quality_source,
+                            "route": route,
+                            "session_id": session_id,
+                            "sources": sources,
+                            "citations": citations,
+                            "trace_id": trace_id,
+                            "suggested_questions": suggested_questions,
+                        }
+                    )
+                    + "\n\n"
+                )
             except Exception as sync_exc:
                 logger.error("SSE fallback error: %s", sync_exc, exc_info=True)
-                yield "data: " + _json.dumps({
-                    "type": "result",
-                    "answer": "Ошибка обработки запроса.",
-                    "quality_score": 0,
-                    "route": "human",
-                    "session_id": session_id,
-                    "sources": [],
-                    "citations": [],
-                    "trace_id": "",
-                    "suggested_questions": [],
-                }) + "\n\n"
+                yield (
+                    "data: "
+                    + _json.dumps(
+                        {
+                            "type": "result",
+                            "answer": "Ошибка обработки запроса.",
+                            "quality_score": 0,
+                            "route": "human",
+                            "session_id": session_id,
+                            "sources": [],
+                            "citations": [],
+                            "trace_id": "",
+                            "suggested_questions": [],
+                        }
+                    )
+                    + "\n\n"
+                )
         finally:
             # Clear stream-side ContextVars. Do not clear a shared budget object
             # mid-orphan: worker may still charge against it until done.
