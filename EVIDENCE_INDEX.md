@@ -61,22 +61,48 @@ than in a summary elsewhere, because they are the argument for phase B.
 | Slice | Evidence class | Evidence |
 |---|---|---|
 | A.1 shipment-status shadow behind `/api/ask` | `fixture` | `tests/test_resolution_shadow_wiring.py` (15 tests) |
+| A.5 the same shadow, proved through the endpoint | `fixture` | `tests/integration/test_shipment_status_e2e.py` (4 tests) |
+| A.4 legacy body byte-identical, shadow off vs on | `fixture` | same file, `test_the_response_body_is_byte_identical_with_the_shadow_off_and_on` |
 
-Not yet a slice under rule (a): the behaviour change is real — a
-`resolution_shadow` step now appears in the trace — but it is proven by unit
-tests, not by an E2E test against the running endpoint. A.5 is what closes
-that, and this row moves to `measured` only when a published number comes out
-of it.
+**A.1 + A.5 together are a slice under rule (a)** (2026-08-25, `4a5bdf1`).
+A.1 alone was not: the behaviour change was real — a `resolution_shadow` step
+appears in the trace — but it was held by unit tests calling
+`_run_resolution_shadows` directly. A.5 posts a shipment-status question to
+`/api/ask` over HTTP and reads the evidence bundle back **out of the trace
+store**, which is what the phase A.3 Evidence tab will have to do: the bundle
+has to survive `_state_to_dict`, `json.dumps`, PII redaction and SQLite, not
+just reach the sink.
+
+A.4 is closed at the HTTP level in the same file. A.1 held "the answer does not
+change" by object identity inside the process; the byte comparison of two real
+response bodies, one with the shadow off and one on, is the claim that was
+actually being made. That test also asserts the shadow ran, since otherwise it
+would pass equally well with the shadow silently disabled.
+
+Neither row is `measured`: no number is published from this journey yet.
 
 `fixture` is a fourth evidence class, weaker than `synthetic`: the journey
 runs against a fixture transport management system
 (`resolution/adapters/fixtures/shipment-status-v0.1.json`), so it demonstrates
 the wiring and proves nothing about air cargo. Phase B replaces it.
 
-## Phase 0 corrections (2026-08-24)
+## Corrections
 
 Not slices — these fix claims that were false, so they do not go in the table
 above.
+
+### 2026-08-25
+
+| Fix | Commit | Test |
+|---|---|---|
+| Governed-action ledger counts scoped to their tenant (CI-RED-1: the ledger was right, the assertion read another test's rows) | `0fdb29c` | `tests/integration/test_governed_actions_postgres.py` |
+
+The claim that was false was in [ADR 0008](docs/adr/0008-inherited-ci-red-disposition.md)
+and `BACKLOG.md`, not in the code: both stated that the governed-action
+reconcile path recorded a second run row for one logical action. It never did.
+The ADR carries a postscript saying so.
+
+### Phase 0 (2026-08-24)
 
 | Fix | Commit | Test |
 |---|---|---|

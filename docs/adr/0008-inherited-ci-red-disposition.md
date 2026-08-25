@@ -171,3 +171,36 @@ again, one directory to the left.
 - The repository carries three accepted security exceptions with an expiry date
   on them. Visible in `CURRENT_STATE.md`, not only in a workflow file.
 - Phase D keeps its independence: it will be decided on numbers, not on CVEs.
+
+## Postscript, 2026-08-25 — the CI-RED-1 diagnosis above was wrong
+
+The decision stands; the diagnosis it rests on does not, and it is left in
+place above rather than edited so that the mistake stays legible.
+
+This ADR asserted, twice, that "a second row therefore means the reconcile path
+arrives with a different `operation_key_digest`", and called the failure a
+ledger defect: "two runs recorded for one logical action". Neither is true.
+Reconcile cannot insert a run at all — `create_or_replay` has exactly one
+caller, `ActionGateway.request`, and the failing test calls it once. The ledger
+held one run for one logical action the whole time.
+
+The second row belonged to the test that runs before it. The count named no
+tenant and leaned on row-level security to scope it, but the database is
+module-scoped and the session connects as the owner — the cluster superuser in
+CI, which RLS does not apply to even under FORCE ROW LEVEL SECURITY. The fix,
+`0fdb29c`, names the tenant. Detail in `BACKLOG.md`.
+
+Two things are worth keeping from this:
+
+- **The localisation was right and the inference from it was not.** "Rows are
+  inserted at exactly one site" was correct and checkable; "therefore reconcile
+  computes a different digest" skipped the step of asking whether reconcile
+  reaches that site at all. It does not. One `grep` for callers would have
+  settled it before the ADR was written.
+- **The safety property was never in doubt.** `execute_calls == 1` passed
+  throughout, and so did the ledger. A reader of the ADR between 2026-08-24 and
+  today would have believed this repository had an effectively-once defect in
+  its governed-action audit trail. It did not.
+
+The timebox the decision set (one working session) was not needed: root cause,
+fix and green CI took well under it.

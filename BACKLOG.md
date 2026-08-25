@@ -10,37 +10,55 @@ next local-only candidate.
 
 ## Known-red CI, inherited (not caused by the phase-0 work)
 
-Both are decided — [ADR 0008](docs/adr/0008-inherited-ci-red-disposition.md) —
-and their fixes are steps 1 and 2 of the next session, at the top of
-[`CURRENT_STATE.md`](CURRENT_STATE.md).
+Both are decided — [ADR 0008](docs/adr/0008-inherited-ci-red-disposition.md).
+CI-RED-1 is **closed** (2026-08-25, `0fdb29c`); CI-RED-2 is **open pending
+approval** of the `.pre-commit-config.yaml` half.
 
 Both reproduce on `baseline/freeze-2026-08-23`, a branch at the freeze tag
 that predates every phase-0 commit (run 32775953483). They were invisible for
 months because this repository had no remote and CI had never run.
 
-### CI-RED-1 — governed action reconcile writes a second run row
+### CI-RED-1 — the ledger was right and the assertion was wrong — CLOSED
 
 `tests/integration/test_governed_actions_postgres.py::test_timeout_reconciliation_never_dispatches_a_second_create`
-fails `assert 2 == 1` on the `GovernedActionRun` count. The downstream
-connector is *not* called twice (`execute_calls == 1` passes), so this is a
-ledger defect rather than a duplicate side effect — but "never dispatches a
-second create" is the safety property this slice exists to demonstrate, and
-the audit trail now shows two runs for one logical action.
+failed `assert 2 == 1` on the `GovernedActionRun` count. ADR 0008 read that as
+a ledger defect: "a second row therefore means the reconcile path arrives with
+a different `operation_key_digest` than the request path computed". **That
+diagnosis was wrong.** The ledger records exactly one run per logical action;
+the count was reading rows that belonged to a different test.
 
-Localised: run rows are inserted at exactly one site,
-`actions/postgres.py:407`, guarded by a lookup on
-`(tenant_id, operation_key_digest)`; `complete_event` only selects. A second
-row therefore means the reconcile path arrives with a different
-`operation_key_digest` than the request path computed.
+`GovernedActionRun` rows are inserted at exactly one site,
+`actions/postgres.py:407`, reached from exactly one caller,
+`actions/application.py:369` inside `ActionGateway.request`. The failing test
+calls `request` once, so it writes one run. Reconcile goes through `_lease`,
+`complete_event` and `record_postcondition`, none of which insert a run — so
+"reconcile writes a second row" was not a reachable state.
 
-**Decided 2026-08-24, [ADR 0008](docs/adr/0008-inherited-ci-red-disposition.md):
-fix it before any further phase-A work, timeboxed to one working session.** A.5
-lands a new test in this same job, and a new integration test cannot be
-verified inside a job that is already red. If the timebox expires without a
-root cause: `@pytest.mark.xfail(strict=True)` citing the ADR — never delete,
-never plain-`skip`, never weaken the assertion.
+What actually happened: the count named no tenant and relied on row-level
+security to scope it. `action_database_url` is module-scoped, so all four
+tests in the file share one database, and `action_session_factory` connects as
+the database owner — which in CI is the cluster superuser the Postgres service
+image creates from `POSTGRES_USER`. A superuser is exempt from RLS even under
+FORCE ROW LEVEL SECURITY, so the count returned every tenant in the file: one
+run from the idempotency test that runs before it, plus its own. That test
+passed only because it happens to write first.
 
-This is a repair, not a slice, and it belongs in the corrections table of
+Fixed 2026-08-25 in `0fdb29c` by naming the tenant in the counts — the claim
+each test is actually making — and by additionally asserting that the one row
+is *the* run the test created, which no longer depends on execution order.
+Verified green on both Python legs, run 32831583779. Tenant isolation itself
+stays asserted where it always was, through the NOBYPASSRLS role in
+`test_forced_rls_and_transition_guards_fail_closed`.
+
+Carried forward as a smaller open item: **the integration suite runs as a
+Postgres superuser**, so RLS is inert for every assertion that does not go
+through a runtime role. The other three Postgres modules already route their
+isolation assertions through such a role, so nothing is currently unguarded —
+but a future test that forgets to will pass for the wrong reason, exactly as
+this one did. A non-superuser application role for the whole integration job
+would remove the trap; not scheduled.
+
+This was a repair, not a slice, and it is in the corrections table of
 `EVIDENCE_INDEX.md`. The slice rule exists to stop agents choosing
 locally-provable kernel work over wiring and real data; it was never meant to
 forbid fixing a failing test.
