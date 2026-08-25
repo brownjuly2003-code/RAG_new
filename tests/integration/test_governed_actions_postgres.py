@@ -363,6 +363,29 @@ async def _seed_case(
         await session.commit()
 
 
+async def _ledger_count(
+    session: AsyncSession,
+    model: type,
+    tenant_id: UUID,
+) -> int:
+    """Count rows of ``model`` owned by ``tenant_id``.
+
+    The tenant has to be named explicitly. ``action_session_factory`` connects
+    as the database owner, and in CI that owner is the cluster superuser the
+    Postgres service image creates from ``POSTGRES_USER`` — a superuser is
+    exempt from row-level security even where the table carries FORCE ROW LEVEL
+    SECURITY, so an unqualified ``count()`` here reports every tenant in the
+    module-scoped database rather than the one under test.
+
+    That RLS actually confines a normal caller is asserted separately, through
+    the NOBYPASSRLS role in
+    ``test_forced_rls_and_transition_guards_fail_closed``.
+    """
+    return await session.scalar(
+        select(func.count()).select_from(model).where(model.tenant_id == tenant_id)
+    )
+
+
 def test_revision_030_round_trips_exact_action_schema_on_real_postgresql(
     action_database_url: URL,
 ) -> None:
@@ -470,21 +493,17 @@ async def test_postgres_gateway_is_transactional_idempotent_and_postcondition_bo
 
     async with action_session_factory() as session:
         await set_action_tenant_context(session, tenant_id)
-        assert await session.scalar(select(func.count()).select_from(GovernedPolicyDecision)) == 1
-        assert await session.scalar(select(func.count()).select_from(GovernedActionRun)) == 1
+        assert await _ledger_count(session, GovernedPolicyDecision, tenant_id) == 1
+        assert await _ledger_count(session, GovernedActionRun, tenant_id) == 1
+        assert await _ledger_count(session, GovernedActionConfirmation, tenant_id) == 1
+        assert await _ledger_count(session, GovernedActionOutboxEvent, tenant_id) == 1
+        assert await _ledger_count(session, GovernedActionAttempt, tenant_id) == 1
+        assert await _ledger_count(session, GovernedActionPostconditionResult, tenant_id) == 1
         assert (
-            await session.scalar(select(func.count()).select_from(GovernedActionConfirmation)) == 1
-        )
-        assert (
-            await session.scalar(select(func.count()).select_from(GovernedActionOutboxEvent)) == 1
-        )
-        assert await session.scalar(select(func.count()).select_from(GovernedActionAttempt)) == 1
-        assert (
-            await session.scalar(
-                select(func.count()).select_from(GovernedActionPostconditionResult)
+            await session.scalars(
+                select(GovernedActionRun.id).where(GovernedActionRun.tenant_id == tenant_id)
             )
-            == 1
-        )
+        ).all() == [completed.run_id]
 
 
 @pytest.mark.asyncio
@@ -540,8 +559,13 @@ async def test_timeout_reconciliation_never_dispatches_a_second_create(
     assert connector.reconcile_calls == 1
     async with action_session_factory() as session:
         await set_action_tenant_context(session, tenant_id)
-        assert await session.scalar(select(func.count()).select_from(GovernedActionRun)) == 1
-        assert await session.scalar(select(func.count()).select_from(GovernedActionAttempt)) == 2
+        assert await _ledger_count(session, GovernedActionRun, tenant_id) == 1
+        assert await _ledger_count(session, GovernedActionAttempt, tenant_id) == 2
+        assert (
+            await session.scalars(
+                select(GovernedActionRun.id).where(GovernedActionRun.tenant_id == tenant_id)
+            )
+        ).all() == [requested.run_id]
 
 
 @pytest.mark.asyncio
