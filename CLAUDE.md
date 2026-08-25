@@ -35,9 +35,7 @@ binds autopilot too.
   answered 2026-08-24). The account's git protocol is ssh with no key loaded,
   so pushes go over HTTPS:
   `git -c credential.helper='!gh auth git-credential' push origin master`.
-- **CI is green except `security` and `pre-commit`**, both red on the same
-  three chromadb CVEs (CI-RED-2 in [`BACKLOG.md`](BACKLOG.md); the
-  `.pre-commit-config.yaml` half of the fix still needs Julia). Do not "fix"
-  anything by relaxing a gate, and do not read a red run as permission to
-  ignore a new failure — compare against `baseline/freeze-2026-08-23` instead.
-  `test-integration` went green on 2026-08-25 and must stay that way.
+- **CI is fully green** as of 2026-08-25 and must stay that way. A red job now
+  means a new problem, not an inherited one. Do not "fix" a gate by relaxing
+  it; if something does turn red, compare against `baseline/freeze-2026-08-23`
+  before assuming it is yours.

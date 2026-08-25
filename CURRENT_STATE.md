@@ -10,30 +10,22 @@ Last updated: 2026-08-25 · Plan: [`plan_23_08_2026.md`](plan_23_08_2026.md)
 
 ## Start here
 
-### 1. Finish CI-RED-2 — 5 minutes, needs Julia
+### 1. A.2 — `SessionService` admit/commit around sync `/api/ask`
 
-The three `--ignore-vuln` entries (CVE-2026-45830, CVE-2026-45833,
-CVE-2026-45831) are in the `security` job in `.github/workflows/ci.yml`. The
-identical change to the `pip-audit` hook in `.pre-commit-config.yaml` was
-refused by a permission guard — correctly: adding ignores to a vulnerability
-scanner is a thing a human should sign off on. Until it lands, `pre-commit`
-stays red for that one reason. Add the same three `--ignore-vuln` pairs to the
-hook's `args` and extend its comment block the way `ci.yml` was extended. All
-five conditions in ADR 0008 are mandatory — inline comment with CVE id and
-date, **review 2026-09-24**, by id only, never a blanket ignore, never
-dropping `--strict`. chromadb 1.5.9 is still the latest release on PyPI
-(re-checked 2026-08-25); there is nothing to upgrade to.
+The last wiring item before anything a user can see. Then **A.3**, the Evidence
+tab, which is the first phase-A item that shows up in a UI — and the first
+consumer of the rows A.1b started writing.
 
-### 2. A.1b — evidence into the Postgres tables
+### 2. Phase B — the number this repository is actually judged on
 
-The shadow writes its bundle into the SQLite trace and nowhere else. Migrations
-024–030 exist for it. This is what makes the evidence queryable rather than
-merely visible. Then A.2 (`SessionService` admit/commit), then A.3 (the
-Evidence tab — the first phase-A item a user can see).
+100 real labelled cases. Blocked on **Q2** below, with a decided fallback, so
+it is never blocked waiting.
 
-Phase B (100 real labelled cases) is what actually moves the number this
-repository is judged on; it is blocked on **Q2** below, with a decided
-fallback.
+### 3. Housekeeping with a date on it
+
+**Review 2026-09-24:** the three chromadb CVE ignores. If a fixed release
+exists by then, upgrade and delete them from all four places the guard
+requires them to match.
 
 ## What changed on 2026-08-25
 
@@ -43,12 +35,21 @@ fallback.
   calls it once. The count named no tenant, and the session connects as the
   Postgres superuser, which RLS does not apply to — so it counted the previous
   test's row too. The ADR has a postscript; `BACKLOG.md` has the full account.
-- **A.5 and the HTTP half of A.4 landed** (`4a5bdf1`, 4 tests). A
-  shipment-status question posted to `/api/ask` leaves exactly one
-  `resolution_shadow` step in the trace the answer names, and the bundle is
-  read back **out of the trace store**, not intercepted on the way in. The
-  response body is byte-for-byte identical with the shadow off and on.
-  **A.1 + A.5 together are a slice under rule (a)** — the first one here.
+- **A.5 and the HTTP half of A.4 landed** (`4a5bdf1`). A shipment-status
+  question posted to `/api/ask` leaves exactly one `resolution_shadow` step in
+  the trace the answer names, and the bundle is read back **out of the trace
+  store**, not intercepted on the way in. The response body is byte-for-byte
+  identical with the shadow off and on. **A.1 + A.5 together are a slice under
+  rule (a)** — the first one here.
+- **CI-RED-2 closed** (`af0d4fd`) and the docs-site deploy conditioned
+  (`81427b5`): every workflow is green or honestly skipped.
+- **A.1b landed** (`ae52cf7`, 31 tests). The shadow's evidence now goes into
+  `support_cases` / `case_events` / `evidence_snapshots` /
+  `case_evidence_links`, so it is queryable and not merely visible. The case
+  walks the states the bundle justifies, checked against
+  `ALLOWED_CASE_TRANSITIONS` itself. Wiring it up found a real defect on the
+  way: an unreachable database does not fail fast, and the first version hung
+  `/api/ask` — the write is now bounded at 2s with a test holding it.
 
 ## What is true right now
 
@@ -70,15 +71,11 @@ fallback.
   (`actions/postgres.py` and `knowledge/postgres.py` 0%,
   `resolution/adapters/postgres.py` 29%, `services/session.py` 44%): the
   integration job exercises those, without `--cov`.
-- **CI is green except for CI-RED-2** (run 32831583779): `test-integration`
-  passes on both legs for the first time. `security` and `pre-commit` are red
-  on the three chromadb CVEs and nothing else — step 1 above closes them.
-  Everything red still reproduces at the freeze tag on branch
-  `baseline/freeze-2026-08-23`; compare against it before assuming a new
-  failure is inherited. The **"Deploy docs site" workflow** was red because
-  Pages is unavailable on a private repo; its `deploy` job now skips while the
-  repo is private and lifts itself when Q4 makes it public. Its `build` job —
-  npm audit, type-check, build — still runs on every docs change.
+- **CI is fully green** — 11/11 on run 32843444796, for the first time in the
+  life of this repository. A red job now means a new problem; that was the
+  whole point of clearing the inherited ones. The "Deploy docs site" workflow
+  builds and skips its Pages deploy, which is unavailable on a private repo
+  and lifts itself when Q4 makes the repo public.
 
 ## Accepted open risks
 
@@ -114,10 +111,10 @@ repair, and it goes in the corrections table of
 | # | Item | Status |
 |---|---|---|
 | A.1 | Shadow wired into `/api/ask` behind a flag, evidence into the trace | done — `900236f`, 15 tests |
-| A.5 | `tests/integration/test_shipment_status_e2e.py` | done — `4a5bdf1`, 4 tests; **A.1 + A.5 = a slice under rule (a)** |
+| A.5 | `tests/integration/test_shipment_status_e2e.py` | done — `4a5bdf1`, 7 tests; **A.1 + A.5 = a slice under rule (a)** |
 | A.4 | Characterisation: legacy answer byte-identical, flag off vs on | done — `4a5bdf1`, byte comparison of two real response bodies |
-| A.1b | Evidence into the Postgres tables (migrations 024–030) | **next** |
-| A.2 | `SessionService` admit/commit around sync `/api/ask` | open |
+| A.1b | Evidence into the Postgres tables (migrations 024–030) | done — `ae52cf7`, 24 unit + 4 Postgres tests |
+| A.2 | `SessionService` admit/commit around sync `/api/ask` | **next** |
 | A.3 | Evidence tab on the trace in admin/agent UI | open |
 
 ## Phase 0 — done

@@ -61,8 +61,9 @@ than in a summary elsewhere, because they are the argument for phase B.
 | Slice | Evidence class | Evidence |
 |---|---|---|
 | A.1 shipment-status shadow behind `/api/ask` | `fixture` | `tests/test_resolution_shadow_wiring.py` (15 tests) |
-| A.5 the same shadow, proved through the endpoint | `fixture` | `tests/integration/test_shipment_status_e2e.py` (4 tests) |
+| A.5 the same shadow, proved through the endpoint | `fixture` | `tests/integration/test_shipment_status_e2e.py` (7 tests) |
 | A.4 legacy body byte-identical, shadow off vs on | `fixture` | same file, `test_the_response_body_is_byte_identical_with_the_shadow_off_and_on` |
+| A.1b evidence into the resolution tables | `fixture` | `tests/test_resolution_shadow_persistence.py` (24) + `tests/integration/test_resolution_shadow_postgres.py` (4) |
 
 **A.1 + A.5 together are a slice under rule (a)** (2026-08-25, `4a5bdf1`).
 A.1 alone was not: the behaviour change was real — a `resolution_shadow` step
@@ -79,7 +80,15 @@ response bodies, one with the shadow off and one on, is the claim that was
 actually being made. That test also asserts the shadow ran, since otherwise it
 would pass equally well with the shadow silently disabled.
 
-Neither row is `measured`: no number is published from this journey yet.
+**A.1b** (2026-08-25, `ae52cf7`) moves the same bundle from visible to
+answerable: a `support_cases` row with the events for the states the run
+actually walked, the `evidence_snapshots` it read, and the
+`case_evidence_links` that tie them to the case version the answer came from.
+The case path is asserted against `ALLOWED_CASE_TRANSITIONS` itself rather
+than restated, and the round trip runs against real Postgres with the
+append-only triggers and both evidence constraints live.
+
+No row here is `measured`: no number is published from this journey yet.
 
 `fixture` is a fourth evidence class, weaker than `synthetic`: the journey
 runs against a fixture transport management system

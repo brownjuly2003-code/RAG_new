@@ -93,6 +93,29 @@ blanket ignore, never dropping `--strict`, inline comment with the date, and
 listed as an accepted risk in `CURRENT_STATE.md`. A new chromadb CVE must still
 turn the job red.
 
+**Applied 2026-08-25 (`af0d4fd`)** with Julia's approval, across all four
+places the ignore set has to match — the hook, the CI job,
+`scripts/local-gate.ps1` and `scripts/autopilot.ps1` — plus the expected set in
+`tests/test_precommit_config.py`, which is the guard that requires them to
+agree. **REVIEW 2026-09-24.**
+
+## Accepted design limits
+
+### Shadow evidence snapshots do not close their previous range (A.1b)
+
+`resolution/persistence.py` writes each snapshot with an open-ended validity
+range and deduplicates by identity, so replaying a run rewrites the same row.
+What it does not do is close the previous range when a source later reports
+*different* content for the same logical key. Postgres will reject that insert
+on `ex_evidence_snapshots_temporal_identity` — correctly, since two authorities
+cannot both be right about the same key at the same instant — and the shadow
+will log the failure and record nothing for that run.
+
+Not a defect to fix here: closing ranges is real bitemporal bookkeeping and
+belongs with the source adapters that know when an observation supersedes
+another, not with an observer that sees one run at a time. The fixture TMS is
+static, so nothing exercises it yet; a real TMS in phase B would, and that is
+where it should be handled.
 
 ## Current routing override — Trust Foundation REL-03
 

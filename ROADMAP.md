@@ -12,12 +12,12 @@ parallel (A does not wait on Julia; B does).
 **Phase A is under way.** A.1 + A.5 landed on 2026-08-25 and are the first
 slice this repository has had under rule (a): a shipment-status question
 through the real `/api/ask` leaves an evidence bundle in the trace, read back
-out of the trace store. A.4 closed with it. Next is A.1b, then A.2, then A.3.
+out of the trace store. A.4 closed with it, and A.1b put the same evidence
+into the resolution tables where it can be queried. Next is A.2, then A.3.
 
-Of the two inherited CI failures ([ADR 0008](docs/adr/0008-inherited-ci-red-disposition.md)),
-CI-RED-1 is repaired and `test-integration` is green on both legs. CI-RED-2 is
-half-applied: the ignores are in `ci.yml`, the `.pre-commit-config.yaml` half
-needs Julia (see [`CURRENT_STATE.md`](CURRENT_STATE.md)).
+Both inherited CI failures ([ADR 0008](docs/adr/0008-inherited-ci-red-disposition.md))
+are closed, and CI is green end to end for the first time. The chromadb CVE
+ignores carry a **review date of 2026-09-24**.
 
 | Phase | What | Acceptance |
 |---|---|---|
