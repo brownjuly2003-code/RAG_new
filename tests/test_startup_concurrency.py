@@ -148,7 +148,8 @@ def test_session_setup_does_not_reopen_store_rejected_at_startup(
         calls["retriever"] += 1
         return object()
 
-    monkeypatch.setattr(api_app, "_db_retry_after", float("inf"))
+    monkeypatch.setattr(api_app, "_db_cooldown", api_app._TenantDbCooldown())
+    api_app._db_cooldown.trip("default", duration_sec=float("inf"))
     monkeypatch.setattr(api_app, "_session_llm_state", {})
     monkeypatch.setattr(api_app, "_session_last_access", {})
     monkeypatch.setattr(api_app, "_vector_store", None)

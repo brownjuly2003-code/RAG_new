@@ -227,7 +227,7 @@ def ask_client(
     integration_api_app._session_llm_state.clear()
     integration_api_app._retriever = None
     integration_api_app._vector_store = None
-    integration_api_app._db_retry_after = 0.0
+    integration_api_app._db_cooldown.reset()
     return integration_client
 
 

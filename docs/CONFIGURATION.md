@@ -125,6 +125,8 @@ Resilience layers apply in this order:
 | `REQUEST_TIMEOUT_SEC` | `30` | Wall-time limit for one `/api/ask` request |
 | `STREAMING_TIMEOUT_SEC` | `120` | Wall-clock budget for the SSE token loop in `/api/ask/stream` (separate from `REQUEST_TIMEOUT_SEC`) |
 | `DB_PERSIST_TIMEOUT_SEC` | `2.0` | Timeout for persisting one conversation message to Postgres before the write is dropped and counted in `rag_message_persist_failures_total{operation}` |
+| `DB_COOLDOWN_SEC` | `60.0` | How long a tenant's database paths stay skipped after one of them fails. **Per tenant** since phase A.2: one process-wide deadline used to stop session lookups and message writes for every tenant |
+| `DB_COOLDOWN_MAX_TENANTS` | `512` | Upper bound on how many tenants that cooldown remembers at once. The key comes from a JWT claim, so the map is bounded; at the cap the entry closest to expiring is dropped |
 | `MAX_CONCURRENT_PIPELINES` | `8` | Maximum concurrent `/api/ask` pipelines |
 | `REQUEST_EXECUTOR_MAX_WORKERS` | `0` | Size of the shared sync request/executor pool used by `/api/ask` and `ConversationSession.ask` wall-budget. `0` = mirror `MAX_CONCURRENT_PIPELINES`. On outer HTTP timeout the pipeline semaphore stays held until the worker finishes (REL-01 / plan §3.1a) |
 | `PIPELINE_ACQUIRE_TIMEOUT_SEC` | `0.5` | How long to wait for a pipeline slot before returning `503` |

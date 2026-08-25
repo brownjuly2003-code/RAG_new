@@ -74,7 +74,7 @@ def test_saturated_pool_returns_503(
             pipeline_acquire_timeout_sec=0.2,
         ),
     )
-    api_app._db_retry_after = time.monotonic() + 60.0
+    api_app._db_cooldown.trip("default")
 
     fake_session = _fake_slow_session_factory(0.8)
     _install_fake_session(monkeypatch, fake_session)
@@ -121,7 +121,7 @@ def test_rejection_counter_increments(
             pipeline_acquire_timeout_sec=0.1,
         ),
     )
-    api_app._db_retry_after = time.monotonic() + 60.0
+    api_app._db_cooldown.trip("default")
 
     fake_session = _fake_slow_session_factory(0.5)
     _install_fake_session(monkeypatch, fake_session)
@@ -153,7 +153,7 @@ def test_inflight_gauge_decrements_after_success(
     if not PROMETHEUS_AVAILABLE:
         pytest.skip("prometheus_client not installed")
 
-    api_app._db_retry_after = time.monotonic() + 60.0
+    api_app._db_cooldown.trip("default")
     assert _get_inflight_gauge_value() == 0.0
 
     fake_session = _fake_slow_session_factory(0.1)
@@ -175,7 +175,7 @@ def test_success_does_not_record_orphan_work(
         "record_orphan_work_started",
         lambda: started.append("started"),
     )
-    api_app._db_retry_after = time.monotonic() + 60.0
+    api_app._db_cooldown.trip("default")
     _install_fake_session(monkeypatch, _fake_slow_session_factory(0.01))
 
     response = client.post("/api/ask", json={"question": "q"})
@@ -297,7 +297,7 @@ def test_inflight_gauge_decrements_after_timeout(
             request_executor_max_workers=1,
         ),
     )
-    api_app._db_retry_after = time.monotonic() + 60.0
+    api_app._db_cooldown.trip("default")
     assert _get_inflight_gauge_value() == 0.0
 
     fake_session = _fake_slow_session_factory(0.8)
@@ -337,7 +337,7 @@ def test_timeout_holds_capacity_until_worker_done(
             request_executor_max_workers=1,
         ),
     )
-    api_app._db_retry_after = time.monotonic() + 60.0
+    api_app._db_cooldown.trip("default")
 
     fake_session = _fake_slow_session_factory(1.2)
     _install_fake_session(monkeypatch, fake_session)

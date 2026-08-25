@@ -1,7 +1,7 @@
 """Auth + session management endpoints (login, refresh, list/get/delete sessions).
 
 Extracted from api/app.py during the Step 8 thin-shell refactor. Globals
-(`_db_retry_after`, `_sessions`, `_session_last_access`) still live in
+(`_db_cooldown`, `_sessions`, `_session_last_access`) still live in
 api.app and are accessed via late-binding through `_app_module()`, the
 same pattern conversation.py uses.
 """
@@ -10,7 +10,6 @@ from __future__ import annotations
 import asyncio
 import logging
 import os
-import time
 import uuid
 
 from fastapi import APIRouter, Depends, HTTPException, Request, Response
@@ -254,10 +253,10 @@ def _try_parse_uuid(session_id: str) -> uuid.UUID | None:
     """Return UUID if parseable, else None.
 
     Skipping the DB query for non-UUID ids keeps invalid input from poisoning
-    the 60s `_db_retry_after` cooldown (a ValueError inside the SQLAlchemy
-    expression would otherwise be swallowed by the outer except and disable
-    DB lookups for everyone). In-memory sessions still resolve via string
-    keys, so we fall through and let the caller answer 404.
+    the tenant's DB cooldown (a ValueError inside the SQLAlchemy expression
+    would otherwise be swallowed by the outer except and disable DB lookups
+    for that tenant). In-memory sessions still resolve via string keys, so we
+    fall through and let the caller answer 404.
     """
     try:
         return uuid.UUID(session_id)
@@ -273,7 +272,7 @@ async def get_session_history(
     _app = _app_module()
     user_tenant = (_user.get("tenant") or "default") or "default"
     session_uuid = _try_parse_uuid(session_id)
-    if session_uuid is not None and time.monotonic() >= _app._db_retry_after:
+    if session_uuid is not None and not _app._db_cooldown.blocked(user_tenant):
         try:
             from sqlalchemy import select  # noqa: PLC0415
 
@@ -298,11 +297,11 @@ async def get_session_history(
                     HistoryMessage(role=message.role, content=message.content)
                     for message in result.scalars()
                 ]
-                _app._db_retry_after = 0.0
+                _app._db_cooldown.clear(user_tenant)
                 if messages:
                     return HistoryResponse(session_id=session_id, messages=messages)
         except Exception as exc:
-            _app._db_retry_after = time.monotonic() + 60.0
+            _app._db_cooldown.trip(user_tenant)
             logger.warning("DB history fallback: %s", exc)
 
     if session_id in _app._sessions:
@@ -344,7 +343,7 @@ async def list_sessions(
     user_tenant = (_user.get("tenant") or "default") or "default"
     result: dict[str, SessionInfo] = {}
 
-    if time.monotonic() >= _app._db_retry_after:
+    if not _app._db_cooldown.blocked(user_tenant):
         try:
             from sqlalchemy import func, select  # noqa: PLC0415
 
@@ -368,9 +367,9 @@ async def list_sessions(
                         session_id=session_uuid.hex,
                         message_count=message_count,
                     )
-                _app._db_retry_after = 0.0
+                _app._db_cooldown.clear(user_tenant)
         except Exception as exc:
-            _app._db_retry_after = time.monotonic() + 60.0
+            _app._db_cooldown.trip(user_tenant)
             logger.warning("DB sessions fallback: %s", exc)
 
     for sid, session in list(_app._sessions.items()):
@@ -425,7 +424,7 @@ async def clear_session(
             _app._session_last_access.pop(session_id, None)
             found = True
 
-    if session_uuid is not None and time.monotonic() >= _app._db_retry_after:
+    if session_uuid is not None and not _app._db_cooldown.blocked(user_tenant):
         try:
             from sqlalchemy import select  # noqa: PLC0415
 
@@ -446,9 +445,9 @@ async def clear_session(
                     await db.delete(db_session)
                     await asyncio.wait_for(db.commit(), timeout=0.5)
                     found = True
-                _app._db_retry_after = 0.0
+                _app._db_cooldown.clear(user_tenant)
         except Exception as exc:
-            _app._db_retry_after = time.monotonic() + 60.0
+            _app._db_cooldown.trip(user_tenant)
             logger.warning("DB clear session fallback: %s", exc)
 
     if not found:

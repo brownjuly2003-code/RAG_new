@@ -20,6 +20,7 @@ import sys
 import threading
 import time
 import uuid
+from collections import OrderedDict
 from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, ClassVar, Optional, cast
@@ -254,6 +255,122 @@ from api.routers.system import ComponentStatus, HealthResponse  # noqa: E402,F40
 
 
 # ---------------------------------------------------------------------------
+# Database cooldown
+# ---------------------------------------------------------------------------
+
+
+class _TenantDbCooldown:
+    """Skip a tenant's database paths for a while after one of them fails.
+
+    This replaces a single process-wide `_db_retry_after` deadline. That
+    deadline was set by four call sites — the session bootstrap, the ask
+    message write, the history read and the session delete — and read by all
+    of them, so one tenant's failing query stopped session lookups and message
+    writes for **every** tenant for a minute. `audit_sol_23_08_2026.md` asks
+    for exactly this partition (§"Partition DB circuit breaker/cooldown"), and
+    `audit_gpt_23_07_26.md` had already asked for the related half: client
+    validation errors must not share a breaker with infrastructure failures.
+
+    Bounded, because tenant ids arrive from a JWT claim and an unbounded map
+    keyed by one is a memory leak with an external trigger. At the cap the
+    entry closest to expiring is dropped: a tenant that recovers early is the
+    cheapest thing to forget, and forgetting one only costs a retry.
+
+    Locked, because the endpoints run on an event loop but the test client and
+    the reaper reach these paths from threads.
+    """
+
+    __slots__ = ("_capacity", "_deadlines", "_duration", "_lock")
+
+    # Longest tenant id the map will key on. `sessions.tenant_id` is
+    # `String(50)`, so anything longer can never own a row; truncating bounds
+    # the memory a forged claim can cost, and two tenants colliding on the
+    # first 64 characters share only a retry, never data.
+    _MAX_KEY_LENGTH = 64
+
+    def __init__(self, *, duration_sec: float = 60.0, capacity: int = 512) -> None:
+        self._duration = float(duration_sec)
+        self._capacity = max(1, int(capacity))
+        self._deadlines: OrderedDict[str, float] = OrderedDict()
+        self._lock = threading.Lock()
+
+    @classmethod
+    def _key(cls, tenant_id: Any) -> str:
+        text = str(tenant_id) if tenant_id else "default"
+        return text[: cls._MAX_KEY_LENGTH]
+
+    def blocked(self, tenant_id: Any) -> bool:
+        """True while this tenant's database paths are still being skipped."""
+        key = self._key(tenant_id)
+        with self._lock:
+            deadline = self._deadlines.get(key)
+            if deadline is None:
+                return False
+            if time.monotonic() >= deadline:
+                del self._deadlines[key]
+                return False
+            return True
+
+    def trip(self, tenant_id: Any, *, duration_sec: float | None = None) -> None:
+        """Start (or restart) this tenant's cooldown after a database failure."""
+        window = self._duration if duration_sec is None else float(duration_sec)
+        key = self._key(tenant_id)
+        with self._lock:
+            self._evict_locked(key)
+            self._deadlines[key] = time.monotonic() + window
+            self._deadlines.move_to_end(key)
+
+    def clear(self, tenant_id: Any) -> None:
+        """Forget this tenant's cooldown after a database call succeeded."""
+        with self._lock:
+            self._deadlines.pop(self._key(tenant_id), None)
+
+    def reset(self) -> None:
+        """Forget every cooldown (startup and tests)."""
+        with self._lock:
+            self._deadlines.clear()
+
+    def configure(self, *, duration_sec: float, capacity: int) -> None:
+        """Take the window and the bound from settings at startup.
+
+        Read here rather than at each trip because a cooldown that changes
+        length between the failure and the retry is harder to reason about
+        than one fixed when the process started.
+        """
+        with self._lock:
+            self._duration = max(0.0, float(duration_sec))
+            self._capacity = max(1, int(capacity))
+            while len(self._deadlines) > self._capacity:
+                self._deadlines.popitem(last=False)
+
+    def tripped_tenants(self) -> int:
+        """How many tenants are in cooldown right now."""
+        now = time.monotonic()
+        with self._lock:
+            return sum(1 for deadline in self._deadlines.values() if deadline > now)
+
+    def retry_after(self, tenant_id: Any) -> float:
+        """This tenant's cooldown deadline on the monotonic clock, 0.0 if none."""
+        key = self._key(tenant_id)
+        with self._lock:
+            deadline = self._deadlines.get(key)
+        if deadline is None or time.monotonic() >= deadline:
+            return 0.0
+        return deadline
+
+    def _evict_locked(self, incoming: str) -> None:
+        if incoming in self._deadlines or len(self._deadlines) < self._capacity:
+            return
+        now = time.monotonic()
+        for key in [key for key, deadline in self._deadlines.items() if deadline <= now]:
+            del self._deadlines[key]
+        while len(self._deadlines) >= self._capacity:
+            # Insertion order is trip order, so the head is the tenant that
+            # tripped longest ago — the one closest to leaving anyway.
+            self._deadlines.popitem(last=False)
+
+
+# ---------------------------------------------------------------------------
 # Global state
 # ---------------------------------------------------------------------------
 
@@ -261,7 +378,7 @@ _session_llm_state: dict[str, Any] = {}
 _sessions = _session_llm_state
 _shutting_down: bool = False
 _session_last_access: dict[str, float] = {}
-_db_retry_after: float = 0.0
+_db_cooldown = _TenantDbCooldown()
 _vector_store: Any = None
 _retriever: Any = None
 _chunks: list[Any] = []
@@ -965,14 +1082,14 @@ async def _get_or_create_session(
     session_id: Optional[str],
     tenant_id: str = "default",
 ) -> tuple:
-    global _retriever, _llm, _db_retry_after
+    global _retriever, _llm
 
     # Track caller-supplied vs server-generated IDs: only server-generated IDs
     # may use the in-memory create fallback when DB is unavailable/cooldown.
     caller_supplied = bool(session_id)
 
     # Normalize / reject session UUID *before* any DB or circuit-breaker logic.
-    # Malformed client input must never trip ``_db_retry_after``.
+    # Malformed client input must never trip the tenant's DB cooldown.
     if not session_id:
         session_uuid = uuid.uuid4()
         session_id = session_uuid.hex
@@ -985,7 +1102,7 @@ async def _get_or_create_session(
 
     db_history: list[dict[str, str]] = []
     db_ownership_verified = False
-    if time.monotonic() >= _db_retry_after:
+    if not _db_cooldown.blocked(tenant_id):
         try:
             from datetime import datetime, timezone
 
@@ -1044,12 +1161,12 @@ async def _get_or_create_session(
                     for role, content in history_result.all()
                 ]
                 db_ownership_verified = True
-                _db_retry_after = 0.0
+                _db_cooldown.clear(tenant_id)
         except HTTPException:
             # Client validation / ownership rejection is not an infra failure.
             raise
         except Exception as exc:
-            _db_retry_after = time.monotonic() + 60.0
+            _db_cooldown.trip(tenant_id)
             try:
                 prometheus_metrics.record_message_persist_failure("session_lookup")
             except Exception:
@@ -1443,6 +1560,10 @@ async def _lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     settings = get_settings()
     app.state.settings = settings
     settings.ensure_dirs()
+    _db_cooldown.configure(
+        duration_sec=float(getattr(settings, "db_cooldown_sec", 60.0)),
+        capacity=int(getattr(settings, "db_cooldown_max_tenants", 512)),
+    )
 
     try:
         settings.validate()

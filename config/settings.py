@@ -862,9 +862,22 @@ class Settings:
     )
     # Wall-clock budget for persisting conversation messages to Postgres.
     # The previous hardcoded 0.5s treated ordinary latency tails as outages
-    # and tripped the global 60s persistence breaker.
+    # and tripped the persistence breaker.
     db_persist_timeout_sec: float = field(
         default_factory=lambda: float(os.getenv("DB_PERSIST_TIMEOUT_SEC", "2.0"))
+    )
+    # How long a tenant's database paths stay skipped after one of them fails.
+    # Was hardcoded 60s in four places, against a single process-wide deadline;
+    # phase A.2 made it per-tenant, and a number that decides how long a
+    # tenant degrades belongs in settings rather than in four literals.
+    db_cooldown_sec: float = field(
+        default_factory=lambda: float(os.getenv("DB_COOLDOWN_SEC", "60.0"))
+    )
+    # Upper bound on how many tenants the cooldown remembers at once. Tenant
+    # ids arrive from a JWT claim, so an unbounded map is a memory leak with an
+    # external trigger; at the cap the entry closest to expiring is dropped.
+    db_cooldown_max_tenants: int = field(
+        default_factory=lambda: int(os.getenv("DB_COOLDOWN_MAX_TENANTS", "512"))
     )
     regression_gate_max_regressions: int = field(
         default_factory=lambda: int(os.getenv("REGRESSION_GATE_MAX_REGRESSIONS", "2"))

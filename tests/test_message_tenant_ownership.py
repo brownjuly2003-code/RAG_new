@@ -357,12 +357,12 @@ def test_persist_ask_messages_sets_tenant_id_on_both_rows(
         conversation,
         "_app_module",
         lambda: SimpleNamespace(
-            _db_retry_after=0.0,
+            _db_cooldown=api_app._TenantDbCooldown(),
             get_settings=lambda: SimpleNamespace(db_persist_timeout_sec=2.0),
         ),
     )
-    # Keep production cooldown attribute clean for other tests.
-    api_app._db_retry_after = 0.0
+    # Keep the production cooldown clean for other tests.
+    api_app._db_cooldown.reset()
 
     asyncio.run(
         conversation._persist_ask_messages(

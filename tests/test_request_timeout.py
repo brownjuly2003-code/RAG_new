@@ -250,7 +250,7 @@ def test_event_loop_not_blocked_during_pipeline(
         "get_settings",
         lambda: settings_factory(request_timeout_sec=2.0),
     )
-    api_app._db_retry_after = time.monotonic() + 60.0
+    api_app._db_cooldown.trip("default")
 
     def _sync_ask(question: str, trace_id=None, **kwargs) -> dict:
         _ = question, trace_id, kwargs

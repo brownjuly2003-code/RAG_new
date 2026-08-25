@@ -63,7 +63,7 @@ def test_stream_parity_timeout_holds_capacity_until_orphan_done(
             ask_budget_sec=0.0,
         ),
     )
-    api_app._db_retry_after = time.monotonic() + 60.0
+    api_app._db_cooldown.trip("default")
 
     release_orphan = threading.Event()
     ask_started = threading.Event()
@@ -201,7 +201,7 @@ def test_stream_binds_budget_for_generate_stream(
             ask_budget_sec=0.0,
         ),
     )
-    api_app._db_retry_after = time.monotonic() + 60.0
+    api_app._db_cooldown.trip("default")
     charged: list[int] = []
 
     class _FakeRetriever:

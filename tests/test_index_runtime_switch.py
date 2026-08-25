@@ -1195,7 +1195,8 @@ async def test_api_session_resolution_does_not_fall_back_to_stale_retriever(
     def _fail_retriever(*args: Any, **kwargs: Any) -> None:
         raise RuntimeError("active index unavailable")
 
-    monkeypatch.setattr(api_app, "_db_retry_after", float("inf"))
+    monkeypatch.setattr(api_app, "_db_cooldown", api_app._TenantDbCooldown())
+    api_app._db_cooldown.trip("acme", duration_sec=float("inf"))
     monkeypatch.setattr(api_app, "_retriever", object())
     monkeypatch.setattr(api_app, "_vector_store", object())
     monkeypatch.setattr(api_app, "_get_retriever", _fail_retriever)

@@ -711,11 +711,11 @@ async def _persist_ask_messages(
     """Persist ask messages only when Session is owned by ``tenant_id``.
 
     Shared by sync / SSE / fallback paths so foreign or missing owners never
-    receive a write. Ownership rejection is silent (no write); real DB failures
-    retain the existing cooldown fallback.
+    receive a write. Ownership rejection is silent (no write); a real DB
+    failure puts this tenant -- and only this tenant -- in cooldown.
     """
     _app = _app_module()
-    if time.monotonic() < _app._db_retry_after:
+    if _app._db_cooldown.blocked(tenant_id):
         return
     try:
         session_uuid = uuid.UUID(str(session_id))
@@ -759,9 +759,9 @@ async def _persist_ask_messages(
                 )
             )
             await asyncio.wait_for(db.commit(), timeout=timeout)
-            _app._db_retry_after = 0.0
+            _app._db_cooldown.clear(tenant_id)
     except Exception as exc:
-        _app._db_retry_after = time.monotonic() + 60.0
+        _app._db_cooldown.trip(tenant_id)
         try:
             prometheus_metrics.record_message_persist_failure(path)
         except Exception:

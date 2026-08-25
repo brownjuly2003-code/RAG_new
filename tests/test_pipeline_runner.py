@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import asyncio
 import importlib
-import time
 from typing import Any, ClassVar
 
 import pytest
@@ -183,7 +182,7 @@ def test_sync_ask_execution_delegates_to_pipeline_runner(
         "get_settings",
         lambda: settings_factory(request_timeout_sec=1.25),
     )
-    api_app._db_retry_after = time.monotonic() + 60.0
+    api_app._db_cooldown.trip("default")
     api_app._pipeline_semaphore = None
 
     class _Session:
@@ -352,7 +351,7 @@ def test_stream_graph_execution_delegates_to_pipeline_runner(
             max_concurrent_pipelines=2,
         ),
     )
-    api_app._db_retry_after = time.monotonic() + 60.0
+    api_app._db_cooldown.trip("default")
     api_app._pipeline_semaphore = None
 
     class _Session:
@@ -443,7 +442,7 @@ def test_stream_event_path_delegates_to_pipeline_runner(
             max_concurrent_pipelines=2,
         ),
     )
-    api_app._db_retry_after = time.monotonic() + 60.0
+    api_app._db_cooldown.trip("default")
     api_app._pipeline_semaphore = None
 
     class _Session:

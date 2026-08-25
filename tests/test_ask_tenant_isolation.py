@@ -150,7 +150,7 @@ def test_ask_cross_tenant_cold_cache_returns_opaque_404(
     monkeypatch.setattr("db.engine.async_session", lambda: fake_db)
     api_app._session_llm_state.clear()
     api_app._session_last_access.clear()
-    api_app._db_retry_after = 0.0
+    api_app._db_cooldown.reset()
 
     response = client.post(
         "/api/ask",
@@ -193,7 +193,7 @@ def test_ask_malformed_session_id_rejected_without_db_cooldown(
     client: TestClient,
 ) -> None:
     """Malformed session_id is rejected at the API boundary; cooldown stays clean."""
-    api_app._db_retry_after = 0.0
+    api_app._db_cooldown.reset()
 
     response = client.post(
         "/api/ask",
@@ -202,7 +202,9 @@ def test_ask_malformed_session_id_rejected_without_db_cooldown(
     )
 
     assert response.status_code == 422, response.text
-    assert api_app._db_retry_after == 0.0, "malformed input must not poison DB cooldown"
+    assert (
+        api_app._db_cooldown.tripped_tenants() == 0
+    ), "malformed input must not poison DB cooldown"
 
 
 def test_ask_rejects_in_memory_tenant_mismatch_without_overwrite(
@@ -211,7 +213,7 @@ def test_ask_rejects_in_memory_tenant_mismatch_without_overwrite(
 ) -> None:
     """Caller must not replace an in-memory session owned by another tenant."""
     # Skip DB so only the in-memory ownership branch is exercised.
-    api_app._db_retry_after = time.monotonic() + 3600.0
+    api_app._db_cooldown.trip(TENANT_B, duration_sec=3600.0)
     owned = _OwnedSession(
         TENANT_A,
         history=[{"role": "user", "content": SECRET_CONTENT}],
@@ -235,10 +237,10 @@ def test_ask_cooldown_supplied_uncached_uuid_returns_503_without_cache_write(
     client: TestClient,
 ) -> None:
     """Caller-supplied UUID + active cooldown + cold cache => 503, no new entry."""
-    api_app._db_retry_after = time.monotonic() + 3600.0
+    api_app._db_cooldown.trip(TENANT_A, duration_sec=3600.0)
     api_app._session_llm_state.clear()
     api_app._session_last_access.clear()
-    cooldown_before = api_app._db_retry_after
+    cooldown_before = api_app._db_cooldown.retry_after(TENANT_A)
 
     supplied = uuid.uuid4()
     supplied_hex = supplied.hex
@@ -256,7 +258,9 @@ def test_ask_cooldown_supplied_uncached_uuid_returns_503_without_cache_write(
     assert supplied_hex not in api_app._session_last_access
     assert str(supplied) not in api_app._session_last_access
     # 503 path itself must not extend the circuit breaker.
-    assert api_app._db_retry_after == cooldown_before
+    assert api_app._db_cooldown.retry_after(TENANT_A) == cooldown_before
+    # ...and must not have put anyone else in cooldown either.
+    assert api_app._db_cooldown.tripped_tenants() == 1
 
 
 def test_ask_primary_ownership_query_is_tenant_scoped(
@@ -270,7 +274,7 @@ def test_ask_primary_ownership_query_is_tenant_scoped(
     monkeypatch.setattr("db.engine.async_session", lambda: fake_db)
     api_app._session_llm_state.clear()
     api_app._session_last_access.clear()
-    api_app._db_retry_after = 0.0
+    api_app._db_cooldown.reset()
 
     response = client.post(
         "/api/ask",
@@ -301,7 +305,7 @@ def test_ask_foreign_default_session_not_rebound(
     monkeypatch.setattr("db.engine.async_session", lambda: fake_db)
     api_app._session_llm_state.clear()
     api_app._session_last_access.clear()
-    api_app._db_retry_after = 0.0
+    api_app._db_cooldown.reset()
 
     response = client.post(
         "/api/ask",

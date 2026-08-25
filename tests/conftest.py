@@ -174,7 +174,7 @@ def _clear_api_state() -> None:
     api_app._chunks = []
     api_app._retriever = None
     api_app._llm = None
-    api_app._db_retry_after = 0.0
+    api_app._db_cooldown.reset()
     api_app._pipeline_semaphore = None
     api_app.app.state.settings = None
 
