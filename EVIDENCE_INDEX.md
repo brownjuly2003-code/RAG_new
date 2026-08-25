@@ -66,6 +66,7 @@ than in a summary elsewhere, because they are the argument for phase B.
 | A.1b evidence into the resolution tables | `fixture` | `tests/test_resolution_shadow_persistence.py` (24) + `tests/integration/test_resolution_shadow_postgres.py` (4) |
 | A.2 durable session turn around sync `/api/ask` | `synthetic` | `tests/integration/test_session_turns_e2e.py` (8, real Postgres) + `tests/test_session_turn_wiring.py` (32) |
 | A.2 database cooldown per tenant, and bounded | `synthetic` | `tests/test_db_cooldown_per_tenant.py` (15) |
+| A.3 evidence view endpoint + Evidence tab + JSON export | `fixture` | `tests/test_evidence_view.py` (22) + `tests/test_admin_trace_evidence.py` (9) + `tests/integration/test_shipment_status_e2e.py` (3) |
 
 **A.1 + A.5 together are a slice under rule (a)** (2026-08-25, `4a5bdf1`).
 A.1 alone was not: the behaviour change was real — a `resolution_shadow` step
@@ -112,8 +113,28 @@ Deliberately absent: replay of a committed response body, `Idempotency-Key`,
 `ETag`/`If-Match`. That is REL-03D and the durable-HTTP work, frozen in
 `ROADMAP.md`; a turn stores the digest of its pair and no payload.
 
-These rows are `synthetic`, not `fixture`: no fixture TMS is involved. They
-prove the mechanism and say nothing about the domain.
+The A.2 rows are `synthetic`, not `fixture`: no fixture TMS is involved.
+They prove the mechanism and say nothing about the domain.
+
+**A.3** (2026-08-25) is the third slice under rule (a) and the first phase-A
+item a person can look at. `GET /api/admin/traces/{trace_id}/evidence` joins a
+shadow step into what a reviewer needs — contract and version, the policy
+decision with its own `recorded_at`, every claim beside the evidence under it
+and how old that evidence was when it was read, postconditions, and a replay
+receipt of the digests the run was pinned to — and the admin UI renders it
+beside Raw JSON with a JSON export. It reads the **trace**, not the resolution
+tables: those are the queryable copy and their write is best-effort and
+bounded, so a run whose database write timed out still has a complete trace
+step. The view carries `case_id` and `case_version` so the queryable copy stays
+one lookup away.
+
+The row is `fixture`, not `synthetic`: the journey it renders runs against the
+fixture TMS, so what it displays is fixture-sourced.
+
+Building it found the defect in the corrections table below — until then every
+bundle behind `/api/ask` was empty, so the tab would have rendered a permanent
+blank. That is the argument for the rule: the tab is what made the emptiness
+visible, and no amount of local test coverage had.
 
 No row here is `measured`: no number is published from this journey yet.
 
@@ -132,6 +153,18 @@ above.
 | Fix | Commit | Test |
 |---|---|---|
 | Governed-action ledger counts scoped to their tenant (CI-RED-1: the ledger was right, the assertion read another test's rows) | `0fdb29c` | `tests/integration/test_governed_actions_postgres.py` |
+| Shipment-id extractor could not match any id the fixture TMS holds | with A.3 | `tests/integration/test_shipment_status_e2e.py` |
+
+The extractor matched only `SHP-…`. The fixture TMS
+(`resolution/adapters/fixtures/shipment-status-v0.1.json`) holds `AC-…`, and
+every wiring and end-to-end test asks about `AC-100001`. So no question about a
+shipment the fixture actually contains could reach an observation: the journey
+answered `CLARIFICATION_REQUIRED` / `SHIPMENT_ID_REQUIRED` every time, and the
+evidence bundle behind `/api/ask` never carried a source, a policy or a single
+claim. Everything A.1, A.1b, A.4 and A.5 asserted was true — the shadow ran,
+reached the trace, reached the tables — and none of it needed a bundle with
+anything in it. The end-to-end test now drives a `verified` journey with its
+claims resolved to their evidence.
 
 The claim that was false was in [ADR 0008](docs/adr/0008-inherited-ci-red-disposition.md)
 and `BACKLOG.md`, not in the code: both stated that the governed-action

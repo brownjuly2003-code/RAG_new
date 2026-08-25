@@ -210,6 +210,17 @@ An unknown journey name is rejected at startup on purpose. A shadow is
 invisible by design, so a silent no-op on a typo would be indistinguishable
 from one that is running.
 
+What a shadow writes is read back through
+`GET /api/admin/traces/{trace_id}/evidence`, and rendered by the **Evidence**
+tab beside Raw JSON in the Traces section of `/static/admin.html`: contract and
+version, the policy decision with its own `recorded_at`, every claim next to
+the evidence under it and how old that evidence was when it was read,
+postconditions, and a replay receipt of the digests the run was pinned to. The
+endpoint reads the trace rather than the resolution tables — those are the
+queryable copy and their write is best-effort, so a run whose database write
+timed out still has a complete trace step. `journeys: []` is the normal answer
+for a trace that ran no journey.
+
 The journey currently ships against a **fixture** transport management system
 (`resolution/adapters/fixtures/shipment-status-v0.1.json`). Anything measured
 through it is fixture-sourced and has to say so.

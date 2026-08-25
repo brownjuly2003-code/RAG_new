@@ -9,7 +9,26 @@ from uuid import NAMESPACE_URL, UUID, uuid5
 
 from resolution.contracts import ResolutionContract, TerminalOutcome, contract_digest
 
-_SHIPMENT_ID_PATTERN = re.compile(r"(?<![A-Z0-9])SHP-[A-Z0-9]{1,32}(?![A-Z0-9])", re.IGNORECASE)
+# Two shipment reference forms, because the repository has always had two.
+# `SHP-` is what the kernel's own scenarios use. `AC-<digits>` is what the
+# fixture TMS that ships with this package actually holds
+# (`resolution/adapters/fixtures/shipment-status-v0.1.json`) and what every
+# wiring and end-to-end test asks about.
+#
+# Until 2026-08-25 only `SHP-` was recognised, so no question about a shipment
+# the fixture contains could reach an observation: the journey answered
+# CLARIFICATION_REQUIRED / SHIPMENT_ID_REQUIRED every time, and the evidence
+# bundle behind `/api/ask` never carried a source, a policy or a single claim.
+# The shadow ran; there was simply nothing in it to look at, which phase A.3
+# found by trying to render it.
+#
+# The `AC-` form requires digits so ordinary prose ("AC-DC") is not read as a
+# shipment reference. A false positive would cost an escalation inside the
+# shadow and nothing else, but there is no reason to invite one.
+_SHIPMENT_ID_PATTERN = re.compile(
+    r"(?<![A-Z0-9])(?:SHP-[A-Z0-9]{1,32}|AC-[0-9]{1,32})(?![A-Z0-9])",
+    re.IGNORECASE,
+)
 _SHIPMENT_CONTRACT_ID = "aircargo.shipment-status"
 _SHIPMENT_CONTRACT_VERSION = "0.1.0"
 _SHIPMENT_CONTRACT_DIGEST = "5d4d069f317df0c18f9e132b6fdbf9649bd6136808b2dc14507a0f2b10c99e38"

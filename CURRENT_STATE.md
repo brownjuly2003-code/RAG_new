@@ -6,27 +6,17 @@
 Last updated: 2026-08-25 · Plan: [`plan_23_08_2026.md`](plan_23_08_2026.md)
 (mode B) · Audit of record:
 [`docs/audits/audit_final_23_08_2026.md`](docs/audits/audit_final_23_08_2026.md)
-· HEAD when this was written: `8548a1c`
+· HEAD when this was written: `c3e86f4` + phase A.3
 
 ## Start here
 
-### 1. A.3 — the Evidence tab on the trace
+### 1. Phase B — the number this repository is actually judged on
 
-The last item in phase A, the first one that shows up in a UI, and the first
-consumer of the rows A.1b started writing: contract version, policy decision,
-claims → sources with freshness, postcondition, replay receipt, and a JSON
-export button. No redesign — calm white, existing surfaces.
+**Phase A is done.** 100 real labelled cases is what is left between this
+repository and a number worth publishing. Blocked on **Q2** below, with a
+decided fallback, so it never waits.
 
-A.2 is done — `/api/ask` takes a durable session turn behind
-`SESSION_DURABLE_TURNS` — so nothing else stands between phase A and something
-a user can see.
-
-### 2. Phase B — the number this repository is actually judged on
-
-100 real labelled cases. Blocked on **Q2** below, with a decided fallback, so
-it is never blocked waiting.
-
-### 3. Housekeeping with a date on it
+### 2. Housekeeping with a date on it
 
 **Review 2026-09-24:** the three chromadb CVE ignores. If a fixed release
 exists by then, upgrade and delete them from all four places the guard
@@ -34,27 +24,37 @@ requires them to match.
 
 ## What changed on 2026-08-25
 
-- **A.2 landed in two commits, and is a slice under rule (a)** — the second
-  one here. `3586b0a` wires `SessionService` into the synchronous `/api/ask`
-  behind `SESSION_DURABLE_TURNS`, off by default: one turn per session at a
-  time — a second request while the first is answering gets 503 — and the
-  message pair written by the transaction that ends the turn rather than by a
-  best-effort write that could lose it. Proved over HTTP against a disposable
-  PostgreSQL: 8 integration tests, 32 without a database. `8548a1c` makes the
-  process-wide `_db_retry_after` deadline a per-tenant, bounded cooldown, so
-  one tenant's database failure no longer stops every tenant's writes.
-  Deliberately absent: response replay, `Idempotency-Key`, `ETag`/`If-Match` —
-  REL-03D and the durable-HTTP work, still frozen.
-- **A.5 and the HTTP half of A.4** (`4a5bdf1`) made A.1 + A.5 the first slice
-  under rule (a): the evidence bundle read back out of the trace store, two
-  response bodies compared byte for byte. **A.1b** (`ae52cf7`) put the same
-  evidence into the resolution tables, and found a real defect on the way — an
-  unreachable database does not fail fast, so that write is bounded at 2s.
-- **Both inherited CI failures are closed** (`0fdb29c`, `af0d4fd`, `81427b5`).
-  ADR 0008's diagnosis of CI-RED-1 was wrong: there was no ledger defect. The
-  count named no tenant and the session connects as the Postgres superuser,
-  which RLS does not apply to, so it counted the previous test's row. The ADR
-  has a postscript; `BACKLOG.md` has the full account.
+- **Phase A closed** — A.1, A.1b, A.2, A.3, A.4 and A.5 all landed today.
+- **A.3 — the Evidence tab** (rule (a), third slice).
+  `GET /api/admin/traces/{trace_id}/evidence` joins a shadow step into what a
+  reviewer needs — contract, the policy decision with its own `recorded_at`,
+  every claim beside the evidence under it and how old that evidence was when
+  it was read, postconditions, and a replay receipt — and the admin UI renders
+  it beside Raw JSON with a JSON export. It reads the trace, not the
+  resolution tables: those are the queryable copy and their write is
+  best-effort, so a run whose write timed out still has a complete trace step.
+- **Building it found a defect that made the whole journey hollow.** The
+  shipment-id extractor matched only `SHP-…`, while the fixture TMS holds
+  `AC-…` and every test asks about `AC-100001`, so no question about a
+  shipment the fixture contains could reach an observation: every bundle
+  behind `/api/ask` was `CLARIFICATION_REQUIRED` with no source, no policy and
+  no claims. Fixed; the E2E now drives a `verified` journey with its claims
+  resolved to their evidence. Full account in `EVIDENCE_INDEX.md`.
+- **A.2 — the durable session turn** (rule (a), second slice). `3586b0a`
+  wires `SessionService` into the synchronous `/api/ask` behind
+  `SESSION_DURABLE_TURNS`, off by default: one turn per session at a time — a
+  second request while the first is answering gets 503 — and the message pair
+  written by the transaction that ends the turn rather than by a best-effort
+  write that could lose it. `8548a1c` makes the process-wide
+  `_db_retry_after` deadline a per-tenant, bounded cooldown. Deliberately
+  absent: response replay, `Idempotency-Key`, `ETag`/`If-Match` — REL-03D and
+  the durable-HTTP work, still frozen.
+- **A.5 + A.4** (`4a5bdf1`) made A.1 + A.5 the first slice under rule (a);
+  **A.1b** (`ae52cf7`) put the same evidence into the resolution tables and
+  bounded that write at 2s. **Both inherited CI failures are closed**
+  (`0fdb29c`, `af0d4fd`, `81427b5`) — ADR 0008's diagnosis of CI-RED-1 was
+  wrong and carries a postscript; `BACKLOG.md` and `EVIDENCE_INDEX.md` have
+  the detail.
 
 ## What is true right now
 
@@ -112,16 +112,16 @@ fixing a failing test is a repair — it goes in the corrections table of
 [`CLAUDE.md`](CLAUDE.md); it is the direct counter to FIN-01 / FIN-02, where
 local provability was the path of least resistance.
 
-## Phase A — in progress
+## Phase A — done
 
 | # | Item | Status |
 |---|---|---|
-| A.1 | Shadow wired into `/api/ask` behind a flag, evidence into the trace | done — `900236f`, 15 tests |
-| A.5 | `tests/integration/test_shipment_status_e2e.py` | done — `4a5bdf1`, 7 tests; **A.1 + A.5 = a slice under rule (a)** |
-| A.4 | Characterisation: legacy answer byte-identical, flag off vs on | done — `4a5bdf1`, byte comparison of two real response bodies |
-| A.1b | Evidence into the Postgres tables (migrations 024–030) | done — `ae52cf7`, 24 unit + 4 Postgres tests |
-| A.2 | `SessionService` admit/commit around sync `/api/ask`, per-tenant DB cooldown | done — `3586b0a` + `8548a1c`, 8 Postgres E2E + 47 unit; **a slice under rule (a)** |
-| A.3 | Evidence tab on the trace in admin/agent UI | **next** |
+| A.1 | Shadow wired into `/api/ask` behind a flag, evidence into the trace | `900236f`, 15 tests |
+| A.5 | `tests/integration/test_shipment_status_e2e.py` | `4a5bdf1`, 7 tests; **A.1 + A.5 = a slice under rule (a)** |
+| A.4 | Characterisation: legacy answer byte-identical, flag off vs on | `4a5bdf1`, byte comparison of two real response bodies |
+| A.1b | Evidence into the Postgres tables (migrations 024–030) | `ae52cf7`, 24 unit + 4 Postgres tests |
+| A.2 | `SessionService` admit/commit around sync `/api/ask`, per-tenant DB cooldown | `3586b0a` + `8548a1c`, 8 Postgres E2E + 47 unit; **a slice under rule (a)** |
+| A.3 | Evidence view endpoint + tab, JSON export | 3 E2E + 31 unit; **a slice under rule (a)** |
 
 ## Phase 0 — done
 

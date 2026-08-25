@@ -210,3 +210,82 @@ pre {
     padding-inline: 16px;
   }
 }
+
+/* Phase A.3 -- the Evidence view on a trace. Same calm white surface as the
+   rest of the page: no new colour, no card chrome, one accent for the state
+   the run reached. */
+#trace-views button.selected {
+  background: var(--surface-strong);
+  font-weight: 500;
+}
+
+.evidence {
+  margin-top: 12px;
+  font-size: 13px;
+}
+
+.evidence h3 {
+  margin: 20px 0 0;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.evidence h3:first-child {
+  margin-top: 0;
+}
+
+.evidence .empty {
+  color: var(--muted);
+}
+
+.evidence .terminal {
+  font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+  border: 1px solid var(--border);
+  padding: 2px 6px;
+}
+
+.evidence .claim {
+  margin-top: 12px;
+  padding-left: 12px;
+  border-left: 2px solid var(--border);
+}
+
+.evidence .claim-text {
+  margin: 0 0 6px;
+}
+
+.evidence .source {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.evidence .digest {
+  font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+  word-break: break-all;
+}
+
+.evidence .stale {
+  color: #8a4b00;
+}
+
+.evidence dl {
+  display: grid;
+  grid-template-columns: minmax(0, 220px) minmax(0, 1fr);
+  gap: 4px 16px;
+  margin: 8px 0 0;
+  font-size: 12px;
+}
+
+.evidence dt {
+  color: var(--muted);
+}
+
+.evidence dd {
+  margin: 0;
+  font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+  word-break: break-all;
+}

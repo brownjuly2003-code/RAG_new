@@ -11,7 +11,9 @@ router:
   out of the trace store rather than intercepted on the way in (A.5);
 - the response body is byte-for-byte the same with the shadow off and on
   (A.4 at the HTTP level — A.1 held it only by object identity inside the
-  process).
+  process);
+- the same run, opened through `GET /api/admin/traces/{id}/evidence`, is the
+  join an operator reads in the Evidence tab (A.3).
 
 The read-back matters. Between the observer and the Evidence tab that phase
 A.3 will build sit `_state_to_dict`, `json.dumps`, PII redaction and SQLite.
@@ -28,6 +30,8 @@ from __future__ import annotations
 import asyncio
 import sqlite3
 import uuid
+from collections.abc import Sequence
+from datetime import UTC, datetime, timedelta
 from typing import Any
 
 import pytest
@@ -41,11 +45,20 @@ _LEGACY_ANSWER = "Legacy pipeline answer, owned by the legacy pipeline."
 
 
 class _Retriever:
-    """The kernel gathers policy evidence through whatever the app has."""
+    """The kernel gathers policy evidence through whatever the app has.
+
+    Empty by default, which is what the A.1/A.4/A.5 tests want: they are about
+    the seam, and a journey that finds no policy still reaches the trace. The
+    A.3 tests hand it a policy document, because a bundle with no policy has no
+    claims either, and claims are what the Evidence tab is for.
+    """
+
+    def __init__(self, documents: Sequence[Any] = ()) -> None:
+        self._documents = list(documents)
 
     def get_relevant_documents(self, query: str) -> list[Any]:
         _ = query
-        return []
+        return list(self._documents)
 
 
 class _FakeSession:
@@ -149,7 +162,12 @@ def wired_app(monkeypatch: pytest.MonkeyPatch, integration_api_app, integration_
     production reads from `RESOLUTION_SHADOW_JOURNEYS`.
     """
 
-    def _install(*, open_trace: bool = True) -> Any:
+    def _install(
+        *,
+        open_trace: bool = True,
+        policy_documents: Sequence[Any] = (),
+        shipment_fixtures: Sequence[Any] | None = None,
+    ) -> Any:
         async def _fake_get_or_create_session(session_id: str | None, tenant_id: str = "default"):
             normalized = session_id or uuid.uuid4().hex
             key = (tenant_id, normalized)
@@ -163,7 +181,24 @@ def wired_app(monkeypatch: pytest.MonkeyPatch, integration_api_app, integration_
             integration_api_app, "_get_or_create_session", _fake_get_or_create_session
         )
         monkeypatch.setattr(integration_api_app, "log_audit", _fake_log_audit)
-        monkeypatch.setattr(integration_api_app, "_retriever", _Retriever(), raising=False)
+        monkeypatch.setattr(
+            integration_api_app,
+            "_retriever",
+            _Retriever(policy_documents),
+            raising=False,
+        )
+        if shipment_fixtures is not None:
+            # The contract gives a shipment observation a 300-second freshness
+            # window, and the fixture TMS that ships with the package is dated
+            # 2026-08-24. A journey run today against it escalates as
+            # EVIDENCE_STALE before it ever reaches a policy -- correct, and
+            # useless for testing what a completed journey looks like. Handing
+            # it an observation as recent as the question is what a real TMS
+            # would have; it changes nothing about the code under test.
+            monkeypatch.setattr(
+                "resolution.composition.load_shipment_fixtures",
+                lambda path=None: tuple(shipment_fixtures),
+            )
 
         def _enable_shadow() -> None:
             settings = integration_api_app.get_settings()
@@ -407,3 +442,160 @@ def test_a_database_that_never_answers_does_not_hang_the_endpoint(
 
     assert response.status_code == 200
     assert response.json()["answer"] == _LEGACY_ANSWER
+
+
+# --- phase A.3: the same run, read back through the Evidence endpoint --------
+#
+# These run a journey that *completes*, which the tests above deliberately do
+# not: they use the fixture TMS's own tenant, hand the retriever a policy
+# document and give the fixture an observation as recent as the question. All
+# three are needed because the contract puts a 300-second freshness window on
+# a shipment observation and requires exactly one policy, so anything else
+# escalates before a single claim is compiled — and claims are what an
+# Evidence tab is for.
+
+_POLICY_TENANT = "default"
+_SHIPMENT_ID = "AC-100001"
+
+
+def _recent_evidence() -> tuple[tuple[Any, ...], tuple[Any, ...]]:
+    """A fixture observation and a policy document, both current right now."""
+    from resolution.adapters.shipment_status import ShipmentFixture
+
+    now = datetime.now(UTC)
+    fixtures = (
+        ShipmentFixture(
+            tenant_id=_POLICY_TENANT,
+            shipment_id=_SHIPMENT_ID,
+            status="in_transit",
+            location="FRA",
+            estimated_delivery="2026-08-27",
+            observed_at=now - timedelta(seconds=30),
+            source_version="e2e-fixture-0.1",
+        ),
+    )
+    documents = (
+        {
+            "page_content": "Shipment status may be disclosed to the requesting party.",
+            "metadata": {
+                "tenant_id": _POLICY_TENANT,
+                "authority": "logistics-policy-primary",
+                "policy_revision": "2026-08-01",
+                "recorded_at": (now - timedelta(seconds=60)).isoformat(),
+                "valid_from": (now - timedelta(days=30)).isoformat(),
+                "valid_to": None,
+                "status_disclosure_allowed": True,
+                "content_digest": "0" * 64,
+            },
+        },
+    )
+    return fixtures, documents
+
+
+def _evidence_for(client, headers, trace_id: str) -> dict[str, Any]:
+    response = client.get(f"/api/admin/traces/{trace_id}/evidence", headers=headers)
+    assert response.status_code == 200, response.text
+    return response.json()
+
+
+def _ask_and_open_evidence(wired_app, client, headers, *, shadow: bool = True):
+    fixtures, documents = _recent_evidence()
+    enable_shadow = wired_app(policy_documents=documents, shipment_fixtures=fixtures)
+    if shadow:
+        enable_shadow()
+    answer = client.post("/api/ask", json={"question": _QUESTION}, headers=headers)
+    assert answer.status_code == 200
+    trace_id = answer.json()["trace_id"]
+    assert trace_id, "the answer named no trace, so there is nothing to open"
+    return _evidence_for(client, headers, trace_id), trace_id
+
+
+def test_a_real_question_produces_an_evidence_view_an_operator_can_read(
+    wired_app,
+    integration_client,
+    integration_headers,
+    _isolated_trace_store,
+) -> None:
+    """A.3 end to end: ask, then open the Evidence tab on the answer's trace.
+
+    The tab is not handed the bundle — it goes and gets it, by the trace id
+    the caller was given, through the same endpoint the browser calls. What
+    comes back is the join: the contract that ran, the decision the policy
+    made, and each claim next to the evidence under it with the age that
+    evidence had when it was read.
+    """
+    headers = integration_headers(_POLICY_TENANT, "admin")
+
+    view, trace_id = _ask_and_open_evidence(wired_app, integration_client, headers)
+
+    assert view["trace_id"] == trace_id
+    (journey,) = view["journeys"]
+    assert journey["journey"] == "shipment-status"
+    assert journey["contract"]["contract_id"] == "aircargo.shipment-status"
+    assert journey["contract"]["version"] == "0.1.0"
+    assert journey["terminal_state"] == "verified"
+
+    # The policy decision, carrying the policy's own time rather than the run's.
+    assert journey["policy"] is not None
+    assert journey["policy"]["source_id"] == "logistics-policy-primary"
+    assert journey["policy"]["source_version"] == "2026-08-01"
+    assert journey["policy"]["age_seconds"] >= 0.0
+
+    # Freshness against the observation's own timestamp. The TMS is a
+    # stand-in, so this says the join works and nothing about air cargo.
+    assert journey["observation"] is not None
+    assert journey["observation"]["source_id"] == "shipment-source-primary"
+    assert journey["observation"]["label"].startswith(_SHIPMENT_ID)
+    assert 0.0 <= journey["observation"]["age_seconds"] <= 300.0
+
+    # The replay receipt is the claim "this is reproducible", made checkable.
+    receipt = journey["replay_receipt"]
+    assert receipt["case_id"] and receipt["correlation_id"]
+    assert receipt["contract_digest"] and receipt["source_digest"]
+    assert receipt["policy_digest"] == "0" * 64
+
+
+def test_every_claim_the_run_made_names_the_evidence_under_it(
+    wired_app,
+    integration_client,
+    integration_headers,
+    _isolated_trace_store,
+) -> None:
+    """The tab's reason to exist: no claim rendered as supported by nothing.
+
+    A claim citing evidence the bundle does not carry is reported as
+    unresolved rather than dropped, so this asserts the real journey produces
+    none of those — and that everything it does cite resolves to evidence
+    whose digest matches the one the claim names.
+    """
+    headers = integration_headers(_POLICY_TENANT, "admin")
+
+    view, _ = _ask_and_open_evidence(wired_app, integration_client, headers)
+
+    (journey,) = view["journeys"]
+    assert journey["claims"], "the run made no claims, so there is nothing to justify"
+    for claim in journey["claims"]:
+        assert claim["unresolved"] == [], (
+            f"claim {claim['claim_id']} cites evidence the bundle does not carry"
+        )
+        assert claim["sources"], f"claim {claim['claim_id']} rests on nothing"
+        assert {source["kind"] for source in claim["sources"]} == {"observation", "policy"}
+        for source in claim["sources"]:
+            assert source["digest"], "evidence without a digest cannot be replayed"
+            assert source["digest_matches"] is True
+
+
+def test_a_trace_from_a_question_with_the_shadow_off_has_no_journeys(
+    wired_app,
+    integration_client,
+    integration_headers,
+    _isolated_trace_store,
+) -> None:
+    """Off by default, all the way to the tab: an empty panel, not an error."""
+    headers = integration_headers(_POLICY_TENANT, "admin")
+
+    view, _ = _ask_and_open_evidence(
+        wired_app, integration_client, headers, shadow=False
+    )
+
+    assert view["journeys"] == []

@@ -136,7 +136,13 @@
       <tbody></tbody>
     </table>
     <pre id="traces-output"></pre>
+    <div class="controls" id="trace-views" aria-label="Trace detail views">
+      <button type="button" id="btn-trace-raw" class="selected" aria-pressed="true">Raw JSON</button>
+      <button type="button" id="btn-trace-evidence" aria-pressed="false">Evidence</button>
+      <button type="button" id="btn-export-evidence" disabled>Export evidence JSON</button>
+    </div>
     <pre id="trace-detail"></pre>
+    <div id="trace-evidence" class="evidence" hidden></div>
   </section>
 
   <section id="tab-review-queue">

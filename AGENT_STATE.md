@@ -63,8 +63,8 @@ before any further release machinery.
 ## Current work
 
 Active plan: [`plan_23_08_2026.md`](plan_23_08_2026.md), mode B (evidence of
-engineering maturity, then publication). Phase 0 is done and phase A is under
-way — A.1, A.4, A.5, A.1b and A.2 all landed on 2026-08-25, A.3 is next. See
+engineering maturity, then publication). Phase 0 and phase A are done
+way — every phase-A item landed on 2026-08-25, and phase B is next. See
 [`CURRENT_STATE.md`](CURRENT_STATE.md) for the live status and
 [`ROADMAP.md`](ROADMAP.md) for what is frozen.
 

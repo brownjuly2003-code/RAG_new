@@ -106,6 +106,223 @@
     output.textContent = JSON.stringify({ status: result.status, body: result.body }, null, 2);
   });
 
+  // --- Phase A.3: the Evidence view on a trace ------------------------------
+  // The raw JSON pane stays exactly what it was. This one answers the question
+  // the raw pane cannot: why the run reached that state, on what evidence, and
+  // how old that evidence was when it was read. Everything is built with
+  // textContent -- an evidence bundle carries source text, and innerHTML here
+  // would make a shipment status an injection point.
+  var evidencePane = document.getElementById("trace-evidence");
+  var rawPane = document.getElementById("trace-detail");
+  var rawViewButton = document.getElementById("btn-trace-raw");
+  var evidenceViewButton = document.getElementById("btn-trace-evidence");
+  var exportEvidenceButton = document.getElementById("btn-export-evidence");
+  var loadedEvidence = null;
+
+  function el(tag, className, text) {
+    var node = document.createElement(tag);
+    if (className) {
+      node.className = className;
+    }
+    if (text !== undefined && text !== null) {
+      node.textContent = String(text);
+    }
+    return node;
+  }
+
+  function describeAge(seconds) {
+    // Age at the moment the shadow recorded the step, not age now: the same
+    // trace has to read the same way next week.
+    if (seconds === null || seconds === undefined || !isFinite(Number(seconds))) {
+      return "age unknown";
+    }
+    var value = Number(seconds);
+    if (value < 90) {
+      return Math.round(value) + "s old";
+    }
+    if (value < 5400) {
+      return Math.round(value / 60) + "m old";
+    }
+    if (value < 172800) {
+      return Math.round(value / 3600) + "h old";
+    }
+    return Math.round(value / 86400) + "d old";
+  }
+
+  function definitionList(pairs) {
+    var list = document.createElement("dl");
+    pairs.forEach(function (pair) {
+      if (pair[1] === null || pair[1] === undefined || pair[1] === "") {
+        return;
+      }
+      list.appendChild(el("dt", null, pair[0]));
+      list.appendChild(el("dd", null, pair[1]));
+    });
+    return list;
+  }
+
+  function renderSource(source) {
+    var line = el("p", "source");
+    line.appendChild(document.createTextNode(source.kind + ": " + (source.label || "-") + " - "));
+    line.appendChild(el("span", "digest", String(source.digest || "").slice(0, 12)));
+    line.appendChild(document.createTextNode(
+      " - " + describeAge(source.age_seconds) + " - observed " + (source.observed_at || "at an unknown time")
+    ));
+    if (source.digest_matches === false) {
+      // The claim cites one digest and the evidence carries another. Worth
+      // seeing: it means the claim was written against evidence that moved.
+      line.appendChild(document.createTextNode(" - cites a different digest"));
+    }
+    return line;
+  }
+
+  function renderJourney(journey) {
+    var contract = journey.contract || {};
+    var receipt = journey.replay_receipt || {};
+    var box = document.createElement("div");
+
+    box.appendChild(el("h3", null, "Contract"));
+    box.appendChild(definitionList([
+      ["journey", journey.journey],
+      ["contract", contract.contract_id],
+      ["version", contract.version],
+      ["digest", contract.digest]
+    ]));
+
+    box.appendChild(el("h3", null, "Outcome"));
+    var outcome = el("p");
+    outcome.appendChild(el("span", "terminal", journey.terminal_state || "-"));
+    if (journey.reason_codes && journey.reason_codes.length) {
+      outcome.appendChild(document.createTextNode(" " + journey.reason_codes.join(", ")));
+    }
+    box.appendChild(outcome);
+
+    box.appendChild(el("h3", null, "Policy decision"));
+    if (journey.policy) {
+      var policyDetail = journey.policy.detail || {};
+      box.appendChild(definitionList([
+        ["decision", policyDetail.decision],
+        ["authority", journey.policy.source_id],
+        ["data revision", journey.policy.source_version],
+        ["implementation", policyDetail.implementation_version],
+        ["recorded at", journey.policy.observed_at],
+        ["valid from", policyDetail.valid_from],
+        ["valid to", policyDetail.valid_to || "open"],
+        ["freshness", describeAge(journey.policy.age_seconds)]
+      ]));
+    } else {
+      box.appendChild(el("p", "empty", "No policy evidence in this bundle."));
+    }
+
+    box.appendChild(el("h3", null, "Claims and the evidence behind them"));
+    var claims = journey.claims || [];
+    if (!claims.length) {
+      box.appendChild(el("p", "empty", "This run made no material claims."));
+    }
+    claims.forEach(function (claim) {
+      var claimBox = el("div", "claim");
+      claimBox.appendChild(el("p", "claim-text", claim.text || claim.claim_id || "-"));
+      (claim.sources || []).forEach(function (source) {
+        claimBox.appendChild(renderSource(source));
+      });
+      if (claim.unresolved && claim.unresolved.length) {
+        claimBox.appendChild(el(
+          "p",
+          "source",
+          "cites evidence this bundle does not carry: " + claim.unresolved.join(", ")
+        ));
+      }
+      box.appendChild(claimBox);
+    });
+
+    box.appendChild(el("h3", null, "Postconditions"));
+    var postconditions = journey.postconditions || [];
+    if (!postconditions.length) {
+      box.appendChild(el("p", "empty", "No postconditions were checked."));
+    }
+    postconditions.forEach(function (postcondition) {
+      box.appendChild(el(
+        "p",
+        "source",
+        postcondition.postcondition_id + " " + postcondition.version + " - " + postcondition.result
+      ));
+    });
+
+    box.appendChild(el("h3", null, "Replay receipt"));
+    box.appendChild(definitionList([
+      ["mode", receipt.mode],
+      ["case", receipt.case_id],
+      ["case version", receipt.case_version],
+      ["correlation", receipt.correlation_id],
+      ["contract digest", receipt.contract_digest],
+      ["source", receipt.source_id],
+      ["source version", receipt.source_version],
+      ["source digest", receipt.source_digest],
+      ["policy authority", receipt.policy_authority],
+      ["policy revision", receipt.policy_data_revision],
+      ["policy digest", receipt.policy_digest],
+      ["evidence as of", journey.as_of]
+    ]));
+
+    return box;
+  }
+
+  function setEvidence(view) {
+    loadedEvidence = view;
+    evidencePane.textContent = "";
+    var journeys = view && Array.isArray(view.journeys) ? view.journeys : [];
+    exportEvidenceButton.disabled = journeys.length === 0;
+
+    if (!view) {
+      evidencePane.appendChild(el("p", "empty", "Evidence could not be loaded for this trace."));
+      return;
+    }
+    if (!journeys.length) {
+      evidencePane.appendChild(el(
+        "p",
+        "empty",
+        "No resolution journey ran for this trace. The shadow is off by default."
+      ));
+      return;
+    }
+    journeys.forEach(function (journey) {
+      evidencePane.appendChild(renderJourney(journey));
+    });
+  }
+
+  function showTraceView(name) {
+    var showEvidence = name === "evidence";
+    evidencePane.hidden = !showEvidence;
+    rawPane.hidden = showEvidence;
+    rawViewButton.classList.toggle("selected", !showEvidence);
+    evidenceViewButton.classList.toggle("selected", showEvidence);
+    rawViewButton.setAttribute("aria-pressed", String(!showEvidence));
+    evidenceViewButton.setAttribute("aria-pressed", String(showEvidence));
+  }
+
+  rawViewButton.addEventListener("click", function () {
+    showTraceView("raw");
+  });
+
+  evidenceViewButton.addEventListener("click", function () {
+    showTraceView("evidence");
+  });
+
+  exportEvidenceButton.addEventListener("click", function () {
+    if (!loadedEvidence) {
+      return;
+    }
+    var blob = new Blob([JSON.stringify(loadedEvidence, null, 2)], { type: "application/json" });
+    var url = URL.createObjectURL(blob);
+    var link = document.createElement("a");
+    link.href = url;
+    link.download = "evidence-" + (loadedEvidence.trace_id || "trace") + ".json";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  });
+
   document.getElementById("btn-load-traces").addEventListener("click", async function () {
     var limit = document.getElementById("traces-limit").value;
     var output = document.getElementById("traces-output");
@@ -114,6 +331,7 @@
 
     tracesTableBody.innerHTML = "";
     detail.textContent = "";
+    setEvidence(null);
 
     if (!result.ok || !result.body || !Array.isArray(result.body.traces)) {
       output.textContent = JSON.stringify({ status: result.status, body: result.body }, null, 2);
@@ -137,8 +355,15 @@
       detailsButton.type = "button";
       detailsButton.textContent = "Details";
       detailsButton.addEventListener("click", async function () {
-        var detailResult = await api("GET", "/api/admin/traces/" + encodeURIComponent(trace.trace_id || ""));
+        var traceId = trace.trace_id || "";
+        var detailResult = await api("GET", "/api/admin/traces/" + encodeURIComponent(traceId));
         detail.textContent = JSON.stringify({ status: detailResult.status, body: detailResult.body }, null, 2);
+
+        var evidenceResult = await api(
+          "GET",
+          "/api/admin/traces/" + encodeURIComponent(traceId) + "/evidence"
+        );
+        setEvidence(evidenceResult.ok ? evidenceResult.body : null);
       });
 
       actionCell.appendChild(detailsButton);

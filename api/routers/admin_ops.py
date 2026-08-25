@@ -169,17 +169,13 @@ async def admin_list_traces(
     return JSONResponse(content={"traces": traces})
 
 
-@router.get("/admin/traces/{trace_id}")
-async def admin_get_trace(
-    trace_id: str,
-    _user: dict = Depends(require_role("agent", "admin")),
-) -> JSONResponse:
+async def _load_trace_for_tenant(trace_id: str, tenant: str) -> Any:
+    """Read one trace, tenant-scoped when the trace store supports it."""
     if not re.fullmatch(r"[A-Za-z0-9\-]{8,64}", trace_id):
         raise HTTPException(status_code=400, detail="invalid trace_id format")
 
     from tracing.sqlite_trace import get_trace_detail  # noqa: PLC0415
 
-    tenant = _user.get("tenant") or get_current_tenant() or "default"
     detail_params = inspect.signature(get_trace_detail).parameters
     if "tenant_id" in detail_params or any(
         param.kind in (inspect.Parameter.VAR_KEYWORD, inspect.Parameter.VAR_POSITIONAL)
@@ -190,7 +186,38 @@ async def admin_get_trace(
         trace = await asyncio.to_thread(get_trace_detail, trace_id)
     if trace is None:
         raise HTTPException(status_code=404, detail="trace not found")
+    return trace
+
+
+@router.get("/admin/traces/{trace_id}")
+async def admin_get_trace(
+    trace_id: str,
+    _user: dict = Depends(require_role("agent", "admin")),
+) -> JSONResponse:
+    tenant = _user.get("tenant") or get_current_tenant() or "default"
+    trace = await _load_trace_for_tenant(trace_id, tenant)
     return JSONResponse(content=trace)
+
+
+@router.get("/admin/traces/{trace_id}/evidence")
+async def admin_get_trace_evidence(
+    trace_id: str,
+    _user: dict = Depends(require_role("agent", "admin")),
+) -> JSONResponse:
+    """The evidence bundle behind an answer, joined for a reader (phase A.3).
+
+    Reads the trace rather than the resolution tables on purpose: the tables
+    are the queryable copy and their write is best-effort and bounded, so a
+    run whose database write timed out still has a complete trace step. The
+    view carries `case_id` and `case_version` so the queryable copy stays one
+    lookup away. `journeys: []` is the honest answer for a trace that ran no
+    journey, which is most of them — the shadow is off by default.
+    """
+    from resolution.evidence_view import evidence_view  # noqa: PLC0415
+
+    tenant = _user.get("tenant") or get_current_tenant() or "default"
+    trace = await _load_trace_for_tenant(trace_id, tenant)
+    return JSONResponse(content=evidence_view(trace))
 
 
 @router.delete("/admin/traces")

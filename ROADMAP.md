@@ -9,19 +9,26 @@ parallel (A does not wait on Julia; B does).
 
 ## Active
 
-**Phase A is under way.** A.1 + A.5 landed on 2026-08-25 and are the first
+**Phase A is done.** A.1 + A.5 landed on 2026-08-25 and are the first
 slice this repository has had under rule (a): a shipment-status question
 through the real `/api/ask` leaves an evidence bundle in the trace, read back
 out of the trace store. A.4 closed with it, and A.1b put the same evidence
 into the resolution tables where it can be queried.
 
-**A.2 landed the same day** and is the second slice under rule (a):
-`/api/ask` takes a durable session turn behind `SESSION_DURABLE_TURNS`, so a
-session answers one request at a time and its message pair is written by the
-transaction that ends the turn; the process-wide database cooldown became
-per-tenant and bounded with it. Both of FIN-01's unwired halves —
-`resolution/` and `services/session.py` — now have production callers. Next,
-and last in phase A, is **A.3**: the Evidence tab.
+**A.2 and A.3 landed the same day.** A.2 is the second slice under rule (a): `/api/ask` takes a durable session turn behind
+`SESSION_DURABLE_TURNS`, so a session answers one request at a time and its
+message pair is written by the transaction that ends the turn; the
+process-wide database cooldown became per-tenant and bounded with it. A.3 is
+the third: `GET /api/admin/traces/{id}/evidence` and the Evidence tab beside
+Raw JSON, where a reviewer reads the contract, the policy decision, each claim
+next to the evidence under it with its age, and the replay receipt. Building
+it found that the shipment-id extractor could not match any id the fixture TMS
+holds, so every bundle behind `/api/ask` had been empty; fixed with an
+end-to-end test that sees a completed journey.
+
+Both of FIN-01's unwired halves — `resolution/` and `services/session.py` —
+now have production callers. **Next is phase B**, which needs Julia (Q2) and
+has a decided fallback if she is unavailable.
 
 Both inherited CI failures ([ADR 0008](docs/adr/0008-inherited-ci-red-disposition.md))
 are closed, and CI is green end to end for the first time. The chromadb CVE

@@ -37,6 +37,13 @@ Get-Content data/alerts.log -Tail 40
 2. Потом открой `/api/metrics` и сравни, какая метрика красная.
 3. Затем смотри конкретные trace_id через SQL и `/api/admin/traces/{trace_id}`
    (admin auth). Legacy unauthenticated trace UI удалён 2026-04-27 (Codex P0).
+4. Если на трассе отработал resolution-journey (флаг `RESOLUTION_SHADOW_JOURNEYS`),
+   `/api/admin/traces/{trace_id}/evidence` отдаёт разобранный evidence bundle:
+   контракт и его версия, решение политики со своим `recorded_at`, каждое
+   утверждение рядом с доказательствами под ним и их возрастом на момент
+   чтения, постусловия и replay receipt. В UI это вкладка **Evidence** рядом с
+   Raw JSON на `/static/admin.html` → Traces, там же кнопка выгрузки JSON.
+   `journeys: []` — нормальный ответ: shadow по умолчанию выключен.
 
 ## Алерты и действия
 
