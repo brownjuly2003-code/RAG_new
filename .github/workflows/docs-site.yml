@@ -72,6 +72,21 @@ jobs:
 
   deploy:
     needs: build
+    # GitHub Pages is not available on a private repository on this plan, so
+    # this job could only ever fail: `actions/deploy-pages` returns 404
+    # "Ensure GitHub Pages has been enabled" (run 32783283788). Q1 chose a
+    # private repository deliberately, so the deploy is what has to give, not
+    # the choice. The build job above still runs on every docs change and
+    # still gates on `npm audit --audit-level=high`, the dependency
+    # exceptions check, the type-check and the build itself — none of that is
+    # skipped, only the publish.
+    #
+    # A workflow that is permanently red teaches its readers to ignore red,
+    # which is the same argument ADR 0008 makes about the pip-audit jobs. This
+    # condition turns a guaranteed failure into an honest skip, and it lifts
+    # itself the moment the repository goes public — phase E, Q4 — with no
+    # edit needed here.
+    if: github.event.repository.visibility == 'public'
     runs-on: ubuntu-latest
     environment:
       name: github-pages

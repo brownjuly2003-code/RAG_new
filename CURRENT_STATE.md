@@ -52,18 +52,16 @@ fallback.
 
 ## What is true right now
 
-- **Remote exists** (2026-08-24): `brownjuly2003-code/RAG_new`, private,
-  `master` pushed, tag `freeze-2026-08-23` = `26866e9`, the state the audit
-  describes. The account's git protocol is ssh with no key loaded, so pushes go
-  over HTTPS:
+- **Remote exists** (2026-08-24): `brownjuly2003-code/RAG_new`, private, tag
+  `freeze-2026-08-23` = `26866e9` = the state the audit describes. The
+  account's git protocol is ssh with no key loaded, so pushes go over HTTPS:
   `git -c credential.helper='!gh auth git-credential' push origin master`.
 - **The kernel has a production caller** (2026-08-24), having had none for the
   whole life of the fork. `/api/ask` runs the shipment-status journey as a
   read-only shadow behind `RESOLUTION_SHADOW_JOURNEYS`, off by default; the
   answer stays the legacy one and tests hold it to that. The phase-A gate
-  command now returns a file rather than nothing:
-  `grep -rlE 'from resolution|services\.session' api` →
-  `api/routers/conversation.py`.
+  command returns a file rather than nothing:
+  `grep -rlE 'from resolution|services\.session' api` → `api/routers/conversation.py`.
 - **Zero real labelled cases.** All 17 resolution scenarios are synthetic;
   verified-resolution yield 1/17. Phase B is what changes this.
 - **Full unit suite green locally** (Windows): 2134 passed, 4 skipped,
@@ -77,8 +75,10 @@ fallback.
   on the three chromadb CVEs and nothing else — step 1 above closes them.
   Everything red still reproduces at the freeze tag on branch
   `baseline/freeze-2026-08-23`; compare against it before assuming a new
-  failure is inherited. The separate **"Deploy docs site" workflow is also
-  red** and has never been looked at.
+  failure is inherited. The **"Deploy docs site" workflow** was red because
+  Pages is unavailable on a private repo; its `deploy` job now skips while the
+  repo is private and lifts itself when Q4 makes it public. Its `build` job —
+  npm audit, type-check, build — still runs on every docs change.
 
 ## Accepted open risks
 
