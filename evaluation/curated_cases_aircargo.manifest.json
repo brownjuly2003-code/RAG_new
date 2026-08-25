@@ -1,0 +1,36 @@
+{
+  "batch_size": 20,
+  "case_source": "agent_authored_over_real_documents",
+  "case_source_note": "The 201 source documents are real (copied from D:/TestRag/corpus into the aircargo tenant on 2026-05-30). The 100 questions over them were written by an agent, not sampled from support traffic, so an approved label makes the labelling real, not the case.",
+  "dataset": "evaluation/curated_cases_aircargo.jsonl",
+  "dataset_sha256": "3737d694362d1867ca3d5983e3765d02c01110d2409145ba7e0f05c021d9c720",
+  "evidence_class": "agent_labelled",
+  "label_schema_version": "aircargo-case-labels/v1.0",
+  "schema_version": "aircargo-case-label-manifest/v1.0",
+  "summary": {
+    "agent_labelled_count": 100,
+    "approved_batches": [],
+    "binds_shipment_count": 0,
+    "case_count": 100,
+    "confidence_counts": {
+      "high": 77,
+      "low": 2,
+      "medium": 21
+    },
+    "expected_terminal_counts": {
+      "verified": 100
+    },
+    "journey_counts": {
+      "customs_docs": 11,
+      "exception_escalation": 17,
+      "out_of_scope": 66,
+      "shipment_status": 6
+    },
+    "journey_coverage_count": 34,
+    "real_labelled_count": 0,
+    "root_cause_counts": {
+      "no_contract_for_intent": 66,
+      "no_shipment_binding": 34
+    }
+  }
+}

@@ -8,6 +8,35 @@ override" and "Paused routing" below is the pre-audit autopilot queue, kept
 for history. In particular **REL-03D is frozen** — do not pick it up as the
 next local-only candidate.
 
+## 2026-08-25 — phase B is blocked on data, and B.1 is why
+
+B.1 labelled all 100 air-cargo cases
+([capsule](docs/evidence/b1-aircargo-journey-labels.md)). **Not one names a
+shipment.** 66 belong to no kernel journey; the other 34 are blocked by
+`no_shipment_binding` before the journey starts. Nothing in the corpus can
+reach an observation, a policy decision or a claim, so:
+
+- **B.2** (extend the fixture TMS to cover the cases) has nothing to cover.
+- **B.3** (first real numbers on the 100 cases) cannot be run — VR precision,
+  VRY and `pass^k` are all undefined on a corpus that starts no journey.
+- **B.5** (corpus v1.0 at `real_labelled`) needs cases the labels cannot
+  manufacture.
+
+`expected_terminal` is `verified` for 100/100 for the same reason: these are
+questions *about* air-cargo work, not requests *inside* it, so the corpus
+also exercises no escalation, disclosure or refusal path.
+
+**What a corpus that can measure resolution has to contain**, when the data
+arrives — each case needs the identifier a journey runs on (an AWB or shipment
+id the source system actually holds), the state of that shipment at the time
+the request was made, and the outcome the request actually got. Without those
+three, a case is a knowledge question no matter how it is labelled. Roughly a
+third of the corpus should end somewhere other than `verified` —
+clarification, escalation, refusal — or the safety paths stay unmeasured.
+
+**Do not** close this by writing more fixture instances. The repository has 17
+already; more of them is exactly the move FIN-02 named.
+
 ## Known-red CI, inherited (not caused by the phase-0 work)
 
 Both are decided — [ADR 0008](docs/adr/0008-inherited-ci-red-disposition.md).

@@ -8,6 +8,8 @@ on this list.
 
 - `synthetic` — fixtures the project wrote for itself. Proves the mechanism
   works; proves nothing about the domain.
+- `agent_labelled` — cases the agent labelled and no human has approved
+  (ADR 0008's fallback for phase B). It is a proposal, not evidence.
 - `real_labelled` — cases labelled from real air-cargo data by a human.
   **Nothing carries this class yet.** Phase B is the work of earning it.
 - `measured` — a number produced by a run that actually happened, with
@@ -142,6 +144,35 @@ No row here is `measured`: no number is published from this journey yet.
 runs against a fixture transport management system
 (`resolution/adapters/fixtures/shipment-status-v0.1.json`), so it demonstrates
 the wiring and proves nothing about air cargo. Phase B replaces it.
+
+## Phase B (2026-08-25) — the labels, and what they found
+
+| Slice | Evidence class | Evidence |
+|---|---|---|
+| B.1 journey/outcome/root-cause labels on all 100 air-cargo cases | `agent_labelled` | [capsule](docs/evidence/b1-aircargo-journey-labels.md) · `tests/test_aircargo_labels.py` (13) · `evaluation/curated_cases_aircargo.manifest.json` |
+
+**B.1 is not yet a slice under rule (b).** Rule (b) counts *real* labelled
+cases, and `real_labelled` is still 0: every label is the agent's proposal
+until the domain-owner proxy approves a batch of 20 (Q2). ADR 0008 decided
+that fallback in advance, and the code enforces it — `evidence_class` is
+derived from `approved_by`, so a file cannot claim the stronger class by
+writing it.
+
+What the labelling produced instead is a finding that changes the rest of
+phase B. **All 100 cases name no shipment**: 66 belong to no kernel journey at
+all, and the 34 that do are blocked before they start by
+`no_shipment_binding`. Nothing in the corpus can reach an observation, a
+policy decision or a claim, so B.3 — "the first real numbers on the 100
+labelled cases" — cannot be run against it, however good the kernel gets. The
+brief's own NO-GO check (§15, "100 cases не отражают реальные обращения") is
+what fired. `expected_terminal` is `verified` for 100 out of 100 for the same
+reason: these are questions *about* air-cargo work, not requests *inside* it,
+so the corpus exercises no escalation, disclosure or refusal path either.
+
+The provenance is narrower than the audit's shorthand as well: the 201 source
+documents are real, the 100 questions over them were written by an agent
+(`325d63c`, `6b7417d`, `32e841f`). An approval makes the **labelling** real,
+not the cases — the manifest says so in `case_source`.
 
 ## Corrections
 

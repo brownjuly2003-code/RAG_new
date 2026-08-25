@@ -6,15 +6,39 @@
 Last updated: 2026-08-25 · Plan: [`plan_23_08_2026.md`](plan_23_08_2026.md)
 (mode B) · Audit of record:
 [`docs/audits/audit_final_23_08_2026.md`](docs/audits/audit_final_23_08_2026.md)
-· HEAD when this was written: `d5da100`
+· HEAD when this was written: `c31d226` + the B.1 commit below
 
 ## Start here
 
-### 1. Phase B — the number this repository is actually judged on
+### 1. Phase B — the labels are done, and they changed the question
 
-**Phase A is done.** 100 real labelled cases is what is left between this
-repository and a number worth publishing. Blocked on **Q2** below, with a
-decided fallback, so it never waits.
+**B.1 landed on 2026-08-25.** All 100 air-cargo cases now carry a journey, an
+expected outcome, a root cause and an approval slot, checked by
+`tests/test_aircargo_labels.py` and pinned by
+`evaluation/curated_cases_aircargo.manifest.json`. Full account:
+[`docs/evidence/b1-aircargo-journey-labels.md`](docs/evidence/b1-aircargo-journey-labels.md).
+
+The labelling found that **no case in the corpus names a shipment.** 66 of the
+100 belong to no kernel journey at all; the other 34 are blocked before they
+start by `no_shipment_binding`. So the corpus cannot produce a
+verified-resolution number, a VRY or a `pass^k` no matter how good the kernel
+gets — **B.3 cannot be run against it**, and B.2 (extending the fixture TMS to
+cover the cases) has nothing to cover. This is the brief's own NO-GO check
+firing (§15: "100 cases не отражают реальные обращения"): these are questions
+*about* air-cargo work, not requests *inside* it.
+
+**The next action is a decision, not code** — see Q2 below. Two routes, and
+only the first produces `real_labelled`:
+
+1. **Real requests** — 100 support requests that named a shipment, from a
+   domain owner; labelled and approved the way B.1 already supports.
+2. **Explicitly synthetic instances** against the fixture TMS — cheap, but the
+   repository has 17 already and more of them does not move FIN-02.
+
+Independent of that, the 100 proposed labels await review in batches of 20:
+`python scripts/aircargo_labels.py report --batch 1`, then
+`approve --batch 1 --approver julia`. That does not fix the finding above; it
+only turns `agent_labelled` into `real_labelled` for the labelling itself.
 
 ### 2. Housekeeping with a date on it
 
@@ -24,37 +48,19 @@ requires them to match.
 
 ## What changed on 2026-08-25
 
-- **Phase A closed** — A.1, A.1b, A.2, A.3, A.4 and A.5 all landed today.
-- **A.3 — the Evidence tab** (rule (a), third slice).
-  `GET /api/admin/traces/{trace_id}/evidence` joins a shadow step into what a
-  reviewer needs — contract, the policy decision with its own `recorded_at`,
-  every claim beside the evidence under it and how old that evidence was when
-  it was read, postconditions, and a replay receipt — and the admin UI renders
-  it beside Raw JSON with a JSON export. It reads the trace, not the
-  resolution tables: those are the queryable copy and their write is
-  best-effort, so a run whose write timed out still has a complete trace step.
-- **Building it found a defect that made the whole journey hollow.** The
-  shipment-id extractor matched only `SHP-…`, while the fixture TMS holds
-  `AC-…` and every test asks about `AC-100001`, so no question about a
-  shipment the fixture contains could reach an observation: every bundle
-  behind `/api/ask` was `CLARIFICATION_REQUIRED` with no source, no policy and
-  no claims. Fixed; the E2E now drives a `verified` journey with its claims
-  resolved to their evidence. Full account in `EVIDENCE_INDEX.md`.
-- **A.2 — the durable session turn** (rule (a), second slice). `3586b0a`
-  wires `SessionService` into the synchronous `/api/ask` behind
-  `SESSION_DURABLE_TURNS`, off by default: one turn per session at a time — a
-  second request while the first is answering gets 503 — and the message pair
-  written by the transaction that ends the turn rather than by a best-effort
-  write that could lose it. `8548a1c` makes the process-wide
-  `_db_retry_after` deadline a per-tenant, bounded cooldown. Deliberately
-  absent: response replay, `Idempotency-Key`, `ETag`/`If-Match` — REL-03D and
-  the durable-HTTP work, still frozen.
-- **A.5 + A.4** (`4a5bdf1`) made A.1 + A.5 the first slice under rule (a);
-  **A.1b** (`ae52cf7`) put the same evidence into the resolution tables and
-  bounded that write at 2s. **Both inherited CI failures are closed**
-  (`0fdb29c`, `af0d4fd`, `81427b5`) — ADR 0008's diagnosis of CI-RED-1 was
-  wrong and carries a postscript; `BACKLOG.md` and `EVIDENCE_INDEX.md` have
-  the detail.
+- **Phase A closed** — A.1, A.1b, A.2, A.3, A.4 and A.5 all landed. `/api/ask`
+  runs the shipment-status journey as a read-only shadow, takes a durable
+  session turn, writes its evidence to both the trace and the resolution
+  tables, and shows it in an Evidence tab with a JSON export. Both flags
+  (`RESOLUTION_SHADOW_JOURNEYS`, `SESSION_DURABLE_TURNS`) default off and the
+  legacy answer is byte-identical either way. Building the tab found the defect
+  that had made the journey hollow: the shipment-id extractor matched only
+  `SHP-…` while the fixture TMS holds `AC-…`, so every bundle had been empty.
+  Detail and tests: the phase-A section of [`EVIDENCE_INDEX.md`](EVIDENCE_INDEX.md).
+- **B.1 — the 100 cases are labelled** (see above). `evaluation/aircargo_labels.py`
+  holds the vocabulary and the invariants; `scripts/aircargo_labels.py` is the
+  only supported way to record an approval, so the dataset, the manifest digest
+  and the `real_labelled` count cannot drift apart.
 
 ## What is true right now
 
@@ -63,44 +69,42 @@ requires them to match.
   account's git protocol is ssh with no key loaded, so pushes go over HTTPS:
   `git -c credential.helper='!gh auth git-credential' push origin master`.
 - **The kernel has a production caller** (2026-08-24), having had none for the
-  whole life of the fork. `/api/ask` runs the shipment-status journey as a
-  read-only shadow behind `RESOLUTION_SHADOW_JOURNEYS`, off by default; the
-  answer stays the legacy one and tests hold it to that. The phase-A gate
-  command returns a file rather than nothing:
+  whole life of the fork, and so does `services/session.py` (2026-08-25). Both
+  halves of FIN-01's "primitives with no caller" are closed:
   `grep -rlE 'from resolution|services\.session' api` → `api/routers/conversation.py`.
-- **`services/session.py` has a caller too** (2026-08-25), behind
-  `SESSION_DURABLE_TURNS`, also off by default. Both halves of FIN-01's
-  "primitives with no caller" are closed; what is left of FIN-01 is that
-  everything they run against is still synthetic.
-- **Zero real labelled cases.** All 17 resolution scenarios are synthetic;
-  verified-resolution yield 1/17. Phase B is what changes this.
-- **Full unit suite green in CI** (run 32874107015): 2234 passed, 25 skipped,
-  coverage 76.04% against a gate of 72; the integration job is 62 passed,
-  1 skipped. Unit scope understates the Postgres adapters
-  (`actions/postgres.py` and `knowledge/postgres.py` 0%,
-  `resolution/adapters/postgres.py` 29%, `services/session.py` under half):
-  the integration job exercises those, without `--cov`.
-- **CI is fully green** — 11/11 on run 32874107015, and has stayed green
-  through every phase-A commit. A red job now means a new problem; that was the
-  whole point of clearing the inherited ones. The "Deploy docs site" workflow
-  builds and skips its Pages deploy, which is unavailable on a private repo
-  and lifts itself when Q4 makes the repo public.
+  What is left of FIN-01 is that everything they run against is still synthetic.
+- **Zero real labelled cases**, now with a reason on the record rather than a
+  to-do: 100/100 labelled, 0 approved, 0 binding a shipment, and
+  `expected_terminal` `verified` for all 100 — so the corpus exercises no
+  escalation, disclosure or refusal path either.
+- **The 100 cases are agent-authored over real documents.** The 201 source
+  documents are real; the questions over them were written by an agent
+  (`325d63c`, `6b7417d`, `32e841f`), not sampled from traffic. An approval
+  makes the *labelling* real, not the cases — the audit's shorthand "100 real
+  air-cargo cases" is looser than the provenance supports.
+- **CI is fully green** — 11/11 on run 32874107015 (unit 2234 passed,
+  25 skipped, coverage 76.04% against a gate of 72; integration 62 passed,
+  1 skipped), and has stayed green through every phase-A commit. A red job now
+  means a new problem. Unit coverage understates the Postgres adapters, which
+  only the integration job exercises. The "Deploy docs site" workflow builds
+  and skips its Pages deploy, unavailable on a private repo until Q4.
+- **Postgres integration tests do not run on this laptop** (the WSL role has no
+  CREATEDB, sudo password unknown), so their gate is CI. Local mypy also
+  reports a numpy stub error the locked version does not have (2.5.1 installed
+  vs 2.4.4 locked) — not a code problem.
 
 ## Accepted open risks
 
 - **Three chromadb CVEs** (CVE-2026-45830 / 45833 / 45831), no fix version
-  available. Ignored by id per ADR 0008 — applied in `ci.yml`, still to apply
-  in `.pre-commit-config.yaml`. **Review 2026-09-24.** A new chromadb CVE must
-  still turn CI red.
+  available. Ignored by id per ADR 0008. **Review 2026-09-24.** A new chromadb
+  CVE must still turn CI red.
 - **The fixture TMS is a stand-in**, not a transport management system. Every
-  number measured through it is fixture-sourced and has to say so. Phase B
-  replaces it.
+  number measured through it is fixture-sourced and has to say so.
 - **The integration job connects to Postgres as a superuser**, so RLS is inert
   for any assertion that does not deliberately go through a NOBYPASSRLS
-  runtime role. All four Postgres modules do route their isolation assertions
-  through one, so nothing is unguarded today — but this is the trap CI-RED-1
-  fell into, and a new test that forgets it passes for the wrong reason. The
-  real fix is a non-superuser application role for the job; not scheduled.
+  runtime role. All four Postgres modules do — but a new test that forgets it
+  passes for the wrong reason. The fix is a non-superuser role for the job;
+  not scheduled.
 
 ## The rule that governs every slice
 
@@ -108,35 +112,32 @@ A slice counts only if **(a)** observable `/api/ask` or UI behaviour changed
 with an E2E test proving it, **(b)** real labelled cases went up, or **(c)** a
 published number changed with provenance. Anything else is preparation, and
 fixing a failing test is a repair — it goes in the corrections table of
-[`EVIDENCE_INDEX.md`](EVIDENCE_INDEX.md), not the slice table. Full text in
-[`CLAUDE.md`](CLAUDE.md); it is the direct counter to FIN-01 / FIN-02, where
-local provability was the path of least resistance.
+[`EVIDENCE_INDEX.md`](EVIDENCE_INDEX.md), not the slice table. B.1 is the
+honest edge of this rule: it is preparation until a batch is approved, and it
+says so.
 
-## Phase A — done
+## Phases 0 and A — done · B — in progress
 
 | # | Item | Status |
 |---|---|---|
-| A.1 | Shadow wired into `/api/ask` behind a flag, evidence into the trace | `900236f`, 15 tests |
-| A.5 | `tests/integration/test_shipment_status_e2e.py` | `4a5bdf1`, 7 tests; **A.1 + A.5 = a slice under rule (a)** |
-| A.4 | Characterisation: legacy answer byte-identical, flag off vs on | `4a5bdf1`, byte comparison of two real response bodies |
-| A.1b | Evidence into the Postgres tables (migrations 024–030) | `ae52cf7`, 24 unit + 4 Postgres tests |
-| A.2 | `SessionService` admit/commit around sync `/api/ask`, per-tenant DB cooldown | `3586b0a` + `8548a1c`, 8 Postgres E2E + 47 unit; **a slice under rule (a)** |
-| A.3 | Evidence view endpoint + tab, JSON export | 3 E2E + 31 unit; **a slice under rule (a)** |
-
-## Phase 0 — done
-
-0.1–0.3 all landed and every gate command in `plan_23_08_2026.md` §0 passes;
-per-fix commits and tests are in [`EVIDENCE_INDEX.md`](EVIDENCE_INDEX.md).
+| 0.1–0.3 | Freeze, publish, truth about gates | done, every §0 gate command passes |
+| A.1–A.5 | Shadow + durable turn + evidence tables + Evidence tab | done, three slices under rule (a) |
+| B.1 | Journey/outcome/root-cause labels on all 100 cases | **done**, `agent_labelled`, 0 approved |
+| B.2 | Fixture TMS covering the cases | **blocked** — no case binds a shipment |
+| B.3 | First real numbers on the labelled cases | **blocked** — same reason |
+| B.4 | Judge calibration 10 → ≥40 double-annotated routes | not started |
+| B.5 | Corpus v1.0 at `real_labelled` | needs Q2 route 1 |
 
 ## Open questions for Julia
 
 Q1 is answered (separate private repo). Each of these blocks only its own phase:
 
-- **Q2 (phase B):** act as domain-owner-proxy — approve 100 labels in batches
-  of 20, plus 40 double-annotated calibration routes. **If unanswered when
-  phase B starts**, ADR 0008 decides the fallback: proceed with agent-proposed
-  labels tagged `evidence_class: agent_labelled`, never `real_labelled`, with
-  phase B's gate explicitly not met and `real_labelled` still showing 0.
+- **Q2 (phase B), now two questions.** (a) Approve the proposed labels in
+  batches of 20 — the command is in §1 above. (b) **The one that matters:** can
+  100 real support requests that name a shipment be obtained? Without them
+  phase B has no measurable corpus, and B.2/B.3/B.5 stay blocked. If the answer
+  is no, the decision to record is that the repository measures resolution on
+  synthetic instances and says so wherever a number is published.
 - **Q3 (phase C):** heavy runs on Colab or the iMac. **Q4 (phase E):** publish
   as `RAG_new` or rename.
 
@@ -146,5 +147,4 @@ Q1 is answered (separate private repo). Each of these blocks only its own phase:
 - One row per slice, with evidence — [`EVIDENCE_INDEX.md`](EVIDENCE_INDEX.md)
 - Defect detail and the pre-audit queue — [`BACKLOG.md`](BACKLOG.md)
 - Agent conventions — [`CLAUDE.md`](CLAUDE.md) · removed surfaces —
-  [`DEPRECATIONS.md`](DEPRECATIONS.md) · history (do not plan from it) —
-  [`AGENT_STATE.md`](AGENT_STATE.md)
+  [`DEPRECATIONS.md`](DEPRECATIONS.md) · history — [`AGENT_STATE.md`](AGENT_STATE.md)

@@ -53,18 +53,22 @@ Phase B is what changes that.
 | Claim | Reality |
 |---|---|
 | Resolution scenarios | 17, all synthetic; verified-resolution yield 1/17 |
-| Real labelled cases | 0 |
+| Real labelled cases | 0 — 100 labelled 2026-08-25, none approved, **none binding a shipment** |
 | Judge calibration set | 10 cases |
 | Release machinery on top | 7 layers (G1–G8) |
 
 Phase B of the plan is the correction: 100 real labelled air-cargo cases
-before any further release machinery.
+before any further release machinery. B.1 labelled all 100 on 2026-08-25 and
+found that none of them names a shipment, so the corpus cannot start a journey
+and cannot produce a resolution number — the remaining phase-B items are
+blocked on data rather than on work. See `CURRENT_STATE.md` §1.
 
 ## Current work
 
 Active plan: [`plan_23_08_2026.md`](plan_23_08_2026.md), mode B (evidence of
-engineering maturity, then publication). Phase 0 and phase A are done
-way — every phase-A item landed on 2026-08-25, and phase B is next. See
+engineering maturity, then publication). Phase 0 and phase A are done — every
+phase-A item landed on 2026-08-25 — and phase B is open: B.1 (labels) landed
+the same day, B.2/B.3/B.5 are blocked on data. See
 [`CURRENT_STATE.md`](CURRENT_STATE.md) for the live status and
 [`ROADMAP.md`](ROADMAP.md) for what is frozen.
 

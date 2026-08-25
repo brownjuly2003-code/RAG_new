@@ -27,8 +27,18 @@ holds, so every bundle behind `/api/ask` had been empty; fixed with an
 end-to-end test that sees a completed journey.
 
 Both of FIN-01's unwired halves — `resolution/` and `services/session.py` —
-now have production callers. **Next is phase B**, which needs Julia (Q2) and
-has a decided fallback if she is unavailable.
+now have production callers.
+
+**Phase B has started, and B.1 changed the shape of the rest of it.** All 100
+air-cargo cases carry a journey, an expected outcome and a root cause
+([capsule](docs/evidence/b1-aircargo-journey-labels.md)), and the labelling
+found that **not one of them names a shipment**: 66 belong to no kernel
+journey, and the 34 that do are blocked by `no_shipment_binding` before they
+start. The corpus therefore cannot produce a verified-resolution number at
+all, so **B.2, B.3 and B.5 are blocked on data, not on work** — the brief's own
+NO-GO check (§15) is what fired. The labels themselves stay `agent_labelled`
+until a batch of 20 is approved (Q2); ADR 0008 decided that fallback in
+advance and the code enforces it.
 
 Both inherited CI failures ([ADR 0008](docs/adr/0008-inherited-ci-red-disposition.md))
 are closed, and CI is green end to end for the first time. The chromadb CVE
@@ -38,7 +48,7 @@ ignores carry a **review date of 2026-09-24**.
 |---|---|---|
 | **0** | Freeze, publish, truth about gates | root ≤ 8 md, remote exists, CI status known, pricing/README/eval-gate claims true |
 | **A** | Wire the shipment-status shadow into `/api/ask` | rule (a): E2E test on real endpoint behaviour + evidence bundle + replay receipt |
-| **B** | 100 real labelled air-cargo cases | rule (b): corpus v1.0 at `evidence_class: real_labelled`, ≥40 double-annotated calibration routes |
+| **B** | 100 real labelled air-cargo cases | rule (b): corpus v1.0 at `evidence_class: real_labelled`, ≥40 double-annotated calibration routes. B.1 done (`agent_labelled`); B.2/B.3/B.5 blocked — no case binds a shipment |
 | **C** | Quality leverage: Qwen3 benchmark, NLI second judge, claim-level compilation | rule (c): faithfulness ≥ 0.90 and precision ≥ 0.63 over 3 runs with a CI, **or** a NO-SHIP report with a cause |
 | **D** | pgvector spike, ADR 0007 | a table of numbers in the ADR; no migration without it |
 | **E** | Public artefact: README-first, 3-minute demo, `resolution-contracts` sub-package | repo public, CI green, numbers in README |
