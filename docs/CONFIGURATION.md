@@ -212,6 +212,39 @@ The journey currently ships against a **fixture** transport management system
 (`resolution/adapters/fixtures/shipment-status-v0.1.json`). Anything measured
 through it is fixture-sourced and has to say so.
 
+### Durable session turns
+
+| Variable | Default | Description |
+|---|---|---|
+| `SESSION_DURABLE_TURNS` | `false` | Wrap the synchronous `/api/ask` in `SessionService.admit_turn` → pipeline → `commit_turn`/`abort_turn`. One turn per session at a time; the message pair is written by the transaction that ends the turn |
+| `SESSION_TURN_DEADLINE_MARGIN_SEC` | `15.0` | How far past `REQUEST_TIMEOUT_SEC` a turn's deadline sits, so a request that used its whole budget still has room to commit |
+
+With the flag off, `/api/ask` behaves exactly as it did before phase A.2,
+including the best-effort message write it has always used. With it on, three
+things change and nothing else does:
+
+- a second request on a session that is still answering is refused with `503`
+  rather than racing the first one into an interleaved history;
+- the user/assistant pair and the turn's terminal state are written in one
+  transaction, and the session version moves with them, so the pair cannot be
+  silently lost the way the best-effort write could;
+- a request that dies before its answer ends its turn as `ABORTED` on the way
+  out, and a turn whose process is gone is expired on its deadline by the next
+  admission.
+
+The turn's identity is derived from the request — tenant, session, session
+version, question — and not taken from a header. An `Idempotency-Key`
+contract, `ETag`/`If-Match` and replay of a committed response body are
+durable-HTTP work, frozen in [`ROADMAP.md`](../ROADMAP.md) until a design
+partner asks for it; a turn stores the digest of its message pair and no
+payload. A repeat of a request whose turn already ended is therefore answered
+again on the pre-A.2 path rather than served from storage that does not exist.
+
+A database that is unreachable, slow or missing the session row costs the
+turn, not the answer: admission is bounded by `DB_PERSIST_TIMEOUT_SEC` and
+falls back to the pre-A.2 path. The one case that is a decision rather than a
+failure — this session already has a turn in flight — is the `503`.
+
 ### Channels, escalation, and reporting
 
 | Variable | Default | Description |

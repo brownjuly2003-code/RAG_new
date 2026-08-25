@@ -495,6 +495,37 @@ class SessionService:
             await db.flush()
             return TurnCommitOutcome(turn=_snapshot(turn), changed=True)
 
+    async def current_version(
+        self,
+        *,
+        tenant_id: str,
+        session_id: UUID,
+    ) -> int:
+        """Read the durable version of a session the tenant owns.
+
+        `admit_turn` asks the caller which version it believes it is
+        extending, and an HTTP handler has no other way to learn it: the
+        session bootstrap in `api/app.py` predates durable turns and never
+        reads the column. Deliberately an unlocked read — a version that moves
+        between this call and admission is the concurrent-turn case, and
+        `admit_turn` already rejects it rather than papering over it here.
+        """
+        tenant = _require_text(tenant_id, field="tenant_id", max_length=50)
+        if not isinstance(session_id, UUID):
+            raise InvalidSessionTurn("session_id must be a UUID")
+
+        async with self._session_factory() as db, db.begin():
+            await set_session_tenant_context(db, tenant)
+            version = await db.scalar(
+                select(Session.version).where(
+                    Session.id == session_id,
+                    Session.tenant_id == tenant,
+                )
+            )
+            if version is None:
+                raise SessionNotFound("session was not found for tenant")
+            return int(version)
+
     async def load_history(
         self,
         *,

@@ -4,12 +4,15 @@ from __future__ import annotations
 
 import asyncio
 import contextvars
+import hashlib
 import json as _json
 import logging
 import re
 import time
 import uuid
 from collections.abc import AsyncGenerator
+from dataclasses import dataclass
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Any, Optional
 
@@ -199,6 +202,319 @@ def _run_resolution_shadows(
         _shadow_trace_id.reset(token)
         _shadow_collect.reset(collect_token)
     return response
+
+
+# --- Durable session turns (plan 2026-08-23, phase A.2) ----------------------
+# Off unless SESSION_DURABLE_TURNS is set. With it on, /api/ask admits a
+# durable turn before it answers and ends that turn when it is done, so a
+# session runs one turn at a time and its message pair is written by the
+# transaction that marks the turn terminal -- not by the best-effort write
+# below, which has always been able to lose a pair without anyone noticing.
+#
+# What that changes observably: a second request arriving while the first is
+# still running is refused with the 503 this endpoint already uses for
+# saturation, instead of racing the first one into an interleaved history.
+#
+# What it deliberately does not do: replay a committed response body. That is
+# REL-03D, frozen in ROADMAP.md until a design partner asks for it, so a turn
+# stores the digest of its terminal message pair and no payload. A repeat of a
+# request whose turn already ended is answered on the pre-A.2 path rather than
+# served from storage that does not exist.
+_TURN_IDENTITY_DOMAIN = "api-ask-turn-v1"
+_TURN_DB_TIMEOUT_FALLBACK_SECONDS = 2.0
+
+# Built once against the application engine and reused; tests replace it.
+_session_turn_service: Any | None = None
+
+
+@dataclass(slots=True)
+class _DurableTurn:
+    """An admitted turn, and whether anything has ended it yet."""
+
+    service: Any
+    tenant_id: str
+    session_id: uuid.UUID
+    turn_id: str
+    turn_epoch: int
+    request_digest: str
+    settled: bool = False
+
+
+def _durable_turns_enabled() -> bool:
+    return bool(getattr(_app_module().get_settings(), "session_durable_turns", False))
+
+
+def _durable_turn_service() -> Any | None:
+    """Return the shared `SessionService`, or None if it cannot be built."""
+    global _session_turn_service
+    if _session_turn_service is None:
+        try:
+            from db.engine import async_session
+            from services.session import SessionService
+
+            _session_turn_service = SessionService(async_session)
+        except Exception:
+            logger.warning("durable session turns are unavailable", exc_info=True)
+            return None
+    return _session_turn_service
+
+
+def _durable_turn_identity(
+    *,
+    tenant_id: str,
+    session_id: str,
+    expected_version: int,
+    question: str,
+    confirm: bool,
+) -> tuple[str, str]:
+    """Derive the turn's idempotency key and request digest from the request.
+
+    Derived rather than taken from a header on purpose: an `Idempotency-Key`
+    contract belongs to the durable-HTTP work frozen in `ROADMAP.md`, and A.2
+    needs neither a new header nor a client that knows about one.
+
+    The digest says *what was asked*. The turn id is that digest bound to the
+    session version it extends, which is what makes the two cases behave
+    differently: a duplicate of a request still in flight lands on the same
+    turn id and is refused instead of starting a second turn, while a
+    different question -- or the same question after the previous turn ended
+    and moved the version -- gets an id of its own. A turn that aborted
+    therefore cannot lock its session out of ever asking again, which is the
+    failure a content-free key would have introduced.
+    """
+    request_digest = hashlib.sha256(
+        _json.dumps(
+            {
+                "domain": _TURN_IDENTITY_DOMAIN,
+                "tenant_id": tenant_id,
+                "session_id": session_id,
+                "question": question,
+                "confirm": bool(confirm),
+            },
+            ensure_ascii=False,
+            separators=(",", ":"),
+            sort_keys=True,
+        ).encode("utf-8")
+    ).hexdigest()
+    turn_id = "ask-" + hashlib.sha256(
+        f"{_TURN_IDENTITY_DOMAIN}:{int(expected_version)}:{request_digest}".encode()
+    ).hexdigest()
+    return turn_id, request_digest
+
+
+def _durable_turn_timeout() -> float:
+    return float(
+        getattr(
+            _app_module().get_settings(),
+            "db_persist_timeout_sec",
+            _TURN_DB_TIMEOUT_FALLBACK_SECONDS,
+        )
+    )
+
+
+def _session_busy(reason: str) -> HTTPException:
+    """The 503 that says this session is already answering something."""
+    try:
+        prometheus_metrics.record_pipeline_rejection(reason)
+    except Exception:
+        pass
+    return HTTPException(
+        status_code=503,
+        detail="This session already has a request in flight - retry in a moment",
+    )
+
+
+async def _admit_durable_turn(
+    *,
+    tenant_id: str,
+    session_id: str,
+    question: str,
+    confirm: bool,
+) -> _DurableTurn | None:
+    """Admit a durable turn for this request, or answer without one.
+
+    Returns None whenever the durable path cannot be taken: the flag is off,
+    the service or the session row is not there, the database did not answer
+    in time, or this exact request already has a turn that ended. `/api/ask`
+    then behaves as it did before A.2. That is the only acceptable failure
+    mode for a flag that is off in production -- a database problem may not
+    turn an answerable question into an error.
+
+    It raises 503 for the one case that is a decision rather than a failure:
+    this session already has a turn in flight, so answering now would
+    interleave two turns into one history.
+    """
+    if not _durable_turns_enabled():
+        return None
+    service = _durable_turn_service()
+    if service is None:
+        return None
+    try:
+        session_uuid = uuid.UUID(str(session_id))
+    except (TypeError, ValueError, AttributeError):
+        return None
+
+    from services.session import (
+        SessionNotFound,
+        SessionTurnActive,
+        SessionTurnIdempotencyConflict,
+        SessionVersionConflict,
+        TurnStatus,
+    )
+
+    settings = _app_module().get_settings()
+    timeout = _durable_turn_timeout()
+    deadline_at = datetime.now(UTC) + timedelta(
+        seconds=float(getattr(settings, "request_timeout_sec", 30.0))
+        + float(getattr(settings, "session_turn_deadline_margin_sec", 15.0))
+    )
+
+    try:
+        expected_version = await asyncio.wait_for(
+            service.current_version(tenant_id=tenant_id, session_id=session_uuid),
+            timeout=timeout,
+        )
+        turn_id, request_digest = _durable_turn_identity(
+            tenant_id=tenant_id,
+            session_id=str(session_id),
+            expected_version=expected_version,
+            question=question,
+            confirm=confirm,
+        )
+        outcome = await asyncio.wait_for(
+            service.admit_turn(
+                tenant_id=tenant_id,
+                session_id=session_uuid,
+                turn_id=turn_id,
+                request_digest=request_digest,
+                expected_version=expected_version,
+                deadline_at=deadline_at,
+            ),
+            timeout=timeout,
+        )
+    except SessionTurnActive:
+        raise _session_busy("session_turn_active") from None
+    except SessionVersionConflict:
+        # Another turn committed between the version read and this admission.
+        # Not an error in the data -- a race, and the loser retries.
+        raise _session_busy("session_version_conflict") from None
+    except SessionTurnIdempotencyConflict:
+        # Unreachable while the turn id is derived from the digest it is bound
+        # to; kept because reaching it would mean the derivation changed.
+        logger.warning("durable turn id is bound to another request digest")
+        return None
+    except SessionNotFound:
+        # The session row is not there: the bootstrap in api/app.py fell back
+        # to memory. Nothing durable to hang a turn on.
+        return None
+    except (TimeoutError, asyncio.TimeoutError):
+        logger.warning("durable turn admission timed out after %ss", timeout)
+        return None
+    except Exception:
+        logger.warning("durable turn admission failed", exc_info=True)
+        return None
+
+    turn = outcome.turn
+    if not outcome.admitted:
+        if turn.status == TurnStatus.RUNNING:
+            raise _session_busy("session_turn_duplicate")
+        # The same request already has a terminal turn. Replaying its response
+        # body is REL-03D and frozen, so answer it again without a turn rather
+        # than pretend a stored answer exists.
+        return None
+
+    return _DurableTurn(
+        service=service,
+        tenant_id=tenant_id,
+        session_id=session_uuid,
+        turn_id=turn.turn_id,
+        turn_epoch=turn.turn_epoch,
+        request_digest=turn.request_digest,
+    )
+
+
+async def _commit_durable_turn(turn: _DurableTurn, *, question: str, answer: str) -> bool:
+    """End the turn, writing its message pair in the same transaction.
+
+    True means the pair is durable, which is what tells `/api/ask` to skip the
+    best-effort write it would otherwise do. A turn that cannot commit is left
+    to expire on its deadline rather than half-written: the answer has already
+    gone out, and falling back to the best-effort write here would risk the
+    pair landing twice for one turn.
+    """
+    if turn.settled:
+        return False
+    if not question or not answer:
+        # `commit_turn` refuses an empty side of the pair, and it is right to:
+        # a turn whose answer is empty has nothing to make durable.
+        await _abort_durable_turn(turn)
+        return False
+    timeout = _durable_turn_timeout()
+    try:
+        await asyncio.wait_for(
+            turn.service.commit_turn(
+                tenant_id=turn.tenant_id,
+                session_id=turn.session_id,
+                turn_id=turn.turn_id,
+                turn_epoch=turn.turn_epoch,
+                request_digest=turn.request_digest,
+                user_content=question,
+                assistant_content=answer,
+            ),
+            timeout=timeout,
+        )
+    except (TimeoutError, asyncio.TimeoutError):
+        turn.settled = True
+        logger.warning("durable turn commit timed out after %ss", timeout)
+        _record_turn_persist_failure()
+        return False
+    except Exception:
+        turn.settled = True
+        logger.warning("durable turn commit failed", exc_info=True)
+        _record_turn_persist_failure()
+        return False
+    turn.settled = True
+    return True
+
+
+def _record_turn_persist_failure() -> None:
+    try:
+        prometheus_metrics.record_message_persist_failure("ask_turn_commit")
+    except Exception:
+        pass
+
+
+async def _abort_durable_turn(turn: _DurableTurn) -> None:
+    """Mark the turn terminal after a failure, so the session is not stuck.
+
+    Without this a failed request leaves a RUNNING turn holding its session
+    until the deadline elapses, and every retry in that window is refused.
+    Failures here are swallowed: `admit_turn` expires a turn past its deadline
+    on the next admission, so the deadline is the backstop and this is only
+    the fast path to it.
+    """
+    if turn.settled:
+        return
+    turn.settled = True
+    try:
+        await asyncio.wait_for(
+            turn.service.abort_turn(
+                tenant_id=turn.tenant_id,
+                session_id=turn.session_id,
+                turn_id=turn.turn_id,
+                turn_epoch=turn.turn_epoch,
+            ),
+            timeout=_durable_turn_timeout(),
+        )
+    except Exception:
+        logger.warning("durable turn abort failed; deadline will expire it", exc_info=True)
+
+
+async def _settle_durable_turn(slot: list[_DurableTurn]) -> None:
+    """Abort whatever the request left running, whichever way it left."""
+    for turn in slot:
+        if not turn.settled:
+            await _abort_durable_turn(turn)
 
 
 def _release_pipeline_capacity(semaphore: Any) -> None:
@@ -461,6 +777,23 @@ async def ask(
     _user: dict = Depends(get_current_user),
 ) -> AskResponse:
     """Ask a question to the RAG assistant."""
+    # A durable turn (phase A.2) has to end on every way out of the handler,
+    # including the ones that raise, so the handler hands it back through this
+    # slot and the cleanup lives here. Wrapping the four hundred lines below in
+    # a try/finally would say the same thing and bury the change that says it.
+    turn_slot: list[_DurableTurn] = []
+    try:
+        return await _answer_ask(request, body, _user, turn_slot)
+    finally:
+        await _settle_durable_turn(turn_slot)
+
+
+async def _answer_ask(
+    request: Request,
+    body: AskRequest,
+    _user: dict,
+    turn_slot: list[_DurableTurn],
+) -> AskResponse:
     _app = _app_module()
     t0 = time.monotonic()
     question = body.question.strip()
@@ -502,6 +835,15 @@ async def ask(
             session_finished_at - session_started_at,
             extra={"trace_id": request_id},
         )
+
+    durable_turn = await _admit_durable_turn(
+        tenant_id=tenant,
+        session_id=session_id,
+        question=question,
+        confirm=bool(body.confirm),
+    )
+    if durable_turn is not None:
+        turn_slot.append(durable_turn)
 
     cache_enabled = bool(getattr(settings, "llm_cache_enabled", False))
     if cache_enabled:
@@ -854,13 +1196,32 @@ async def ask(
             suggested_questions=[],
         )
 
-    await _persist_ask_messages(
-        session_id=session_id,
-        tenant_id=tenant,
-        question=question,
-        answer=response.answer,
-        path="ask",
-    )
+    # A durable turn owns its own write: `commit_turn` puts the pair and the
+    # turn's terminal state in one transaction. Only the pre-A.2 path falls
+    # through to the best-effort write, and a commit that failed does not fall
+    # back to it -- one turn may not write its pair twice.
+    committed = False
+    if durable_turn is not None:
+        committed = await _commit_durable_turn(
+            durable_turn,
+            question=question,
+            answer=response.answer,
+        )
+    if durable_turn is None:
+        await _persist_ask_messages(
+            session_id=session_id,
+            tenant_id=tenant,
+            question=question,
+            answer=response.answer,
+            path="ask",
+        )
+    else:
+        logger.debug(
+            "req_id=%s /api/ask durable turn %s committed=%s",
+            request_id or "-",
+            durable_turn.turn_id,
+            committed,
+        )
 
     await _app.log_audit(
         actor=_user.get("sub", "anonymous"),

@@ -1046,6 +1046,30 @@ class Settings:
         default_factory=_load_resolution_shadow_journeys
     )
 
+    # --- Durable session turns (plan 2026-08-23, phase A.2) ---
+    # SESSION_DURABLE_TURNS=true wraps the synchronous /api/ask in
+    # SessionService.admit_turn -> pipeline -> commit_turn / abort_turn, so a
+    # session runs one turn at a time and its message pair is written in the
+    # same transaction that ends the turn. Off by default: with the flag off
+    # the endpoint behaves exactly as it did before phase A.2, including the
+    # best-effort message write it has always used.
+    #
+    # This is admission and terminal commit only. Replaying a committed
+    # response body is REL-03D, frozen in ROADMAP.md until a design partner
+    # asks for it, so a turn stores no response payload here.
+    session_durable_turns: bool = field(
+        default_factory=lambda: os.getenv("SESSION_DURABLE_TURNS", "false").strip().lower()
+        in ("1", "true", "yes")
+    )
+
+    # How far past the request's own wall-clock budget the durable turn's
+    # deadline sits. The deadline is checked on the PostgreSQL clock at commit,
+    # so a turn that used its whole budget must still have room to commit;
+    # without the margin the last request before the wall would abort itself.
+    session_turn_deadline_margin_sec: float = field(
+        default_factory=lambda: float(os.getenv("SESSION_TURN_DEADLINE_MARGIN_SEC", "15.0"))
+    )
+
     # --- Продакшн-режим ---
     # REQUIRE_OLLAMA=true → fail fast если Ollama недоступна при старте.
     # По умолчанию false; local-first сообщает о недоступности через readiness.
