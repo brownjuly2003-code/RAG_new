@@ -20,21 +20,31 @@ migration baseline plus a new deterministic resolution kernel
 (`resolution/`, `knowledge/`, `actions/`, `services/session.py`, migrations
 024–031).
 
-**There is no git remote.** 909 commits exist in exactly one place.
+**Remote since 2026-08-24:** `brownjuly2003-code/RAG_new`, private, with the
+freeze tag `freeze-2026-08-23` on the state the audit describes.
 
 ## The single most important fact
 
-The kernel is **not wired into the product**. As of 2026-08-24:
+Until 2026-08-24 the kernel was **not wired into the product** — the grep
+below returned nothing, `/api/ask` had not changed since the fork, and every
+kernel slice was proven by its own tests against synthetic fixtures rather
+than by any user-visible behaviour change. That inversion of the critical path
+is finding FIN-01/FIN-02 of
+[`docs/audits/audit_final_23_08_2026.md`](docs/audits/audit_final_23_08_2026.md).
 
 ```
-grep -rlE "from (resolution|knowledge|actions)|services\.session" api/ agent/   # empty
+grep -rlE "from (resolution|knowledge|actions)|services\.session" api/   # api/routers/conversation.py
 ```
 
-`/api/ask` has not changed since the fork. Every kernel slice so far is
-proven by its own tests against synthetic fixtures, never by a user-visible
-behaviour change. That inversion of the critical path is finding FIN-01/FIN-02
-of [`docs/audits/audit_final_23_08_2026.md`](docs/audits/audit_final_23_08_2026.md)
-and it is what the current plan exists to correct.
+**Phase A has closed the wiring half** (2026-08-25): `/api/ask` runs the
+shipment-status journey as a read-only shadow behind
+`RESOLUTION_SHADOW_JOURNEYS`, off by default, and what it observes reaches both
+the trace and the resolution tables. `services.session` is still unwired —
+that is A.2.
+
+The other half is untouched: every scenario is still synthetic, the journey
+still runs against a fixture TMS, and real labelled cases are still zero.
+Phase B is what changes that.
 
 ## Where the numbers stand
 
@@ -51,7 +61,8 @@ before any further release machinery.
 ## Current work
 
 Active plan: [`plan_23_08_2026.md`](plan_23_08_2026.md), mode B (evidence of
-engineering maturity, then publication). Phase 0 in progress — see
+engineering maturity, then publication). Phase 0 is done and phase A is under
+way — A.1, A.4, A.5 and A.1b landed on 2026-08-25, A.2 is next. See
 [`CURRENT_STATE.md`](CURRENT_STATE.md) for the live status and
 [`ROADMAP.md`](ROADMAP.md) for what is frozen.
 

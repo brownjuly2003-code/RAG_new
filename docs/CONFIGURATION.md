@@ -182,6 +182,36 @@ Resilience layers apply in this order:
 | `AUDIT_PURGE_INTERVAL_SEC` | `86400` | Background audit purge interval |
 | `SHUTDOWN_READY_DELAY_SEC` | `5` | Drain delay between readiness flip and shutdown |
 
+### Resolution kernel shadow journeys
+
+| Variable | Default | Description |
+|---|---|---|
+| `RESOLUTION_SHADOW_JOURNEYS` | *(empty — off)* | Comma-separated journey names run as read-only shadows alongside `/api/ask`. Only `shipment-status` is known; an unknown name **fails at startup** rather than being ignored |
+
+A shadow observes the question the legacy pipeline has just answered and
+records what a contract-driven resolution journey would have concluded. It
+never owns the response: the answer the caller receives is byte-for-byte the
+same with the flag off and on, and a failure inside the shadow is logged
+rather than surfaced.
+
+Two things are written when a journey is enabled:
+
+- a `resolution_shadow` step in the same trace the answer names, carrying the
+  evidence bundle, so it is reachable from the response it explains;
+- a case and its evidence in `support_cases`, `case_events`,
+  `evidence_snapshots` and `case_evidence_links`, so the same bundle can be
+  queried rather than only read. The write is bounded (2s) and its failure is
+  never allowed to reach the caller — a database that is down costs the
+  shadow, not the answer.
+
+An unknown journey name is rejected at startup on purpose. A shadow is
+invisible by design, so a silent no-op on a typo would be indistinguishable
+from one that is running.
+
+The journey currently ships against a **fixture** transport management system
+(`resolution/adapters/fixtures/shipment-status-v0.1.json`). Anything measured
+through it is fixture-sourced and has to say so.
+
 ### Channels, escalation, and reporting
 
 | Variable | Default | Description |

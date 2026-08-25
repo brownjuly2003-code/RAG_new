@@ -17,15 +17,28 @@ base and decides whether a request can be resolved automatically or should be
 escalated to a human. Until the staged migration gates are green, those legacy
 paths remain the compatibility baseline rather than the new product boundary.
 
-**Inherited runtime status:** audit remediation in progress (revalidated 2026-08-03;
-index lifecycle work remains incomplete after local slice 4.8d3e). The active
-consolidated plan contains only remaining audit DoD plus the 2026-08-03 LLM/RAG
-gaps: project/production release is not complete. See
-[`docs/audits/audit_gpt_23_07_26.md`](docs/audits/audit_gpt_23_07_26.md) and
-[`docs/plans/rag-remediation-plan-2026-08-03.md`](docs/plans/rag-remediation-plan-2026-08-03.md).
-The earlier
-[docs/PROJECT_CLOSURE.md](docs/PROJECT_CLOSURE.md) note is historical and
-**superseded** by that revalidation.
+**Status, 2026-08-25.** The audit of record is
+[`docs/audits/audit_final_23_08_2026.md`](docs/audits/audit_final_23_08_2026.md)
+and the plan it produced is [`plan_23_08_2026.md`](plan_23_08_2026.md); the
+2026-08-03 remediation plan and
+[`docs/PROJECT_CLOSURE.md`](docs/PROJECT_CLOSURE.md) are history and are
+superseded by them.
+
+That audit's central finding was an inverted critical path: seven slices of
+resolution kernel, all proven against their own tests, while nothing under
+`api/` imported any of it and `/api/ask` had not changed since the fork.
+**Phase A ends that.** The shipment-status journey now runs as a read-only
+shadow behind `RESOLUTION_SHADOW_JOURNEYS` (off by default), and what it
+observes lands both in the trace the answer names and in the resolution
+tables. The legacy answer is unchanged, byte for byte, with the flag off or
+on.
+
+What is *not* yet true: every resolution scenario is synthetic, the journey
+runs against a fixture transport management system, and **zero cases are
+labelled from real data**. Numbers from this path are fixture-sourced and say
+so. Phase B is the work of changing that. Current position and the next action
+are in [`CURRENT_STATE.md`](CURRENT_STATE.md); one row per slice with its
+evidence is in [`EVIDENCE_INDEX.md`](EVIDENCE_INDEX.md).
 
 **Deployment model:** there is **no** hosted Hugging Face Space and none is
 planned. Users run the service **locally**. Hugging Face is not a publication
@@ -78,6 +91,12 @@ User / Email / Widget
 - **Knowledge loops:** Nightly eval drift checks, KB gap clustering, KB draft
   generation, freshness alerts, and weekly reports keep the knowledge base
   improving over time.
+- **Resolution kernel (shadow):** behind `RESOLUTION_SHADOW_JOURNEYS`, a
+  contract-driven journey observes the same question and records an evidence
+  bundle — the source observation it read, the policy decision that applied,
+  the claims it could support, and the terminal outcome it would have reached.
+  It never owns the response. See
+  [`docs/CONFIGURATION.md`](docs/CONFIGURATION.md#resolution-kernel-shadow-journeys).
 
 ### Module layout (high level)
 
@@ -95,6 +114,17 @@ User / Email / Widget
 - `monitoring/` — Prometheus metrics (~50); `tracing/` — Langfuse + OTel + SQLite trace store.
 - `ingestion/` — loaders, pipeline, categorizer, contextual headers.
 - `scripts/` — operational CLIs (regression eval, KB builders, chunking eval, nightly tasks).
+
+The resolution kernel is a separate set of packages, deliberately unaware of
+FastAPI. `api/` reaches them through one composition root and nothing else:
+
+- `resolution/` — contracts, the case/evidence domain, the shipment-status
+  journey, Postgres adapters, and `composition.py` (the only seam `api/` uses)
+  plus `persistence.py` (what a shadow run becomes in the tables).
+- `knowledge/` — bitemporal knowledge objects and their authority rules.
+- `actions/` — governed actions: manifests, policy, confirmation, outbox,
+  reconciliation, postconditions.
+- `services/session.py` — durable session admission and terminal commit.
 
 ### Type checking
 
@@ -463,6 +493,22 @@ streaming, concurrent sessions, escalation, and async upload flows. Browser
 accessibility/mobile smoke tests may skip automatically when optional
 Playwright dependencies are not installed.
 
+Several modules there need a **real PostgreSQL** and are skipped nowhere — they
+fail without one. They create a disposable database per module, run `alembic
+upgrade head` into it, and drop it afterwards, so they exercise the append-only
+triggers, row-level security and the temporal exclusion constraint rather than
+a mock of them: `test_resolution_postgres_persistence.py`,
+`test_temporal_knowledge_postgres.py`, `test_governed_actions_postgres.py`,
+`test_session_service_postgres.py`, `test_resolution_shadow_postgres.py`. Point
+`DATABASE_URL` at a scratch server before running the suite.
+
+Note for anyone adding assertions there: the CI database user is a **superuser**,
+which row-level security does not apply to even under `FORCE ROW LEVEL
+SECURITY`. Count and isolation assertions must either name the tenant
+explicitly or go through a `NOBYPASSRLS` runtime role, as the existing modules
+do. A test that relies on RLS to scope a query silently passes for the wrong
+reason — that is what CI-RED-1 was.
+
 ## CI
 
 GitHub Actions (`.github/workflows/ci.yml`) runs on every push and pull
@@ -498,7 +544,11 @@ tests/                  Unit and integration test suites
 tests/integration/      End-to-end coverage for critical user flows
 tracing/                SQLite tracing base/wrapper and OpenTelemetry setup
 vectordb/               ChromaDB manager, BM25 fusion, reranking
-alembic/                Migrations `001` through `017`
+resolution/             Contracts, case/evidence domain, shadow journeys, Postgres adapters
+knowledge/              Bitemporal knowledge objects and authority rules
+actions/                Governed actions: manifests, policy, outbox, reconciliation
+services/               Durable session admission and terminal commit
+alembic/                Migrations `001` through `031`
 demo/                   Demo docs and seed helpers
 codex-tasks/            Task backlog and archived implementation specs
 docs/research/          Research archive
