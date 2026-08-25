@@ -5,6 +5,17 @@
 - Audience: product owner, architecture, engineering, security, support operations
 - Inputs: source commit `bd071793258391408ed7d3b41883246f0b24bae2` and `D:\New_steps\rag.md`
 
+> **This is a design baseline, not a description of what runs.** It was
+> written before implementation and has not been rewritten since; read it for
+> the intended shape, and read [`CURRENT_STATE.md`](../../CURRENT_STATE.md)
+> for what actually exists. As of 2026-08-25 the kernel's domain, contracts,
+> governed actions and Postgres adapters are built, and the shipment-status
+> journey runs against `/api/ask` as a read-only shadow behind
+> `RESOLUTION_SHADOW_JOURNEYS`. It runs against a **fixture** transport
+> management system, and no case in this repository is labelled from real
+> data — so nothing here has yet been verified against the domain it
+> describes.
+
 ## Purpose
 
 `RAG_new` is a self-hosted **Verifiable Resolution OS** for complex B2B support. The unit of work is a durable `SupportCase` governed by an immutable `ResolutionContract` version, not a chat message or an LLM answer. A case is resolved only when required evidence is current and authorized, policy permits the path, every material claim is supported, actions are confirmed by their source of truth, and contract postconditions pass.
