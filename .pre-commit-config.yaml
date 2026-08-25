@@ -33,7 +33,7 @@ repos:
     rev: v2.10.0
     hooks:
       - id: pip-audit
-        args: ["--strict", "--disable-pip", "--require-hashes", "--timeout", "15", "--progress-spinner", "off", "--cache-dir", ".tmp/pip-audit-cache", "--ignore-vuln", "CVE-2026-45829", "--ignore-vuln", "GHSA-f4j7-r4q5-qw2c", "--ignore-vuln", "CVE-2025-3000", "-r", "requirements.lock"]
+        args: ["--strict", "--disable-pip", "--require-hashes", "--timeout", "15", "--progress-spinner", "off", "--cache-dir", ".tmp/pip-audit-cache", "--ignore-vuln", "CVE-2026-45829", "--ignore-vuln", "GHSA-f4j7-r4q5-qw2c", "--ignore-vuln", "CVE-2025-3000", "--ignore-vuln", "CVE-2026-45830", "--ignore-vuln", "CVE-2026-45833", "--ignore-vuln", "CVE-2026-45831", "-r", "requirements.lock"]
         files: ^(?:requirements(?:-dev)?\.(?:txt|lock)|\.pre-commit-config\.yaml)$
         pass_filenames: false
         # Audit the generated lock only. requirements.txt is intentionally
@@ -45,3 +45,13 @@ repos:
         # no fixed release as of 2026-06-12. torch is used only for local
         # sentence-transformers inference; torch.jit.script is never fed
         # untrusted input. Drop this ignore once an upstream fix ships.
+        # CVE-2026-45830, CVE-2026-45833, CVE-2026-45831 (chromadb): ignored
+        # from 2026-08-25, none with a fix version — 1.5.9 is the latest
+        # chromadb release on PyPI (re-checked 2026-08-25), so there is nothing
+        # to upgrade to. Accepted under ADR 0008, whose conditions are
+        # mandatory: by CVE id only, never a blanket ignore on the package,
+        # never dropping --strict, so a new chromadb advisory still fails this
+        # hook. REVIEW 2026-09-24: re-check for a fixed release; if one exists,
+        # upgrade and delete these three entries.
+        # Keep this list in sync with the security job in
+        # .github/workflows/ci.yml.

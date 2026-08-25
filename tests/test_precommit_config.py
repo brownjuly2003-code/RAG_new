@@ -120,10 +120,20 @@ def test_local_dependency_gates_match_ci_pip_audit_exception_policy() -> None:
 # reachable in this app (verified 2026-06-12): torch.jit.script is never
 # called, and Chroma runs as an embedded PersistentClient, never the server
 # API. Drop an entry the moment an upstream fix is released.
+#
+# The three 2026-45830/45833/45831 entries were added 2026-08-25 under
+# ADR 0008: chromadb 1.5.9 is the latest release on PyPI, so there is no
+# version to upgrade to, and holding the only supply-chain alarm in the
+# repository red on a finding nobody can act on stops it reporting the ones
+# that could be. They are ignored by id, never by package, and they carry a
+# review date. REVIEW 2026-09-24.
 EXPECTED_PIP_AUDIT_IGNORES = {
     "CVE-2026-45829",       # unfixed ChromaDB server advisory
     "GHSA-f4j7-r4q5-qw2c",  # GHSA alias of the same ChromaDB advisory
     "CVE-2025-3000",        # unfixed torch advisory (torch.jit.script memory corruption)
+    "CVE-2026-45830",       # unfixed chromadb advisory, no fix version — review 2026-09-24
+    "CVE-2026-45833",       # unfixed chromadb advisory, no fix version — review 2026-09-24
+    "CVE-2026-45831",       # unfixed chromadb advisory, no fix version — review 2026-09-24
 }
 
 _IGNORE_VULN_RE = re.compile(r"--ignore-vuln[\"',\s]+([A-Za-z0-9-]+)")
