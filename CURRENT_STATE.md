@@ -6,7 +6,7 @@
 Last updated: 2026-08-25 · Plan: [`plan_23_08_2026.md`](plan_23_08_2026.md)
 (mode B) · Audit of record:
 [`docs/audits/audit_final_23_08_2026.md`](docs/audits/audit_final_23_08_2026.md)
-· HEAD when this was written: `c3e86f4` + phase A.3
+· HEAD when this was written: `d5da100`
 
 ## Start here
 
@@ -74,14 +74,14 @@ requires them to match.
   everything they run against is still synthetic.
 - **Zero real labelled cases.** All 17 resolution scenarios are synthetic;
   verified-resolution yield 1/17. Phase B is what changes this.
-- **Full unit suite green in CI** (run 32864216309): 2203 passed, 25 skipped,
-  coverage 75.96% against a gate of 72; the integration job is 59 passed,
+- **Full unit suite green in CI** (run 32874107015): 2234 passed, 25 skipped,
+  coverage 76.04% against a gate of 72; the integration job is 62 passed,
   1 skipped. Unit scope understates the Postgres adapters
   (`actions/postgres.py` and `knowledge/postgres.py` 0%,
   `resolution/adapters/postgres.py` 29%, `services/session.py` under half):
   the integration job exercises those, without `--cov`.
-- **CI is fully green** — 11/11 on run 32864216309, and has stayed green
-  through both A.2 commits. A red job now means a new problem; that was the
+- **CI is fully green** — 11/11 on run 32874107015, and has stayed green
+  through every phase-A commit. A red job now means a new problem; that was the
   whole point of clearing the inherited ones. The "Deploy docs site" workflow
   builds and skips its Pages deploy, which is unavailable on a private repo
   and lifts itself when Q4 makes the repo public.
