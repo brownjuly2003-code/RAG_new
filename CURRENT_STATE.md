@@ -6,15 +6,20 @@
 Last updated: 2026-08-25 · Plan: [`plan_23_08_2026.md`](plan_23_08_2026.md)
 (mode B) · Audit of record:
 [`docs/audits/audit_final_23_08_2026.md`](docs/audits/audit_final_23_08_2026.md)
-· HEAD when this was written: `4a5bdf1`
+· HEAD when this was written: `8548a1c`
 
 ## Start here
 
-### 1. A.2 — `SessionService` admit/commit around sync `/api/ask`
+### 1. A.3 — the Evidence tab on the trace
 
-The last wiring item before anything a user can see. Then **A.3**, the Evidence
-tab, which is the first phase-A item that shows up in a UI — and the first
-consumer of the rows A.1b started writing.
+The last item in phase A, the first one that shows up in a UI, and the first
+consumer of the rows A.1b started writing: contract version, policy decision,
+claims → sources with freshness, postcondition, replay receipt, and a JSON
+export button. No redesign — calm white, existing surfaces.
+
+A.2 is done — `/api/ask` takes a durable session turn behind
+`SESSION_DURABLE_TURNS` — so nothing else stands between phase A and something
+a user can see.
 
 ### 2. Phase B — the number this repository is actually judged on
 
@@ -29,27 +34,27 @@ requires them to match.
 
 ## What changed on 2026-08-25
 
-- **CI-RED-1 is closed** (`0fdb29c`, green on both legs, run 32831583779). The
-  diagnosis in ADR 0008 was wrong: there was no ledger defect. Run rows are
-  inserted at one site with one caller, `ActionGateway.request`, and the test
-  calls it once. The count named no tenant, and the session connects as the
-  Postgres superuser, which RLS does not apply to — so it counted the previous
-  test's row too. The ADR has a postscript; `BACKLOG.md` has the full account.
-- **A.5 and the HTTP half of A.4 landed** (`4a5bdf1`). A shipment-status
-  question posted to `/api/ask` leaves exactly one `resolution_shadow` step in
-  the trace the answer names, and the bundle is read back **out of the trace
-  store**, not intercepted on the way in. The response body is byte-for-byte
-  identical with the shadow off and on. **A.1 + A.5 together are a slice under
-  rule (a)** — the first one here.
-- **CI-RED-2 closed** (`af0d4fd`) and the docs-site deploy conditioned
-  (`81427b5`): every workflow is green or honestly skipped.
-- **A.1b landed** (`ae52cf7`, 31 tests). The shadow's evidence now goes into
-  `support_cases` / `case_events` / `evidence_snapshots` /
-  `case_evidence_links`, so it is queryable and not merely visible. The case
-  walks the states the bundle justifies, checked against
-  `ALLOWED_CASE_TRANSITIONS` itself. Wiring it up found a real defect on the
-  way: an unreachable database does not fail fast, and the first version hung
-  `/api/ask` — the write is now bounded at 2s with a test holding it.
+- **A.2 landed in two commits, and is a slice under rule (a)** — the second
+  one here. `3586b0a` wires `SessionService` into the synchronous `/api/ask`
+  behind `SESSION_DURABLE_TURNS`, off by default: one turn per session at a
+  time — a second request while the first is answering gets 503 — and the
+  message pair written by the transaction that ends the turn rather than by a
+  best-effort write that could lose it. Proved over HTTP against a disposable
+  PostgreSQL: 8 integration tests, 32 without a database. `8548a1c` makes the
+  process-wide `_db_retry_after` deadline a per-tenant, bounded cooldown, so
+  one tenant's database failure no longer stops every tenant's writes.
+  Deliberately absent: response replay, `Idempotency-Key`, `ETag`/`If-Match` —
+  REL-03D and the durable-HTTP work, still frozen.
+- **A.5 and the HTTP half of A.4** (`4a5bdf1`) made A.1 + A.5 the first slice
+  under rule (a): the evidence bundle read back out of the trace store, two
+  response bodies compared byte for byte. **A.1b** (`ae52cf7`) put the same
+  evidence into the resolution tables, and found a real defect on the way — an
+  unreachable database does not fail fast, so that write is bounded at 2s.
+- **Both inherited CI failures are closed** (`0fdb29c`, `af0d4fd`, `81427b5`).
+  ADR 0008's diagnosis of CI-RED-1 was wrong: there was no ledger defect. The
+  count named no tenant and the session connects as the Postgres superuser,
+  which RLS does not apply to, so it counted the previous test's row. The ADR
+  has a postscript; `BACKLOG.md` has the full account.
 
 ## What is true right now
 
@@ -63,16 +68,20 @@ requires them to match.
   answer stays the legacy one and tests hold it to that. The phase-A gate
   command returns a file rather than nothing:
   `grep -rlE 'from resolution|services\.session' api` → `api/routers/conversation.py`.
+- **`services/session.py` has a caller too** (2026-08-25), behind
+  `SESSION_DURABLE_TURNS`, also off by default. Both halves of FIN-01's
+  "primitives with no caller" are closed; what is left of FIN-01 is that
+  everything they run against is still synthetic.
 - **Zero real labelled cases.** All 17 resolution scenarios are synthetic;
   verified-resolution yield 1/17. Phase B is what changes this.
-- **Full unit suite green locally** (Windows): 2134 passed, 4 skipped,
-  coverage 76.05% against a gate of 72 — widening the source to the kernel
-  packages raised it. Unit scope understates the Postgres adapters
+- **Full unit suite green in CI** (run 32864216309): 2203 passed, 25 skipped,
+  coverage 75.96% against a gate of 72; the integration job is 59 passed,
+  1 skipped. Unit scope understates the Postgres adapters
   (`actions/postgres.py` and `knowledge/postgres.py` 0%,
-  `resolution/adapters/postgres.py` 29%, `services/session.py` 44%): the
-  integration job exercises those, without `--cov`.
-- **CI is fully green** — 11/11 on run 32843444796, for the first time in the
-  life of this repository. A red job now means a new problem; that was the
+  `resolution/adapters/postgres.py` 29%, `services/session.py` under half):
+  the integration job exercises those, without `--cov`.
+- **CI is fully green** — 11/11 on run 32864216309, and has stayed green
+  through both A.2 commits. A red job now means a new problem; that was the
   whole point of clearing the inherited ones. The "Deploy docs site" workflow
   builds and skips its Pages deploy, which is unavailable on a private repo
   and lifts itself when Q4 makes the repo public.
@@ -86,25 +95,22 @@ requires them to match.
 - **The fixture TMS is a stand-in**, not a transport management system. Every
   number measured through it is fixture-sourced and has to say so. Phase B
   replaces it.
-- **The integration job connects to Postgres as a superuser**, so row-level
-  security is inert for any assertion that does not deliberately go through a
-  NOBYPASSRLS runtime role. All four Postgres modules currently do route their
-  isolation assertions through one, so nothing is unguarded today — but this is
-  the trap CI-RED-1 fell into, and a new test that forgets will pass for the
-  wrong reason. Fixing it properly means a non-superuser application role for
-  the whole job; not scheduled.
+- **The integration job connects to Postgres as a superuser**, so RLS is inert
+  for any assertion that does not deliberately go through a NOBYPASSRLS
+  runtime role. All four Postgres modules do route their isolation assertions
+  through one, so nothing is unguarded today — but this is the trap CI-RED-1
+  fell into, and a new test that forgets it passes for the wrong reason. The
+  real fix is a non-superuser application role for the job; not scheduled.
 
 ## The rule that governs every slice
 
 A slice counts only if **(a)** observable `/api/ask` or UI behaviour changed
 with an E2E test proving it, **(b)** real labelled cases went up, or **(c)** a
-published number changed with provenance. Anything else is preparation. Full
-text and rationale in [`CLAUDE.md`](CLAUDE.md); it is the direct counter to
-FIN-01 / FIN-02, where local provability was the path of least resistance.
-
-Fixing a failing test is **not** a slice and does not pretend to be — it is a
-repair, and it goes in the corrections table of
-[`EVIDENCE_INDEX.md`](EVIDENCE_INDEX.md).
+published number changed with provenance. Anything else is preparation, and
+fixing a failing test is a repair — it goes in the corrections table of
+[`EVIDENCE_INDEX.md`](EVIDENCE_INDEX.md), not the slice table. Full text in
+[`CLAUDE.md`](CLAUDE.md); it is the direct counter to FIN-01 / FIN-02, where
+local provability was the path of least resistance.
 
 ## Phase A — in progress
 
@@ -114,16 +120,13 @@ repair, and it goes in the corrections table of
 | A.5 | `tests/integration/test_shipment_status_e2e.py` | done — `4a5bdf1`, 7 tests; **A.1 + A.5 = a slice under rule (a)** |
 | A.4 | Characterisation: legacy answer byte-identical, flag off vs on | done — `4a5bdf1`, byte comparison of two real response bodies |
 | A.1b | Evidence into the Postgres tables (migrations 024–030) | done — `ae52cf7`, 24 unit + 4 Postgres tests |
-| A.2 | `SessionService` admit/commit around sync `/api/ask` | **next** |
-| A.3 | Evidence tab on the trace in admin/agent UI | open |
+| A.2 | `SessionService` admit/commit around sync `/api/ask`, per-tenant DB cooldown | done — `3586b0a` + `8548a1c`, 8 Postgres E2E + 47 unit; **a slice under rule (a)** |
+| A.3 | Evidence tab on the trace in admin/agent UI | **next** |
 
 ## Phase 0 — done
 
-0.1–0.3 all landed; every gate command in `plan_23_08_2026.md` §0 passes.
-`c4b2d0c` pricing snapshot · `f57ade8` eval-gate + ragas evidence classes ·
-`4d82a68` kernel packages into mypy/coverage + cookie `Origin` fail-closed ·
-`e541385` root 46 → 9 md · `fdeff62` the errors the widened type scope found.
-Per-fix tests: the corrections table in [`EVIDENCE_INDEX.md`](EVIDENCE_INDEX.md).
+0.1–0.3 all landed and every gate command in `plan_23_08_2026.md` §0 passes;
+per-fix commits and tests are in [`EVIDENCE_INDEX.md`](EVIDENCE_INDEX.md).
 
 ## Open questions for Julia
 
@@ -134,14 +137,14 @@ Q1 is answered (separate private repo). Each of these blocks only its own phase:
   phase B starts**, ADR 0008 decides the fallback: proceed with agent-proposed
   labels tagged `evidence_class: agent_labelled`, never `real_labelled`, with
   phase B's gate explicitly not met and `real_labelled` still showing 0.
-- **Q3 (phase C):** heavy runs on Colab or the iMac.
-- **Q4 (phase E):** publish as `RAG_new` or rename.
+- **Q3 (phase C):** heavy runs on Colab or the iMac. **Q4 (phase E):** publish
+  as `RAG_new` or rename.
 
 ## Links
 
 - Roadmap and what is frozen — [`ROADMAP.md`](ROADMAP.md)
 - One row per slice, with evidence — [`EVIDENCE_INDEX.md`](EVIDENCE_INDEX.md)
 - Defect detail and the pre-audit queue — [`BACKLOG.md`](BACKLOG.md)
-- Agent conventions — [`CLAUDE.md`](CLAUDE.md)
-- Removed/deprecated surfaces — [`DEPRECATIONS.md`](DEPRECATIONS.md)
-- History (do not plan from it) — [`AGENT_STATE.md`](AGENT_STATE.md)
+- Agent conventions — [`CLAUDE.md`](CLAUDE.md) · removed surfaces —
+  [`DEPRECATIONS.md`](DEPRECATIONS.md) · history (do not plan from it) —
+  [`AGENT_STATE.md`](AGENT_STATE.md)

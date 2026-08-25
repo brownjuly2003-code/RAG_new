@@ -64,6 +64,8 @@ than in a summary elsewhere, because they are the argument for phase B.
 | A.5 the same shadow, proved through the endpoint | `fixture` | `tests/integration/test_shipment_status_e2e.py` (7 tests) |
 | A.4 legacy body byte-identical, shadow off vs on | `fixture` | same file, `test_the_response_body_is_byte_identical_with_the_shadow_off_and_on` |
 | A.1b evidence into the resolution tables | `fixture` | `tests/test_resolution_shadow_persistence.py` (24) + `tests/integration/test_resolution_shadow_postgres.py` (4) |
+| A.2 durable session turn around sync `/api/ask` | `synthetic` | `tests/integration/test_session_turns_e2e.py` (8, real Postgres) + `tests/test_session_turn_wiring.py` (32) |
+| A.2 database cooldown per tenant, and bounded | `synthetic` | `tests/test_db_cooldown_per_tenant.py` (15) |
 
 **A.1 + A.5 together are a slice under rule (a)** (2026-08-25, `4a5bdf1`).
 A.1 alone was not: the behaviour change was real — a `resolution_shadow` step
@@ -87,6 +89,31 @@ actually walked, the `evidence_snapshots` it read, and the
 The case path is asserted against `ALLOWED_CASE_TRANSITIONS` itself rather
 than restated, and the round trip runs against real Postgres with the
 append-only triggers and both evidence constraints live.
+
+**A.2** (2026-08-25, `3586b0a` and `8548a1c`) is the second slice under rule
+(a), and the first one that does not involve the resolution kernel at all.
+`services/session.py` had a durable turn lifecycle with no caller — the other
+half of FIN-01. Behind `SESSION_DURABLE_TURNS`, `/api/ask` now admits a turn
+before it answers and ends it when it is done: a second request on a session
+that is still answering gets a 503 instead of racing the first one, and the
+message pair is written by the transaction that marks the turn terminal
+rather than by a best-effort write that could drop it. The endpoint is driven
+over HTTP against a disposable PostgreSQL and the rows are read back — turn
+status, committed version, the pair through
+`GET /api/sessions/{id}/history` after the in-memory session map is cleared.
+
+Its second half fixes a defect the audit named: one process-wide
+`_db_retry_after` deadline meant a single tenant's database failure stopped
+session lookups and message writes for every tenant for a minute. The
+cooldown is now per tenant and bounded, with a test that fails against the
+old code — tenant B's pair is written while tenant A is in cooldown.
+
+Deliberately absent: replay of a committed response body, `Idempotency-Key`,
+`ETag`/`If-Match`. That is REL-03D and the durable-HTTP work, frozen in
+`ROADMAP.md`; a turn stores the digest of its pair and no payload.
+
+These rows are `synthetic`, not `fixture`: no fixture TMS is involved. They
+prove the mechanism and say nothing about the domain.
 
 No row here is `measured`: no number is published from this journey yet.
 

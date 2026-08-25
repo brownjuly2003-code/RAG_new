@@ -13,7 +13,15 @@ parallel (A does not wait on Julia; B does).
 slice this repository has had under rule (a): a shipment-status question
 through the real `/api/ask` leaves an evidence bundle in the trace, read back
 out of the trace store. A.4 closed with it, and A.1b put the same evidence
-into the resolution tables where it can be queried. Next is A.2, then A.3.
+into the resolution tables where it can be queried.
+
+**A.2 landed the same day** and is the second slice under rule (a):
+`/api/ask` takes a durable session turn behind `SESSION_DURABLE_TURNS`, so a
+session answers one request at a time and its message pair is written by the
+transaction that ends the turn; the process-wide database cooldown became
+per-tenant and bounded with it. Both of FIN-01's unwired halves —
+`resolution/` and `services/session.py` — now have production callers. Next,
+and last in phase A, is **A.3**: the Evidence tab.
 
 Both inherited CI failures ([ADR 0008](docs/adr/0008-inherited-ci-red-disposition.md))
 are closed, and CI is green end to end for the first time. The chromadb CVE
