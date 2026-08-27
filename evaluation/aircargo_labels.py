@@ -310,8 +310,12 @@ def summarise(cases: Sequence[LabelledCase]) -> LabelSummary:
     )
 
 
-def load_labelled_cases(path: Path) -> tuple[LabelledCase, ...]:
-    """Read the dataset and require every case to carry a label.
+def load_labelled_cases_from_bytes(
+    dataset_bytes: bytes,
+    *,
+    source_name: str,
+) -> tuple[LabelledCase, ...]:
+    """Parse one UTF-8 dataset snapshot and require a label on every case.
 
     Phase B's claim is "100% of cases have a journey/outcome or an explicit
     out-of-scope", so a case without a label is a failure to load, not a case
@@ -319,24 +323,24 @@ def load_labelled_cases(path: Path) -> tuple[LabelledCase, ...]:
     """
     cases: list[LabelledCase] = []
     seen: set[str] = set()
-    for number, raw_line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
+    for number, raw_line in enumerate(dataset_bytes.decode("utf-8").splitlines(), start=1):
         line = raw_line.strip()
         if not line or line.startswith("#"):
             continue
         payload = json.loads(line)
         case_id = payload.get("case_id")
         if not isinstance(case_id, str) or not case_id:
-            raise ValueError(f"{path.name}:{number} has no case_id")
+            raise ValueError(f"{source_name}:{number} has no case_id")
         if case_id in seen:
-            raise ValueError(f"{path.name}:{number} repeats case_id {case_id!r}")
+            raise ValueError(f"{source_name}:{number} repeats case_id {case_id!r}")
         seen.add(case_id)
         label_payload = payload.get("label")
         if not isinstance(label_payload, Mapping):
-            raise ValueError(f"{path.name}:{number} ({case_id}) carries no label")
+            raise ValueError(f"{source_name}:{number} ({case_id}) carries no label")
         try:
             label = CaseLabel.from_mapping(label_payload)
         except ValueError as error:
-            raise ValueError(f"{path.name}:{number} ({case_id}): {error}") from error
+            raise ValueError(f"{source_name}:{number} ({case_id}): {error}") from error
         tags = payload.get("tags") or []
         cases.append(
             LabelledCase(
@@ -349,14 +353,23 @@ def load_labelled_cases(path: Path) -> tuple[LabelledCase, ...]:
     return tuple(cases)
 
 
+def load_labelled_cases(path: Path) -> tuple[LabelledCase, ...]:
+    """Read the dataset and require every case to carry a label."""
+    return load_labelled_cases_from_bytes(path.read_bytes(), source_name=path.name)
+
+
+def dataset_digest_bytes(dataset_bytes: bytes) -> str:
+    """SHA-256 of dataset bytes, normalised to ``\\n`` line endings."""
+    return hashlib.sha256(dataset_bytes.replace(b"\r\n", b"\n")).hexdigest()
+
+
 def dataset_digest(path: Path) -> str:
     """SHA-256 of the dataset bytes, normalised to ``\\n`` line endings.
 
     A manifest that pins a digest which changes with a checkout on another
     platform pins nothing.
     """
-    raw = path.read_bytes().replace(b"\r\n", b"\n")
-    return hashlib.sha256(raw).hexdigest()
+    return dataset_digest_bytes(path.read_bytes())
 
 
 def build_manifest(
@@ -422,7 +435,9 @@ __all__ = [
     "RootCause",
     "build_manifest",
     "dataset_digest",
+    "dataset_digest_bytes",
     "load_labelled_cases",
+    "load_labelled_cases_from_bytes",
     "summarise",
     "verify_manifest",
 ]

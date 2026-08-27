@@ -392,6 +392,15 @@ class ShipmentShadowResult:
     evidence_export: ShipmentEvidenceExport
 
 
+@dataclass(frozen=True, slots=True)
+class AdmissionSignals:
+    """The exact facts evaluated by the shipment-status admission gate."""
+
+    has_shipment_reference: bool
+    has_domain_noun: bool
+    has_status_cue: bool
+
+
 class ShipmentStatusShadowLoop:
     """Deterministic fixture-backed shipment journey that never owns a legacy response."""
 
@@ -662,13 +671,20 @@ class ShipmentStatusShadowLoop:
 
     @staticmethod
     def _is_admitted(messages: tuple[str, ...]) -> bool:
-        if any(_SHIPMENT_ID_PATTERN.search(message) is not None for message in messages):
-            return True
-        if any(
-            _TRUNCATED_SHIPMENT_REFERENCE_PATTERN.search(message) is not None
+        signals = ShipmentStatusShadowLoop.admission_signals(messages)
+        return (
+            signals.has_shipment_reference
+            or signals.has_domain_noun and signals.has_status_cue
+        )
+
+    @staticmethod
+    def admission_signals(messages: tuple[str, ...]) -> AdmissionSignals:
+        """Expose the exact lexical facts that the admission kernel evaluates."""
+        has_shipment_reference = any(
+            _SHIPMENT_ID_PATTERN.search(message) is not None
+            or _TRUNCATED_SHIPMENT_REFERENCE_PATTERN.search(message) is not None
             for message in messages
-        ):
-            return True
+        )
         conversation_tokens = tuple(
             token
             for message in messages
@@ -684,7 +700,11 @@ class ShipmentStatusShadowLoop:
             for token in conversation_tokens
             for cue in vocabulary["status_cues"]
         )
-        return has_domain_noun and has_status_cue
+        return AdmissionSignals(
+            has_shipment_reference=has_shipment_reference,
+            has_domain_noun=has_domain_noun,
+            has_status_cue=has_status_cue,
+        )
 
     @staticmethod
     def _is_current(*, recorded_at: datetime, checked_at: datetime, max_age_seconds: int) -> bool:
@@ -828,6 +848,7 @@ def run_legacy_ask_shadow(
 
 
 __all__ = [
+    "AdmissionSignals",
     "ClaimCandidate",
     "ClaimEvidenceLink",
     "ContractIdentity",
