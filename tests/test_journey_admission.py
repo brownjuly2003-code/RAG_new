@@ -67,19 +67,19 @@ def test_report_publishes_decline_and_corpus_reachability_diagnostics() -> None:
     report = score_default_corpus(git_sha="test-sha")
 
     assert report.decline_reasons == {
-        "no_shipment_reference": 100,
-        "no_domain_noun": 88,
-        "no_status_cue": 97,
-        "neither_domain_noun_nor_status_cue": 85,
+        "no_shipment_reference": 99,
+        "no_domain_noun": 78,
+        "no_status_cue": 94,
+        "neither_domain_noun_nor_status_cue": 73,
     }
     assert report.script_composition == {
         "contains_latin": 33,
         "contains_no_latin": 67,
     }
     assert report.vocabulary_reachability == {
-        "contains_domain_noun": 12,
-        "contains_status_cue": 3,
-        "contains_both_domain_noun_and_status_cue": 0,
+        "contains_domain_noun": 22,
+        "contains_status_cue": 6,
+        "contains_both_domain_noun_and_status_cue": 1,
     }
 
     payload = report.as_dict()
