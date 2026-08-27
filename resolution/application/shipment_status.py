@@ -29,6 +29,54 @@ _SHIPMENT_ID_PATTERN = re.compile(
     r"(?<![A-Z0-9])(?:SHP-[A-Z0-9]{1,32}|AC-[0-9]{1,32})(?![A-Z0-9])",
     re.IGNORECASE,
 )
+# An incomplete `SHP-` or `AC-` prefix is a truncated shipment reference, not
+# an intent phrase. The negative lookahead makes this distinct from a valid ID
+# matched by `_SHIPMENT_ID_PATTERN` above.
+_TRUNCATED_SHIPMENT_REFERENCE_PATTERN = re.compile(
+    r"(?<![A-Z0-9])(?:SHP-|AC-)(?![A-Z0-9])",
+    re.IGNORECASE,
+)
+# Lexical admission vocabulary: `shipment` and `status` come from the pinned
+# shipment-status contract; `location`, `transit`, `hold`, and `delivered`
+# come from its fixture TMS. `cargo`, `air waybill`, and `awb` are the minimal
+# air-cargo request nouns. `_matches_lexical_form` recognizes their regular
+# plurals; `held` remains explicit because it is irregular.
+_SHIPMENT_STATUS_ADMISSION_VOCABULARY = {
+    "domain_nouns": frozenset(
+        {
+            "shipment",
+            "cargo",
+            "air waybill",
+            "awb",
+        }
+    ),
+    "status_cues": frozenset(
+        {
+            "status",
+            "where",
+            "location",
+            "eta",
+            "transit",
+            "hold",
+            "held",
+            "holding",
+            "delay",
+            "delayed",
+            "delaying",
+            "arrive",
+            "arrived",
+            "arriving",
+            "arrival",
+            "deliver",
+            "delivered",
+            "delivering",
+            "delivery",
+            "track",
+            "tracked",
+            "tracking",
+        }
+    ),
+}
 _SHIPMENT_CONTRACT_ID = "aircargo.shipment-status"
 _SHIPMENT_CONTRACT_VERSION = "0.1.0"
 _SHIPMENT_CONTRACT_DIGEST = "5d4d069f317df0c18f9e132b6fdbf9649bd6136808b2dc14507a0f2b10c99e38"
@@ -119,6 +167,28 @@ class ShipmentPolicyPort(Protocol):
 def _require_aware(value: datetime, field: str) -> None:
     if value.tzinfo is None or value.utcoffset() is None:
         raise ValueError(f"{field} must be timezone-aware")
+
+
+def _matches_lexical_form(token: str, form: str) -> bool:
+    if token == form:
+        return True
+    if token.endswith("ies") and token[:-3] + "y" == form:
+        return True
+    if token.endswith("es") and token[:-2] == form:
+        return True
+    return token.endswith("s") and token[:-1] == form
+
+
+def _contains_admission_noun(tokens: tuple[str, ...], noun: str) -> bool:
+    noun_tokens = tuple(noun.split())
+    width = len(noun_tokens)
+    return any(
+        all(
+            _matches_lexical_form(token, noun_token)
+            for token, noun_token in zip(tokens[index : index + width], noun_tokens, strict=True)
+        )
+        for index in range(len(tokens) - width + 1)
+    )
 
 
 @dataclass(frozen=True, slots=True)
@@ -363,6 +433,13 @@ class ShipmentStatusShadowLoop:
         )
 
     def run(self, request: ShipmentShadowRequest) -> ShipmentShadowResult:
+        if not self._is_admitted(request.messages):
+            return self._finish(
+                request=request,
+                terminal_state=TerminalOutcome.CANCELLED,
+                reason_codes=("NOT_IN_JOURNEY",),
+            )
+
         shipment_id = self._extract_shipment_id(request.messages)
         if shipment_id is None:
             return self._finish(
@@ -582,6 +659,32 @@ class ShipmentStatusShadowLoop:
                 match.group(0).upper() for match in _SHIPMENT_ID_PATTERN.finditer(message)
             )
         return matches[-1] if matches else None
+
+    @staticmethod
+    def _is_admitted(messages: tuple[str, ...]) -> bool:
+        if any(_SHIPMENT_ID_PATTERN.search(message) is not None for message in messages):
+            return True
+        if any(
+            _TRUNCATED_SHIPMENT_REFERENCE_PATTERN.search(message) is not None
+            for message in messages
+        ):
+            return True
+        conversation_tokens = tuple(
+            token
+            for message in messages
+            for token in re.findall(r"[a-z0-9]+", message.casefold())
+        )
+        vocabulary = _SHIPMENT_STATUS_ADMISSION_VOCABULARY
+        has_domain_noun = any(
+            _contains_admission_noun(conversation_tokens, noun)
+            for noun in vocabulary["domain_nouns"]
+        )
+        has_status_cue = any(
+            _matches_lexical_form(token, cue)
+            for token in conversation_tokens
+            for cue in vocabulary["status_cues"]
+        )
+        return has_domain_noun and has_status_cue
 
     @staticmethod
     def _is_current(*, recorded_at: datetime, checked_at: datetime, max_age_seconds: int) -> bool:

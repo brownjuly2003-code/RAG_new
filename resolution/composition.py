@@ -29,7 +29,7 @@ from resolution.application.shipment_status import (
     ShipmentShadowResult,
     ShipmentStatusShadowLoop,
 )
-from resolution.contracts.models import ResolutionContract
+from resolution.contracts.models import ResolutionContract, TerminalOutcome
 
 logger = logging.getLogger(__name__)
 
@@ -97,6 +97,11 @@ def build_shipment_status_observer(
             result = loop.run(request)
         except Exception:
             logger.warning("shipment-status shadow failed", exc_info=True)
+            return None
+        if (
+            result.terminal_state is TerminalOutcome.CANCELLED
+            and result.reason_codes == ("NOT_IN_JOURNEY",)
+        ):
             return None
         if sink is not None:
             try:

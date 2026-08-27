@@ -117,11 +117,11 @@ SCENARIOS = (
         "SHIPMENT_ID_REQUIRED",
     ),
     Scenario(
-        "missing-two-turn",
+        "declined-two-turn",
         "missing",
         ("Hello", "Please check it"),
-        TerminalOutcome.CLARIFICATION_REQUIRED,
-        "SHIPMENT_ID_REQUIRED",
+        TerminalOutcome.CANCELLED,
+        "NOT_IN_JOURNEY",
     ),
     Scenario(
         "missing-partial-token",
@@ -131,11 +131,11 @@ SCENARIOS = (
         "SHIPMENT_ID_REQUIRED",
     ),
     Scenario(
-        "missing-whitespace",
+        "declined-whitespace",
         "missing",
         ("   ",),
-        TerminalOutcome.CLARIFICATION_REQUIRED,
-        "SHIPMENT_ID_REQUIRED",
+        TerminalOutcome.CANCELLED,
+        "NOT_IN_JOURNEY",
     ),
     Scenario(
         "unknown-single",
