@@ -5,14 +5,10 @@
 The admission gate landed (`6651964`, `36d4269`, `bd82297`). T-03 then made
 its clarification terminal observable through `/api/ask`, and T-04 made
 disabled, declined and failed shadow production distinct in Evidence without
-changing the legacy answer. These two items are the remaining queue; both are
-verified, neither is a guess.
+changing the legacy answer. T-07 is closed by the report-v1.3 provenance
+repair; T-09 is the remaining queue and is verified, not a guess.
 Detail: [capsule](docs/evidence/a6-journey-admission-and-clarification.md).
 
-- **T-07** — report-level reproducibility does not cover the corpus, and
-  `rev-parse HEAD` is resolved separately from the `HEAD:path` reads.
-  File: `evaluation/journey_admission.py`. Review findings F-T-02-8 and
-  F-T-02-9, both reproduced in-process.
 - **T-09** — the paradigm validator's single-space check cannot fire,
   because `split()` has already collapsed the separator. File:
   `resolution/application/shipment_status.py`. Review finding from T-08

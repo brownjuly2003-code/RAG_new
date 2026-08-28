@@ -204,13 +204,14 @@ fitted to this corpus.
 
 The before/after table and the report as it prints are in the capsule,
 which also records that T-02 fixed four earlier provenance defects.
-T-07 is still open: `reproducible_from_head` can report true while
-`rev-parse HEAD` and the `HEAD:path` reads are not pinned to one
-resolved SHA, so the printed SHA can disagree with the bytes compared;
-the check also does not cover the corpus or the manifest. Commits:
-`6651964` (T-01, the gate), `36d4269` (T-02, the scorer), `bd82297`
-(T-08, the Russian half). All three are local, not pushed, and have
-not been through remote CI.
+T-07 closes the remaining provenance gap in report schema v1.3: corpus and
+manifest are each read once, their exact snapshots join the code inputs in
+`reproducible_from_head`, and every comparison uses the same resolved commit
+SHA rather than symbolic `HEAD:path`. Inputs outside the repository fail
+closed. Two regressions were RED before the repair; the isolated Mac gate is
+11 passed plus strict Mypy and Ruff. Commits: `6651964` (T-01, the gate),
+`36d4269` (T-02, the scorer), `bd82297` (T-08, the Russian half), and T-07
+(this commit). All are local, not pushed, and have not been through remote CI.
 
 ## A.7 (2026-08-27) — clarification owns the opt-in endpoint answer
 

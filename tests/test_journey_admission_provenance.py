@@ -6,6 +6,9 @@ import hashlib
 import subprocess
 from pathlib import Path
 
+import pytest
+
+import evaluation.journey_admission as journey_admission
 from evaluation.journey_admission import CODE_DIGEST_PATHS, code_provenance
 
 
@@ -93,3 +96,54 @@ def test_code_provenance_marks_a_dirty_label_loader_not_reproducible_from_head(
 
     assert provenance.head_sha != "unknown"
     assert provenance.reproducible_from_head is False
+
+
+def test_code_provenance_reads_blobs_from_the_resolved_head_sha(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    _write_report_sources(tmp_path)
+    resolved_sha = "a" * 40
+    batch_request: bytes | None = None
+
+    def fake_run_git(
+        arguments: tuple[str, ...],
+        *,
+        project_root: Path,
+        input_bytes: bytes | None = None,
+    ) -> subprocess.CompletedProcess[bytes]:
+        nonlocal batch_request
+        assert project_root == tmp_path
+        if arguments == ("rev-parse", "HEAD"):
+            return subprocess.CompletedProcess(
+                ["git", *arguments],
+                0,
+                stdout=f"{resolved_sha}\n".encode("ascii"),
+                stderr=b"",
+            )
+        assert arguments == ("cat-file", "--batch")
+        batch_request = input_bytes
+        output = b"".join(
+            f"{'b' * 40} blob {len(contents)}\n".encode("ascii") + contents + b"\n"
+            for contents in (
+                (tmp_path / relative_path).read_bytes() for relative_path in CODE_DIGEST_PATHS
+            )
+        )
+        return subprocess.CompletedProcess(
+            ["git", *arguments],
+            0,
+            stdout=output,
+            stderr=b"",
+        )
+
+    monkeypatch.setattr(journey_admission, "_run_git", fake_run_git)
+
+    provenance = code_provenance(project_root=tmp_path)
+
+    expected_request = b"".join(
+        resolved_sha.encode("ascii") + b":" + path.as_posix().encode("utf-8") + b"\n"
+        for path in CODE_DIGEST_PATHS
+    )
+    assert batch_request == expected_request
+    assert provenance.head_sha == resolved_sha
+    assert provenance.reproducible_from_head is True

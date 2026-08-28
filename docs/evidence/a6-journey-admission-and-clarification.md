@@ -179,17 +179,15 @@ would have left a number that looked like evidence:
    bytes scored were not the bytes hashed;
 4. a bare concatenation digest, so different file splits collided.
 
-The report now prints HEAD, a length-framed digest over the four files
-that decide the result, the framing rule itself, and an explicit
-`Reproducible from HEAD` line. That line compares the working-tree
-sources against a separately resolved `HEAD`; it is not a guarantee
-that the printed SHA is the commit those bytes belong to. Two further
-provenance defects are real, verified, and not fixed here (T-07):
-`reproducible_from_head` covers those four sources but not the corpus
-and manifest, and `rev-parse HEAD` is resolved separately from the
-`HEAD:path` reads. Until both reads are pinned to one resolved SHA, a
-HEAD that moves between them can bind one commit's SHA to another
-commit's bytes.
+The report now prints one resolved commit SHA, a length-framed digest over the
+four code files that decide the result, the framing rule itself, and an
+explicit `Reproducible from HEAD` line. T-07 moves that output to report schema
+v1.3: corpus and manifest are each read once, and the exact snapshots used for
+validation and scoring join the code inputs in the report-level reproducibility
+decision. Every Git batch query names the same immutable resolved SHA rather
+than symbolic `HEAD:path`; inputs outside the repository fail closed. The two
+regressions were RED before the repair. The isolated Mac verification passed
+11 focused tests, strict Mypy 1.19.1 and Ruff 0.15.11.
 
 ## Accepted limitation (T-08)
 
@@ -228,9 +226,8 @@ committed in `6651964`.
   across a message boundary; a complete noun and its status cue may still
   occur in different messages. Public `/api/ask` supplies one message, so this
   correction is not a new slice under rule (a).
-- **Two verified defects remain queued as their own tasks:** T-07
-  (report-level reproducibility, above) and T-09 (the paradigm validator's
-  single-space check cannot fire, because `split()` has already collapsed the
-  separator).
+- **One verified defect remains queued as its own task:** T-09 (the paradigm
+  validator's single-space check cannot fire, because `split()` has already
+  collapsed the separator). T-07 is closed above.
 
 Nothing here approves a batch. Q2 stays Julia's.

@@ -3,17 +3,17 @@
 **The only entry point for a new session.** Read this, then
 [`ROADMAP.md`](ROADMAP.md). Everything else is reached by link, on demand.
 
-Last updated: 2026-08-27 · Plan: [`plan_23_08_2026.md`](plan_23_08_2026.md)
+Last updated: 2026-08-28 · Plan: [`plan_23_08_2026.md`](plan_23_08_2026.md)
 (mode B) · Audit of record:
 [`docs/audits/audit_final_23_08_2026.md`](docs/audits/audit_final_23_08_2026.md)
-· baseline before T-06: `e809d37` · T-06 is the seventh local commit beyond
+· baseline before T-07: `62e9883` · T-07 is the eighth local commit beyond
 `origin/master`; nothing is pushed
 
 ## Start here
 
 ### 1. The gate can reach Russian traffic. The corpus still cannot measure it.
 
-T-01/T-02/T-08, the T-05 evidence commit, T-03/T-04 and T-06 — **seven local
+T-01/T-02/T-08, the T-05 evidence commit, T-03/T-04, T-06 and T-07 — **eight local
 commits total, not pushed**. Push is the owner's call:
 `git -c credential.helper='!gh auth git-credential' push origin master`.
 
@@ -43,6 +43,8 @@ commits total, not pushed**. Push is the owner's call:
 - **T-06 correction** — a multi-word admission noun must now occur within one
   message; a complete noun and its status cue may still occur in different
   messages. Public `/api/ask` supplies one message, so this is not an A.9 slice.
+- **T-07 provenance repair** — report v1.3 pins the code, corpus and manifest
+  snapshots to one SHA; the Mac gate passed 11 tests plus strict Mypy and Ruff.
 
 The corpus cannot measure resolution, for three independent reasons
 ([capsule](docs/evidence/a6-journey-admission-and-clarification.md)):
@@ -63,9 +65,8 @@ B.2/B.3/B.5 stay blocked on data. Label review does not fix that:
 `python scripts/aircargo_labels.py report --batch 1`, then
 `python scripts/aircargo_labels.py approve --batch 1 --approver julia`.
 
-**Queued, both verified, neither a guess,** in [`BACKLOG.md`](BACKLOG.md): T-07
-(report provenance is not pinned to one resolved SHA) and T-09 (the
-single-space validator cannot fire).
+**Queued and verified, not a guess,** in [`BACKLOG.md`](BACKLOG.md): T-09; its
+single-space validator cannot fire. T-07 is closed above.
 
 **This laptop:** `tests/test_a11y.py::test_axe_has_no_serious_or_critical_findings`
 drives headless Chrome and hangs the whole run (deselect it; CI runs it);
@@ -93,7 +94,7 @@ requires them to match.
   `6b7417d`, `32e841f`).
 - **CI is fully green** through A.5 / the latest pushed state — 11/11 on
   run 32874107015 (unit 2234 passed, 25 skipped, coverage 76.04% against
-  a gate of 72; integration 62 passed, 1 skipped). None of the seven local
+  a gate of 72; integration 62 passed, 1 skipped). None of the eight local
   commits has been through remote CI.
 
 ## Accepted open risks

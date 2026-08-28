@@ -19,7 +19,7 @@ from evaluation.aircargo_labels import (
 )
 from resolution.application.shipment_status import ShipmentStatusShadowLoop
 
-REPORT_SCHEMA_VERSION: Final[str] = "journey-admission-report/v1.2"
+REPORT_SCHEMA_VERSION: Final[str] = "journey-admission-report/v1.3"
 PROJECT_ROOT: Final[Path] = Path(__file__).resolve().parent.parent
 DEFAULT_CORPUS_PATH: Final[Path] = PROJECT_ROOT / "evaluation" / "curated_cases_aircargo.jsonl"
 DEFAULT_MANIFEST_PATH: Final[Path] = (
@@ -105,7 +105,7 @@ class AdmissionConfusionMatrix:
 
 @dataclass(frozen=True, slots=True)
 class CodeProvenance:
-    """Source identity for the exact report and kernel bytes just evaluated."""
+    """Source identity for the exact report and kernel code bytes evaluated."""
 
     head_sha: str
     code_digest: str
@@ -161,11 +161,15 @@ class JourneyAdmissionReport:
         }
 
 
-def _verify_corpus_digest_bytes(corpus_bytes: bytes, manifest_path: Path) -> str:
+def _verify_corpus_digest_bytes(
+    corpus_bytes: bytes,
+    manifest_bytes: bytes,
+    manifest_path: Path,
+) -> str:
     """Return the digest of one pinned corpus snapshot, or refuse to score it."""
     try:
-        manifest_payload = json.loads(manifest_path.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError) as error:
+        manifest_payload = json.loads(manifest_bytes.decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError) as error:
         raise CorpusDigestMismatchError(f"cannot read manifest {manifest_path}: {error}") from error
     if not isinstance(manifest_payload, dict):
         raise CorpusDigestMismatchError(f"manifest {manifest_path} must be a JSON object")
@@ -188,9 +192,20 @@ def _read_corpus_bytes(corpus_path: Path) -> bytes:
         raise CorpusDigestMismatchError(f"cannot read corpus {corpus_path}: {error}") from error
 
 
+def _read_manifest_bytes(manifest_path: Path) -> bytes:
+    try:
+        return manifest_path.read_bytes()
+    except OSError as error:
+        raise CorpusDigestMismatchError(f"cannot read manifest {manifest_path}: {error}") from error
+
+
 def verify_corpus_digest(corpus_path: Path, manifest_path: Path) -> str:
     """Return the pinned corpus digest, or refuse to score the changed corpus."""
-    return _verify_corpus_digest_bytes(_read_corpus_bytes(corpus_path), manifest_path)
+    return _verify_corpus_digest_bytes(
+        _read_corpus_bytes(corpus_path),
+        _read_manifest_bytes(manifest_path),
+        manifest_path,
+    )
 
 
 def kernel_admits(question: str) -> bool:
@@ -259,12 +274,21 @@ def head_git_sha(project_root: Path = PROJECT_ROOT) -> str:
 def _head_matches_source_contents(
     *,
     project_root: Path,
+    head_sha: str,
+    source_paths: Sequence[Path],
     source_contents: Sequence[bytes],
 ) -> bool:
-    """Compare every report input to HEAD in one Git batch query."""
-    requests = b"".join(
-        b"HEAD:" + path.as_posix().encode("utf-8") + b"\n" for path in CODE_DIGEST_PATHS
-    )
+    """Compare source snapshots to one already-resolved HEAD commit."""
+    if len(source_paths) != len(source_contents):
+        return False
+    try:
+        head_prefix = head_sha.encode("ascii") + b":"
+    except UnicodeEncodeError:
+        return False
+    path_bytes = tuple(path.as_posix().encode("utf-8") for path in source_paths)
+    if any(b"\n" in path for path in path_bytes):
+        return False
+    requests = b"".join(head_prefix + path + b"\n" for path in path_bytes)
     result = _run_git(
         ("cat-file", "--batch"),
         project_root=project_root,
@@ -306,12 +330,11 @@ def code_provenance(project_root: Path = PROJECT_ROOT) -> CodeProvenance:
     """
     source_contents = _report_source_contents(project_root)
     head_sha = head_git_sha(project_root)
-    reproducible_from_head = (
-        head_sha != UNKNOWN_HEAD_SHA
-        and _head_matches_source_contents(
-            project_root=project_root,
-            source_contents=source_contents,
-        )
+    reproducible_from_head = head_sha != UNKNOWN_HEAD_SHA and _head_matches_source_contents(
+        project_root=project_root,
+        head_sha=head_sha,
+        source_paths=CODE_DIGEST_PATHS,
+        source_contents=source_contents,
     )
     return CodeProvenance(
         head_sha=head_sha,
@@ -352,6 +375,7 @@ def score_labelled_cases(
     corpus_path: Path,
     corpus_sha256: str,
     provenance: CodeProvenance,
+    report_reproducible_from_head: bool | None = None,
 ) -> JourneyAdmissionReport:
     """Run T-01 over every labelled question and retain its exact decisions."""
     journey_counts = {journey.value: 0 for journey in Journey}
@@ -398,7 +422,11 @@ def score_labelled_cases(
         head_sha=provenance.head_sha,
         code_digest=provenance.code_digest,
         code_digest_paths=provenance.code_digest_paths,
-        reproducible_from_head=provenance.reproducible_from_head,
+        reproducible_from_head=(
+            provenance.reproducible_from_head
+            if report_reproducible_from_head is None
+            else report_reproducible_from_head
+        ),
         journey_counts=journey_counts,
         confusion_matrix=admission_confusion_matrix(decisions),
         decline_reasons=decline_reasons,
@@ -420,15 +448,39 @@ def score_default_corpus(
     but cannot override the separately reported HEAD provenance.
     """
     corpus_bytes = _read_corpus_bytes(corpus_path)
-    corpus_sha256 = _verify_corpus_digest_bytes(corpus_bytes, manifest_path)
+    manifest_bytes = _read_manifest_bytes(manifest_path)
+    corpus_sha256 = _verify_corpus_digest_bytes(
+        corpus_bytes,
+        manifest_bytes,
+        manifest_path,
+    )
     cases = load_labelled_cases_from_bytes(corpus_bytes, source_name=corpus_path.name)
     provenance = code_provenance(project_root)
+    try:
+        resolved_project_root = project_root.resolve()
+        report_input_paths = tuple(
+            path.resolve().relative_to(resolved_project_root)
+            for path in (corpus_path, manifest_path)
+        )
+    except (OSError, ValueError):
+        report_input_paths = None
+    report_reproducible_from_head = (
+        provenance.reproducible_from_head
+        and report_input_paths is not None
+        and _head_matches_source_contents(
+            project_root=project_root,
+            head_sha=provenance.head_sha,
+            source_paths=report_input_paths,
+            source_contents=(corpus_bytes, manifest_bytes),
+        )
+    )
     _ = git_sha
     return score_labelled_cases(
         cases,
         corpus_path=corpus_path,
         corpus_sha256=corpus_sha256,
         provenance=provenance,
+        report_reproducible_from_head=report_reproducible_from_head,
     )
 
 
