@@ -52,7 +52,7 @@ def _loop() -> ShipmentStatusShadowLoop:
     )
 
 
-def test_non_shipment_request_is_declined_and_the_observer_records_nothing() -> None:
+def test_non_shipment_request_records_only_its_declined_admission_outcome() -> None:
     request = _request("What time does the warehouse close?")
     result = _loop().run(request)
     recorded = []
@@ -64,7 +64,12 @@ def test_non_shipment_request_is_declined_and_the_observer_records_nothing() -> 
     assert result.terminal_state is TerminalOutcome.CANCELLED
     assert result.reason_codes == ("NOT_IN_JOURNEY",)
     assert observer(request) is None
-    assert recorded == []
+    (outcome,) = recorded
+    assert outcome.journey == "shipment-status"
+    assert outcome.outcome == "journey_declined"
+    assert outcome.terminal_state is TerminalOutcome.CANCELLED
+    assert outcome.reason_codes == ("NOT_IN_JOURNEY",)
+    assert not hasattr(outcome, "evidence_export")
 
 
 def test_shipment_status_request_without_reference_still_requires_an_id() -> None:

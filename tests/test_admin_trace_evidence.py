@@ -167,6 +167,7 @@ def test_a_trace_that_ran_no_journey_answers_with_an_empty_list(
 
     assert response.status_code == 200
     assert response.json()["journeys"] == []
+    assert response.json()["shadow_status"] == "shadow_disabled"
 
 
 def test_an_unknown_trace_is_a_404(monkeypatch, client_with_key: TestClient) -> None:
@@ -237,6 +238,12 @@ def test_the_admin_script_fetches_and_renders_the_evidence() -> None:
     evidence_block = js.split("Phase A.3", 1)[1].split("btn-load-traces", 1)[0]
     assert ".innerHTML" not in evidence_block
     assert "application/json" in js and "link.download" in js
+    for status_copy in (
+        "Resolution shadow was disabled for this trace.",
+        "This request did not enter the journey; no source or policy was called.",
+        "The resolution producer failed before it could record evidence.",
+    ):
+        assert status_copy in js
 
 
 def test_the_evidence_pane_has_styles_of_its_own() -> None:

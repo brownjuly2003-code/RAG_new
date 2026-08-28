@@ -41,6 +41,9 @@ The shadow remains read-only. T-03 now lets `/api/ask` project only its
 `CLARIFICATION_REQUIRED` terminal behind the independent, default-off
 `RESOLUTION_CLARIFICATION_JOURNEYS` allowlist; both allowlists must name the
 journey. Declines, other terminals and failures keep the legacy response.
+T-04 makes the operator-visible side explicit: Evidence now distinguishes a
+disabled shadow, a declined journey and producer failure while a decline still
+calls neither source nor policy and never enters resolution persistence.
 
 **Phase B has started, and B.1 changed the shape of the rest of it.** All 100
 air-cargo cases carry a journey, an expected outcome and a root cause
@@ -58,7 +61,7 @@ advance and the code enforces it.
 
 Both inherited CI failures ([ADR 0008](docs/adr/0008-inherited-ci-red-disposition.md))
 are closed, and CI is green end to end through A.5 / the latest pushed
-state. The five local commits through T-03 have not been through remote CI. The chromadb CVE
+state. The six local commits through T-04 have not been through remote CI. The chromadb CVE
 ignores carry a **review date of 2026-09-24**.
 
 | Phase | What | Acceptance |

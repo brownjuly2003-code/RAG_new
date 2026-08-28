@@ -85,15 +85,32 @@ def _resolution_shadow_observers(journeys: tuple[str, ...], retriever: Any) -> d
 
 
 def _record_shadow_evidence(result: Any) -> None:
-    """Write one shadow result into the trace the legacy answer already owns."""
+    """Write one full or minimal shadow outcome into the legacy answer's trace."""
+    from resolution.composition import ShadowProducerOutcome
     from tracing import log_step
 
-    collected = _shadow_collect.get()
-    if collected is not None:
-        collected.append(result)
+    is_minimal = isinstance(result, ShadowProducerOutcome)
+    if not is_minimal:
+        collected = _shadow_collect.get()
+        if collected is not None:
+            collected.append(result)
     trace_id = _shadow_trace_id.get()
     if not trace_id:
         logger.warning("shadow evidence has no trace to attach to, dropped")
+        return
+    if is_minimal:
+        log_step(
+            trace_id,
+            "resolution_shadow",
+            {
+                "journey": result.journey,
+                "outcome": result.outcome,
+                "terminal_state": (
+                    "" if result.terminal_state is None else result.terminal_state.value
+                ),
+                "reason_codes": list(result.reason_codes),
+            },
+        )
         return
     export = result.evidence_export
     log_step(
@@ -101,6 +118,7 @@ def _record_shadow_evidence(result: Any) -> None:
         "resolution_shadow",
         {
             "journey": "shipment-status",
+            "outcome": "journey_recorded",
             "evidence": export.as_dict(),
             "terminal_state": result.terminal_state.value,
             "reason_codes": list(result.reason_codes),
@@ -112,6 +130,14 @@ def _record_shadow_evidence(result: Any) -> None:
             # never returned to anyone.
             "shadow_response_text": result.response_text,
         },
+    )
+
+
+def _record_shadow_producer_failure(journey: str) -> None:
+    from resolution.composition import ShadowProducerOutcome
+
+    _record_shadow_evidence(
+        ShadowProducerOutcome(journey=journey, outcome="producer_failure")
     )
 
 
@@ -176,6 +202,7 @@ def _run_resolution_shadows(
     """
     token = _shadow_trace_id.set(trace_id or correlation_id)
     collect_token = _shadow_collect.set(collect)
+    journeys: tuple[str, ...] = ()
     try:
         _app = _app_module()
         journeys = tuple(getattr(_app.get_settings(), "resolution_shadow_journeys", ()) or ())
@@ -183,12 +210,18 @@ def _run_resolution_shadows(
             return response
         retriever = getattr(_app, "_retriever", None)
         if retriever is None:
+            for journey in journeys:
+                _record_shadow_producer_failure(journey)
             return response
 
         from resolution.application.shipment_status import run_legacy_ask_shadow
 
         observers = _resolution_shadow_observers(journeys, retriever)
-        for observer in observers.values():
+        for journey in journeys:
+            observer = observers.get(journey)
+            if observer is None:
+                _record_shadow_producer_failure(journey)
+                continue
             response = run_legacy_ask_shadow(
                 response=response,
                 tenant_id=tenant_id,
@@ -199,6 +232,11 @@ def _run_resolution_shadows(
             )
     except Exception:
         logger.warning("resolution shadow wiring failed", exc_info=True)
+        for journey in journeys:
+            try:
+                _record_shadow_producer_failure(journey)
+            except Exception:
+                logger.warning("resolution shadow failure outcome was not recorded", exc_info=True)
     finally:
         _shadow_trace_id.reset(token)
         _shadow_collect.reset(collect_token)

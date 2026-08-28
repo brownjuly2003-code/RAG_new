@@ -283,6 +283,38 @@ def test_a_trace_that_ran_no_journey_is_empty_not_broken() -> None:
 
     assert view["journeys"] == []
     assert view["trace_id"] == "trace-abc123"
+    assert view["shadow_status"] == "shadow_disabled"
+
+
+@pytest.mark.parametrize(
+    ("outcome", "terminal_state", "reason_codes"),
+    [
+        ("journey_declined", "cancelled", ["NOT_IN_JOURNEY"]),
+        ("producer_failure", "", []),
+    ],
+)
+def test_a_minimal_producer_outcome_is_not_an_empty_evidence_view(
+    outcome: str,
+    terminal_state: str,
+    reason_codes: list[str],
+) -> None:
+    state = {
+        "journey": "shipment-status",
+        "outcome": outcome,
+        "terminal_state": terminal_state,
+        "reason_codes": reason_codes,
+    }
+    view = evidence_view(
+        _trace(steps=[{"order": 1, "node": SHADOW_NODE_NAME, "state": state, "ts": _STEP_TS}])
+    )
+
+    assert view["shadow_status"] == outcome
+    (journey,) = view["journeys"]
+    assert journey["outcome"] == outcome
+    assert journey["terminal_state"] == terminal_state
+    assert journey["reason_codes"] == reason_codes
+    assert journey["observation"] is None
+    assert journey["policy"] is None
 
 
 def test_a_bundle_without_a_source_or_a_policy_renders_the_rest() -> None:

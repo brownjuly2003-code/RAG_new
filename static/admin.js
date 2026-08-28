@@ -181,6 +181,24 @@
     var receipt = journey.replay_receipt || {};
     var box = document.createElement("div");
 
+    if (journey.outcome === "journey_declined" || journey.outcome === "producer_failure") {
+      box.appendChild(el("h3", null, "Outcome"));
+      var minimalOutcome = el("p");
+      minimalOutcome.appendChild(el("span", "terminal", journey.terminal_state || journey.outcome));
+      if (journey.reason_codes && journey.reason_codes.length) {
+        minimalOutcome.appendChild(document.createTextNode(" " + journey.reason_codes.join(", ")));
+      }
+      box.appendChild(minimalOutcome);
+      box.appendChild(el(
+        "p",
+        "empty",
+        journey.outcome === "journey_declined"
+          ? "This request did not enter the journey; no source or policy was called."
+          : "The resolution producer failed before it could record evidence."
+      ));
+      return box;
+    }
+
     box.appendChild(el("h3", null, "Contract"));
     box.appendChild(definitionList([
       ["journey", journey.journey],
@@ -281,7 +299,7 @@
       evidencePane.appendChild(el(
         "p",
         "empty",
-        "No resolution journey ran for this trace. The shadow is off by default."
+        "Resolution shadow was disabled for this trace."
       ));
       return;
     }

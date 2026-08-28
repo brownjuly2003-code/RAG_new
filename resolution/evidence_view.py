@@ -32,6 +32,11 @@ from resolution.persistence import POLICY_REQUIREMENT_ID, SOURCE_REQUIREMENT_ID
 
 SHADOW_NODE_NAME = "resolution_shadow"
 
+_JOURNEY_RECORDED = "journey_recorded"
+_JOURNEY_DECLINED = "journey_declined"
+_PRODUCER_FAILURE = "producer_failure"
+_SHADOW_DISABLED = "shadow_disabled"
+
 __all__ = ["SHADOW_NODE_NAME", "evidence_view"]
 
 
@@ -208,6 +213,9 @@ def _replay_receipt(
 
 def _journey_view(state: Mapping[str, Any], step_ts: Any) -> dict[str, Any]:
     evidence = _as_mapping(state.get("evidence"))
+    outcome = _as_text(state.get("outcome"))
+    if outcome not in {_JOURNEY_RECORDED, _JOURNEY_DECLINED, _PRODUCER_FAILURE}:
+        outcome = _JOURNEY_RECORDED if evidence else _PRODUCER_FAILURE
     contract = _as_mapping(evidence.get("contract"))
     observation = _as_mapping(evidence.get("source_observation"))
     policy = _as_mapping(evidence.get("policy"))
@@ -242,6 +250,7 @@ def _journey_view(state: Mapping[str, Any], step_ts: Any) -> dict[str, Any]:
 
     return {
         "journey": _as_text(state.get("journey")),
+        "outcome": outcome,
         "as_of": _as_text(step_ts),
         "case_id": _as_text(evidence.get("case_id")) or _as_text(state.get("case_id")),
         "case_version": evidence.get("case_version"),
@@ -280,8 +289,18 @@ def evidence_view(trace: Mapping[str, Any]) -> dict[str, Any]:
         for step in (_as_mapping(item) for item in _as_sequence(trace.get("steps")))
         if step.get("node") == SHADOW_NODE_NAME
     ]
+    outcomes = {journey["outcome"] for journey in journeys}
+    if _PRODUCER_FAILURE in outcomes:
+        shadow_status = _PRODUCER_FAILURE
+    elif _JOURNEY_RECORDED in outcomes:
+        shadow_status = _JOURNEY_RECORDED
+    elif _JOURNEY_DECLINED in outcomes:
+        shadow_status = _JOURNEY_DECLINED
+    else:
+        shadow_status = _SHADOW_DISABLED
     return {
         "trace_id": _as_text(trace.get("trace_id")),
         "started_at": _as_text(trace.get("started_at")),
+        "shadow_status": shadow_status,
         "journeys": journeys,
     }

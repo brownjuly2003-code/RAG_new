@@ -1,23 +1,14 @@
 # Backlog
 
-## 2026-08-27 — open work after T-03
+## 2026-08-27 — open work after T-04
 
 The admission gate landed (`6651964`, `36d4269`, `bd82297`). T-03 then made
-its clarification terminal observable through `/api/ask`, behind the separate
-default-off `RESOLUTION_CLARIFICATION_JOURNEYS` allowlist. These four items are
-the remaining queue; all four are verified, none is a guess.
+its clarification terminal observable through `/api/ask`, and T-04 made
+disabled, declined and failed shadow production distinct in Evidence without
+changing the legacy answer. These three items are the remaining queue; all
+three are verified, none is a guess.
 Detail: [capsule](docs/evidence/a6-journey-admission-and-clarification.md).
 
-- **T-04** — an empty Evidence bundle cannot tell shadow-disabled,
-  journey-declined and producer-failure apart. The tab already renders
-  `terminal_state` and `reason_codes` for a persisted journey
-  (`static/admin.js`); a declined request writes nothing, because
-  `observe()` returns None before the sink. Reproduced:
-  `observer_result None`, `sink_records []`. Record a minimal admission
-  outcome at the producer (`resolution/composition.py` /
-  `api/routers/conversation.py`) before returning None, then distinguish
-  the three states in API/UI. A decline must still not touch the answer,
-  call the source or policy ports, or cost measurable time.
 - **T-06** — a multi-word domain noun can still be assembled across a
   message boundary. File: `resolution/application/shipment_status.py`.
   Review finding F-T-01-16, reproduced:

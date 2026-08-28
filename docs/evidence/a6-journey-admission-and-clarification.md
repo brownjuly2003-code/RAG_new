@@ -210,15 +210,14 @@ committed in `6651964`.
 - **Resolution.** No verified-resolution number, VRY or `pass^k` can
   come from this corpus, however good the kernel gets. That is the
   finding, not a delay.
-- **`/api/ask` acting on the clarification terminal.** T-03 is queued,
-  not done. The flag it would add does not exist. The kernel can now
-  reach Russian traffic, which is why T-03 is now worth doing; it has
-  not been done. The user still gets the legacy RAG answer.
-- **An empty Evidence bundle is ambiguous.** T-04 is queued. The tab
-  already renders `terminal_state` and `reason_codes` for a persisted
-  journey; a declined request writes nothing (`observe()` returns None
-  before the sink), so disabled / declined / producer-failure look the
-  same. The producer must record a minimal admission outcome first.
+- **`/api/ask` acting on the clarification terminal.** T-03 closed this
+  after A.6: an independent default-off allowlist lets the contract's
+  shipment-id clarification own the response. Without both allowlists,
+  the user still gets the legacy RAG answer.
+- **An empty Evidence bundle is no longer ambiguous.** T-04 records a
+  minimal outcome for a declined journey or producer failure. The API
+  and tab distinguish both from a disabled shadow; declines still call
+  neither source nor policy and never enter resolution persistence.
 - **The other two journeys.** `customs_docs` and `exception_escalation`
   have no kernel loop. A decline of those labels is not a routing
   opinion; the report says so.

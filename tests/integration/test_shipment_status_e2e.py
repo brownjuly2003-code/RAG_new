@@ -289,15 +289,19 @@ def test_the_legacy_answer_is_untouched_when_the_shadow_is_off(
     """Off by default, end to end: no journey named, no step written."""
     wired_app()
 
+    headers = integration_headers("acme", "admin")
     response = integration_client.post(
         "/api/ask",
         json={"question": _QUESTION},
-        headers=integration_headers("acme", "admin"),
+        headers=headers,
     )
 
     assert response.status_code == 200
     assert response.json()["answer"] == _LEGACY_ANSWER
     assert _count_shadow_steps(_isolated_trace_store) == 0
+    view = _evidence_for(integration_client, headers, response.json()["trace_id"])
+    assert view["shadow_status"] == "shadow_disabled"
+    assert view["journeys"] == []
 
 
 def test_the_response_body_is_byte_identical_with_the_shadow_off_and_on(
@@ -398,48 +402,72 @@ def test_clarification_flag_leaves_a_declined_request_on_the_legacy_path(
     integration_headers,
     persisted,
 ) -> None:
-    enable_shadow = wired_app(open_trace=False)
+    enable_shadow = wired_app()
     enable_shadow(clarification=True)
+    headers = integration_headers("acme", "admin")
 
     response = integration_client.post(
         "/api/ask",
         json={"question": "Как оформить авианакладную?"},
-        headers=integration_headers("acme", "admin"),
+        headers=headers,
     )
 
     assert response.status_code == 200
     assert response.json()["answer"] == _LEGACY_ANSWER
     assert response.json()["route"] == "auto"
+    view = _evidence_for(integration_client, headers, response.json()["trace_id"])
+    assert view["shadow_status"] == "journey_declined"
+    (journey,) = view["journeys"]
+    assert journey["outcome"] == "journey_declined"
+    assert journey["terminal_state"] == "cancelled"
+    assert journey["reason_codes"] == ["NOT_IN_JOURNEY"]
+    assert journey["observation"] is None
+    assert journey["policy"] is None
     assert persisted == []
 
 
+@pytest.mark.parametrize("failure_layer", ("loop", "composition"))
 def test_a_shadow_that_raises_still_returns_the_legacy_answer(
     monkeypatch: pytest.MonkeyPatch,
     wired_app,
     integration_client,
     integration_headers,
     _isolated_trace_store,
+    failure_layer: str,
 ) -> None:
-    """The leash, over HTTP: a broken shadow may not turn 200 into 500."""
-    from api.routers import conversation
-
+    """A producer failure is visible but may not turn the legacy 200 into a 500."""
     enable_shadow = wired_app()
     enable_shadow(clarification=True)
+    headers = integration_headers("acme", "admin")
 
     def _explode(*args: Any, **kwargs: Any) -> Any:
         raise RuntimeError("shadow blew up")
 
-    monkeypatch.setattr(conversation, "_resolution_shadow_observers", _explode)
+    if failure_layer == "loop":
+        monkeypatch.setattr(
+            "resolution.application.shipment_status.ShipmentStatusShadowLoop.run",
+            _explode,
+        )
+    else:
+        from api.routers import conversation
+
+        monkeypatch.setattr(conversation, "_resolution_shadow_observers", _explode)
 
     response = integration_client.post(
         "/api/ask",
         json={"question": _QUESTION},
-        headers=integration_headers("acme", "admin"),
+        headers=headers,
     )
 
     assert response.status_code == 200
     assert response.json()["answer"] == _LEGACY_ANSWER
-    assert _count_shadow_steps(_isolated_trace_store) == 0
+    view = _evidence_for(integration_client, headers, response.json()["trace_id"])
+    assert view["shadow_status"] == "producer_failure"
+    (journey,) = view["journeys"]
+    assert journey["outcome"] == "producer_failure"
+    assert journey["terminal_state"] == ""
+    assert journey["reason_codes"] == []
+    assert "error" not in journey
 
 
 # --- phase A.1b: the same run, on its way to the resolution tables -----------
@@ -615,7 +643,9 @@ def test_a_real_question_produces_an_evidence_view_an_operator_can_read(
     view, trace_id = _ask_and_open_evidence(wired_app, integration_client, headers)
 
     assert view["trace_id"] == trace_id
+    assert view["shadow_status"] == "journey_recorded"
     (journey,) = view["journeys"]
+    assert journey["outcome"] == "journey_recorded"
     assert journey["journey"] == "shipment-status"
     assert journey["contract"]["contract_id"] == "aircargo.shipment-status"
     assert journey["contract"]["version"] == "0.1.0"

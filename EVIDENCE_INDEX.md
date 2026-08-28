@@ -227,6 +227,20 @@ The same E2E holds the response schema, trace/session identity and in-memory
 session answer. Flag off, a declined request, every other terminal and a
 shadow/projection failure keep the legacy response unchanged.
 
+## A.8 (2026-08-27) — an empty Evidence view has an explicit cause
+
+| Slice | Evidence class | Evidence |
+|---|---|---|
+| A.8 Evidence distinguishes disabled, declined and failed shadow production | `synthetic` | `tests/integration/test_shipment_status_e2e.py::test_clarification_flag_leaves_a_declined_request_on_the_legacy_path` · `tests/integration/test_shipment_status_e2e.py::test_a_shadow_that_raises_still_returns_the_legacy_answer` · `tests/test_evidence_view.py` · `tests/test_admin_trace_evidence.py` |
+
+**A.8 is a slice under rule (a).** A request through `/api/ask` now leaves a
+minimal trace outcome when `shipment-status` declines it or its producer
+fails; `GET /api/admin/traces/{trace_id}/evidence` and the admin tab distinguish
+those outcomes from a disabled shadow. The decline still returns the exact
+legacy answer, calls neither source nor policy, and is not offered to the
+resolution-table persistence path. Producer failures expose no exception
+detail to the API.
+
 ## Corrections
 
 Not slices — these fix claims that were false, so they do not go in the table

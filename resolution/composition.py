@@ -15,9 +15,10 @@ from __future__ import annotations
 import json
 import logging
 from collections.abc import Callable, Sequence
+from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal
 
 from resolution.adapters.shipment_status import (
     FixtureShipmentSource,
@@ -38,6 +39,16 @@ SHIPMENT_STATUS_JOURNEY = "shipment-status"
 _PACKAGE_ROOT = Path(__file__).resolve().parent
 SHIPMENT_CONTRACT_PATH = _PACKAGE_ROOT / "contracts" / "versions" / "v0.1" / "shipment-status.json"
 SHIPMENT_FIXTURE_PATH = _PACKAGE_ROOT / "adapters" / "fixtures" / "shipment-status-v0.1.json"
+
+
+@dataclass(frozen=True, slots=True)
+class ShadowProducerOutcome:
+    """Minimal trace outcome when a journey produces no persistable evidence."""
+
+    journey: str
+    outcome: Literal["journey_declined", "producer_failure"]
+    terminal_state: TerminalOutcome | None = None
+    reason_codes: tuple[str, ...] = ()
 
 
 def load_shipment_contract(path: Path | None = None) -> ResolutionContract:
@@ -76,15 +87,16 @@ def load_shipment_fixtures(path: Path | None = None) -> tuple[ShipmentFixture, .
 def build_shipment_status_observer(
     *,
     retriever: object,
-    sink: Callable[[ShipmentShadowResult], None] | None = None,
+    sink: Callable[[ShipmentShadowResult | ShadowProducerOutcome], None] | None = None,
     contract_path: Path | None = None,
     fixture_path: Path | None = None,
 ) -> Callable[[ShipmentShadowRequest], ShipmentShadowResult | None]:
     """Build the observer callable `run_legacy_ask_shadow` expects.
 
-    `sink` receives each result; it is where trace and evidence persistence
-    hang. Both the loop and the sink are wrapped: a shadow that raises would
-    otherwise turn an answered question into a 500.
+    `sink` receives a full result, or a minimal outcome for a decline/failure;
+    it is where trace and evidence persistence hang. Both the loop and the
+    sink are wrapped: a shadow that raises would otherwise turn an answered
+    question into a 500.
     """
     loop = ShipmentStatusShadowLoop(
         contract=load_shipment_contract(contract_path),
@@ -92,22 +104,40 @@ def build_shipment_status_observer(
         policy=LegacyRetrievalPolicyAdapter(retriever),
     )
 
+    def emit(value: ShipmentShadowResult | ShadowProducerOutcome) -> None:
+        if sink is None:
+            return
+        try:
+            sink(value)
+        except Exception:
+            logger.warning("shipment-status shadow sink failed", exc_info=True)
+
     def observe(request: ShipmentShadowRequest) -> ShipmentShadowResult | None:
         try:
             result = loop.run(request)
         except Exception:
             logger.warning("shipment-status shadow failed", exc_info=True)
+            emit(
+                ShadowProducerOutcome(
+                    journey=SHIPMENT_STATUS_JOURNEY,
+                    outcome="producer_failure",
+                )
+            )
             return None
         if (
             result.terminal_state is TerminalOutcome.CANCELLED
             and result.reason_codes == ("NOT_IN_JOURNEY",)
         ):
+            emit(
+                ShadowProducerOutcome(
+                    journey=SHIPMENT_STATUS_JOURNEY,
+                    outcome="journey_declined",
+                    terminal_state=result.terminal_state,
+                    reason_codes=result.reason_codes,
+                )
+            )
             return None
-        if sink is not None:
-            try:
-                sink(result)
-            except Exception:
-                logger.warning("shipment-status shadow sink failed", exc_info=True)
+        emit(result)
         return result
 
     return observe
@@ -117,7 +147,7 @@ def build_shadow_observers(
     *,
     journeys: Sequence[str],
     retriever: object,
-    sink: Callable[[ShipmentShadowResult], None] | None = None,
+    sink: Callable[[ShipmentShadowResult | ShadowProducerOutcome], None] | None = None,
 ) -> dict[str, Callable[[ShipmentShadowRequest], Any]]:
     """Build every enabled shadow observer. Empty `journeys` means empty dict.
 
@@ -143,6 +173,7 @@ __all__ = [
     "SHIPMENT_CONTRACT_PATH",
     "SHIPMENT_FIXTURE_PATH",
     "SHIPMENT_STATUS_JOURNEY",
+    "ShadowProducerOutcome",
     "build_shadow_observers",
     "build_shipment_status_observer",
     "load_shipment_contract",
