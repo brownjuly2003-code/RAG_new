@@ -142,7 +142,7 @@ def _validate_russian_paradigm(stem: str, endings: tuple[str, ...]) -> None:
         raise ValueError("stem must be non-empty without surrounding whitespace")
     if not endings:
         raise ValueError("endings must be a non-empty tuple")
-    if any("  " in stem_token for stem_token in stem.split()):
+    if " ".join(stem.split()) != stem:
         raise ValueError("stem tokens must use single spaces")
     for ending in endings:
         if ending != ending.casefold() or " " in ending:

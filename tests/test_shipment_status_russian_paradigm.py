@@ -13,6 +13,7 @@ import pytest
 
 from resolution.application.shipment_status import (
     _SHIPMENT_STATUS_RUSSIAN_ADMISSION_VOCABULARY,
+    RussianAdmissionTranslation,
     ShipmentShadowRequest,
     ShipmentStatusShadowLoop,
 )
@@ -55,6 +56,16 @@ def _loop() -> ShipmentStatusShadowLoop:
         source=_NeverCalledSource(),
         policy=_NeverCalledPolicy(),
     )
+
+
+def test_translation_rejects_a_stem_with_a_double_space() -> None:
+    with pytest.raises(ValueError, match="stem tokens must use single spaces"):
+        RussianAdmissionTranslation(
+            english="air waybill",
+            citation="авиа накладная",
+            stem="авиа  накладн",
+            endings=("ая",),
+        )
 
 
 def test_past_plural_pribyli_admits_when_paired_with_cargo() -> None:

@@ -210,8 +210,11 @@ manifest are each read once, their exact snapshots join the code inputs in
 SHA rather than symbolic `HEAD:path`. Inputs outside the repository fail
 closed. Two regressions were RED before the repair; the isolated Mac gate is
 11 passed plus strict Mypy and Ruff. Commits: `6651964` (T-01, the gate),
-`36d4269` (T-02, the scorer), `bd82297` (T-08, the Russian half), and T-07
-(this commit). All are local, not pushed, and have not been through remote CI.
+`36d4269` (T-02, the scorer), `bd82297` (T-08, the Russian half), and `491860d`
+(T-07). All are local, not pushed, and have not been through remote CI.
+T-09 then closes the validator gap: the exact double-space stem was RED before
+the one-line source fix; 174 adjacent tests, strict Mypy and Ruff are green.
+T-09 is local in its own commit, not pushed, and has not been through remote CI.
 
 ## A.7 (2026-08-27) — clarification owns the opt-in endpoint answer
 

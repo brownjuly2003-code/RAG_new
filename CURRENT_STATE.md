@@ -6,14 +6,14 @@
 Last updated: 2026-08-28 · Plan: [`plan_23_08_2026.md`](plan_23_08_2026.md)
 (mode B) · Audit of record:
 [`docs/audits/audit_final_23_08_2026.md`](docs/audits/audit_final_23_08_2026.md)
-· baseline before T-07: `62e9883` · T-07 is the eighth local commit beyond
+· baseline before T-09: `491860d` · T-09 is the ninth local commit beyond
 `origin/master`; nothing is pushed
 
 ## Start here
 
 ### 1. The gate can reach Russian traffic. The corpus still cannot measure it.
 
-T-01/T-02/T-08, the T-05 evidence commit, T-03/T-04, T-06 and T-07 — **eight local
+T-01/T-02/T-08, T-05, T-03/T-04, T-06/T-07 and T-09 — **nine local
 commits total, not pushed**. Push is the owner's call:
 `git -c credential.helper='!gh auth git-credential' push origin master`.
 
@@ -65,8 +65,8 @@ B.2/B.3/B.5 stay blocked on data. Label review does not fix that:
 `python scripts/aircargo_labels.py report --batch 1`, then
 `python scripts/aircargo_labels.py approve --batch 1 --approver julia`.
 
-**Queued and verified, not a guess,** in [`BACKLOG.md`](BACKLOG.md): T-09; its
-single-space validator cannot fire. T-07 is closed above.
+**T-09 is closed:** stems now preserve exactly one space between tokens; the
+exact double-space regression and 174 adjacent tests pass. Local queue: empty.
 
 **This laptop:** `tests/test_a11y.py::test_axe_has_no_serious_or_critical_findings`
 drives headless Chrome and hangs the whole run (deselect it; CI runs it);
@@ -94,7 +94,7 @@ requires them to match.
   `6b7417d`, `32e841f`).
 - **CI is fully green** through A.5 / the latest pushed state — 11/11 on
   run 32874107015 (unit 2234 passed, 25 skipped, coverage 76.04% against
-  a gate of 72; integration 62 passed, 1 skipped). None of the eight local
+  a gate of 72; integration 62 passed, 1 skipped). None of the nine local
   commits has been through remote CI.
 
 ## Accepted open risks

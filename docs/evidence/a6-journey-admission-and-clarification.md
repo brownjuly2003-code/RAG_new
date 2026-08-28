@@ -226,8 +226,8 @@ committed in `6651964`.
   across a message boundary; a complete noun and its status cue may still
   occur in different messages. Public `/api/ask` supplies one message, so this
   correction is not a new slice under rule (a).
-- **One verified defect remains queued as its own task:** T-09 (the paradigm
-  validator's single-space check cannot fire, because `split()` has already
-  collapsed the separator). T-07 is closed above.
+- **T-09 correction:** the validator now compares the original stem with its
+  single-space reconstruction before token generation. The exact double-space
+  regression was RED; 174 adjacent tests plus strict Mypy and Ruff are green.
 
 Nothing here approves a batch. Q2 stays Julia's.
