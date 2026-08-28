@@ -6,14 +6,14 @@
 Last updated: 2026-08-27 · Plan: [`plan_23_08_2026.md`](plan_23_08_2026.md)
 (mode B) · Audit of record:
 [`docs/audits/audit_final_23_08_2026.md`](docs/audits/audit_final_23_08_2026.md)
-· baseline before T-04: `7ce0d66` · T-04 is the sixth local commit beyond
+· baseline before T-06: `e809d37` · T-06 is the seventh local commit beyond
 `origin/master`; nothing is pushed
 
 ## Start here
 
 ### 1. The gate can reach Russian traffic. The corpus still cannot measure it.
 
-T-01/T-02/T-08, the T-05 evidence commit, T-03 and T-04 — **six local
+T-01/T-02/T-08, the T-05 evidence commit, T-03/T-04 and T-06 — **seven local
 commits total, not pushed**. Push is the owner's call:
 `git -c credential.helper='!gh auth git-credential' push origin master`.
 
@@ -40,6 +40,9 @@ commits total, not pushed**. Push is the owner's call:
   `shadow_disabled`, `journey_declined` and `producer_failure`. Declines still
   return the legacy answer, call neither source nor policy, and never enter
   resolution persistence; only their minimal outcome reaches the trace.
+- **T-06 correction** — a multi-word admission noun must now occur within one
+  message; a complete noun and its status cue may still occur in different
+  messages. Public `/api/ask` supplies one message, so this is not an A.9 slice.
 
 The corpus cannot measure resolution, for three independent reasons
 ([capsule](docs/evidence/a6-journey-admission-and-clarification.md)):
@@ -60,9 +63,9 @@ B.2/B.3/B.5 stay blocked on data. Label review does not fix that:
 `python scripts/aircargo_labels.py report --batch 1`, then
 `python scripts/aircargo_labels.py approve --batch 1 --approver julia`.
 
-**Queued, all verified, none a guess,** in [`BACKLOG.md`](BACKLOG.md): T-06
-(a multi-word noun can span messages), T-07 (report provenance is not pinned
-to one resolved SHA), and T-09 (the single-space validator cannot fire).
+**Queued, both verified, neither a guess,** in [`BACKLOG.md`](BACKLOG.md): T-07
+(report provenance is not pinned to one resolved SHA) and T-09 (the
+single-space validator cannot fire).
 
 **This laptop:** `tests/test_a11y.py::test_axe_has_no_serious_or_critical_findings`
 drives headless Chrome and hangs the whole run (deselect it; CI runs it);
@@ -90,7 +93,7 @@ requires them to match.
   `6b7417d`, `32e841f`).
 - **CI is fully green** through A.5 / the latest pushed state — 11/11 on
   run 32874107015 (unit 2234 passed, 25 skipped, coverage 76.04% against
-  a gate of 72; integration 62 passed, 1 skipped). None of the six local
+  a gate of 72; integration 62 passed, 1 skipped). None of the seven local
   commits has been through remote CI.
 
 ## Accepted open risks

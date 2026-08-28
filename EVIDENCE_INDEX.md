@@ -246,6 +246,17 @@ detail to the API.
 Not slices — these fix claims that were false, so they do not go in the table
 above.
 
+### 2026-08-27
+
+| Fix | Commit | Test |
+|---|---|---|
+| Multi-word admission nouns cannot be assembled across message boundaries; a complete noun and its status cue may still occur in different messages | with T-06 | `tests/test_shipment_status_admission.py` |
+
+T-06 is a correction, not A.9. Public `/api/ask` currently supplies one
+message to the shipment-status journey, so no endpoint or UI behaviour changed
+and rule (a) is not satisfied. The internal tuple contract is still protected
+because direct callers may supply more than one message.
+
 ### 2026-08-25
 
 | Fix | Commit | Test |

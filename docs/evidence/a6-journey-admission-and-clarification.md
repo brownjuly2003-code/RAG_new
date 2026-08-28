@@ -224,10 +224,13 @@ committed in `6651964`.
 - **Any terminal other than admission.** `expected_terminal` is
   `verified` for 100 out of 100, so the corpus exercises no
   clarification, escalation, disclosure or refusal path.
-- **Three verified defects, queued as their own tasks:** T-06 (a
-  multi-word domain noun can still be assembled across a message
-  boundary), T-07 (report-level reproducibility, above), T-09 (the
-  paradigm validator's single-space check cannot fire, because
-  `split()` has already collapsed the separator).
+- **T-06 correction:** a multi-word admission noun can no longer be assembled
+  across a message boundary; a complete noun and its status cue may still
+  occur in different messages. Public `/api/ask` supplies one message, so this
+  correction is not a new slice under rule (a).
+- **Two verified defects remain queued as their own tasks:** T-07
+  (report-level reproducibility, above) and T-09 (the paradigm validator's
+  single-space check cannot fire, because `split()` has already collapsed the
+  separator).
 
 Nothing here approves a batch. Q2 stays Julia's.

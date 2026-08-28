@@ -1186,31 +1186,33 @@ class ShipmentStatusShadowLoop:
             or _TRUNCATED_SHIPMENT_REFERENCE_PATTERN.search(message) is not None
             for message in messages
         )
-        english_tokens = tuple(
-            token
+        english_tokens_by_message = tuple(
+            tuple(_ENGLISH_ADMISSION_TOKEN_PATTERN.findall(message.casefold()))
             for message in messages
-            for token in _ENGLISH_ADMISSION_TOKEN_PATTERN.findall(message.casefold())
         )
-        russian_tokens = tuple(
-            token
+        russian_tokens_by_message = tuple(
+            tuple(_RUSSIAN_ADMISSION_TOKEN_PATTERN.findall(message.casefold()))
             for message in messages
-            for token in _RUSSIAN_ADMISSION_TOKEN_PATTERN.findall(message.casefold())
         )
         vocabulary = _SHIPMENT_STATUS_ADMISSION_VOCABULARY
         russian = _SHIPMENT_STATUS_RUSSIAN_ADMISSION_VOCABULARY
         has_domain_noun = any(
-            _contains_admission_noun(english_tokens, noun)
+            _contains_admission_noun(tokens, noun)
+            for tokens in english_tokens_by_message
             for noun in vocabulary["domain_nouns"]
         ) or any(
-            _russian_term_matches(russian_tokens, term)
+            _russian_term_matches(tokens, term)
+            for tokens in russian_tokens_by_message
             for term in russian["domain_nouns"].values()
         )
         has_status_cue = any(
             _matches_lexical_form(token, cue)
-            for token in english_tokens
+            for tokens in english_tokens_by_message
+            for token in tokens
             for cue in vocabulary["status_cues"]
         ) or any(
-            _russian_term_matches(russian_tokens, term)
+            _russian_term_matches(tokens, term)
+            for tokens in russian_tokens_by_message
             for term in russian["status_cues"].values()
         )
         return AdmissionSignals(

@@ -111,11 +111,34 @@ def test_non_status_lookalikes_are_declined(question: str) -> None:
     assert result.reason_codes == ("NOT_IN_JOURNEY",)
 
 
-def test_shipment_specific_phrase_cannot_cross_message_boundaries() -> None:
-    result = _loop().run(_request("I have a question about customs", "Hold on while I find it."))
+@pytest.mark.parametrize(
+    "messages",
+    (
+        ("This concerns air", "waybill status."),
+        ("Это касается авиа", "накладная, статус?"),
+    ),
+)
+def test_multiword_domain_noun_cannot_cross_message_boundaries(
+    messages: tuple[str, ...],
+) -> None:
+    signals = ShipmentStatusShadowLoop.admission_signals(messages)
+    result = _loop().run(_request(*messages))
 
+    assert signals.has_domain_noun is False
+    assert signals.has_status_cue is True
     assert result.terminal_state is TerminalOutcome.CANCELLED
     assert result.reason_codes == ("NOT_IN_JOURNEY",)
+
+
+def test_complete_domain_noun_can_be_paired_with_a_cue_from_another_message() -> None:
+    messages = ("This concerns an air waybill.", "What is its status?")
+    signals = ShipmentStatusShadowLoop.admission_signals(messages)
+    result = _loop().run(_request(*messages))
+
+    assert signals.has_domain_noun is True
+    assert signals.has_status_cue is True
+    assert result.terminal_state is TerminalOutcome.CLARIFICATION_REQUIRED
+    assert result.reason_codes == ("SHIPMENT_ID_REQUIRED",)
 
 
 @pytest.mark.parametrize(

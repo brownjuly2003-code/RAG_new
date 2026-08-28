@@ -5,15 +5,10 @@
 The admission gate landed (`6651964`, `36d4269`, `bd82297`). T-03 then made
 its clarification terminal observable through `/api/ask`, and T-04 made
 disabled, declined and failed shadow production distinct in Evidence without
-changing the legacy answer. These three items are the remaining queue; all
-three are verified, none is a guess.
+changing the legacy answer. These two items are the remaining queue; both are
+verified, neither is a guess.
 Detail: [capsule](docs/evidence/a6-journey-admission-and-clarification.md).
 
-- **T-06** — a multi-word domain noun can still be assembled across a
-  message boundary. File: `resolution/application/shipment_status.py`.
-  Review finding F-T-01-16, reproduced:
-  `_is_admitted(('This concerns air', 'waybill status.'))` still returns
-  True.
 - **T-07** — report-level reproducibility does not cover the corpus, and
   `rev-parse HEAD` is resolved separately from the `HEAD:path` reads.
   File: `evaluation/journey_admission.py`. Review findings F-T-02-8 and
