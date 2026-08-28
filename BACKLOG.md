@@ -1,5 +1,40 @@
 # Backlog
 
+## 2026-08-27 — open work after A.6 (T-01 / T-02 / T-08)
+
+The admission gate landed (`6651964`, `36d4269`, `bd82297`). These five
+items are the remaining queue; all five are verified, none is a guess.
+Detail: [capsule](docs/evidence/a6-journey-admission-and-clarification.md).
+
+- **T-03** — `/api/ask` still returns the legacy answer when the kernel
+  has already decided CLARIFICATION_REQUIRED. File:
+  `api/routers/conversation.py` (flag in `config/settings.py`). Remaining
+  planned slice; verified still open because T-01/T-02/T-08 did not
+  change the endpoint.
+- **T-04** — an empty Evidence bundle cannot tell shadow-disabled,
+  journey-declined and producer-failure apart. The tab already renders
+  `terminal_state` and `reason_codes` for a persisted journey
+  (`static/admin.js`); a declined request writes nothing, because
+  `observe()` returns None before the sink. Reproduced:
+  `observer_result None`, `sink_records []`. Record a minimal admission
+  outcome at the producer (`resolution/composition.py` /
+  `api/routers/conversation.py`) before returning None, then distinguish
+  the three states in API/UI. A decline must still not touch the answer,
+  call the source or policy ports, or cost measurable time.
+- **T-06** — a multi-word domain noun can still be assembled across a
+  message boundary. File: `resolution/application/shipment_status.py`.
+  Review finding F-T-01-16, reproduced:
+  `_is_admitted(('This concerns air', 'waybill status.'))` still returns
+  True.
+- **T-07** — report-level reproducibility does not cover the corpus, and
+  `rev-parse HEAD` is resolved separately from the `HEAD:path` reads.
+  File: `evaluation/journey_admission.py`. Review findings F-T-02-8 and
+  F-T-02-9, both reproduced in-process.
+- **T-09** — the paradigm validator's single-space check cannot fire,
+  because `split()` has already collapsed the separator. File:
+  `resolution/application/shipment_status.py`. Review finding from T-08
+  pass 4, reproduced: stem `'авиа  накладн'` (two spaces) is accepted.
+
 ## 2026-08-24 — routing below is superseded
 
 Stream status now lives in [`ROADMAP.md`](ROADMAP.md); the next action lives

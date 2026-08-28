@@ -138,7 +138,10 @@ bundle behind `/api/ask` was empty, so the tab would have rendered a permanent
 blank. That is the argument for the rule: the tab is what made the emptiness
 visible, and no amount of local test coverage had.
 
-No row here is `measured`: no number is published from this journey yet.
+No row in this phase-A table is `measured`. The first `measured` number
+from this journey is A.6 below: over the 100
+agent-authored-over-real-documents cases, still `agent_labelled` and 0
+approved, admission recall is 0.0000, not a resolution score.
 
 `fixture` is a fourth evidence class, weaker than `synthetic`: the journey
 runs against a fixture transport management system
@@ -173,6 +176,42 @@ The provenance is narrower than the audit's shorthand as well: the 201 source
 documents are real, the 100 questions over them were written by an agent
 (`325d63c`, `6b7417d`, `32e841f`). An approval makes the **labelling** real,
 not the cases — the manifest says so in `case_source`.
+
+## A.6 (2026-08-27) — admission scored, and what the score says
+
+| Slice | Evidence class | Evidence |
+|---|---|---|
+| A.6 journey admission scored on the 100 labelled cases | `measured` over `agent_labelled` | [a6](docs/evidence/a6-journey-admission-and-clarification.md) · `python scripts/journey_admission_report.py` |
+
+**A.6 is a slice under rule (c):** a published number with provenance
+(corpus sha256 + HEAD sha + code digest + `Reproducible from HEAD`).
+`/api/ask` did not change. T-03, which would make the clarification
+terminal visible at the endpoint, is queued and the flag it would add
+does not exist.
+
+On these 100 agent-authored-over-real-documents cases, still
+`agent_labelled` and 0 approved, admission recall is **0.0000**. That is
+the published number, and it is the point. The corpus cannot measure
+resolution for three independent reasons: no case names a shipment (B.1);
+the corpus is Russian and the gate's vocabulary was English
+(`contains_both_domain_noun_and_status_cue: 0` at `36d4269`); and with
+the language removed (`bd82297`), over the 100
+agent-authored-over-real-documents cases, still `agent_labelled` and 0
+approved, admission recall is still 0.0000 — reachability moved from
+`both 0` to `both 1`, and the one admission is a false positive on a
+case labelled `exception_escalation`. The third reason was only findable
+because the Russian half is a translation of the English one, not a list
+fitted to this corpus.
+
+The before/after table and the report as it prints are in the capsule,
+which also records that T-02 fixed four earlier provenance defects.
+T-07 is still open: `reproducible_from_head` can report true while
+`rev-parse HEAD` and the `HEAD:path` reads are not pinned to one
+resolved SHA, so the printed SHA can disagree with the bytes compared;
+the check also does not cover the corpus or the manifest. Commits:
+`6651964` (T-01, the gate), `36d4269` (T-02, the scorer), `bd82297`
+(T-08, the Russian half). All three are local, not pushed, and have
+not been through remote CI.
 
 ## Corrections
 
