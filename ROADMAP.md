@@ -37,7 +37,10 @@ has a Russian half built as a translation of the English one (`bd82297`).
 Over the 100 agent-authored-over-real-documents cases, still
 `agent_labelled` and 0 approved, admission recall is **0.0000**
 ([capsule](docs/evidence/a6-journey-admission-and-clarification.md)).
-`/api/ask` is unchanged: the shadow is still read-only.
+The shadow remains read-only. T-03 now lets `/api/ask` project only its
+`CLARIFICATION_REQUIRED` terminal behind the independent, default-off
+`RESOLUTION_CLARIFICATION_JOURNEYS` allowlist; both allowlists must name the
+journey. Declines, other terminals and failures keep the legacy response.
 
 **Phase B has started, and B.1 changed the shape of the rest of it.** All 100
 air-cargo cases carry a journey, an expected outcome and a root cause
@@ -55,7 +58,7 @@ advance and the code enforces it.
 
 Both inherited CI failures ([ADR 0008](docs/adr/0008-inherited-ci-red-disposition.md))
 are closed, and CI is green end to end through A.5 / the latest pushed
-state. T-01/T-02/T-08 have not been through remote CI. The chromadb CVE
+state. The five local commits through T-03 have not been through remote CI. The chromadb CVE
 ignores carry a **review date of 2026-09-24**.
 
 | Phase | What | Acceptance |

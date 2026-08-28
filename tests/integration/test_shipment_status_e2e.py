@@ -41,6 +41,7 @@ from api.routers.conversation import _persist_shadow_evidence as _REAL_PERSIST
 pytestmark = pytest.mark.integration
 
 _QUESTION = "What is the status of shipment AC-100001?"
+_CLARIFICATION_QUESTION = "Какой статус груза?"
 _LEGACY_ANSWER = "Legacy pipeline answer, owned by the legacy pipeline."
 
 
@@ -200,11 +201,18 @@ def wired_app(monkeypatch: pytest.MonkeyPatch, integration_api_app, integration_
                 lambda path=None: tuple(shipment_fixtures),
             )
 
-        def _enable_shadow() -> None:
+        def _enable_shadow(*, clarification: bool = False) -> None:
             settings = integration_api_app.get_settings()
             monkeypatch.setattr(
                 settings, "resolution_shadow_journeys", ("shipment-status",), raising=False
             )
+            if clarification:
+                monkeypatch.setattr(
+                    settings,
+                    "resolution_clarification_journeys",
+                    ("shipment-status",),
+                    raising=False,
+                )
 
         return _enable_shadow
 
@@ -327,6 +335,84 @@ def test_the_response_body_is_byte_identical_with_the_shadow_off_and_on(
     assert _count_shadow_steps(_isolated_trace_store) == 1
 
 
+def test_clarification_flag_off_keeps_a_no_id_response_byte_identical(
+    wired_app,
+    integration_client,
+    integration_headers,
+) -> None:
+    enable_shadow = wired_app(open_trace=False)
+    session_id = "4f1c9c2e5b7d4a8fae2d6b0c19f43a77"
+    payload = {"question": _CLARIFICATION_QUESTION, "session_id": session_id}
+    headers = integration_headers("acme", "admin")
+
+    without_shadow = integration_client.post("/api/ask", json=payload, headers=headers)
+    enable_shadow()
+    with_shadow = integration_client.post("/api/ask", json=payload, headers=headers)
+
+    assert without_shadow.status_code == with_shadow.status_code == 200
+    assert with_shadow.content == without_shadow.content
+
+
+def test_clarification_flag_returns_the_contract_ask_and_updates_session_history(
+    wired_app,
+    integration_api_app,
+    integration_store,
+    integration_client,
+    integration_headers,
+) -> None:
+    """T-03: an admitted no-id request gets the kernel's honest next question."""
+    from resolution.composition import load_shipment_contract
+
+    enable_shadow = wired_app(open_trace=False)
+    enable_shadow(clarification=True)
+    session_id = "5f1c9c2e5b7d4a8fae2d6b0c19f43a77"
+
+    response = integration_client.post(
+        "/api/ask",
+        json={"question": _CLARIFICATION_QUESTION, "session_id": session_id},
+        headers=integration_headers("acme", "admin"),
+    )
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["answer"] != _LEGACY_ANSWER
+    assert "shipment id" in body["answer"].casefold()
+    disclosure = load_shipment_contract().disclosure.id.replace("-", " ")
+    assert disclosure.casefold() in body["answer"].casefold()
+    assert body["route"] == "clarification_required"
+    assert body["quality_score"] == 0
+    assert body["sources"] == []
+    assert body["citations"] == []
+    assert body["session_id"] == session_id
+    assert body["trace_id"] == ""
+    assert body["cached"] is False
+
+    session = integration_store["sessions"][("acme", session_id)]
+    assert session.history[-1] == {"role": "assistant", "content": body["answer"]}
+    assert integration_api_app._sessions[session_id] is session
+
+
+def test_clarification_flag_leaves_a_declined_request_on_the_legacy_path(
+    wired_app,
+    integration_client,
+    integration_headers,
+    persisted,
+) -> None:
+    enable_shadow = wired_app(open_trace=False)
+    enable_shadow(clarification=True)
+
+    response = integration_client.post(
+        "/api/ask",
+        json={"question": "Как оформить авианакладную?"},
+        headers=integration_headers("acme", "admin"),
+    )
+
+    assert response.status_code == 200
+    assert response.json()["answer"] == _LEGACY_ANSWER
+    assert response.json()["route"] == "auto"
+    assert persisted == []
+
+
 def test_a_shadow_that_raises_still_returns_the_legacy_answer(
     monkeypatch: pytest.MonkeyPatch,
     wired_app,
@@ -338,7 +424,7 @@ def test_a_shadow_that_raises_still_returns_the_legacy_answer(
     from api.routers import conversation
 
     enable_shadow = wired_app()
-    enable_shadow()
+    enable_shadow(clarification=True)
 
     def _explode(*args: Any, **kwargs: Any) -> Any:
         raise RuntimeError("shadow blew up")

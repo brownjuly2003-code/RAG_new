@@ -1,16 +1,13 @@
 # Backlog
 
-## 2026-08-27 — open work after A.6 (T-01 / T-02 / T-08)
+## 2026-08-27 — open work after T-03
 
-The admission gate landed (`6651964`, `36d4269`, `bd82297`). These five
-items are the remaining queue; all five are verified, none is a guess.
+The admission gate landed (`6651964`, `36d4269`, `bd82297`). T-03 then made
+its clarification terminal observable through `/api/ask`, behind the separate
+default-off `RESOLUTION_CLARIFICATION_JOURNEYS` allowlist. These four items are
+the remaining queue; all four are verified, none is a guess.
 Detail: [capsule](docs/evidence/a6-journey-admission-and-clarification.md).
 
-- **T-03** — `/api/ask` still returns the legacy answer when the kernel
-  has already decided CLARIFICATION_REQUIRED. File:
-  `api/routers/conversation.py` (flag in `config/settings.py`). Remaining
-  planned slice; verified still open because T-01/T-02/T-08 did not
-  change the endpoint.
 - **T-04** — an empty Evidence bundle cannot tell shadow-disabled,
   journey-declined and producer-failure apart. The tab already renders
   `terminal_state` and `reason_codes` for a persisted journey

@@ -940,6 +940,7 @@ class ShipmentStatusShadowLoop:
                 request=request,
                 terminal_state=TerminalOutcome.CLARIFICATION_REQUIRED,
                 reason_codes=("SHIPMENT_ID_REQUIRED",),
+                response_text=self._clarification_response_text(),
             )
 
         try:
@@ -1125,6 +1126,24 @@ class ShipmentStatusShadowLoop:
             response_text=response_text,
             evidence_export=export,
         )
+
+    def _clarification_response_text(self) -> str:
+        """Render the missing-input ask from the pinned contract vocabulary."""
+        terminal = self._contract.terminal_outcomes[TerminalOutcome.CLARIFICATION_REQUIRED]
+        disclosure = self._contract.disclosure
+        if terminal.disclosure_id != disclosure.id or "en" not in disclosure.locales:
+            raise ValueError("clarification response lacks its declared English disclosure")
+        required_inputs = tuple(item.id for item in self._contract.required_inputs if item.required)
+        if len(required_inputs) != 1:
+            raise ValueError("shipment clarification requires exactly one declared input")
+
+        def label(symbol: str) -> str:
+            words = symbol.replace("-", "_").split("_")
+            return " ".join(
+                word.upper() if word.casefold() in {"ai", "id"} else word for word in words
+            )
+
+        return f"{label(disclosure.id)}: Please provide the {label(required_inputs[0])}."
 
     def _evidence_max_age(self, requirement_id: str) -> int:
         requirement = next(

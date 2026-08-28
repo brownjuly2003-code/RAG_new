@@ -206,18 +206,26 @@ def _load_llm_model_prices() -> dict[str, dict[str, float]]:
 KNOWN_SHADOW_JOURNEYS: frozenset[str] = frozenset({"shipment-status"})
 
 
-def _load_resolution_shadow_journeys() -> tuple[str, ...]:
-    raw = os.getenv("RESOLUTION_SHADOW_JOURNEYS", "").strip()
+def _load_resolution_journeys(env_name: str) -> tuple[str, ...]:
+    raw = os.getenv(env_name, "").strip()
     if not raw:
         return ()
     names = tuple(dict.fromkeys(part.strip() for part in raw.split(",") if part.strip()))
     unknown = sorted(set(names) - KNOWN_SHADOW_JOURNEYS)
     if unknown:
         raise ValueError(
-            f"RESOLUTION_SHADOW_JOURNEYS contains unknown journeys: {', '.join(unknown)}. "
+            f"{env_name} contains unknown journeys: {', '.join(unknown)}. "
             f"Known journeys: {', '.join(sorted(KNOWN_SHADOW_JOURNEYS))}"
         )
     return names
+
+
+def _load_resolution_shadow_journeys() -> tuple[str, ...]:
+    return _load_resolution_journeys("RESOLUTION_SHADOW_JOURNEYS")
+
+
+def _load_resolution_clarification_journeys() -> tuple[str, ...]:
+    return _load_resolution_journeys("RESOLUTION_CLARIFICATION_JOURNEYS")
 
 
 def _load_experiment_override_payload() -> dict[str, Any]:
@@ -1057,6 +1065,14 @@ class Settings:
     # is the default everywhere including production.
     resolution_shadow_journeys: tuple[str, ...] = field(
         default_factory=_load_resolution_shadow_journeys
+    )
+
+    # Journeys whose CLARIFICATION_REQUIRED terminal may replace the legacy
+    # /api/ask answer. This is a separate allowlist from shadow execution: a
+    # journey must be named in both flags before it can own the response.
+    # Empty = off, so enabling the read-only shadow alone remains byte-identical.
+    resolution_clarification_journeys: tuple[str, ...] = field(
+        default_factory=_load_resolution_clarification_journeys
     )
 
     # --- Durable session turns (plan 2026-08-23, phase A.2) ---

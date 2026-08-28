@@ -85,6 +85,37 @@ def test_unknown_journey_fails_loudly(monkeypatch: pytest.MonkeyPatch) -> None:
         Settings()
 
 
+def test_clarification_response_is_off_by_default(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.delenv("RESOLUTION_CLARIFICATION_JOURNEYS", raising=False)
+    from config.settings import Settings
+
+    assert Settings().resolution_clarification_journeys == ()
+
+
+def test_clarification_flag_parses_and_deduplicates(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv(
+        "RESOLUTION_CLARIFICATION_JOURNEYS",
+        " shipment-status , shipment-status ",
+    )
+    from config.settings import Settings
+
+    assert Settings().resolution_clarification_journeys == ("shipment-status",)
+
+
+def test_unknown_clarification_journey_fails_loudly(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("RESOLUTION_CLARIFICATION_JOURNEYS", "shipment_status")
+    from config.settings import Settings
+
+    with pytest.raises(ValueError, match="unknown journeys"):
+        Settings()
+
+
 # --- the legacy response is never touched -----------------------------------
 
 
@@ -196,6 +227,33 @@ def test_shadow_records_an_evidence_bundle_for_a_known_shipment(
     assert export.tenant_id == "default"
     # Serialisable, because it has to survive the trip into the trace.
     json.dumps(export.as_dict())
+
+
+def test_clarification_result_is_collected_even_without_a_trace(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Response ownership may not depend on the trace store being available."""
+    from api.routers import conversation
+    from resolution.contracts import TerminalOutcome
+
+    collected: list[Any] = []
+    monkeypatch.setattr(conversation, "_app_module", lambda: _app_stub(("shipment-status",)))
+
+    conversation._run_resolution_shadows(
+        response=_Response(),
+        tenant_id="default",
+        session_id="s1",
+        correlation_id="",
+        question="Какой статус груза?",
+        trace_id="",
+        collect=collected,
+    )
+
+    assert len(collected) == 1
+    assert collected[0].terminal_state is TerminalOutcome.CLARIFICATION_REQUIRED
+    assert collected[0].reason_codes == ("SHIPMENT_ID_REQUIRED",)
+    assert "shipment id" in collected[0].response_text.casefold()
+    assert "ai assistance" in collected[0].response_text.casefold()
 
 
 def test_observers_are_built_once_and_reused(monkeypatch: pytest.MonkeyPatch) -> None:

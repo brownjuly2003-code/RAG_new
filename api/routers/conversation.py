@@ -37,9 +37,10 @@ _TERMINAL_ESCALATE_ROUTES = frozenset({"human", "error", "error_escalation"})
 # --- Resolution kernel shadow journeys (plan 2026-08-23, phase A) ------------
 # Off unless RESOLUTION_SHADOW_JOURNEYS names a journey. The shadow observes
 # the same question the legacy pipeline just answered and writes an evidence
-# bundle to the trace; the answer the caller receives is the same object,
-# unchanged. Before this seam existed the kernel had no production caller at
-# all, which is finding FIN-01 of the 2026-08-24 audit.
+# bundle to the trace. A separate, off-by-default clarification allowlist may
+# project one terminal into the response; without it the caller receives the
+# same object unchanged. Before this seam existed the kernel had no production
+# caller at all, which is finding FIN-01 of the 2026-08-24 audit.
 _shadow_observers: dict[str, Any] = {}
 _shadow_observers_key: tuple[Any, tuple[str, ...]] | None = None
 
@@ -87,6 +88,9 @@ def _record_shadow_evidence(result: Any) -> None:
     """Write one shadow result into the trace the legacy answer already owns."""
     from tracing import log_step
 
+    collected = _shadow_collect.get()
+    if collected is not None:
+        collected.append(result)
     trace_id = _shadow_trace_id.get()
     if not trace_id:
         logger.warning("shadow evidence has no trace to attach to, dropped")
@@ -109,9 +113,6 @@ def _record_shadow_evidence(result: Any) -> None:
             "shadow_response_text": result.response_text,
         },
     )
-    collected = _shadow_collect.get()
-    if collected is not None:
-        collected.append(result)
 
 
 # A shadow may cost the answer a little time; it may not cost it forever.
@@ -701,6 +702,69 @@ class AskResponse(BaseModel):
     delivery_state: str | None = None
 
 
+def _project_resolution_clarification(
+    *,
+    response: AskResponse,
+    results: list[Any],
+    journeys: tuple[str, ...],
+) -> AskResponse:
+    """Let one explicitly enabled clarification terminal own the response."""
+    if "shipment-status" not in journeys:
+        return response
+    try:
+        from resolution.contracts import TerminalOutcome
+
+        result = next(
+            (
+                item
+                for item in results
+                if item.terminal_state is TerminalOutcome.CLARIFICATION_REQUIRED
+                and item.reason_codes == ("SHIPMENT_ID_REQUIRED",)
+                and item.response_text
+            ),
+            None,
+        )
+        if result is None:
+            return response
+        return response.model_copy(
+            update={
+                "answer": result.response_text,
+                "quality_score": 0,
+                "route": TerminalOutcome.CLARIFICATION_REQUIRED.value,
+                "sources": [],
+                "citations": [],
+                "suggested_questions": [],
+                "requires_confirmation": False,
+                "action_summary": "",
+                "cached": False,
+                "ticket_id": None,
+                "delivery_state": None,
+            }
+        )
+    except Exception:
+        logger.warning("resolution clarification projection failed", exc_info=True)
+        return response
+
+
+def _replace_latest_session_answer(session: Any, *, question: str, answer: str) -> None:
+    """Keep in-memory history aligned with the response the endpoint returns."""
+    history = (
+        getattr(session, "_history", None)
+        if hasattr(session, "_history")
+        else session.get("history")
+        if isinstance(session, dict)
+        else None
+    )
+    if (
+        isinstance(history, list)
+        and len(history) >= 2
+        and history[-2] == {"role": "user", "content": question}
+        and isinstance(history[-1], dict)
+        and history[-1].get("role") == "assistant"
+    ):
+        history[-1] = {"role": "assistant", "content": answer}
+
+
 async def _persist_ask_messages(
     session_id: str,
     tenant_id: str,
@@ -1196,6 +1260,28 @@ async def _answer_ask(
             suggested_questions=[],
         )
 
+    clarification_journeys = tuple(getattr(settings, "resolution_clarification_journeys", ()) or ())
+    shadow_results: list[Any] = []
+    if clarification_journeys:
+        response = _run_resolution_shadows(
+            response=response,
+            tenant_id=tenant,
+            session_id=session_id,
+            correlation_id=request_id or "",
+            question=question,
+            trace_id=getattr(response, "trace_id", "") or request_id or "",
+            collect=shadow_results,
+        )
+        projected_response = _project_resolution_clarification(
+            response=response,
+            results=shadow_results,
+            journeys=clarification_journeys,
+        )
+        if projected_response is not response:
+            response = projected_response
+            quality_source = "unmeasured"
+            _replace_latest_session_answer(session, question=question, answer=response.answer)
+
     # A durable turn owns its own write: `commit_turn` puts the pair and the
     # turn's terminal state in one transaction. Only the pre-A.2 path falls
     # through to the best-effort write, and a commit that failed does not fall
@@ -1248,16 +1334,16 @@ async def _answer_ask(
     prometheus_metrics.ACTIVE_SESSIONS.set(len(_app._sessions))
     if response.citations:
         spawn_tracked(_app._record_citation_stats(tenant, list(response.citations)))
-    shadow_results: list[Any] = []
-    response = _run_resolution_shadows(
-        response=response,
-        tenant_id=tenant,
-        session_id=session_id,
-        correlation_id=request_id or "",
-        question=question,
-        trace_id=getattr(response, "trace_id", "") or request_id or "",
-        collect=shadow_results,
-    )
+    if not clarification_journeys:
+        response = _run_resolution_shadows(
+            response=response,
+            tenant_id=tenant,
+            session_id=session_id,
+            correlation_id=request_id or "",
+            question=question,
+            trace_id=getattr(response, "trace_id", "") or request_id or "",
+            collect=shadow_results,
+        )
     await _persist_shadow_evidence(shadow_results)
     return JSONResponse(
         content=response.model_dump(),

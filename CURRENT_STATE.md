@@ -6,14 +6,14 @@
 Last updated: 2026-08-27 · Plan: [`plan_23_08_2026.md`](plan_23_08_2026.md)
 (mode B) · Audit of record:
 [`docs/audits/audit_final_23_08_2026.md`](docs/audits/audit_final_23_08_2026.md)
-· measured code baseline: `bd82297` · T-05 publishes that baseline as the
-fourth local commit beyond `origin/master`; nothing is pushed
+· baseline before T-03: `ad8eed8` · T-03 is the fifth local commit beyond
+`origin/master`; nothing is pushed
 
 ## Start here
 
 ### 1. The gate can reach Russian traffic. The corpus still cannot measure it.
 
-Three code commits, plus this T-05 documentation commit — **four local
+T-01/T-02/T-08, the T-05 evidence commit and this T-03 slice — **five local
 commits total, not pushed**. Push is the owner's call:
 `git -c credential.helper='!gh auth git-credential' push origin master`.
 
@@ -31,6 +31,11 @@ commits total, not pushed**. Push is the owner's call:
 - `bd82297` **T-08** — the vocabulary gained a Russian half, built as a
   translation of the English one so it could not be fitted to the corpus
   it is scored against.
+- **T-03** — `/api/ask` now projects the contract's shipment-id clarification
+  only when `shipment-status` is named in both resolution allowlists. Both
+  default off. A decline, another terminal or any shadow/projection failure
+  leaves the legacy response unchanged; the E2E test also holds session
+  history, trace identity and the response schema.
 
 The corpus cannot measure resolution, for three independent reasons
 ([capsule](docs/evidence/a6-journey-admission-and-clarification.md)):
@@ -51,15 +56,10 @@ B.2/B.3/B.5 stay blocked on data. Label review does not fix that:
 `python scripts/aircargo_labels.py report --batch 1`, then
 `python scripts/aircargo_labels.py approve --batch 1 --approver julia`.
 
-**Queued, all verified, none a guess,** listed under 2026-08-27 in
-[`BACKLOG.md`](BACKLOG.md): T-03 (`/api/ask` acts on the
-clarification terminal — now worth doing, because the gate can reach
-Russian traffic), T-04 (tab already shows a persisted terminal; a
-decline writes nothing, so empty Evidence is ambiguous),
-T-06 (a multi-word domain noun can still be assembled across a message
-boundary), T-07 (report-level reproducibility does not cover the corpus,
-and `rev-parse HEAD` is resolved separately from the `HEAD:path` reads),
-T-09 (the paradigm validator's single-space check cannot fire).
+**Queued, all verified, none a guess,** in [`BACKLOG.md`](BACKLOG.md): T-04
+(declines still leave empty Evidence ambiguous), T-06 (a multi-word noun can
+span messages), T-07 (report provenance is not pinned to one resolved SHA),
+and T-09 (the single-space validator cannot fire).
 
 **This laptop:** `tests/test_a11y.py::test_axe_has_no_serious_or_critical_findings`
 drives headless Chrome and hangs the whole run (deselect it; CI runs it);
@@ -77,18 +77,18 @@ requires them to match.
 
 - **Remote exists** (2026-08-24): `brownjuly2003-code/RAG_new`, private,
   tag `freeze-2026-08-23` = `26866e9`. Pushes go over HTTPS (command in §1).
-- **Phase A closed** (2026-08-25): `/api/ask` runs the shipment-status
-  journey as a read-only shadow; both flags default off; the legacy answer
-  is byte-identical either way. T-01/T-02/T-08 did not change that.
+- **Phase A closed:** `/api/ask` runs the shipment-status journey as a
+  read-only shadow. T-03 may project only its clarification terminal when both
+  allowlists name it; all resolution/session flags default off, and shadow-only
+  remains byte-identical.
 - **Zero real labelled cases.** 100/100 labelled, 0 approved, 0 binding a
   shipment, `expected_terminal` `verified` for all 100. The 201 source
   documents are real; the questions were written by an agent (`325d63c`,
   `6b7417d`, `32e841f`).
 - **CI is fully green** through A.5 / the latest pushed state — 11/11 on
   run 32874107015 (unit 2234 passed, 25 skipped, coverage 76.04% against
-  a gate of 72; integration 62 passed, 1 skipped). T-01/T-02/T-08 have
-  not been through remote CI; the three commits above are local and
-  unpushed.
+  a gate of 72; integration 62 passed, 1 skipped). None of the five local
+  commits has been through remote CI.
 
 ## Accepted open risks
 
@@ -104,7 +104,7 @@ requires them to match.
 A slice counts only if **(a)** observable `/api/ask` or UI behaviour
 changed with an E2E test proving it, **(b)** real labelled cases went up,
 or **(c)** a published number changed with provenance. T-02/T-08/T-05 are
-(c). T-03 is the queued (a). B.1 is preparation until a batch is approved.
+(c); T-03 is (a). B.1 is preparation until a batch is approved.
 
 ## Phases 0 and A — done · B — in progress
 
@@ -113,6 +113,7 @@ or **(c)** a published number changed with provenance. T-02/T-08/T-05 are
 | 0.1–0.3 | Freeze, publish, truth about gates | done |
 | A.1–A.5 | Shadow + durable turn + evidence tables + Evidence tab | done, three slices under (a) |
 | A.6 | Admission gate; over the 100 agent-authored-over-real-documents cases, still `agent_labelled` and 0 approved, scored recall 0.0000 | **done** (c) |
+| A.7 | Opt-in clarification projection through `/api/ask` | **done** (a), default off |
 | B.1 | Labels on all 100 cases | **done**, `agent_labelled`, 0 approved |
 | B.2 | Fixture TMS covering the cases | **blocked** — three reasons, not one |
 | B.3 | First real numbers on the labelled cases | **blocked** — same |

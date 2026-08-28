@@ -185,9 +185,8 @@ not the cases — the manifest says so in `case_source`.
 
 **A.6 is a slice under rule (c):** a published number with provenance
 (corpus sha256 + HEAD sha + code digest + `Reproducible from HEAD`).
-`/api/ask` did not change. T-03, which would make the clarification
-terminal visible at the endpoint, is queued and the flag it would add
-does not exist.
+`/api/ask` did not change in A.6. T-03 later closed that endpoint gap as
+A.7 below.
 
 On these 100 agent-authored-over-real-documents cases, still
 `agent_labelled` and 0 approved, admission recall is **0.0000**. That is
@@ -212,6 +211,21 @@ the check also does not cover the corpus or the manifest. Commits:
 `6651964` (T-01, the gate), `36d4269` (T-02, the scorer), `bd82297`
 (T-08, the Russian half). All three are local, not pushed, and have
 not been through remote CI.
+
+## A.7 (2026-08-27) — clarification owns the opt-in endpoint answer
+
+| Slice | Evidence class | Evidence |
+|---|---|---|
+| A.7 `/api/ask` projects `CLARIFICATION_REQUIRED` for an admitted no-id request | `synthetic` | `tests/integration/test_shipment_status_e2e.py::test_clarification_flag_returns_the_contract_ask_and_updates_session_history` · `tests/test_resolution_shadow_wiring.py` |
+
+**A.7 is a slice under rule (a).** The independent
+`RESOLUTION_CLARIFICATION_JOURNEYS` allowlist defaults off and rejects unknown
+journeys. With `shipment-status` named in both allowlists, a Russian status
+question without an id returns the contract-derived disclosure and asks for
+`shipment_id`; the response carries no claims, citations or measured quality.
+The same E2E holds the response schema, trace/session identity and in-memory
+session answer. Flag off, a declined request, every other terminal and a
+shadow/projection failure keep the legacy response unchanged.
 
 ## Corrections
 

@@ -189,12 +189,16 @@ Resilience layers apply in this order:
 | Variable | Default | Description |
 |---|---|---|
 | `RESOLUTION_SHADOW_JOURNEYS` | *(empty — off)* | Comma-separated journey names run as read-only shadows alongside `/api/ask`. Only `shipment-status` is known; an unknown name **fails at startup** rather than being ignored |
+| `RESOLUTION_CLARIFICATION_JOURNEYS` | *(empty — off)* | Comma-separated shadow journeys whose `CLARIFICATION_REQUIRED` terminal may replace the legacy `/api/ask` answer. Only `shipment-status` is known; an unknown name **fails at startup** |
 
 A shadow observes the question the legacy pipeline has just answered and
 records what a contract-driven resolution journey would have concluded. It
-never owns the response: the answer the caller receives is byte-for-byte the
-same with the flag off and on, and a failure inside the shadow is logged
-rather than surfaced.
+remains read-only. Naming the same journey in
+`RESOLUTION_CLARIFICATION_JOURNEYS` separately allows only its
+`CLARIFICATION_REQUIRED` terminal to own the answer; both flags are required.
+With the clarification allowlist empty, the response stays byte-for-byte the
+same with the shadow off and on. A declined journey, any other terminal or a
+shadow/projection failure leaves the legacy response unchanged.
 
 Two things are written when a journey is enabled:
 
