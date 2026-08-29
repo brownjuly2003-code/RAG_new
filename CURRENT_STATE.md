@@ -94,8 +94,8 @@ requires them to match.
   `6b7417d`, `32e841f`).
 - **CI is fully green** through B.1 / `origin/master` at `04fbe4b` — 11/11
   on run 32880095361 (unit 2247 passed, 25 skipped, coverage 76.13% against
-  a gate of 72; integration 62 passed, 1 skipped). None of the nine local
-  commits has been through remote CI.
+  a gate of 72; integration 62 passed, 1 skipped). None of the local commits
+  beyond `origin/master` has been through remote CI.
 
 ## Accepted open risks
 
