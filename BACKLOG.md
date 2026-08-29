@@ -49,8 +49,9 @@ already; more of them is exactly the move FIN-02 named.
 ## Known-red CI, inherited (not caused by the phase-0 work)
 
 Both are decided — [ADR 0008](docs/adr/0008-inherited-ci-red-disposition.md).
-CI-RED-1 is **closed** (2026-08-25, `0fdb29c`); CI-RED-2 is **open pending
-approval** of the `.pre-commit-config.yaml` half.
+CI-RED-1 is **closed** (2026-08-25, `0fdb29c`); CI-RED-2's CI repair is
+**closed** (2026-08-25, `af0d4fd`), with the accepted CVE risk due for review
+on 2026-09-24.
 
 Both reproduce on `baseline/freeze-2026-08-23`, a branch at the freeze tag
 that predates every phase-0 commit (run 32775953483). They were invisible for

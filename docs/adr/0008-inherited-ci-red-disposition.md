@@ -1,7 +1,6 @@
 # ADR 0008 — Disposition of the three inherited red CI jobs
 
-- Status: Accepted, not yet implemented. Implementation is the first task of
-  the next session.
+- Status: Accepted and implemented on 2026-08-25 (`0fdb29c`, `af0d4fd`).
 - Date: 2026-08-24
 - Decided by: agent, under explicit delegation ("сделай выбор сам"). Julia can
   overrule any of it; the reasoning is written out here so overruling is cheap.
