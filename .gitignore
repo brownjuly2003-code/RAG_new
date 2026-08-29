@@ -42,6 +42,7 @@ reports/ragas/*.md
 
 # Autopilot runtime state
 .autopilot/
+.myflow/
 
 # Playwright MCP captures (per-session diagnostic, not site assets)
 .playwright-mcp/
