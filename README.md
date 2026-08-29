@@ -17,7 +17,7 @@ base and decides whether a request can be resolved automatically or should be
 escalated to a human. Until the staged migration gates are green, those legacy
 paths remain the compatibility baseline rather than the new product boundary.
 
-**Status, 2026-08-25.** The audit of record is
+**Status, 2026-08-29.** The audit of record is
 [`docs/audits/audit_final_23_08_2026.md`](docs/audits/audit_final_23_08_2026.md)
 and the plan it produced is [`plan_23_08_2026.md`](plan_23_08_2026.md); the
 2026-08-03 remediation plan and
@@ -27,11 +27,16 @@ superseded by them.
 That audit's central finding was an inverted critical path: seven slices of
 resolution kernel, all proven against their own tests, while nothing under
 `api/` imported any of it and `/api/ask` had not changed since the fork.
-**Phase A ends that.** The shipment-status journey now runs as a read-only
-shadow behind `RESOLUTION_SHADOW_JOURNEYS` (off by default), and what it
-observes lands both in the trace the answer names and in the resolution
-tables. The legacy answer is unchanged, byte for byte, with the flag off or
-on.
+**Phase A ends that.** On synchronous `/api/ask` (and `/api/chat`, which
+delegates to it), the shipment-status journey now runs as a read-only shadow
+behind `RESOLUTION_SHADOW_JOURNEYS` (off by default), and what it observes
+lands both in the trace the answer names and in the resolution tables. With
+`RESOLUTION_CLARIFICATION_JOURNEYS` empty, the legacy answer stays
+byte-for-byte unchanged with the shadow off or on. Naming the same journey in
+both allowlists lets only its `CLARIFICATION_REQUIRED` terminal replace that
+answer. The direct SSE `/api/ask/stream` path runs neither the shadow nor the
+clarification projection; moving that path onto persisted resolution events
+remains conditional work.
 
 What is *not* yet true: every resolution scenario is synthetic, the journey
 runs against a fixture transport management system, and **zero cases are
@@ -95,7 +100,9 @@ User / Email / Widget
   contract-driven journey observes the same question and records an evidence
   bundle — the source observation it read, the policy decision that applied,
   the claims it could support, and the terminal outcome it would have reached.
-  It never owns the response. See
+  It owns no response by default; the separate clarification allowlist may
+  project only the clarification terminal on the synchronous path. Direct SSE
+  bypasses both. See
   [`docs/CONFIGURATION.md`](docs/CONFIGURATION.md#resolution-kernel-shadow-journeys).
 
 ### Module layout (high level)
