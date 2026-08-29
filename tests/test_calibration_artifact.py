@@ -240,8 +240,8 @@ def test_seed_artifact_reproducible_via_resolve() -> None:
 # ---------------------------------------------------------------------------
 
 
-def _human_rows(n: int = 10, *, disagree_one: bool = True) -> list[dict]:
-    """Build a minimal dual-annotator human sample that clears default floors."""
+def _human_rows(n: int = 40, *, disagree_one: bool = True) -> list[dict]:
+    """Build a minimal dual-annotator human sample."""
     rows: list[dict] = []
     for i in range(n):
         # Mostly auto agreement; one intentional disagreement like the seed.
@@ -285,6 +285,79 @@ def test_seed_cannot_reissue_as_human_labelled() -> None:
         reissue_calibration_from_labels(items, source=SOURCE_HUMAN)
 
 
+def test_phase_b_human_floor_rejects_ten_and_accepts_forty() -> None:
+    ten_routes = assess_human_calibration_readiness(_human_rows(10))
+    assert ten_routes.ready is False
+    assert ten_routes.min_items == 40
+    assert ten_routes.min_double_labelled == 40
+
+    forty_routes = assess_human_calibration_readiness(_human_rows(40))
+    assert forty_routes.ready is True, forty_routes.reasons
+
+
+def test_phase_b_human_floor_cannot_be_lowered() -> None:
+    items = _human_rows(10)
+    readiness = assess_human_calibration_readiness(
+        items,
+        min_items=1,
+        min_double_labelled=1,
+    )
+    assert readiness.ready is False
+    assert readiness.min_items == 40
+    assert readiness.min_double_labelled == 40
+    with pytest.raises(CalibrationArtifactError, match="human calibration not ready"):
+        reissue_calibration_from_labels(
+            items,
+            require_human=True,
+            min_items=1,
+            min_double_labelled=1,
+        )
+
+    raised = assess_human_calibration_readiness(
+        _human_rows(40),
+        min_items=41,
+        min_double_labelled=41,
+    )
+    assert raised.ready is False
+    assert raised.min_items == 41
+    assert raised.min_double_labelled == 41
+
+
+@pytest.mark.parametrize(
+    ("bad_case_id", "counter_name"),
+    [
+        ("", "missing_case_ids"),
+        ("human-00", "duplicate_case_ids"),
+    ],
+)
+def test_human_readiness_requires_non_empty_unique_case_ids(
+    bad_case_id: str,
+    counter_name: str,
+) -> None:
+    items = _human_rows(40)
+    items[1]["case_id"] = bad_case_id
+    readiness = assess_human_calibration_readiness(items)
+    assert readiness.ready is False
+    assert readiness.n_unique_case_ids == 39
+    assert getattr(readiness, counter_name) == 1
+
+
+def test_human_readiness_requires_distinct_annotator_identities() -> None:
+    items = _human_rows(40)
+    items[0]["annotator_b"] = items[0]["annotator_a"]
+    readiness = assess_human_calibration_readiness(items)
+    assert readiness.ready is False
+    assert readiness.same_annotators == 1
+
+
+def test_human_readiness_rejects_invalid_gold_route() -> None:
+    items = _human_rows(40)
+    items[0]["gold_route"] = "maybe"
+    readiness = assess_human_calibration_readiness(items)
+    assert readiness.ready is False
+    assert readiness.invalid_gold == 1
+
+
 def test_synthetic_reissue_keeps_synthetic_source(tmp_path: Path) -> None:
     items = load_labelled_routes(SEED_LABELS)
     artifact = reissue_calibration_from_labels(
@@ -303,7 +376,7 @@ def test_synthetic_reissue_keeps_synthetic_source(tmp_path: Path) -> None:
 
 
 def test_human_sample_readiness_and_reissue(tmp_path: Path) -> None:
-    items = _human_rows(10)
+    items = _human_rows(40)
     readiness = assess_human_calibration_readiness(items)
     assert readiness.ready is True, readiness.reasons
     artifact = reissue_calibration_from_labels(
@@ -315,7 +388,7 @@ def test_human_sample_readiness_and_reissue(tmp_path: Path) -> None:
     assert artifact["source"] == SOURCE_HUMAN
     assert artifact["thresholds"]["min_quality"] == 82
     assert artifact["human_readiness"]["ready"] is True
-    assert artifact["agreement_report"]["n_double_labelled"] == 10
+    assert artifact["agreement_report"]["n_double_labelled"] == 40
     path = write_calibration_artifact(artifact, tmp_path / "human.json")
     loaded = load_calibration_artifact(path)
     assert loaded["source"] == SOURCE_HUMAN
@@ -325,11 +398,12 @@ def test_human_sample_readiness_and_reissue(tmp_path: Path) -> None:
 
 
 def test_missing_annotators_blocks_human_ready() -> None:
-    items = _human_rows(10)
+    items = _human_rows(40)
     del items[0]["annotator_a"]
+    items[1]["annotator_b"] = " "
     readiness = assess_human_calibration_readiness(items)
     assert readiness.ready is False
-    assert readiness.missing_annotators >= 1
+    assert readiness.missing_annotators == 2
 
 
 def test_recalibrate_cli_readiness_on_seed() -> None:
@@ -353,38 +427,56 @@ def test_recalibrate_cli_readiness_on_seed() -> None:
     assert "ready=False" in proc.stdout or "NOT_READY" in proc.stdout
 
 
-def test_recalibrate_cli_reissue_human_write(tmp_path: Path) -> None:
+@pytest.mark.parametrize(
+    ("row_count", "extra_args", "expected_returncode"),
+    [
+        (10, (), 1),
+        (10, ("--min-items", "1", "--min-double-labelled", "1"), 1),
+        (40, (), 0),
+    ],
+)
+def test_recalibrate_cli_enforces_phase_b_human_floor(
+    tmp_path: Path,
+    row_count: int,
+    extra_args: tuple[str, ...],
+    expected_returncode: int,
+) -> None:
     labels = tmp_path / "human.jsonl"
     out = tmp_path / "out.json"
-    rows = _human_rows(10)
+    rows = _human_rows(row_count)
     labels.write_text(
         "\n".join(json.dumps(r, ensure_ascii=False) for r in rows) + "\n",
         encoding="utf-8",
         newline="\n",
     )
     script = PROJECT_ROOT / "scripts" / "recalibrate_routing.py"
+    command = [
+        sys.executable,
+        str(script),
+        "--mode",
+        "reissue",
+        "--labels",
+        str(labels),
+        "--out",
+        str(out),
+        "--require-human",
+        "--write",
+        "--min-quality",
+        "81",
+    ]
     proc = subprocess.run(
-        [
-            sys.executable,
-            str(script),
-            "--mode",
-            "reissue",
-            "--labels",
-            str(labels),
-            "--out",
-            str(out),
-            "--require-human",
-            "--write",
-            "--min-quality",
-            "81",
-        ],
+        command + list(extra_args),
         cwd=str(PROJECT_ROOT),
         capture_output=True,
         text=True,
         check=False,
     )
-    assert proc.returncode == 0, proc.stdout + proc.stderr
-    assert out.is_file()
-    loaded = load_calibration_artifact(out)
-    assert loaded["source"] == SOURCE_HUMAN
-    assert loaded["thresholds"]["min_quality"] == 81
+    assert proc.returncode == expected_returncode, proc.stdout + proc.stderr
+    if expected_returncode:
+        assert not out.exists()
+        assert "min_items=40" in proc.stdout
+    else:
+        assert out.is_file()
+        loaded = load_calibration_artifact(out)
+        assert loaded["source"] == SOURCE_HUMAN
+        assert loaded["thresholds"]["min_quality"] == 81

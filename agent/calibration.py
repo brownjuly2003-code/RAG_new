@@ -36,8 +36,8 @@ DEFAULT_SELF_RAG_MIN_QUALITY = 70
 
 # §6.7 readiness floors for claiming human-labelled calibration DoD (local gate).
 # Production operators may raise these via CLI; they must not be silently bypassed.
-DEFAULT_HUMAN_MIN_ITEMS = 10
-DEFAULT_HUMAN_MIN_DOUBLE_LABELLED = 8
+DEFAULT_HUMAN_MIN_ITEMS = 40
+DEFAULT_HUMAN_MIN_DOUBLE_LABELLED = 40
 DEFAULT_HUMAN_MIN_RAW_AGREEMENT = 0.8
 DEFAULT_HUMAN_MIN_KAPPA = 0.6
 
@@ -514,6 +514,11 @@ class HumanCalibrationReadiness:
     cohens_kappa: float | None
     missing_annotators: int
     missing_gold: int
+    n_unique_case_ids: int
+    missing_case_ids: int
+    duplicate_case_ids: int
+    same_annotators: int
+    invalid_gold: int
     reasons: tuple[str, ...] = field(default_factory=tuple)
     min_items: int = DEFAULT_HUMAN_MIN_ITEMS
     min_double_labelled: int = DEFAULT_HUMAN_MIN_DOUBLE_LABELLED
@@ -541,6 +546,11 @@ def assess_human_calibration_readiness(
     and gold labels must clear floors. This is a local DoD gate — not a claim
     that production traffic has been re-labelled.
     """
+    min_items = max(DEFAULT_HUMAN_MIN_ITEMS, int(min_items))
+    min_double_labelled = max(
+        DEFAULT_HUMAN_MIN_DOUBLE_LABELLED,
+        int(min_double_labelled),
+    )
     reasons: list[str] = []
     n = len(items)
     n_human = 0
@@ -548,8 +558,21 @@ def assess_human_calibration_readiness(
     n_unknown = 0
     missing_annotators = 0
     missing_gold = 0
+    missing_case_ids = 0
+    duplicate_case_ids = 0
+    same_annotators = 0
+    invalid_gold = 0
+    seen_case_ids: set[str] = set()
 
     for item in items:
+        case_id = str(item.get("case_id") or "").strip()
+        if not case_id:
+            missing_case_ids += 1
+        elif case_id in seen_case_ids:
+            duplicate_case_ids += 1
+        else:
+            seen_case_ids.add(case_id)
+
         src = label_source_of(item)
         if src == LABEL_SOURCE_HUMAN:
             n_human += 1
@@ -564,8 +587,17 @@ def assess_human_calibration_readiness(
             ann_b = str(item.get("annotator_b") or "").strip()
             if not ann_a or not ann_b:
                 missing_annotators += 1
-            if gold_key not in item or not str(item.get(gold_key) or "").strip():
+            elif ann_a.casefold() == ann_b.casefold():
+                same_annotators += 1
+
+            gold_value = item.get(gold_key)
+            if gold_key not in item or not str(gold_value or "").strip():
                 missing_gold += 1
+            else:
+                try:
+                    _norm_route(gold_value)
+                except CalibrationArtifactError:
+                    invalid_gold += 1
 
     agreement = compute_agreement_report(
         items,
@@ -586,10 +618,20 @@ def assess_human_calibration_readiness(
         reasons.append(f"unknown label_source rows present: {n_unknown}")
     if n_human != n or n_human == 0:
         reasons.append(f"not all rows are human-labelled (human={n_human}/{n})")
+    if missing_case_ids > 0:
+        reasons.append(f"missing case_id on {missing_case_ids} rows")
+    if duplicate_case_ids > 0:
+        reasons.append(f"duplicate case_id values: {duplicate_case_ids}")
     if missing_annotators > 0:
         reasons.append(f"missing annotator_a/annotator_b on {missing_annotators} human rows")
+    if same_annotators > 0:
+        reasons.append(
+            f"annotator_a/annotator_b identities are equal on {same_annotators} human rows"
+        )
     if missing_gold > 0:
         reasons.append(f"missing gold_route on {missing_gold} human rows")
+    if invalid_gold > 0:
+        reasons.append(f"invalid gold_route on {invalid_gold} human rows")
     if n_double < int(min_double_labelled):
         reasons.append(
             f"n_double_labelled={n_double} < min_double_labelled={min_double_labelled}"
@@ -613,6 +655,11 @@ def assess_human_calibration_readiness(
         cohens_kappa=kappa_f,
         missing_annotators=missing_annotators,
         missing_gold=missing_gold,
+        n_unique_case_ids=len(seen_case_ids),
+        missing_case_ids=missing_case_ids,
+        duplicate_case_ids=duplicate_case_ids,
+        same_annotators=same_annotators,
+        invalid_gold=invalid_gold,
         reasons=tuple(reasons),
         min_items=int(min_items),
         min_double_labelled=int(min_double_labelled),
