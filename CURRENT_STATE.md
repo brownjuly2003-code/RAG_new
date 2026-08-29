@@ -92,8 +92,8 @@ requires them to match.
   shipment, `expected_terminal` `verified` for all 100. The 201 source
   documents are real; the questions were written by an agent (`325d63c`,
   `6b7417d`, `32e841f`).
-- **CI is fully green** through A.5 / the latest pushed state — 11/11 on
-  run 32874107015 (unit 2234 passed, 25 skipped, coverage 76.04% against
+- **CI is fully green** through B.1 / `origin/master` at `04fbe4b` — 11/11
+  on run 32880095361 (unit 2247 passed, 25 skipped, coverage 76.13% against
   a gate of 72; integration 62 passed, 1 skipped). None of the nine local
   commits has been through remote CI.
 
