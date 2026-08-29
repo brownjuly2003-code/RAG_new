@@ -250,6 +250,15 @@ detail to the API.
 Not slices — these fix claims that were false, so they do not go in the table
 above.
 
+### 2026-08-29
+
+| Fix | Commit | Test |
+|---|---|---|
+| Human-calibration readiness now requires at least 40 unique cases with 40 valid double labels; the binding floors cannot be lowered | `56b6dcc` | `tests/test_calibration_artifact.py` |
+
+This is a fail-closed correction, not B.4 completion. The checked-in calibration
+set remains 10 synthetic routes; no human-labelled route was added or claimed.
+
 ### 2026-08-27
 
 | Fix | Commit | Test |
