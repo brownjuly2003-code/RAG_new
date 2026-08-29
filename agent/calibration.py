@@ -311,7 +311,7 @@ def compute_cost_matrix(
     gold_key: str = "gold_route",
 ) -> dict[str, Any]:
     """Confusion-style cost matrix of predicted vs gold auto/human routes."""
-    counts = {
+    counts: dict[str, Any] = {
         "auto_when_auto": 0,
         "human_when_human": 0,
         "auto_when_human": 0,
