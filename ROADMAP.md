@@ -59,9 +59,17 @@ NO-GO check (§15) is what fired. The labels themselves stay `agent_labelled`
 until a batch of 20 is approved (Q2); ADR 0008 decided that fallback in
 advance and the code enforces it.
 
+**Phase C.1 has a measured baseline** (2026-08-30). Qwen 2.5 7B completed
+3 × 100 cases on the Mac with zero failures. LLM faithfulness is 0.8295,
+NLI faithfulness 0.8919 and context precision 0.5067; the checked-in report
+pins the corpus, cached contexts, source SHA, model digest and full config.
+The baseline misses both phase-C thresholds, but it is not a model decision:
+C.1 remains open for the two Qwen3 candidates under the same benchmark
+contract.
+
 Both inherited CI failures ([ADR 0008](docs/adr/0008-inherited-ci-red-disposition.md))
 are closed, and CI is green end to end through A.5 / the latest pushed
-state. The nine local commits through T-09 have not been through remote CI. The chromadb CVE
+state. Local commits beyond the pushed state have not been through remote CI. The chromadb CVE
 ignores carry a **review date of 2026-09-24**.
 
 | Phase | What | Acceptance |

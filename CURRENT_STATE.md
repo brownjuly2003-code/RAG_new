@@ -3,36 +3,41 @@
 **The only entry point for a new session.** Read this, then
 [`ROADMAP.md`](ROADMAP.md). Everything else is reached by link, on demand.
 
-Last updated: 2026-08-29 · Plan: [`plan_23_08_2026.md`](plan_23_08_2026.md)
+Last updated: 2026-08-30 · Plan: [`plan_23_08_2026.md`](plan_23_08_2026.md)
 (mode B) · Audit of record:
 [`docs/audits/audit_final_23_08_2026.md`](docs/audits/audit_final_23_08_2026.md)
 · Phase C benchmark source: `c06bdf5` · local commits are not pushed
 
 ## Start here
 
-### Active Phase C.1 baseline run — Mac
+### Phase C.1a Qwen 2.5 7B baseline — measured on Mac
 
-`c1a-qwen25-7b-c06bdf5` is running 3 × 100 cases on `deproject-mac` from exact
-SHA `c06bdf5721b434eff32dcf5b9991221d5b2a15f8`. Isolated worktree:
-`/tmp/rag-new-c06bdf5.WLtg39/worktree`; benchmark PID `39358` is detached
-(`PPID 1`), and `caffeinate` PID `39360` keeps the Mac awake. Log/checkpoint:
-the worktree's parent directory. The old Mac clone was not changed. Closing
-this Codex/SSH session is safe and does not stop the run; rebooting or powering
-off the Mac would.
+`c1a-qwen25-7b-c06bdf5` completed on `deproject-mac`: exactly 3 × 100 cases,
+300 valid generations, LLM-judge and NLI results, and zero failures. The
+checked-in [raw report](evaluation/c1a-qwen25-7b-c06bdf5-phase-c-generator-benchmark.json)
+is `measured`; its [SHA-256 sidecar](evaluation/c1a-qwen25-7b-c06bdf5-phase-c-generator-benchmark.json.sha256) is guarded by `tests/test_phase_c_baseline_artifact.py`.
 
-Provenance: model digest
-`845dbda0ea48ed749caafd9e6037047aa19acfcfd82e704d7ca97d631a0b697e`;
-dataset SHA-256
-`3737d694362d1867ca3d5983e3765d02c01110d2409145ba7e0f05c021d9c720`;
-cached contexts
-`91ce1745e13ce24cc1b69d0655412385700f5028b4e6b4ed4bf056cb6188ff10`;
-pinned NLI revision `8adb042d524ecd5c26d3e3ba0e3fbcf7e2d0864c`. A one-case
-end-to-end smoke passed but is `not_evidence`. The full run's first checkpoint
-was valid and error-free. At session closure the checkpoint was 6/300: all six
-rows had valid generation and judge output, with zero errors; the final report
-did not exist yet. This remains a multi-hour run. Publish nothing unless it is
-`measured`, exactly 3 × 100 and zero-failure. On exit, resume this run id with
-the same arguments and `--resume`; never start a duplicate.
+| Metric | Mean | Run-level 95% CI |
+|---|---:|---:|
+| LLM faithfulness | 0.8295 | [0.8295, 0.8295] |
+| NLI faithfulness | 0.8919 | [0.8916, 0.8923] |
+| Context precision | 0.5067 | [0.5067, 0.5067] |
+| Context recall | 0.9050 | [0.9050, 0.9050] |
+| Answer relevancy | 0.8960 | [0.8960, 0.8960] |
+| Mean latency per case | 197.50 s | [192.10 s, 202.90 s] |
+
+Embedded provenance: code `c06bdf5721b434eff32dcf5b9991221d5b2a15f8`; model
+`qwen2.5:7b` at `845dbda0ea48ed749caafd9e6037047aa19acfcfd82e704d7ca97d631a0b697e`;
+dataset `3737d694362d1867ca3d5983e3765d02c01110d2409145ba7e0f05c021d9c720`;
+cached contexts `91ce1745e13ce24cc1b69d0655412385700f5028b4e6b4ed4bf056cb6188ff10`;
+NLI revision `8adb042d524ecd5c26d3e3ba0e3fbcf7e2d0864c`. Config: seeds 42–44,
+temperature 0, `num_ctx=4096`, `num_predict=384`, context cap 6000. Component
+measurements are NLI peak RSS 2,124,476,416 bytes and Ollama loaded-model size 5,062,566,870 bytes; neither is total-host peak RAM.
+
+This baseline misses both phase-C quality thresholds: faithfulness 0.90 and
+context precision 0.63. It does not by itself authorize a model change or a
+NO-SHIP decision. C.1 remains open for the Qwen3 candidates, run on the Mac
+with the same corpus, cached contexts and benchmark contract.
 
 ### 1. The gate can reach Russian traffic. The corpus still cannot measure it.
 

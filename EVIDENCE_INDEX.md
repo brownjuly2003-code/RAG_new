@@ -245,6 +245,26 @@ legacy answer, calls neither source nor policy, and is not offered to the
 resolution-table persistence path. Producer failures expose no exception
 detail to the API.
 
+## Phase C (2026-08-30) — generator baseline
+
+| Slice | Evidence class | Evidence |
+|---|---|---|
+| C.1a Qwen 2.5 7B baseline over 3 × 100 cases | `measured` over `agent_labelled` | [raw report](evaluation/c1a-qwen25-7b-c06bdf5-phase-c-generator-benchmark.json) · [SHA-256](evaluation/c1a-qwen25-7b-c06bdf5-phase-c-generator-benchmark.json.sha256) · `tests/test_phase_c_baseline_artifact.py` |
+
+**C.1a is a slice under rule (c):** a Mac run that actually happened, with
+exact source, corpus, cached-context, model and config provenance. All 300
+rows have valid generation, LLM-judge and NLI output; none has an error. The
+run-level means are LLM faithfulness **0.8295** (95% CI
+[0.8295, 0.8295]), NLI faithfulness **0.8919** ([0.8916, 0.8923]), context
+precision **0.5067** ([0.5067, 0.5067]) and mean latency **197.50 seconds per
+case** ([192.10, 202.90]).
+
+This is generator-quality evidence over 100 agent-authored questions and
+hash-pinned cached contexts from real documents; it is not a shipment-resolution
+number. The baseline misses the phase-C faithfulness and precision thresholds.
+C.1 remains open for the Qwen3 candidates, so this result is neither a default
+model change nor the phase's final NO-SHIP decision.
+
 ## Corrections
 
 Not slices — these fix claims that were false, so they do not go in the table
