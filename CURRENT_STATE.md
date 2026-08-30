@@ -14,8 +14,11 @@ Last updated: 2026-08-29 · Plan: [`plan_23_08_2026.md`](plan_23_08_2026.md)
 
 `c1a-qwen25-7b-c06bdf5` is running 3 × 100 cases on `deproject-mac` from exact
 SHA `c06bdf5721b434eff32dcf5b9991221d5b2a15f8`. Isolated worktree:
-`/tmp/rag-new-c06bdf5.WLtg39/worktree`; PID: `39358`; log/checkpoint: its
-parent directory. The old Mac clone was not changed.
+`/tmp/rag-new-c06bdf5.WLtg39/worktree`; benchmark PID `39358` is detached
+(`PPID 1`), and `caffeinate` PID `39360` keeps the Mac awake. Log/checkpoint:
+the worktree's parent directory. The old Mac clone was not changed. Closing
+this Codex/SSH session is safe and does not stop the run; rebooting or powering
+off the Mac would.
 
 Provenance: model digest
 `845dbda0ea48ed749caafd9e6037047aa19acfcfd82e704d7ca97d631a0b697e`;
@@ -25,8 +28,9 @@ cached contexts
 `91ce1745e13ce24cc1b69d0655412385700f5028b4e6b4ed4bf056cb6188ff10`;
 pinned NLI revision `8adb042d524ecd5c26d3e3ba0e3fbcf7e2d0864c`. A one-case
 end-to-end smoke passed but is `not_evidence`. The full run's first checkpoint
-was valid and error-free; its 173-second latency implies roughly 14 hours, an
-operational estimate only. Publish nothing unless the final report is
+was valid and error-free. At session closure the checkpoint was 6/300: all six
+rows had valid generation and judge output, with zero errors; the final report
+did not exist yet. This remains a multi-hour run. Publish nothing unless it is
 `measured`, exactly 3 × 100 and zero-failure. On exit, resume this run id with
 the same arguments and `--resume`; never start a duplicate.
 
