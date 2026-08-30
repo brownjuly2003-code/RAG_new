@@ -3,48 +3,40 @@
 **The only entry point for a new session.** Read this, then
 [`ROADMAP.md`](ROADMAP.md). Everything else is reached by link, on demand.
 
-Last updated: 2026-08-28 · Plan: [`plan_23_08_2026.md`](plan_23_08_2026.md)
+Last updated: 2026-08-29 · Plan: [`plan_23_08_2026.md`](plan_23_08_2026.md)
 (mode B) · Audit of record:
 [`docs/audits/audit_final_23_08_2026.md`](docs/audits/audit_final_23_08_2026.md)
-· baseline before T-09: `491860d` · T-09 is the ninth local commit beyond
-`origin/master`; nothing is pushed
+· Phase C benchmark source: `c06bdf5` · local commits are not pushed
 
 ## Start here
 
+### Active Phase C.1 baseline run — Mac
+
+`c1a-qwen25-7b-c06bdf5` is running 3 × 100 cases on `deproject-mac` from exact
+SHA `c06bdf5721b434eff32dcf5b9991221d5b2a15f8`. Isolated worktree:
+`/tmp/rag-new-c06bdf5.WLtg39/worktree`; PID: `39358`; log/checkpoint: its
+parent directory. The old Mac clone was not changed.
+
+Provenance: model digest
+`845dbda0ea48ed749caafd9e6037047aa19acfcfd82e704d7ca97d631a0b697e`;
+dataset SHA-256
+`3737d694362d1867ca3d5983e3765d02c01110d2409145ba7e0f05c021d9c720`;
+cached contexts
+`91ce1745e13ce24cc1b69d0655412385700f5028b4e6b4ed4bf056cb6188ff10`;
+pinned NLI revision `8adb042d524ecd5c26d3e3ba0e3fbcf7e2d0864c`. A one-case
+end-to-end smoke passed but is `not_evidence`. The full run's first checkpoint
+was valid and error-free; its 173-second latency implies roughly 14 hours, an
+operational estimate only. Publish nothing unless the final report is
+`measured`, exactly 3 × 100 and zero-failure. On exit, resume this run id with
+the same arguments and `--resume`; never start a duplicate.
+
 ### 1. The gate can reach Russian traffic. The corpus still cannot measure it.
 
-T-01/T-02/T-08, T-05, T-03/T-04, T-06/T-07 and T-09 — **nine local
-commits total, not pushed**. Push is the owner's call:
+T-01…T-09 are closed: measured bilingual admission, opt-in clarification,
+operator-visible shadow outcomes and pinned report provenance. Exact commits
+and tests live in the [A.6–A.8 capsule](docs/evidence/a6-journey-admission-and-clarification.md).
+Push remains the owner's call:
 `git -c credential.helper='!gh auth git-credential' push origin master`.
-
-- `6651964` **T-01** — the shipment-status journey decides whether a request
-  is its own before asking for an id. Three rules: a valid shipment
-  reference, a truncated one, or a domain noun AND a status cue. Anything
-  else ends CANCELLED / NOT_IN_JOURNEY and `build_shipment_status_observer`
-  returns None, so the shadow records nothing and the legacy answer is
-  untouched. CLARIFICATION_REQUIRED stopped being the kernel's default and
-  became a decision. `/api/ask` itself did not change.
-- `36d4269` **T-02** — `evaluation/journey_admission.py` +
-  `scripts/journey_admission_report.py` score that decision against
-  `label.journey` on all 100 labelled cases. First consumer B.1's labels
-  have had.
-- `bd82297` **T-08** — the vocabulary gained a Russian half, built as a
-  translation of the English one so it could not be fitted to the corpus
-  it is scored against.
-- **T-03** — `/api/ask` now projects the contract's shipment-id clarification
-  only when `shipment-status` is named in both resolution allowlists. Both
-  default off. A decline, another terminal or any shadow/projection failure
-  leaves the legacy response unchanged; the E2E test also holds session
-  history, trace identity and the response schema.
-- **T-04** — Evidence readback and the admin tab now distinguish
-  `shadow_disabled`, `journey_declined` and `producer_failure`. Declines still
-  return the legacy answer, call neither source nor policy, and never enter
-  resolution persistence; only their minimal outcome reaches the trace.
-- **T-06 correction** — a multi-word admission noun must now occur within one
-  message; a complete noun and its status cue may still occur in different
-  messages. Public `/api/ask` supplies one message, so this is not an A.9 slice.
-- **T-07 provenance repair** — report v1.3 pins the code, corpus and manifest
-  snapshots to one SHA; the Mac gate passed 11 tests plus strict Mypy and Ruff.
 
 The corpus cannot measure resolution, for three independent reasons
 ([capsule](docs/evidence/a6-journey-admission-and-clarification.md)):
@@ -65,8 +57,7 @@ B.2/B.3/B.5 stay blocked on data. Label review does not fix that:
 `python scripts/aircargo_labels.py report --batch 1`, then
 `python scripts/aircargo_labels.py approve --batch 1 --approver julia`.
 
-**T-09 is closed:** stems now preserve exactly one space between tokens; the
-exact double-space regression and 174 adjacent tests pass. Local queue: empty.
+The local corrective queue after T-09 is empty.
 
 **This laptop:** `tests/test_a11y.py::test_axe_has_no_serious_or_critical_findings`
 drives headless Chrome and hangs the whole run (deselect it; CI runs it);
