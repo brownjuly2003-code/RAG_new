@@ -3,7 +3,7 @@
 **The only entry point for a new session.** Read this, then
 [`ROADMAP.md`](ROADMAP.md). Everything else is reached by link, on demand.
 
-Last updated: 2026-08-30 · Plan: [`plan_23_08_2026.md`](plan_23_08_2026.md)
+Last updated: 2026-09-01 · Plan: [`plan_23_08_2026.md`](plan_23_08_2026.md)
 (mode B) · Audit of record:
 [`docs/audits/audit_final_23_08_2026.md`](docs/audits/audit_final_23_08_2026.md)
 · Phase C benchmark source: `c06bdf5` · local commits are not pushed
@@ -15,7 +15,7 @@ Last updated: 2026-08-30 · Plan: [`plan_23_08_2026.md`](plan_23_08_2026.md)
 `c1a-qwen25-7b-c06bdf5` completed on `deproject-mac`: exactly 3 × 100 cases,
 300 valid generations, LLM-judge and NLI results, and zero failures. The
 checked-in [raw report](evaluation/c1a-qwen25-7b-c06bdf5-phase-c-generator-benchmark.json)
-is `measured`; its [SHA-256 sidecar](evaluation/c1a-qwen25-7b-c06bdf5-phase-c-generator-benchmark.json.sha256) is guarded by `tests/test_phase_c_baseline_artifact.py`.
+is `measured`; sidecar SHA-256 is guarded by `tests/test_phase_c_baseline_artifact.py`.
 
 | Metric | Mean | Run-level 95% CI |
 |---|---:|---:|
@@ -26,18 +26,22 @@ is `measured`; its [SHA-256 sidecar](evaluation/c1a-qwen25-7b-c06bdf5-phase-c-ge
 | Answer relevancy | 0.8960 | [0.8960, 0.8960] |
 | Mean latency per case | 197.50 s | [192.10 s, 202.90 s] |
 
-Embedded provenance: code `c06bdf5721b434eff32dcf5b9991221d5b2a15f8`; model
-`qwen2.5:7b` at `845dbda0ea48ed749caafd9e6037047aa19acfcfd82e704d7ca97d631a0b697e`;
-dataset `3737d694362d1867ca3d5983e3765d02c01110d2409145ba7e0f05c021d9c720`;
-cached contexts `91ce1745e13ce24cc1b69d0655412385700f5028b4e6b4ed4bf056cb6188ff10`;
-NLI revision `8adb042d524ecd5c26d3e3ba0e3fbcf7e2d0864c`. Config: seeds 42–44,
-temperature 0, `num_ctx=4096`, `num_predict=384`, context cap 6000. Component
-measurements are NLI peak RSS 2,124,476,416 bytes and Ollama loaded-model size 5,062,566,870 bytes; neither is total-host peak RAM.
+Provenance: code `c06bdf5721b434eff32dcf5b9991221d5b2a15f8`; model `qwen2.5:7b`
+at `845dbda0ea48ed749caafd9e6037047aa19acfcfd82e704d7ca97d631a0b697e`; dataset
+`3737d694362d1867ca3d5983e3765d02c01110d2409145ba7e0f05c021d9c720`; cached
+contexts `91ce1745e13ce24cc1b69d0655412385700f5028b4e6b4ed4bf056cb6188ff10`;
+NLI `8adb042d524ecd5c26d3e3ba0e3fbcf7e2d0864c`. Config: seeds 42–44,
+temperature 0, `num_ctx=4096`, `num_predict=384`, context cap 6000. NLI peak
+RSS 2,124,476,416 bytes; Ollama loaded size 5,062,566,870 bytes; neither is
+total-host peak RAM. Misses faithfulness 0.90 and context precision 0.63; that
+does not authorize a model change or a NO-SHIP decision.
 
-This baseline misses both phase-C quality thresholds: faithfulness 0.90 and
-context precision 0.63. It does not by itself authorize a model change or a
-NO-SHIP decision. C.1 remains open for the Qwen3 candidates, run on the Mac
-with the same corpus, cached contexts and benchmark contract.
+**C.1b `qwen3:8b` is installed, not measured.** Tag `qwen3:8b`, digest
+`500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41`, size
+5,225,388,164 bytes, family `qwen3`, 8.2B, Q4_K_M, ctx 40960,
+completion/tools/thinking. Worktree `/tmp/rag-new-c06bdf5.WLtg39/worktree` is
+clean at `c06bdf5721b434eff32dcf5b9991221d5b2a15f8`. No pull, no smoke, no
+`c1b-qwen3-8b-c06bdf5` benchmark process.
 
 ### 1. The gate can reach Russian traffic. The corpus still cannot measure it.
 
@@ -48,31 +52,25 @@ Push remains the owner's call:
 `git -c credential.helper='!gh auth git-credential' push origin master`.
 
 The corpus cannot measure resolution, for three independent reasons
-([capsule](docs/evidence/a6-journey-admission-and-clarification.md)):
-
-1. no case names a shipment (B.1);
-2. the corpus is Russian and the gate's vocabulary was English —
-   `contains_both_domain_noun_and_status_cue: 0`, so over the 100
-   agent-authored-over-real-documents cases, still `agent_labelled` and
-   0 approved, `recall 0.0000` said nothing about the predicate;
-3. with the language removed, over the 100
-   agent-authored-over-real-documents cases, still `agent_labelled` and
-   0 approved, admission recall is still **0.0000**. Reachability
-   moved from `both 0` to `both 1`; the one admission is a false
-   positive on a case labelled `exception_escalation`. The corpus
-   contains no case this journey should admit.
+([capsule](docs/evidence/a6-journey-admission-and-clarification.md)): (1) no
+case names a shipment (B.1); (2) the corpus is Russian and the gate's
+vocabulary was English — `contains_both_domain_noun_and_status_cue: 0`, so
+over the 100 agent-authored-over-real-documents cases, still `agent_labelled`
+and 0 approved, `recall 0.0000` said nothing about the predicate; (3) with
+the language removed, over those 100 cases, still `agent_labelled` and 0
+approved, admission recall is still **0.0000**. Reachability moved from
+`both 0` to `both 1`; the one admission is a false positive on a case labelled
+`exception_escalation`. The corpus contains no case this journey should admit.
 
 B.2/B.3/B.5 stay blocked on data. Label review does not fix that:
 `python scripts/aircargo_labels.py report --batch 1`, then
 `python scripts/aircargo_labels.py approve --batch 1 --approver julia`.
-
 The local corrective queue after T-09 is empty.
 
 **This laptop:** `tests/test_a11y.py::test_axe_has_no_serious_or_critical_findings`
 drives headless Chrome and hangs the whole run (deselect it; CI runs it);
-local mypy --strict is red on numpy stubs unless the installed numpy
-matches the lock (2.4.4, not 2.5.1); Postgres integration tests still do
-not run here.
+local mypy --strict is red on numpy stubs unless the installed numpy matches
+the lock (2.4.4, not 2.5.1); Postgres integration tests still do not run here.
 
 ### 2. Housekeeping with a date on it
 
@@ -82,20 +80,20 @@ requires them to match.
 
 ## What is true right now
 
-- **Remote exists** (2026-08-24): `brownjuly2003-code/RAG_new`, private,
-  tag `freeze-2026-08-23` = `26866e9`. Pushes go over HTTPS (command in §1).
+- **Remote exists** (2026-08-24): `brownjuly2003-code/RAG_new`, private, tag
+  `freeze-2026-08-23` = `26866e9`. Pushes go over HTTPS (command in §1).
 - **Phase A closed:** `/api/ask` runs the shipment-status journey as a
   read-only shadow. T-03 may project only its clarification terminal when both
   allowlists name it; T-04 makes disabled/declined/failed observation explicit.
-  All resolution/session flags default off, and shadow-only remains byte-identical.
+  All resolution/session flags default off; shadow-only remains byte-identical.
 - **Zero real labelled cases.** 100/100 labelled, 0 approved, 0 binding a
   shipment, `expected_terminal` `verified` for all 100. The 201 source
-  documents are real; the questions were written by an agent (`325d63c`,
-  `6b7417d`, `32e841f`).
-- **CI is fully green** through B.1 / `origin/master` at `04fbe4b` — 11/11
-  on run 32880095361 (unit 2247 passed, 25 skipped, coverage 76.13% against
-  a gate of 72; integration 62 passed, 1 skipped). None of the local commits
-  beyond `origin/master` has been through remote CI.
+  documents are real; questions were agent-written (`325d63c`, `6b7417d`,
+  `32e841f`).
+- **CI is fully green** through B.1 / `origin/master` at `04fbe4b` — 11/11 on
+  run 32880095361 (unit 2247 passed, 25 skipped, coverage 76.13% vs gate 72;
+  integration 62 passed, 1 skipped). Local commits beyond `origin/master` have
+  not been through remote CI.
 
 ## Accepted open risks
 
@@ -108,10 +106,10 @@ requires them to match.
 
 ## The rule that governs every slice
 
-A slice counts only if **(a)** observable `/api/ask` or UI behaviour
-changed with an E2E test proving it, **(b)** real labelled cases went up,
-or **(c)** a published number changed with provenance. T-02/T-08/T-05 are
-(c); T-03 is (a). B.1 is preparation until a batch is approved.
+A slice counts only if **(a)** observable `/api/ask` or UI behaviour changed
+with an E2E test proving it, **(b)** real labelled cases went up, or **(c)** a
+published number changed with provenance. T-02/T-08/T-05 are (c); T-03 is (a).
+B.1 is preparation until a batch is approved.
 
 ## Phases 0 and A — done · B — in progress
 
@@ -119,7 +117,7 @@ or **(c)** a published number changed with provenance. T-02/T-08/T-05 are
 |---|---|---|
 | 0.1–0.3 | Freeze, publish, truth about gates | done |
 | A.1–A.5 | Shadow + durable turn + evidence tables + Evidence tab | done, three slices under (a) |
-| A.6 | Admission gate; over the 100 agent-authored-over-real-documents cases, still `agent_labelled` and 0 approved, scored recall 0.0000 | **done** (c) |
+| A.6 | Admission gate; 100 agent-authored cases, `agent_labelled`, 0 approved, recall 0.0000 | **done** (c) |
 | A.7 | Opt-in clarification projection through `/api/ask` | **done** (a), default off |
 | A.8 | Evidence distinguishes disabled, declined and failed producers | **done** (a) |
 | B.1 | Labels on all 100 cases | **done**, `agent_labelled`, 0 approved |
@@ -130,14 +128,13 @@ or **(c)** a published number changed with provenance. T-02/T-08/T-05 are
 
 ## Open questions for Julia
 
-Q1 is answered (separate private repo). Each of these blocks only its own phase:
+Q1 is answered (separate private repo). Each blocks only its own phase:
 
-- **Q2 (phase B), now two questions.** (a) Approve the proposed labels in
-  batches of 20 — the command is in §1 above. (b) **The one that matters:** can
-  100 real support requests that name a shipment be obtained? Without them
-  phase B has no measurable corpus, and B.2/B.3/B.5 stay blocked. If the answer
-  is no, the decision to record is that the repository measures resolution on
-  synthetic instances and says so wherever a number is published.
+- **Q2 (phase B), two questions.** (a) Approve proposed labels in batches of
+  20 — command in §1. (b) Can 100 real support requests that name a shipment
+  be obtained? Without them B.2/B.3/B.5 stay blocked. If no, record that the
+  repository measures resolution on synthetic instances wherever a number is
+  published.
 - **Q3 (phase C):** heavy runs on Colab or the iMac. **Q4 (phase E):** publish
   as `RAG_new` or rename.
 
