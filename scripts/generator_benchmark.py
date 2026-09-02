@@ -232,6 +232,7 @@ class OllamaLLM:
         num_predict: int,
         timeout_sec: float,
         keep_alive: str,
+        think: bool | None = None,
         request_json: RequestJson = _default_request_json,
     ) -> None:
         self.base_url = base_url.rstrip("/")
@@ -242,6 +243,7 @@ class OllamaLLM:
         self.num_predict = num_predict
         self.timeout_sec = timeout_sec
         self.keep_alive = keep_alive
+        self.think = think
         self._request_json = request_json
         self.calls = 0
         self.failed_calls = 0
@@ -259,6 +261,8 @@ class OllamaLLM:
                 "num_predict": self.num_predict,
             },
         }
+        if self.think is not None:
+            payload["think"] = self.think
         try:
             data = self._request_json(
                 "POST",
@@ -756,6 +760,7 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--num-predict", type=int, default=384)
     parser.add_argument("--timeout-sec", type=float, default=600.0)
     parser.add_argument("--keep-alive", default="30m")
+    parser.add_argument("--think", action=argparse.BooleanOptionalAction, default=None)
     parser.add_argument("--nli-model", default=DEFAULT_NLI_MODEL)
     parser.add_argument("--nli-revision", default=DEFAULT_NLI_REVISION)
     parser.add_argument("--nli-device", default="cpu")
@@ -793,6 +798,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         num_predict=args.num_predict,
         timeout_sec=args.timeout_sec,
         keep_alive=args.keep_alive,
+        think=args.think,
     )
     model_metadata = probe.model_metadata()
     config = {
@@ -806,6 +812,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         "temperature": args.temperature,
         "num_ctx": args.num_ctx,
         "num_predict": args.num_predict,
+        "think": args.think,
         "nli_batch_size": args.nli_batch_size,
         "nli_support_threshold": args.nli_support_threshold,
     }
@@ -819,6 +826,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         "ollama_model": args.model,
         "ollama_model_digest": model_metadata["digest"],
         "ollama_model_metadata": model_metadata,
+        "ollama_think": args.think,
         "nli_model": args.nli_model,
         "nli_revision": args.nli_revision,
         "host": {
@@ -880,6 +888,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             num_predict=args.num_predict,
             timeout_sec=args.timeout_sec,
             keep_alive=args.keep_alive,
+            think=args.think,
         )
         llms_by_seed[seed] = llm
         for case_number, case in enumerate(cases, 1):

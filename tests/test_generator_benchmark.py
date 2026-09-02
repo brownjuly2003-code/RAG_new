@@ -101,6 +101,7 @@ def test_ollama_llm_sends_pinned_deterministic_generation_options() -> None:
         num_predict=256,
         timeout_sec=90.0,
         keep_alive="15m",
+        think=False,
         request_json=request_json,
     )
 
@@ -117,6 +118,7 @@ def test_ollama_llm_sends_pinned_deterministic_generation_options() -> None:
         "prompt": "Вопрос",
         "stream": False,
         "keep_alive": "15m",
+        "think": False,
         "options": {
             "temperature": 0.0,
             "seed": 17,
@@ -125,6 +127,72 @@ def test_ollama_llm_sends_pinned_deterministic_generation_options() -> None:
         },
     }
     assert calls[1][2] == {"model": "qwen2.5:7b", "keep_alive": 0}
+
+
+def test_no_think_is_recorded_in_benchmark_config_and_provenance(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    dataset = tmp_path / "cases.jsonl"
+    contexts = tmp_path / "contexts.json"
+    dataset.write_text("", encoding="utf-8")
+    contexts.write_text("[]", encoding="utf-8")
+    captured: dict[str, Any] = {"llm_kwargs": []}
+
+    class FakeOllamaLLM:
+        calls = 0
+        failed_calls = 0
+
+        def __init__(self, **kwargs: Any) -> None:
+            captured["llm_kwargs"].append(kwargs)
+
+        def model_metadata(self) -> dict[str, Any]:
+            return {"digest": "d" * 64}
+
+        def process_metadata(self) -> dict[str, Any]:
+            return {}
+
+        def unload(self) -> None:
+            return None
+
+    def capture_report(**kwargs: Any) -> dict[str, Any]:
+        captured["provenance"] = kwargs["provenance"]
+        return {"evidence_class": "not_evidence", "aggregate": {}}
+
+    monkeypatch.setattr(benchmark, "OllamaLLM", FakeOllamaLLM)
+    monkeypatch.setattr(benchmark, "load_benchmark_cases", lambda **_kwargs: [])
+    monkeypatch.setattr(
+        benchmark,
+        "_git_value",
+        lambda *args: "a" * 40 if args == ("rev-parse", "HEAD") else "",
+    )
+    monkeypatch.setattr(benchmark, "build_final_report", capture_report)
+    monkeypatch.setattr(benchmark, "_render_markdown", lambda _report: "report\n")
+
+    assert (
+        benchmark.main(
+            [
+                "--dataset",
+                str(dataset),
+                "--contexts",
+                str(contexts),
+                "--results-dir",
+                str(tmp_path),
+                "--run-id",
+                "no-think-test",
+                "--runs",
+                "1",
+                "--expected-cases",
+                "1",
+                "--skip-nli",
+                "--no-think",
+            ]
+        )
+        == 1
+    )
+    assert all(item["think"] is False for item in captured["llm_kwargs"])
+    assert captured["provenance"]["ollama_think"] is False
+    assert captured["provenance"]["config"]["think"] is False
 
 
 def test_summarize_nli_claims_uses_best_supporting_context_per_claim() -> None:
