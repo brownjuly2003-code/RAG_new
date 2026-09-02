@@ -36,12 +36,13 @@ RSS 2,124,476,416 bytes; Ollama loaded size 5,062,566,870 bytes; neither is
 total-host peak RAM. Misses faithfulness 0.90 and context precision 0.63; that
 does not authorize a model change or a NO-SHIP decision.
 
-**C.1b `qwen3:8b` is installed, not measured.** Tag `qwen3:8b`, digest
+**C.1b `qwen3:8b` passed one smoke, not measured.** Tag `qwen3:8b`, digest
 `500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41`, size
 5,225,388,164 bytes, family `qwen3`, 8.2B, Q4_K_M, ctx 40960,
-completion/tools/thinking. Worktree `/tmp/rag-new-c06bdf5.WLtg39/worktree` is
-clean at `c06bdf5721b434eff32dcf5b9991221d5b2a15f8`. No pull, no smoke, no
-`c1b-qwen3-8b-c06bdf5` benchmark process.
+completion/tools/thinking. On `deproject-mac`, `c1b-qwen3-8b-b8ecc8e-smoke`
+ran one case from a clean `b8ecc8e` worktree with thinking off: generation,
+LLM judge and NLI valid, zero failed cases, 255.525 s. It is `not_evidence`
+(1 run, 1 case). No full `c1b-qwen3-8b-b8ecc8e` process was launched.
 
 ### 1. The gate can reach Russian traffic. The corpus still cannot measure it.
 
