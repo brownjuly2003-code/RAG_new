@@ -40,12 +40,42 @@ against that manifest without needing the network.
 ## Requirement: the aggregate digest is stable under filesystem accidents
 
 The aggregate corpus digest SHALL be computed over the file names and their
-content digests in a fixed sorted order, and SHALL hash file content as raw
-bytes, so that directory listing order, line-ending translation on checkout,
-or the machine the corpus is read on cannot change the published number.
+content digests in a fixed sorted order, SHALL hash file content as raw
+bytes, SHALL ignore hidden files (names starting with `.`), and SHALL
+normalise file names to Unicode NFC, so that directory listing order,
+line-ending translation on checkout, a macOS `.DS_Store`, NFD versus NFC
+spellings of the same name, or the machine the corpus is read on cannot
+change the published number.
+
+The stored root SHALL be a repo-relative POSIX path when the corpus sits
+inside the project, and the stable placeholder `<external>` otherwise —
+never an absolute path.
 
 ### Scenario: two machines agree on the digest
 
 - **GIVEN** the same corpus present on two machines
 - **WHEN** the manifest is built on each
 - **THEN** the aggregate digest is the same on both
+
+### Scenario: a hidden sidecar is not a corpus file
+
+- **GIVEN** a corpus directory that also contains a file whose name starts with `.`
+- **WHEN** the manifest is built or verified
+- **THEN** that file is not listed, does not change `corpus_sha256`, and is
+  not reported as extra
+
+### Scenario: NFD and NFC spellings of a name are the same corpus file
+
+- **GIVEN** a corpus file whose name is stored as Unicode NFD on one machine
+  and NFC on another
+- **WHEN** the manifest is built on each
+- **THEN** both produce one entry under the NFC name and the same
+  `corpus_sha256`
+
+### Scenario: a corpus outside the repository does not embed a machine path
+
+- **GIVEN** the same corpus bytes at two different locations outside the
+  project root
+- **WHEN** the manifest is built for each
+- **THEN** the stored root is not an absolute path, and the two manifests
+  are byte-identical
