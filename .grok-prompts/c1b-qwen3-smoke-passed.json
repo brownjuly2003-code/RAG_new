@@ -1,0 +1,178 @@
+{
+  "schema_version": 1,
+  "kind": "phase-c-generator-benchmark",
+  "created_at": "2026-09-02T04:16:07.591055+00:00",
+  "evidence_class": "not_evidence",
+  "evidence_reasons": [
+    "run_count=1 < required_runs=3",
+    "run 1 num_cases=1 != expected_cases=100"
+  ],
+  "required_runs": 3,
+  "expected_cases": 100,
+  "provenance": {
+    "code_sha": "b8ecc8efb780d423a267595584ef0927ebb77cc5",
+    "code_tree_clean": true,
+    "dataset_path": "/private/tmp/rag-new-b8ecc8e.tdcVc2/worktree/evaluation/curated_cases_aircargo.jsonl",
+    "dataset_sha256": "3737d694362d1867ca3d5983e3765d02c01110d2409145ba7e0f05c021d9c720",
+    "contexts_path": "/private/tmp/rag-new-b8ecc8e.tdcVc2/worktree/.tmp/ab_candidates_phase2_C.json",
+    "contexts_sha256": "91ce1745e13ce24cc1b69d0655412385700f5028b4e6b4ed4bf056cb6188ff10",
+    "ollama_model": "qwen3:8b",
+    "ollama_model_digest": "500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41",
+    "ollama_model_metadata": {
+      "name": "qwen3:8b",
+      "digest": "500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41",
+      "size_bytes": 5225388164,
+      "modified_at": "2026-09-01T21:07:16.769724291+03:00",
+      "details": {
+        "parent_model": "",
+        "format": "gguf",
+        "family": "qwen3",
+        "families": [
+          "qwen3"
+        ],
+        "parameter_size": "8.2B",
+        "quantization_level": "Q4_K_M",
+        "context_length": 40960,
+        "embedding_length": 4096
+      }
+    },
+    "ollama_think": false,
+    "nli_model": "MoritzLaurer/mDeBERTa-v3-base-mnli-xnli",
+    "nli_revision": "8adb042d524ecd5c26d3e3ba0e3fbcf7e2d0864c",
+    "host": {
+      "platform": "macOS-13.7.8-x86_64-i386-64bit",
+      "python": "3.11.15",
+      "machine": "x86_64"
+    },
+    "config": {
+      "prompt_version": "aircargo-context-only-ru-v1",
+      "runs": 1,
+      "expected_cases": 100,
+      "selected_cases": 1,
+      "top_k_override": null,
+      "context_chars": 6000,
+      "seed_base": 42,
+      "temperature": 0.0,
+      "num_ctx": 4096,
+      "num_predict": 384,
+      "think": false,
+      "nli_batch_size": 4,
+      "nli_support_threshold": 0.5
+    },
+    "ollama_runtime": {
+      "size_bytes": 5937257512,
+      "size_vram_bytes": 0,
+      "expires_at": "2026-09-02T07:45:35.810987+03:00"
+    },
+    "nli_process_peak_rss_bytes": 2121834496
+  },
+  "aggregate": {
+    "llm_faithfulness": {
+      "mean": 1.0,
+      "ci_low": 1.0,
+      "ci_high": 1.0,
+      "n": 1,
+      "ci_method": "student-t-95"
+    },
+    "answer_relevancy": {
+      "mean": 1.0,
+      "ci_low": 1.0,
+      "ci_high": 1.0,
+      "n": 1,
+      "ci_method": "student-t-95"
+    },
+    "context_precision": {
+      "mean": 0.6285,
+      "ci_low": 0.6285,
+      "ci_high": 0.6285,
+      "n": 1,
+      "ci_method": "student-t-95"
+    },
+    "context_recall": {
+      "mean": 1.0,
+      "ci_low": 1.0,
+      "ci_high": 1.0,
+      "n": 1,
+      "ci_method": "student-t-95"
+    },
+    "nli_faithfulness": {
+      "mean": 0.9984170198440552,
+      "ci_low": 0.9984170198440552,
+      "ci_high": 0.9984170198440552,
+      "n": 1,
+      "ci_method": "student-t-95"
+    },
+    "nli_supported_claim_rate": {
+      "mean": 1.0,
+      "ci_low": 1.0,
+      "ci_high": 1.0,
+      "n": 1,
+      "ci_method": "student-t-95"
+    },
+    "mean_latency_ms": {
+      "mean": 255525.0,
+      "ci_low": 255525.0,
+      "ci_high": 255525.0,
+      "n": 1,
+      "ci_method": "student-t-95"
+    }
+  },
+  "runs": [
+    {
+      "run_index": 1,
+      "seed": 42,
+      "cases": [
+        {
+          "case_id": "aircargo-probation-data",
+          "query": "Какие данные нужны для ответа по испытательному сроку?",
+          "answer": "Должность, дата приема, условие в трудовом договоре, длительность испытания и результаты оценки.",
+          "latency_ms": 255525,
+          "generation_valid": true,
+          "llm_judge_valid": true,
+          "nli_valid": true,
+          "error": "",
+          "scores": {
+            "faithfulness": 1.0,
+            "answer_relevancy": 1.0,
+            "context_precision": 0.6285,
+            "context_recall": 1.0
+          },
+          "nli": {
+            "n_claims": 1,
+            "n_supported_claims": 1,
+            "supported_claim_rate": 1.0,
+            "nli_faithfulness": 0.9984170198440552,
+            "claims": [
+              {
+                "claim": "Должность, дата приема, условие в трудовом договоре, длительность испытания и результаты оценки.",
+                "entailment_scores": [
+                  0.998417,
+                  0.828632,
+                  0.027706,
+                  0.899389,
+                  0.874775
+                ],
+                "best_entailment": 0.998417,
+                "supported": true
+              }
+            ]
+          }
+        }
+      ],
+      "num_cases": 1,
+      "failed_cases": 0,
+      "case_ids": [
+        "aircargo-probation-data"
+      ],
+      "aggregate": {
+        "llm_faithfulness": 1.0,
+        "answer_relevancy": 1.0,
+        "context_precision": 0.6285,
+        "context_recall": 1.0,
+        "nli_faithfulness": 0.9984170198440552,
+        "nli_supported_claim_rate": 1.0,
+        "mean_latency_ms": 255525.0
+      }
+    }
+  ]
+}
