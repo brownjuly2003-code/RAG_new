@@ -735,7 +735,7 @@ class Settings:
     )
 
     # --- Graph retrieval (GraphRAG lane) activation gate ---
-    # Plan: docs/plans/2026-06-05-graph-retrieval-activation.md. The lane
+    # Plan: archive/docs/plans/2026-06-05-graph-retrieval-activation.md. The lane
     # itself is Phase 2 (not built yet); these settings implement the
     # activation CONDITION, evaluated and logged on every ingestion
     # (ingestion/graph_activation.py). "auto" activates only when the chunk

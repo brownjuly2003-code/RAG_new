@@ -6,7 +6,7 @@
 >
 > The 12 327-line update log that used to live here (Update-1 … Update-239,
 > 2026-03 … 2026-08, 678 KB) is archived verbatim at
-> [`docs/archive/agent-state-2026-03..08.md`](docs/archive/agent-state-2026-03..08.md).
+> [`archive/docs/state/agent-state-2026-03..08.md`](archive/docs/state/agent-state-2026-03..08.md).
 > It is history, not routing: nothing should be planned from it.
 >
 > Kept at this path because `scripts/autopilot.ps1` reads it as planner
@@ -65,7 +65,7 @@ blocked on data rather than on work. See `CURRENT_STATE.md` §1.
 
 ## Current work
 
-Active plan: [`plan_23_08_2026.md`](plan_23_08_2026.md), mode B (evidence of
+Active plan: [`plan_06_09_26.md`](plan_06_09_26.md), mode B (evidence of
 engineering maturity, then publication). Phase 0 and phase A are done — every
 phase-A item landed on 2026-08-25 — and phase B is open: B.1 (labels) landed
 the same day, B.2/B.3/B.5 are blocked on data. See
@@ -79,13 +79,13 @@ provenance. "Locally complete" is preparation, not a slice.
 
 ## Frozen
 
-Trust Foundation steps 5–10, G9+, REL-03D, MCP connectors, GraphRAG,
-enterprise DoD (2 replicas, SBOM, SOC2-shaped gates). Unfreeze conditions are
+Trust Foundation steps 5–10, G9+, REL-03D, MCP connectors, framework-grade
+GraphRAG (LightRAG / MS GraphRAG / Neo4j), enterprise DoD (2 replicas, SBOM, SOC2-shaped gates). Unfreeze conditions are
 in [`ROADMAP.md`](ROADMAP.md). Do not restart them for completeness.
 
 ## History, if you need it
 
-- Update log 2026-03 … 2026-08 — [`docs/archive/agent-state-2026-03..08.md`](docs/archive/agent-state-2026-03..08.md)
-- Session handoff capsules — [`docs/SESSION_HANDOFF.md`](docs/SESSION_HANDOFF.md)
+- Update log 2026-03 … 2026-08 — [`archive/docs/state/agent-state-2026-03..08.md`](archive/docs/state/agent-state-2026-03..08.md)
+- Session handoff capsules — [`archive/docs/sessions/`](archive/docs/sessions/)
 - Slice evidence — [`EVIDENCE_INDEX.md`](EVIDENCE_INDEX.md)
 - Audits — [`docs/audits/`](docs/audits/)

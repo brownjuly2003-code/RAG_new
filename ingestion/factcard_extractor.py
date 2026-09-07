@@ -12,7 +12,7 @@ This module only does extraction + validation; collection wiring (F2) and the
 retriever lane (F3/F4) live elsewhere. Keep imports light — ``ingestion.*`` is in
 the mypy strict scope.
 
-Schema (per plan ``docs/plans/2026-06-13-adaptive-retrieval-factcard-plan.md``)::
+Schema (per plan ``archive/docs/plans/2026-06-13-adaptive-retrieval-factcard-plan.md``)::
 
     {"topic": "customs_clearance", "fields": [...], "required_docs": [...],
      "conditions": [...], "source": "customs.md#sec3"}

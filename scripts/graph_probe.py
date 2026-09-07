@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Phase-1 connectivity probe for the graph-retrieval activation gate.
 
-Plan: docs/plans/2026-06-05-graph-retrieval-activation.md. Size alone does not
+Plan: archive/docs/plans/2026-06-05-graph-retrieval-activation.md. Size alone
+does not
 justify a graph lane — this probe measures whether the corpus is CONNECTED
 enough for a graph to help: entity extraction (mistral-small, temperature=0,
 free-tier pacing) on a deterministic sample of production-chunked sections,

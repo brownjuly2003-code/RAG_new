@@ -48,8 +48,9 @@ Never run `pg_restore --clean` against `rag_assistant` or any working/production
 DSN. C7 does not include production grants, API/runtime routing, Slice D,
 push, deploy, or live-provider calls.
 
-For the next session, use the CURRENT capsule in
-`docs/SESSION_HANDOFF.md`. C8 requires explicit authorization for a named
-production target plus approved role ownership, minimum grants, maintenance
-window, and rollback/revoke ownership; this closing C7 record grants none of
-those permissions.
+Current work starts from [`CURRENT_STATE.md`](../../CURRENT_STATE.md). The
+handoff that originally followed C7 is preserved in
+[`archive/docs/sessions/`](../../archive/docs/sessions/). C8 requires explicit
+authorization for a named production target plus approved role ownership,
+minimum grants, maintenance window, and rollback/revoke ownership; this
+closing C7 record grants none of those permissions.

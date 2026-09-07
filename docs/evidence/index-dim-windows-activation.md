@@ -124,7 +124,8 @@ The proposed snapshot path remained absent.
 ## Resume protocol
 
 1. Refresh Git and protect the four owner-dirty files: `BACKLOG.md`,
-   `README.md`, `audit_gpt_23_07_26.md`, and `plan_sol_23_07_26`.
+   `README.md`, `audit_gpt_23_07_26.md`, and
+   `archive/docs/plans/plan-sol-2026-07-23.md`.
 2. Confirm no project Python/uvicorn/Celery process has the target open.
 3. Do not repeat the completed Ubuntu package inventory, the completed
    dpkg repair, the completed WSL-internal PostgreSQL install/readiness

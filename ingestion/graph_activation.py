@@ -3,7 +3,7 @@ ingestion/graph_activation.py
 
 Activation condition for the graph-retrieval lane (GraphRAG).
 
-Implements the gate from docs/plans/2026-06-05-graph-retrieval-activation.md:
+Implements the gate from archive/docs/plans/2026-06-05-graph-retrieval-activation.md:
 ``RAG_GRAPH_RETRIEVAL=off|on|auto`` (default ``off``).  In ``auto`` mode the
 lane is considered activated only when BOTH signals hold:
 

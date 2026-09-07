@@ -268,7 +268,7 @@ jobs:
 
       - name: Bandit static analysis
         # -ll: Medium+ severity blocks. Low findings are advisory only.
-        run: bandit -r . -ll -c pyproject.toml -x ./tests,./.venv,./reports,./data,./archive-legacy,./.tmp
+        run: bandit -r . -ll -c pyproject.toml -x ./tests,./.venv,./reports,./data,./archive,./.tmp
 
       - name: pip-audit (locked dependencies)
         # --disable-pip: skip pip resolution; the lock is already complete.

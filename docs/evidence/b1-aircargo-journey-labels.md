@@ -1,6 +1,6 @@
 # B.1 — Journey labels on the 100 air-cargo cases
 
-**Slice:** phase B.1 of [`plan_23_08_2026.md`](../../plan_23_08_2026.md) ·
+**Slice:** phase B.1 of [`plan_23_08_2026.md`](../../archive/docs/plans/plan-2026-08-23.md) ·
 **Evidence class:** `agent_labelled` · **Date:** 2026-08-25
 
 ## What was asked

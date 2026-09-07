@@ -1,7 +1,7 @@
 # chunk_size=800/200 ОБОСНОВАН — Phase 0 co-occur гейт закрыл вопрос без production-sweep
 
 - Дата: 2026-06-05.
-- План: `docs/plans/2026-06-05-chunk-size-justification.md`. Exit-критерий Phase 0:
+- План: `archive/docs/plans/2026-06-05-chunk-size-justification.md`. Exit-критерий Phase 0:
   «cap-кандидат не возвращает связок → 800 остаётся, sweep не нужен».
 - Метод: co-occur методика residual-miss диагноза — для каждого из 100
   curated-кейсов проверяется, живёт ли полный kw-набор внутри хотя бы одного

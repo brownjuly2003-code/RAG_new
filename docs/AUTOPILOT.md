@@ -50,11 +50,10 @@ The runner must execute only commands available on the local machine.
 ### Mission Source Order
 
 1. Current `git status`, recent log, and diff.
-2. The CURRENT capsule in `docs/SESSION_HANDOFF.md`.
-3. The top `START HERE` block in `AGENT_STATE.md`.
-4. `rag-new-architecture.md` and `docs/architecture/migration-plan.md`.
-5. `BACKLOG.md` only when its top routing banner or the owner explicitly
-   selects the inherited Trust Foundation stream.
+2. `CURRENT_STATE.md`, then `ROADMAP.md`.
+3. The digest in `AGENT_STATE.md`.
+4. `plan_06_09_26.md` and `docs/architecture/migration-plan.md`.
+5. `BACKLOG.md` only for the small current queue it names.
 6. `README.md` and other `docs/` for supporting context, not queue selection.
 
 ### pi.dev Planner

@@ -1,566 +1,178 @@
 # RAG_new — Verifiable Resolution OS
 
-> **Working on this repository?** Start at
-> [`CURRENT_STATE.md`](CURRENT_STATE.md), then [`ROADMAP.md`](ROADMAP.md).
-> This README describes the system; those two describe where it actually
-> stands. Agent conventions are in [`CLAUDE.md`](CLAUDE.md).
+`RAG_new` is a self-hosted support system that combines a production-style RAG
+runtime with a deterministic resolution kernel for versioned procedures,
+evidence, policy decisions, governed actions, and verified business outcomes.
 
-> `RAG_new` is an architecture-first successor to `RAG_Support_Assistant`.
-> It keeps the verified RAG runtime as a migration baseline and adds a
-> deterministic resolution kernel for versioned procedures, evidence,
-> governed actions, and business-state verification. Start with
-> [`docs/architecture/README.md`](docs/architecture/README.md) and the short
-> [`docs/architecture/rag-new-architecture.md`](docs/architecture/rag-new-architecture.md) implementation plan.
+The first product wedge is multilingual logistics and air-cargo support. The
+inherited chat runtime remains the compatibility baseline while the new
+shipment-status journey is introduced behind default-off feature flags.
 
-The inherited runtime still answers support questions against a knowledge
-base and decides whether a request can be resolved automatically or should be
-escalated to a human. Until the staged migration gates are green, those legacy
-paths remain the compatibility baseline rather than the new product boundary.
-
-**Status, 2026-08-29.** The audit of record is
-[`docs/audits/audit_final_23_08_2026.md`](docs/audits/audit_final_23_08_2026.md)
-and the plan it produced is [`plan_23_08_2026.md`](plan_23_08_2026.md); the
-2026-08-03 remediation plan and
-[`docs/PROJECT_CLOSURE.md`](docs/PROJECT_CLOSURE.md) are history and are
-superseded by them.
-
-That audit's central finding was an inverted critical path: seven slices of
-resolution kernel, all proven against their own tests, while nothing under
-`api/` imported any of it and `/api/ask` had not changed since the fork.
-**Phase A ends that.** On synchronous `/api/ask` (and `/api/chat`, which
-delegates to it), the shipment-status journey now runs as a read-only shadow
-behind `RESOLUTION_SHADOW_JOURNEYS` (off by default), and what it observes
-lands both in the trace the answer names and in the resolution tables. With
-`RESOLUTION_CLARIFICATION_JOURNEYS` empty, the legacy answer stays
-byte-for-byte unchanged with the shadow off or on. Naming the same journey in
-both allowlists lets only its `CLARIFICATION_REQUIRED` terminal replace that
-answer. The direct SSE `/api/ask/stream` path runs neither the shadow nor the
-clarification projection; moving that path onto persisted resolution events
-remains conditional work.
-
-What is *not* yet true: every resolution scenario is synthetic, the journey
-runs against a fixture transport management system, and **zero cases are
-labelled from real data**. Numbers from this path are fixture-sourced and say
-so. Phase B is the work of changing that. Current position and the next action
-are in [`CURRENT_STATE.md`](CURRENT_STATE.md); one row per slice with its
-evidence is in [`EVIDENCE_INDEX.md`](EVIDENCE_INDEX.md).
-
-**Deployment model:** there is **no** hosted Hugging Face Space and none is
-planned. Users run the service **locally**. Hugging Face is not a publication
-or required user-runtime dependency for the recommended external-user path
-below (owner/local profiles may still use optional local models).
-
-Public HTTP endpoints are documented below; runtime configuration lives in [docs/CONFIGURATION.md](docs/CONFIGURATION.md) and the metric / monitoring inventory in [docs/OPERATIONS.md](docs/OPERATIONS.md).
-
-**Stack:** FastAPI · LangGraph · ChromaDB · GraceKelly/Ollama provider routing · SQLite for
-trace snapshots · Postgres for sessions/audit/copilot/analytics · Redis for
-cache · OpenTelemetry · email/Bitrix escalation channels.
+> **Current status:** start with [`CURRENT_STATE.md`](CURRENT_STATE.md), then
+> [`ROADMAP.md`](ROADMAP.md). The active plan is
+> [`plan_06_09_26.md`](plan_06_09_26.md). The resolution journey is wired
+> into synchronous `/api/ask` as a read-only shadow, but it still uses a
+> fixture TMS and the repository has zero approved real shipment-bound cases.
+> Fixture measurements are not production evidence.
 
 ## Architecture
 
-```text
-User / Email / Widget
-        |
-        v
-  FastAPI + Auth (JWT / OIDC / RBAC)
-        |
-        v
-  LangGraph pipeline / agent graph
-    classify -> retrieve -> rerank -> generate -> verify -> evaluate
-          \-> tool calls (search_kb / check_order_status / create_ticket)
-        |
-        +-> ChromaDB + BM25 + category metadata
-        +-> GraceKelly orchestrator / Ollama fallback
-        +-> Postgres (sessions, audit, copilot, analytics)
-        +-> Redis cache
-        +-> SQLite traces + OTel spans
+```mermaid
+flowchart LR
+    Client[Web / email / API] --> API[FastAPI + auth]
+    API --> RAG[LangGraph RAG pipeline]
+    API -. default-off shadow .-> Kernel[Resolution kernel]
+    RAG --> Vector[(ChromaDB + BM25)]
+    RAG --> LLM[Ollama / Mistral / GraceKelly]
+    API --> Data[(PostgreSQL + Redis + traces)]
+    Kernel --> Evidence[Evidence and replay ledger]
+    Kernel --> Data
 ```
 
-- **Retrieval:** ChromaDB (vector) + BM25 hybrid search, Reciprocal Rank
-  Fusion, cross-encoder reranking, contextual headers, and optional document
-  category metadata.
-- **Generation:** the default `local-first` profile uses Ollama/Qwen2.5 7B
-  without an API key. Direct Mistral with your own key and the optional
-  GraceKelly orchestrator remain explicit profiles. Responses can include
-  inline citations `[N]` backed by retrieved documents.
-- **Agent layer:** Feature-flagged tool use supports multi-step reasoning,
-  confirmation-gated irreversible actions, and agent-side ticket creation.
-- **Routing:** Requests resolve to `auto`, `human`, `retry`, or `error`
-  depending on quality, factuality, and downstream tool outcomes.
-- **Channels:** The same backend powers the web chat, agent copilot, and email
-  ingestion/reply paths.
-- **Security:** JWT auth, Google/Microsoft OIDC SSO, tenant isolation, and
-  `pgcrypto` column encryption protect enterprise deployments.
-- **Observability:** Request traces are written to SQLite, optional OpenTelemetry
-  exports spans to Jaeger/Tempo, and Prometheus exposes operational metrics.
-- **Knowledge loops:** Nightly eval drift checks, KB gap clustering, KB draft
-  generation, freshness alerts, and weekly reports keep the knowledge base
-  improving over time.
-- **Resolution kernel (shadow):** behind `RESOLUTION_SHADOW_JOURNEYS`, a
-  contract-driven journey observes the same question and records an evidence
-  bundle — the source observation it read, the policy decision that applied,
-  the claims it could support, and the terminal outcome it would have reached.
-  It owns no response by default; the separate clarification allowlist may
-  project only the clarification terminal on the synchronous path. Direct SSE
-  bypasses both. See
-  [`docs/CONFIGURATION.md`](docs/CONFIGURATION.md#resolution-kernel-shadow-journeys).
+The application is a modular monolith:
 
-### Module layout (high level)
+- `api/` owns HTTP routes, authentication boundaries, limits, and correlation;
+- `agent/`, `ingestion/`, `vectordb/`, and `llm/` implement the inherited RAG path;
+- `resolution/`, `knowledge/`, `actions/`, and `services/session.py` implement
+  deterministic resolution and durable turns;
+- PostgreSQL is the durable authority; ChromaDB is a rebuildable retrieval
+  projection; Redis is an optional cache;
+- `evaluation/`, `monitoring/`, and `tracing/` provide quality and operational
+  evidence.
 
-- `api/app.py` + `api/routers/` — FastAPI app construction and the extracted
-  sub-routers (system, agent, admin_*, analytics, auth_sso, conversation,
-  feedback, upload, …). New endpoint groups land in `api/routers/`, not `app.py`.
-- `api/_shared.py`, `api/correlation.py`, `api/rate_limit.py` — lazy `app_module()`
-  accessor, request-correlation context, and rate-limit primitives.
-- `agent/` — LangGraph pipeline + state + prompts.
-- `auth/` — JWT, X-API-Key, OIDC, RBAC.
-- `db/` — SQLAlchemy models, async engine, audit log, pgcrypto field.
-- `llm/providers/` — Ollama / Mistral / GraceKelly providers + cost guard.
-- `vectordb/` — tenant-aware vector store factory + base implementation.
-- `evaluation/` — RAGAS metrics, online evaluators, regression framework.
-- `monitoring/` — Prometheus metrics (~50); `tracing/` — Langfuse + OTel + SQLite trace store.
-- `ingestion/` — loaders, pipeline, categorizer, contextual headers.
-- `scripts/` — operational CLIs (regression eval, KB builders, chunking eval, nightly tasks).
+The full design, invariants, and decision register are in
+[`docs/architecture/README.md`](docs/architecture/README.md).
 
-The resolution kernel is a separate set of packages, deliberately unaware of
-FastAPI. `api/` reaches them through one composition root and nothing else:
+## Quick start
 
-- `resolution/` — contracts, the case/evidence domain, the shipment-status
-  journey, Postgres adapters, and `composition.py` (the only seam `api/` uses)
-  plus `persistence.py` (what a shadow run becomes in the tables).
-- `knowledge/` — bitemporal knowledge objects and their authority rules.
-- `actions/` — governed actions: manifests, policy, confirmation, outbox,
-  reconciliation, postconditions.
-- `services/session.py` — durable session admission and terminal commit.
+Requirements: Python 3.11+, PostgreSQL, Redis, and either an Ollama model or a
+configured external provider. The complete walkthrough is
+[`docs/QUICKSTART.md`](docs/QUICKSTART.md).
 
-### Type checking
-
-Mypy runs as a blocking CI job over a named scope, not over the whole tree.
-In scope: `auth`, `db`, `llm/providers`, `config/settings.py`, `tasks`,
-`utils`, `monitoring`, `channels`, `tracing`, `ingestion`, `evaluation`,
-`actions`, `cache`, `integrations`, `knowledge`, `resolution`, `services`,
-the five promoted `agent` modules (`state`, `prompts`, `prompt_registry`,
-`tools`, `graph`), and — with `--follow-imports=skip` — `api/app.py`,
-`api/_shared.py`, `api/correlation.py`, `api/rate_limit.py`, `api/routers`,
-`vectordb`.
-
-Out of scope: the rest of `agent/` (`doc_grade`, `grounding`, `relevance`,
-`response_safety`, `judge_policy`, `calibration`, `graph_stream`,
-`agentic_*`), `api/body_limit.py`, `scripts/`, `alembic/`, `data/`, and
-`archive-legacy/`.
-
-The scope list is kept in sync across `.github/workflows/ci.yml`,
-`scripts/local-gate.ps1` and `scripts/autopilot.ps1` by
-`tests/test_precommit_config.py::test_mypy_strict_scope_is_synced_across_gates`.
-
-> This section used to read "All production packages are `mypy --strict` clean
-> (CI-enforced)". That was false in both halves: several packages were outside
-> every gate, and the in-scope ones get per-module strictness from
-> `[[tool.mypy.overrides]]`, not a global `--strict`. Corrected 2026-08-24
-> (audit FIN-07).
-
-> For a complete audit and an implementation log of recent hardening work,
-> see `docs/audits/audit_opus_2026-04-26.md` (especially section 12) and
-> `DEPRECATIONS.md`. Quick handover for new sessions:
-> `docs/SESSION-NOTES-2026-04-26-audit.md`.
-
-## Features
-
-- **Inline citations and source panel:** Answers can embed `[N]` markers that
-  resolve to retrieved documents, excerpts, and a dedicated source panel.
-- **Mobile-first UI:** `chat`, `help`, `metrics`, `admin`, `agent`, `analytics`,
-  and `login` pages ship responsive layouts for phone, tablet, and desktop.
-- **WCAG 2.1 AA improvements:** Static pages include accessible labels, visible
-  focus states, keyboard-friendly dialogs, and stronger screen-reader support.
-- **Chat polish:** Upload progress, retry flows, onboarding prompts, skeleton
-  states, and clearer error handling reduce dead-end interactions.
-- **Agent copilot:** `/agent` and `/static/agent.html` expose escalated ticket
-  queues, conversation context, AI drafts, and similar resolved tickets.
-- **Agentic tool use:** The graph can call KB search, order-status, and
-  ticket-creation tools, with confirmation required for irreversible actions.
-- **Nightly evaluation:** `scripts/nightly_eval.py` runs RAGAS-style checks on
-  recent traces and stores drift against a rolling baseline.
-- **Online evaluators:** seven lightweight per-trace checks score citation
-  coverage, answer-length anomalies, retrieval hit rate, tool efficiency,
-  refusals, PII suspicion, and language mismatch without judge LLM calls.
-- **Knowledge-gap detection:** `scripts/kb_gap_detector.py` clusters unresolved
-  questions into admin-visible KB gap records.
-- **Contextual ingestion:** New uploads can prepend contextual headers before
-  embedding, and `scripts/reindex.py` reprocesses existing documents.
-- **OpenTelemetry tracing:** FastAPI, httpx, SQLAlchemy, Redis, and graph nodes
-  emit distributed traces to OTLP collectors.
-- **OIDC SSO:** Google and Microsoft sign-in flows issue the same application
-  JWTs used by password login.
-- **Encryption at rest:** Sensitive Postgres columns are encrypted with
-  `pgcrypto` and an external `DB_ENCRYPTION_KEY`.
-- **Knowledge Builder:** `scripts/kb_builder.py` clusters resolved tickets into
-  reviewable KB drafts that admins can publish back into the vector store.
-- **Review queue:** `scripts/build_review_queue.py` collects weak, escalated,
-  slow, or thumbs-down traces into a human review backlog with admin actions.
-- **Freshness monitoring:** Citation counts plus document age highlight
-  stale-but-important documents for review.
-- **Auto-categorization:** Uploads are classified into categories from
-  `config/categories.yml`, and those categories are stored in document metadata.
-- **Analytics dashboard:** `/static/analytics.html` visualizes top topics,
-  resolution rates, quality trends, and LLM cost summaries.
-- **Weekly reports:** Markdown digests can be pushed through Slack or email on
-  a weekly schedule.
-- **Improvement backlog:** A weekly generator combines confirmed bad reviews,
-  KB gaps, slow endpoints, stale docs, evaluator drift, and thumbs-down trends
-  into a prioritized improvement backlog.
-- **Email channel:** Incoming support mail can be processed through IMAP
-  polling or an inbound webhook, then routed through the same RAG flow.
-- **Canonical module layout:** Core agent modules live under `agent/*`; the
-  old root-level `graph.py`, `prompts.py`, and `state.py` shims were removed.
-- **Centralized tuning:** Retrieval thresholds and operational constants are
-  concentrated in `config/settings.py` instead of scattered literals.
-- **Integration test suite:** `tests/integration/` covers ingestion,
-  conversation, streaming, concurrency, escalation, and async upload paths.
-
-## Quick Start
-
-> Full steps: [`docs/QUICKSTART.md`](docs/QUICKSTART.md). Configuration reference:
-> [`docs/CONFIGURATION.md`](docs/CONFIGURATION.md).
-
-### External users (recommended): local run, your Mistral key, no HF model download
-
-This path uses **direct Mistral** for generation and **remote Mistral embeddings**.
-Empty `RAG_RERANKER_MODEL` disables the local cross-encoder so the app does not
-download a reranker from a model hub. Historical/optional Hugging Face model
-names may still appear elsewhere in the repo; **this user path does not require
-them**.
-
-```bash
-# 1. Clone, create env, install hashed deps (Python 3.11+)
-cp .env.example .env              # Windows: copy .env.example .env
+```powershell
+python -m venv .venv
+. .venv\Scripts\Activate.ps1
 pip install --require-hashes -r requirements.lock
-```
-
-Put your own key and the no-HF runtime profile in `.env`. Optional provider keys
-belong only in the user's local `.env`; no API keys ship in this repository:
-
-```dotenv
-LLM_PROVIDER_PROFILE=external-mistral
-MISTRAL_API_KEY=<your-key>
-RAG_EMBEDDING_BACKEND=remote
-RAG_EMBEDDING_REMOTE_URL=https://api.mistral.ai/v1/embeddings
-RAG_EMBEDDING_REMOTE_MODEL=mistral-embed
-RAG_EMBEDDING_REMOTE_API_KEY_ENV=MISTRAL_API_KEY
-RAG_RERANKER_MODEL=
-```
-
-```bash
-# 2. Postgres + Redis (dev example), then migrate and start
-#    (see docs/QUICKSTART.md for container commands)
+Copy-Item .env.example .env
 alembic upgrade head
 python main.py
 ```
 
-Open **http://localhost:8000/static/login.html** or
-**http://localhost:8000/static/chat.html**.
+Repository defaults use the owner-oriented `local-first` Ollama profile with
+`qwen2.5:7b`. External users can select `external-mistral`, remote embeddings,
+and an empty `RAG_RERANKER_MODEL` to avoid local model-hub downloads. Provider
+keys belong only in the local `.env`; no credentials ship in this repository.
 
-### Owner / internal local profiles (unchanged defaults)
+Open `http://localhost:8000/static/login.html` or
+`http://localhost:8000/static/chat.html`. Interactive OpenAPI documentation is
+available at `http://localhost:8000/docs`.
 
-Repository defaults remain **`local-first`** (Ollama / `qwen2.5:7b`) for the
-owner. Optional **`gracekelly-primary`** and **`gracekelly-mixed`** profiles are
-unchanged. Those paths may load local embedding/reranker models depending on
-`.env`; they are **not** the external-user recipe above.
+## Main runtime surfaces
 
-```bash
-cp .env.example .env
-pip install --require-hashes -r requirements.lock
-# terminal A: ollama serve
-# terminal B:
-ollama pull qwen2.5:7b
-python main.py
-```
+| Surface | Purpose |
+|---|---|
+| `POST /api/ask` | Synchronous question answering; optional resolution shadow |
+| `POST /api/ask/stream` | Direct SSE answer path; it currently bypasses the shadow |
+| `POST /api/upload` | Authenticated document ingestion |
+| `/api/agent/*` | Escalated-ticket and copilot workflows |
+| `/api/admin/*` | Traces, evidence, audit, providers, and review queues |
+| `/api/analytics/*` | Quality, topic, resolution, and cost analytics |
+| `/api/health/live`, `/api/health/ready` | Liveness and dependency-aware readiness |
+| `/metrics` | Prometheus exposition |
 
-Changing `RAG_EMBEDDING_MODEL` / embedding backend against an existing Chroma
-collection is not supported when vector dimensions differ. Set
-`VECTORDB_CHROMA_DIR` to a new empty directory and re-ingest when evaluating a
-different embedding profile; the default remains `data/vectordb/chroma`.
+Authentication, endpoint details, limits, and all environment variables are
+documented in [`docs/CONFIGURATION.md`](docs/CONFIGURATION.md). FastAPI's
+generated OpenAPI schema is the endpoint-level source of truth.
 
-Optional local Docker Compose path (loopback-only stack from `docker-compose.yml`;
-see [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)):
+## Documentation
 
-```bash
-cp .env.example .env
-docker compose -f docker-compose.yml up
-```
+[`docs/README.md`](docs/README.md) is the documentation map. The maintained
+entry points are:
 
-Open:
-- **http://localhost:8000/static/login.html** - password + SSO login page
-- **http://localhost:8000/static/chat.html** - chat UI
-- **http://localhost:8000/static/admin.html** - admin UI for traces, audit,
-  review queue, providers, KB gaps, KB drafts, stale docs, and breaker controls
-- **http://localhost:8000/agent** - agent copilot dashboard
-- **http://localhost:8000/static/analytics.html** - analytics dashboard
-- **http://localhost:8000/static/metrics.html** - system metrics dashboard
+- [Quickstart](docs/QUICKSTART.md)
+- [Configuration](docs/CONFIGURATION.md)
+- [Architecture](docs/architecture/README.md)
+- [Deployment](docs/DEPLOYMENT.md)
+- [Operations and evaluation](docs/OPERATIONS.md)
+- [Runbook](docs/runbook.md)
+- [Evidence index](EVIDENCE_INDEX.md)
 
-> 2026-04-27: legacy unauthenticated `/` index page и `/ask`, `/escalations`,
-> `/traces`, `/escalations-ui`, `/traces-ui*` endpoints из `main.py`
-> удалены (Codex audit P0). Production entrypoint: `uvicorn api.app:app`.
-> `python main.py` делегирует в `api.app:app`.
-
-## API
-
-### Core chat and ingestion
-
-| Method | Path | Auth | Description |
-|---|---|---|---|
-| POST | `/api/ask` | user | Ask a question synchronously; returns answer, documents, and citations |
-| POST | `/api/ask/stream` | user | Ask a question over SSE streaming |
-| POST | `/api/upload` | agent/admin | Upload a document for indexing; returns assigned categories. Optional `Idempotency-Key` (16–128 chars): one key per logical upload; reuse only for network/503 retry. Same key + different payload → **409**. Broker publish failure → **503** with browser-readable `X-Ingestion-Job-Id` |
-| GET | `/api/tasks/{task_id}` | agent/admin | Check background upload task state |
-| POST | `/api/feedback` | user | Submit thumbs up/down feedback |
-| POST | `/api/escalate` | user | Escalate the current request to a human operator |
-| GET | `/api/sessions` | agent/admin | List active sessions |
-| GET | `/api/sessions/{session_id}/history` | agent/admin | Return session history |
-| DELETE | `/api/sessions/{session_id}` | agent/admin | Delete a session |
-| GET | `/api/feedback/stats` | agent/admin | Aggregate feedback statistics |
-
-### Agent and admin workflows
-
-| Method | Path | Auth | Description |
-|---|---|---|---|
-| GET | `/api/agent/tickets` | agent/admin | List escalated tickets, optionally filtered by status |
-| GET | `/api/agent/tickets/{ticket_id}` | agent/admin | Return ticket details, session messages, and similar tickets |
-| POST | `/api/agent/tickets/{ticket_id}/respond` | agent/admin | Save an operator response and resolve a ticket |
-| GET | `/api/agent/similar` | agent/admin | Return similar resolved tickets for a given ticket |
-| GET | `/api/admin/audit` | agent/admin | List audit-log entries with filters |
-| GET | `/api/admin/traces` | agent/admin | List recent traces |
-| GET | `/api/admin/traces/{trace_id}` | agent/admin | Return one trace with steps and feedback |
-| DELETE | `/api/admin/traces?older_than_days=N` | admin | Purge old traces |
-| DELETE | `/api/admin/audit-log?older_than_days=N` | admin | Purge old audit-log entries |
-| POST | `/api/admin/circuit-breaker/reset` | admin | Force-reset the Ollama circuit breaker |
-| GET | `/api/admin/kb-gaps` | admin | List detected knowledge gaps |
-| GET | `/api/admin/evaluations/trends?evaluator=<name>&days=30` | admin | Return daily mean-score trends for one online evaluator |
-| GET | `/api/admin/evaluations/worst?evaluator=<name>&limit=20` | admin | Return the worst recent traces for one online evaluator |
-| GET | `/api/admin/categories` | admin | Return the active category taxonomy |
-| GET | `/api/admin/kb-drafts` | admin | List Knowledge Builder drafts |
-| PATCH | `/api/admin/kb-drafts/{draft_id}` | admin | Edit a pending KB draft |
-| POST | `/api/admin/kb-drafts/{draft_id}/reject` | admin | Reject a pending KB draft |
-| POST | `/api/admin/kb-drafts/{draft_id}/publish` | admin | Publish a KB draft into the vector store |
-| GET | `/api/admin/improvement-backlog/current` | admin | Return the latest improvement backlog as JSON |
-| GET | `/api/admin/improvement-backlog/archive?year=2026` | admin | List archived improvement backlog weeks |
-| GET | `/api/admin/stale-docs` | admin | List stale but highly cited documents |
-| POST | `/api/admin/stale-docs/{doc_id}/review` | admin | Mark a stale document as reviewed |
-| GET | `/api/admin/curated-dataset/stats` | admin | Aggregate curated dataset counts by verdict, tenant, and channel |
-| POST | `/api/admin/curated-dataset/rebuild` | admin | Trigger an async rebuild of `evaluation/curated_cases.jsonl` |
-| GET | `/api/admin/providers` | admin | Return provider registry metadata, active profile, recent usage, and 24h cost |
-
-### Analytics and channels
-
-| Method | Path | Auth | Description |
-|---|---|---|---|
-| GET | `/api/analytics/top-topics` | agent/admin | Top categories/topics for a time window |
-| GET | `/api/analytics/resolution-rate` | agent/admin | Resolution-rate breakdown by category |
-| GET | `/api/analytics/cost-summary` | agent/admin | Total and per-category LLM cost summaries |
-| GET | `/api/analytics/trends` | agent/admin | Time-series analytics for quality/cost metrics |
-| POST | `/webhook/email` | webhook secret | Preferred inbound email webhook receiver |
-| POST | `/api/channels/email/inbound` | webhook secret | Backward-compatible inbound email webhook alias |
-
-### Auth, health, and metrics
-
-| Method | Path | Auth | Description |
-|---|---|---|---|
-| POST | `/api/auth/login` | `-` | Password login; returns JWT pair + sets httpOnly auth cookies |
-| POST | `/api/auth/refresh` | `-` | Exchange a refresh token for a new token pair (cookies rotated) |
-| POST | `/api/auth/session` | bearer | Re-issue a pasted bearer token as an httpOnly cookie (browser UIs) |
-| POST | `/api/auth/logout` | `-` | Clear the httpOnly auth cookies |
-| GET | `/api/auth/sso/providers` | `-` | List enabled SSO providers |
-| GET | `/api/auth/sso/{provider}/login` | `-` | Start Google or Azure AD OIDC login |
-| GET | `/api/auth/sso/{provider}/callback` | `-` | Finish OIDC login and set JWT cookies |
-| GET | `/api/health` | `-` | Readiness alias |
-| GET | `/api/health/live` | `-` | Liveness probe |
-| GET | `/api/health/ready` | `-` | Dependency-aware readiness probe |
-| GET | `/api/metrics` | admin | JSON metrics snapshot for the admin dashboard |
-| GET | `/metrics` | `-` | Prometheus exposition endpoint |
-
-**Rate limits:** `/api/ask` is limited to 60 req/min, `/api/upload` to
-10 req/min, and `/api/auth/login` / `/api/auth/session` to 5 req/min per
-client IP.
-
-**Browser auth:** the admin/agent/analytics pages authenticate via httpOnly
-`SameSite=Strict` cookies (no tokens in `localStorage`); a cookie bridge maps
-the cookie onto the `Authorization` header server-side and refuses
-cookie-derived auth for state-changing requests whose `Origin` does not match
-the host. Header-based bearer auth for API clients is unchanged.
-
-**Correlation ID:** Clients may send `X-Request-Id` matching
-`^[A-Za-z0-9_\\-:.]{1,128}$`. The server echoes it back, stores it in
-SQLite traces, and also propagates it into logs and spans. If it is not
-supplied, the API generates a UUID4-derived identifier.
-
-### Example requests
-
-```bash
-curl -s http://localhost:8000/api/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{"username":"admin","password":"admin"}'
-```
-
-```bash
-curl -s http://localhost:8000/api/ask \
-  -H "Authorization: Bearer $ACCESS_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{"question":"How do returns work?","session_id":"11111111-1111-1111-1111-111111111111"}'
-```
-
-```bash
-curl -s "http://localhost:8000/api/analytics/top-topics?days=7" \
-  -H "Authorization: Bearer $ACCESS_TOKEN"
-```
-
-
-## Configuration
-
-Runtime configuration — every environment variable, LLM/provider profiles, RAG-pipeline knobs, resilience/capacity limits, auth, storage, and channel settings — is documented in **[docs/CONFIGURATION.md](docs/CONFIGURATION.md)**.
-
-## Operations & evaluation
-
-Monitoring (Prometheus + JSON metrics), the regression-eval and provider-benchmark harnesses, online evaluators, experiments, the review queue, improvement backlog, curated dataset, offline-review workflow, and threshold tuning are documented in **[docs/OPERATIONS.md](docs/OPERATIONS.md)**.
-
-## Deployment
-
-Docker, deployment topology, database migrations, and the pinned dependency-lock workflow are documented in **[docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)**.
-
-## Multi-tenancy
-
-Tenant isolation is built into the application:
-
-- JWT access tokens carry a `tenant` claim.
-- Traces, audit-log queries, analytics, KB drafts, freshness data, and
-  admin read/purge endpoints are filtered by `tenant_id`.
-- ChromaDB uses per-tenant collections named `rag_docs_{tenant_id}`.
-- Response cache keys are tenant-scoped.
-- OIDC and email flows can resolve tenants from `TENANT_EMAIL_DOMAINS`, for example `acme.com:acme,*:default`.
-
-For an existing legacy collection named `rag_docs`, use the one-time migration:
-
-```bash
-python scripts/migrate_default_collection.py
-```
+Superseded plans, task specifications, session handoffs, research snapshots,
+and legacy code are retained under [`archive/`](archive/README.md). They are
+historical evidence, not current guidance. Demo knowledge-base inputs live in
+[`demo/docs/`](demo/docs/).
 
 ## Web UI
 
-- `/static/chat.html` - main chat UI with inline citations, upload progress, onboarding,
-  responsive layouts, and SSE streaming
-- `/static/login.html` - login page with password, Google, and Microsoft SSO
-- `/static/help.html` - end-user help page
-- `/static/metrics.html` - system metrics dashboard with auto-refresh
-- `/static/admin.html` - admin UI for breaker control, traces, audit logs,
-  review queue, KB gaps, categories, KB drafts, and stale docs
-- `/agent` and `/static/agent.html` - agent copilot dashboard
-- `/static/analytics.html` - product analytics dashboard
+- `/static/chat.html` - main chat UI with citations and streaming
+- `/static/login.html` - password and OIDC login
+- `/static/admin.html` - traces, evidence, audit, provider, and KB administration
+- `/agent` and `/static/agent.html` - agent copilot
+- `/static/analytics.html` - product analytics
+- `/static/metrics.html` - operational metrics
 - `/static/widget.html` - embeddable support widget
 
 ## Accessibility
 
-- Latest axe audit: [docs/a11y/axe-audit-2026-04-21.md](docs/a11y/axe-audit-2026-04-21.md)
-- Current blocking status: **PASS** for scanned UI pages and rendered Jinja
-  templates (`0` critical, `0` serious)
-- Axe/Lighthouse verification 2026-05-03: `tests/test_a11y.py` ran with
-  `@axe-core/cli` 4.11.3 installed and completed with `38 passed`.
-- Lighthouse mobile `/static/chat.html`: performance `99`, accessibility
-  `100`, best-practices `96`, SEO `90`.
-- Local unit gate runs `tests/test_a11y.py` through `@axe-core/cli` when the
-  CLI is installed; axe subprocesses use an explicit timeout budget so the
-  full unit suite does not hang under `pytest --timeout=60`.
-- Source status: static coverage now includes `/static/widget.html`; source
-  updates have landed for explicit `<main>` landmarks, the admin analytics
-  `<nav>` landmark, and the rendered `ask_result` heading order.
+Axe/Lighthouse verification 2026-05-03 completed with `38 passed` for the
+scanned pages and rendered templates. Lighthouse mobile `/static/chat.html`:
+performance `99`, accessibility `100`, best-practices `96`, SEO `90`. The
+detailed record is
+[`docs/a11y/axe-audit-2026-04-21.md`](docs/a11y/axe-audit-2026-04-21.md).
 
-## Tests
+## Development and verification
 
-Run the full test suite:
+Install development dependencies from the locked set:
 
-```bash
-pytest tests/ -v
+```powershell
+pip install --require-hashes -r requirements-dev.lock
 ```
 
-On Windows, use the repository-local temp directory and disable the broken
-auto-loaded Schemathesis plugin. The full workflow is documented in
-[`docs/windows-test-workflow.md`](docs/windows-test-workflow.md):
+Focused Windows test workflow:
 
-```bash
+```powershell
 python -m pytest -p no:schemathesis --basetemp=.tmp/pytest
 ```
 
-Run only the integration suite added in arc `122`:
+Useful scoped gates:
 
-```bash
-pytest tests/integration/ -v
-pytest -m integration -q
-pytest -m "not integration" -q
+```powershell
+ruff check .
+pre-commit run --all-files
+python -m pytest tests -q --ignore=tests/integration -p no:cacheprovider
+python -m pytest tests/integration -q
 ```
 
-`tests/integration/` covers full ingestion, multi-turn conversation, SSE
-streaming, concurrent sessions, escalation, and async upload flows. Browser
-accessibility/mobile smoke tests may skip automatically when optional
-Playwright dependencies are not installed.
+Several integration modules require a real disposable PostgreSQL database.
+Heavy model runs, the full suite, and Docker workflows are kept off the
+resource-constrained Windows laptop; see `CURRENT_STATE.md` for the current
+execution boundary.
 
-Several modules there need a **real PostgreSQL** and are skipped nowhere — they
-fail without one. They create a disposable database per module, run `alembic
-upgrade head` into it, and drop it afterwards, so they exercise the append-only
-triggers, row-level security and the temporal exclusion constraint rather than
-a mock of them: `test_resolution_postgres_persistence.py`,
-`test_temporal_knowledge_postgres.py`, `test_governed_actions_postgres.py`,
-`test_session_service_postgres.py`, `test_resolution_shadow_postgres.py`. Point
-`DATABASE_URL` at a scratch server before running the suite.
+Mypy is blocking only for the named scope synchronized across CI and local
+gates. It is not a repository-wide `--strict` claim. See the configuration in
+`pyproject.toml` and the guard in `tests/test_precommit_config.py`.
 
-Note for anyone adding assertions there: the CI database user is a **superuser**,
-which row-level security does not apply to even under `FORCE ROW LEVEL
-SECURITY`. Count and isolation assertions must either name the tenant
-explicitly or go through a `NOBYPASSRLS` runtime role, as the existing modules
-do. A test that relies on RLS to scope a query silently passes for the wrong
-reason — that is what CI-RED-1 was.
-
-## CI
-
-GitHub Actions (`.github/workflows/ci.yml`) runs on every push and pull
-request. Jobs that always run: `lint`, `type-check`, `test-unit` (Python 3.11
-and 3.13; the 3.13 leg adds the coverage gate), `test-integration`,
-`pre-commit`, and `security` (bandit + pip-audit against the locked deps).
-Conditional jobs: `migrations` and `helm` run when their inputs change, and
-`regression-eval` runs on pull requests and pushes to `master` when prompt,
-settings, or evaluation inputs change.
-Install local tooling with `pip install --require-hashes -r requirements-dev.lock`.
-Run `pre-commit run --all-files`, `pytest tests/ -q --ignore=tests/integration -p no:cacheprovider`, and `pytest tests/integration -q`.
-Workflow history and logs are available on the repository `Actions -> CI` page.
-
-## Project structure
+## Repository map
 
 ```text
-api/                    FastAPI app, REST endpoints, middleware, correlation IDs
-agent/                  Canonical graph, prompts, state, and tool modules
-auth/                   JWT helpers, RBAC dependencies, OIDC integration
-cache/                  Redis cache with in-memory fallback
-channels/               Telegram and email channel integrations
-config/                 settings.py, categories.yml, logging
-db/                     SQLAlchemy models, engine, audit helpers, pgcrypto helpers
-deploy/                 docker-compose and Helm chart artifacts
-evaluation/             RAG evaluation, drift detection, benchmarks
-ingestion/              Loaders, pipeline, categorizer, contextual headers
-integrations/           Bitrix and local support inbox integrations
-monitoring/             Prometheus collectors and alert rules
-reports/                Weekly-report renderer
-scripts/                Ops jobs: eval, review queue, reindex, KB builder/gap detection, chunking eval, email poller
-static/                 chat, admin, agent, analytics, login, metrics, widget UIs
-tests/                  Unit and integration test suites
-tests/integration/      End-to-end coverage for critical user flows
-tracing/                SQLite tracing base/wrapper and OpenTelemetry setup
-vectordb/               ChromaDB manager, BM25 fusion, reranking
-resolution/             Contracts, case/evidence domain, shadow journeys, Postgres adapters
-knowledge/              Bitemporal knowledge objects and authority rules
-actions/                Governed actions: manifests, policy, outbox, reconciliation
-services/               Durable session admission and terminal commit
-alembic/                Migrations `001` through `031`
-demo/                   Demo docs and seed helpers
-codex-tasks/            Task backlog and archived implementation specs
-docs/research/          Research archive
+api/             HTTP application and routers
+agent/           LangGraph RAG pipeline
+resolution/      Resolution contracts, domain, adapters, and composition
+knowledge/       Temporal knowledge authority
+actions/         Governed side effects and reconciliation
+services/        Durable session service
+ingestion/       Loaders and indexing pipeline
+vectordb/        Hybrid retrieval and ChromaDB projection
+evaluation/      Quality datasets, benchmarks, and reports
+monitoring/      Metrics and alerts
+tracing/         Trace persistence and OpenTelemetry
+static/          Browser interfaces
+tests/           Unit and integration suites
+docs/            Maintained documentation and evidence
+demo/            Reproducible demo inputs
+archive/         Superseded documents, tasks, and legacy code
 ```
 
 ## License
 
-MIT. See [LICENSE](LICENSE).
+MIT. See [`LICENSE`](LICENSE).

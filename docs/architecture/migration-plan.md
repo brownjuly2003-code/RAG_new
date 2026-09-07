@@ -85,14 +85,14 @@ Delivery status:
   emits only `id`, `digest`, `visibility`, and `profile`; unknown,
   restricted, and support-only paths fail closed without a locator. Closing
   evidence is recorded in
-  [`../../c6-protected-evidence-encryption-redaction.md`](../../c6-protected-evidence-encryption-redaction.md).
+  [`../evidence/c6-protected-evidence-encryption-redaction.md`](../evidence/c6-protected-evidence-encryption-redaction.md).
 - **C7 complete locally (`f1103bb`):** the restore verifier now compares the exact head
   inventory (**17 ORM + 5 migration-owned + `alembic_version` = 23 tables**)
   and fails closed on missing or extra tables. A real PostgreSQL 14 disposable
   source-to-target custom-format restore preserved representative Resolution
   data, encrypted locator behavior, RLS, append guards, temporal exclusion,
   and the protection constraint. Closing evidence is recorded in
-  [`../../c7-resolution-restore-smoke.md`](../../c7-resolution-restore-smoke.md).
+  [`../evidence/c7-resolution-restore-smoke.md`](../evidence/c7-resolution-restore-smoke.md).
 - **C8 complete on the authorized Mac target (`c78da01`):** a dedicated
   PostgreSQL 16
   cluster runs only on `127.0.0.1:55432`, separately from the existing service
@@ -102,7 +102,7 @@ Delivery status:
   RLS policy expressions, current and default ACLs, role settings, tenant
   negatives, append guard, revoke/restore, and restart persistence passed.
   Closing evidence is in
-  [`../../c8-mac-postgres-deployment.md`](../../c8-mac-postgres-deployment.md)
+  [`../evidence/c8-mac-postgres-deployment.md`](../evidence/c8-mac-postgres-deployment.md)
   and the operator contract is in
   [`../operations/resolution-postgres-roles.md`](../operations/resolution-postgres-roles.md).
 - Slice C is complete. This is not a full production/release-ready claim: C8

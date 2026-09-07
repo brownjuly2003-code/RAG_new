@@ -196,7 +196,7 @@ def render_markdown(results: dict[str, dict]) -> str:
     lines = [
         "# Simulated Model Benchmark - RAG Support Assistant",
         "",
-        "> Benchmark is simulated from MERA-derived model profiles in `docs/research/llm-model-selection-2025.md`.",
+        "> Benchmark is simulated from MERA-derived model profiles in `archive/docs/research/llm-model-selection-2025.md`.",
         "> Answers are synthetic and deterministic; ranking reflects relative answer quality, not live Ollama inference.",
         "",
         "## Aggregate scores",

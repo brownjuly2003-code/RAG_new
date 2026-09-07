@@ -6,8 +6,8 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 ACTIVE_BENCHMARK_DOCS = [
     PROJECT_ROOT / "README.md",
     PROJECT_ROOT / "docs" / "QUICKSTART.md",
-    PROJECT_ROOT / "docs" / "plans" / "2026-05-01-backlog.md",
-    PROJECT_ROOT / "codex-tasks" / "task-177-regression-via-gracekelly-claude.md",
+    PROJECT_ROOT / "archive" / "docs" / "plans" / "2026-05-01-backlog.md",
+    PROJECT_ROOT / "archive" / "tasks" / "task-177-regression-via-gracekelly-claude.md",
 ]
 
 

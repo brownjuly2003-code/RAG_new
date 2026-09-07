@@ -297,16 +297,16 @@ def test_precommit_repo_wide_hooks_skip_tracked_legacy_outputs() -> None:
 
     excluded_paths = {
         "trailing-whitespace": [
-            "archive-legacy/rag_poc_architecture.md",
+            "archive/legacy-code/rag_poc_architecture.md",
             "docs/audits/audit_opus_27_04_26.md",
         ],
         "end-of-file-fixer": [
-            "archive-legacy/prompt_for_github.md",
+            "archive/legacy-code/prompt_for_github.md",
             "reports/regression/20260425T044732Z-ministral-3b-latest-vs-mistral-small-latest.json",
         ],
         "detect-private-key": [
-            "codex-tasks/cleanup-report.md",
-            "codex-tasks/Archive/task-126-hygiene-consistency-audit.md",
+            "archive/tasks/cleanup-report.md",
+            "archive/tasks/Archive/task-126-hygiene-consistency-audit.md",
         ],
     }
 

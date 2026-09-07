@@ -20,10 +20,11 @@ const ROOT_FILES = [
 // Internal/kitchen docs that must NOT be published or indexed by Pagefind.
 // Matched against the path relative to docs/ (slugified, forward slashes).
 // Anything under these directories or matching these filenames is skipped.
-// sessions/ holds agent handoffs and archives (IPs, host aliases, secret-file
-// paths). Publishing them turns repo-internal notes into indexable Pages.
+// Historical material lives in the repository-level archive/. Keep these
+// prefixes as defense-in-depth if a future change recreates them under docs/.
 // audits/ stays publishable until N4 policy decides; do not pre-decide it here.
 const KITCHEN_DIR_PREFIXES = [
+  'archive/',
   'plans/',
   'research/',
   'operations/',
@@ -75,7 +76,7 @@ function ensureFrontMatter(content, title, sourcePath) {
     return trimmed;
   }
   const safeTitle = title.replace(/"/g, '\\"');
-  const editUrl = `https://github.com/brownjuly2003-code/RAG_Support_Assistant/blob/master/${sourcePath.replace(/\\/g, '/')}`;
+  const editUrl = `https://github.com/brownjuly2003-code/RAG_new/blob/master/${sourcePath.replace(/\\/g, '/')}`;
   return `---\ntitle: "${safeTitle}"\neditUrl: ${editUrl}\n---\n\n${trimmed}`;
 }
 

@@ -53,7 +53,7 @@ class _FastEmbeddings:
 def _load_seed_docs(project_root: Path) -> list[dict[str, Any]]:
     docs: list[dict[str, Any]] = []
     for name in ("warranty.md", "returns_policy.md", "errors_e10_e30.md"):
-        path = project_root / "docs" / name
+        path = project_root / "demo" / "docs" / name
         if path.exists():
             docs.append(
                 {

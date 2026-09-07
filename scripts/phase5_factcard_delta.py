@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Phase 5 (adaptive-retrieval, Track F): offline delta D2 vs D2+factcard.
 
-Closes the plan's ship-gate (docs/plans/2026-06-13-adaptive-retrieval-factcard-plan.md
+Closes the plan's ship-gate
+(archive/docs/plans/2026-06-13-adaptive-retrieval-factcard-plan.md
 T5.1). Reuses the validated A/B scorer ``_kw_status`` from
 ``scripts/ab_remote_contextual.py`` (answer_contains keyword coverage in the
 retrieved top-k → FULL/PART/MISS) so the factcard arm is measured on the exact

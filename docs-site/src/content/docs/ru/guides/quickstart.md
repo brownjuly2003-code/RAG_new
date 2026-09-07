@@ -126,12 +126,12 @@ LLM_PROVIDER_PROFILE=local-first python main.py
 # PowerShell (Windows) — заметка: curl.exe, не curl (последний — alias к Invoke-WebRequest)
 curl.exe -X POST http://localhost:8000/api/upload `
     -H "Authorization: Bearer <admin-jwt>" `
-    -F "file=@docs/warranty.md"
+    -F "file=@demo/docs/warranty.md"
 
 # Bash (Linux/macOS)
 curl -X POST http://localhost:8000/api/upload \
     -H "Authorization: Bearer <admin-jwt>" \
-    -F "file=@docs/warranty.md"
+    -F "file=@demo/docs/warranty.md"
 
 # Первый запрос
 # PowerShell (Windows)

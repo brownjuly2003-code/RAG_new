@@ -1,7 +1,7 @@
 # Phase 2 A/B (production stack) — structural chunking ПОДТВЕРЖДЁН, дефолт включён
 
 - Дата: 2026-06-05
-- План: `docs/plans/2026-06-03-overcome-retrieval-barrier.md` (Phase 2 — подтверждение
+- План: `archive/docs/plans/2026-06-03-overcome-retrieval-barrier.md` (Phase 2 — подтверждение
   Phase-1-направления на production-стеке BGE-M3 + reranker; Phase 3 — лендинг дефолта).
 - Вопрос: переносится ли прокси-результат Phase 1 (MiniLM, reranker OFF) на production-стек,
   и не роняет ли фикс faithfulness при LLM-judged генерации.

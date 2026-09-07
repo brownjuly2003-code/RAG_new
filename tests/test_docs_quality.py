@@ -9,7 +9,6 @@ def _active_markdown_docs() -> list[Path]:
     return [
         PROJECT_ROOT / "README.md",
         *(PROJECT_ROOT / "docs").rglob("*.md"),
-        *(PROJECT_ROOT / "codex-tasks").glob("*.md"),
     ]
 
 
@@ -27,15 +26,19 @@ def test_active_docs_do_not_contain_common_mojibake_markers() -> None:
 
 def test_accessibility_docs_record_completed_tooling_verification() -> None:
     readme = (PROJECT_ROOT / "README.md").read_text(encoding="utf-8")
+    normalized_readme = " ".join(readme.split())
     audit = (PROJECT_ROOT / "docs" / "a11y" / "axe-audit-2026-04-21.md").read_text(
         encoding="utf-8"
     )
     backlog = (
-        PROJECT_ROOT / "docs" / "plans" / "2026-05-01-backlog.md"
+        PROJECT_ROOT / "archive" / "docs" / "plans" / "2026-05-01-backlog.md"
     ).read_text(encoding="utf-8")
 
-    assert "Axe/Lighthouse verification 2026-05-03" in readme
-    assert "Lighthouse mobile `/static/chat.html`: performance `99`" in readme
+    assert "Axe/Lighthouse verification 2026-05-03" in normalized_readme
+    assert (
+        "Lighthouse mobile `/static/chat.html`: performance `99`"
+        in normalized_readme
+    )
     assert "Post-audit source updates" in audit
     assert "Verification refresh 2026-05-03" in audit
     assert "`38 passed`" in audit
@@ -72,7 +75,7 @@ def test_sync_docs_keeps_sessions_out_of_public_pages() -> None:
 
 
 def test_roadmap_does_not_reopen_closed_lighthouse_work() -> None:
-    roadmap = (PROJECT_ROOT / "codex-tasks" / "ROADMAP.md").read_text(
+    roadmap = (PROJECT_ROOT / "archive" / "tasks" / "ROADMAP.md").read_text(
         encoding="utf-8"
     )
 
@@ -82,7 +85,7 @@ def test_roadmap_does_not_reopen_closed_lighthouse_work() -> None:
 
 def test_backlog_parallel_prompt_does_not_reopen_closed_mock_guardrails() -> None:
     backlog = (
-        PROJECT_ROOT / "docs" / "plans" / "2026-05-01-backlog.md"
+        PROJECT_ROOT / "archive" / "docs" / "plans" / "2026-05-01-backlog.md"
     ).read_text(encoding="utf-8")
     prompt_section = backlog.split("## Parallel Session Prompts", 1)[1]
 
@@ -93,7 +96,7 @@ def test_backlog_parallel_prompt_does_not_reopen_closed_mock_guardrails() -> Non
 
 def test_next_session_handoff_points_at_live_batch_n_decision_only() -> None:
     content = (
-        PROJECT_ROOT / "docs" / "sessions" / "next-session-3-subagents.md"
+        PROJECT_ROOT / "archive" / "docs" / "sessions" / "next-session-3-subagents.md"
     ).read_text(encoding="utf-8")
 
     assert "Live Batch N benchmark decision" in content
@@ -128,7 +131,7 @@ def test_configuration_provider_profiles_include_gracekelly_mixed() -> None:
 
 
 def test_old_arc_verification_report_is_marked_historical() -> None:
-    content = (PROJECT_ROOT / "codex-tasks" / "verification-report.md").read_text(
+    content = (PROJECT_ROOT / "archive" / "tasks" / "verification-report.md").read_text(
         encoding="utf-8"
     )
 
@@ -145,7 +148,8 @@ def test_live_gracekelly_docs_require_explicit_user_opt_in() -> None:
     )
     task_177 = (
         PROJECT_ROOT
-        / "codex-tasks"
+        / "archive"
+        / "tasks"
         / "task-177-regression-via-gracekelly-claude.md"
     ).read_text(encoding="utf-8")
 
@@ -157,13 +161,30 @@ def test_live_gracekelly_docs_require_explicit_user_opt_in() -> None:
     assert "requires `-AllowLive`" in task_177
 
 
-def test_top_level_backlog_notes_are_historical_pointers() -> None:
+def test_top_level_backlog_routes_to_live_state_and_preserves_history() -> None:
     backlog = (PROJECT_ROOT / "BACKLOG.md").read_text(encoding="utf-8")
-    non_live_backlog = (
-        PROJECT_ROOT / "docs" / "sessions" / "2026-05-02-non-live-backlog.md"
+    archived_backlog = (
+        PROJECT_ROOT
+        / "archive"
+        / "docs"
+        / "status"
+        / "backlog-through-2026-08-27.md"
     ).read_text(encoding="utf-8")
+    non_live_backlog = (
+        PROJECT_ROOT
+        / "archive"
+        / "docs"
+        / "sessions"
+        / "2026-05-02-non-live-backlog.md"
+    ).read_text(encoding="utf-8")
+
+    assert "CURRENT_STATE.md" in backlog
+    assert "ROADMAP.md" in backlog
+    assert "archive/docs/status/backlog-through-2026-08-27.md" in backlog
+    assert len(backlog.splitlines()) <= 60
+
     historical_notes = {
-        "BACKLOG.md": backlog.split("## Historical Safe Tasks", 1)[1].split(
+        "archived BACKLOG.md": archived_backlog.split("## Historical Safe Tasks", 1)[1].split(
             "## Safe Task 1", 1
         )[0],
         "2026-05-02-non-live-backlog.md": non_live_backlog.split("## Goal", 1)[0],

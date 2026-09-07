@@ -186,13 +186,13 @@ through the optional GraceKelly orchestrator.
 curl.exe -X POST http://localhost:8000/api/upload `
     -H "Authorization: Bearer <admin-jwt>" `
     -H "Idempotency-Key: upload-warranty-md-001" `
-    -F "file=@docs/warranty.md"
+    -F "file=@demo/docs/warranty.md"
 
 # Bash (Linux/macOS)
 curl -X POST http://localhost:8000/api/upload \
     -H "Authorization: Bearer <admin-jwt>" \
     -H "Idempotency-Key: upload-warranty-md-001" \
-    -F "file=@docs/warranty.md"
+    -F "file=@demo/docs/warranty.md"
 
 # First query
 # PowerShell (Windows)

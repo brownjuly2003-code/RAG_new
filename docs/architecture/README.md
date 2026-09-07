@@ -92,7 +92,7 @@ flowchart LR
 - [Security and reliability](security-reliability.md): trust boundaries, connector controls, threat model, failure semantics, SLOs, and promotion gates.
 - [Migration plan](migration-plan.md): source-to-target seams, staged delivery, compatibility, rollback, and the first milestone.
 - [Resolution Contract schema v0.1](resolution-contract-schema-v0.1.md): strict authoring model, canonical identity, fixtures, and compatibility policy.
-- [Root implementation plan](../../rag-new-architecture.md): short ordered backlog with verification.
+- [Implementation plan](rag-new-architecture.md): short ordered backlog with verification.
 
 ## Research basis
 

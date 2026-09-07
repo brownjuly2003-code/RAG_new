@@ -388,7 +388,7 @@ seed_docs = ('warranty.md', 'returns_policy.md', 'errors_e10_e30.md')
 with tempfile.TemporaryDirectory() as tmp_dir:
     tmp_path = Path(tmp_dir)
     for name in seed_docs:
-        shutil.copy2(Path('docs') / name, tmp_path / name)
+        shutil.copy2(Path('demo') / 'docs' / name, tmp_path / name)
     vs, chunks = IngestPipeline().ingest(tmp_path, tenant_id='default')
 print(f'Ingested {len(chunks)} chunks from {len(seed_docs)} seed docs')
 "@

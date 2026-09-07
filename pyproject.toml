@@ -7,7 +7,7 @@ exclude = [
     "vectordb/__init__.py",
     ".tmp",
     "tests/pytest-cache-files-*",
-    "archive-legacy",
+    "archive",
     "reports",
     "data",
 ]
@@ -33,7 +33,7 @@ ignore = ["E501"]
 markers = [
     "integration: end-to-end integration tests",
 ]
-norecursedirs = [".*", "build", "dist", "CVS", "_darcs", "{arch}", "*.egg", "venv", "pytest-cache-files-*", "archive-legacy", "data"]
+norecursedirs = [".*", "build", "dist", "CVS", "_darcs", "{arch}", "*.egg", "venv", "pytest-cache-files-*", "archive", "data"]
 
 [tool.coverage.run]
 branch = true
@@ -66,7 +66,7 @@ omit = [
     "*/__pycache__/*",
     "*/tests/*",
     "scripts/*",
-    "archive-legacy/*",
+    "archive/*",
     "alembic/*",
     "data/*",
     ".tmp/*",
@@ -122,7 +122,7 @@ warn_redundant_casts = true
 show_error_codes = true
 pretty = true
 exclude = [
-    "archive-legacy/",
+    "archive/",
     "alembic/versions/",
     "data/",
     "scripts/",
@@ -277,7 +277,7 @@ no_implicit_optional = true
 [tool.bandit]
 exclude_dirs = [
     "tests",
-    "archive-legacy",
+    "archive",
     "scripts",
     "data",
     "alembic/versions",

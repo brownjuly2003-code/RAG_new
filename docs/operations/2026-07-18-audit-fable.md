@@ -83,7 +83,7 @@
 | **T1** хрупкий route-тест | закрыт `2263a8c` | тест переведён на OpenAPI; в прогоне admin_ui/guards не флапает | **ЗАКРЫТ** ✔ |
 | **Q2** latency budgets | закрыт `694dbc0` | `docs/OPERATIONS.md:232` «Latency budgets & timeouts», рекомендация `RAG_ASK_BUDGET_SEC=300`, дефолт 0 не тронут | **ЗАКРЫТ** ✔ (docs) |
 | **Q1** precision + нет quality-гейта | харнесс `5b6c157` | `scripts/ab_context_precision.py` + run-plan прочитаны: 8 плеч вокруг D2, переиспользование существующих стадий, SHIP-критерии вшиты (Δprec ≥ +0.05, recall ≥ 0.90, FULL/MISS без регрессий), 7 mock-тестов | **ПОДГОТОВЛЕН**, прогон гейтован Mac'ом |
-| **A1/S4** single-replica | design-doc `ee82fea` | `docs/plans/2026-07-18-multi-replica-design.md`: 22 позиции state с file:line; ключевые поправки к аудиту верны по коду (сессии уже Postgres, LLM-кэш уже Redis; реальные блокеры — rate limiter без storage и confirm-actions; telegram_bot single-instance) | **DESIGN ГОТОВ**, impl только по SLA |
+| **A1/S4** single-replica | design-doc `ee82fea` | `archive/docs/plans/2026-07-18-multi-replica-design.md`: 22 позиции state с file:line; ключевые поправки к аудиту верны по коду (сессии уже Postgres, LLM-кэш уже Redis; реальные блокеры — rate limiter без storage и confirm-actions; telegram_bot single-instance) | **DESIGN ГОТОВ**, impl только по SLA |
 | **C1** god-modules | не трогали | graph.py 2652 / app.py 1848 / _base_manager 1338 / settings 1105 / conversation 1023 (физ. строк); graph.py не менялся с 18.06 | **ОТКРЫТ**, гейт «только по явному решению» соблюдён |
 
 Адверсариальный ревью S1 волны-2 (Origin-гейт, вакуумные cookie-тесты) — оба
@@ -144,7 +144,7 @@ test-unit (3.13) — `fail_under` подхватится из pyproject; либ�
 В публичном GitHub лежат: `AGENT_STATE.md` (136KB плотного handoff'а),
 `fable_com.md`, `next-session-fable-hardening.md`, `research_adaptive.md`,
 `audit_grok_16_07_26.md`, `commercial-upgrade-plan.md`, `BACKLOG.md`,
-`AUTOPILOT.md`, `docs/audits/` (8 аудитов), `docs/sessions/`. Секретов там нет
+`AUTOPILOT.md`, `docs/audits/` (8 аудитов), `archive/docs/sessions/`. Секретов там нет
 (проверено выборочно), и историческая практика проекта — сознательная
 (evidence-culture как витрина; grok это даже хвалил). Но по действующему
 глобальному правилу владельца (2026-07-09, после инцидента AB_TEST) внутренние
@@ -157,7 +157,7 @@ tracked. Сам не трогаю. Новые файлы этого аудита
 
 136KB, сегодня +4KB. Верхний START-HERE-блок отличный; всё ниже июньского
 уровня — superseded и продублировано в CHANGELOG/docs/operations. Архивация
-старых блоков (в `docs/sessions/` или `archive-legacy/`) снизит и вес N4.
+старых блоков (в `archive/docs/sessions/` или `archive/legacy-code/`) снизит и вес N4.
 
 ### N6 — Локальная верификационная среда деградировала — INFO
 

@@ -1,6 +1,6 @@
 """F-4 guards: provider-runtime cache, compiled-graph cache, and the four traps.
 
-Spec: codex-tasks/task-F4-cache-runtime-graph.md. The money-critical invariant
+Spec: archive/tasks/Archive/task-F4-cache-runtime-graph.md. The money-critical invariant
 is that _enforce_daily_cost_limit runs on EVERY build_provider_runtime call,
 cache hit or not; the concurrency-critical invariant is that a shared
 ProviderBackedLLM never leaks one thread's last_response into another.

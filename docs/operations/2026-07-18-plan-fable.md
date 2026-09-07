@@ -43,7 +43,7 @@ C1) до выполнения их условий.
   (11 KB после выноса + новый handoff-блок). Вынесены 22 датированных блока
   плюс майские `Last Verified Gates` и `Next Step`. Сверка с `git show HEAD:`:
   31 блок = 7 корень + 24 архив, потеряно 0. Исходная формулировка: superseded-блоки (июнь и
-  старше) → `docs/sessions/agent-state-archive-2026H1.md`; в корне оставить
+  старше) → `archive/docs/sessions/agent-state-archive-2026-05-01-to-06-16.md`; в корне оставить
   2 верхних блока + ссылку на архив.
   → Verify: `pytest tests/test_docs_quality.py` passed; файл ≤ 30KB;
   содержимое архива = вырезанное 1:1 (diff).  ~40 мин.
@@ -69,7 +69,7 @@ C1) до выполнения их условий.
 - [x] ~~**7. N4 — policy**~~ — РЕШЕНИЕ 2026-07-21 (hybrid, см. AGENT_STATE Update-7):
   - **Tracked оставляем** (agent memory + technical transparency): root kitchen
     (`AGENT_STATE.md`, `BACKLOG.md`, `AUTOPILOT.md`, research/fable notes),
-    `docs/sessions/**`, `docs/operations/**`, `docs/audits/**`.
+    `archive/docs/sessions/**`, `docs/operations/**`, `docs/audits/**`.
   - **Pages:** только не-kitchen guides. Kitchen dirs:
     `plans/ research/ operations/ a11y/ superpowers/ sessions/` — **не
     публикуются**. Product audits в `docs/audits/` остаются на Pages как

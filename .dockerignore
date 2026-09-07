@@ -48,10 +48,7 @@ Thumbs.db
 
 # Audit / planning artifacts (keep image lean)
 audit_*
-codex-tasks
-docs/SESSION-NOTES-*
-docs/plans
-archive-legacy
+archive
 .claude
 .workflow
 

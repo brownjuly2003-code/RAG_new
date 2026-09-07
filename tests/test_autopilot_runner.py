@@ -296,13 +296,24 @@ def test_autopilot_runner_pi_planner_gets_preloaded_context(
         newline="\n",
     )
     (repo / "README.md").write_text("# Readme\n", encoding="utf-8", newline="\n")
-    plans_dir = repo / "docs" / "plans"
-    plans_dir.mkdir(parents=True)
-    (plans_dir / "2026-05-01-backlog.md").write_text(
+    (repo / "CURRENT_STATE.md").write_text(
+        "# Current state\n", encoding="utf-8", newline="\n"
+    )
+    (repo / "ROADMAP.md").write_text("# Roadmap\n", encoding="utf-8", newline="\n")
+    (repo / "plan_06_09_26.md").write_text(
         "# Active plan\n", encoding="utf-8", newline="\n"
     )
     _run(
-        ["git", "add", "AGENT_STATE.md", "BACKLOG.md", "README.md", "docs/plans/2026-05-01-backlog.md"],
+        [
+            "git",
+            "add",
+            "AGENT_STATE.md",
+            "BACKLOG.md",
+            "README.md",
+            "CURRENT_STATE.md",
+            "ROADMAP.md",
+            "plan_06_09_26.md",
+        ],
         cwd=repo,
     )
     _run(["git", "commit", "-m", "add planner context"], cwd=repo)

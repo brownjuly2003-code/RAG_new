@@ -1,7 +1,7 @@
 # Adaptive Retrieval — Phase 0: разметка + baseline + гейт
 
 - Дата: 2026-06-13.
-- План: `docs/plans/2026-06-13-adaptive-retrieval-factcard-plan.md` (workstream
+- План: `archive/docs/plans/2026-06-13-adaptive-retrieval-factcard-plan.md` (workstream
   «Adaptive Retrieval Router + Fact-Card (SFR)»).
 - Research: `research_adaptive.md`.
 - Scope этой сессии: **только Phase 0** (T0.1 разметка + T0.2 baseline + ГЕЙТ).

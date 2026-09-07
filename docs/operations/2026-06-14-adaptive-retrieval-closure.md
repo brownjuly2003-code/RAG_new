@@ -11,7 +11,7 @@
 > исправлен реальным исходом. Lane-факты (F1–F4 opt-in, R1) остаются верны; opt-in остаётся, дефолт не флипаем.
 
 > Дата: 2026-06-14. Тип: terminal decision record (ADR-стиль).
-> План: `docs/plans/2026-06-13-adaptive-retrieval-factcard-plan.md`.
+> План: `archive/docs/plans/2026-06-13-adaptive-retrieval-factcard-plan.md`.
 > Объяснение концепции: `rag_new_explanation.md`. Research: `research_adaptive.md`.
 > Решение принято с правами админа («закрывай все задачи») — это та ship/no-ship-развилка,
 > которую иначе принимает владелец на Phase-5.

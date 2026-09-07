@@ -12,21 +12,21 @@ carried Q1b / multi-replica / C1 from AGENT_STATE Update-5/6.
 |-------|----------|-----------------|---------------|
 | Product docs | README, QUICKSTART, DEPLOYMENT, OPERATIONS, CHANGELOG | yes | yes |
 | Product audits | `docs/audits/*` | yes | yes (technical transparency) |
-| Agent/process kitchen | `AGENT_STATE.md`, `docs/sessions/**`, `docs/operations/**`, `docs/plans/**`, research/fable notes | yes | **no** (`KITCHEN_DIR_PREFIXES`) |
+| Agent/process kitchen | `AGENT_STATE.md`, `archive/docs/sessions/**`, `docs/operations/**`, `archive/docs/plans/**`, research/fable notes | yes | **no** (`KITCHEN_DIR_PREFIXES`) |
 | Secrets / credentials | never | **no** | **no** |
 
 Rationale:
 
 1. The real incident (2026-07-19) was **Pages indexing** of handoffs, not
    «file exists in a public git repo». Root kitchen was never synced to Pages
-   (only `README.md` + `DEPRECATIONS.md`); `docs/sessions/` was the hole and
-   is now kitchen-blocked.
+   (only `README.md` + `DEPRECATIONS.md`); `sessions/` remains kitchen-blocked
+   as defense in depth, while old handoffs now live under repository `archive/`.
 2. `git rm --cached` does not erase history and costs continuity for agents.
 3. Product audits stay public as a deliberate showcase; they were spot-checked
    for LAN IPs / secret-file paths — clean.
 
 Operational rule for agents: new handoff, ops report, or process audit goes
-under `docs/sessions/` or `docs/operations/` (kitchen). Product-facing audit
+under `archive/docs/sessions/` or `docs/operations/` (kitchen). Product-facing audit
 summaries may go under `docs/audits/`.
 
 ## Q1b — nightly RAGAS drift + CI quality floor
@@ -47,7 +47,7 @@ Harness remains: `scripts/ab_context_precision.py` and
 
 **Decision: DEFER.**
 
-Design is complete (`docs/plans/2026-07-18-multi-replica-design.md`). Headline
+Design is complete (`archive/docs/plans/2026-07-18-multi-replica-design.md`). Headline
 there still holds: do not start without a concrete multi-replica SLA. Two real
 blockers when started later: confirm-action pending state and distributed rate
 limiting.

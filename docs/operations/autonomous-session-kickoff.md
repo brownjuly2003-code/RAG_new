@@ -59,7 +59,7 @@ RUF100/I001 — крупный diff), R6 (reranker device из настройк�
   `docs/operations/2026-05-30-mac-rag-retrieval-baseline.md`.
 - **R2 подтверждён живьём**: `Contextual header exceeded chunk_size; truncating chunk`.
 - ADR GraphRAG (defer-with-seam): `docs/adr/0001-graphrag-deferral-and-trigger.md`.
-- План: `docs/plans/2026-05-30-demo-corpus-and-rag-grounding.md` (§7 = порядок по ROI).
+- План: `archive/docs/plans/2026-05-30-demo-corpus-and-rag-grounding.md` (§7 = порядок по ROI).
 
 Эти артефакты **не закоммичены** (untracked + 1 modified test) — push только по явной просьбе.
 
@@ -126,7 +126,7 @@ RUF100/I001 — крупный diff), R6 (reranker device из настройк�
 ```powershell
 # 1. Онбординг проекта (правило CLAUDE.md): прочитать свежие .md
 #    AGENT_STATE.md, BACKLOG.md, docs/audits/audit_claude_30_05_26.md,
-#    docs/plans/2026-05-30-demo-corpus-and-rag-grounding.md, этот файл.
+#    archive/docs/plans/2026-05-30-demo-corpus-and-rag-grounding.md, этот файл.
 # 2. Состояние гита (push НЕ делать без спроса)
 git -C D:\RAG_Support_Assistant status --short --branch
 # 3. Проверить связь с iMac (heavy-offload)

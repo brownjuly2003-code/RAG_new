@@ -283,7 +283,7 @@ class IngestPipeline:
         self._chunks = chunks
 
         # Step 3 -- evaluate & log the graph-lane activation condition
-        # (docs/plans/2026-06-05-graph-retrieval-activation.md)
+        # (archive/docs/plans/2026-06-05-graph-retrieval-activation.md)
         log_graph_activation(len(chunks))
 
         # Step 4 -- write ingestion log

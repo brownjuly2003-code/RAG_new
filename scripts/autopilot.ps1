@@ -203,9 +203,11 @@ function Get-PlannerContext {
     $logText = Join-ContextLines $logLines "[no git log output]"
     $docsText = Join-ContextLines $docsLines "[no docs markdown files found]"
     $agentState = Read-PlannerContextFile "AGENT_STATE.md"
+    $currentState = Read-PlannerContextFile "CURRENT_STATE.md"
+    $roadmap = Read-PlannerContextFile "ROADMAP.md"
     $backlog = Read-PlannerContextFile "BACKLOG.md"
     $readme = Read-PlannerContextFile "README.md" 8000
-    $activePlan = Read-PlannerContextFile "docs/plans/2026-05-01-backlog.md"
+    $activePlan = Read-PlannerContextFile "plan_06_09_26.md"
 
     return @"
 ## git status --short
@@ -218,6 +220,10 @@ $logText
 $docsText
 
 $agentState
+
+$currentState
+
+$roadmap
 
 $backlog
 
@@ -694,12 +700,12 @@ function Invoke-LocalBacklogGuardTask {
 def test_top_level_backlog_notes_are_historical() -> None:
     backlog = (PROJECT_ROOT / "BACKLOG.md").read_text(encoding="utf-8")
     non_live = (
-        PROJECT_ROOT / "docs" / "sessions" / "2026-05-02-non-live-backlog.md"
+        PROJECT_ROOT / "archive" / "docs" / "sessions" / "2026-05-02-non-live-backlog.md"
     ).read_text(encoding="utf-8")
 
     assert "Historical safe-task snapshot" in backlog
     assert "Historical completion note" in non_live
-    assert "docs/plans/2026-05-01-backlog.md" in backlog
+    assert "archive/docs/status/backlog-through-2026-08-27.md" in backlog
     assert "docs/plans/2026-05-01-backlog.md" in non_live
     assert "explicit live GraceKelly/Mistral opt-in" in backlog
     assert "explicit opt-in" in non_live

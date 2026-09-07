@@ -1,7 +1,7 @@
 # Phase 1 proxy A/B — contextual-header направление ПОДТВЕРЖДЕНО (12/13 целевых ↑), обрезка тела чанка ВРЕДИТ (починена)
 
 - Дата: 2026-06-04
-- План: `docs/plans/2026-06-03-overcome-retrieval-barrier.md` (Phase 1 — дешёвый прокси-A/B
+- План: `archive/docs/plans/2026-06-03-overcome-retrieval-barrier.md` (Phase 1 — дешёвый прокси-A/B
   под лимитом <1GiB на Windows-хосте, go/no-go перед тратой remote-ресурса).
 - Вопрос: поднимает ли structural chunking + heading-path contextual header (`fc4ad0e`)
   целевые чанки класса `*-required-fields` в RRF-ранге?

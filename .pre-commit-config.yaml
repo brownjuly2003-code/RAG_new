@@ -8,9 +8,9 @@ repos:
     rev: v6.0.0
     hooks:
       - id: trailing-whitespace
-        exclude: ^(?:archive/|archive-legacy/|docs/audits/audit_opus_.*\.md$|codex-tasks/Archive/|docs/research/|docs/superpowers/specs/)
+        exclude: ^(?:archive/|docs/audits/audit_opus_.*\.md$)
       - id: end-of-file-fixer
-        exclude: ^(?:archive/|archive-legacy/|codex-tasks/Archive/|docs/research/|docs/superpowers/specs/|reports/|vectordb/__init__\.py$)
+        exclude: ^(?:archive/|reports/|vectordb/__init__\.py$)
       - id: check-yaml
         exclude: ^deploy/helm/templates/
       - id: check-toml
@@ -18,7 +18,7 @@ repos:
         args: [--maxkb=500]
       - id: check-merge-conflict
       - id: detect-private-key
-        exclude: ^(?:codex-tasks/cleanup-report\.md$|codex-tasks/Archive/task-126-hygiene-consistency-audit\.md$)
+        exclude: ^archive/
 
   - repo: https://github.com/PyCQA/bandit
     rev: 1.9.4

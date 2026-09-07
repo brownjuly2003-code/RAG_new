@@ -3,7 +3,7 @@
 **The only entry point for a new session.** Read this, then
 [`ROADMAP.md`](ROADMAP.md). Everything else is reached by link, on demand.
 
-Last updated: 2026-09-01 · Plan: [`plan_23_08_2026.md`](plan_23_08_2026.md)
+Last updated: 2026-09-06 · Plan: [`plan_06_09_26.md`](plan_06_09_26.md)
 (mode B) · Audit of record:
 [`docs/audits/audit_final_23_08_2026.md`](docs/audits/audit_final_23_08_2026.md)
 · Phase C benchmark source: `c06bdf5` · local commits are not pushed
@@ -36,13 +36,15 @@ RSS 2,124,476,416 bytes; Ollama loaded size 5,062,566,870 bytes; neither is
 total-host peak RAM. Misses faithfulness 0.90 and context precision 0.63; that
 does not authorize a model change or a NO-SHIP decision.
 
-**C.1b `qwen3:8b` passed one smoke, not measured.** Tag `qwen3:8b`, digest
-`500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41`, size
-5,225,388,164 bytes, family `qwen3`, 8.2B, Q4_K_M, ctx 40960,
-completion/tools/thinking. On `deproject-mac`, `c1b-qwen3-8b-b8ecc8e-smoke`
-ran one case from a clean `b8ecc8e` worktree with thinking off: generation,
-LLM judge and NLI valid, zero failed cases, 255.525 s. It is `not_evidence`
-(1 run, 1 case). No full `c1b-qwen3-8b-b8ecc8e` process was launched.
+**C.1b `qwen3:8b` smoke passed; the full run stopped on 2026-09-02 — not evidence.**
+Tag digest is `500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41`
+(Q4_K_M, 5,225,388,164 bytes). The valid one-case smoke took 255.525 s.
+Full `c1b-qwen3-8b-b8ecc8e` started 2026-09-02 on `deproject-mac` from the
+clean exact `b8ecc8e` worktree (3 × 100, seeds 42–44, `--no-think`, pinned
+hashes). Verified 2026-09-06 over ssh: no benchmark process; the log ends at
+run 1/3 case 11/100; the checkpoint under `/tmp/rag-new-b8ecc8e.tdcVc2/results/`
+was last written 2026-09-02 08:19 with 12 cases; Mac uptime 17 days, cause unproven.
+Do not launch a duplicate: resume from the checkpoint with `--resume` (plan §C.1b).
 
 ### 1. The gate can reach Russian traffic. The corpus still cannot measure it.
 

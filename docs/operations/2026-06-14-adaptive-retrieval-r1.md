@@ -1,7 +1,7 @@
 # Adaptive Retrieval — Track R / R1: lightweight router classifier
 
 > Date: 2026-06-14 · Workstream: adaptive-retrieval (Track R, router cost).
-> Plan: `docs/plans/2026-06-13-adaptive-retrieval-factcard-plan.md` (Track R, R1).
+> Plan: `archive/docs/plans/2026-06-13-adaptive-retrieval-factcard-plan.md` (Track R, R1).
 > Artifacts: `evaluation/adaptive_retrieval/train_router_classifier.py` (harness),
 > `evaluation/adaptive_retrieval/r1_router_results.json` (results).
 > Verdict: **R1 verify met and exceeded** — a cheap classifier is *both* more

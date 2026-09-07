@@ -2,8 +2,8 @@
 
 Read exactly two files to start: [`CURRENT_STATE.md`](CURRENT_STATE.md), then
 [`ROADMAP.md`](ROADMAP.md). Everything else is reached by link, on demand.
-Do not read `docs/archive/` or `docs/SESSION_HANDOFF.md` for routing — they
-are history, and planning from them is how this repository accumulated seven
+Do not read `archive/` for routing — it is history, and planning from it is
+how this repository accumulated seven
 layers of release machinery on synthetic fixtures.
 
 ## The slice acceptance rule
