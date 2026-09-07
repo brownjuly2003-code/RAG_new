@@ -37,10 +37,28 @@ def test_default_compose_forces_development_environment() -> None:
     assert "RAG_ENV=development" in compose["services"]["app"]["environment"]
 
 
+def _readme_section(title: str) -> str:
+    """Return one top-level README section, bounded by the next `## ` heading.
+
+    The 2026-09-04 restructure renamed `## Quick Start` to `## Quick start` and
+    dropped the `## API` heading this test used as the section's lower bound.
+    Splitting on a hardcoded next-heading name is what let a rename read as "the
+    whole rest of the file", so the bound is now the next heading, whatever it is
+    called: a section that loses its content fails here instead of borrowing a
+    phrase from a later one.
+    """
+    lines = (PROJECT_ROOT / "README.md").read_text(encoding="utf-8").splitlines()
+    headings = [index for index, line in enumerate(lines) if line.startswith("## ")]
+    for position, index in enumerate(headings):
+        if lines[index].removeprefix("## ").strip().casefold() == title.casefold():
+            end = headings[position + 1] if position + 1 < len(headings) else len(lines)
+            return "\n".join(lines[index + 1 : end])
+    raise AssertionError(f"README has no `## {title}` section")
+
+
 def test_readme_quick_start_covers_local_first_onboarding() -> None:
     """README Quick Start must document env bootstrap, local Compose, and no shipped keys."""
-    content = (PROJECT_ROOT / "README.md").read_text(encoding="utf-8")
-    quick_start = content.split("## Quick Start", 1)[1].split("## API", 1)[0]
+    quick_start = _readme_section("Quick start")
     lowered = quick_start.lower()
 
     assert "cp .env.example .env" in quick_start

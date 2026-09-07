@@ -58,10 +58,21 @@ alembic upgrade head
 python main.py
 ```
 
+On Linux and macOS the same bootstrap is `cp .env.example .env`.
+
+To bring up the application together with PostgreSQL and Redis instead of
+installing them yourself, use the checked-in `docker-compose.yml`:
+
+```bash
+cp .env.example .env
+docker compose up -d
+```
+
 Repository defaults use the owner-oriented `local-first` Ollama profile with
 `qwen2.5:7b`. External users can select `external-mistral`, remote embeddings,
-and an empty `RAG_RERANKER_MODEL` to avoid local model-hub downloads. Provider
-keys belong only in the local `.env`; no credentials ship in this repository.
+and an empty `RAG_RERANKER_MODEL` to avoid local model-hub downloads.
+Optional provider keys belong only in the local `.env`;
+no API keys ship in this repository.
 
 Open `http://localhost:8000/static/login.html` or
 `http://localhost:8000/static/chat.html`. Interactive OpenAPI documentation is
