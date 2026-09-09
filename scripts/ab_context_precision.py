@@ -725,6 +725,74 @@ def _bucket_row(question_class: str, rows: Sequence[dict[str, Any]]) -> dict[str
     }
 
 
+def _label_block(approved: int) -> dict[str, Any]:
+    return {
+        "evidence_class": "agent_labelled",
+        "approved": approved,
+        "case_source": "agent_authored_over_real_documents",
+        "note": (
+            "The questions were agent-authored over real documents and the "
+            "question classes are agent-assigned; no human has approved either."
+        ),
+    }
+
+
+def _provenance_block(
+    *,
+    pool_path: Path,
+    dataset_path: Path,
+    sidecar_path: Path,
+    label_manifest_path: Path,
+    corpus_manifest_path: Path,
+    code_commit: str | None,
+    config: dict[str, Any],
+) -> dict[str, Any]:
+    """Everything that pins a published number, minus the number itself.
+
+    Shared by the GR-0.3 bucket baseline and the GR-1a arm so the two reports
+    cannot describe the same pool in two different vocabularies. Only ``config``
+    differs between them.
+    """
+    corpus_manifest = json.loads(corpus_manifest_path.read_text(encoding="utf-8"))
+    code = _git_commit() if code_commit is None else {"commit": code_commit, "tree_clean": None}
+    code["files"] = _code_digests()
+    return {
+        "pool_path": _stored_path(pool_path),
+        "pool_sha256": sha256_file(pool_path),
+        "pool_bytes": pool_path.stat().st_size,
+        "pool_produced_by": (
+            "scripts/ab_remote_contextual.py --stage pools/rerank --arm C "
+            "(BGE-M3 + bge-reranker-v2-m3, production chunking)"
+        ),
+        "dataset": _stored_path(dataset_path),
+        "dataset_sha256": sha256_file(dataset_path),
+        "label_sidecar": _stored_path(sidecar_path),
+        "label_sidecar_sha256": sha256_file(sidecar_path),
+        "label_manifest": _stored_path(label_manifest_path),
+        "label_manifest_sha256": sha256_file(label_manifest_path),
+        "corpus": {
+            "manifest": _stored_path(corpus_manifest_path),
+            "manifest_sha256": sha256_file(corpus_manifest_path),
+            "name": corpus_manifest.get("name"),
+            "root": corpus_manifest.get("root"),
+            "corpus_sha256": corpus_manifest.get("corpus_sha256"),
+            "file_count": corpus_manifest.get("file_count"),
+        },
+        "code": code,
+        "config": config,
+    }
+
+
+def _bucket_rows_by_class(scored: Sequence[dict[str, Any]]) -> list[dict[str, Any]]:
+    """One row per known question class, in a fixed order, empty classes included."""
+    from evaluation.question_class_labels import QUESTION_CLASSES
+
+    by_class: dict[str, list[dict[str, Any]]] = {name: [] for name in sorted(QUESTION_CLASSES)}
+    for row in scored:
+        by_class.setdefault(row["question_class"], []).append(row)
+    return [_bucket_row(name, by_class[name]) for name in sorted(by_class)]
+
+
 def build_bucket_report(
     *,
     pool_path: Path,
@@ -742,8 +810,6 @@ def build_bucket_report(
     Deterministic by construction — the body carries no timestamp, so two runs
     over the same inputs are byte-identical.
     """
-    from evaluation.question_class_labels import QUESTION_CLASSES
-
     scored, approved = score_cases_by_class(
         pool_path=pool_path,
         dataset_path=dataset_path,
@@ -754,56 +820,23 @@ def build_bucket_report(
         context_chars=context_chars,
     )
 
-    by_class: dict[str, list[dict[str, Any]]] = {name: [] for name in sorted(QUESTION_CLASSES)}
-    for row in scored:
-        by_class.setdefault(row["question_class"], []).append(row)
-
-    corpus_manifest = json.loads(corpus_manifest_path.read_text(encoding="utf-8"))
     pool_rows = json.loads(pool_path.read_text(encoding="utf-8"))
-    code = _git_commit() if code_commit is None else {"commit": code_commit, "tree_clean": None}
-    code["files"] = _code_digests()
 
     return {
         "schema_version": BUCKET_REPORT_SCHEMA_VERSION,
         "kind": "gr-retrieval-bucket-baseline",
         "evidence_class": "measured",
-        "labels": {
-            "evidence_class": "agent_labelled",
-            "approved": approved,
-            "case_source": "agent_authored_over_real_documents",
-            "note": (
-                "The questions were agent-authored over real documents and the "
-                "question classes are agent-assigned; no human has approved either."
-            ),
-        },
-        "provenance": {
-            "pool_path": _stored_path(pool_path),
-            "pool_sha256": sha256_file(pool_path),
-            "pool_bytes": pool_path.stat().st_size,
-            "pool_produced_by": (
-                "scripts/ab_remote_contextual.py --stage pools/rerank --arm C "
-                "(BGE-M3 + bge-reranker-v2-m3, production chunking)"
-            ),
-            "dataset": _stored_path(dataset_path),
-            "dataset_sha256": sha256_file(dataset_path),
-            "label_sidecar": _stored_path(sidecar_path),
-            "label_sidecar_sha256": sha256_file(sidecar_path),
-            "label_manifest": _stored_path(label_manifest_path),
-            "label_manifest_sha256": sha256_file(label_manifest_path),
-            "corpus": {
-                "manifest": _stored_path(corpus_manifest_path),
-                "manifest_sha256": sha256_file(corpus_manifest_path),
-                "name": corpus_manifest.get("name"),
-                "root": corpus_manifest.get("root"),
-                "corpus_sha256": corpus_manifest.get("corpus_sha256"),
-                "file_count": corpus_manifest.get("file_count"),
-            },
-            "code": code,
-            "config": {
+        "labels": _label_block(approved),
+        "provenance": _provenance_block(
+            pool_path=pool_path,
+            dataset_path=dataset_path,
+            sidecar_path=sidecar_path,
+            label_manifest_path=label_manifest_path,
+            corpus_manifest_path=corpus_manifest_path,
+            code_commit=code_commit,
+            config={
                 "top_k": top_k,
-                "pool_rerank_k": sorted(
-                    {int(row.get("rerank_k") or 0) for row in pool_rows}
-                ),
+                "pool_rerank_k": sorted({int(row.get("rerank_k") or 0) for row in pool_rows}),
                 "context_chars": context_chars,
                 "parent_expansion": False,
                 "grade_docs": False,
@@ -815,10 +848,8 @@ def build_bucket_report(
                 "kw_status": "scripts.ab_remote_contextual._kw_status",
                 "rounding": "per case to 4 decimals, then the mean, then 4 decimals",
             },
-        },
-        "buckets": [
-            _bucket_row(name, by_class[name]) for name in sorted(by_class)
-        ],
+        ),
+        "buckets": _bucket_rows_by_class(scored),
         "aggregate": _bucket_row("all cases", scored) | {"question_class": "all cases"},
         "per_case": scored,
     }
@@ -886,6 +917,802 @@ def run_bucket_report(args: argparse.Namespace) -> int:
         "context_precision": report["aggregate"]["context_precision"],
         "context_recall": report["aggregate"]["context_recall"],
     }, ensure_ascii=False))
+    return 0
+
+
+# ---------------------------------------------------------------------------
+# GR-1a — section coherence as a narrowing arm over the same pinned pool
+# ---------------------------------------------------------------------------
+#
+# `plan_06_09_26.md` §4 п.3–4: candidates are grouped by document and section
+# (the heading path); a chunk whose section is already represented in the top is
+# promoted over an isolated semantic neighbour; the isolated neighbour below a
+# threshold is dropped rather than re-ranked; parent-expansion follows the
+# section boundary instead of a fixed ±1 window.
+#
+# The structural signal is already in the pool: every candidate string starts
+# with the contextual header the production ingest wrote
+# (`vectordb.manager.add_contextual_headers` -> the no-LLM fallback in
+# `vectordb._base_manager.add_contextual_headers`), so the arm is post-processing
+# over the T-12 pool and needs no model and no corpus.
+
+SECTION_COHERENCE_SCHEMA_VERSION = "gr-section-coherence-arm/v1.0"
+DEFAULT_SECTION_COHERENCE_REPORT_PATH = (
+    PROJECT_ROOT / "reports" / "gr" / "gr1a-section-coherence.json"
+)
+
+#: The producer's format, one constant per separator. These mirror
+#: `vectordb._base_manager.add_contextual_headers`, which writes
+#: ``[Контекст: Из документа <source>, раздел: <h1> › <h2>…, стр. <page>]\n<body>``
+#: and clamps the header to 200 characters. `tests/test_section_coherence_arm.py`
+#: builds its fixtures by calling that producer, so a drift in either direction
+#: fails there rather than quietly changing what this arm measures.
+CONTEXT_HEADER_PREFIX = "[Контекст: "
+CONTEXT_HEADER_SUFFIX = "]"
+HEADER_DOCUMENT_PREFIX = "Из документа "
+HEADER_SECTION_SEPARATOR = ", раздел: "
+HEADER_HEADING_JOINER = " › "
+HEADER_PAGE_SEPARATOR = ", стр. "
+
+#: The producer's own clamp: `vectordb._base_manager.add_contextual_headers` cuts
+#: the header to this many characters before wrapping it in the prefix/suffix. A
+#: clamped header still *parses* — the wrapper always appends the suffix — but its
+#: heading path is cut mid-text, so two sections of one document that share a
+#: 200-character prefix would group as one. That is invisible in the section key,
+#: so it is counted and reported instead.
+CONTEXT_HEADER_CLAMP = 200
+
+#: The swept parameter. A singleton section survives when its strength — its
+#: reciprocal-rank score over the neighbourhood, divided by the strongest
+#: section's — is at least this. 0.00 drops nothing and is the control.
+SECTION_COHERENCE_THRESHOLDS: tuple[float, ...] = (0.00, 0.10, 0.25, 0.50, 0.75)
+
+#: How deep into the reranked pool "the top" reaches when section support is
+#: counted. 5 is the published top-k itself (the arm may only re-order and
+#: drop); 10 is twice it (the arm may also pull a supported chunk up into the
+#: top-5). Both are published; neither is chosen after seeing the result.
+SECTION_COHERENCE_NEIGHBOURHOODS: tuple[int, ...] = (5, 10)
+
+#: A cell qualifies when it costs no keyword coverage; among those, the headline
+#: is the one with the highest context precision. Stated before the run, and
+#: applied to the whole grid — the grid is published either way.
+SECTION_COHERENCE_SELECTION_RULE = (
+    "the grid cell with the highest aggregate context precision among the cells "
+    "whose keyword FULL is not below the baseline's and whose MISS is not above "
+    "it; if no cell qualifies, there is no headline and the grid is the result"
+)
+
+_KW_STATUS_ORDER = {"FULL": 2, "PART": 1, "MISS": 0}
+
+
+@dataclass(frozen=True)
+class SectionRef:
+    """The (document, heading path) pair the contextual header names."""
+
+    document: str
+    heading_path: tuple[str, ...]
+
+    def label(self) -> str:
+        path = HEADER_HEADING_JOINER.join(self.heading_path)
+        return f"{self.document} :: {path}" if path else f"{self.document} :: <no heading>"
+
+
+def parse_contextual_header(text: str) -> Optional[SectionRef]:
+    """Read the producer's header off a candidate, or return ``None``.
+
+    ``None`` means "this candidate does not carry the header the production
+    ingest writes" — an LLM-authored header, a chunk from another pipeline, or a
+    truncated string. It never means "sectionless": a chunk from a document with
+    no markdown headings parses fine and gets an empty heading path.
+    """
+    if not text.startswith(CONTEXT_HEADER_PREFIX):
+        return None
+    newline = text.find("\n")
+    if newline == -1:
+        return None
+    header = text[len(CONTEXT_HEADER_PREFIX) : newline]
+    if not header.endswith(CONTEXT_HEADER_SUFFIX):
+        return None
+    header = header[: -len(CONTEXT_HEADER_SUFFIX)]
+    if not header.startswith(HEADER_DOCUMENT_PREFIX):
+        return None
+    body = header[len(HEADER_DOCUMENT_PREFIX) :]
+    # The producer appends the page marker last, so it is stripped from the
+    # right — and only when what follows it cannot be a heading: no further
+    # heading joiner, and a tail that can actually *be* a page number, because
+    # the producer writes the marker only for a chunk whose metadata carries a
+    # page (`vectordb/_base_manager.py`: ``if page:``). Without the digit test a
+    # heading of the producer's own like "Приложение 2, стр. 12 и далее" loses
+    # its tail and gets a silently wrong section key. The one case the header
+    # format cannot resolve is a last heading ending in the separator plus bare
+    # digits: that string is byte-identical to one the producer writes with page
+    # metadata, so the page reading wins — see the fixture in
+    # `tests/test_section_coherence_arm.py`.
+    head, page_sep, tail = body.rpartition(HEADER_PAGE_SEPARATOR)
+    if page_sep and head and HEADER_HEADING_JOINER not in tail and tail.strip().isdigit():
+        body = head
+    document, section_sep, section = body.partition(HEADER_SECTION_SEPARATOR)
+    if not section_sep:
+        return SectionRef(document=document.strip(), heading_path=())
+    path = tuple(part.strip() for part in section.split(HEADER_HEADING_JOINER) if part.strip())
+    return SectionRef(document=document.strip(), heading_path=path)
+
+
+def header_is_clamped(text: str) -> bool:
+    """True when the candidate's header sits exactly on the producer's clamp.
+
+    The clamp truncates the header body, never the wrapper, so the length that
+    identifies it is the body's — ``CONTEXT_HEADER_CLAMP`` characters between the
+    prefix and the suffix. A header that long parses, but its heading path may be
+    cut mid-text, and the section key is then a truncated path.
+    """
+    if not text.startswith(CONTEXT_HEADER_PREFIX):
+        return False
+    newline = text.find("\n")
+    if newline == -1:
+        return False
+    header = text[len(CONTEXT_HEADER_PREFIX) : newline]
+    if not header.endswith(CONTEXT_HEADER_SUFFIX):
+        return False
+    return len(header) - len(CONTEXT_HEADER_SUFFIX) == CONTEXT_HEADER_CLAMP
+
+
+def group_candidates_by_section(
+    candidates: Sequence[str],
+) -> tuple[dict[SectionRef, list[int]], list[int]]:
+    """Group candidate ranks by (document, section); return the unreadable ranks too.
+
+    Two chunks of one section of one document land in one group; two same-named
+    sections of different documents stay apart, because the document is part of
+    the key. Candidates whose header cannot be read are returned separately and
+    are in no group — merging them would invent a section that does not exist.
+    """
+    groups: dict[SectionRef, list[int]] = {}
+    unparsed: list[int] = []
+    for rank, text in enumerate(candidates):
+        ref = parse_contextual_header(str(text))
+        if ref is None:
+            unparsed.append(rank)
+            continue
+        groups.setdefault(ref, []).append(rank)
+    return groups, unparsed
+
+
+@dataclass(frozen=True)
+class CoherenceParams:
+    """Every knob of the arm, named. None of them has a default in the report."""
+
+    neighbourhood: int = 10
+    singleton_threshold: float = 0.25
+    top_k: int = PHASE_C_TOP_K
+    expand_to_section: bool = True
+    context_chars: int = PHASE_C_CONTEXT_CHARS
+
+    def as_dict(self) -> dict[str, Any]:
+        return {
+            "neighbourhood": self.neighbourhood,
+            "singleton_threshold": round(self.singleton_threshold, 4),
+            "top_k": self.top_k,
+            "expand_to_section": self.expand_to_section,
+            "context_chars": self.context_chars,
+        }
+
+
+@dataclass(frozen=True)
+class CoherenceOutcome:
+    """What the arm selected, and what it did to get there."""
+
+    texts: list[str]
+    promoted: int  # candidates in a section with support in the neighbourhood
+    demoted: int  # isolated neighbours kept, but below the supported ones
+    dropped: int  # isolated neighbours below the threshold
+    unparsed: int  # headers the producer's format does not explain
+    sectionless: int  # chunks of a document with no markdown headings
+    expanded: int  # selected chunks joined to a sibling from their section
+    not_expandable: int  # selected chunks whose section has no sibling in the pool
+    rank0_dropped: bool  # the reranker's first choice did not survive
+
+
+def _strip_contextual_header(text: str) -> str:
+    """The production strip, so a joined section is not a wall of headers."""
+    from vectordb._base_manager import HybridRetriever
+
+    return HybridRetriever._strip_contextual_header(text)
+
+
+def apply_section_coherence(candidates: Sequence[str], params: CoherenceParams) -> CoherenceOutcome:
+    """Narrow a case's candidate pool by section coherence. Pure function.
+
+    Ordering is ordinal, not a weighted score: a candidate whose section is
+    represented more than once in the neighbourhood outranks one whose header
+    could not be read, which outranks an isolated neighbour. Inside each tier
+    the reranker's own order is preserved — the arm narrows the top, it does not
+    re-score it.
+    """
+    pool = [str(text) for text in candidates]
+    neighbourhood = pool[: params.neighbourhood]
+    groups, unparsed_ranks = group_candidates_by_section(neighbourhood)
+    unparsed = set(unparsed_ranks)
+    ref_by_rank: dict[int, SectionRef] = {
+        rank: ref for ref, ranks in groups.items() for rank in ranks
+    }
+
+    # A section's pull on the top: reciprocal rank summed over its members, so
+    # two chunks at ranks 1 and 2 outweigh one chunk at rank 4.
+    scores = {ref: sum(1.0 / (1 + rank) for rank in ranks) for ref, ranks in groups.items()}
+    strongest = max(scores.values(), default=0.0)
+
+    tier_supported, tier_unreadable, tier_isolated = 0, 1, 2
+    ordered: list[tuple[int, int]] = []
+    promoted = demoted = dropped = 0
+    rank0_dropped = False
+    for rank in range(len(neighbourhood)):
+        if rank in unparsed:
+            ordered.append((tier_unreadable, rank))
+            continue
+        ref = ref_by_rank[rank]
+        if len(groups[ref]) > 1:
+            promoted += 1
+            ordered.append((tier_supported, rank))
+            continue
+        strength = scores[ref] / strongest if strongest else 0.0
+        if strength < params.singleton_threshold:
+            dropped += 1
+            rank0_dropped = rank0_dropped or rank == 0
+            continue
+        demoted += 1
+        ordered.append((tier_isolated, rank))
+    ordered.sort()
+    selected = [rank for _, rank in ordered][: params.top_k]
+
+    texts, expanded, not_expandable = _expand_to_section_boundary(
+        pool, neighbourhood, selected, ref_by_rank, params
+    )
+    return CoherenceOutcome(
+        texts=texts,
+        promoted=promoted,
+        demoted=demoted,
+        dropped=dropped,
+        unparsed=len(unparsed),
+        sectionless=sum(1 for ref in ref_by_rank.values() if not ref.heading_path),
+        expanded=expanded,
+        not_expandable=not_expandable,
+        rank0_dropped=rank0_dropped,
+    )
+
+
+def _expand_to_section_boundary(
+    pool: Sequence[str],
+    neighbourhood: Sequence[str],
+    selected: Sequence[int],
+    ref_by_rank: dict[int, SectionRef],
+    params: CoherenceParams,
+) -> tuple[list[str], int, int]:
+    """Join each selected chunk to the rest of its section, as far as the pool has it.
+
+    The pool holds only what retrieval returned, so "the section boundary" is
+    reachable exactly when a sibling chunk of the same (document, section) was
+    itself retrieved. Where it was not, the chunk is left alone and counted in
+    ``not_expandable`` — this arm cannot read the corpus, and pretending it can
+    would be the ±1 window under another name.
+    """
+    if not params.expand_to_section:
+        return [neighbourhood[rank] for rank in selected], 0, 0
+
+    pool_refs = [parse_contextual_header(text) for text in pool]
+    # The neighbourhood is a prefix of the pool, so a selected rank indexes both.
+    taken = set(selected)
+    used: set[int] = set()
+    texts: list[str] = []
+    expanded = not_expandable = 0
+    for rank in selected:
+        text = neighbourhood[rank]
+        ref = ref_by_rank.get(rank)
+        if ref is None:
+            texts.append(text)
+            continue
+        siblings = [
+            index
+            for index, candidate_ref in enumerate(pool_refs)
+            if candidate_ref == ref and index not in used and index not in taken
+        ]
+        if not siblings:
+            not_expandable += 1
+            texts.append(text)
+            continue
+        used.update(siblings)
+        expanded += 1
+        parts = [text] + [_strip_contextual_header(pool[index]).strip() for index in siblings]
+        texts.append("\n\n".join(part for part in parts if part))
+    return texts, expanded, not_expandable
+
+
+def _score_arm_cases(
+    cases: Sequence[dict[str, Any]],
+    class_by_case: dict[str, str],
+    params: CoherenceParams,
+) -> tuple[list[dict[str, Any]], dict[str, int]]:
+    """Run the arm over every case and score it with the phase C metric code path."""
+    from evaluation.ragas_eval import context_precision, context_recall
+    from scripts.ab_remote_contextual import _kw_status
+    from scripts.generator_benchmark import _truncate_contexts
+
+    rows: list[dict[str, Any]] = []
+    diagnostics = {
+        "promoted": 0,
+        "demoted": 0,
+        "dropped": 0,
+        "expanded": 0,
+        "not_expandable": 0,
+        "cases_with_a_drop": 0,
+        "cases_with_the_top_candidate_dropped": 0,
+        # No section in this case's neighbourhood holds more than one candidate,
+        # so the arm has no structural signal to promote on and can only drop.
+        # This is the property of the pool that decides how much the arm can move
+        # at all, and the capsule quotes it, so it is a reported number.
+        "cases_with_all_singleton_sections": 0,
+        # `_truncate_contexts` spends ONE shared character budget in order, so for
+        # a case whose selected chunks reach that budget the arm's re-ordering
+        # decides what survives — re-ordering alone can then move keyword coverage.
+        # The control cell's equality with the baseline rests on this count being
+        # zero, so it is a reported number and not an assumption: a pool where a
+        # case does reach the budget makes it non-zero and fails the control test
+        # instead of quietly invalidating the reasoning behind it.
+        "cases_at_the_truncation_budget": 0,
+        "docs_selected": 0,
+    }
+    for case in cases:
+        outcome = apply_section_coherence(case["contexts"], params)
+        texts = _truncate_contexts(outcome.texts, params.context_chars)
+        at_budget = (
+            params.context_chars > 0
+            and sum(len(text) for text in outcome.texts) > params.context_chars
+        )
+        docs = [{"page_content": text} for text in texts]
+        keywords = list(case["expected_keywords"])
+        case_id = str(case["case_id"])
+        rows.append(
+            {
+                "case_id": case_id,
+                "question_class": class_by_case[case_id],
+                "n_docs": len(texts),
+                "context_precision": round(context_precision(case["query"], docs, keywords), 4),
+                "context_recall": round(context_recall(docs, keywords), 4),
+                "kw_status": _kw_status(keywords, texts),
+                "dropped": outcome.dropped,
+            }
+        )
+        diagnostics["promoted"] += outcome.promoted
+        diagnostics["demoted"] += outcome.demoted
+        diagnostics["dropped"] += outcome.dropped
+        diagnostics["expanded"] += outcome.expanded
+        diagnostics["not_expandable"] += outcome.not_expandable
+        diagnostics["cases_with_a_drop"] += 1 if outcome.dropped else 0
+        diagnostics["cases_with_the_top_candidate_dropped"] += 1 if outcome.rank0_dropped else 0
+        diagnostics["cases_with_all_singleton_sections"] += 1 if outcome.promoted == 0 else 0
+        diagnostics["cases_at_the_truncation_budget"] += 1 if at_budget else 0
+        diagnostics["docs_selected"] += len(texts)
+    diagnostics["mean_docs"] = round(diagnostics["docs_selected"] / max(len(cases), 1), 4)
+    return rows, diagnostics
+
+
+def _naive_top_k_reference(
+    *,
+    pool_path: Path,
+    dataset_path: Path,
+    class_by_case: dict[str, str],
+    expected_cases: int,
+    top_k: int,
+    context_chars: int,
+) -> list[dict[str, Any]]:
+    """The cheapest narrowing there is: keep the first k, drop the rest.
+
+    Section coherence has to be measured against this and not only against the
+    baseline, because an arm that ends up with four documents per case must not
+    be credited for a gain that "take the top four" already produces. Same pool,
+    same cases, same metric code path.
+    """
+    from evaluation.ragas_eval import context_precision, context_recall
+    from scripts.ab_remote_contextual import _kw_status
+    from scripts.generator_benchmark import load_benchmark_cases
+
+    reference: list[dict[str, Any]] = []
+    for k in range(1, top_k + 1):
+        cases = load_benchmark_cases(
+            dataset_path=dataset_path,
+            contexts_path=pool_path,
+            expected_cases=expected_cases,
+            top_k=k,
+            context_chars=context_chars,
+        )
+        rows: list[dict[str, Any]] = []
+        docs_selected = 0
+        for case in cases:
+            texts = list(case["contexts"])
+            docs = [{"page_content": text} for text in texts]
+            keywords = list(case["expected_keywords"])
+            case_id = str(case["case_id"])
+            docs_selected += len(texts)
+            rows.append(
+                {
+                    "case_id": case_id,
+                    "question_class": class_by_case[case_id],
+                    "n_docs": len(texts),
+                    "context_precision": round(context_precision(case["query"], docs, keywords), 4),
+                    "context_recall": round(context_recall(docs, keywords), 4),
+                    "kw_status": _kw_status(keywords, texts),
+                }
+            )
+        reference.append(
+            {
+                "top_k": k,
+                "mean_docs": round(docs_selected / max(len(cases), 1), 4),
+                "aggregate": _bucket_row("all cases", rows) | {"question_class": "all cases"},
+            }
+        )
+    return reference
+
+
+def _delta(arm: Optional[float], base: Optional[float]) -> Optional[float]:
+    if arm is None or base is None:
+        return None
+    return round(arm - base, 4)
+
+
+def _keyword_regressions(
+    arm_rows: Sequence[dict[str, Any]], baseline_by_case: dict[str, dict[str, Any]]
+) -> list[dict[str, Any]]:
+    """Every case whose FULL/PART/MISS status got worse, named."""
+    regressions: list[dict[str, Any]] = []
+    for row in arm_rows:
+        before = baseline_by_case[row["case_id"]]["kw_status"]
+        after = row["kw_status"]
+        if _KW_STATUS_ORDER[after] < _KW_STATUS_ORDER[before]:
+            regressions.append(
+                {
+                    "case_id": row["case_id"],
+                    "question_class": row["question_class"],
+                    "from": before,
+                    "to": after,
+                }
+            )
+    return regressions
+
+
+def build_section_coherence_report(
+    *,
+    pool_path: Path,
+    dataset_path: Path,
+    sidecar_path: Path,
+    label_manifest_path: Path,
+    corpus_manifest_path: Path,
+    expected_cases: int = 100,
+    top_k: int = PHASE_C_TOP_K,
+    context_chars: int = PHASE_C_CONTEXT_CHARS,
+    neighbourhoods: Sequence[int] = SECTION_COHERENCE_NEIGHBOURHOODS,
+    thresholds: Sequence[float] = SECTION_COHERENCE_THRESHOLDS,
+    code_commit: str | None = None,
+) -> dict[str, Any]:
+    """The GR-1a report: the whole threshold grid beside the GR-0.3 baseline.
+
+    Deterministic by construction, exactly like the baseline it is measured
+    against: no timestamp, no run id, no ordering that depends on a dict.
+    """
+    from scripts.generator_benchmark import load_benchmark_cases
+
+    # `docs/specs/retrieval-buckets.md` requires the published grid to contain a
+    # control cell in which the arm provably drops nothing and adds nothing —
+    # neighbourhood equal to the reported top-k, threshold 0.0, no expansion. The
+    # neighbourhood grid therefore *derives* one value from `top_k` instead of
+    # hoping the caller asked for a `top_k` that happens to sit in the declared
+    # pair, and a threshold grid without the 0.0 control value is refused loudly
+    # rather than published with nothing to prove the arm rejects nothing. With
+    # the declared defaults (top_k 5, neighbourhoods 5 and 10) this changes
+    # nothing: 5 is already in the grid.
+    neighbourhood_grid = sorted({*(int(n) for n in neighbourhoods), int(top_k)})
+    threshold_grid = sorted(float(t) for t in thresholds)
+    if not any(threshold == 0.0 for threshold in threshold_grid):
+        raise ValueError(
+            "the threshold grid must contain 0.0: docs/specs/retrieval-buckets.md "
+            "requires a published control cell in which the arm provably drops "
+            f"nothing and adds nothing, and {threshold_grid} has no such cell"
+        )
+
+    baseline_rows, approved = score_cases_by_class(
+        pool_path=pool_path,
+        dataset_path=dataset_path,
+        sidecar_path=sidecar_path,
+        label_manifest_path=label_manifest_path,
+        expected_cases=expected_cases,
+        top_k=top_k,
+        context_chars=context_chars,
+    )
+    baseline_by_case = {row["case_id"]: row for row in baseline_rows}
+    class_by_case = {row["case_id"]: row["question_class"] for row in baseline_rows}
+    baseline_aggregate = _bucket_row("all cases", baseline_rows) | {"question_class": "all cases"}
+
+    # The arm reads deeper than the published top-5, so the candidates are loaded
+    # once at the deepest neighbourhood in the grid and untruncated; the 6000-char
+    # cap is applied by the arm afterwards, through the same helper phase C used.
+    cases = load_benchmark_cases(
+        dataset_path=dataset_path,
+        contexts_path=pool_path,
+        expected_cases=expected_cases,
+        top_k=max(neighbourhood_grid),
+        context_chars=0,
+    )
+
+    header_parse = _header_parse_stats(cases)
+
+    grid: list[dict[str, Any]] = []
+    for neighbourhood in neighbourhood_grid:
+        for threshold in threshold_grid:
+            for expand in (False, True):
+                params = CoherenceParams(
+                    neighbourhood=neighbourhood,
+                    singleton_threshold=threshold,
+                    top_k=top_k,
+                    expand_to_section=expand,
+                    context_chars=context_chars,
+                )
+                arm_rows, diagnostics = _score_arm_cases(cases, class_by_case, params)
+                aggregate = _bucket_row("all cases", arm_rows) | {"question_class": "all cases"}
+                grid.append(
+                    {
+                        "parameters": params.as_dict(),
+                        "is_control": (neighbourhood == top_k and threshold == 0.0 and not expand),
+                        "buckets": _bucket_rows_by_class(arm_rows),
+                        "aggregate": aggregate,
+                        "delta": {
+                            "context_precision": _delta(
+                                aggregate["context_precision"],
+                                baseline_aggregate["context_precision"],
+                            ),
+                            "context_recall": _delta(
+                                aggregate["context_recall"],
+                                baseline_aggregate["context_recall"],
+                            ),
+                            "FULL": aggregate["FULL"] - baseline_aggregate["FULL"],
+                            "PART": aggregate["PART"] - baseline_aggregate["PART"],
+                            "MISS": aggregate["MISS"] - baseline_aggregate["MISS"],
+                        },
+                        "diagnostics": diagnostics,
+                        "keyword_regressions": _keyword_regressions(arm_rows, baseline_by_case),
+                        "per_case": arm_rows,
+                    }
+                )
+
+    headline = _select_headline(grid, baseline_aggregate)
+
+    # Twenty per-case tables of the same 100 cases is noise, not evidence. The
+    # two cells a reader actually audits keep theirs — the control, which proves
+    # nothing was rejected, and the headline. Every other cell keeps its full
+    # regression list and is reproducible with one command.
+    for cell in grid:
+        if not cell["is_control"] and cell["parameters"] != headline["parameters"]:
+            cell.pop("per_case")
+
+    return {
+        "schema_version": SECTION_COHERENCE_SCHEMA_VERSION,
+        "kind": "gr-section-coherence-arm",
+        "evidence_class": "measured",
+        "labels": _label_block(approved),
+        "provenance": _provenance_block(
+            pool_path=pool_path,
+            dataset_path=dataset_path,
+            sidecar_path=sidecar_path,
+            label_manifest_path=label_manifest_path,
+            corpus_manifest_path=corpus_manifest_path,
+            code_commit=code_commit,
+            config={
+                "arm": "section coherence (plan_06_09_26.md §4 п.3–4)",
+                "baseline_arm": "GR-0.3 phase C contexts at top-5, no expansion",
+                "baseline_report": _stored_path(DEFAULT_BUCKET_REPORT_PATH),
+                "top_k": top_k,
+                "context_chars": context_chars,
+                "neighbourhoods": neighbourhood_grid,
+                "thresholds": [round(threshold, 4) for threshold in threshold_grid],
+                "expansion": ["off", "section boundary as far as the pool carries it"],
+                "grouping": "(document, heading path) parsed from the production contextual header",
+                "header_producer": (
+                    "vectordb.manager.add_contextual_headers -> "
+                    "vectordb._base_manager.add_contextual_headers (no-LLM fallback)"
+                ),
+                "ordering": (
+                    "supported section > unreadable header > isolated neighbour; "
+                    "the reranker's order is kept inside each tier"
+                ),
+                "section_strength": (
+                    "sum of 1/(1+rank) over the section's members in the "
+                    "neighbourhood, divided by the strongest section's"
+                ),
+                "context_builder": "scripts.generator_benchmark.load_benchmark_cases",
+                "metrics": (
+                    "evaluation.ragas_eval.context_precision / context_recall "
+                    "(keyword, the phase C code path)"
+                ),
+                "kw_status": "scripts.ab_remote_contextual._kw_status",
+                "rounding": "per case to 4 decimals, then the mean, then 4 decimals",
+            },
+        ),
+        "header_parse": header_parse,
+        "baseline": {
+            "source": _stored_path(DEFAULT_BUCKET_REPORT_PATH),
+            "buckets": _bucket_rows_by_class(baseline_rows),
+            "aggregate": baseline_aggregate,
+            "per_case": baseline_rows,
+        },
+        "naive_top_k": {
+            "note": (
+                "Fixed truncation of the same pool, as the reference every "
+                "narrowing arm has to beat: an arm that ends with four documents "
+                "per case is not an improvement if 'keep the first four' is. "
+                "top_k equal to the baseline's reproduces the baseline exactly."
+            ),
+            "rows": _naive_top_k_reference(
+                pool_path=pool_path,
+                dataset_path=dataset_path,
+                class_by_case=class_by_case,
+                expected_cases=expected_cases,
+                top_k=top_k,
+                context_chars=context_chars,
+            ),
+        },
+        "grid": grid,
+        "headline": headline,
+    }
+
+
+def _header_parse_stats(cases: Sequence[dict[str, Any]]) -> dict[str, Any]:
+    """How much of the pool the producer's format actually explains.
+
+    A candidate the parser cannot read is counted here and named by case; it is
+    never folded into the sectionless bucket and never dropped by the arm. A
+    candidate whose header sits on the producer's clamp is counted too: it parses,
+    so it is not 'unparsed', but its heading path may be truncated and its section
+    key with it.
+    """
+    candidates = unparsed = sectionless = clamped = 0
+    unparsed_cases: list[str] = []
+    for case in cases:
+        for text in case["contexts"]:
+            candidates += 1
+            if header_is_clamped(str(text)):
+                clamped += 1
+            ref = parse_contextual_header(str(text))
+            if ref is None:
+                unparsed += 1
+                if str(case["case_id"]) not in unparsed_cases:
+                    unparsed_cases.append(str(case["case_id"]))
+            elif not ref.heading_path:
+                sectionless += 1
+    return {
+        "candidates": candidates,
+        "unparsed": unparsed,
+        "sectionless": sectionless,
+        "clamped": clamped,
+        "clamp": CONTEXT_HEADER_CLAMP,
+        "unparsed_cases": unparsed_cases,
+        "note": (
+            "'unparsed' is a header this arm cannot read and therefore does not "
+            "group, demote or drop; 'sectionless' is a chunk of a document with "
+            "no markdown headings, which is a section of its own; 'clamped' is a "
+            "header the producer cut at 'clamp' characters, whose heading path — "
+            "and therefore whose section key — may be truncated mid-text."
+        ),
+    }
+
+
+def _select_headline(
+    grid: Sequence[dict[str, Any]], baseline_aggregate: dict[str, Any]
+) -> dict[str, Any]:
+    """Apply the stated selection rule to the published grid."""
+    qualifying = [
+        cell
+        for cell in grid
+        if cell["aggregate"]["FULL"] >= baseline_aggregate["FULL"]
+        and cell["aggregate"]["MISS"] <= baseline_aggregate["MISS"]
+    ]
+    if not qualifying:
+        return {
+            "selection_rule": SECTION_COHERENCE_SELECTION_RULE,
+            "parameters": None,
+            "outcome": (
+                "no grid cell held keyword coverage at the baseline, so the arm "
+                "has no headline row on this pool"
+            ),
+        }
+    best = max(qualifying, key=lambda cell: cell["aggregate"]["context_precision"])
+    return {
+        "selection_rule": SECTION_COHERENCE_SELECTION_RULE,
+        "parameters": best["parameters"],
+        "qualifying_cells": len(qualifying),
+        "context_precision": best["aggregate"]["context_precision"],
+        "context_recall": best["aggregate"]["context_recall"],
+        "delta": best["delta"],
+        "outcome": (
+            "the best cell that costs no keyword coverage; the whole grid is published beside it"
+        ),
+    }
+
+
+def render_section_coherence_table(report: dict[str, Any]) -> str:
+    """The printed grid. Precision and coverage never travel apart."""
+    provenance = report["provenance"]
+    baseline = report["baseline"]["aggregate"]
+    lines = [
+        "GR-1a section coherence arm over the pinned pool",
+        f"Pool: {provenance['pool_path']} sha256 {provenance['pool_sha256']}",
+        f"Corpus: {provenance['corpus']['corpus_sha256']} "
+        f"({provenance['corpus']['file_count']} files)",
+        f"Baseline (GR-0.3): {_metric_cell(baseline['context_precision'])} / "
+        f"{_metric_cell(baseline['context_recall'])} "
+        f"FULL/PART/MISS {baseline['FULL']}/{baseline['PART']}/{baseline['MISS']}",
+        f"Headers: {report['header_parse']['candidates']} candidates, "
+        f"{report['header_parse']['unparsed']} unparsed, "
+        f"{report['header_parse']['sectionless']} sectionless",
+        "",
+        "| n | threshold | expand | ctx precision | Δ prec | ctx recall | FULL | PART | MISS |",
+        "|---:|---:|:---:|---:|---:|---:|---:|---:|---:|",
+    ]
+    for cell in report["grid"]:
+        parameters = cell["parameters"]
+        aggregate = cell["aggregate"]
+        delta = cell["delta"]["context_precision"]
+        lines.append(
+            f"| {parameters['neighbourhood']} | "
+            f"{parameters['singleton_threshold']:.2f} | "
+            f"{'on' if parameters['expand_to_section'] else 'off'} | "
+            f"{_metric_cell(aggregate['context_precision'])} | "
+            f"{'—' if delta is None else f'{delta:+.4f}'} | "
+            f"{_metric_cell(aggregate['context_recall'])} | "
+            f"{aggregate['FULL']} | {aggregate['PART']} | {aggregate['MISS']} |"
+        )
+    lines.extend(
+        [
+            "",
+            "| naive top-k | mean docs | ctx precision | ctx recall | FULL | PART | MISS |",
+            "|---:|---:|---:|---:|---:|---:|---:|",
+        ]
+    )
+    for row in report["naive_top_k"]["rows"]:
+        aggregate = row["aggregate"]
+        lines.append(
+            f"| {row['top_k']} | {row['mean_docs']:.2f} | "
+            f"{_metric_cell(aggregate['context_precision'])} | "
+            f"{_metric_cell(aggregate['context_recall'])} | "
+            f"{aggregate['FULL']} | {aggregate['PART']} | {aggregate['MISS']} |"
+        )
+    headline = report["headline"]
+    lines.extend(["", f"Headline: {headline['parameters']}", headline["outcome"]])
+    return "\n".join(lines) + "\n"
+
+
+def run_section_coherence_report(args: argparse.Namespace) -> int:
+    report = build_section_coherence_report(
+        pool_path=Path(args.rerank_artifact),
+        dataset_path=Path(args.dataset),
+        sidecar_path=Path(args.sidecar),
+        label_manifest_path=Path(args.label_manifest),
+        corpus_manifest_path=Path(args.corpus_manifest),
+        expected_cases=args.expected_cases,
+        top_k=args.top_k,
+        context_chars=args.context_chars,
+    )
+    out = write_bucket_report(report, Path(args.coherence_report))
+    print(render_section_coherence_table(report), end="", flush=True)
+    print(
+        json.dumps(
+            {
+                "status": "ok",
+                "report_json": _stored_path(out),
+                "cells": len(report["grid"]),
+                "baseline_context_precision": report["baseline"]["aggregate"]["context_precision"],
+                "headline": report["headline"]["parameters"],
+            },
+            ensure_ascii=False,
+        )
+    )
     return 0
 
 
@@ -996,11 +1823,22 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     buckets.add_argument("--expected-cases", type=int, default=100)
     buckets.add_argument("--top-k", type=int, default=PHASE_C_TOP_K)
     buckets.add_argument("--context-chars", type=int, default=PHASE_C_CONTEXT_CHARS)
+
+    coherence = p.add_argument_group("GR-1a section coherence arm (no models, no network)")
+    coherence.add_argument("--section-coherence", action="store_true",
+                           help="run the section-coherence narrowing arm over the same pool "
+                                "and report the whole threshold grid against the GR-0.3 "
+                                "baseline (reuses the --buckets arguments)")
+    coherence.add_argument("--coherence-report",
+                           default=str(DEFAULT_SECTION_COHERENCE_REPORT_PATH))
     return p.parse_args(argv)
 
 
 def main(argv: Sequence[str] | None = None) -> int:
     args = parse_args(argv)
+
+    if args.section_coherence:
+        return run_section_coherence_report(args)
 
     if args.buckets:
         return run_bucket_report(args)

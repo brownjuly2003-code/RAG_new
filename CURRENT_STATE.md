@@ -127,6 +127,7 @@ B.1 is preparation until a batch is approved.
 | B.4 | Judge calibration 10 → ≥40 double-annotated routes | not started |
 | B.5 | Corpus v1.0 at `real_labelled` | needs Q2 route 1 |
 | GR-0.3 | Retrieval baseline by class over pool `91ce1745…`: 0.5067 / 0.9050 at top-5 (= C.1a), `single_hop` 0.5063 / 0.9091 over 99 cases, `multi_hop` over 1, two classes empty — a ruler, not a comparison ([capsule](docs/evidence/gr0-bucket-baseline.md)) | **done** (c) |
+| GR-1a | Section coherence as a narrowing arm over the same pool: 0.5216 / 0.9050 with 87/7/6 held, but plain top-4 gives 0.5214 with the same coverage — the gain is a smaller `k`, not structure. 0.63 only by losing 16 FULL cases ([capsule](docs/evidence/gr1a-section-coherence.md)) | **done** (c) |
 
 ## Open questions for Julia
 

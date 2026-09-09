@@ -70,3 +70,21 @@ precision gain bought by dropping the answer is visible rather than hidden.
 - **WHEN** the comparison is reported
 - **THEN** both movements appear in the same table, and the report does not
   present the arm as an improvement on precision alone
+
+### Scenario: the arm ends with fewer documents than the baseline
+
+- **GIVEN** an arm whose mean document count per case is below the baseline's
+  top-k
+- **WHEN** its context precision is reported
+- **THEN** fixed truncation of the same pool at each k up to the baseline's is
+  reported beside it, so a gain that "keep the first four" already produces is
+  not published as a retrieval result
+
+### Scenario: the arm is swept, not tuned
+
+- **GIVEN** an arm with a threshold or any other continuous parameter
+- **WHEN** its result is published
+- **THEN** the whole stated grid is published, the headline row is chosen by a
+  rule fixed before the run rather than by inspection, and the grid contains a
+  control cell in which the arm provably drops nothing and adds nothing, whose
+  keyword coverage equals the baseline's

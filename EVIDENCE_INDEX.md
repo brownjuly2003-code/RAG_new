@@ -270,6 +270,7 @@ model change nor the phase's final NO-SHIP decision.
 | Slice | Evidence class | Evidence |
 |---|---|---|
 | GR-0.3 phase C retrieval baseline split by question class, over the question-class sidecar `evaluation/curated_cases_question_class.jsonl` + its manifest (`tests/test_question_class_labels.py`) | `measured` over `agent_labelled` | [gr0-bucket-baseline](docs/evidence/gr0-bucket-baseline.md) · [report](reports/gr/gr0-bucket-baseline.json) · `tests/test_gr_bucket_baseline.py` · `python scripts/ab_context_precision.py --buckets` |
+| GR-1a section coherence measured as a narrowing arm over the same pinned pool, against GR-0.3 and against fixed top-k truncation | `measured` over `agent_labelled` | [gr1a-section-coherence](docs/evidence/gr1a-section-coherence.md) · [report](reports/gr/gr1a-section-coherence.json) · `tests/test_section_coherence_arm.py` · `python scripts/ab_context_precision.py --section-coherence` |
 
 **GR-0.3 is a slice under rule (c)** and the first published number of stream
 GR: context precision **0.5067** and recall **0.9050** at top-5 over the pinned
@@ -285,6 +286,20 @@ in one bucket the table cannot discriminate between classes, which is the
 finding rather than a defect — GR-0.2's ≥ 15 new multi-hop questions are the
 precondition for any bucketed comparison, and they need a new candidate pool
 built on the Mac. No retrieval behaviour changed in this slice.
+
+**GR-1a is a slice under rule (c)** and the first *arm* measured against that
+ruler: section coherence over the same pool, off by default, reported as a whole
+threshold grid rather than one cell. Twelve of the twenty cells cost no keyword
+coverage; at the best of them it reaches context precision **0.5216** against
+the baseline's **0.5067**, with recall **0.9050** and 87 / 7 / 6 unchanged —
+but plain top-4
+truncation of the same pool reaches **0.5214** with the same coverage, so on
+this corpus the headline gain is a smaller *k*, not section structure. The arm
+beats fixed truncation only where it drops harder: 82 FULL at 2.13 documents per
+case against top-2's 79, and 71 FULL at 1.24 documents against top-1's 65. The
+GR-1 target of 0.63 is reached only at the threshold that turns 16 FULL cases
+into PART or MISS, all named in the capsule. No production retrieval behaviour
+changed in this slice either.
 
 ## Corrections
 
