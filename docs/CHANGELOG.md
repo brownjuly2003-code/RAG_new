@@ -2,6 +2,44 @@
 
 Все значимые изменения в проекте. Формат адаптирован под [Keep a Changelog](https://keepachangelog.com/ru/1.1.0/), но сгруппирован по аркам и батчам, а не по семантическим версиям.
 
+## [Security] — 2026-09-09 — transformers 5.6.2 → 5.16.1 (CVE-2026-9856)
+
+- pip-audit (CI `security` job + `pre-commit` hook) падал на **CVE-2026-9856**
+  против `transformers 5.6.2` (fix в 5.10.0) — оба джоба красные в run
+  34069248177 на `54e26b8`. `transformers` — транзитивный, приходит через
+  `sentence-transformers`; чтобы резолв не съехал обратно, в
+  `requirements.txt` добавлен security-floor `transformers>=5.10.0`.
+  `--ignore-vuln` НЕ использован: fix-версия существует, ignore нарушил бы
+  «minimal/unfixed»-политику ADR 0008 и governance-guard. Ignore-list
+  не менялся, поэтому `ci.yml` / `.pre-commit-config.yaml` /
+  `scripts/local-gate.ps1` / `scripts/autopilot.ps1` не трогали.
+- Перекомпиляция от существующих lock'ов, точечно:
+  `uv pip compile requirements.txt -o requirements.lock --generate-hashes
+  --python-version 3.11 --python-platform linux --upgrade-package transformers`
+  (и то же для `requirements-dev.txt` → `requirements-dev.lock`), uv 0.8.23.
+- **Diff — три пина, не один**, одинаково в обоих lock'ах: `transformers`
+  5.6.2 → **5.16.1**, `tokenizers` 0.22.2 → **0.23.2**, `safetensors`
+  0.7.0 → **0.8.0**. Больше ничего не двигалось (ни добавленных, ни
+  удалённых пакетов); `sentence-transformers==5.4.1` без изменений.
+  `tokenizers`/`safetensors` — вынужденные спутники: метаданные
+  `transformers 5.16.1` требуют `tokenizers>=0.23.1,<0.24` и
+  `safetensors>=0.8.0` (было `tokenizers>=0.22,<=0.23.0`, `safetensors>=0.4.3`).
+- **Верификация — только аудит и резолв.** `pip-audit --strict --disable-pip
+  --require-hashes … -r requirements.lock` → «No known vulnerabilities found,
+  4 ignored». Тот же прогон на `requirements-dev.lock` → «Found 3 known
+  vulnerabilities, ignored 4 in 1 package»: `httpx2 2.10.0` (CVE-2026-84379 /
+  84380 / 84382). Это преднайденное состояние dev-lock'а, не следствие этой
+  правки (на старом dev-lock'е тот же прогон давал 4 находки — те же три
+  плюс `transformers`), и CI dev-lock сегодня не аудитит. Отдельная задача.
+- **Runtime на новом lock'е НЕ проверен:** локально из него ничего не
+  ставилось. Проектного venv нет; интерпретатор, которым гоняются гейты
+  (системный Python 3.13), несёт `transformers` 5.2.0 — не из lock'а и старее
+  даже прежнего пина 5.6.2. Проверено ровно две вещи — резолв и аудит. Первая
+  фактическая проверка установки — удалённый CI, который ставит
+  `--require-hashes -r requirements.lock`.
+- Guard: `tests/test_transformers_cve_floor.py` — floor в `requirements.txt`
+  и пины в обоих lock'ах не могут молча уехать ниже 5.10.0.
+
 ## [Process] — 2026-07-21 — gate decisions (N4 / Q1b / multi-replica / C1)
 
 Все оставшиеся «гейты Юли» делегированы агенту. Зафиксировано в

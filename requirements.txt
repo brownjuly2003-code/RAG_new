@@ -20,6 +20,9 @@ chromadb>=1.5.9
 
 # === Embeddings (Level 1: BGE-M3 multilingual) ===
 sentence-transformers>=2.5.0
+# transformers: floor at 5.10.0 clears CVE-2026-9856 (2026-09-09); transitive
+# via sentence-transformers, pinned here so the lock is reproducible.
+transformers>=5.10.0
 
 # === Hybrid Search: BM25 keyword retrieval ===
 rank-bm25>=0.2.2

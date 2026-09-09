@@ -92,10 +92,10 @@ requires them to match.
   `32e841f`). Question classes live in a sidecar (`6cde0b1`) — 99 `single_hop`,
   1 `multi_hop`, no `aggregation` or `global`: a ruler, not a bucketed
   comparison (plan §5, GR-0.2).
-- **The last CI run was red and only half of it is fixed.** Run 34069248177,
-  on `54e26b8`, failed 4 of 11 jobs: `test-unit` 3.11/3.13, which `4a836c9`
-  fixes, and `security` + `pre-commit` on pip-audit (`transformers` 5.6.2,
-  CVE-2026-9856, fix 5.10.0) — unfixed, so the next push is red again.
+- **Last CI run red; both halves fixed in-tree, unproven.** Run 34069248177 on `54e26b8`
+  failed 4/11: `test-unit` 3.11/3.13 (`4a836c9`) and pip-audit CVE-2026-9856 in `security`
+  + `pre-commit` (floor `transformers>=5.10.0`, lock 5.16.1). Nothing was installed from
+  it — no CI has run on those commits; the next pushed run is the first real check.
 
 ## Accepted open risks
 
