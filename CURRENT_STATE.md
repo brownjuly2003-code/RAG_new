@@ -91,10 +91,10 @@ requires them to match.
   documents are real; questions were agent-written (`325d63c`, `6b7417d`,
   `32e841f`). Question classes live in a sidecar (`6cde0b1`) — 99 `single_hop`,
   1 `multi_hop`, 0 `aggregation`, 0 `global` (plan §5, GR-0.2).
-- **Last CI run red; both halves fixed in-tree, unproven.** Run 34069248177 on `54e26b8`
-  failed 4/11: `test-unit` 3.11/3.13 (`4a836c9`) and pip-audit CVE-2026-9856 in `security`
-  + `pre-commit` (floor `transformers>=5.10.0`, lock 5.16.1). Nothing was installed from
-  it — no CI has run on those commits; the next pushed run is the first real check.
+- **CI is green end to end on the pushed head.** Run 34374312654 on `53c24f5` finished
+  `success`, 11 of 11 jobs. Run 34359692687 on `69a5140` installed `transformers`
+  5.16.1 (CVE-2026-9856 floor `transformers>=5.10.0`) under `--require-hashes` on both
+  Pythons — installability plus a clean pip-audit; no CI job imports it yet.
 
 ## Accepted open risks
 

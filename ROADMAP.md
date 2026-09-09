@@ -70,7 +70,7 @@ contract.
 
 Both inherited CI failures ([ADR 0008](docs/adr/0008-inherited-ci-red-disposition.md))
 are closed, and CI is green end to end through A.5 / the latest pushed
-state. Local commits beyond the pushed state have not been through remote CI. The chromadb CVE
+state: run 34374312654 on `53c24f5` finished `success`, 11 of 11 jobs. The chromadb CVE
 ignores carry a **review date of 2026-09-24**.
 
 | Phase | What | Acceptance |

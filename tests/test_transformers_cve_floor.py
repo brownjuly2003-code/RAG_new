@@ -28,7 +28,15 @@ def test_requirements_declares_the_cve_2026_9856_floor() -> None:
 
 
 def test_current_state_does_not_call_the_cve_unfixed_while_the_locks_carry_it() -> None:
-    """The routing doc must not contradict the locks — nor claim CI is green."""
+    """The routing doc must not contradict the locks, and any CI claim must be checkable.
+
+    Until 2026-09-09 this guard forbade the word "green" outright, because no CI
+    run had executed on the commits carrying the bump.  Runs 34359692687
+    (`69a5140`) and 34374312654 (`53c24f5`) then did, so the prohibition expired.
+    What replaces it does not expire: a claim that CI is green or that the bump is
+    verified has to cite a run id and the commit it ran on, so a reader can check
+    it instead of trusting a mood.
+    """
     state = (PROJECT_ROOT / "CURRENT_STATE.md").read_text(encoding="utf-8")
 
     bullets = [b for b in state.split("\n- ") if "CVE-2026-9856" in b]
@@ -37,7 +45,14 @@ def test_current_state_does_not_call_the_cve_unfixed_while_the_locks_carry_it() 
 
     assert "unfixed" not in bullet, "the locks pin the fix; the bullet says otherwise"
     assert "transformers>=5.10.0" in bullet, "the bullet does not name the floor"
-    assert "green" not in bullet.lower(), "no CI run has executed on these commits"
+
+    if re.search(r"\bgreen\b|\bverif", bullet, flags=re.IGNORECASE):
+        assert re.search(r"\b\d{8,}\b", bullet), (
+            "the bullet claims CI is green without naming a run id"
+        )
+        assert re.search(r"`[0-9a-f]{7,40}`", bullet), (
+            "the bullet claims CI is green without naming the commit it ran on"
+        )
 
 
 def test_both_locks_pin_transformers_at_or_above_the_fix() -> None:
