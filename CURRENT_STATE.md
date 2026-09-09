@@ -3,10 +3,10 @@
 **The only entry point for a new session.** Read this, then
 [`ROADMAP.md`](ROADMAP.md). Everything else is reached by link, on demand.
 
-Last updated: 2026-09-06 · Plan: [`plan_06_09_26.md`](plan_06_09_26.md)
+Last updated: 2026-09-09 · Plan: [`plan_06_09_26.md`](plan_06_09_26.md)
 (mode B) · Audit of record:
 [`docs/audits/audit_final_23_08_2026.md`](docs/audits/audit_final_23_08_2026.md)
-· Phase C benchmark source: `c06bdf5` · local commits are not pushed
+· Phase C benchmark source: `c06bdf5` · push is the owner's call (§1)
 
 ## Start here
 
@@ -36,15 +36,12 @@ RSS 2,124,476,416 bytes; Ollama loaded size 5,062,566,870 bytes; neither is
 total-host peak RAM. Misses faithfulness 0.90 and context precision 0.63; that
 does not authorize a model change or a NO-SHIP decision.
 
-**C.1b `qwen3:8b` smoke passed; the full run stopped on 2026-09-02 — not evidence.**
-Tag digest is `500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41`
-(Q4_K_M, 5,225,388,164 bytes). The valid one-case smoke took 255.525 s.
-Full `c1b-qwen3-8b-b8ecc8e` started 2026-09-02 on `deproject-mac` from the
-clean exact `b8ecc8e` worktree (3 × 100, seeds 42–44, `--no-think`, pinned
-hashes). Verified 2026-09-06 over ssh: no benchmark process; the log ends at
-run 1/3 case 11/100; the checkpoint under `/tmp/rag-new-b8ecc8e.tdcVc2/results/`
-was last written 2026-09-02 08:19 with 12 cases; Mac uptime 17 days, cause unproven.
-Do not launch a duplicate: resume from the checkpoint with `--resume` (plan §C.1b).
+**C.1b `qwen3:8b` finished on the Mac 2026-09-08 03:55 MSK — measured there,
+not published here.** The 2026-09-02 attempt died with `/tmp`; rebuilt under
+`$HOME`, 3 × 100 (seeds 42–44, code `b8ecc8e`) ended `FULL_VALIDATION_OK` at
+faithfulness 0.8986, NLI 0.9908, precision 0.5067, recall 0.9050, relevancy
+0.8095, 176.8 s per case. Checking the report in with a sha guard and an index
+row is what remains; paths in [`plan_06_09_26.md`](plan_06_09_26.md) §0.
 
 ### 1. The gate can reach Russian traffic. The corpus still cannot measure it.
 
@@ -92,11 +89,13 @@ requires them to match.
 - **Zero real labelled cases.** 100/100 labelled, 0 approved, 0 binding a
   shipment, `expected_terminal` `verified` for all 100. The 201 source
   documents are real; questions were agent-written (`325d63c`, `6b7417d`,
-  `32e841f`).
-- **CI is fully green** through B.1 / `origin/master` at `04fbe4b` — 11/11 on
-  run 32880095361 (unit 2247 passed, 25 skipped, coverage 76.13% vs gate 72;
-  integration 62 passed, 1 skipped). Local commits beyond `origin/master` have
-  not been through remote CI.
+  `32e841f`). Question classes live in a sidecar (`6cde0b1`) — 99 `single_hop`,
+  1 `multi_hop`, no `aggregation` or `global`: a ruler, not a bucketed
+  comparison (plan §5, GR-0.2).
+- **The last CI run was red and only half of it is fixed.** Run 34069248177,
+  on `54e26b8`, failed 4 of 11 jobs: `test-unit` 3.11/3.13, which `4a836c9`
+  fixes, and `security` + `pre-commit` on pip-audit (`transformers` 5.6.2,
+  CVE-2026-9856, fix 5.10.0) — unfixed, so the next push is red again.
 
 ## Accepted open risks
 
