@@ -69,9 +69,13 @@ C.1 remains open for the two Qwen3 candidates under the same benchmark
 contract.
 
 Both inherited CI failures ([ADR 0008](docs/adr/0008-inherited-ci-red-disposition.md))
-are closed, and CI is green end to end through A.5 / the latest pushed
-state: run 34374312654 on `53c24f5` finished `success`, 11 of 11 jobs. The chromadb CVE
-ignores carry a **review date of 2026-09-24**.
+are closed, and the `CI` workflow is green through A.5 / the latest pushed
+state: run 34393111511 on `95d408e` finished `success`, 11 of 11 jobs, as did
+run 34374312654 on `53c24f5`. `CI` is one of five workflows, not the whole set:
+`Deploy docs site (Astro Starlight) to Pages` has been red on every push since
+2026-08-25 (latest run 34393111514 on `95d408e`) because five npm advisories
+landed upstream against pins that were correct when written — T-18 raises the
+floors. The chromadb CVE ignores carry a **review date of 2026-09-24**.
 
 | Phase | What | Acceptance |
 |---|---|---|

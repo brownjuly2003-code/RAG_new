@@ -1,4 +1,18 @@
-"""Plan DEP-01: docs-site npm audit posture and dated exceptions register."""
+"""Plan DEP-01: docs-site npm audit posture and dated exceptions register.
+
+**What this file owns:** the exception register's schema and staleness, the
+audit script and npm-script wiring, and the manifest shape the Astro 7 upgrade
+requires of packages that carry no advisory (`@astrojs/starlight`,
+`@astrojs/markdown-remark`), plus the presence of a committed lock.
+
+Version constraints on the five packages T-18 raised floors for — `astro`,
+`fast-uri`, `js-yaml`, `sharp`, `svgo` — live in
+`tests/test_npm_audit_floors.py` and only there, including their pin format.
+This file used to carry private copies (`astro` had to start with `^7.`,
+`sharp` with `^0.35`); the `astro` copy went stale the moment the security fix
+demanded an exact pin, so those assertions moved to their single owner rather
+than being patched here.
+"""
 
 from __future__ import annotations
 
@@ -15,9 +29,10 @@ PACKAGE_JSON = DOCS_SITE / "package.json"
 
 # Reachability notes that only papered over Astro 6 residual moderates/lows.
 # After the Astro 7 upgrade these packages must not keep stale exceptions.
+# `astro` itself is not listed here: test_npm_audit_floors.py already forbids
+# an exception for every package with a fixed release, `astro` included.
 ASTRO6_RESIDUAL_EXCEPTION_PACKAGES = frozenset(
     {
-        "astro",
         "@astrojs/mdx",
         "@astrojs/starlight",
         "astro-expressive-code",
@@ -69,11 +84,7 @@ def test_docs_site_audit_script_and_package_script_exist() -> None:
     assert pkg["scripts"]["audit:deps"] == "node scripts/check-npm-audit.mjs"
     deps = pkg["dependencies"]
 
-    # Lock refresh targets: Astro 7.2+, Starlight 0.41+, sharp 0.35+ (no high residual).
-    astro_ver = _caret_version(deps["astro"])
-    assert astro_ver[0] == 7, f"astro major must be 7, got {deps['astro']!r}"
-    assert deps["astro"].startswith("^7.")
-
+    # `astro` and `sharp` are asserted in tests/test_npm_audit_floors.py.
     starlight_ver = _caret_version(deps["@astrojs/starlight"])
     assert starlight_ver[0] == 0 and starlight_ver[1] >= 41, (
         f"@astrojs/starlight must be ^0.41+, got {deps['@astrojs/starlight']!r}"
@@ -89,8 +100,6 @@ def test_docs_site_audit_script_and_package_script_exist() -> None:
     assert md_ver[0] == 7 and md_ver[1] >= 2, (
         f"@astrojs/markdown-remark must be ^7.2+, got {md_spec!r}"
     )
-
-    assert deps["sharp"].startswith("^0.35")
 
 
 def test_docs_site_package_lock_present() -> None:

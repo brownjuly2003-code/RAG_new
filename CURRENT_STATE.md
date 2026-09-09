@@ -91,10 +91,10 @@ requires them to match.
   documents are real; questions were agent-written (`325d63c`, `6b7417d`,
   `32e841f`). Question classes live in a sidecar (`6cde0b1`) — 99 `single_hop`,
   1 `multi_hop`, 0 `aggregation`, 0 `global` (plan §5, GR-0.2).
-- **CI is green end to end on the pushed head.** Run 34374312654 on `53c24f5` finished
-  `success`, 11 of 11 jobs. Run 34359692687 on `69a5140` installed `transformers`
-  5.16.1 (CVE-2026-9856 floor `transformers>=5.10.0`) under `--require-hashes` on both
-  Pythons — installability plus a clean pip-audit; no CI job imports it yet.
+- **The `CI` workflow is green on the pushed head — one of five workflows, not "end to end".** Run 34393111511 on
+  `95d408e` finished `success`, 11 of 11; run 34359692687 on `69a5140` verified the CVE-2026-9856 floor
+  `transformers>=5.10.0` under `--require-hashes`, pip-audit clean. `docs-site.yml` failed on both commits
+  (34359692593 on `69a5140`, 34393111514 on `95d408e`) at `npm audit --audit-level=high` — red on every push since 2026-08-25; T-18 raises the floors, unpushed.
 
 ## Accepted open risks
 
