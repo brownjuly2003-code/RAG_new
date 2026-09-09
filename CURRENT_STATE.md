@@ -90,8 +90,7 @@ requires them to match.
   shipment, `expected_terminal` `verified` for all 100. The 201 source
   documents are real; questions were agent-written (`325d63c`, `6b7417d`,
   `32e841f`). Question classes live in a sidecar (`6cde0b1`) — 99 `single_hop`,
-  1 `multi_hop`, no `aggregation` or `global`: a ruler, not a bucketed
-  comparison (plan §5, GR-0.2).
+  1 `multi_hop`, 0 `aggregation`, 0 `global` (plan §5, GR-0.2).
 - **Last CI run red; both halves fixed in-tree, unproven.** Run 34069248177 on `54e26b8`
   failed 4/11: `test-unit` 3.11/3.13 (`4a836c9`) and pip-audit CVE-2026-9856 in `security`
   + `pre-commit` (floor `transformers>=5.10.0`, lock 5.16.1). Nothing was installed from
@@ -113,7 +112,7 @@ with an E2E test proving it, **(b)** real labelled cases went up, or **(c)** a
 published number changed with provenance. T-02/T-08/T-05 are (c); T-03 is (a).
 B.1 is preparation until a batch is approved.
 
-## Phases 0 and A — done · B — in progress
+## Phases 0 and A — done · B — in progress · GR started
 
 | # | Item | Status |
 |---|---|---|
@@ -127,6 +126,7 @@ B.1 is preparation until a batch is approved.
 | B.3 | First real numbers on the labelled cases | **blocked** — same |
 | B.4 | Judge calibration 10 → ≥40 double-annotated routes | not started |
 | B.5 | Corpus v1.0 at `real_labelled` | needs Q2 route 1 |
+| GR-0.3 | Retrieval baseline by class over pool `91ce1745…`: 0.5067 / 0.9050 at top-5 (= C.1a), `single_hop` 0.5063 / 0.9091 over 99 cases, `multi_hop` over 1, two classes empty — a ruler, not a comparison ([capsule](docs/evidence/gr0-bucket-baseline.md)) | **done** (c) |
 
 ## Open questions for Julia
 

@@ -265,6 +265,27 @@ number. The baseline misses the phase-C faithfulness and precision thresholds.
 C.1 remains open for the Qwen3 candidates, so this result is neither a default
 model change nor the phase's final NO-SHIP decision.
 
+## Stream GR (2026-09-09) — the retrieval ruler
+
+| Slice | Evidence class | Evidence |
+|---|---|---|
+| GR-0.3 phase C retrieval baseline split by question class, over the question-class sidecar `evaluation/curated_cases_question_class.jsonl` + its manifest (`tests/test_question_class_labels.py`) | `measured` over `agent_labelled` | [gr0-bucket-baseline](docs/evidence/gr0-bucket-baseline.md) · [report](reports/gr/gr0-bucket-baseline.json) · `tests/test_gr_bucket_baseline.py` · `python scripts/ab_context_precision.py --buckets` |
+
+**GR-0.3 is a slice under rule (c)** and the first published number of stream
+GR: context precision **0.5067** and recall **0.9050** at top-5 over the pinned
+arm-C pool (`91ce1745…`), reconciling exactly with the C.1a baseline, split as
+`single_hop` 0.5063 / 0.9091 over **99** cases, `multi_hop` 0.5401 / 0.5000 over
+**1**, `aggregation` and `global` over **0** each. All of it is over 100
+questions agent-authored from real documents, still `agent_labelled` with 0
+approved, whose question classes are agent-assigned and likewise unapproved.
+
+The row is also where the T-11 question-class labels stop being an unmeasured
+artefact: this is the first number computed over them. With 99 of the 100 cases
+in one bucket the table cannot discriminate between classes, which is the
+finding rather than a defect — GR-0.2's ≥ 15 new multi-hop questions are the
+precondition for any bucketed comparison, and they need a new candidate pool
+built on the Mac. No retrieval behaviour changed in this slice.
+
 ## Corrections
 
 Not slices — these fix claims that were false, so they do not go in the table

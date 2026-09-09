@@ -34,6 +34,13 @@ All project imports are lazy (module import loads nothing heavy). Nothing here
 downloads or runs a model on its own; the heavy embed+rerank happens only in the
 `ab_remote_contextual` subprocess launched by --build-pool (Mac/Colab only).
 
+GR-0.3 (stream GR baseline) reuses the same pool and the same metric code path
+to report context precision / recall and the FULL/PART/MISS keyword status per
+question class, joined onto the T-11 sidecar. It changes no retrieval
+behaviour — it is measurement of the pool as it already is — and runs on
+Windows with no model and no network:
+  python scripts/ab_context_precision.py --buckets
+
 Smoke (Windows, no models):
   python scripts/ab_context_precision.py --mock --stub-grade \
       --results-dir .tmp/q1_smoke
@@ -49,6 +56,7 @@ Heavy run — ONE command on Mac (see the run-doc
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import subprocess
 import sys
@@ -554,6 +562,334 @@ def build_pool(out_dir: Path, arm: str = "C") -> Path:
 
 
 # ---------------------------------------------------------------------------
+# GR-0.3 — the phase C baseline, split by question class
+# ---------------------------------------------------------------------------
+#
+# `docs/specs/retrieval-buckets.md` asks for one retrieval number per question
+# class over a pinned pool. Nothing here changes retrieval: it post-processes
+# the same reranked pool the phase C.1a benchmark consumed, through the same
+# code path (`scripts.generator_benchmark.load_benchmark_cases` slices the pool
+# and caps the context; `evaluation.ragas_eval` computes the two metrics), and
+# joins the T-11 question-class sidecar onto it by `case_id`. The aggregate is
+# therefore expected to reproduce the published 0.5067 / 0.9050 exactly; if it
+# does not, the harness is not measuring what phase C measured.
+
+BUCKET_REPORT_SCHEMA_VERSION = "gr-bucket-baseline/v1.0"
+DEFAULT_BUCKET_REPORT_PATH = PROJECT_ROOT / "reports" / "gr" / "gr0-bucket-baseline.json"
+DEFAULT_DATASET_PATH = PROJECT_ROOT / "evaluation" / "curated_cases_aircargo.jsonl"
+DEFAULT_SIDECAR_PATH = PROJECT_ROOT / "evaluation" / "curated_cases_question_class.jsonl"
+DEFAULT_LABEL_MANIFEST_PATH = (
+    PROJECT_ROOT / "evaluation" / "curated_cases_question_class.manifest.json"
+)
+DEFAULT_CORPUS_MANIFEST_PATH = PROJECT_ROOT / "evaluation" / "aircargo_corpus.manifest.json"
+
+#: Phase C.1a sliced each pool row at its own `rerank_k` (5 for all 100 cases)
+#: and capped the joined context at 6000 characters, with no parent expansion.
+#: Those two numbers are what make this report the same ruler.
+PHASE_C_TOP_K = 5
+PHASE_C_CONTEXT_CHARS = 6000
+
+#: Every file that decides the published number. Their digests travel with the
+#: report, so it stays verifiable independently of which commit is HEAD.
+BUCKET_CODE_PATHS: tuple[str, ...] = (
+    "scripts/ab_context_precision.py",
+    "scripts/generator_benchmark.py",
+    "scripts/ab_remote_contextual.py",
+    "evaluation/ragas_eval.py",
+    "evaluation/question_class_labels.py",
+)
+
+_EMPTY_CELL = "—"
+
+
+def sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for block in iter(lambda: handle.read(1 << 20), b""):
+            digest.update(block)
+    return digest.hexdigest()
+
+
+def _stored_path(path: Path) -> str:
+    """Repo-relative POSIX path, or a stable placeholder for anything outside.
+
+    An absolute path on this laptop is not provenance; it is noise that makes
+    two machines disagree byte for byte.
+    """
+    resolved = path.resolve()
+    try:
+        return resolved.relative_to(PROJECT_ROOT).as_posix()
+    except ValueError:
+        return f"<external>/{resolved.name}"
+
+
+def _git_commit() -> dict[str, Any]:
+    """HEAD and whether the tree was clean when the report was produced."""
+    def _git(*args: str) -> Optional[str]:
+        try:
+            out = subprocess.run(
+                ["git", "-C", str(PROJECT_ROOT), *args],
+                check=False, capture_output=True, text=True,
+            )
+        except OSError:
+            return None
+        return out.stdout.strip() if out.returncode == 0 else None
+
+    commit = _git("rev-parse", "HEAD")
+    status = _git("status", "--porcelain")
+    return {
+        "commit": commit or "unknown",
+        "tree_clean": None if status is None else status == "",
+    }
+
+
+def _code_digests() -> dict[str, str]:
+    return {
+        rel: sha256_file(PROJECT_ROOT / rel)
+        for rel in BUCKET_CODE_PATHS
+        if (PROJECT_ROOT / rel).is_file()
+    }
+
+
+def score_cases_by_class(
+    *,
+    pool_path: Path,
+    dataset_path: Path,
+    sidecar_path: Path,
+    label_manifest_path: Path,
+    expected_cases: int,
+    top_k: int,
+    context_chars: int,
+) -> tuple[list[dict[str, Any]], int]:
+    """One scored row per case, carrying its question class, plus the approval count.
+
+    The join goes through `load_classified_cases`, so the run refuses to start
+    when the sidecar's pinned dataset digest disagrees with the dataset.
+    """
+    from evaluation.question_class_labels import load_classified_cases
+    from evaluation.ragas_eval import context_precision, context_recall
+    from scripts.ab_remote_contextual import _kw_status
+    from scripts.generator_benchmark import load_benchmark_cases
+
+    classified = load_classified_cases(
+        dataset_path=dataset_path,
+        sidecar_path=sidecar_path,
+        manifest_path=label_manifest_path,
+    )
+    class_by_case = {case.case_id: case.label.question_class.value for case in classified}
+    approved = sum(1 for case in classified if case.label.approved_by is not None)
+
+    cases = load_benchmark_cases(
+        dataset_path=dataset_path,
+        contexts_path=pool_path,
+        expected_cases=expected_cases,
+        top_k=top_k,
+        context_chars=context_chars,
+    )
+
+    rows: list[dict[str, Any]] = []
+    for case in cases:
+        case_id = str(case["case_id"])
+        texts = list(case["contexts"])
+        docs = [{"page_content": text} for text in texts]
+        keywords = list(case["expected_keywords"])
+        rows.append({
+            "case_id": case_id,
+            "question_class": class_by_case[case_id],
+            "n_docs": len(texts),
+            "context_precision": round(context_precision(case["query"], docs, keywords), 4),
+            "context_recall": round(context_recall(docs, keywords), 4),
+            "kw_status": _kw_status(keywords, texts),
+        })
+    return rows, approved
+
+
+def _bucket_row(question_class: str, rows: Sequence[dict[str, Any]]) -> dict[str, Any]:
+    """Metrics for one class. A class with no cases reports null, never 0.0."""
+    counts = {status: 0 for status in ("FULL", "PART", "MISS")}
+    for row in rows:
+        counts[row["kw_status"]] += 1
+    n = len(rows)
+    return {
+        "question_class": question_class,
+        "num_cases": n,
+        "context_precision": (
+            round(sum(r["context_precision"] for r in rows) / n, 4) if n else None
+        ),
+        "context_recall": (
+            round(sum(r["context_recall"] for r in rows) / n, 4) if n else None
+        ),
+        "FULL": counts["FULL"],
+        "PART": counts["PART"],
+        "MISS": counts["MISS"],
+    }
+
+
+def build_bucket_report(
+    *,
+    pool_path: Path,
+    dataset_path: Path,
+    sidecar_path: Path,
+    label_manifest_path: Path,
+    corpus_manifest_path: Path,
+    expected_cases: int = 100,
+    top_k: int = PHASE_C_TOP_K,
+    context_chars: int = PHASE_C_CONTEXT_CHARS,
+    code_commit: str | None = None,
+) -> dict[str, Any]:
+    """The GR-0.3 report: per-class and aggregate retrieval metrics over a pinned pool.
+
+    Deterministic by construction — the body carries no timestamp, so two runs
+    over the same inputs are byte-identical.
+    """
+    from evaluation.question_class_labels import QUESTION_CLASSES
+
+    scored, approved = score_cases_by_class(
+        pool_path=pool_path,
+        dataset_path=dataset_path,
+        sidecar_path=sidecar_path,
+        label_manifest_path=label_manifest_path,
+        expected_cases=expected_cases,
+        top_k=top_k,
+        context_chars=context_chars,
+    )
+
+    by_class: dict[str, list[dict[str, Any]]] = {name: [] for name in sorted(QUESTION_CLASSES)}
+    for row in scored:
+        by_class.setdefault(row["question_class"], []).append(row)
+
+    corpus_manifest = json.loads(corpus_manifest_path.read_text(encoding="utf-8"))
+    pool_rows = json.loads(pool_path.read_text(encoding="utf-8"))
+    code = _git_commit() if code_commit is None else {"commit": code_commit, "tree_clean": None}
+    code["files"] = _code_digests()
+
+    return {
+        "schema_version": BUCKET_REPORT_SCHEMA_VERSION,
+        "kind": "gr-retrieval-bucket-baseline",
+        "evidence_class": "measured",
+        "labels": {
+            "evidence_class": "agent_labelled",
+            "approved": approved,
+            "case_source": "agent_authored_over_real_documents",
+            "note": (
+                "The questions were agent-authored over real documents and the "
+                "question classes are agent-assigned; no human has approved either."
+            ),
+        },
+        "provenance": {
+            "pool_path": _stored_path(pool_path),
+            "pool_sha256": sha256_file(pool_path),
+            "pool_bytes": pool_path.stat().st_size,
+            "pool_produced_by": (
+                "scripts/ab_remote_contextual.py --stage pools/rerank --arm C "
+                "(BGE-M3 + bge-reranker-v2-m3, production chunking)"
+            ),
+            "dataset": _stored_path(dataset_path),
+            "dataset_sha256": sha256_file(dataset_path),
+            "label_sidecar": _stored_path(sidecar_path),
+            "label_sidecar_sha256": sha256_file(sidecar_path),
+            "label_manifest": _stored_path(label_manifest_path),
+            "label_manifest_sha256": sha256_file(label_manifest_path),
+            "corpus": {
+                "manifest": _stored_path(corpus_manifest_path),
+                "manifest_sha256": sha256_file(corpus_manifest_path),
+                "name": corpus_manifest.get("name"),
+                "root": corpus_manifest.get("root"),
+                "corpus_sha256": corpus_manifest.get("corpus_sha256"),
+                "file_count": corpus_manifest.get("file_count"),
+            },
+            "code": code,
+            "config": {
+                "top_k": top_k,
+                "pool_rerank_k": sorted(
+                    {int(row.get("rerank_k") or 0) for row in pool_rows}
+                ),
+                "context_chars": context_chars,
+                "parent_expansion": False,
+                "grade_docs": False,
+                "context_builder": "scripts.generator_benchmark.load_benchmark_cases",
+                "metrics": (
+                    "evaluation.ragas_eval.context_precision / context_recall "
+                    "(keyword, the phase C code path)"
+                ),
+                "kw_status": "scripts.ab_remote_contextual._kw_status",
+                "rounding": "per case to 4 decimals, then the mean, then 4 decimals",
+            },
+        },
+        "buckets": [
+            _bucket_row(name, by_class[name]) for name in sorted(by_class)
+        ],
+        "aggregate": _bucket_row("all cases", scored) | {"question_class": "all cases"},
+        "per_case": scored,
+    }
+
+
+def _metric_cell(value: Optional[float]) -> str:
+    return _EMPTY_CELL if value is None else f"{value:.4f}"
+
+
+def render_bucket_table(report: dict[str, Any]) -> str:
+    """The printed table. Every class row carries its case count, always."""
+    provenance = report["provenance"]
+    lines = [
+        "GR-0.3 retrieval baseline by question class",
+        f"Pool: {provenance['pool_path']} sha256 {provenance['pool_sha256']}",
+        f"Corpus: {provenance['corpus']['corpus_sha256']} "
+        f"({provenance['corpus']['file_count']} files)",
+        f"Dataset: {provenance['dataset_sha256']}",
+        f"Labels: {report['labels']['evidence_class']}, "
+        f"{report['labels']['approved']} approved",
+        f"Config: top_k={provenance['config']['top_k']} "
+        f"context_chars={provenance['config']['context_chars']} "
+        f"parent_expansion={provenance['config']['parent_expansion']}",
+        "",
+        "| question class | cases | ctx precision | ctx recall | FULL | PART | MISS |",
+        "|---|---:|---:|---:|---:|---:|---:|",
+    ]
+    for row in [*report["buckets"], report["aggregate"]]:
+        lines.append(
+            f"| {row['question_class']} | {row['num_cases']} | "
+            f"{_metric_cell(row['context_precision'])} | "
+            f"{_metric_cell(row['context_recall'])} | "
+            f"{row['FULL']} | {row['PART']} | {row['MISS']} |"
+        )
+    return "\n".join(lines) + "\n"
+
+
+def write_bucket_report(report: dict[str, Any], path: Path) -> Path:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        json.dumps(report, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+        newline="\n",
+    )
+    return path
+
+
+def run_bucket_report(args: argparse.Namespace) -> int:
+    report = build_bucket_report(
+        pool_path=Path(args.rerank_artifact),
+        dataset_path=Path(args.dataset),
+        sidecar_path=Path(args.sidecar),
+        label_manifest_path=Path(args.label_manifest),
+        corpus_manifest_path=Path(args.corpus_manifest),
+        expected_cases=args.expected_cases,
+        top_k=args.top_k,
+        context_chars=args.context_chars,
+    )
+    out = write_bucket_report(report, Path(args.bucket_report))
+    print(render_bucket_table(report), end="", flush=True)
+    print(json.dumps({
+        "status": "ok",
+        "report_json": _stored_path(out),
+        "num_cases": report["aggregate"]["num_cases"],
+        "context_precision": report["aggregate"]["context_precision"],
+        "context_recall": report["aggregate"]["context_recall"],
+    }, ensure_ascii=False))
+    return 0
+
+
+# ---------------------------------------------------------------------------
 # Orchestration
 # ---------------------------------------------------------------------------
 
@@ -645,11 +981,29 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     p.add_argument("--stub-grade", action="store_true",
                    help="smoke: use a deterministic offline grade stub instead of mistral")
     p.add_argument("--results-dir", default=str(PROJECT_ROOT / "reports" / "ragas"))
+
+    buckets = p.add_argument_group("GR-0.3 bucket baseline (no models, no network)")
+    buckets.add_argument("--buckets", action="store_true",
+                         help="report the pinned pool per question class instead of the knob grid")
+    buckets.add_argument("--dataset", default=str(DEFAULT_DATASET_PATH))
+    buckets.add_argument("--sidecar", default=str(DEFAULT_SIDECAR_PATH),
+                         help="question-class sidecar (T-11)")
+    buckets.add_argument("--label-manifest", default=str(DEFAULT_LABEL_MANIFEST_PATH),
+                         help="sidecar manifest pinning the dataset digest")
+    buckets.add_argument("--corpus-manifest", default=str(DEFAULT_CORPUS_MANIFEST_PATH),
+                         help="corpus manifest (T-10) naming the measured corpus")
+    buckets.add_argument("--bucket-report", default=str(DEFAULT_BUCKET_REPORT_PATH))
+    buckets.add_argument("--expected-cases", type=int, default=100)
+    buckets.add_argument("--top-k", type=int, default=PHASE_C_TOP_K)
+    buckets.add_argument("--context-chars", type=int, default=PHASE_C_CONTEXT_CHARS)
     return p.parse_args(argv)
 
 
 def main(argv: Sequence[str] | None = None) -> int:
     args = parse_args(argv)
+
+    if args.buckets:
+        return run_bucket_report(args)
 
     # Mock mode must never touch the network: grade always uses the offline stub
     # and the mistral judge is disabled regardless of flags.
