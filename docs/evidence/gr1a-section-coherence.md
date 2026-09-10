@@ -287,9 +287,10 @@ the other three unpinned while this paragraph already claimed otherwise. The cou
 that reason, not arithmetic done in the prose. The few integers here that are
 claims about something else — the target `plan_06_09_26.md` states, the D2 arm
 measured in another report, GR-0.2's precondition, a date, a section number —
-are listed in that test one by one, each with its reason, and each as the exact
-phrase it appears in: change a digit and the exemption stops matching, so it
-cannot cover a wrong number.
+are listed — once, for both capsules — in `tests/capsule_prose.py`
+(`NON_REPORT_PHRASES`), each with its reason, and each as the exact phrase it
+appears in: change a digit and the exemption stops matching, so it cannot cover
+a wrong number.
 
 ## What this is not
 

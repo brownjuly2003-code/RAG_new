@@ -24,8 +24,9 @@ These tests are the gate for the arm in `scripts/ab_context_precision.py`:
   (neighbourhood = top-k, threshold 0.0, no expansion) drops nothing and adds
   nothing, so keyword coverage cannot move at all;
 * the numbers in `docs/evidence/gr1a-section-coherence.md` are the numbers in
-  the committed `reports/gr/gr1a-section-coherence.json`, prose included, as in
-  T-12.
+  the committed `reports/gr/gr1a-section-coherence.json`, prose and every table
+  included, under the capsule contract shared with T-12
+  (`tests/capsule_prose.py`).
 """
 
 from __future__ import annotations
@@ -50,6 +51,17 @@ from scripts.ab_context_precision import (
     header_is_clamped,
     parse_contextual_header,
     write_bucket_report,
+)
+from tests.capsule_prose import (
+    NON_REPORT_PHRASES,
+    capsule_defects,
+    capsule_tables,
+    numeric_claims,
+    prose_lines,
+    row_defects,
+    table_defects,
+    unreported_numbers,
+    with_cell,
 )
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
@@ -763,32 +775,18 @@ def test_the_capsule_names_the_base_it_compares_against() -> None:
     assert "gr0-bucket-baseline" in capsule
 
 
-def _capsule_prose_lines() -> list[str]:
-    """The capsule's running prose: no table rows, no code spans, no code blocks.
-
-    A fenced block is a literal — the producer's header format, the command that
-    reproduces the report — and the digits inside it are part of that literal,
-    not claims about a measurement.
-    """
-    lines: list[str] = []
-    fenced = False
-    for line in CAPSULE.read_text(encoding="utf-8").splitlines():
-        if line.strip().startswith("```"):
-            fenced = not fenced
-            continue
-        if fenced or line.strip().startswith("|"):
-            continue
-        lines.append(re.sub(r"`[^`]*`", "", line))
-    return lines
+def _capsule() -> str:
+    return CAPSULE.read_text(encoding="utf-8")
 
 
 def _reported_metric_values(report: dict[str, Any]) -> list[float]:
     """Every decimal value the report carries, in the roles the capsule quotes.
 
-    Metrics per class and in aggregate, the deltas against the baseline, the
-    mean document count of a cell and the swept thresholds. A decimal in the
-    capsule's prose has to be one of these; anything else is a number the
-    report does not support.
+    Metrics per class and in aggregate, the signed deltas against the baseline
+    (the grid prints their sign; an unsigned quote in prose matches their
+    magnitude), the mean document count of a cell and the swept thresholds. A
+    decimal in the capsule has to be one of these; anything else is a number
+    the report does not support.
     """
     values: list[float] = []
     rows = [
@@ -808,89 +806,75 @@ def _reported_metric_values(report: dict[str, Any]) -> list[float]:
         for key in ("context_precision", "context_recall"):
             delta = cell["delta"][key]
             if delta is not None:
-                values.append(abs(float(delta)))
+                values.append(float(delta))
         values.append(float(cell["diagnostics"]["mean_docs"]))
         values.append(float(cell["parameters"]["singleton_threshold"]))
     values.extend(float(row["mean_docs"]) for row in report["naive_top_k"]["rows"])
     return values
 
 
-#: A decimal rendering of a 0-1 value in running prose. The lookbehind keeps
-#: identifiers out (``GR-0.3`` is a stream name, ``v1.0`` a schema version); the
-#: lookahead stops the pattern from biting a prefix off a longer number.
-#:
-#: T-12's version ended ``(?![\d.])``, which also skipped any number at the end
-#: of a sentence — "precision 0.5051 against 0.5067." left the second value
-#: unchecked. Only a *digit* after the dot means the match is a prefix; a
-#: full stop does not.
-_PROSE_METRIC_RE = re.compile(r"(?<![\w.-])\d\.\d{1,4}(?!\d|\.\d)")
-
-
-def _is_prefix_rounding(token: str, values: list[float]) -> bool:
-    decimals = len(token.split(".", 1)[1])
-    return any(f"{value:.{decimals}f}" == token for value in values)
-
-
-def _unreported_prose_tokens(lines: list[str], values: list[float]) -> list[str]:
-    return [
-        token
-        for line in lines
-        for token in _PROSE_METRIC_RE.findall(line)
-        if not _is_prefix_rounding(token, values)
-    ]
-
-
 def test_the_capsule_prose_quotes_only_numbers_that_are_in_the_report() -> None:
-    """Every decimal in the narrative is a rendering of a value the report has.
+    """Every number in the narrative is a value the report carries.
 
-    The same guard T-12 landed, over this slice's report: a decimal in prose is
-    a claim about a measured value, so any decimal at any precision is checked,
-    not only the canonical four-decimal rendering.
+    Decimals at any precision, and integers: the first attempt at this capsule
+    shipped "11 of the 494 selected chunks … the other 483 had none" against
+    diagnostics of 394 and 383 — an off-by-100 in running prose, invisible to a
+    guard that only matched ``\\d\\.\\d{1,4}``. A count in the narrative is a
+    claim like a metric, checked under the contract shared with T-12 in
+    `tests/capsule_prose.py`, and the report carries the diagnostics that make
+    the checkable version writable.
     """
     report = _committed()
-    values = _reported_metric_values(report)
+    lines = prose_lines(_capsule())
 
-    lines = _capsule_prose_lines()
-    unreported = _unreported_prose_tokens(lines, values)
-    assert not unreported, (
-        f"docs/evidence/gr1a-section-coherence.md quotes {unreported} in its "
-        f"prose, which is not a metric in reports/gr/gr1a-section-coherence.json. "
-        "Do not edit a number in the capsule without re-running the report."
+    unreported = unreported_numbers(
+        lines, decimals=_reported_metric_values(report), integers=_reported_integer_values(report)
     )
-    quoted = [token for line in lines for token in _PROSE_METRIC_RE.findall(line)]
-    assert len(quoted) >= 4, (
-        "the capsule no longer quotes any metric in its prose; the narrative is "
-        "then unpinned and this test would pass vacuously"
+    assert not unreported, (
+        f"docs/evidence/gr1a-section-coherence.md quotes {unreported} in its prose, "
+        "which reports/gr/gr1a-section-coherence.json does not carry. Quote a report "
+        "field, or — if the number is a claim about something else — add its exact "
+        "phrase with the reason to NON_REPORT_PHRASES in tests/capsule_prose.py."
+    )
+    quoted = [claim for line in lines for claim in numeric_claims(line)]
+    metrics = [claim for claim in quoted if "." in claim]
+    assert len(metrics) >= 4 and len(quoted) - len(metrics) >= 10, (
+        "the capsule no longer quotes metrics and counts in its prose; the narrative "
+        "is then unpinned and this test would pass vacuously"
     )
 
 
 def test_a_wrong_prose_quote_fails_however_few_decimals_it_is_written_to() -> None:
-    """The guard is proven by mutating a prose number, as T-12's final form does.
+    """The guard is proven by mutating a prose number, on an in-memory copy.
 
-    The mutation happens on an in-memory copy; nothing on disk is touched.
+    Including the hole T-12's first pattern left, which this capsule actually
+    exercises: "loses precision**, 0.5051 against 0.5067." ends a sentence, and a
+    wrong value in that position matched nothing under T-12's ``(?![\\d.])``.
     """
     report = _committed()
-    values = _reported_metric_values(report)
-    lines = _capsule_prose_lines()
+    decimals = _reported_metric_values(report)
+    integers = _reported_integer_values(report)
+    capsule = _capsule()
+
+    def prose_defects(text: str) -> list[str]:
+        return unreported_numbers(prose_lines(text), decimals=decimals, integers=integers)
+
     anchor = f"{report['baseline']['aggregate']['context_precision']:.4f}"
-    assert any(anchor in line for line in lines), (
+    occurrences = sum(line.count(anchor) for line in prose_lines(capsule))
+    assert occurrences, (
         f"this test mutates the baseline precision quote {anchor}; the capsule "
         "no longer carries it, so re-anchor the mutation before trusting it"
     )
+    assert prose_defects(capsule) == []
+    assert prose_defects(capsule.replace(anchor, "0.6412")) == ["0.6412"] * occurrences
+    assert prose_defects(capsule.replace(anchor, anchor[: len(anchor) - 1])) == []
 
-    occurrences = sum(line.count(anchor) for line in lines)
-    wrong = [line.replace(anchor, "0.6412") for line in lines]
-    assert _unreported_prose_tokens(wrong, values) == ["0.6412"] * occurrences
-
-    honest = [line.replace(anchor, anchor[: len(anchor) - 1]) for line in lines]
-    assert _unreported_prose_tokens(honest, values) == []
-
-    # The hole T-12's lookahead left: a wrong number that ends a sentence.
-    assert _unreported_prose_tokens(["the reranker's own order scored 0.6412."], values) == [
-        "0.6412"
-    ]
-    # …while a stream identifier at the end of a sentence is still not a metric.
-    assert _unreported_prose_tokens(["this follows GR-0.2."], values) == []
+    # The sentence-final quote, mutated where the capsule itself puts it.
+    final = f"against {anchor}."
+    assert final in capsule, "the capsule no longer ends a sentence on a metric; re-anchor"
+    assert prose_defects(capsule.replace(final, "against 0.6412.")) == ["0.6412"]
+    # …while a stream id or a version string ending a sentence is still not a claim.
+    assert prose_defects(f"{capsule}\nthis follows GR-0.2.\nthe schema is 1.0.3.\n") == []
 
 
 def _reported_integer_values(report: dict[str, Any]) -> set[int]:
@@ -899,8 +883,8 @@ def _reported_integer_values(report: dict[str, Any]) -> set[int]:
     Keyword coverage and case counts, the parse census, the per-cell diagnostics
     (``docs_selected``, ``expanded``, ``not_expandable``, ``dropped``,
     ``cases_with_all_singleton_sections`` …), the swept parameters, the length of
-    each cell's regression list, and the corpus file count. An integer in the
-    capsule's prose has to be one of these.
+    each cell's regression list, the corpus file count and the pool size in
+    bytes. An integer in the capsule has to be one of these.
     """
     values: set[int] = set()
     header = report["header_parse"]
@@ -910,6 +894,7 @@ def _reported_integer_values(report: dict[str, Any]) -> set[int]:
     values.add(int(report["labels"]["approved"]))
     values.add(int(report["headline"]["qualifying_cells"]))
     values.add(int(report["provenance"]["corpus"]["file_count"]))
+    values.add(int(report["provenance"]["pool_bytes"]))
     # The configuration the provenance table prints: the swept parameters are
     # numbers the report carries, and the capsule quotes them there.
     config = report["provenance"]["config"]
@@ -937,132 +922,55 @@ def _reported_integer_values(report: dict[str, Any]) -> set[int]:
     return values
 
 
-#: An integer in running prose. Same lookbehind as the decimal guard, so an
-#: identifier keeps its number (``GR-1``, ``T-12``, ``top-4`` name things the
-#: tables carry); the lookahead keeps a decimal, a thousands separator and a
-#: longer integer out, so ``0.5051`` and ``7,692,098`` are not read as counts.
-_PROSE_INTEGER_RE = re.compile(r"(?<![\w.,-])\d+(?!\d|\.\d|,\d)")
-
-#: A date is not a measurement.
-_ISO_DATE_RE = re.compile(r"\d{4}-\d{2}-\d{2}")
-
-#: The integers in the capsule's prose that are claims about something other than
-#: this report, each with the reason it is not in the JSON. They are matched as
-#: literal phrases: change a digit and the phrase stops matching, so the number
-#: falls back into the guard. An exemption can only cover the exact sentence it
-#: was written for — never a wrong number.
-_NON_REPORT_INTEGER_PHRASES: tuple[tuple[str, str], ...] = (
-    ("§4 п.3–4", "a section number in plan_06_09_26.md"),
-    ("±1 window", "the window shape this arm replaces, not a count"),
-    ("kw FULL vs 96 %", "the target plan_06_09_26.md:147 states, quoted verbatim"),
-    ("the 96 % does not", "the same target, named as not being this measurement"),
-    ("FULL is 96 in the", "the D2 arm's FULL, measured in another report"),
-    ("window 2 / 3600 chars", "the D2 arm's expansion parameters"),
-    ("≥ 15 new multi-hop", "GR-0.2's precondition — a requirement, not a result"),
-)
-
-
-def _strip_non_report_integers(line: str) -> str:
-    line = _ISO_DATE_RE.sub(" ", line)
-    for phrase, _reason in _NON_REPORT_INTEGER_PHRASES:
-        line = line.replace(phrase, " ")
-    return line
-
-
-def _unreported_prose_integers(lines: list[str], values: set[int]) -> list[str]:
-    return [
-        token
-        for line in lines
-        for token in _PROSE_INTEGER_RE.findall(_strip_non_report_integers(line))
-        # ``token != str(int(token))`` rejects a zero-padded number: ``07`` is not
-        # a rendering of the integer 7 that the report carries.
-        if token != str(int(token)) or int(token) not in values
-    ]
-
-
-def test_the_capsule_prose_quotes_only_integers_that_are_in_the_report() -> None:
-    """The same guard, over integers — the class of error T-12's guard missed.
-
-    The first attempt at this capsule shipped "11 of the 494 selected chunks …
-    the other 483 had none" against diagnostics of 394 and 383: an off-by-100 in
-    running prose, invisible to a guard that only matched ``\\d\\.\\d{1,4}``. So a
-    count in the narrative is now a claim to be checked like a metric, and the
-    report carries the diagnostics that make the checkable version writable.
-    """
-    report = _committed()
-    values = _reported_integer_values(report)
-
-    lines = _capsule_prose_lines()
-    unreported = _unreported_prose_integers(lines, values)
-    assert not unreported, (
-        f"docs/evidence/gr1a-section-coherence.md quotes {unreported} in its "
-        "prose, which is not an integer reports/gr/gr1a-section-coherence.json "
-        "carries. Quote a report field, or add the exemption with its reason to "
-        "_NON_REPORT_INTEGER_PHRASES if the number is a claim about something else."
-    )
-    quoted = [
-        token
-        for line in lines
-        for token in _PROSE_INTEGER_RE.findall(_strip_non_report_integers(line))
-    ]
-    assert len(quoted) >= 10, (
-        "the capsule no longer quotes any count in its prose; the narrative is "
-        "then unpinned and this test would pass vacuously"
-    )
-
-
 def test_a_wrong_prose_integer_fails_while_a_non_metric_integer_passes() -> None:
     """The boundary of the integer guard, proven both ways on an in-memory copy.
 
     Mutating a quoted count fails; the integers that are not measurements — the
     plan's target, the D2 arm's FULL, GR-0.2's precondition, the date, the
     section number — still pass, so the guard is not bought by dragging every
-    digit in the document into the report.
+    digit in the document into the report. That each named exemption covers a
+    phrase a capsule carries, and nothing once a digit changes, is pinned once
+    for both capsules in `tests/test_capsule_prose.py`.
     """
     report = _committed()
-    values = _reported_integer_values(report)
-    lines = _capsule_prose_lines()
+    decimals = _reported_metric_values(report)
+    integers = _reported_integer_values(report)
+    capsule = _capsule()
+
+    def prose_defects(text: str) -> list[str]:
+        return unreported_numbers(prose_lines(text), decimals=decimals, integers=integers)
 
     headline = next(
         cell for cell in report["grid"] if cell["parameters"] == report["headline"]["parameters"]
     )
     anchor = str(headline["diagnostics"]["docs_selected"])
-    assert any(anchor in line for line in lines), (
+    assert any(anchor in line for line in prose_lines(capsule)), (
         f"this test mutates the selected-chunk count {anchor}; the capsule no "
         "longer carries it, so re-anchor the mutation before trusting it"
     )
     # The exact defect this guard was written for: 394 -> 494.
-    wrong = [line.replace(anchor, "4" + anchor[1:]) for line in lines]
-    assert "4" + anchor[1:] in _unreported_prose_integers(wrong, values)
+    assert "4" + anchor[1:] in prose_defects(capsule.replace(anchor, "4" + anchor[1:]))
 
     # …and the honest number passes.
-    assert _unreported_prose_integers(lines, values) == []
+    assert prose_defects(capsule) == []
 
-    # Every exemption is load-bearing — it covers a sentence that is actually in
-    # the capsule — and covers nothing but its own digits.
-    for phrase, reason in _NON_REPORT_INTEGER_PHRASES:
-        assert any(phrase in line for line in lines), (
-            f"the exemption {phrase!r} ({reason}) matches nothing in the capsule; "
-            "an exemption that covers no sentence is dead weight, delete it"
-        )
-        assert _unreported_prose_integers([phrase], values) == []
-
-    # And the exemptions are not decoration: without them the plan's target and
-    # the D2 arm's parameters would be flagged, because the report does not carry
+    # The exemptions are not decoration: without them the plan's target and the
+    # D2 arm's parameters would be flagged, because the report does not carry
     # them — that is precisely why they are named rather than silently allowed.
     outside = {
-        token
-        for phrase, _reason in _NON_REPORT_INTEGER_PHRASES
-        for token in _PROSE_INTEGER_RE.findall(phrase)
-        if int(token) not in values
+        claim
+        for phrase, _reason in NON_REPORT_PHRASES
+        if phrase in capsule
+        for claim in numeric_claims(phrase, phrases=())
+        if int(claim) not in integers
     }
     assert {"96", "3600"} <= outside
     for token in outside:
-        assert _unreported_prose_integers([f"a sentence with {token} in it"], values) == [token]
+        assert prose_defects(f"a sentence with {token} in it") == [token]
 
-    # A date and a zero-padded number are not counts; a bare wrong count is.
-    assert _unreported_prose_integers(["Date: 2026-09-09"], values) == []
-    assert _unreported_prose_integers(["the other 483 had none"], values) == ["483"]
+    # A date is not a count; a bare wrong count is.
+    assert prose_defects("Date: 2026-09-09") == []
+    assert prose_defects("the other 483 had none") == ["483"]
 
 
 # ---------------------------------------------------------------------------
@@ -1085,52 +993,8 @@ _NO_VALUE = "—"
 _TO = "→"
 
 
-def _capsule_tables() -> dict[str, list[list[str]]]:
-    """Every markdown table in the capsule, keyed by its first header cell.
-
-    Each value is the table's rows with the header row first and the alignment
-    row dropped. A fenced block cannot hold a table here, and is skipped so that
-    a literal is never read as one.
-    """
-    tables: dict[str, list[list[str]]] = {}
-    current: str | None = None
-    fenced = False
-    for line in CAPSULE.read_text(encoding="utf-8").splitlines():
-        stripped = line.strip()
-        if stripped.startswith("```"):
-            fenced = not fenced
-            continue
-        if fenced or not stripped.startswith("|"):
-            current = None
-            continue
-        if set(stripped) <= set("|-: "):
-            continue
-        cells = [cell.strip() for cell in stripped.strip("|").split("|")]
-        if current is None:
-            current = cells[0]
-            if current in tables:
-                raise AssertionError(
-                    f"two capsule tables start with the header cell {current!r}; the "
-                    "guard keys tables by that cell, so rename one of them"
-                )
-            tables[current] = [cells]
-            continue
-        tables[current].append(cells)
-    return tables
-
-
 def _metric_cell(value: float | None) -> str:
     return _NO_VALUE if value is None else f"{value:.4f}"
-
-
-def _row_defects(published: list[str], expected: list[str], where: str) -> list[str]:
-    if len(published) != len(expected):
-        return [f"{where}: capsule row has {len(published)} cells, expected {len(expected)}"]
-    return [
-        f"{where}: capsule cell {index} is {cell!r}, report says {want!r}"
-        for index, (cell, want) in enumerate(zip(published, expected, strict=True))
-        if cell != want
-    ]
 
 
 def _grid_table_defects(rows: list[list[str]], report: dict[str, Any]) -> list[str]:
@@ -1150,7 +1014,7 @@ def _grid_table_defects(rows: list[list[str]], report: dict[str, Any]) -> list[s
             defects.append(f"grid cell {key} is missing from the capsule")
             continue
         seen.add(key)
-        defects += _row_defects(
+        defects += row_defects(
             published[key],
             [
                 f"{aggregate['context_precision']:.4f}",
@@ -1177,7 +1041,7 @@ def _naive_table_defects(rows: list[list[str]], report: dict[str, Any]) -> list[
         if key not in published:
             defects.append(f"naive top-{key} is missing from the capsule")
             continue
-        defects += _row_defects(
+        defects += row_defects(
             published.pop(key),
             [
                 f"{naive['mean_docs']:.2f}",
@@ -1234,7 +1098,7 @@ def _class_table_defects(rows: list[list[str]], report: dict[str, Any]) -> list[
         if label not in accepted:
             defects.append(f"the by-class table publishes {label!r}, which is not a report bucket")
             continue
-        defects += _row_defects(cells, accepted[label], f"by class {label!r}")
+        defects += row_defects(cells, accepted[label], f"by class {label!r}")
     for name, alternatives in required:
         if not any(alternative in published for alternative in alternatives):
             defects.append(f"the by-class table does not publish {name!r}")
@@ -1287,7 +1151,7 @@ def _regression_table_defects(rows: list[list[str]], report: dict[str, Any]) -> 
 
     published = {row[0].strip("`"): row[1:] for row in rows[1:]}
     for case_id, cells in published.items():
-        defects += _row_defects(
+        defects += row_defects(
             cells,
             [expected[threshold].get(case_id, _NO_VALUE) for threshold in columns],
             f"regression {case_id}",
@@ -1301,8 +1165,10 @@ def _regression_table_defects(rows: list[list[str]], report: dict[str, Any]) -> 
     return defects
 
 
-#: Every table the capsule publishes, and the report section that decides it. The
-#: key is the table's first header cell; the provenance table has an empty one.
+#: The tables the capsule publishes with a structural guard, and the report
+#: section that decides each, keyed by the table's first header cell. The
+#: provenance table's header row is blank, so it is keyed by its first row
+#: (``Pool``); it has no structural guard, and the shared contract alone pins it.
 _TABLE_GUARDS: dict[str, Any] = {
     "n": _grid_table_defects,
     "naive top-k": _naive_table_defects,
@@ -1321,10 +1187,10 @@ def test_the_capsule_publishes_every_grid_cell_with_its_own_numbers() -> None:
     """
     report = _committed()
 
-    defects = _grid_table_defects(_capsule_tables()["n"], report)
+    defects = _grid_table_defects(capsule_tables(_capsule())["n"], report)
 
     assert defects == []
-    assert len(_capsule_tables()["n"]) - 1 == len(report["grid"])
+    assert len(capsule_tables(_capsule())["n"]) - 1 == len(report["grid"])
 
 
 def test_the_capsule_publishes_the_naive_reference_the_report_measured() -> None:
@@ -1336,17 +1202,17 @@ def test_the_capsule_publishes_the_naive_reference_the_report_measured() -> None
     """
     report = _committed()
 
-    defects = _naive_table_defects(_capsule_tables()["naive top-k"], report)
+    defects = _naive_table_defects(capsule_tables(_capsule())["naive top-k"], report)
 
     assert defects == []
-    assert len(_capsule_tables()["naive top-k"]) - 1 == len(report["naive_top_k"]["rows"])
+    assert len(capsule_tables(_capsule())["naive top-k"]) - 1 == len(report["naive_top_k"]["rows"])
 
 
 def test_the_capsule_by_class_table_is_the_baseline_and_the_headline_buckets() -> None:
     """Per-class case counts, metrics and coverage, both bases, one table."""
     report = _committed()
 
-    defects = _class_table_defects(_capsule_tables()["question class"], report)
+    defects = _class_table_defects(capsule_tables(_capsule())["question class"], report)
 
     assert defects == []
 
@@ -1355,54 +1221,31 @@ def test_the_capsule_regression_table_carries_the_reports_own_pairs() -> None:
     """Naming the case is half of it; the status it fell from and to is the rest."""
     report = _committed()
 
-    defects = _regression_table_defects(_capsule_tables()["case"], report)
+    defects = _regression_table_defects(capsule_tables(_capsule())["case"], report)
 
     assert defects == []
 
 
-def _table_cell_defects(tables: dict[str, list[list[str]]], report: dict[str, Any]) -> list[str]:
-    """Every number in every capsule table is a number the report carries.
-
-    The completeness half of the guard: the four tables above are checked
-    structurally, and this routes *all* table cells — the provenance table
-    included, and any table a later edit adds — through the same value sets the
-    prose guard uses, so a fifth unpinned table cannot appear.
-    """
-    values = _reported_metric_values(report)
-    integers = _reported_integer_values(report)
-    defects: list[str] = []
-    for key, rows in tables.items():
-        for row in rows:
-            for cell in row:
-                text = _strip_non_report_integers(re.sub(r"`[^`]*`", "", cell))
-                defects += [
-                    f"table {key!r} cell {cell!r} quotes {token}, which the report does not carry"
-                    for token in _PROSE_METRIC_RE.findall(text)
-                    if not _is_prefix_rounding(token, values)
-                ]
-                defects += [
-                    f"table {key!r} cell {cell!r} quotes the count {token}, which the report "
-                    "does not carry"
-                    for token in _PROSE_INTEGER_RE.findall(text)
-                    if token != str(int(token)) or int(token) not in integers
-                ]
-    return defects
-
-
 def test_every_number_in_every_capsule_table_is_a_number_the_report_carries() -> None:
-    report = _committed()
-    tables = _capsule_tables()
+    """The completeness half of the table guard, under the shared contract.
 
-    assert _table_cell_defects(tables, report) == []
+    The four tables above are checked structurally; this routes *all* table
+    cells — the provenance table included, and any table a later edit adds —
+    through the same contract as the prose, so a fifth unpinned table cannot
+    appear.
+    """
+    report = _committed()
+    tables = capsule_tables(_capsule())
+
+    decimals = _reported_metric_values(report)
+    integers = _reported_integer_values(report)
+    assert table_defects(tables, decimals=decimals, integers=integers) == []
     assert set(_TABLE_GUARDS) <= set(tables), (
         f"the capsule no longer carries {sorted(set(_TABLE_GUARDS) - set(tables))}; "
         "a renamed table would leave its own guard reading nothing"
     )
     quoted = sum(
-        len(_PROSE_METRIC_RE.findall(cell)) + len(_PROSE_INTEGER_RE.findall(cell))
-        for rows in tables.values()
-        for row in rows
-        for cell in row
+        len(numeric_claims(cell)) for rows in tables.values() for row in rows for cell in row
     )
     assert quoted >= 100, (
         f"only {quoted} numbers were read out of the capsule's tables; the tables are "
@@ -1410,12 +1253,23 @@ def test_every_number_in_every_capsule_table_is_a_number_the_report_carries() ->
     )
 
 
-def _with_cell(rows: list[list[str]], row: int, column: int, value: str) -> list[list[str]]:
-    """The same table with one cell changed, in memory; the capsule is untouched."""
-    mutated = [list(cells) for cells in rows]
-    assert mutated[row][column] != value, "the mutation has to change the cell it mutates"
-    mutated[row][column] = value
-    return mutated
+def test_the_committed_capsule_passes_the_shared_contract_unchanged() -> None:
+    """FALSE-REJECT control: the published capsule, prose and every table, as committed.
+
+    The contract was widened — sentence-final decimals, grouped numbers, signed
+    deltas read with their sign. A widening that rejected an honest number here
+    would be a defect of the guard, not of the capsule.
+    """
+    report = _committed()
+
+    assert (
+        capsule_defects(
+            _capsule(),
+            decimals=_reported_metric_values(report),
+            integers=_reported_integer_values(report),
+        )
+        == []
+    )
 
 
 def test_a_wrong_cell_in_any_capsule_table_fails_and_a_non_metric_cell_does_not() -> None:
@@ -1423,10 +1277,13 @@ def test_a_wrong_cell_in_any_capsule_table_fails_and_a_non_metric_cell_does_not(
 
     The two mutations named here are the ones that survived the width-9 guard:
     the naive-top-k cell 0.5214 and the by-class cell 0.4267, which is the whole
-    reason this test exists.
+    reason this test exists. The provenance table has no structural guard — the
+    shared contract alone pins its numbers — so its mutations go that route.
     """
     report = _committed()
-    tables = _capsule_tables()
+    decimals = _reported_metric_values(report)
+    integers = _reported_integer_values(report)
+    tables = capsule_tables(_capsule())
 
     mutations = {
         "n": (5, 3, "0.9216"),  # the headline row's precision
@@ -1436,17 +1293,28 @@ def test_a_wrong_cell_in_any_capsule_table_fails_and_a_non_metric_cell_does_not(
     }
     for key, (row, column, value) in mutations.items():
         rows = tables[key]
-        wrong = _with_cell(rows, row, column, value)
+        wrong = with_cell(rows, row, column, value)
         assert _TABLE_GUARDS[key](rows, report) == [], f"{key} is not honest to begin with"
         assert _TABLE_GUARDS[key](wrong, report), (
             f"a wrong cell in the {key!r} table is not caught by its own guard"
         )
-        # …and the same drift is caught by the value-set route, except where the
+        # …and the same drift is caught by the contract, except where the
         # mutation is a keyword status rather than a number.
         if value.replace(".", "").isdigit():
-            assert _table_cell_defects({key: wrong}, report), (
-                f"a wrong number in the {key!r} table passes the value-set guard"
+            assert table_defects({key: wrong}, decimals=decimals, integers=integers), (
+                f"a wrong number in the {key!r} table passes the shared contract"
             )
+
+    # The provenance table's header row is blank, so it is keyed by its first row.
+    provenance = tables["Pool"]
+    for label, honest, wrong_text in (
+        ("Pool", "7,692,098 bytes", "7,692,099 bytes"),
+        ("Corpus", "201 files", "202 files"),
+    ):
+        index = next(index for index, cells in enumerate(provenance) if cells[0] == label)
+        assert honest in provenance[index][1], f"re-anchor the {label} mutation"
+        mutated = with_cell(provenance, index, 1, provenance[index][1].replace(honest, wrong_text))
+        assert table_defects({"Pool": mutated}, decimals=decimals, integers=integers), wrong_text
 
     # A row the report does not carry at all, and a missing row, are both defects.
     invented = [*tables["naive top-k"], ["6", "6.00", "0.5067", "0.9050", "87", "7", "6"]]
@@ -1461,9 +1329,11 @@ def test_a_wrong_cell_in_any_capsule_table_fails_and_a_non_metric_cell_does_not(
             [f"single_hop (baseline) {_NO_VALUE}", "GR-0.3", "T-12"],
         ]
     }
-    assert _table_cell_defects(non_metric, report) == []
+    assert table_defects(non_metric, decimals=decimals, integers=integers) == []
     # …while a bare wrong count in the same position is not.
-    assert _table_cell_defects({"question class": [["cases"], ["483"]]}, report)
+    assert table_defects(
+        {"question class": [["cases"], ["483"]]}, decimals=decimals, integers=integers
+    )
 
 
 def test_the_capsule_quotes_the_provenance_digests_of_the_report() -> None:
@@ -1479,9 +1349,8 @@ def test_the_capsule_quotes_the_provenance_digests_of_the_report() -> None:
     ):
         assert digest in capsule, f"capsule does not quote {digest}"
 
-    # The two provenance counts the value-set guard cannot reach: a thousands
-    # separator is not a count to the integer pattern, and the file count sits in
-    # the same table cell, so both are pinned here instead.
+    # The shared contract makes any number the capsule quotes honest; these two
+    # assertions are what make the pool size and the file count quoted at all.
     assert f"{provenance['pool_bytes']:,} bytes" in capsule
     assert f"{provenance['corpus']['file_count']} files" in capsule
 
