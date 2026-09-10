@@ -69,13 +69,23 @@ C.1 remains open for the two Qwen3 candidates under the same benchmark
 contract.
 
 Both inherited CI failures ([ADR 0008](docs/adr/0008-inherited-ci-red-disposition.md))
-are closed, and the `CI` workflow is green through A.5 / the latest pushed
-state: run 34393111511 on `95d408e` finished `success`, 11 of 11 jobs, as did
-run 34374312654 on `53c24f5`. `CI` is one of five workflows, not the whole set:
-`Deploy docs site (Astro Starlight) to Pages` has been red on every push since
-2026-08-25 (latest run 34393111514 on `95d408e`) because five npm advisories
-landed upstream against pins that were correct when written — T-18 raises the
-floors. The chromadb CVE ignores carry a **review date of 2026-09-24**.
+are closed. On `0aacb7b` (T-18, pushed) both workflows that run on push ended
+`success`: `CI` run 34408840696 with 11 of 11 jobs, and `Deploy docs site
+(Astro Starlight) to Pages` run 34408840657, its first success since
+2026-08-25. That green is the `build` job, which carries
+`npm audit --audit-level=high`; the `deploy` job was skipped by its own
+condition `if: github.event.repository.visibility == 'public'`
+(`docs-site.yml:89`) because the repository is private, so the run published
+nothing — the deploy half is inert by design until phase E. After its last
+success on 2026-08-25 (run 32880095380) every push that ran docs-site failed
+through 2026-09-09 (four runs, last 34393111514 on `95d408e`), at the npm audit
+step. Not every push runs it: the `paths` filter in `docs-site.yml:6-17` starts
+no run for a push that touches none of those paths, so `bcb83de` got none. The
+audit failed because ten GHSA advisories across five npm packages landed upstream against
+pins that were correct when written; T-18 raised the floors. The other three
+workflows (`live-provider-gate`, `live-quality-metrics-gate`, `weekly-report`)
+run on schedule or dispatch only, so this is two of five, not the whole set.
+The chromadb CVE ignores carry a **review date of 2026-09-24**.
 
 | Phase | What | Acceptance |
 |---|---|---|
