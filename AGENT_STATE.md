@@ -65,11 +65,27 @@ blocked on data rather than on work. See `CURRENT_STATE.md` §1.
 
 ## Current work
 
-Active plan: [`plan_06_09_26.md`](plan_06_09_26.md), mode B (evidence of
-engineering maturity, then publication). Phase 0 and phase A are done — every
-phase-A item landed on 2026-08-25 — and phase B is open: B.1 (labels) landed
-the same day, B.2/B.3/B.5 are blocked on data. See
-[`CURRENT_STATE.md`](CURRENT_STATE.md) for the live status and
+Adopted plan (owner's decision, 2026-09-10): [`plan_06_09_26.md`](plan_06_09_26.md),
+mode B (evidence of engineering maturity, then publication). Phase 0 and phase
+A are done — every phase-A item landed on 2026-08-25. The plan's work (§5, §10)
+is **stream GR** and phase C. Phase B is not the front: B.1 (labels) landed on
+2026-08-25, and B.2/B.3/B.5 wait on owner data (Q2), not on agent work.
+
+**Stream GR is required work, not an optional enrichment.** Plan §2: context
+precision is computed over cached contexts, so only the retriever moves it, and
+the ≥ 0.63 gate (phase C's, carried by GR-1 in plan §5) cannot be met by
+generation tuning. Measured over pool `91ce1745…`: baseline 0.5067 at top-5
+([GR-0.3](docs/evidence/gr0-bucket-baseline.md)); section coherence as a
+narrowing arm 0.5216, while plain top-4 gives 0.5214 at the same coverage — a
+smaller `k`, not structure — and 0.63 only with FULL falling 87 → 71
+([GR-1a](docs/evidence/gr1a-section-coherence.md)). The cheap structural arm
+was tried and does not reach the gate; the remaining GR steps are what is left.
+Limit: the eval bucket is 99 `single_hop`, 1 `multi_hop`, 0 `aggregation`,
+0 `global` (`6cde0b1`), so a per-class A/B on the classes a graph should help
+most cannot run on this corpus until GR-0.2 adds its ≥ 15 multi-hop /
+aggregation questions. "Needed" is measured; "will work" is not claimed.
+
+See [`CURRENT_STATE.md`](CURRENT_STATE.md) for the status rows and
 [`ROADMAP.md`](ROADMAP.md) for what is frozen.
 
 **Slice acceptance rule (binding, including for autopilot):** a slice counts
@@ -79,9 +95,16 @@ provenance. "Locally complete" is preparation, not a slice.
 
 ## Frozen
 
-Trust Foundation steps 5–10, G9+, REL-03D, MCP connectors, framework-grade
-GraphRAG (LightRAG / MS GraphRAG / Neo4j), enterprise DoD (2 replicas, SBOM, SOC2-shaped gates). Unfreeze conditions are
-in [`ROADMAP.md`](ROADMAP.md). Do not restart them for completeness.
+Trust Foundation steps 5–10, G9+, REL-03D, MCP connectors, enterprise DoD
+(2 replicas, SBOM, SOC2-shaped gates). Unfreeze conditions are in
+[`ROADMAP.md`](ROADMAP.md). Do not restart them for completeness.
+
+Graphs are two different things here, and only one is frozen. **Frozen:** the
+framework-grade variant — LightRAG / MS GraphRAG / community summaries / Neo4j —
+until the ADR 0001 trigger (> 50 000 chunks per tenant, or a measured GR-3
+failure on the `global` class). **Live and needed:** stream GR, the in-repo
+structure + entity graph of plan §4, unfrozen by the owner on 2026-09-06 and
+required for the reason in the section above.
 
 ## History, if you need it
 

@@ -3,8 +3,8 @@
 **The only entry point for a new session.** Read this, then
 [`ROADMAP.md`](ROADMAP.md). Everything else is reached by link, on demand.
 
-Last updated: 2026-09-09 · Plan: [`plan_06_09_26.md`](plan_06_09_26.md)
-(mode B) · Audit of record:
+Last updated: 2026-09-10 · Plan: [`plan_06_09_26.md`](plan_06_09_26.md)
+(mode B, adopted by the owner 2026-09-10) · Audit of record:
 [`docs/audits/audit_final_23_08_2026.md`](docs/audits/audit_final_23_08_2026.md)
 · Phase C benchmark source: `c06bdf5` · push is the owner's call (§1)
 
@@ -34,7 +34,7 @@ NLI `8adb042d524ecd5c26d3e3ba0e3fbcf7e2d0864c`. Config: seeds 42–44,
 temperature 0, `num_ctx=4096`, `num_predict=384`, context cap 6000. NLI peak
 RSS 2,124,476,416 bytes; Ollama loaded size 5,062,566,870 bytes; neither is
 total-host peak RAM. Misses faithfulness 0.90 and context precision 0.63; that
-does not authorize a model change or a NO-SHIP decision.
+does not authorize a model change or a NO-SHIP decision. **Stream GR is required, not optional:** precision is computed over these cached contexts, so only the retriever moves it (plan §2), and the cheap structural arm is measured short of the ≥ 0.63 gate (phase C's, GR-1's target in plan §5) — GR-0.3 0.5067 at top-5, GR-1a 0.5216 against plain top-4's 0.5214 (rows GR-0.3/GR-1a below).
 
 **C.1b `qwen3:8b` finished on the Mac 2026-09-08 03:55 MSK — measured there,
 not published here.** The 2026-09-02 attempt died with `/tmp`; rebuilt under
@@ -112,7 +112,7 @@ with an E2E test proving it, **(b)** real labelled cases went up, or **(c)** a
 published number changed with provenance. T-02/T-08/T-05 are (c); T-03 is (a).
 B.1 is preparation until a batch is approved.
 
-## Phases 0 and A — done · B — in progress · GR started
+## Phases 0 and A — done · GR — required stream (plan §2) · B — waits on the owner (Q2)
 
 | # | Item | Status |
 |---|---|---|
