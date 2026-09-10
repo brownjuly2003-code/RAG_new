@@ -15,6 +15,23 @@ conditions, read [`ROADMAP.md`](ROADMAP.md). The active delivery plan is
   `CURRENT_STATE.md`; do not launch a duplicate run from this file.
 - Review the three accepted ChromaDB CVE exceptions on **2026-09-24** and
   remove them if a fixed release exists.
+- MyFlow tree pinning has been silently off here since 2026-09-08 — a defect in
+  the shared controller under `~/.claude/skills/`, not in this repository.
+  `worktree_hash()` (`mf_util.py:853-895`) runs
+  `git add -A -- . ':(exclude).myflow'`, which exits 1 because `.myflow/` is
+  gitignored, and on a non-zero exit returns "" instead of the hash. In the run
+  journal every `gate`, `gate_green` and `slice_done` event at or after
+  2026-09-08T14:12:02 is unmeasured and every earlier one carries a hash. The
+  totals grow with every gate; up to the journal entry of 2026-09-10T06:50:04
+  they read `gate` 69 events, 28 measured, 41 not; `gate_green` 53/21/32;
+  `slice_done` 13/4/9. For those slices "the full gate ran on the commit's tree" is a manual claim,
+  not a machine-checked one. T-19 and T-17 were pinned by hand (`git read-tree
+  HEAD` + `git add -A -- .` + `git write-tree` in a private index: before the
+  full gate, after it and at the commit, equal to `d026804^{tree}` 97ddd508 and
+  `6cc810d^{tree}` 22519835). T-18 (`0aacb7b`) has no pin at all — it was
+  committed before that manual script existed. Not fixed from here: the controller
+  has 208 tests, other projects depend on it, and the fix is conditional —
+  ignored paths must not fail the add.
 
 The local corrective queue after T-09 is otherwise empty. New work must satisfy
 the slice rule in `CURRENT_STATE.md`: observable product behaviour, more real

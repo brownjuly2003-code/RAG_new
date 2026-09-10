@@ -91,10 +91,10 @@ requires them to match.
   documents are real; questions were agent-written (`325d63c`, `6b7417d`,
   `32e841f`). Question classes live in a sidecar (`6cde0b1`) — 99 `single_hop`,
   1 `multi_hop`, 0 `aggregation`, 0 `global` (plan §5, GR-0.2).
-- **On `0aacb7b` (T-18, pushed) both push-triggered workflows ended `success` — two of five; docs-site deployed nothing.** `CI`
-  run 34408840696: 11 of 11 jobs; run 34359692687 on `69a5140` verified the CVE-2026-9856 floor `transformers>=5.10.0` under
-  `--require-hashes`, pip-audit clean. Docs-site run 34408840657: `build`, carrying `npm audit --audit-level=high`, succeeded;
-  `deploy` was skipped by `docs-site.yml:89` (repo private). After 2026-08-25 every push that ran it failed through 2026-09-09 — four runs, last 34393111514 on `95d408e`; its `paths` filter starts no run for other pushes (`bcb83de` got none).
+- **On `6cc810d` (T-17, pushed) both push-triggered workflows ended `success` — two of five; docs-site deployed nothing.**
+  `CI` run 34461559172: 11 of 11 jobs; run 34359692687 on `69a5140` verified the CVE-2026-9856 floor `transformers>=5.10.0` under
+  `--require-hashes`, pip-audit clean. Docs-site run 34461559218: `build` (with `npm audit --audit-level=high`) succeeded, `deploy` skipped by `docs-site.yml:89` (repo private) — the second docs-site green in a row.
+  The first was `0aacb7b` (T-18, run 34408840657) after four failures since 2026-08-25, so T-18's npm floors are confirmed; `d026804` (T-19) touched no `docs-site.yml:6-17` path and got `CI` 34449244275 alone.
 
 ## Accepted open risks
 

@@ -69,23 +69,23 @@ C.1 remains open for the two Qwen3 candidates under the same benchmark
 contract.
 
 Both inherited CI failures ([ADR 0008](docs/adr/0008-inherited-ci-red-disposition.md))
-are closed. On `0aacb7b` (T-18, pushed) both workflows that run on push ended
-`success`: `CI` run 34408840696 with 11 of 11 jobs, and `Deploy docs site
-(Astro Starlight) to Pages` run 34408840657, its first success since
-2026-08-25. That green is the `build` job, which carries
-`npm audit --audit-level=high`; the `deploy` job was skipped by its own
-condition `if: github.event.repository.visibility == 'public'`
-(`docs-site.yml:89`) because the repository is private, so the run published
-nothing — the deploy half is inert by design until phase E. After its last
-success on 2026-08-25 (run 32880095380) every push that ran docs-site failed
-through 2026-09-09 (four runs, last 34393111514 on `95d408e`), at the npm audit
-step. Not every push runs it: the `paths` filter in `docs-site.yml:6-17` starts
-no run for a push that touches none of those paths, so `bcb83de` got none. The
-audit failed because ten GHSA advisories across five npm packages landed upstream against
-pins that were correct when written; T-18 raised the floors. The other three
-workflows (`live-provider-gate`, `live-quality-metrics-gate`, `weekly-report`)
-run on schedule or dispatch only, so this is two of five, not the whole set.
-The chromadb CVE ignores carry a **review date of 2026-09-24**.
+are closed. On `6cc810d` (T-17, pushed) both workflows that run on
+push ended `success`: `CI` run 34461559172 with 11 of 11 jobs, and `Deploy docs
+site (Astro Starlight) to Pages` run 34461559218. That green is the `build` job,
+which carries `npm audit --audit-level=high`; the `deploy` job was skipped by
+`if: github.event.repository.visibility == 'public'` (`docs-site.yml:89`)
+because the repository is private, so nothing was published — the deploy half
+is inert by design until phase E. After its last success on 2026-08-25 (run
+32880095380) every push that ran docs-site failed through 2026-09-09 (four runs,
+last 34393111514 on `95d408e`) at the npm audit step: ten GHSA advisories across
+five npm packages landed upstream against pins that were correct when written.
+T-18 raised the floors; `0aacb7b` (run 34408840657) was the first success and
+`6cc810d` the second, so the fix is confirmed rather than assumed. The `paths`
+filter in `docs-site.yml:6-17` starts no run for a push touching none of its
+paths, so `d026804` (T-19, only `CURRENT_STATE.md` and `ROADMAP.md`) got `CI`
+run 34449244275 alone. The other three workflows (`live-provider-gate`,
+`live-quality-metrics-gate`, `weekly-report`) run on schedule or dispatch only,
+so this is two of five. The chromadb CVE ignores carry a **review date of 2026-09-24**.
 
 | Phase | What | Acceptance |
 |---|---|---|
