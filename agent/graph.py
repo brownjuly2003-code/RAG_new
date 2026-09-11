@@ -1239,6 +1239,47 @@ def _build_agentic_search_query(question: str) -> str:
 # Model routing node
 # ---------------------------------------------------------------------------
 
+_SGR_QUESTION_CLASSES = ("single_hop", "multi_hop", "aggregation", "global")
+_SGR_MULTI_HOP_CLASSES = frozenset({"multi_hop", "aggregation", "global"})
+_SGR_REASON_CODES = (
+    "SINGLE_SOURCE",
+    "MULTI_SOURCE_CHAIN",
+    "MULTI_SOURCE_AGGREGATION",
+    "CORPUS_GLOBAL",
+)
+_CLASSIFY_COMPLEXITY_SCHEMA: dict[str, Any] = {
+    "type": "object",
+    "properties": {
+        "complexity": {
+            "type": "string",
+            "enum": ["simple", "complex", "global"],
+        },
+        "question_class": {
+            "type": "string",
+            "enum": list(_SGR_QUESTION_CLASSES),
+        },
+        "entities": {
+            "type": "array",
+            "items": {"type": "string", "minLength": 1, "maxLength": 128},
+            "maxItems": 12,
+            "uniqueItems": True,
+        },
+        "needs_multi_hop": {"type": "boolean"},
+        "reason_code": {
+            "type": "string",
+            "enum": list(_SGR_REASON_CODES),
+        },
+    },
+    "required": [
+        "complexity",
+        "question_class",
+        "entities",
+        "needs_multi_hop",
+        "reason_code",
+    ],
+    "additionalProperties": False,
+}
+
 
 def make_classify_complexity_node(
     classifier_llm: SupportsInvoke,
@@ -1252,29 +1293,29 @@ def make_classify_complexity_node(
 
             settings = get_settings()
             if not getattr(settings, "model_routing_enabled", False):
-                new_state: GraphState = {**state, "complexity": "unknown"}
+                new_state: GraphState = {
+                    **state,
+                    "complexity": "unknown",
+                    "question_class": "unknown",
+                    "entities": [],
+                    "needs_multi_hop": False,
+                    "reason_code": "ROUTING_DISABLED",
+                }
                 log_step(trace_id, "classify_complexity", new_state)
                 return new_state
 
             question = state.get("question", "")
             prompt = build_classify_complexity_prompt(question)
             model = _get_llm_model_name(classifier_llm) or ""
+            structured: dict[str, Any] | None = None
             if _llm_supports_structured_output(classifier_llm):
-                structured = _invoke_with_schema(
+                schema_output = _invoke_with_schema(
                     classifier_llm,
                     prompt,
-                    {
-                        "type": "object",
-                        "properties": {
-                            "complexity": {
-                                "type": "string",
-                                "enum": ["simple", "complex", "global"],
-                            }
-                        },
-                        "required": ["complexity"],
-                        "additionalProperties": False,
-                    },
+                    _CLASSIFY_COMPLEXITY_SCHEMA,
                 )
+                if isinstance(schema_output, dict):
+                    structured = schema_output
                 raw = (
                     str(structured.get("complexity") or "")
                     if isinstance(structured, dict)
@@ -1287,7 +1328,11 @@ def make_classify_complexity_node(
                 trace_id=trace_id,
                 node_name="classify_complexity",
                 prompt=prompt,
-                response=raw,
+                response=(
+                    json.dumps(structured, ensure_ascii=False, sort_keys=True)
+                    if structured is not None
+                    else raw
+                ),
                 model=model,
                 duration_ms=0.0,
                 tool_calls=state.get("tool_calls") or None,
@@ -1302,7 +1347,70 @@ def make_classify_complexity_node(
             else:
                 complexity = "complex"
 
-            new_state = _apply_llm_usage({**state, "complexity": complexity}, usage)
+            question_class: Literal[
+                "single_hop", "multi_hop", "aggregation", "global", "unknown"
+            ] = "unknown"
+            entities: list[str] = []
+            needs_multi_hop = False
+            reason_code = "LEGACY_COMPLEXITY_ONLY"
+
+            if structured is not None:
+                raw_question_class = str(structured.get("question_class") or "").strip().lower()
+                if raw_question_class in _SGR_QUESTION_CLASSES:
+                    question_class = cast(
+                        Literal["single_hop", "multi_hop", "aggregation", "global"],
+                        raw_question_class,
+                    )
+
+                raw_entities = structured.get("entities")
+                if isinstance(raw_entities, list):
+                    seen_entities: set[str] = set()
+                    for raw_entity in raw_entities:
+                        if not isinstance(raw_entity, str):
+                            continue
+                        entity = raw_entity.strip()
+                        if not entity or len(entity) > 128 or entity in seen_entities:
+                            continue
+                        seen_entities.add(entity)
+                        entities.append(entity)
+                        if len(entities) == 12:
+                            break
+
+                raw_needs_multi_hop = structured.get("needs_multi_hop")
+                needs_multi_hop = (
+                    raw_needs_multi_hop
+                    if isinstance(raw_needs_multi_hop, bool)
+                    else question_class in _SGR_MULTI_HOP_CLASSES
+                )
+                raw_reason_code = str(structured.get("reason_code") or "").strip().upper()
+                reason_code = (
+                    raw_reason_code
+                    if raw_reason_code in _SGR_REASON_CODES
+                    else "SCHEMA_FIELDS_INVALID"
+                )
+            elif raw.startswith("SIMPLE"):
+                question_class = "single_hop"
+                reason_code = "SINGLE_SOURCE"
+            elif raw.startswith("GLOBAL"):
+                question_class = "global"
+                needs_multi_hop = True
+                reason_code = "CORPUS_GLOBAL"
+            elif raw.startswith("MULTI_HOP") or raw.startswith("MULTIHOP"):
+                question_class = "multi_hop"
+                needs_multi_hop = True
+                reason_code = "MULTI_SOURCE_CHAIN"
+
+            new_state = _apply_llm_usage(
+                {
+                    **state,
+                    "complexity": complexity,
+                    "question_class": question_class,
+                    "entities": entities,
+                    "needs_multi_hop": needs_multi_hop,
+                    "reason_code": reason_code,
+                },
+                usage,
+            )
 
             try:
                 from monitoring.prometheus import record_model_routing

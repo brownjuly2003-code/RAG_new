@@ -105,6 +105,12 @@ class GraphState(TypedDict, total=False):
     # When set, graph routes human via safety/log and skips evaluate/handle_error.
     generation_error: Optional[str]
     complexity: Literal["simple", "complex", "global", "unknown"]
+    question_class: Literal[
+        "single_hop", "multi_hop", "aggregation", "global", "unknown"
+    ]
+    entities: list[str]
+    needs_multi_hop: bool
+    reason_code: str
     retrieval_strategy: Literal["vector", "hybrid", "graph", "factcard"]
     route: Optional[
         Literal[
@@ -195,6 +201,10 @@ def create_initial_state(
         fact_verification_error=None,
         generation_error=None,
         complexity="unknown",
+        question_class="unknown",
+        entities=[],
+        needs_multi_hop=False,
+        reason_code="NOT_CLASSIFIED",
         knowledge_gap=False,
         retrieval_strategy="hybrid",
         route=None,

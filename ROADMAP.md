@@ -74,8 +74,15 @@ evidence, not a default-model decision, and its LLM mean is still below 0.90.
 `multi_hop` and 5 `aggregation` cases. The supplemental dataset digest is
 `0949d756…`; its sidecar remains `agent_labelled` and unapproved. The published
 phase-C dataset stays byte-identical at `3737d694…`. This is preparation, not a
-new metric; retrieval still needs a new candidate pool. The next local item is
-GR-0.4.
+new metric; retrieval still needs a new candidate pool.
+
+**GR-0.4 structured query classification is implemented locally** (2026-09-11).
+Schema-capable providers now fill `complexity`, `question_class`, bounded
+`entities`, `needs_multi_hop` and `reason_code`; initial and legacy-provider
+paths stay safe. Default `simple → vector`, other complexity → hybrid routing
+is unchanged, and graph still requires explicit graph configuration. This is
+preparation for GR-2 entity matching, not a measured slice. The next local item
+is the GR-1 structural builder.
 
 Both inherited CI failures ([ADR 0008](docs/adr/0008-inherited-ci-red-disposition.md))
 are closed. On `6cc810d` (T-17, pushed) both workflows that run on

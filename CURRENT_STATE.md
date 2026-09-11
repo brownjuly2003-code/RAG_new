@@ -74,10 +74,6 @@ mypy needs locked numpy 2.4.4; Postgres integration tests do not run here.
   documents are real; questions were agent-written (`325d63c`, `6b7417d`,
   `32e841f`). Question classes live in a sidecar (`6cde0b1`) — 99 `single_hop`,
   1 `multi_hop`, 0 `aggregation`, 0 `global` (plan §5, GR-0.2).
-- **GR-0.2 supplemental bucket is prepared, not measured:** 15 agent-written
-  questions over 13 pinned real documents (10 `multi_hop`, 5 `aggregation`),
-  dataset `0949d756…`, labels `agent_labelled`, 0 approved. The phase-C dataset
-  remains byte-identical at `3737d694…`; a new candidate pool is still needed.
 - **On pushed `6cc810d`, both push-triggered workflows passed** (`CI`
   34461559172, 11/11; docs build 34461559218). Deploy skipped because the repo
   is private. Schedule/dispatch-only workflows were not run.
@@ -114,6 +110,7 @@ B.1 is preparation until a batch is approved.
 | B.5 | Corpus v1.0 at `real_labelled` | needs Q2 route 1 |
 | GR-0.2 | Separate pinned bucket: 15 cases over 13 documents; 10 `multi_hop`, 5 `aggregation`; original phase-C dataset unchanged | **done as preparation**, not a measured slice |
 | GR-0.3 | Retrieval baseline by class over pool `91ce1745…`: 0.5067 / 0.9050 at top-5 (= C.1a), `single_hop` 0.5063 / 0.9091 over 99 cases, `multi_hop` over 1, two classes empty — a ruler, not a comparison ([capsule](docs/evidence/gr0-bucket-baseline.md)) | **done** (c) |
+| GR-0.4 | SGR schema adds `question_class`, bounded `entities`, `needs_multi_hop` and `reason_code`; default and legacy retrieval routes unchanged | **done as preparation**, graph still explicit |
 | GR-1a | Section coherence as a narrowing arm over the same pool: 0.5216 / 0.9050 with 87/7/6 held, but plain top-4 gives 0.5214 with the same coverage — the gain is a smaller `k`, not structure. 0.63 only by losing 16 FULL cases ([capsule](docs/evidence/gr1a-section-coherence.md)) | **done** (c) |
 
 ## Open questions for Julia

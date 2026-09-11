@@ -13,7 +13,7 @@ Copy `.env.example` to `.env`, then adjust only what your deployment needs.
 | `OLLAMA_BASE_URL` | `http://localhost:11434` | Base URL for the default `local-first` Ollama mode or GraceKelly fallback |
 | `OLLAMA_MODEL_NAME` | `qwen2.5:7b` | Primary Ollama model when `LLM_PROVIDER_PROFILE=local-first` |
 | `OLLAMA_FAST_MODEL_NAME` | `llama3.2:3b` | Faster Ollama model for local helper/tool flows |
-| `MODEL_ROUTING_ENABLED` | `false` | Enable simple/complex/global model routing |
+| `MODEL_ROUTING_ENABLED` | `false` | Enable structured query classification and simple/complex/global model routing |
 | `OLLAMA_REQUEST_TIMEOUT_SEC` | `60` | Timeout for a single Ollama HTTP request |
 | `REQUIRE_OLLAMA` | `false` | Fail fast at startup if Ollama/fallback validation requires Ollama |
 | `LANGFUSE_PUBLIC_KEY` | `-` | Optional Langfuse public key |

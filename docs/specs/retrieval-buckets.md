@@ -59,6 +59,29 @@ SHALL live in a sidecar with `agent_labelled` evidence until human approval.
   its published phase-C SHA-256, and no old result is relabelled as if it had
   measured the new questions
 
+## Requirement: runtime classification exposes SGR metadata without enabling graph
+
+When model routing is enabled, `classify_complexity` SHALL request the structured
+fields `complexity`, `question_class`, `entities`, `needs_multi_hop` and
+`reason_code`. Every initial state SHALL carry safe defaults for those fields,
+and providers without structured output SHALL retain the legacy one-word
+complexity path.
+
+### Scenario: a structured provider supplies the future entity-lane input
+
+- **GIVEN** a classifier provider that supports JSON-schema output
+- **WHEN** it classifies a question that links evidence across documents
+- **THEN** the graph state records its bounded entity list, `multi_hop` class,
+  multi-hop decision and stable reason code together with legacy complexity
+
+### Scenario: classification metadata does not silently enable graph retrieval
+
+- **GIVEN** the new SGR fields on a request
+- **WHEN** the configured retrieval strategy remains `hybrid`
+- **THEN** legacy routing is unchanged (`simple` selects vector; other
+  complexities select hybrid), and graph remains available only through the
+  existing explicit graph configuration
+
 ## Requirement: a retrieval number is reported per class over a pinned pool
 
 A retrieval report SHALL group its metrics by question class, SHALL state the

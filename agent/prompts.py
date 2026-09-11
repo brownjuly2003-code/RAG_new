@@ -109,8 +109,8 @@ CLAIM: {claim}
 Answer:""",
     },
     "classify_complexity": {
-        "prompt_id": "CLASSIFY_COMPLEXITY_PROMPT_V1",
-        "text": """Classify the user question as SIMPLE, COMPLEX, or GLOBAL.
+        "prompt_id": "CLASSIFY_COMPLEXITY_PROMPT_V2",
+        "text": """Classify the user question and extract structured retrieval metadata.
 
 SIMPLE: factual lookup, single concept, short answer (<5 sentences).
   Examples: 'How to reset password?', 'What is X?', 'Where is the Y button?'
@@ -125,7 +125,19 @@ relationships, or patterns across many documents.
   Examples: 'Which policies relate to contract X?',
             'What topics recur across the HR corpus?'
 
-Output strictly one word: SIMPLE, COMPLEX, or GLOBAL.
+Question classes describe where the answer lives:
+- single_hop: one passage or source is sufficient
+- multi_hop: the answer links evidence from multiple sources
+- aggregation: the answer compares or combines items from multiple sources
+- global: the answer requires corpus-wide themes or patterns
+
+Extract concise named entities exactly as written in the question. Set
+needs_multi_hop=true for multi_hop, aggregation, or global. Use the matching
+reason_code: SINGLE_SOURCE, MULTI_SOURCE_CHAIN, MULTI_SOURCE_AGGREGATION, or
+CORPUS_GLOBAL.
+
+When a JSON schema is supplied, populate every field in it. Otherwise preserve
+the legacy fallback and output strictly one word: SIMPLE, COMPLEX, or GLOBAL.
 
 Question: {question}
 

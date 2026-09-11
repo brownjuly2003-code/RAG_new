@@ -81,10 +81,9 @@ ROUTE_OF_CLASS = {
 }
 
 # ---------------------------------------------------------------------------
-# LLM classify prompt + parse — copied verbatim from agent/prompts.py
-# (CLASSIFY_COMPLEXITY_PROMPT_V1) and agent/graph.make_classify_complexity_node
-# so the comparison reflects exactly what the graph would do, without importing
-# the heavy graph/langchain stack.
+# Frozen legacy V1 prompt + parse used by the published Track R comparison.
+# Production moved to the structured CLASSIFY_COMPLEXITY_PROMPT_V2 in GR-0.4;
+# keep this snapshot unchanged so the historical offline result stays reproducible.
 # ---------------------------------------------------------------------------
 CLASSIFY_PROMPT = """Classify the user question as SIMPLE, COMPLEX, or GLOBAL.
 
