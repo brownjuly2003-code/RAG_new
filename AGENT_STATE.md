@@ -85,22 +85,13 @@ Limit: the eval bucket is 99 `single_hop`, 1 `multi_hop`, 0 `aggregation`,
 most cannot run on this corpus until GR-0.2 adds its ≥ 15 multi-hop /
 aggregation questions. "Needed" is measured; "will work" is not claimed.
 
-**Stop point 2026-09-11 — GR-1 persistence verified.** The pure structural
-graph builder is committed as `d0cb9e6`. The persistence milestone adds the
-tenant-owned ORM tables, migration 032 with forced RLS, transactional replace /
-load repository, and focused contract tests. The required red test was recorded
-before implementation; fresh local gates on the completed tree are 4 persistence
-tests passed, 4 existing builder tests passed, focused Ruff passed, focused
-repository mypy passed with imported modules skipped, and `git diff --check`
-passed. Full strict-scope mypy produced no result in 60 seconds and was stopped;
-PostgreSQL integration and the full suite remain off the Windows laptop.
-
-This is preparation, not a slice under the binding acceptance rule. The next
-GR-1 milestone is the graph manifest / NetworkX projection and pipeline wiring
-required by plan §5. No push is authorized.
-
-See [`CURRENT_STATE.md`](CURRENT_STATE.md) for the status rows and
-[`ROADMAP.md`](ROADMAP.md) for what is frozen.
+**Stop point 2026-09-11 — GR-1 projection verified.** Builder `d0cb9e6` and
+tenant-scoped PostgreSQL persistence `d192028` are committed. This milestone adds
+deterministic provenance and lossless `networkx.MultiDiGraph`; its red test came
+first. Fresh gates: 11 GR-1 tests, focused Ruff/mypy, lock regeneration via
+`uv 0.8.23` without version drift, and `pip-audit`: no known vulnerabilities
+(5 accepted ignores). PostgreSQL integration/full suite remain off this laptop.
+Next: tenant-scoped pipeline wiring (plan §5); still preparation under the binding acceptance rule, with no push.
 
 **Slice acceptance rule (binding, including for autopilot):** a slice counts
 only if it changes observable `/api/ask` or UI behaviour with an E2E test, or

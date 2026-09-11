@@ -27,6 +27,9 @@ transformers>=5.10.0
 # === Hybrid Search: BM25 keyword retrieval ===
 rank-bm25>=0.2.2
 
+# === Structural graph: rebuildable in-memory projection ===
+networkx>=3.5
+
 # === Reranker: cross-encoder for post-retrieval reranking ===
 # (uses sentence-transformers, no extra package needed)
 
