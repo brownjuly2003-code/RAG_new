@@ -245,11 +245,12 @@ legacy answer, calls neither source nor policy, and is not offered to the
 resolution-table persistence path. Producer failures expose no exception
 detail to the API.
 
-## Phase C (2026-08-30) — generator baseline
+## Phase C (2026-08-30…2026-09-11) — generator benchmarks
 
 | Slice | Evidence class | Evidence |
 |---|---|---|
 | C.1a Qwen 2.5 7B baseline over 3 × 100 cases | `measured` over `agent_labelled` | [raw report](evaluation/c1a-qwen25-7b-c06bdf5-phase-c-generator-benchmark.json) · [SHA-256](evaluation/c1a-qwen25-7b-c06bdf5-phase-c-generator-benchmark.json.sha256) · `tests/test_phase_c_baseline_artifact.py` |
+| C.1b Qwen3 8B over 3 × 100 cases | `measured` over `agent_labelled` | [c1b-qwen3-generator-benchmark](docs/evidence/c1b-qwen3-generator-benchmark.md) · [raw report](evaluation/c1b-qwen3-8b-b8ecc8e-phase-c-generator-benchmark.json) · [SHA-256](evaluation/c1b-qwen3-8b-b8ecc8e-phase-c-generator-benchmark.json.sha256) · `tests/test_phase_c_qwen3_artifact.py` |
 
 **C.1a is a slice under rule (c):** a Mac run that actually happened, with
 exact source, corpus, cached-context, model and config provenance. All 300
@@ -262,8 +263,17 @@ case** ([192.10, 202.90]).
 This is generator-quality evidence over 100 agent-authored questions and
 hash-pinned cached contexts from real documents; it is not a shipment-resolution
 number. The baseline misses the phase-C faithfulness and precision thresholds.
-C.1 remains open for the Qwen3 candidates, so this result is neither a default
-model change nor the phase's final NO-SHIP decision.
+C.1a alone was neither a default-model change nor the phase's final NO-SHIP
+decision.
+
+**C.1b is a second slice under rule (c):** Qwen3 8B completed the same 3 × 100
+contract with zero failed cases. LLM faithfulness is **0.8986**, NLI
+faithfulness **0.9908**, answer relevancy **0.8095**, and mean latency **176.81
+seconds per case** (run-level 95% CI [105.34, 248.29]). Context precision stays
+**0.506657** and recall **0.9050** because the cached-context digest is exactly
+the C.1a digest. The result is now an input to C.4, not a model flip: the LLM
+faithfulness mean remains 0.0014 below the 0.90 gate, and the report does not
+contain a total-host peak-RAM measurement.
 
 ## Stream GR (2026-09-09) — the retrieval ruler
 

@@ -60,13 +60,14 @@ NO-GO check (§15) is what fired. The labels themselves stay `agent_labelled`
 until a batch of 20 is approved (Q2); ADR 0008 decided that fallback in
 advance and the code enforces it.
 
-**Phase C.1 has a measured baseline** (2026-08-30). Qwen 2.5 7B completed
-3 × 100 cases on the Mac with zero failures. LLM faithfulness is 0.8295,
-NLI faithfulness 0.8919 and context precision 0.5067; the checked-in report
-pins the corpus, cached contexts, source SHA, model digest and full config.
-The baseline misses both phase-C thresholds, but it is not a model decision:
-C.1 remains open for the two Qwen3 candidates under the same benchmark
-contract.
+**Phase C.1 now has two published generator benchmarks.** Qwen 2.5 7B
+completed 3 × 100 cases on the Mac with zero failures at LLM faithfulness
+0.8295, NLI faithfulness 0.8919 and context precision 0.5067. Qwen3 8B then
+completed the same contract at 0.8986 / 0.9908 / 0.506657, also with zero
+failures; its report, sidecar and [capsule](docs/evidence/c1b-qwen3-generator-benchmark.md)
+were published on 2026-09-11. Both reports pin the corpus, cached contexts,
+source SHA, model digest and full config. C.4 remains open: C.1b is comparison
+evidence, not a default-model decision, and its LLM mean is still below 0.90.
 
 Both inherited CI failures ([ADR 0008](docs/adr/0008-inherited-ci-red-disposition.md))
 are closed. On `6cc810d` (T-17, pushed) both workflows that run on

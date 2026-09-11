@@ -3,7 +3,7 @@
 **The only entry point for a new session.** Read this, then
 [`ROADMAP.md`](ROADMAP.md). Everything else is reached by link, on demand.
 
-Last updated: 2026-09-10 · Plan: [`plan_06_09_26.md`](plan_06_09_26.md)
+Last updated: 2026-09-11 · Plan: [`plan_06_09_26.md`](plan_06_09_26.md)
 (mode B, adopted by the owner 2026-09-10) · Audit of record:
 [`docs/audits/audit_final_23_08_2026.md`](docs/audits/audit_final_23_08_2026.md)
 · Phase C benchmark source: `c06bdf5` · push is the owner's call (§1)
@@ -36,12 +36,12 @@ RSS 2,124,476,416 bytes; Ollama loaded size 5,062,566,870 bytes; neither is
 total-host peak RAM. Misses faithfulness 0.90 and context precision 0.63; that
 does not authorize a model change or a NO-SHIP decision. **Stream GR is required, not optional:** precision is computed over these cached contexts, so only the retriever moves it (plan §2), and the cheap structural arm is measured short of the ≥ 0.63 gate (phase C's, GR-1's target in plan §5) — GR-0.3 0.5067 at top-5, GR-1a 0.5216 against plain top-4's 0.5214 (rows GR-0.3/GR-1a below).
 
-**C.1b `qwen3:8b` finished on the Mac 2026-09-08 03:55 MSK — measured there,
-not published here.** The 2026-09-02 attempt died with `/tmp`; rebuilt under
-`$HOME`, 3 × 100 (seeds 42–44, code `b8ecc8e`) ended `FULL_VALIDATION_OK` at
-faithfulness 0.8986, NLI 0.9908, precision 0.5067, recall 0.9050, relevancy
-0.8095, 176.8 s per case. Checking the report in with a sha guard and an index
-row is what remains; paths in [`plan_06_09_26.md`](plan_06_09_26.md) §0.
+**C.1b `qwen3:8b` is published** (2026-09-11): the Mac run completed 3 × 100 cases with zero failures.
+The [raw report](evaluation/c1b-qwen3-8b-b8ecc8e-phase-c-generator-benchmark.json) and sidecar are guarded by `tests/test_phase_c_qwen3_artifact.py`;
+the [capsule](docs/evidence/c1b-qwen3-generator-benchmark.md) records provenance and limitations.
+LLM faithfulness is 0.8986, NLI 0.9908, relevancy 0.8095 and mean latency 176.81 s per case.
+Precision remains 0.506657 over the same cached contexts. This is C.4 input, not a default-model change;
+total-host peak RAM was not measured.
 
 ### 1. The gate can reach Russian traffic. The corpus still cannot measure it.
 
