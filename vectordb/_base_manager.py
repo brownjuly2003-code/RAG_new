@@ -441,6 +441,7 @@ class HybridRetriever:
         parent_expansion: bool = False,
         parent_expansion_window: int = 1,
         parent_expansion_max_chars: int = 2400,
+        graph_projection: Any = None,
     ):
         self._vector_store = vector_store
         self._chunks = chunks
@@ -452,6 +453,12 @@ class HybridRetriever:
         self._parent_expansion = parent_expansion
         self._parent_window = max(0, parent_expansion_window)
         self._parent_max_chars = parent_expansion_max_chars
+        self._graph_projection = graph_projection
+        self._graph_category_sources: dict[str, set[str]] = {}
+        self._graph_chunk_sections: dict[str, str] = {}
+        self._graph_section_chunks: dict[str, list[Document]] = {}
+        if graph_projection is not None:
+            self._index_graph_projection(graph_projection)
 
         # Position of each chunk in ingestion order — neighbour lookup for
         # parent-expansion. Keyed the same way as RRF dedup, so documents
@@ -479,12 +486,268 @@ class HybridRetriever:
             logger.warning("[HybridRetriever] Vector search error: %s", e)
             return []
 
+    @staticmethod
+    def _graph_chunk_identity(source: Any, chunk_index: Any) -> tuple[str, str] | None:
+        if source is None or chunk_index is None:
+            return None
+        return str(source).strip().casefold(), str(chunk_index)
+
+    @staticmethod
+    def _graph_chunk_order(metadata: dict[str, Any], position: int) -> int:
+        raw_index = metadata.get("chunk_index")
+        if isinstance(raw_index, int) and not isinstance(raw_index, bool) and raw_index >= 0:
+            return raw_index
+        if isinstance(raw_index, str) and raw_index.isdecimal():
+            return int(raw_index)
+        return position
+
+    def _index_graph_projection(self, projection: Any) -> None:
+        docs_by_identity: dict[tuple[str, str], Document] = {}
+        chunk_order: dict[str, int] = {}
+        for position, doc in enumerate(self._chunks):
+            metadata = doc.metadata or {}
+            identity = self._graph_chunk_identity(
+                metadata.get("source"), self._graph_chunk_order(metadata, position)
+            )
+            if identity is not None:
+                docs_by_identity.setdefault(identity, doc)
+            chunk_order.setdefault(_rrf_document_key(doc, self._doc_key_chars), position)
+
+        node_data = dict(projection.nodes(data=True))
+        graph_chunk_docs: dict[str, Document] = {}
+        for node_id, data in node_data.items():
+            attributes = data.get("attributes") or {}
+            kind = data.get("kind")
+            if kind == "document":
+                source = attributes.get("source")
+                raw_categories = attributes.get("categories") or ()
+                if isinstance(raw_categories, str):
+                    raw_categories = (raw_categories,)
+                if source is not None:
+                    for category in raw_categories:
+                        category_key = str(category).strip().casefold()
+                        if category_key:
+                            self._graph_category_sources.setdefault(category_key, set()).add(
+                                str(source)
+                            )
+            elif kind == "chunk":
+                identity = self._graph_chunk_identity(
+                    attributes.get("source"), attributes.get("chunk_index")
+                )
+                if identity is not None and identity in docs_by_identity:
+                    graph_chunk_docs[str(node_id)] = docs_by_identity[identity]
+
+        for section_id, chunk_id, edge_data in projection.edges(data=True):
+            if edge_data.get("kind") != "contains":
+                continue
+            attributes = edge_data.get("attributes") or {}
+            if attributes.get("level") != "chunk":
+                continue
+            doc = graph_chunk_docs.get(str(chunk_id))
+            if doc is None or (node_data.get(section_id) or {}).get("kind") != "section":
+                continue
+            section_key = str(section_id)
+            doc_key = _rrf_document_key(doc, self._doc_key_chars)
+            self._graph_chunk_sections[doc_key] = section_key
+            self._graph_section_chunks.setdefault(section_key, []).append(doc)
+
+        for section_docs in self._graph_section_chunks.values():
+            section_docs.sort(
+                key=lambda doc: chunk_order.get(
+                    _rrf_document_key(doc, self._doc_key_chars), len(self._chunks)
+                )
+            )
+
+    def _graph_sources_for_categories(
+        self, categories: Sequence[str] | None
+    ) -> list[str] | None:
+        if not categories:
+            return None
+        sources: set[str] = set()
+        for category in categories:
+            sources.update(
+                self._graph_category_sources.get(str(category).strip().casefold(), ())
+            )
+        return sorted(sources) or None
+
+    @staticmethod
+    def _source_key(doc: Document) -> str | None:
+        source = (doc.metadata or {}).get("source")
+        if source is None:
+            return None
+        return str(source).strip().casefold()
+
+    def _vector_search_for_sources(
+        self, query: str, sources: Sequence[str]
+    ) -> list[Document]:
+        source_filter = {"source": {"$in": list(sources)}}
+        try:
+            if hasattr(self._vector_store, "similarity_search"):
+                try:
+                    docs = self._vector_store.similarity_search(
+                        query, k=self._retrieval_k, filter=source_filter
+                    )
+                except TypeError:
+                    docs = self._vector_store.similarity_search(
+                        query, k=self._retrieval_k
+                    )
+            else:
+                try:
+                    retriever = self._vector_store.as_retriever(
+                        search_kwargs={"k": self._retrieval_k, "filter": source_filter}
+                    )
+                    docs = retriever.get_relevant_documents(query)
+                except TypeError:
+                    retriever = self._vector_store.as_retriever(
+                        search_kwargs={"k": self._retrieval_k}
+                    )
+                    docs = retriever.get_relevant_documents(query)
+        except Exception as e:
+            logger.warning("[HybridRetriever] Filtered vector search error: %s", e)
+            return []
+
+        allowed = {source.strip().casefold() for source in sources}
+        return [doc for doc in docs if self._source_key(doc) in allowed]
+
+    def _graph_bm25_documents(
+        self, query: str, sources: Sequence[str] | None
+    ) -> list[Document]:
+        if self._bm25 is None:
+            return []
+        allowed = (
+            {source.strip().casefold() for source in sources}
+            if sources is not None
+            else None
+        )
+        scores = self._bm25.get_scores(_tokenize_for_bm25(query))
+        eligible = [
+            index
+            for index in range(len(scores))
+            if allowed is None or self._source_key(self._chunks[index]) in allowed
+        ]
+        top_indices = sorted(eligible, key=lambda index: scores[index], reverse=True)[
+            : self._retrieval_k
+        ]
+        return [self._chunks[index] for index in top_indices if scores[index] > 0]
+
+    def _apply_graph_coherence(self, docs: list[Document]) -> list[Document]:
+        groups: dict[str, list[int]] = {}
+        unmapped: set[int] = set()
+        for rank, doc in enumerate(docs):
+            section = self._graph_chunk_sections.get(
+                _rrf_document_key(doc, self._doc_key_chars)
+            )
+            if section is None:
+                unmapped.add(rank)
+                continue
+            groups.setdefault(section, []).append(rank)
+
+        scores = {
+            section: sum(1.0 / (rank + 1) for rank in ranks)
+            for section, ranks in groups.items()
+        }
+        strongest = max(scores.values(), default=0.0)
+        ordered: list[tuple[int, int]] = []
+        for rank, doc in enumerate(docs):
+            if rank in unmapped:
+                ordered.append((1, rank))
+                continue
+            section = self._graph_chunk_sections[
+                _rrf_document_key(doc, self._doc_key_chars)
+            ]
+            if len(groups[section]) > 1:
+                ordered.append((0, rank))
+                continue
+            strength = scores[section] / strongest if strongest else 0.0
+            if strength <= 0.25 and scores[section] < strongest:
+                continue
+            ordered.append((2, rank))
+
+        ordered.sort()
+        return [docs[rank] for _, rank in ordered[: self._rerank_k]]
+
+    def _expand_graph_sections(self, docs: list[Document]) -> list[Document]:
+        used_keys = {_rrf_document_key(doc, self._doc_key_chars) for doc in docs}
+        expanded: list[Document] = []
+        for doc in docs:
+            doc_key = _rrf_document_key(doc, self._doc_key_chars)
+            section = self._graph_chunk_sections.get(doc_key)
+            section_docs = self._graph_section_chunks.get(section or "", [])
+            positions = [
+                index
+                for index, candidate in enumerate(section_docs)
+                if _rrf_document_key(candidate, self._doc_key_chars) == doc_key
+            ]
+            if not positions:
+                expanded.append(doc)
+                continue
+
+            before: list[str] = []
+            after: list[str] = []
+            budget = self._parent_max_chars - len(doc.page_content)
+            position = positions[0]
+            for distance in range(1, len(section_docs)):
+                for side, sibling_position in (
+                    (before, position - distance),
+                    (after, position + distance),
+                ):
+                    if sibling_position < 0 or sibling_position >= len(section_docs):
+                        continue
+                    sibling = section_docs[sibling_position]
+                    sibling_key = _rrf_document_key(sibling, self._doc_key_chars)
+                    if sibling_key in used_keys:
+                        continue
+                    text = self._strip_contextual_header(sibling.page_content).strip()
+                    if not text or len(text) > budget:
+                        continue
+                    budget -= len(text)
+                    used_keys.add(sibling_key)
+                    side.append(text)
+
+            if not before and not after:
+                expanded.append(doc)
+                continue
+            parts = list(reversed(before)) + [doc.page_content] + after
+            expanded.append(
+                Document(
+                    page_content="\n\n".join(parts),
+                    metadata={**(doc.metadata or {}), "graph_section_expanded": True},
+                )
+            )
+        return expanded
+
     def get_vector_documents(self, query: str) -> list[Document]:
         """Vector-only retrieval path for cheap simple-query routing."""
         docs = self._vector_search(query)[:self._rerank_k]
         if self._parent_expansion and docs:
             docs = self._expand_parents(docs)
         return docs
+
+    def get_graph_documents(
+        self, query: str, *, categories: Sequence[str] | None = None
+    ) -> list[Document]:
+        """Structural retrieval with category prefilter and section coherence."""
+        if self._graph_projection is None:
+            return self.get_relevant_documents(query)
+
+        sources = self._graph_sources_for_categories(categories)
+        vector_results = (
+            self._vector_search_for_sources(query, sources)
+            if sources is not None
+            else self._vector_search(query)
+        )
+        bm25_results = self._graph_bm25_documents(query, sources)
+        merged = (
+            self._rrf_merge(vector_results, bm25_results)
+            if bm25_results
+            else vector_results
+        )
+        if self._reranker is not None and merged:
+            merged = self._rerank(query, merged)
+        else:
+            merged = merged[: self._rerank_k]
+        coherent = self._apply_graph_coherence(merged)
+        return self._expand_graph_sections(coherent)
 
     def get_relevant_documents(self, query: str) -> list[Document]:
         """Гибридный поиск с RRF и reranking."""

@@ -20,6 +20,8 @@ Arms:
      ORIGINAL query (as in C/D2, where those cases are FULL). Pools are NOT
      recomputed: copy ab_phase2_E_pool.json -> ab_phase2_F_pool.json and run
      rerank F. Rationale: docs/operations/2026-06-06-arm-e-field-hyde-results.md.
+  G1 structural graph: arm-C chunking plus exact available-category prefilter,
+     then graph section coherence and same-section expansion after reranking.
 
 All arms run the post-4844094 header path (body never truncated, header clamped 200).
 
@@ -39,6 +41,8 @@ Usage:
   python scripts/ab_remote_contextual.py --stage pools  --arm C
   python scripts/ab_remote_contextual.py --stage rerank --arm A
   python scripts/ab_remote_contextual.py --stage rerank --arm C
+  python scripts/ab_remote_contextual.py --stage pools  --arm G1
+  python scripts/ab_remote_contextual.py --stage rerank --arm G1
   python scripts/ab_remote_contextual.py --stage report
 """
 from __future__ import annotations
@@ -101,8 +105,30 @@ def _set_arm_env(arm: str) -> None:
     os.environ["RAG_RERANKER_MODEL"] = ""  # pools stage never loads the reranker
     os.environ["RAG_SEMANTIC_CHUNKING"] = "false"
     # Arm E = arm C chunking + expanded queries (query side only).
-    os.environ["RAG_STRUCTURAL_CHUNKING"] = "true" if arm in ("C", "E") else "false"
+    os.environ["RAG_STRUCTURAL_CHUNKING"] = (
+        "true" if arm in ("C", "E", "G1") else "false"
+    )
     # RAG_CONTEXTUAL_HEADERS stays at the production default (on).
+
+
+def _matching_graph_categories(case: dict, available_categories: list[str]) -> list[str]:
+    """Return case labels that exactly match categories present in the graph."""
+    available = {
+        str(category).strip().casefold(): str(category)
+        for category in available_categories
+        if str(category).strip()
+    }
+    raw_labels = case.get("categories") or case.get("tags") or ()
+    if isinstance(raw_labels, str):
+        raw_labels = (raw_labels,)
+    matched: list[str] = []
+    seen: set[str] = set()
+    for raw_label in raw_labels:
+        key = str(raw_label).strip().casefold()
+        if key in available and key not in seen:
+            seen.add(key)
+            matched.append(available[key])
+    return matched
 
 
 def _load_expansions(path: Path) -> dict[str, str]:
@@ -214,24 +240,61 @@ def stage_pools(
         def __init__(self) -> None:
             self._qv = {q: qmat[i] for i, q in enumerate(eff_queries)}
 
-        def similarity_search(self, query: str, k: int = 20):
-            idx = np.argsort(-(mat @ self._qv[query]))[:k]
-            return [chunks[i] for i in idx]
+        def similarity_search(self, query: str, k: int = 20, filter=None):
+            idx = np.argsort(-(mat @ self._qv[query]))
+            if filter is not None:
+                allowed = set(filter["source"]["$in"])
+                idx = [
+                    item
+                    for item in idx
+                    if (chunks[item].metadata or {}).get("source") in allowed
+                ]
+            return [chunks[i] for i in idx[:k]]
 
     store = _MatrixStore()
+    graph_projection = None
+    if arm == "G1":
+        from ingestion.structure_graph import build_structural_graph
+        from ingestion.structure_graph_projection import project_structure_graph
+
+        tenant_id = str(cases[0].get("tenant_id") or "aircargo") if cases else "aircargo"
+        graph_projection = project_structure_graph(
+            build_structural_graph(chunks, tenant_id=tenant_id)
+        )
     retriever = HybridRetriever(
         vector_store=store,
         chunks=chunks,
         retrieval_k=settings.retrieval_top_k,
         rerank_k=settings.rerank_top_k,
         reranker=None,
+        graph_projection=graph_projection,
     )
 
     rows = []
     for case, eff_query in zip(cases, eff_queries, strict=True):
-        vector_results = store.similarity_search(eff_query, k=retriever._retrieval_k)
-        bm25_results = []
-        if retriever._bm25 is not None:
+        graph_categories = (
+            _matching_graph_categories(
+                case, list(retriever._graph_category_sources)
+            )
+            if arm == "G1"
+            else []
+        )
+        graph_sources = (
+            retriever._graph_sources_for_categories(graph_categories)
+            if graph_categories
+            else None
+        )
+        vector_results = (
+            retriever._vector_search_for_sources(eff_query, graph_sources)
+            if graph_sources is not None
+            else store.similarity_search(eff_query, k=retriever._retrieval_k)
+        )
+        bm25_results = (
+            retriever._graph_bm25_documents(eff_query, graph_sources)
+            if arm == "G1"
+            else []
+        )
+        if arm != "G1" and retriever._bm25 is not None:
             scores = retriever._bm25.get_scores(_tokenize_for_bm25(eff_query))
             top = sorted(range(len(scores)), key=lambda i: scores[i], reverse=True)
             bm25_results = [
@@ -249,9 +312,39 @@ def stage_pools(
         }
         if eff_query != case["query"]:
             row["expanded_query"] = eff_query
+        if arm == "G1":
+            row["graph_categories"] = graph_categories
+            row["graph_prefiltered"] = graph_sources is not None
+            row["cand_metadata"] = [dict(d.metadata or {}) for d in merged]
         rows.append(row)
 
     out_dir.mkdir(parents=True, exist_ok=True)
+    if arm == "G1":
+        graph_chunks_path = out_dir / "ab_phase2_G1_graph_chunks.json"
+        graph_chunks_path.write_text(
+            json.dumps(
+                {
+                    "tenant_id": str(cases[0].get("tenant_id") or "aircargo")
+                    if cases
+                    else "aircargo",
+                    "chunks": [
+                        {
+                            "page_content": chunk.page_content,
+                            "metadata": dict(chunk.metadata or {}),
+                        }
+                        for chunk in chunks
+                    ],
+                },
+                ensure_ascii=False,
+            ),
+            encoding="utf-8",
+        )
+        matched_cases = sum(bool(row["graph_categories"]) for row in rows)
+        print(
+            f"[pools/{arm}] category prefilter matched {matched_cases}/{len(rows)} cases; "
+            f"graph chunks -> {graph_chunks_path}",
+            flush=True,
+        )
     pool_path = out_dir / f"ab_phase2_{arm}_pool.json"
     pool_path.write_text(json.dumps(rows, ensure_ascii=False), encoding="utf-8")
     print(f"[pools/{arm}] saved {len(rows)} pools -> {pool_path}", flush=True)
@@ -261,7 +354,7 @@ def stage_pools(
 def stage_rerank(arm: str, out_dir: Path) -> int:
     # Reranker only in this process; embedder env stays irrelevant here.
     from config.settings import get_settings
-    from vectordb._base_manager import get_reranker
+    from vectordb._base_manager import Document, HybridRetriever, get_reranker
 
     settings = get_settings()
     pool_path = out_dir / f"ab_phase2_{arm}_pool.json"
@@ -269,6 +362,44 @@ def stage_rerank(arm: str, out_dir: Path) -> int:
         print(f"[rerank/{arm}] missing {pool_path} — run --stage pools first", flush=True)
         return 2
     rows = json.loads(pool_path.read_text(encoding="utf-8"))
+
+    graph_retriever = None
+    if arm == "G1":
+        from ingestion.structure_graph import build_structural_graph
+        from ingestion.structure_graph_projection import project_structure_graph
+
+        graph_chunks_path = out_dir / "ab_phase2_G1_graph_chunks.json"
+        if not graph_chunks_path.exists():
+            print(
+                f"[rerank/{arm}] missing {graph_chunks_path} — run --stage pools first",
+                flush=True,
+            )
+            return 2
+        graph_payload = json.loads(graph_chunks_path.read_text(encoding="utf-8"))
+        graph_chunks = [
+            Document(
+                page_content=str(item["page_content"]),
+                metadata=dict(item.get("metadata") or {}),
+            )
+            for item in graph_payload["chunks"]
+        ]
+        graph_projection = project_structure_graph(
+            build_structural_graph(
+                graph_chunks,
+                tenant_id=str(graph_payload.get("tenant_id") or "aircargo"),
+            )
+        )
+        graph_retriever = HybridRetriever(
+            vector_store=None,
+            chunks=graph_chunks,
+            rerank_k=settings.rerank_top_k,
+            reranker=None,
+            use_bm25=False,
+            parent_expansion_max_chars=getattr(
+                settings, "parent_expansion_max_chars", 2400
+            ),
+            graph_projection=graph_projection,
+        )
 
     reranker = get_reranker()
     if reranker is None:
@@ -296,11 +427,41 @@ def stage_rerank(arm: str, out_dir: Path) -> int:
         order = sorted(range(len(scores)), key=lambda j: scores[j], reverse=True)
         row["prerank_cands"] = row["cands"]
         row["prerank_sources"] = row.get("cand_sources", [])
-        row["cands"] = [row["prerank_cands"][j] for j in order]
-        row["cand_sources"] = [
+        reranked_cands = [row["prerank_cands"][j] for j in order]
+        reranked_sources = [
             row["prerank_sources"][j] if j < len(row["prerank_sources"]) else "?"
             for j in order
         ]
+        if arm == "G1":
+            metadata = row.get("cand_metadata") or []
+            if len(metadata) != len(row["prerank_cands"]):
+                print(
+                    f"[rerank/{arm}] {row.get('case_id', '?')} has incomplete candidate metadata",
+                    flush=True,
+                )
+                return 2
+            reranked_metadata = [metadata[j] for j in order]
+            ranked_docs = [
+                Document(page_content=text, metadata=dict(doc_metadata or {}))
+                for text, doc_metadata in zip(
+                    reranked_cands, reranked_metadata, strict=True
+                )
+            ]
+            top_k = int(row.get("rerank_k", settings.rerank_top_k))
+            assert graph_retriever is not None
+            coherent = graph_retriever._apply_graph_coherence(ranked_docs[:top_k])
+            graph_docs = graph_retriever._expand_graph_sections(coherent)
+            row["reranked_cands"] = reranked_cands
+            row["reranked_sources"] = reranked_sources
+            row["cands"] = [doc.page_content for doc in graph_docs]
+            row["cand_sources"] = [
+                (doc.metadata or {}).get("source", "?") for doc in graph_docs
+            ]
+            row["cand_metadata"] = [dict(doc.metadata or {}) for doc in graph_docs]
+            row["graph_postprocessed"] = True
+        else:
+            row["cands"] = reranked_cands
+            row["cand_sources"] = reranked_sources
         if i % 20 == 0:
             print(f"[rerank/{arm}] {i}/{len(rows)} ({time.time()-t0:.0f}s)", flush=True)
 
@@ -534,7 +695,7 @@ def stage_expand(
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--stage", required=True, choices=("pools", "rerank", "report", "expand"))
-    parser.add_argument("--arm", default="", choices=("", "A", "C", "E", "F"))
+    parser.add_argument("--arm", default="", choices=("", "A", "C", "E", "F", "G1"))
     parser.add_argument("--corpus", default=str(PROJECT_ROOT / "data" / "uploads" / "aircargo"))
     parser.add_argument(
         "--cases", default=str(PROJECT_ROOT / "evaluation" / "curated_cases_aircargo.jsonl")
@@ -561,15 +722,15 @@ def main(argv: list[str] | None = None) -> int:
 
     out_dir = Path(args.out_dir)
     if args.stage == "pools":
-        if args.arm not in ("A", "C", "E"):
-            parser.error("--stage pools requires --arm A|C|E")
+        if args.arm not in ("A", "C", "E", "G1"):
+            parser.error("--stage pools requires --arm A|C|E|G1")
         expansions = _load_expansions(Path(args.expansions)) if args.arm == "E" else None
         return stage_pools(
             args.arm, Path(args.corpus), Path(args.cases), out_dir, expansions=expansions
         )
     if args.stage == "rerank":
-        if args.arm not in ("A", "C", "E", "F"):
-            parser.error("--stage rerank requires --arm A|C|E|F")
+        if args.arm not in ("A", "C", "E", "F", "G1"):
+            parser.error("--stage rerank requires --arm A|C|E|F|G1")
         return stage_rerank(args.arm, out_dir)
     if args.stage == "expand":
         return stage_expand(
