@@ -429,6 +429,77 @@ class DocumentStats(Base):
     last_cited_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
 
+class KbGraphNode(Base):
+    """Tenant-owned structural graph node."""
+
+    __tablename__ = "kb_graph_nodes"
+    __table_args__ = (
+        UniqueConstraint(
+            "tenant_id",
+            "kind",
+            "natural_key",
+            name="uq_kb_graph_nodes_tenant_kind_key",
+        ),
+        CheckConstraint(
+            "kind IN ('document', 'section', 'chunk', 'category')",
+            name="ck_kb_graph_nodes_kind",
+        ),
+        Index("ix_kb_graph_nodes_tenant_kind", "tenant_id", "kind"),
+    )
+
+    tenant_id: Mapped[str] = mapped_column(String(50), primary_key=True)
+    node_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True)
+    kind: Mapped[str] = mapped_column(String(32), nullable=False)
+    natural_key: Mapped[str] = mapped_column(Text, nullable=False)
+    label: Mapped[str] = mapped_column(Text, nullable=False)
+    attributes: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
+
+
+class KbGraphEdge(Base):
+    """Tenant-owned structural graph edge."""
+
+    __tablename__ = "kb_graph_edges"
+    __table_args__ = (
+        ForeignKeyConstraint(
+            ["tenant_id", "source_node_id"],
+            ["kb_graph_nodes.tenant_id", "kb_graph_nodes.node_id"],
+            ondelete="CASCADE",
+            name="fk_kb_graph_edges_source_node",
+        ),
+        ForeignKeyConstraint(
+            ["tenant_id", "target_node_id"],
+            ["kb_graph_nodes.tenant_id", "kb_graph_nodes.node_id"],
+            ondelete="CASCADE",
+            name="fk_kb_graph_edges_target_node",
+        ),
+        UniqueConstraint(
+            "tenant_id",
+            "kind",
+            "source_node_id",
+            "target_node_id",
+            name="uq_kb_graph_edges_tenant_kind_nodes",
+        ),
+        CheckConstraint(
+            "kind IN ('contains', 'next', 'same_section', 'cross_ref', 'category')",
+            name="ck_kb_graph_edges_kind",
+        ),
+        Index(
+            "ix_kb_graph_edges_tenant_kind_source",
+            "tenant_id",
+            "kind",
+            "source_node_id",
+        ),
+        Index("ix_kb_graph_edges_tenant_target", "tenant_id", "target_node_id"),
+    )
+
+    tenant_id: Mapped[str] = mapped_column(String(50), primary_key=True)
+    edge_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True)
+    kind: Mapped[str] = mapped_column(String(32), nullable=False)
+    source_node_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), nullable=False)
+    target_node_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), nullable=False)
+    attributes: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
+
+
 class IngestionJob(Base):
     """Durable tenant-owned ingestion job (public job_id identity)."""
 
