@@ -69,6 +69,14 @@ were published on 2026-09-11. Both reports pin the corpus, cached contexts,
 source SHA, model digest and full config. C.4 remains open: C.1b is comparison
 evidence, not a default-model decision, and its LLM mean is still below 0.90.
 
+**GR-0.2 now has a separate, provenance-pinned evaluation bucket** (2026-09-11):
+15 agent-written questions over 13 real corpus documents, split into 10
+`multi_hop` and 5 `aggregation` cases. The supplemental dataset digest is
+`0949d756…`; its sidecar remains `agent_labelled` and unapproved. The published
+phase-C dataset stays byte-identical at `3737d694…`. This is preparation, not a
+new metric; retrieval still needs a new candidate pool. The next local item is
+GR-0.4.
+
 Both inherited CI failures ([ADR 0008](docs/adr/0008-inherited-ci-red-disposition.md))
 are closed. On `6cc810d` (T-17, pushed) both workflows that run on
 push ended `success`: `CI` run 34461559172 with 11 of 11 jobs, and `Deploy docs

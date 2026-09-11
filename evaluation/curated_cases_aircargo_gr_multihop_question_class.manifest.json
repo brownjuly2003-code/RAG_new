@@ -1,0 +1,14 @@
+{
+  "schema_version": "aircargo-question-class-manifest/v1.0",
+  "dataset": "evaluation/curated_cases_aircargo_gr_multihop.jsonl",
+  "dataset_sha256": "0949d7563983b96500074e61f10274b28cb9341612206e02733a59b5c7968f5f",
+  "label_schema_version": "aircargo-question-class-labels/v1.0",
+  "evidence_class": "agent_labelled",
+  "case_count": 15,
+  "question_class_counts": {
+    "aggregation": 5,
+    "global": 0,
+    "multi_hop": 10,
+    "single_hop": 0
+  }
+}

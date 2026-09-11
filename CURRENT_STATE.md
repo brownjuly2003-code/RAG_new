@@ -1,7 +1,7 @@
 # Current state — RAG_new
 
-**The only entry point for a new session.** Read this, then
-[`ROADMAP.md`](ROADMAP.md). Everything else is reached by link, on demand.
+**The only entry point for a new session.** Read this, then [`ROADMAP.md`](ROADMAP.md);
+follow other links only when needed.
 
 Last updated: 2026-09-11 · Plan: [`plan_06_09_26.md`](plan_06_09_26.md)
 (mode B, adopted by the owner 2026-09-10) · Audit of record:
@@ -26,75 +26,61 @@ is `measured`; sidecar SHA-256 is guarded by `tests/test_phase_c_baseline_artifa
 | Answer relevancy | 0.8960 | [0.8960, 0.8960] |
 | Mean latency per case | 197.50 s | [192.10 s, 202.90 s] |
 
-Provenance: code `c06bdf5721b434eff32dcf5b9991221d5b2a15f8`; model `qwen2.5:7b`
-at `845dbda0ea48ed749caafd9e6037047aa19acfcfd82e704d7ca97d631a0b697e`; dataset
-`3737d694362d1867ca3d5983e3765d02c01110d2409145ba7e0f05c021d9c720`; cached
-contexts `91ce1745e13ce24cc1b69d0655412385700f5028b4e6b4ed4bf056cb6188ff10`;
-NLI `8adb042d524ecd5c26d3e3ba0e3fbcf7e2d0864c`. Config: seeds 42–44,
-temperature 0, `num_ctx=4096`, `num_predict=384`, context cap 6000. NLI peak
-RSS 2,124,476,416 bytes; Ollama loaded size 5,062,566,870 bytes; neither is
-total-host peak RAM. Misses faithfulness 0.90 and context precision 0.63; that
-does not authorize a model change or a NO-SHIP decision. **Stream GR is required, not optional:** precision is computed over these cached contexts, so only the retriever moves it (plan §2), and the cheap structural arm is measured short of the ≥ 0.63 gate (phase C's, GR-1's target in plan §5) — GR-0.3 0.5067 at top-5, GR-1a 0.5216 against plain top-4's 0.5214 (rows GR-0.3/GR-1a below).
+The guarded report pins full provenance and config: code `c06bdf5`, model
+`qwen2.5:7b` at `845dbda0…`, dataset `3737d694…`, cached contexts `91ce1745…`,
+NLI `8adb042d…`, seeds 42–44, temperature 0. NLI peak RSS was 2.12 GB and the
+loaded Ollama model 5.06 GB; neither is total-host peak RAM. Both the 0.90
+faithfulness and 0.63 precision gates are missed. **Stream GR is required:**
+only retrieval can move precision over fixed contexts. GR-0.3 measured 0.5067
+at top-5; GR-1a measured 0.5216 versus plain top-4's 0.5214.
 
-**C.1b `qwen3:8b` is published** (2026-09-11): the Mac run completed 3 × 100 cases with zero failures.
-The [raw report](evaluation/c1b-qwen3-8b-b8ecc8e-phase-c-generator-benchmark.json) and sidecar are guarded by `tests/test_phase_c_qwen3_artifact.py`;
-the [capsule](docs/evidence/c1b-qwen3-generator-benchmark.md) records provenance and limitations.
-LLM faithfulness is 0.8986, NLI 0.9908, relevancy 0.8095 and mean latency 176.81 s per case.
-Precision remains 0.506657 over the same cached contexts. This is C.4 input, not a default-model change;
-total-host peak RAM was not measured.
+**C.1b `qwen3:8b` is published** (2026-09-11): 3 × 100 Mac cases,
+zero failures, LLM faithfulness 0.8986, NLI 0.9908, relevancy 0.8095,
+precision 0.506657 and mean latency 176.81 s. The guarded [raw report](evaluation/c1b-qwen3-8b-b8ecc8e-phase-c-generator-benchmark.json)
+and [capsule](docs/evidence/c1b-qwen3-generator-benchmark.md) hold provenance and
+limitations. This is C.4 input, not a model change; host peak RAM is unknown.
 
 ### 1. The gate can reach Russian traffic. The corpus still cannot measure it.
 
-T-01…T-09 are closed: measured bilingual admission, opt-in clarification,
-operator-visible shadow outcomes and pinned report provenance. Exact commits
-and tests live in the [A.6–A.8 capsule](docs/evidence/a6-journey-admission-and-clarification.md).
+T-01…T-09 are closed; commits and tests are in the
+[A.6–A.8 capsule](docs/evidence/a6-journey-admission-and-clarification.md).
 Push remains the owner's call:
 `git -c credential.helper='!gh auth git-credential' push origin master`.
 
-The corpus cannot measure resolution, for three independent reasons
-([capsule](docs/evidence/a6-journey-admission-and-clarification.md)): (1) no
-case names a shipment (B.1); (2) the corpus is Russian and the gate's
-vocabulary was English — `contains_both_domain_noun_and_status_cue: 0`, so
-over the 100 agent-authored-over-real-documents cases, still `agent_labelled`
-and 0 approved, `recall 0.0000` said nothing about the predicate; (3) with
-the language removed, over those 100 cases, still `agent_labelled` and 0
-approved, admission recall is still **0.0000**. Reachability moved from
-`both 0` to `both 1`; the one admission is a false positive on a case labelled
-`exception_escalation`. The corpus contains no case this journey should admit.
+The corpus cannot measure resolution for three independent reasons
+([capsule](docs/evidence/a6-journey-admission-and-clarification.md)): no case
+names a shipment; the original English-only gate could not measure the Russian
+corpus; and the bilingual gate still has admission recall **0.0000** over 100
+agent-written, `agent_labelled`, unapproved cases. Its sole admission is an
+`exception_escalation` false positive; no case belongs to this journey.
 
 B.2/B.3/B.5 stay blocked on data. Label review does not fix that:
 `python scripts/aircargo_labels.py report --batch 1`, then
 `python scripts/aircargo_labels.py approve --batch 1 --approver julia`.
 The local corrective queue after T-09 is empty.
 
-**This laptop:** `tests/test_a11y.py::test_axe_has_no_serious_or_critical_findings`
-drives headless Chrome and hangs the whole run (deselect it; CI runs it);
-local mypy --strict is red on numpy stubs unless the installed numpy matches
-the lock (2.4.4, not 2.5.1); Postgres integration tests still do not run here.
-
-### 2. Housekeeping with a date on it
-
-**Review 2026-09-24:** the three chromadb CVE ignores. If a fixed release
-exists by then, upgrade and delete them from all four places the guard
-requires them to match.
+**This laptop:** deselect the headless-Chrome a11y test (CI runs it); strict
+mypy needs locked numpy 2.4.4; Postgres integration tests do not run here.
 
 ## What is true right now
 
 - **Remote exists** (2026-08-24): `brownjuly2003-code/RAG_new`, private, tag
   `freeze-2026-08-23` = `26866e9`. Pushes go over HTTPS (command in §1).
-- **Phase A closed:** `/api/ask` runs the shipment-status journey as a
-  read-only shadow. T-03 may project only its clarification terminal when both
-  allowlists name it; T-04 makes disabled/declined/failed observation explicit.
-  All resolution/session flags default off; shadow-only remains byte-identical.
+- **Phase A closed:** `/api/ask` runs the shipment-status journey read-only.
+  Only its clarification terminal may project when both default-off allowlists
+  name it; disabled/declined/failed states remain explicit.
 - **Zero real labelled cases.** 100/100 labelled, 0 approved, 0 binding a
   shipment, `expected_terminal` `verified` for all 100. The 201 source
   documents are real; questions were agent-written (`325d63c`, `6b7417d`,
   `32e841f`). Question classes live in a sidecar (`6cde0b1`) — 99 `single_hop`,
   1 `multi_hop`, 0 `aggregation`, 0 `global` (plan §5, GR-0.2).
-- **On `6cc810d` (T-17, pushed) both push-triggered workflows ended `success` — two of five; docs-site deployed nothing.**
-  `CI` run 34461559172: 11 of 11 jobs; run 34359692687 on `69a5140` verified the CVE-2026-9856 floor `transformers>=5.10.0` under
-  `--require-hashes`, pip-audit clean. Docs-site run 34461559218: `build` (with `npm audit --audit-level=high`) succeeded, `deploy` skipped by `docs-site.yml:89` (repo private) — the second docs-site green in a row.
-  The first was `0aacb7b` (T-18, run 34408840657) after four failures since 2026-08-25, so T-18's npm floors are confirmed; `d026804` (T-19) touched no `docs-site.yml:6-17` path and got `CI` 34449244275 alone.
+- **GR-0.2 supplemental bucket is prepared, not measured:** 15 agent-written
+  questions over 13 pinned real documents (10 `multi_hop`, 5 `aggregation`),
+  dataset `0949d756…`, labels `agent_labelled`, 0 approved. The phase-C dataset
+  remains byte-identical at `3737d694…`; a new candidate pool is still needed.
+- **On pushed `6cc810d`, both push-triggered workflows passed** (`CI`
+  34461559172, 11/11; docs build 34461559218). Deploy skipped because the repo
+  is private. Schedule/dispatch-only workflows were not run.
 
 ## Accepted open risks
 
@@ -126,6 +112,7 @@ B.1 is preparation until a batch is approved.
 | B.3 | First real numbers on the labelled cases | **blocked** — same |
 | B.4 | Judge calibration 10 → ≥40 double-annotated routes | not started |
 | B.5 | Corpus v1.0 at `real_labelled` | needs Q2 route 1 |
+| GR-0.2 | Separate pinned bucket: 15 cases over 13 documents; 10 `multi_hop`, 5 `aggregation`; original phase-C dataset unchanged | **done as preparation**, not a measured slice |
 | GR-0.3 | Retrieval baseline by class over pool `91ce1745…`: 0.5067 / 0.9050 at top-5 (= C.1a), `single_hop` 0.5063 / 0.9091 over 99 cases, `multi_hop` over 1, two classes empty — a ruler, not a comparison ([capsule](docs/evidence/gr0-bucket-baseline.md)) | **done** (c) |
 | GR-1a | Section coherence as a narrowing arm over the same pool: 0.5216 / 0.9050 with 87/7/6 held, but plain top-4 gives 0.5214 with the same coverage — the gain is a smaller `k`, not structure. 0.63 only by losing 16 FULL cases ([capsule](docs/evidence/gr1a-section-coherence.md)) | **done** (c) |
 

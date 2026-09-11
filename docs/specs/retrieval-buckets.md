@@ -34,6 +34,31 @@ so that the dataset file stays byte-identical and the phase C baseline
   evidence class is `agent_labelled` until a human approves it, exactly as
   ADR 0008 requires of the journey labels
 
+## Requirement: the multi-document bucket supplements rather than rewrites phase C
+
+GR-0.2 SHALL add at least 15 agent-authored `multi_hop` or `aggregation`
+questions in a separate dataset. Every case SHALL name at least two source
+documents from the hash-pinned air-cargo corpus, map every
+`expected.answer_contains` term to a source document that contains it, and
+declare `case_source: agent_authored_over_real_documents`. Its question class
+SHALL live in a sidecar with `agent_labelled` evidence until human approval.
+
+### Scenario: a proposed multi-hop case really crosses documents
+
+- **GIVEN** a supplemental question labelled `multi_hop` or `aggregation`
+- **WHEN** its expected terms and source mapping are checked against the pinned
+  corpus manifest
+- **THEN** every term occurs in its named source and at least two distinct
+  documents contribute terms
+
+### Scenario: the supplemental bucket cannot move the published baseline
+
+- **GIVEN** the supplemental dataset and its own digest-pinned class sidecar
+- **WHEN** GR creates a new candidate pool for it
+- **THEN** `evaluation/curated_cases_aircargo.jsonl` remains byte-identical at
+  its published phase-C SHA-256, and no old result is relabelled as if it had
+  measured the new questions
+
 ## Requirement: a retrieval number is reported per class over a pinned pool
 
 A retrieval report SHALL group its metrics by question class, SHALL state the

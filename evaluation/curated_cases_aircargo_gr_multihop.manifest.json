@@ -1,0 +1,11 @@
+{
+  "schema_version": "aircargo-gr-eval-dataset/v1.0",
+  "dataset": "evaluation/curated_cases_aircargo_gr_multihop.jsonl",
+  "dataset_sha256": "0949d7563983b96500074e61f10274b28cb9341612206e02733a59b5c7968f5f",
+  "case_source": "agent_authored_over_real_documents",
+  "case_count": 15,
+  "source_document_count": 13,
+  "corpus_manifest": "evaluation/aircargo_corpus.manifest.json",
+  "corpus_sha256": "c8562a64f88f72172f29e30865091be79f08d00ce65fbf675f34de64dcebe343",
+  "question_class_sidecar": "evaluation/curated_cases_aircargo_gr_multihop_question_class.jsonl"
+}
