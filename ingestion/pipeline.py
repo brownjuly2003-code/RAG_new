@@ -17,7 +17,7 @@ import time
 from collections.abc import Callable
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Optional
+from typing import TYPE_CHECKING, Any, Optional
 
 try:
     from langchain_core.documents import Document
@@ -36,7 +36,11 @@ import vectordb.manager as tenant_manager
 from ingestion.categorizer import annotate_documents_with_categories
 from ingestion.graph_activation import log_graph_activation
 from ingestion.loader import DocumentLoader
+from ingestion.structure_graph import build_structural_graph
 from vectordb import _base_manager as legacy_manager
+
+if TYPE_CHECKING:
+    from ingestion.structure_graph_repository import StructuralGraphRepository
 
 logger = logging.getLogger(__name__)
 
@@ -117,15 +121,18 @@ class IngestPipeline:
         self,
         log_path: str | Path | None = None,
         recursive: bool = True,
+        structural_graph_repository: StructuralGraphRepository | None = None,
     ) -> None:
         """
         Args:
             log_path: where to write ``ingestion_log.json``.
                       Defaults to ``<project_root>/data/ingestion_log.json``.
             recursive: whether DocumentLoader scans sub-directories.
+            structural_graph_repository: caller-owned transactional graph repository.
         """
         self.log_path = Path(log_path) if log_path else _DEFAULT_LOG_PATH
         self.loader = DocumentLoader(recursive=recursive)
+        self._structural_graph_repository = structural_graph_repository
 
         # Cached state from the last ingest/add_document call
         self._documents: list[Document] = []
@@ -281,6 +288,7 @@ class IngestPipeline:
             )
         self._store = store
         self._chunks = chunks
+        self._replace_structural_graph(chunks, tenant_id)
 
         # Step 3 -- evaluate & log the graph-lane activation condition
         # (archive/docs/plans/2026-06-05-graph-retrieval-activation.md)
@@ -363,12 +371,23 @@ class IngestPipeline:
             )
         self._store = store
         self._chunks = chunks
+        self._replace_structural_graph(chunks, tenant_id)
 
         log_graph_activation(len(chunks))
 
         self._append_log_entry(new_docs, chunks, file_path, chunk_config)
 
         return store, chunks
+
+    def _replace_structural_graph(
+        self,
+        chunks: list[Document],
+        tenant_id: str,
+    ) -> None:
+        repository = self._structural_graph_repository
+        if repository is None:
+            return
+        repository.replace(build_structural_graph(chunks, tenant_id=tenant_id))
 
     # ------------------------------------------------------------------
     # Properties

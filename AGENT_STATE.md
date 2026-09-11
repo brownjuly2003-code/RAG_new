@@ -85,13 +85,13 @@ Limit: the eval bucket is 99 `single_hop`, 1 `multi_hop`, 0 `aggregation`,
 most cannot run on this corpus until GR-0.2 adds its ≥ 15 multi-hop /
 aggregation questions. "Needed" is measured; "will work" is not claimed.
 
-**Stop point 2026-09-11 — GR-1 projection verified.** Builder `d0cb9e6` and
-tenant-scoped PostgreSQL persistence `d192028` are committed. This milestone adds
-deterministic provenance and lossless `networkx.MultiDiGraph`; its red test came
-first. Fresh gates: 11 GR-1 tests, focused Ruff/mypy, lock regeneration via
-`uv 0.8.23` without version drift, and `pip-audit`: no known vulnerabilities
-(5 accepted ignores). PostgreSQL integration/full suite remain off this laptop.
-Next: tenant-scoped pipeline wiring (plan §5); still preparation under the binding acceptance rule, with no push.
+**Stop point 2026-09-11 — GR-1 pipeline wiring verified.** Builder, persistence,
+manifest, and projection are committed through `2124935`; the current wiring is
+verified but uncommitted. It injects a caller-owned transactional repository into
+`IngestPipeline` and replaces the tenant graph from final chunks on both ingest
+paths. Red tests came first; fresh gates passed: 37 focused + 8 docs tests,
+Ruff, mypy, and `git diff --check`. PostgreSQL integration/full suite remain off
+this laptop. Next is GR-1b pool/measurement on Mac; no push is authorized.
 
 **Slice acceptance rule (binding, including for autopilot):** a slice counts
 only if it changes observable `/api/ask` or UI behaviour with an E2E test, or
