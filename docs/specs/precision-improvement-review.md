@@ -114,8 +114,10 @@ seeds over fixed contexts do not provide independent retrieval measurements.
 Steps 1 and 2 are measured: [controls](../evidence/gr1b-same-pool-controls.md)
 fail joint gates; the [bounded oracle](../evidence/gr1b-safe-subset-oracle.md)
 reaches 0.6780 / 0.9250 with labels and G1 fallback, without keyword losses.
-Next is a query-only selection control and investigation of three infeasible
-cases; the oracle does not establish deployable quality.
+The [query-only control](../evidence/gr1b-query-control.md) is also measured:
+0.6268 / 0.7250, 22 FULL regressions; it fails acceptance. The three infeasible
+cases have G1 hits absent from uncapped top-five. Next: recover source metadata
+for evidence-preserving expansion. Neither experiment establishes deployable quality.
 
 This work reuses the exact gzip archive, without embeddings, model calls
 or deployment. Windows runs focused checks only; models, full suites and

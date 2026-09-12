@@ -1,6 +1,6 @@
 # Current state — RAG_new
 
-**The only entry point for a new session.** Read this, then [`ROADMAP.md`](ROADMAP.md);
+**Entry point for a new session.** Read this, then [`ROADMAP.md`](ROADMAP.md);
 follow other links only when needed.
 
 Last updated: 2026-09-12 · Plan: [`plan_06_09_26.md`](plan_06_09_26.md)
@@ -112,7 +112,7 @@ B.1 is preparation until a batch is approved.
 | GR-0.3 | Retrieval baseline by class over pool `91ce1745…`: 0.5067 / 0.9050 at top-5 (= C.1a), `single_hop` 0.5063 / 0.9091 over 99 cases, `multi_hop` over 1, two classes empty — a ruler, not a comparison ([capsule](docs/evidence/gr0-bucket-baseline.md)) | **done** (c) |
 | GR-0.4 | SGR schema adds `question_class`, bounded `entities`, `needs_multi_hop` and `reason_code`; default and legacy retrieval routes unchanged | **done as preparation**, graph still explicit |
 | GR-1a | Offline coherence: 0.5216 vs plain top-4 0.5214 at unchanged 87/7/6; 0.63 loses 16 FULL ([capsule](docs/evidence/gr1a-section-coherence.md)) | **done** (c) |
-| GR-1b | Mac pool: precision 0.5475, recall 0.9200, FULL/PART/MISS 88/8/4; prefilter 0/100. [Evidence](docs/evidence/gr1b-structure-graph.md). **NO-SHIP** at 0.63. Controls fail joint gates; [oracle](docs/evidence/gr1b-safe-subset-oracle.md) reaches 0.6780 / 0.9250 using labels and G1 fallback. Next: query-only selection and three infeasible-case diagnostics. | **measured**, provenance limits in capsule |
+| GR-1b | [Mac measurement](docs/evidence/gr1b-structure-graph.md): 0.5475 / 0.9200, 88/8/4; NO-SHIP. [Oracle](docs/evidence/gr1b-safe-subset-oracle.md): 0.6780 / 0.9250, label-dependent. [Query-only control](docs/evidence/gr1b-query-control.md): 0.6268 / 0.7250, 67/11/22; NO-SHIP, 25 fact-loss cases. Three infeasible cases lack hits in uncapped top-five. Next: source metadata for evidence-preserving expansion. | **measured**, provenance limits in capsule |
 
 ## Open questions for Julia
 

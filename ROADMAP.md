@@ -90,8 +90,9 @@ reproduction tests and source-attribution limits. The owner's 2026-09-12
 [Astra/Fable review](docs/specs/precision-improvement-review.md) puts same-pool
 top-k controls and bounded diagnosis before GR-4/GR-2/GR-3. Both are measured:
 plain top-k fails coverage; [label-dependent oracle](docs/evidence/gr1b-safe-subset-oracle.md)
-reaches 0.6780 / 0.9250 with G1 fallback. Next: query-only selection control
-and diagnosis of three infeasible cases. Do not repeat this
+reaches 0.6780 / 0.9250 with G1 fallback. The [query-only control](docs/evidence/gr1b-query-control.md) fails coverage
+(0.6268 / 0.7250, 67/11/22); three infeasible cases have G1 hits absent from
+uncapped top-five. Next: recover source metadata for evidence-preserving expansion. Do not repeat this
 pool or its embeddings. Resume details are in `CURRENT_STATE.md`.
 
 Both inherited CI failures ([ADR 0008](docs/adr/0008-inherited-ci-red-disposition.md))

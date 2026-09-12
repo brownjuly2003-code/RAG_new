@@ -90,7 +90,7 @@ committed at `782f03f`, the retrieval lane at `6e23630`, and pool provenance
 guards through `f9ba47a`. GR-1b: 100 cases, precision 0.5475, recall 0.9200,
 FULL/PART/MISS 88/8/4; short-context fix `b2db542`. [Report, archived input and
 provenance limits](docs/evidence/gr1b-structure-graph.md): NO-SHIP at 0.63,
-prefilter 0/100. [Oracle](docs/evidence/gr1b-safe-subset-oracle.md): 0.6780 / 0.9250 with labels and G1 fallback. Next: query-only selection and three infeasible-case diagnostics, then GR-4/GR-2/GR-3; reuse embeddings.
+prefilter 0/100. [Oracle](docs/evidence/gr1b-safe-subset-oracle.md): 0.6780 / 0.9250 with labels and G1 fallback. Query-only control: 0.6268 / 0.7250, NO-SHIP; [diagnosis](docs/evidence/gr1b-query-control.md) finds missing hits outside uncapped top-five. Next: recover source metadata for evidence-preserving expansion, then GR-4/GR-2/GR-3; reuse embeddings.
 Windows is for editing and focused checks only. Models, full-suite tests,
 PostgreSQL integration and containers run on the Mac; no WSL/Docker/VM here, no push.
 
