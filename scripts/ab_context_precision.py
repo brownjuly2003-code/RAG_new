@@ -678,6 +678,7 @@ def score_cases_by_class(
     expected_cases: int,
     top_k: int,
     context_chars: int,
+    allow_short_contexts: bool = False,
 ) -> tuple[list[dict[str, Any]], int]:
     """One scored row per case, carrying its question class, plus the approval count.
 
@@ -703,6 +704,7 @@ def score_cases_by_class(
         expected_cases=expected_cases,
         top_k=top_k,
         context_chars=context_chars,
+        allow_short_contexts=allow_short_contexts,
     )
 
     rows: list[dict[str, Any]] = []
@@ -839,6 +841,7 @@ def build_bucket_report(
         expected_cases=expected_cases,
         top_k=top_k,
         context_chars=context_chars,
+        allow_short_contexts=pool_arm == "G1",
     )
 
     pool_rows = json.loads(pool_path.read_text(encoding="utf-8"))
@@ -880,6 +883,7 @@ def build_bucket_report(
         config.update(
             {
                 "pool_arm": "G1",
+                "allow_short_contexts": True,
                 "category_prefilter": "exact available case labels",
                 "section_coherence": "production structural graph",
                 "section_expansion": "same-section structural graph boundary",

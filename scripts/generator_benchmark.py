@@ -145,6 +145,7 @@ def load_benchmark_cases(
     expected_cases: int = 100,
     top_k: int | None = None,
     context_chars: int = 6000,
+    allow_short_contexts: bool = False,
 ) -> list[dict[str, Any]]:
     """Load dataset/context rows and fail closed on identity or ordering drift."""
     dataset_rows = _read_jsonl(Path(dataset_path))
@@ -188,7 +189,7 @@ def load_benchmark_cases(
         ):
             raise BenchmarkInputError(f"invalid contexts for case_id={case_id}")
         selected_k = top_k if top_k is not None else int(context_row.get("rerank_k") or 0)
-        if selected_k <= 0 or selected_k > len(candidates):
+        if selected_k <= 0 or (selected_k > len(candidates) and not allow_short_contexts):
             raise BenchmarkInputError(
                 f"invalid top_k={selected_k} for case_id={case_id} with {len(candidates)} contexts"
             )

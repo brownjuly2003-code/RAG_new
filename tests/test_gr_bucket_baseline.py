@@ -405,6 +405,29 @@ def test_the_report_records_the_pool_digest_and_the_configuration(tmp_path: Path
         assert ":" not in provenance[key], f"{key} carries a drive letter"
 
 
+@pytest.mark.parametrize("context_count", [0, 1])
+def test_g1_scores_short_graph_results_without_padding(
+    tmp_path: Path, context_count: int,
+) -> None:
+    paths = _mark_as_g1_pool(_write_fixture(tmp_path))
+    rows = json.loads(paths["pool"].read_text(encoding="utf-8"))
+    rows[0]["cands"] = rows[0]["cands"][:context_count]
+    paths["pool"].write_text(json.dumps(rows), encoding="utf-8")
+
+    from scripts.generator_benchmark import BenchmarkInputError
+
+    with pytest.raises(BenchmarkInputError, match="invalid top_k"):
+        _report_for(paths)
+    report = _report_for(paths, pool_arm="G1")
+    assert report["aggregate"]["num_cases"] == len(_CASES)
+    assert report["per_case"][0]["n_docs"] == context_count
+    assert report["provenance"]["config"]["allow_short_contexts"] is True
+    if context_count == 0:
+        assert report["per_case"][0]["context_precision"] == 0.0
+        assert report["per_case"][0]["context_recall"] == 0.0
+        assert report["per_case"][0]["kw_status"] == "MISS"
+
+
 def test_a_g1_report_names_the_structural_graph_producer(tmp_path: Path) -> None:
     report = _report_for(_mark_as_g1_pool(_write_fixture(tmp_path)), pool_arm="G1")
     provenance = report["provenance"]
