@@ -90,3 +90,18 @@ def test_cli_selects_controls_mode_without_other_work(tmp_path: Path) -> None:
         "--corpus-manifest", str(kwargs["corpus_manifest_path"]),
     ]) == 0
     assert json.loads(output.read_text(encoding="utf-8"))["arms"][0]["name"] == "g1"
+
+
+def test_published_controls_reproduce_every_case_and_interval() -> None:
+    report = json.loads(controls.DEFAULT_REPORT.read_text(encoding="utf-8"))
+    rebuilt = controls.build_controls_report()
+    assert rebuilt["arms"] == report["arms"]
+    for field in ("archive_sha256", "pool_sha256", "dataset_sha256", "label_sidecar_sha256",
+                  "label_manifest_sha256", "corpus", "config"):
+        assert rebuilt["provenance"][field] == report["provenance"][field]
+    arms = {arm["name"]: arm for arm in report["arms"]}
+    assert arms["g1"]["aggregate"]["context_recall"] == 0.92
+    assert arms["reranked_top_1"]["aggregate"]["context_precision"] == 0.6403
+    assert len(arms["reranked_top_1"]["comparison"]["full_regressions"]) == 23
+    capsule = (controls.PROJECT_ROOT / "docs/evidence/gr1b-same-pool-controls.md").read_text(encoding="utf-8")
+    assert controls.render_controls_table(report).strip() in capsule
