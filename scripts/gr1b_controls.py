@@ -26,6 +26,95 @@ from scripts.ab_context_precision import (
 
 DEFAULT_ARCHIVE = PROJECT_ROOT / "evaluation/gr1b-4436d61-candidates.json.gz"
 DEFAULT_REPORT = PROJECT_ROOT / "reports/gr/gr1b-controls.json"
+DEFAULT_ORACLE_REPORT = PROJECT_ROOT / "reports/gr/gr1b-oracle.json"
+
+
+def _score_texts(query: str, keywords: list[str], texts: list[str]) -> dict[str, Any]:
+    from evaluation.ragas_eval import _normalise, context_precision, context_recall
+    from scripts.ab_remote_contextual import _kw_status
+
+    blob = _normalise("\n".join(texts))
+    return dict(
+        context_precision=round(context_precision(query, texts, keywords), 4),
+        context_recall=round(context_recall(texts, keywords), 4),
+        kw_status=_kw_status(keywords, texts),
+        matched_keywords=[word for word in keywords if _normalise(word) in blob],
+        context_chars=sum(map(len, texts)), n_docs=len(texts),
+    )
+
+
+def best_safe_subset(
+    *, query: str, keywords: list[str], candidates: list[str],
+    baseline_texts: list[str], context_chars: int,
+) -> dict[str, Any] | None:
+    """Label-dependent diagnostic over original top-five subsets, never a selector."""
+    from scripts.generator_benchmark import _truncate_contexts
+
+    if context_chars < 1 or len(candidates) < 5:
+        raise ValueError("positive character cap and at least five candidates required")
+    baseline = _score_texts(query, keywords, baseline_texts)
+    required = set(baseline["matched_keywords"])
+    raw_blob = "\n".join(baseline_texts).lower()
+    raw_required = {word for word in keywords if word.lower() in raw_blob}
+    feasible = []
+    for mask in range(1, 32):
+        indices = [i for i in range(5) if mask & (1 << i)]
+        texts = _truncate_contexts([candidates[i] for i in indices], context_chars)
+        row = _score_texts(query, keywords, texts)
+        raw_after = "\n".join(texts).lower()
+        if (required <= set(row["matched_keywords"])
+                and all(word.lower() in raw_after for word in raw_required)):
+            feasible.append(dict(row, candidate_indices=indices, subsets_evaluated=31))
+    return min(feasible, key=lambda row: (
+        -row["context_precision"], row["n_docs"], row["candidate_indices"],
+    )) if feasible else None
+
+
+def build_oracle_report(**kwargs: Any) -> dict[str, Any]:
+    from scripts.generator_benchmark import _truncate_contexts
+
+    controls = build_controls_report(**kwargs)
+    original = json.loads(gzip.decompress(Path(kwargs.get("archive_path", DEFAULT_ARCHIVE)).read_bytes()))
+    by_id = {row["case_id"]: row for row in original}
+    baseline = controls["arms"][0]["per_case"]
+    cap = kwargs.get("context_chars", 6000)
+    selected, feasible = [], []
+    for before in baseline:
+        source = by_id[before["case_id"]]
+        best = best_safe_subset(
+            query=source["query"], keywords=source["kws"],
+            candidates=source["reranked_cands"],
+            baseline_texts=_truncate_contexts(source["cands"][:5], cap), context_chars=cap,
+        )
+        if best is not None:
+            feasible.append(dict(before, **best))
+        use_subset = best is not None and best["context_precision"] > before["context_precision"]
+        row = dict(before)
+        if use_subset:
+            row.update(best)
+        row.update(
+            selection="oracle_subset" if use_subset else "g1_fallback",
+            feasible_subset=best, lost_keywords=sorted(
+                set(before["matched_keywords"]) - set(row["matched_keywords"])),
+        )
+        selected.append(row)
+    controls["provenance"]["config"]["oracle"] = {
+        "subsets_per_case": 31, "candidate_limit": 5, "order": "original",
+        "preservation": "normalised and raw keyword identities present in capped G1",
+        "objective": "max four-decimal precision, then fewer contexts, then indices",
+        "fallback": "G1 when infeasible or precision does not improve",
+    }
+    return dict(
+        schema_version="gr1b-oracle/v1.0", kind="oracle_diagnostic_not_deployable",
+        provenance=controls["provenance"], labels=controls["labels"],
+        baseline=controls["arms"][0]["aggregate"],
+        feasible_cases_only=_bucket_row("feasible cases only", feasible),
+        all_cases_with_g1_fallback=_bucket_row("all cases", selected),
+        comparison=paired_comparison(selected, baseline,
+                                     samples=kwargs.get("bootstrap_samples", 2000),
+                                     seed=kwargs.get("seed", 42)),
+        per_case=selected,
+    )
 
 
 def paired_comparison(
@@ -174,12 +263,18 @@ def render_controls_table(report: dict[str, Any]) -> str:
 
 
 def run_controls_report(args: Any) -> int:
-    report = build_controls_report(
+    builder = build_oracle_report if args.structural_oracle else build_controls_report
+    report = builder(
         archive_path=Path(args.controls_archive), dataset_path=Path(args.dataset),
         sidecar_path=Path(args.sidecar), label_manifest_path=Path(args.label_manifest),
         corpus_manifest_path=Path(args.corpus_manifest), expected_cases=args.expected_cases,
         context_chars=args.context_chars,
     )
-    write_bucket_report(report, Path(args.controls_report))
-    print(render_controls_table(report), end="")
+    write_bucket_report(report, Path(args.oracle_report if args.structural_oracle else args.controls_report))
+    if args.structural_oracle:
+        print(json.dumps({key: report[key] for key in (
+            "baseline", "feasible_cases_only", "all_cases_with_g1_fallback", "comparison",
+        )}, indent=2))
+    else:
+        print(render_controls_table(report), end="")
     return 0
