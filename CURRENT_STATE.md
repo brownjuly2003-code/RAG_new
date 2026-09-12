@@ -57,7 +57,6 @@ agent-written, `agent_labelled`, unapproved cases. Its sole admission is an
 B.2/B.3/B.5 stay blocked on data. Label review does not fix that:
 `python scripts/aircargo_labels.py report --batch 1`, then
 `python scripts/aircargo_labels.py approve --batch 1 --approver julia`.
-The local corrective queue after T-09 is empty.
 
 **This laptop:** deselect the headless-Chrome a11y test (CI runs it); strict
 mypy needs locked numpy 2.4.4; Postgres integration tests do not run here.
@@ -112,7 +111,7 @@ B.1 is preparation until a batch is approved.
 | GR-0.3 | Retrieval baseline by class over pool `91ce1745…`: 0.5067 / 0.9050 at top-5 (= C.1a), `single_hop` 0.5063 / 0.9091 over 99 cases, `multi_hop` over 1, two classes empty — a ruler, not a comparison ([capsule](docs/evidence/gr0-bucket-baseline.md)) | **done** (c) |
 | GR-0.4 | SGR schema adds `question_class`, bounded `entities`, `needs_multi_hop` and `reason_code`; default and legacy retrieval routes unchanged | **done as preparation**, graph still explicit |
 | GR-1a | Offline coherence: 0.5216 vs plain top-4 0.5214 at unchanged 87/7/6; 0.63 loses 16 FULL ([capsule](docs/evidence/gr1a-section-coherence.md)) | **done** (c) |
-| GR-1b | [Mac measurement](docs/evidence/gr1b-structure-graph.md): 0.5475 / 0.9200, 88/8/4; NO-SHIP. [Oracle](docs/evidence/gr1b-safe-subset-oracle.md): 0.6780 / 0.9250, label-dependent. [Query-only control](docs/evidence/gr1b-query-control.md): 0.6268 / 0.7250, 67/11/22; NO-SHIP, 25 fact-loss cases. Three infeasible cases lack hits in uncapped top-five. Next: source metadata for evidence-preserving expansion. | **measured**, provenance limits in capsule |
+| GR-1b | [Mac measurement](docs/evidence/gr1b-structure-graph.md): 0.5475 / 0.9200, 88/8/4; NO-SHIP. [Oracle](docs/evidence/gr1b-safe-subset-oracle.md): 0.6780 / 0.9250, label-dependent. [Query-only control](docs/evidence/gr1b-query-control.md): 0.6268 / 0.7250, 67/11/22; NO-SHIP, 25 fact-loss cases. [Stage replay](docs/evidence/gr1b-stage-replay.md): 100/100 exact; expansion alone 0.5125 / 0.9300. Next: seed-preserving expansion. | **measured**, provenance limits in capsule |
 
 ## Open questions for Julia
 

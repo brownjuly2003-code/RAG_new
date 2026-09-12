@@ -116,8 +116,10 @@ fail joint gates; the [bounded oracle](../evidence/gr1b-safe-subset-oracle.md)
 reaches 0.6780 / 0.9250 with labels and G1 fallback, without keyword losses.
 The [query-only control](../evidence/gr1b-query-control.md) is also measured:
 0.6268 / 0.7250, 22 FULL regressions; it fails acceptance. The three infeasible
-cases have G1 hits absent from uncapped top-five. Next: recover source metadata
-for evidence-preserving expansion. Neither experiment establishes deployable quality.
+cases have G1 hits absent from uncapped top-five. The [stage replay](../evidence/gr1b-stage-replay.md) restores metadata and
+reproduces 100/100 outputs. Expansion alone gives 0.5125 / 0.9300 without G1
+keyword losses, still NO-SHIP. Next: seed-preserving expansion under the global
+cap. None of these experiments establishes deployable quality.
 
 This work reuses the exact gzip archive, without embeddings, model calls
 or deployment. Windows runs focused checks only; models, full suites and
