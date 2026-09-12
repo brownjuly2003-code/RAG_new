@@ -1915,11 +1915,22 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
                                 "baseline (reuses the --buckets arguments)")
     coherence.add_argument("--coherence-report",
                            default=str(DEFAULT_SECTION_COHERENCE_REPORT_PATH))
+    controls = p.add_argument_group("GR-1b same-pool controls (no models, no network)")
+    controls.add_argument("--structural-controls", action="store_true")
+    controls.add_argument("--controls-archive",
+                          default=str(PROJECT_ROOT / "evaluation/gr1b-4436d61-candidates.json.gz"))
+    controls.add_argument("--controls-report",
+                          default=str(PROJECT_ROOT / "reports/gr/gr1b-controls.json"))
     return p.parse_args(argv)
 
 
 def main(argv: Sequence[str] | None = None) -> int:
     args = parse_args(argv)
+
+    if args.structural_controls:
+        from scripts.gr1b_controls import run_controls_report
+
+        return run_controls_report(args)
 
     if args.section_coherence:
         return run_section_coherence_report(args)
