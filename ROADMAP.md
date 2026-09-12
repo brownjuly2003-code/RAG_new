@@ -94,7 +94,9 @@ reaches 0.6780 / 0.9250 with G1 fallback. The [query-only control](docs/evidence
 (0.6268 / 0.7250, 67/11/22); three infeasible cases have G1 hits absent from
 uncapped top-five. [Stage replay](docs/evidence/gr1b-stage-replay.md) recovers metadata and matches
 100/100 outputs; expansion alone gives 0.5125 / 0.9300 without G1 fact losses,
-still NO-SHIP. Next: seed-preserving expansion. Do not repeat this
+still NO-SHIP. [Seed reservation](docs/evidence/gr1b-seed-expansion.md) prevents displaced seed
+text but yields no metric gain (0.5472 / 0.9200 with coherence). This bounded
+experiment is closed. Next: GR-4 structural product wiring, then GR-2/GR-3. Do not repeat this
 pool or its embeddings. Resume details are in `CURRENT_STATE.md`.
 
 Both inherited CI failures ([ADR 0008](docs/adr/0008-inherited-ci-red-disposition.md))

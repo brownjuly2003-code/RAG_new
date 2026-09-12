@@ -69,7 +69,7 @@ mypy needs locked numpy 2.4.4; Postgres integration tests do not run here.
   Only its clarification terminal may project when both default-off allowlists
   name it; disabled/declined/failed states remain explicit.
 - **Zero real labelled cases.** 100/100 labelled, 0 approved, 0 binding a
-  shipment, `expected_terminal` `verified` for all 100. The 201 source
+  shipment, `expected_terminal` `verified` for all 100. 201 source
   documents are real; questions were agent-written (`325d63c`, `6b7417d`,
   `32e841f`). Question classes live in a sidecar (`6cde0b1`) — 99 `single_hop`,
   1 `multi_hop`, 0 `aggregation`, 0 `global` (plan §5, GR-0.2).
@@ -79,7 +79,7 @@ mypy needs locked numpy 2.4.4; Postgres integration tests do not run here.
 
 ## Accepted open risks
 
-- **Three chromadb CVEs** (CVE-2026-45830 / 45833 / 45831), no fix version.
+- **ChromaDB CVEs** (CVE-2026-45830 / 45833 / 45831), no fix version.
   Ignored by id per ADR 0008. **Review 2026-09-24.**
 - **The fixture TMS is a stand-in.** Every number measured through it is
   fixture-sourced and has to say so.
@@ -111,7 +111,7 @@ B.1 is preparation until a batch is approved.
 | GR-0.3 | Retrieval baseline by class over pool `91ce1745…`: 0.5067 / 0.9050 at top-5 (= C.1a), `single_hop` 0.5063 / 0.9091 over 99 cases, `multi_hop` over 1, two classes empty — a ruler, not a comparison ([capsule](docs/evidence/gr0-bucket-baseline.md)) | **done** (c) |
 | GR-0.4 | SGR schema adds `question_class`, bounded `entities`, `needs_multi_hop` and `reason_code`; default and legacy retrieval routes unchanged | **done as preparation**, graph still explicit |
 | GR-1a | Offline coherence: 0.5216 vs plain top-4 0.5214 at unchanged 87/7/6; 0.63 loses 16 FULL ([capsule](docs/evidence/gr1a-section-coherence.md)) | **done** (c) |
-| GR-1b | [Mac measurement](docs/evidence/gr1b-structure-graph.md): 0.5475 / 0.9200, 88/8/4; NO-SHIP. [Oracle](docs/evidence/gr1b-safe-subset-oracle.md): 0.6780 / 0.9250, label-dependent. [Query-only control](docs/evidence/gr1b-query-control.md): 0.6268 / 0.7250, 67/11/22; NO-SHIP, 25 fact-loss cases. [Stage replay](docs/evidence/gr1b-stage-replay.md): 100/100 exact; expansion alone 0.5125 / 0.9300. Next: seed-preserving expansion. | **measured**, provenance limits in capsule |
+| GR-1b | [Mac measurement](docs/evidence/gr1b-structure-graph.md): 0.5475 / 0.9200, 88/8/4; NO-SHIP. [Oracle](docs/evidence/gr1b-safe-subset-oracle.md): 0.6780 / 0.9250, label-dependent. [Query-only](docs/evidence/gr1b-query-control.md): 0.6268 / 0.7250, 67/11/22; NO-SHIP, 25 fact-loss cases. [Stage replay](docs/evidence/gr1b-stage-replay.md): 100/100 exact; expansion alone 0.5125 / 0.9300. [Seed reservation](docs/evidence/gr1b-seed-expansion.md): no gain. Next: GR-4 structural wiring. | **measured**, provenance limits in capsule |
 
 ## Open questions for Julia
 
@@ -131,4 +131,4 @@ Q1 is answered (separate private repo). Each blocks only its own phase:
 - One row per slice, with evidence — [`EVIDENCE_INDEX.md`](EVIDENCE_INDEX.md)
 - Open work after T-04, plus the pre-audit queue — [`BACKLOG.md`](BACKLOG.md)
 - Agent conventions — [`CLAUDE.md`](CLAUDE.md) · removed surfaces —
-  [`DEPRECATIONS.md`](DEPRECATIONS.md) · history — [`AGENT_STATE.md`](AGENT_STATE.md)
+  [`DEPRECATIONS.md`](DEPRECATIONS.md) · [`AGENT_STATE.md`](AGENT_STATE.md)

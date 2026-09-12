@@ -118,8 +118,9 @@ The [query-only control](../evidence/gr1b-query-control.md) is also measured:
 0.6268 / 0.7250, 22 FULL regressions; it fails acceptance. The three infeasible
 cases have G1 hits absent from uncapped top-five. The [stage replay](../evidence/gr1b-stage-replay.md) restores metadata and
 reproduces 100/100 outputs. Expansion alone gives 0.5125 / 0.9300 without G1
-keyword losses, still NO-SHIP. Next: seed-preserving expansion under the global
-cap. None of these experiments establishes deployable quality.
+keyword losses, still NO-SHIP. The [seed-reservation control](../evidence/gr1b-seed-expansion.md) prevents
+seed displacement but yields no metric gain; the bounded experiment is closed.
+Next: GR-4 structural product wiring, then GR-2/GR-3. None of these experiments establishes deployable quality.
 
 This work reuses the exact gzip archive, without embeddings, model calls
 or deployment. Windows runs focused checks only; models, full suites and

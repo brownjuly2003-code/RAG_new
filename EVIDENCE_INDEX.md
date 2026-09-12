@@ -24,6 +24,7 @@ root — that habit is what produced 29 of them and is now closed.
 
 | Slice | Capsule | Evidence class |
 |---|---|---|
+| GR-1b seed reservation: coherent 0.5472 / 0.9200; seed text preserved, no metric gain, NO-SHIP | [report and tests](docs/evidence/gr1b-seed-expansion.md) | measured |
 | GR-1b structural replay: 100/100 exact; expansion alone 0.5125 / 0.9300, no G1 keyword losses, NO-SHIP | [stage report and tests](docs/evidence/gr1b-stage-replay.md) | measured |
 | GR-1b query-only control: 0.6268 / 0.7250; 22 FULL regressions, NO-SHIP; missing-hit diagnosis | [report and reproduction test](docs/evidence/gr1b-query-control.md) | measured |
 | GR-1b bounded safe-subset oracle: 0.6780 / 0.9250 with G1 fallback; label-dependent diagnostic only | [GR-1b oracle](docs/evidence/gr1b-safe-subset-oracle.md) | measured |

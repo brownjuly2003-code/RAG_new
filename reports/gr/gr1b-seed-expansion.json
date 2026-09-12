@@ -1,0 +1,3769 @@
+{
+  "schema_version": "gr1b-seed-expansion/v1.0",
+  "evidence_class": "measured",
+  "provenance": {
+    "pool_path": "evaluation/gr1b-4436d61-candidates.json.gz (decompressed)",
+    "pool_sha256": "c862dcb76878d7a79db040ac13099b733ad769b08092094d174cc6814be4ee26",
+    "pool_bytes": 8338583,
+    "pool_produced_by": "scripts/ab_remote_contextual.py --stage pools/rerank --arm G1 (BGE-M3 + bge-reranker-v2-m3, structural chunking + exact category prefilter + structural graph coherence/expansion)",
+    "dataset": "evaluation/curated_cases_aircargo.jsonl",
+    "dataset_sha256": "3737d694362d1867ca3d5983e3765d02c01110d2409145ba7e0f05c021d9c720",
+    "label_sidecar": "evaluation/curated_cases_question_class.jsonl",
+    "label_sidecar_sha256": "cc6356b9faa46d4b952a955e1d47e9a8b15003284c42f48e7e5236471f8ff17c",
+    "label_manifest": "evaluation/curated_cases_question_class.manifest.json",
+    "label_manifest_sha256": "e2010fc94ee283c29308e6fa53e522c70b57d767aacf00113628858a061f7b10",
+    "corpus": {
+      "manifest": "evaluation/aircargo_corpus.manifest.json",
+      "manifest_sha256": "2b2e9232e69b4f52a55237f3ee620f34c91d1900383877c2310ba616c6590444",
+      "name": "aircargo",
+      "root": "data/uploads/aircargo",
+      "corpus_sha256": "c8562a64f88f72172f29e30865091be79f08d00ce65fbf675f34de64dcebe343",
+      "file_count": 201
+    },
+    "code": {
+      "commit": "0b88362cabc420173c605d63546ce73ac121c880",
+      "tree_clean": true,
+      "files": {
+        "scripts/ab_context_precision.py": "c1762f3deaa0913aeaf9ade2ab08d22f5348cdfe406f07da1522e16052b783c4",
+        "scripts/generator_benchmark.py": "668a318ca8c4eea3e1924cc22e7e6ba664ae2c98e80489d0f91133b2b3c9c156",
+        "scripts/ab_remote_contextual.py": "9ab4ce29dabe93f2394b2a4b5afc70f1072c047bca45294350aa66d1bc63f2ed",
+        "evaluation/ragas_eval.py": "d08ae8b2fe18bbae237b278090f0ca1d284225c0e4f27a8bf2c136a03a8f0987",
+        "evaluation/question_class_labels.py": "fb175ecb7c36c914c3025eff5dc55e07ac53f59530a8fae59fc1534d1c9623f6",
+        "vectordb/_base_manager.py": "684abcdf1ac6d3ad02807032cd4a1435e826955a9d089438b230fc1f5245e520",
+        "ingestion/structure_graph.py": "24a55cfd0c89b931df24b9a7850707a4b40e2d63f1c76ef428154520a27e4bd7",
+        "ingestion/structure_graph_projection.py": "0ed54c99a552cc79dae834f7ff31c583b477ffb82073a8a4fe2b74caa9635641",
+        "scripts/gr1b_controls.py": "00f2c92185496daa54159072b81c7fdb0505fcf41c359802721334c243771996",
+        "scripts/gr1b_stage_replay.py": "8ec31acf4f4a5dea46118c5f3b0b736dc3766be7d63ee8ea5d037bdb56b78b8e",
+        "scripts/gr1b_seed_expansion.py": "d2920c864e7fc6a3de54966ae2a1fe939ff5a216c7a3bd70a882239dd6fcb278"
+      }
+    },
+    "config": {
+      "top_k": 5,
+      "pool_rerank_k": [
+        5
+      ],
+      "context_chars": 6000,
+      "parent_expansion": false,
+      "grade_docs": false,
+      "context_builder": "scripts.generator_benchmark.load_benchmark_cases",
+      "metrics": "evaluation.ragas_eval.context_precision / context_recall (keyword, the phase C code path)",
+      "kw_status": "scripts.ab_remote_contextual._kw_status",
+      "rounding": "per case to 4 decimals, then the mean, then 4 decimals",
+      "pool_arm": "G1",
+      "allow_short_contexts": true,
+      "category_prefilter": "exact available case labels",
+      "section_coherence": "production structural graph",
+      "section_expansion": "same-section structural graph boundary",
+      "controls": {
+        "candidate_fields": [
+          "cands",
+          "reranked_cands",
+          "prerank_cands"
+        ],
+        "reranked_top_k": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "bootstrap_samples": 2000,
+        "bootstrap_seed": 42,
+        "ci": "paired case bootstrap percentile 95%, linear quantiles",
+        "scope": "exploratory; cases not held out; shared-source dependence not modelled",
+        "keyword_losses": "recall-normalised keyword sets; FULL uses original kw_status"
+      },
+      "stage_replay": {
+        "parent_expansion_max_chars": 3600,
+        "context_chars": 6000,
+        "rerank_k": 5,
+        "recovery": "exact text/source permutation, reject conflicting metadata",
+        "gate": "all reconstructed G1 texts, sources and metadata equal archived output",
+        "limit": "exact replay supports this configuration; original model/source attestation remains unavailable"
+      },
+      "seed_reservation": {
+        "cap": 6000,
+        "expansion_budget": 3600,
+        "policy": "reserve capped seeds; remaining chars by seed rank, nearest preceding text then following text",
+        "order": "original text order within each expanded context; partial neighbour text allowed",
+        "scope": "two prespecified controls, with and without coherence; no label/query access in allocation"
+      }
+    },
+    "archive_path": "evaluation/gr1b-4436d61-candidates.json.gz",
+    "archive_sha256": "4fdf2a128a23fedea08a2d465ee0605181ab5b014bfb4611f66b6acc62bbbb49",
+    "recovered_inputs": {
+      "evaluation/gr1b-4436d61-prerank-pool.json.gz": {
+        "archive_sha256": "dfc67c281bef24c483ff105f96896bbaf7b5cf68c2f8e0f2ccf26963631ad410",
+        "uncompressed_sha256": "97a2ab819db03431dabd6c79994d567eb1db5d202169b14d276aab5cf551767c"
+      },
+      "evaluation/gr1b-4436d61-graph-chunks.json.gz": {
+        "archive_sha256": "2a9da515a4c69b46453a59ed6d0bb772b0aad6fed23c87ee465851b43dbdef12",
+        "uncompressed_sha256": "5b35883f741deefc0698eb829f927413fc6588b72b9add9ee7697f3fc5806c94"
+      }
+    }
+  },
+  "labels": {
+    "evidence_class": "agent_labelled",
+    "approved": 0,
+    "case_source": "agent_authored_over_real_documents",
+    "note": "The questions were agent-authored over real documents and the question classes are agent-assigned; no human has approved either."
+  },
+  "exact_replays": 100,
+  "baseline": {
+    "question_class": "all cases",
+    "num_cases": 100,
+    "context_precision": 0.5475,
+    "context_recall": 0.92,
+    "FULL": 88,
+    "PART": 8,
+    "MISS": 4
+  },
+  "reference_arm": "archived_g1",
+  "arms": [
+    {
+      "name": "seed_reserved_top5",
+      "aggregate": {
+        "question_class": "all cases",
+        "num_cases": 100,
+        "context_precision": 0.5119,
+        "context_recall": 0.93,
+        "FULL": 89,
+        "PART": 8,
+        "MISS": 3
+      },
+      "per_case": [
+        {
+          "case_id": "aircargo-probation-data",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.6285,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "должность",
+            "трудов"
+          ],
+          "context_chars": 3801,
+          "lost_keywords": [],
+          "seed_chars": 3801,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-probation-extend",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.6371,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "не допускается",
+            "ст. 70"
+          ],
+          "context_chars": 4673,
+          "lost_keywords": [],
+          "seed_chars": 3229,
+          "added_chars": 1444,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-probation-dismissal",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.5742,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "критери",
+            "уведомлени"
+          ],
+          "context_chars": 3887,
+          "lost_keywords": [],
+          "seed_chars": 3065,
+          "added_chars": 822,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-dismissal-check",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.7318,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "основание",
+            "приказ"
+          ],
+          "context_chars": 3975,
+          "lost_keywords": [],
+          "seed_chars": 3975,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-dismissal-lawyer",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.5392,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "работодател",
+            "сокращени"
+          ],
+          "context_chars": 2008,
+          "lost_keywords": [],
+          "seed_chars": 2008,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-dismissal-order",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.6423,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "черновик",
+            "шаблон"
+          ],
+          "context_chars": 2956,
+          "lost_keywords": [],
+          "seed_chars": 2956,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-leave-sources",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.6131,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "график отпусков",
+            "ТК РФ"
+          ],
+          "context_chars": 3879,
+          "lost_keywords": [],
+          "seed_chars": 3879,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-leave-compensation",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.513,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "расчет",
+            "бухгалтери"
+          ],
+          "context_chars": 3216,
+          "lost_keywords": [],
+          "seed_chars": 3216,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-leave-risk",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.4067,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "перенос",
+            "декрет"
+          ],
+          "context_chars": 4287,
+          "lost_keywords": [],
+          "seed_chars": 3625,
+          "added_chars": 662,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-matliab-check",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.806,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "ущерб",
+            "объяснени"
+          ],
+          "context_chars": 3961,
+          "lost_keywords": [],
+          "seed_chars": 3645,
+          "added_chars": 316,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-matliab-disputed",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.5912,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "основани",
+            "договор"
+          ],
+          "context_chars": 3092,
+          "lost_keywords": [],
+          "seed_chars": 2776,
+          "added_chars": 316,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-templates-choose",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.5203,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "предмет",
+            "перевозка"
+          ],
+          "context_chars": 2681,
+          "lost_keywords": [],
+          "seed_chars": 2681,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-templates-checklist",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.1615,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "стороны",
+            "ответственность"
+          ],
+          "context_chars": 2511,
+          "lost_keywords": [],
+          "seed_chars": 2511,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-templates-insufficient",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.414,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "иностранн",
+            "санкционн"
+          ],
+          "context_chars": 3375,
+          "lost_keywords": [],
+          "seed_chars": 3375,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-secret-check",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.684,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "NDA",
+            "доступ"
+          ],
+          "context_chars": 4201,
+          "lost_keywords": [],
+          "seed_chars": 3863,
+          "added_chars": 338,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-secret-not-auto",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.6634,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "режим",
+            "доступ"
+          ],
+          "context_chars": 4026,
+          "lost_keywords": [],
+          "seed_chars": 3328,
+          "added_chars": 698,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-secret-disclosure",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.6122,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "зафиксировать",
+            "compliance"
+          ],
+          "context_chars": 3684,
+          "lost_keywords": [],
+          "seed_chars": 3224,
+          "added_chars": 460,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-pdp-scope",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.7258,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "согласие",
+            "передача"
+          ],
+          "context_chars": 3016,
+          "lost_keywords": [],
+          "seed_chars": 3016,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-pdp-data",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.646,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "цель обработки",
+            "срок хранения"
+          ],
+          "context_chars": 3581,
+          "lost_keywords": [],
+          "seed_chars": 2795,
+          "added_chars": 786,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-pdp-uncertain",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.7161,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "основани",
+            "утечк"
+          ],
+          "context_chars": 3774,
+          "lost_keywords": [],
+          "seed_chars": 3249,
+          "added_chars": 525,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-claims-delay",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.6867,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "AWB",
+            "вину"
+          ],
+          "context_chars": 4957,
+          "lost_keywords": [],
+          "seed_chars": 4118,
+          "added_chars": 839,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-claims-damage",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.6618,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "акт",
+            "фото"
+          ],
+          "context_chars": 4145,
+          "lost_keywords": [],
+          "seed_chars": 3483,
+          "added_chars": 662,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-claims-lawyer",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.4307,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "суд",
+            "срок"
+          ],
+          "context_chars": 2660,
+          "lost_keywords": [],
+          "seed_chars": 2660,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-claims-forbidden",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.5604,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "долг",
+            "вину"
+          ],
+          "context_chars": 4804,
+          "lost_keywords": [],
+          "seed_chars": 3756,
+          "added_chars": 1048,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-expedition-vs-carrier",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.719,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "экспедитор",
+            "AWB"
+          ],
+          "context_chars": 3249,
+          "lost_keywords": [],
+          "seed_chars": 3249,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-expedition-mawb-hawb",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.7105,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "HAWB",
+            "MAWB"
+          ],
+          "context_chars": 4174,
+          "lost_keywords": [],
+          "seed_chars": 3781,
+          "added_chars": 393,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-expedition-risks",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.6038,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "ответственност",
+            "customs"
+          ],
+          "context_chars": 4501,
+          "lost_keywords": [],
+          "seed_chars": 3856,
+          "added_chars": 645,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-road-cutoff",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.6734,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "cut-off",
+            "терминал"
+          ],
+          "context_chars": 5827,
+          "lost_keywords": [],
+          "seed_chars": 4160,
+          "added_chars": 1667,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-road-penalty",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.5706,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "GPS",
+            "договорное"
+          ],
+          "context_chars": 4293,
+          "lost_keywords": [],
+          "seed_chars": 3900,
+          "added_chars": 393,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-road-seal",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.719,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "пломб",
+            "акт"
+          ],
+          "context_chars": 6000,
+          "lost_keywords": [],
+          "seed_chars": 3385,
+          "added_chars": 2615,
+          "changed_from_ordinary_expansion": true,
+          "ordinary_expansion_lost_seed": true
+        },
+        {
+          "case_id": "aircargo-road-driver-pdn",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.6411,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "раскрывать",
+            "основание"
+          ],
+          "context_chars": 3862,
+          "lost_keywords": [],
+          "seed_chars": 3862,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-business-trip-advance-report",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.3674,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "авансовый отчет",
+            "билеты"
+          ],
+          "context_chars": 2673,
+          "lost_keywords": [],
+          "seed_chars": 2673,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-business-trip-foreign-approval",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.3983,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "генеральным директором",
+            "за пределы РФ"
+          ],
+          "context_chars": 3154,
+          "lost_keywords": [],
+          "seed_chars": 3154,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-remote-work-monitoring-limits",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.1564,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "клавиатуры",
+            "видеонаблюдение"
+          ],
+          "context_chars": 3087,
+          "lost_keywords": [],
+          "seed_chars": 3087,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-remote-work-equipment-compensation",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.2522,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "VPN",
+            "800 руб"
+          ],
+          "context_chars": 2456,
+          "lost_keywords": [],
+          "seed_chars": 2456,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-maternity-duration-normal",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.4482,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "140 календар",
+            "70 до"
+          ],
+          "context_chars": 3169,
+          "lost_keywords": [],
+          "seed_chars": 3169,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-maternity-dismissal-ban",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.3458,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "ст. 261",
+            "ликвидации"
+          ],
+          "context_chars": 2811,
+          "lost_keywords": [],
+          "seed_chars": 2811,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-internal-transfer-consent",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.346,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "письменного согласия",
+            "ст. 74"
+          ],
+          "context_chars": 3544,
+          "lost_keywords": [],
+          "seed_chars": 3544,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-internal-transfer-documents",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.4964,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "дополнительное соглашение",
+            "приказ"
+          ],
+          "context_chars": 2573,
+          "lost_keywords": [],
+          "seed_chars": 2573,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-contract-termination-open-awb",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.5194,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "open AWB",
+            "claims register"
+          ],
+          "context_chars": 4515,
+          "lost_keywords": [],
+          "seed_chars": 4241,
+          "added_chars": 274,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-contract-termination-fields",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.5456,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "termination_date",
+            "settlements_status"
+          ],
+          "context_chars": 3614,
+          "lost_keywords": [],
+          "seed_chars": 3614,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-road-contract-aircargo-fields",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.3723,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "terminal_slot",
+            "seal_numbers"
+          ],
+          "context_chars": 6000,
+          "lost_keywords": [],
+          "seed_chars": 4691,
+          "added_chars": 1309,
+          "changed_from_ordinary_expansion": true,
+          "ordinary_expansion_lost_seed": true
+        },
+        {
+          "case_id": "aircargo-dangerous-goods-fields",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.4501,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "cargo_un_number",
+            "cargo_class"
+          ],
+          "context_chars": 4798,
+          "lost_keywords": [],
+          "seed_chars": 3778,
+          "added_chars": 1020,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-dangerous-goods-clearance",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.273,
+          "context_recall": 0.5,
+          "kw_status": "PART",
+          "matched_keywords": [
+            "UN"
+          ],
+          "context_chars": 5636,
+          "lost_keywords": [],
+          "seed_chars": 4299,
+          "added_chars": 1337,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-customs-clearance-fields",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.4566,
+          "context_recall": 0.0,
+          "kw_status": "MISS",
+          "matched_keywords": [],
+          "context_chars": 5670,
+          "lost_keywords": [],
+          "seed_chars": 4236,
+          "added_chars": 1434,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-customs-special-cargo-manual-check",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.1014,
+          "context_recall": 0.5,
+          "kw_status": "PART",
+          "matched_keywords": [
+            "dangerous goods"
+          ],
+          "context_chars": 3549,
+          "lost_keywords": [],
+          "seed_chars": 2751,
+          "added_chars": 798,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-waybill-first-mile-fields",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.4194,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "waybill_number",
+            "vehicle_number"
+          ],
+          "context_chars": 6000,
+          "lost_keywords": [],
+          "seed_chars": 4508,
+          "added_chars": 1492,
+          "changed_from_ordinary_expansion": true,
+          "ordinary_expansion_lost_seed": true
+        },
+        {
+          "case_id": "aircargo-waybill-escalation-events",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.3,
+          "context_recall": 0.5,
+          "kw_status": "PART",
+          "matched_keywords": [
+            "missed cutoff"
+          ],
+          "context_chars": 2768,
+          "lost_keywords": [],
+          "seed_chars": 2768,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-trade-compliance-hold",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.4712,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "compliance hold",
+            "dual-use"
+          ],
+          "context_chars": 5968,
+          "lost_keywords": [],
+          "seed_chars": 3508,
+          "added_chars": 2460,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-trade-compliance-screening",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.5314,
+          "context_recall": 0.5,
+          "kw_status": "PART",
+          "matched_keywords": [
+            "код ТН ВЭД"
+          ],
+          "context_chars": 3737,
+          "lost_keywords": [],
+          "seed_chars": 3508,
+          "added_chars": 229,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-incident-response-bridge",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.5687,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "incident bridge",
+            "DPO"
+          ],
+          "context_chars": 6000,
+          "lost_keywords": [],
+          "seed_chars": 2114,
+          "added_chars": 3886,
+          "changed_from_ordinary_expansion": true,
+          "ordinary_expansion_lost_seed": true
+        },
+        {
+          "case_id": "aircargo-incident-response-required-fields",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.5328,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "containment_measures",
+            "shipment_or_data_hold"
+          ],
+          "context_chars": 4413,
+          "lost_keywords": [],
+          "seed_chars": 3447,
+          "added_chars": 966,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-access-control-need-to-know",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.5418,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "need-to-know",
+            "журнала действий"
+          ],
+          "context_chars": 5128,
+          "lost_keywords": [],
+          "seed_chars": 3621,
+          "added_chars": 1507,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-access-control-review",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.3942,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "role_matrix",
+            "review_frequency"
+          ],
+          "context_chars": 5559,
+          "lost_keywords": [],
+          "seed_chars": 3101,
+          "added_chars": 2458,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-employment-contract-essential-terms",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.2952,
+          "context_recall": 0.5,
+          "kw_status": "PART",
+          "matched_keywords": [
+            "ст. 57"
+          ],
+          "context_chars": 3827,
+          "lost_keywords": [],
+          "seed_chars": 3827,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-employment-contract-special-form",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.3303,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "срочный трудовой договор",
+            "удаленным работником"
+          ],
+          "context_chars": 2840,
+          "lost_keywords": [],
+          "seed_chars": 2840,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-driver-job-documents",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.4023,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "путевые листы",
+            "ТТН"
+          ],
+          "context_chars": 3531,
+          "lost_keywords": [],
+          "seed_chars": 3227,
+          "added_chars": 304,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-driver-dangerous-goods-refusal",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.4858,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "опасных грузов",
+            "допуска"
+          ],
+          "context_chars": 6000,
+          "lost_keywords": [],
+          "seed_chars": 4119,
+          "added_chars": 1881,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-sick-leave-required-fields",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.6022,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "sick_leave_number",
+            "payment_amount"
+          ],
+          "context_chars": 4092,
+          "lost_keywords": [],
+          "seed_chars": 4092,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-sick-leave-lawyer-escalation",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.2284,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "защищённой категории",
+            "спорных условиях"
+          ],
+          "context_chars": 2275,
+          "lost_keywords": [],
+          "seed_chars": 2275,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-cargo-loss-evidence-bundle",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.6781,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "shortage report",
+            "seal photos"
+          ],
+          "context_chars": 4511,
+          "lost_keywords": [],
+          "seed_chars": 3839,
+          "added_chars": 672,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-cargo-loss-required-fields",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.4388,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "dispute_card_id",
+            "response_deadline"
+          ],
+          "context_chars": 3583,
+          "lost_keywords": [],
+          "seed_chars": 3583,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-late-delivery-reply-evidence",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.6255,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "offload reason",
+            "terminal timestamps"
+          ],
+          "context_chars": 4066,
+          "lost_keywords": [],
+          "seed_chars": 4066,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-late-delivery-reply-no-admission",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.6387,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "вину",
+            "liability cap"
+          ],
+          "context_chars": 4202,
+          "lost_keywords": [],
+          "seed_chars": 3426,
+          "added_chars": 776,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-driver-hours-required-fields",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.5444,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "tachograph_card_number",
+            "daily_driving_limit"
+          ],
+          "context_chars": 4615,
+          "lost_keywords": [],
+          "seed_chars": 3969,
+          "added_chars": 646,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-driver-hours-terminal-discrepancy",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.8182,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "TMS/WMS/terminal log",
+            "актом"
+          ],
+          "context_chars": 3196,
+          "lost_keywords": [],
+          "seed_chars": 3196,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-warehouse-3pl-required-fields",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.5854,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "warehouse_address",
+            "inventory_accuracy_target"
+          ],
+          "context_chars": 4694,
+          "lost_keywords": [],
+          "seed_chars": 4208,
+          "added_chars": 486,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-warehouse-3pl-escalation",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.4423,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "temperature excursion",
+            "insurance regress"
+          ],
+          "context_chars": 6000,
+          "lost_keywords": [],
+          "seed_chars": 2920,
+          "added_chars": 3080,
+          "changed_from_ordinary_expansion": true,
+          "ordinary_expansion_lost_seed": true
+        },
+        {
+          "case_id": "aircargo-perishable-temperature-controls",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.6115,
+          "context_recall": 0.0,
+          "kw_status": "MISS",
+          "matched_keywords": [],
+          "context_chars": 5552,
+          "lost_keywords": [],
+          "seed_chars": 4310,
+          "added_chars": 1242,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-perishable-special-cargo-evidence",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.3998,
+          "context_recall": 0.5,
+          "kw_status": "PART",
+          "matched_keywords": [
+            "temperature logger"
+          ],
+          "context_chars": 4296,
+          "lost_keywords": [],
+          "seed_chars": 4296,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-oversized-permit-route",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.5985,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "permit_number",
+            "escort_vehicle_count"
+          ],
+          "context_chars": 6000,
+          "lost_keywords": [],
+          "seed_chars": 4426,
+          "added_chars": 1574,
+          "changed_from_ordinary_expansion": true,
+          "ordinary_expansion_lost_seed": true
+        },
+        {
+          "case_id": "aircargo-oversized-manual-check",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.4982,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "ручную проверку",
+            "carrier/GSA"
+          ],
+          "context_chars": 4893,
+          "lost_keywords": [],
+          "seed_chars": 3380,
+          "added_chars": 1513,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-data-retention-legal-hold",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.4607,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "legal hold",
+            "incident hold"
+          ],
+          "context_chars": 4569,
+          "lost_keywords": [],
+          "seed_chars": 4021,
+          "added_chars": 548,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-data-retention-required-fields",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.508,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "retention_period",
+            "system_of_record"
+          ],
+          "context_chars": 3090,
+          "lost_keywords": [],
+          "seed_chars": 3090,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-subject-rights-third-party-masking",
+          "question_class": "multi_hop",
+          "n_docs": 5,
+          "context_precision": 0.5401,
+          "context_recall": 0.5,
+          "kw_status": "PART",
+          "matched_keywords": [
+            "чужих данных"
+          ],
+          "context_chars": 3444,
+          "lost_keywords": [],
+          "seed_chars": 3114,
+          "added_chars": 330,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-subject-rights-required-fields",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.6609,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "request_type",
+            "awb_booking_reference"
+          ],
+          "context_chars": 4416,
+          "lost_keywords": [],
+          "seed_chars": 3905,
+          "added_chars": 511,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-customs-broker-evidence",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.5207,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "packing list",
+            "broker authority"
+          ],
+          "context_chars": 5308,
+          "lost_keywords": [],
+          "seed_chars": 4067,
+          "added_chars": 1241,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-customs-broker-escalation",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.2292,
+          "context_recall": 0.0,
+          "kw_status": "MISS",
+          "matched_keywords": [],
+          "context_chars": 3584,
+          "lost_keywords": [],
+          "seed_chars": 3584,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-salary-payment-dates",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.5139,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "20-го числа",
+            "5-го числа"
+          ],
+          "context_chars": 2373,
+          "lost_keywords": [],
+          "seed_chars": 2373,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-salary-bonus-conditions",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.4827,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "6 месяцев",
+            "дисциплинарных взысканий"
+          ],
+          "context_chars": 2794,
+          "lost_keywords": [],
+          "seed_chars": 2794,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-overtime-limits",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.5162,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "4 часов",
+            "120 часов"
+          ],
+          "context_chars": 3630,
+          "lost_keywords": [],
+          "seed_chars": 3311,
+          "added_chars": 319,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-overtime-protected-categories",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.635,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "беременные",
+            "несовершеннолетние"
+          ],
+          "context_chars": 3402,
+          "lost_keywords": [],
+          "seed_chars": 3083,
+          "added_chars": 319,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-harassment-complaint-data",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.4939,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "дату",
+            "свидетелей"
+          ],
+          "context_chars": 3206,
+          "lost_keywords": [],
+          "seed_chars": 3206,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-harassment-investigation-timeline",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.2506,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "2 рабочих дней",
+            "10 рабочих дней"
+          ],
+          "context_chars": 2537,
+          "lost_keywords": [],
+          "seed_chars": 2537,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-conflict-interest-disclosure",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.4898,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "родственных связях",
+            "подарков"
+          ],
+          "context_chars": 3652,
+          "lost_keywords": [],
+          "seed_chars": 3652,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-conflict-interest-sanctions",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.3622,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "дисциплинарное взыскание",
+            "убытков"
+          ],
+          "context_chars": 2739,
+          "lost_keywords": [],
+          "seed_chars": 2739,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-cargo-insurance-evidence",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.6204,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "insurance application",
+            "temperature log"
+          ],
+          "context_chars": 4974,
+          "lost_keywords": [],
+          "seed_chars": 4232,
+          "added_chars": 742,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-cargo-insurance-operational-limits",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.4063,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "special cargo",
+            "excluded route"
+          ],
+          "context_chars": 6000,
+          "lost_keywords": [],
+          "seed_chars": 4038,
+          "added_chars": 1962,
+          "changed_from_ordinary_expansion": true,
+          "ordinary_expansion_lost_seed": true
+        },
+        {
+          "case_id": "aircargo-fuel-supply-evidence",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.5388,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "batch certificate",
+            "safety sheet"
+          ],
+          "context_chars": 6000,
+          "lost_keywords": [],
+          "seed_chars": 3693,
+          "added_chars": 2307,
+          "changed_from_ordinary_expansion": true,
+          "ordinary_expansion_lost_seed": true
+        },
+        {
+          "case_id": "aircargo-fuel-supply-required-fields",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.5642,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "fuel_type",
+            "terminal_delivery_point"
+          ],
+          "context_chars": 6000,
+          "lost_keywords": [],
+          "seed_chars": 3852,
+          "added_chars": 2148,
+          "changed_from_ordinary_expansion": true,
+          "ordinary_expansion_lost_seed": true
+        },
+        {
+          "case_id": "aircargo-gps-monitoring-required-fields",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.6317,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "gps_device_id",
+            "data_retention_period"
+          ],
+          "context_chars": 4912,
+          "lost_keywords": [],
+          "seed_chars": 3440,
+          "added_chars": 1472,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-gps-monitoring-scope",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.7,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "first/last mile",
+            "cargo release"
+          ],
+          "context_chars": 2769,
+          "lost_keywords": [],
+          "seed_chars": 2769,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-weight-control-required-fields",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.6095,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "axle_loads",
+            "weighbridge_certificate"
+          ],
+          "context_chars": 5431,
+          "lost_keywords": [],
+          "seed_chars": 4468,
+          "added_chars": 963,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-weight-control-discrepancy",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.7034,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "фиксируются актом",
+            "следующему участнику"
+          ],
+          "context_chars": 2727,
+          "lost_keywords": [],
+          "seed_chars": 2727,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-cross-border-required-fields",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.2571,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "route_countries",
+            "vehicle_tir_carnet"
+          ],
+          "context_chars": 6000,
+          "lost_keywords": [],
+          "seed_chars": 4549,
+          "added_chars": 1451,
+          "changed_from_ordinary_expansion": true,
+          "ordinary_expansion_lost_seed": true
+        },
+        {
+          "case_id": "aircargo-cross-border-special-cargo",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.4035,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "lithium batteries",
+            "valuable cargo"
+          ],
+          "context_chars": 6000,
+          "lost_keywords": [],
+          "seed_chars": 3267,
+          "added_chars": 2733,
+          "changed_from_ordinary_expansion": true,
+          "ordinary_expansion_lost_seed": true
+        },
+        {
+          "case_id": "aircargo-breach-notification-required-fields",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.2084,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "breach_type",
+            "affected_systems"
+          ],
+          "context_chars": 4819,
+          "lost_keywords": [],
+          "seed_chars": 3776,
+          "added_chars": 1043,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-breach-notification-participants",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.5413,
+          "context_recall": 0.5,
+          "kw_status": "PART",
+          "matched_keywords": [
+            "DPO"
+          ],
+          "context_chars": 5878,
+          "lost_keywords": [],
+          "seed_chars": 3119,
+          "added_chars": 2759,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-cross-border-pdn-required-fields",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.455,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "recipient_country",
+            "sanctions_route_check"
+          ],
+          "context_chars": 4407,
+          "lost_keywords": [],
+          "seed_chars": 3823,
+          "added_chars": 584,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-cross-border-pdn-no-transfer",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.5693,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "без цели",
+            "country/routing assessment"
+          ],
+          "context_chars": 2845,
+          "lost_keywords": [],
+          "seed_chars": 2845,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        }
+      ],
+      "changed_cases": 11,
+      "ordinary_seed_loss_cases": 11,
+      "comparison": {
+        "precision_delta": -0.035628,
+        "precision_delta_ci95": [
+          -0.04284,
+          -0.028263
+        ],
+        "recall_delta": 0.01,
+        "recall_delta_ci95": [
+          0.0,
+          0.025
+        ],
+        "full_regressions": [],
+        "lost_keyword_cases": [],
+        "transitions": {
+          "FULL->FULL": 88,
+          "FULL->PART": 0,
+          "FULL->MISS": 0,
+          "PART->FULL": 1,
+          "PART->PART": 7,
+          "PART->MISS": 0,
+          "MISS->FULL": 0,
+          "MISS->PART": 1,
+          "MISS->MISS": 3
+        }
+      }
+    },
+    {
+      "name": "seed_reserved_coherent",
+      "aggregate": {
+        "question_class": "all cases",
+        "num_cases": 100,
+        "context_precision": 0.5472,
+        "context_recall": 0.92,
+        "FULL": 88,
+        "PART": 8,
+        "MISS": 4
+      },
+      "per_case": [
+        {
+          "case_id": "aircargo-probation-data",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.6465,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "должность",
+            "трудов"
+          ],
+          "context_chars": 2018,
+          "lost_keywords": [],
+          "seed_chars": 2018,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-probation-extend",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.7273,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "не допускается",
+            "ст. 70"
+          ],
+          "context_chars": 2276,
+          "lost_keywords": [],
+          "seed_chars": 1743,
+          "added_chars": 533,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-probation-dismissal",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.6667,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "критери",
+            "уведомлени"
+          ],
+          "context_chars": 2063,
+          "lost_keywords": [],
+          "seed_chars": 1774,
+          "added_chars": 289,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-dismissal-check",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.7614,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "основание",
+            "приказ"
+          ],
+          "context_chars": 2181,
+          "lost_keywords": [],
+          "seed_chars": 2181,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-dismissal-lawyer",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.5795,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "работодател",
+            "сокращени"
+          ],
+          "context_chars": 1161,
+          "lost_keywords": [],
+          "seed_chars": 1161,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-dismissal-order",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.7143,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "черновик",
+            "шаблон"
+          ],
+          "context_chars": 2080,
+          "lost_keywords": [],
+          "seed_chars": 2080,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-leave-sources",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.7159,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "график отпусков",
+            "ТК РФ"
+          ],
+          "context_chars": 2174,
+          "lost_keywords": [],
+          "seed_chars": 2174,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-leave-compensation",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.5844,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "расчет",
+            "бухгалтери"
+          ],
+          "context_chars": 2114,
+          "lost_keywords": [],
+          "seed_chars": 2114,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-leave-risk",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.5065,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "перенос",
+            "декрет"
+          ],
+          "context_chars": 2290,
+          "lost_keywords": [],
+          "seed_chars": 1956,
+          "added_chars": 334,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-matliab-check",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.8442,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "ущерб",
+            "объяснени"
+          ],
+          "context_chars": 2343,
+          "lost_keywords": [],
+          "seed_chars": 2027,
+          "added_chars": 316,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-matliab-disputed",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.6136,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "основани",
+            "договор"
+          ],
+          "context_chars": 1627,
+          "lost_keywords": [],
+          "seed_chars": 1627,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-templates-choose",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.5974,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "предмет",
+            "перевозка"
+          ],
+          "context_chars": 1142,
+          "lost_keywords": [],
+          "seed_chars": 1142,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-templates-checklist",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.1023,
+          "context_recall": 0.5,
+          "kw_status": "PART",
+          "matched_keywords": [
+            "стороны"
+          ],
+          "context_chars": 1725,
+          "lost_keywords": [],
+          "seed_chars": 1725,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-templates-insufficient",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.4805,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "иностранн",
+            "санкционн"
+          ],
+          "context_chars": 1633,
+          "lost_keywords": [],
+          "seed_chars": 1633,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-secret-check",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.7273,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "NDA",
+            "доступ"
+          ],
+          "context_chars": 2398,
+          "lost_keywords": [],
+          "seed_chars": 2060,
+          "added_chars": 338,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-secret-not-auto",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.7172,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "режим",
+            "доступ"
+          ],
+          "context_chars": 2259,
+          "lost_keywords": [],
+          "seed_chars": 1561,
+          "added_chars": 698,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-secret-disclosure",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.6705,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "зафиксировать",
+            "compliance"
+          ],
+          "context_chars": 1855,
+          "lost_keywords": [],
+          "seed_chars": 1855,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-pdp-scope",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.7792,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "согласие",
+            "передача"
+          ],
+          "context_chars": 1364,
+          "lost_keywords": [],
+          "seed_chars": 1364,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-pdp-data",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.7091,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "цель обработки",
+            "срок хранения"
+          ],
+          "context_chars": 2181,
+          "lost_keywords": [],
+          "seed_chars": 1395,
+          "added_chars": 786,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-pdp-uncertain",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.798,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "основани",
+            "утечк"
+          ],
+          "context_chars": 1794,
+          "lost_keywords": [],
+          "seed_chars": 1456,
+          "added_chars": 338,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-claims-delay",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.7692,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "AWB",
+            "вину"
+          ],
+          "context_chars": 2575,
+          "lost_keywords": [],
+          "seed_chars": 2311,
+          "added_chars": 264,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-claims-damage",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.7273,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "акт",
+            "фото"
+          ],
+          "context_chars": 2016,
+          "lost_keywords": [],
+          "seed_chars": 2016,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-claims-lawyer",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.4545,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "суд",
+            "срок"
+          ],
+          "context_chars": 1678,
+          "lost_keywords": [],
+          "seed_chars": 1678,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-claims-forbidden",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.6465,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "долг",
+            "вину"
+          ],
+          "context_chars": 2278,
+          "lost_keywords": [],
+          "seed_chars": 1921,
+          "added_chars": 357,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-expedition-vs-carrier",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.7727,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "экспедитор",
+            "AWB"
+          ],
+          "context_chars": 1893,
+          "lost_keywords": [],
+          "seed_chars": 1893,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-expedition-mawb-hawb",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.7879,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "HAWB",
+            "MAWB"
+          ],
+          "context_chars": 2085,
+          "lost_keywords": [],
+          "seed_chars": 2085,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-expedition-risks",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.6623,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "ответственност",
+            "customs"
+          ],
+          "context_chars": 2109,
+          "lost_keywords": [],
+          "seed_chars": 2109,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-road-cutoff",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.7045,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "cut-off",
+            "терминал"
+          ],
+          "context_chars": 2893,
+          "lost_keywords": [],
+          "seed_chars": 2308,
+          "added_chars": 585,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-road-penalty",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.6515,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "GPS",
+            "договорное"
+          ],
+          "context_chars": 2172,
+          "lost_keywords": [],
+          "seed_chars": 2172,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-road-seal",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.7727,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "пломб",
+            "акт"
+          ],
+          "context_chars": 3394,
+          "lost_keywords": [],
+          "seed_chars": 1910,
+          "added_chars": 1484,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-road-driver-pdn",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.7576,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "раскрывать",
+            "основание"
+          ],
+          "context_chars": 2138,
+          "lost_keywords": [],
+          "seed_chars": 2138,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-business-trip-advance-report",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.3636,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "авансовый отчет",
+            "билеты"
+          ],
+          "context_chars": 1479,
+          "lost_keywords": [],
+          "seed_chars": 1479,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-business-trip-foreign-approval",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.4416,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "генеральным директором",
+            "за пределы РФ"
+          ],
+          "context_chars": 1757,
+          "lost_keywords": [],
+          "seed_chars": 1757,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-remote-work-monitoring-limits",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.1948,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "клавиатуры",
+            "видеонаблюдение"
+          ],
+          "context_chars": 1874,
+          "lost_keywords": [],
+          "seed_chars": 1874,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-remote-work-equipment-compensation",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.314,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "VPN",
+            "800 руб"
+          ],
+          "context_chars": 1390,
+          "lost_keywords": [],
+          "seed_chars": 1390,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-maternity-duration-normal",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.4818,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "140 календар",
+            "70 до"
+          ],
+          "context_chars": 1937,
+          "lost_keywords": [],
+          "seed_chars": 1937,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-maternity-dismissal-ban",
+          "question_class": "single_hop",
+          "n_docs": 4,
+          "context_precision": 0.26,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "ст. 261",
+            "ликвидации"
+          ],
+          "context_chars": 2378,
+          "lost_keywords": [],
+          "seed_chars": 2378,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-internal-transfer-consent",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.3545,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "письменного согласия",
+            "ст. 74"
+          ],
+          "context_chars": 1850,
+          "lost_keywords": [],
+          "seed_chars": 1850,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-internal-transfer-documents",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.5227,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "дополнительное соглашение",
+            "приказ"
+          ],
+          "context_chars": 1282,
+          "lost_keywords": [],
+          "seed_chars": 1282,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-contract-termination-open-awb",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.5524,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "open AWB",
+            "claims register"
+          ],
+          "context_chars": 2917,
+          "lost_keywords": [],
+          "seed_chars": 2643,
+          "added_chars": 274,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-contract-termination-fields",
+          "question_class": "single_hop",
+          "n_docs": 2,
+          "context_precision": 0.6667,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "termination_date",
+            "settlements_status"
+          ],
+          "context_chars": 1425,
+          "lost_keywords": [],
+          "seed_chars": 1425,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-road-contract-aircargo-fields",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.4545,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "terminal_slot",
+            "seal_numbers"
+          ],
+          "context_chars": 6000,
+          "lost_keywords": [],
+          "seed_chars": 2794,
+          "added_chars": 3206,
+          "changed_from_ordinary_expansion": true,
+          "ordinary_expansion_lost_seed": true
+        },
+        {
+          "case_id": "aircargo-dangerous-goods-fields",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.447,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "cargo_un_number",
+            "cargo_class"
+          ],
+          "context_chars": 3399,
+          "lost_keywords": [],
+          "seed_chars": 2379,
+          "added_chars": 1020,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-dangerous-goods-clearance",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.2636,
+          "context_recall": 0.5,
+          "kw_status": "PART",
+          "matched_keywords": [
+            "UN"
+          ],
+          "context_chars": 3877,
+          "lost_keywords": [],
+          "seed_chars": 2540,
+          "added_chars": 1337,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-customs-clearance-fields",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.4444,
+          "context_recall": 0.0,
+          "kw_status": "MISS",
+          "matched_keywords": [],
+          "context_chars": 3603,
+          "lost_keywords": [],
+          "seed_chars": 2558,
+          "added_chars": 1045,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-customs-special-cargo-manual-check",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.1111,
+          "context_recall": 0.0,
+          "kw_status": "MISS",
+          "matched_keywords": [],
+          "context_chars": 1421,
+          "lost_keywords": [],
+          "seed_chars": 1421,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-waybill-first-mile-fields",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.4132,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "waybill_number",
+            "vehicle_number"
+          ],
+          "context_chars": 4738,
+          "lost_keywords": [],
+          "seed_chars": 2749,
+          "added_chars": 1989,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-waybill-escalation-events",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.3,
+          "context_recall": 0.5,
+          "kw_status": "PART",
+          "matched_keywords": [
+            "missed cutoff"
+          ],
+          "context_chars": 1685,
+          "lost_keywords": [],
+          "seed_chars": 1685,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-trade-compliance-hold",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.5051,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "compliance hold",
+            "dual-use"
+          ],
+          "context_chars": 3439,
+          "lost_keywords": [],
+          "seed_chars": 2352,
+          "added_chars": 1087,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-trade-compliance-screening",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.5636,
+          "context_recall": 0.5,
+          "kw_status": "PART",
+          "matched_keywords": [
+            "код ТН ВЭД"
+          ],
+          "context_chars": 1924,
+          "lost_keywords": [],
+          "seed_chars": 1924,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-incident-response-bridge",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.6061,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "incident bridge",
+            "DPO"
+          ],
+          "context_chars": 3983,
+          "lost_keywords": [],
+          "seed_chars": 1306,
+          "added_chars": 2677,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-incident-response-required-fields",
+          "question_class": "single_hop",
+          "n_docs": 4,
+          "context_precision": 0.56,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "containment_measures",
+            "shipment_or_data_hold"
+          ],
+          "context_chars": 3325,
+          "lost_keywords": [],
+          "seed_chars": 3069,
+          "added_chars": 256,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-access-control-need-to-know",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.5657,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "need-to-know",
+            "журнала действий"
+          ],
+          "context_chars": 2205,
+          "lost_keywords": [],
+          "seed_chars": 2205,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-access-control-review",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.4242,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "role_matrix",
+            "review_frequency"
+          ],
+          "context_chars": 3735,
+          "lost_keywords": [],
+          "seed_chars": 1990,
+          "added_chars": 1745,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-employment-contract-essential-terms",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.3131,
+          "context_recall": 0.5,
+          "kw_status": "PART",
+          "matched_keywords": [
+            "ст. 57"
+          ],
+          "context_chars": 2227,
+          "lost_keywords": [],
+          "seed_chars": 2227,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-employment-contract-special-form",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.3636,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "срочный трудовой договор",
+            "удаленным работником"
+          ],
+          "context_chars": 1594,
+          "lost_keywords": [],
+          "seed_chars": 1594,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-driver-job-documents",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.4343,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "путевые листы",
+            "ТТН"
+          ],
+          "context_chars": 2489,
+          "lost_keywords": [],
+          "seed_chars": 2185,
+          "added_chars": 304,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-driver-dangerous-goods-refusal",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.5354,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "опасных грузов",
+            "допуска"
+          ],
+          "context_chars": 3482,
+          "lost_keywords": [],
+          "seed_chars": 2413,
+          "added_chars": 1069,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-sick-leave-required-fields",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.6136,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "sick_leave_number",
+            "payment_amount"
+          ],
+          "context_chars": 2403,
+          "lost_keywords": [],
+          "seed_chars": 2403,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-sick-leave-lawyer-escalation",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.2338,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "защищённой категории",
+            "спорных условиях"
+          ],
+          "context_chars": 1531,
+          "lost_keywords": [],
+          "seed_chars": 1531,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-cargo-loss-evidence-bundle",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.7,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "shortage report",
+            "seal photos"
+          ],
+          "context_chars": 2483,
+          "lost_keywords": [],
+          "seed_chars": 2483,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-cargo-loss-required-fields",
+          "question_class": "single_hop",
+          "n_docs": 4,
+          "context_precision": 0.52,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "dispute_card_id",
+            "response_deadline"
+          ],
+          "context_chars": 3032,
+          "lost_keywords": [],
+          "seed_chars": 3032,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-late-delivery-reply-evidence",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.6455,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "offload reason",
+            "terminal timestamps"
+          ],
+          "context_chars": 2419,
+          "lost_keywords": [],
+          "seed_chars": 2419,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-late-delivery-reply-no-admission",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.6727,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "вину",
+            "liability cap"
+          ],
+          "context_chars": 2185,
+          "lost_keywords": [],
+          "seed_chars": 2185,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-driver-hours-required-fields",
+          "question_class": "single_hop",
+          "n_docs": 4,
+          "context_precision": 0.5467,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "tachograph_card_number",
+            "daily_driving_limit"
+          ],
+          "context_chars": 3440,
+          "lost_keywords": [],
+          "seed_chars": 3153,
+          "added_chars": 287,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-driver-hours-terminal-discrepancy",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.8182,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "TMS/WMS/terminal log",
+            "актом"
+          ],
+          "context_chars": 1895,
+          "lost_keywords": [],
+          "seed_chars": 1895,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-warehouse-3pl-required-fields",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.6091,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "warehouse_address",
+            "inventory_accuracy_target"
+          ],
+          "context_chars": 2415,
+          "lost_keywords": [],
+          "seed_chars": 2415,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-warehouse-3pl-escalation",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.4909,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "temperature excursion",
+            "insurance regress"
+          ],
+          "context_chars": 3387,
+          "lost_keywords": [],
+          "seed_chars": 1562,
+          "added_chars": 1825,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-perishable-temperature-controls",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.6294,
+          "context_recall": 0.0,
+          "kw_status": "MISS",
+          "matched_keywords": [],
+          "context_chars": 3374,
+          "lost_keywords": [],
+          "seed_chars": 2752,
+          "added_chars": 622,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-perishable-special-cargo-evidence",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.404,
+          "context_recall": 0.5,
+          "kw_status": "PART",
+          "matched_keywords": [
+            "temperature logger"
+          ],
+          "context_chars": 2532,
+          "lost_keywords": [],
+          "seed_chars": 2532,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-oversized-permit-route",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.6364,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "permit_number",
+            "escort_vehicle_count"
+          ],
+          "context_chars": 4829,
+          "lost_keywords": [],
+          "seed_chars": 2675,
+          "added_chars": 2154,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-oversized-manual-check",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.5455,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "ручную проверку",
+            "carrier/GSA"
+          ],
+          "context_chars": 2954,
+          "lost_keywords": [],
+          "seed_chars": 2242,
+          "added_chars": 712,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-data-retention-legal-hold",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.4949,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "legal hold",
+            "incident hold"
+          ],
+          "context_chars": 2990,
+          "lost_keywords": [],
+          "seed_chars": 2569,
+          "added_chars": 421,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-data-retention-required-fields",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.5455,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "retention_period",
+            "system_of_record"
+          ],
+          "context_chars": 2118,
+          "lost_keywords": [],
+          "seed_chars": 2118,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-subject-rights-third-party-masking",
+          "question_class": "multi_hop",
+          "n_docs": 4,
+          "context_precision": 0.4327,
+          "context_recall": 0.5,
+          "kw_status": "PART",
+          "matched_keywords": [
+            "чужих данных"
+          ],
+          "context_chars": 2976,
+          "lost_keywords": [],
+          "seed_chars": 2646,
+          "added_chars": 330,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-subject-rights-required-fields",
+          "question_class": "single_hop",
+          "n_docs": 2,
+          "context_precision": 0.7179,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "request_type",
+            "awb_booking_reference"
+          ],
+          "context_chars": 1297,
+          "lost_keywords": [],
+          "seed_chars": 1297,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-customs-broker-evidence",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.5303,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "packing list",
+            "broker authority"
+          ],
+          "context_chars": 3043,
+          "lost_keywords": [],
+          "seed_chars": 2284,
+          "added_chars": 759,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-customs-broker-escalation",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.2364,
+          "context_recall": 0.0,
+          "kw_status": "MISS",
+          "matched_keywords": [],
+          "context_chars": 2279,
+          "lost_keywords": [],
+          "seed_chars": 2279,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-salary-payment-dates",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.5636,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "20-го числа",
+            "5-го числа"
+          ],
+          "context_chars": 1375,
+          "lost_keywords": [],
+          "seed_chars": 1375,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-salary-bonus-conditions",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.5568,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "6 месяцев",
+            "дисциплинарных взысканий"
+          ],
+          "context_chars": 1655,
+          "lost_keywords": [],
+          "seed_chars": 1655,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-overtime-limits",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.5844,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "4 часов",
+            "120 часов"
+          ],
+          "context_chars": 2252,
+          "lost_keywords": [],
+          "seed_chars": 1933,
+          "added_chars": 319,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-overtime-protected-categories",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.697,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "беременные",
+            "несовершеннолетние"
+          ],
+          "context_chars": 1752,
+          "lost_keywords": [],
+          "seed_chars": 1752,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-harassment-complaint-data",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.5455,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "дату",
+            "свидетелей"
+          ],
+          "context_chars": 1793,
+          "lost_keywords": [],
+          "seed_chars": 1793,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-harassment-investigation-timeline",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.2727,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "2 рабочих дней",
+            "10 рабочих дней"
+          ],
+          "context_chars": 1368,
+          "lost_keywords": [],
+          "seed_chars": 1368,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-conflict-interest-disclosure",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.5364,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "родственных связях",
+            "подарков"
+          ],
+          "context_chars": 1839,
+          "lost_keywords": [],
+          "seed_chars": 1839,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-conflict-interest-sanctions",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.4205,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "дисциплинарное взыскание",
+            "убытков"
+          ],
+          "context_chars": 1728,
+          "lost_keywords": [],
+          "seed_chars": 1728,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-cargo-insurance-evidence",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.6364,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "insurance application",
+            "temperature log"
+          ],
+          "context_chars": 2769,
+          "lost_keywords": [],
+          "seed_chars": 2609,
+          "added_chars": 160,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-cargo-insurance-operational-limits",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.3939,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "special cargo",
+            "excluded route"
+          ],
+          "context_chars": 2844,
+          "lost_keywords": [],
+          "seed_chars": 2419,
+          "added_chars": 425,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-fuel-supply-evidence",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.562,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "batch certificate",
+            "safety sheet"
+          ],
+          "context_chars": 4804,
+          "lost_keywords": [],
+          "seed_chars": 2138,
+          "added_chars": 2666,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-fuel-supply-required-fields",
+          "question_class": "single_hop",
+          "n_docs": 2,
+          "context_precision": 0.6,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "fuel_type",
+            "terminal_delivery_point"
+          ],
+          "context_chars": 1392,
+          "lost_keywords": [],
+          "seed_chars": 1392,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-gps-monitoring-required-fields",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.6281,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "gps_device_id",
+            "data_retention_period"
+          ],
+          "context_chars": 3414,
+          "lost_keywords": [],
+          "seed_chars": 1942,
+          "added_chars": 1472,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-gps-monitoring-scope",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.7,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "first/last mile",
+            "cargo release"
+          ],
+          "context_chars": 1674,
+          "lost_keywords": [],
+          "seed_chars": 1674,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-weight-control-required-fields",
+          "question_class": "single_hop",
+          "n_docs": 2,
+          "context_precision": 0.6333,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "axle_loads",
+            "weighbridge_certificate"
+          ],
+          "context_chars": 1855,
+          "lost_keywords": [],
+          "seed_chars": 1855,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-weight-control-discrepancy",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.7273,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "фиксируются актом",
+            "следующему участнику"
+          ],
+          "context_chars": 1497,
+          "lost_keywords": [],
+          "seed_chars": 1497,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-cross-border-required-fields",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.2929,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "route_countries",
+            "vehicle_tir_carnet"
+          ],
+          "context_chars": 4019,
+          "lost_keywords": [],
+          "seed_chars": 2728,
+          "added_chars": 1291,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-cross-border-special-cargo",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.4132,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "lithium batteries",
+            "valuable cargo"
+          ],
+          "context_chars": 3567,
+          "lost_keywords": [],
+          "seed_chars": 1965,
+          "added_chars": 1602,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-breach-notification-required-fields",
+          "question_class": "single_hop",
+          "n_docs": 5,
+          "context_precision": 0.2216,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "breach_type",
+            "affected_systems"
+          ],
+          "context_chars": 4819,
+          "lost_keywords": [],
+          "seed_chars": 3776,
+          "added_chars": 1043,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-breach-notification-participants",
+          "question_class": "single_hop",
+          "n_docs": 3,
+          "context_precision": 0.5734,
+          "context_recall": 0.5,
+          "kw_status": "PART",
+          "matched_keywords": [
+            "DPO"
+          ],
+          "context_chars": 2310,
+          "lost_keywords": [],
+          "seed_chars": 2310,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-cross-border-pdn-required-fields",
+          "question_class": "single_hop",
+          "n_docs": 4,
+          "context_precision": 0.4933,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "recipient_country",
+            "sanctions_route_check"
+          ],
+          "context_chars": 3613,
+          "lost_keywords": [],
+          "seed_chars": 3029,
+          "added_chars": 584,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        },
+        {
+          "case_id": "aircargo-cross-border-pdn-no-transfer",
+          "question_class": "single_hop",
+          "n_docs": 4,
+          "context_precision": 0.5429,
+          "context_recall": 1.0,
+          "kw_status": "FULL",
+          "matched_keywords": [
+            "без цели",
+            "country/routing assessment"
+          ],
+          "context_chars": 2340,
+          "lost_keywords": [],
+          "seed_chars": 2340,
+          "added_chars": 0,
+          "changed_from_ordinary_expansion": false,
+          "ordinary_expansion_lost_seed": false
+        }
+      ],
+      "changed_cases": 1,
+      "ordinary_seed_loss_cases": 1,
+      "comparison": {
+        "precision_delta": -0.00027,
+        "precision_delta_ci95": [
+          -0.00081,
+          0.0
+        ],
+        "recall_delta": 0.0,
+        "recall_delta_ci95": [
+          0.0,
+          0.0
+        ],
+        "full_regressions": [],
+        "lost_keyword_cases": [],
+        "transitions": {
+          "FULL->FULL": 88,
+          "FULL->PART": 0,
+          "FULL->MISS": 0,
+          "PART->FULL": 0,
+          "PART->PART": 8,
+          "PART->MISS": 0,
+          "MISS->FULL": 0,
+          "MISS->PART": 0,
+          "MISS->MISS": 4
+        }
+      }
+    }
+  ]
+}
