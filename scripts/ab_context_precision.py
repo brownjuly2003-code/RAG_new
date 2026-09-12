@@ -842,6 +842,25 @@ def build_bucket_report(
     )
 
     pool_rows = json.loads(pool_path.read_text(encoding="utf-8"))
+    pool_diagnostics: dict[str, int] | None = None
+    if pool_arm == "G1":
+        unprocessed = [
+            str(row.get("case_id") or "?")
+            for row in pool_rows
+            if row.get("graph_postprocessed") is not True
+        ]
+        if unprocessed:
+            raise ValueError(
+                "G1 pool requires graph_postprocessed=true for every row; "
+                f"missing for {len(unprocessed)} case(s): {unprocessed[:5]}"
+            )
+        pool_diagnostics = {
+            "row_count": len(pool_rows),
+            "graph_postprocessed_count": len(pool_rows),
+            "graph_prefiltered_count": sum(
+                row.get("graph_prefiltered") is True for row in pool_rows
+            ),
+        }
 
     config: dict[str, Any] = {
         "top_k": top_k,
@@ -867,7 +886,7 @@ def build_bucket_report(
             }
         )
 
-    return {
+    report = {
         "schema_version": (
             STRUCTURAL_GRAPH_REPORT_SCHEMA_VERSION
             if pool_arm == "G1"
@@ -903,6 +922,9 @@ def build_bucket_report(
         "aggregate": _bucket_row("all cases", scored) | {"question_class": "all cases"},
         "per_case": scored,
     }
+    if pool_diagnostics is not None:
+        report["pool_diagnostics"] = pool_diagnostics
+    return report
 
 
 def _metric_cell(value: Optional[float]) -> str:

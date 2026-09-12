@@ -233,6 +233,18 @@ def _report_for(paths: dict[str, Path], **overrides: Any) -> dict[str, Any]:
     return build_bucket_report(**kwargs)
 
 
+def _mark_as_g1_pool(paths: dict[str, Path]) -> dict[str, Path]:
+    rows = json.loads(paths["pool"].read_text(encoding="utf-8"))
+    for index, row in enumerate(rows):
+        row["graph_categories"] = ["shipping"] if index % 2 == 0 else []
+        row["graph_prefiltered"] = index % 2 == 0
+        row["graph_postprocessed"] = True
+    paths["pool"].write_text(
+        json.dumps(rows, ensure_ascii=False), encoding="utf-8", newline="\n"
+    )
+    return paths
+
+
 def _buckets_by_class(report: dict[str, Any]) -> dict[str, dict[str, Any]]:
     return {row["question_class"]: row for row in report["buckets"]}
 
@@ -394,7 +406,7 @@ def test_the_report_records_the_pool_digest_and_the_configuration(tmp_path: Path
 
 
 def test_a_g1_report_names_the_structural_graph_producer(tmp_path: Path) -> None:
-    report = _report_for(_write_fixture(tmp_path), pool_arm="G1")
+    report = _report_for(_mark_as_g1_pool(_write_fixture(tmp_path)), pool_arm="G1")
     provenance = report["provenance"]
 
     assert report["schema_version"] == "gr-structure-graph-retrieval/v1.0"
@@ -408,9 +420,19 @@ def test_a_g1_report_names_the_structural_graph_producer(tmp_path: Path) -> None
         "ingestion/structure_graph.py",
         "ingestion/structure_graph_projection.py",
     } <= provenance["code"]["files"].keys()
+    assert report["pool_diagnostics"] == {
+        "row_count": 4,
+        "graph_postprocessed_count": 4,
+        "graph_prefiltered_count": 2,
+    }
     assert render_bucket_table(report).startswith(
         "GR-1b structural graph retrieval by question class\n"
     )
+
+
+def test_a_g1_report_refuses_a_pool_without_graph_postprocessing(tmp_path: Path) -> None:
+    with pytest.raises(ValueError, match="graph_postprocessed=true"):
+        _report_for(_write_fixture(tmp_path), pool_arm="G1")
 
 
 def test_a_path_outside_the_project_is_stored_as_the_stable_placeholder() -> None:
