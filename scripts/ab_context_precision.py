@@ -600,6 +600,13 @@ BUCKET_CODE_PATHS: tuple[str, ...] = (
     "evaluation/question_class_labels.py",
 )
 
+STRUCTURAL_GRAPH_CODE_PATHS: tuple[str, ...] = (
+    *BUCKET_CODE_PATHS,
+    "vectordb/_base_manager.py",
+    "ingestion/structure_graph.py",
+    "ingestion/structure_graph_projection.py",
+)
+
 _EMPTY_CELL = "—"
 
 _BASELINE_POOL_PRODUCER = (
@@ -654,10 +661,10 @@ def _git_commit() -> dict[str, Any]:
     }
 
 
-def _code_digests() -> dict[str, str]:
+def _code_digests(paths: Sequence[str] = BUCKET_CODE_PATHS) -> dict[str, str]:
     return {
         rel: sha256_file(PROJECT_ROOT / rel)
-        for rel in BUCKET_CODE_PATHS
+        for rel in paths
         if (PROJECT_ROOT / rel).is_file()
     }
 
@@ -758,6 +765,7 @@ def _provenance_block(
     code_commit: str | None,
     config: dict[str, Any],
     pool_produced_by: str = _BASELINE_POOL_PRODUCER,
+    code_paths: Sequence[str] = BUCKET_CODE_PATHS,
 ) -> dict[str, Any]:
     """Everything that pins a published number, minus the number itself.
 
@@ -767,7 +775,7 @@ def _provenance_block(
     """
     corpus_manifest = json.loads(corpus_manifest_path.read_text(encoding="utf-8"))
     code = _git_commit() if code_commit is None else {"commit": code_commit, "tree_clean": None}
-    code["files"] = _code_digests()
+    code["files"] = _code_digests(code_paths)
     return {
         "pool_path": _stored_path(pool_path),
         "pool_sha256": sha256_file(pool_path),
@@ -884,6 +892,11 @@ def build_bucket_report(
                 _STRUCTURAL_GRAPH_POOL_PRODUCER
                 if pool_arm == "G1"
                 else _BASELINE_POOL_PRODUCER
+            ),
+            code_paths=(
+                STRUCTURAL_GRAPH_CODE_PATHS
+                if pool_arm == "G1"
+                else BUCKET_CODE_PATHS
             ),
         ),
         "buckets": _bucket_rows_by_class(scored),

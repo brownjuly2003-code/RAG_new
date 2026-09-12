@@ -403,6 +403,11 @@ def test_a_g1_report_names_the_structural_graph_producer(tmp_path: Path) -> None
     assert provenance["config"]["pool_arm"] == "G1"
     assert provenance["config"]["category_prefilter"] == "exact available case labels"
     assert provenance["config"]["section_coherence"] == "production structural graph"
+    assert {
+        "vectordb/_base_manager.py",
+        "ingestion/structure_graph.py",
+        "ingestion/structure_graph_projection.py",
+    } <= provenance["code"]["files"].keys()
     assert render_bucket_table(report).startswith(
         "GR-1b structural graph retrieval by question class\n"
     )
