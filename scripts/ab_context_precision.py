@@ -575,6 +575,7 @@ def build_pool(out_dir: Path, arm: str = "C") -> Path:
 # does not, the harness is not measuring what phase C measured.
 
 BUCKET_REPORT_SCHEMA_VERSION = "gr-bucket-baseline/v1.0"
+STRUCTURAL_GRAPH_REPORT_SCHEMA_VERSION = "gr-structure-graph-retrieval/v1.0"
 DEFAULT_BUCKET_REPORT_PATH = PROJECT_ROOT / "reports" / "gr" / "gr0-bucket-baseline.json"
 DEFAULT_DATASET_PATH = PROJECT_ROOT / "evaluation" / "curated_cases_aircargo.jsonl"
 DEFAULT_SIDECAR_PATH = PROJECT_ROOT / "evaluation" / "curated_cases_question_class.jsonl"
@@ -600,6 +601,16 @@ BUCKET_CODE_PATHS: tuple[str, ...] = (
 )
 
 _EMPTY_CELL = "—"
+
+_BASELINE_POOL_PRODUCER = (
+    "scripts/ab_remote_contextual.py --stage pools/rerank --arm C "
+    "(BGE-M3 + bge-reranker-v2-m3, production chunking)"
+)
+_STRUCTURAL_GRAPH_POOL_PRODUCER = (
+    "scripts/ab_remote_contextual.py --stage pools/rerank --arm G1 "
+    "(BGE-M3 + bge-reranker-v2-m3, structural chunking + exact category "
+    "prefilter + structural graph coherence/expansion)"
+)
 
 
 def sha256_file(path: Path) -> str:
@@ -746,6 +757,7 @@ def _provenance_block(
     corpus_manifest_path: Path,
     code_commit: str | None,
     config: dict[str, Any],
+    pool_produced_by: str = _BASELINE_POOL_PRODUCER,
 ) -> dict[str, Any]:
     """Everything that pins a published number, minus the number itself.
 
@@ -760,10 +772,7 @@ def _provenance_block(
         "pool_path": _stored_path(pool_path),
         "pool_sha256": sha256_file(pool_path),
         "pool_bytes": pool_path.stat().st_size,
-        "pool_produced_by": (
-            "scripts/ab_remote_contextual.py --stage pools/rerank --arm C "
-            "(BGE-M3 + bge-reranker-v2-m3, production chunking)"
-        ),
+        "pool_produced_by": pool_produced_by,
         "dataset": _stored_path(dataset_path),
         "dataset_sha256": sha256_file(dataset_path),
         "label_sidecar": _stored_path(sidecar_path),
@@ -804,12 +813,16 @@ def build_bucket_report(
     top_k: int = PHASE_C_TOP_K,
     context_chars: int = PHASE_C_CONTEXT_CHARS,
     code_commit: str | None = None,
+    pool_arm: str = "C",
 ) -> dict[str, Any]:
     """The GR-0.3 report: per-class and aggregate retrieval metrics over a pinned pool.
 
     Deterministic by construction — the body carries no timestamp, so two runs
     over the same inputs are byte-identical.
     """
+    if pool_arm not in {"C", "G1"}:
+        raise ValueError(f"unsupported retrieval pool arm: {pool_arm!r}")
+
     scored, approved = score_cases_by_class(
         pool_path=pool_path,
         dataset_path=dataset_path,
@@ -822,9 +835,41 @@ def build_bucket_report(
 
     pool_rows = json.loads(pool_path.read_text(encoding="utf-8"))
 
+    config: dict[str, Any] = {
+        "top_k": top_k,
+        "pool_rerank_k": sorted({int(row.get("rerank_k") or 0) for row in pool_rows}),
+        "context_chars": context_chars,
+        "parent_expansion": False,
+        "grade_docs": False,
+        "context_builder": "scripts.generator_benchmark.load_benchmark_cases",
+        "metrics": (
+            "evaluation.ragas_eval.context_precision / context_recall "
+            "(keyword, the phase C code path)"
+        ),
+        "kw_status": "scripts.ab_remote_contextual._kw_status",
+        "rounding": "per case to 4 decimals, then the mean, then 4 decimals",
+    }
+    if pool_arm == "G1":
+        config.update(
+            {
+                "pool_arm": "G1",
+                "category_prefilter": "exact available case labels",
+                "section_coherence": "production structural graph",
+                "section_expansion": "same-section structural graph boundary",
+            }
+        )
+
     return {
-        "schema_version": BUCKET_REPORT_SCHEMA_VERSION,
-        "kind": "gr-retrieval-bucket-baseline",
+        "schema_version": (
+            STRUCTURAL_GRAPH_REPORT_SCHEMA_VERSION
+            if pool_arm == "G1"
+            else BUCKET_REPORT_SCHEMA_VERSION
+        ),
+        "kind": (
+            "gr-structure-graph-retrieval"
+            if pool_arm == "G1"
+            else "gr-retrieval-bucket-baseline"
+        ),
         "evidence_class": "measured",
         "labels": _label_block(approved),
         "provenance": _provenance_block(
@@ -834,20 +879,12 @@ def build_bucket_report(
             label_manifest_path=label_manifest_path,
             corpus_manifest_path=corpus_manifest_path,
             code_commit=code_commit,
-            config={
-                "top_k": top_k,
-                "pool_rerank_k": sorted({int(row.get("rerank_k") or 0) for row in pool_rows}),
-                "context_chars": context_chars,
-                "parent_expansion": False,
-                "grade_docs": False,
-                "context_builder": "scripts.generator_benchmark.load_benchmark_cases",
-                "metrics": (
-                    "evaluation.ragas_eval.context_precision / context_recall "
-                    "(keyword, the phase C code path)"
-                ),
-                "kw_status": "scripts.ab_remote_contextual._kw_status",
-                "rounding": "per case to 4 decimals, then the mean, then 4 decimals",
-            },
+            config=config,
+            pool_produced_by=(
+                _STRUCTURAL_GRAPH_POOL_PRODUCER
+                if pool_arm == "G1"
+                else _BASELINE_POOL_PRODUCER
+            ),
         ),
         "buckets": _bucket_rows_by_class(scored),
         "aggregate": _bucket_row("all cases", scored) | {"question_class": "all cases"},
@@ -862,8 +899,13 @@ def _metric_cell(value: Optional[float]) -> str:
 def render_bucket_table(report: dict[str, Any]) -> str:
     """The printed table. Every class row carries its case count, always."""
     provenance = report["provenance"]
+    title = (
+        "GR-1b structural graph retrieval by question class"
+        if report["kind"] == "gr-structure-graph-retrieval"
+        else "GR-0.3 retrieval baseline by question class"
+    )
     lines = [
-        "GR-0.3 retrieval baseline by question class",
+        title,
         f"Pool: {provenance['pool_path']} sha256 {provenance['pool_sha256']}",
         f"Corpus: {provenance['corpus']['corpus_sha256']} "
         f"({provenance['corpus']['file_count']} files)",
@@ -907,6 +949,7 @@ def run_bucket_report(args: argparse.Namespace) -> int:
         expected_cases=args.expected_cases,
         top_k=args.top_k,
         context_chars=args.context_chars,
+        pool_arm=args.pool_arm,
     )
     out = write_bucket_report(report, Path(args.bucket_report))
     print(render_bucket_table(report), end="", flush=True)
@@ -1792,7 +1835,7 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     p = argparse.ArgumentParser(description="Q1 context_precision knob A/B (offline)")
     p.add_argument("--rerank-artifact",
                    default=str(PROJECT_ROOT / ".tmp" / "ab_candidates_phase2_C.json"),
-                   help="reranked candidate pool from ab_remote_contextual --stage rerank --arm C")
+                   help="reranked candidate pool from ab_remote_contextual for --pool-arm")
     p.add_argument("--corpus", default=str(PROJECT_ROOT / "data" / "uploads" / "aircargo"),
                    help="aircargo corpus dir for parent-window expansion")
     p.add_argument("--build-pool", action="store_true",
@@ -1820,6 +1863,8 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     buckets.add_argument("--corpus-manifest", default=str(DEFAULT_CORPUS_MANIFEST_PATH),
                          help="corpus manifest (T-10) naming the measured corpus")
     buckets.add_argument("--bucket-report", default=str(DEFAULT_BUCKET_REPORT_PATH))
+    buckets.add_argument("--pool-arm", choices=("C", "G1"), default="C",
+                         help="producer arm recorded in the bucket report provenance")
     buckets.add_argument("--expected-cases", type=int, default=100)
     buckets.add_argument("--top-k", type=int, default=PHASE_C_TOP_K)
     buckets.add_argument("--context-chars", type=int, default=PHASE_C_CONTEXT_CHARS)

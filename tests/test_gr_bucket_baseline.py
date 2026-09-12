@@ -393,6 +393,21 @@ def test_the_report_records_the_pool_digest_and_the_configuration(tmp_path: Path
         assert ":" not in provenance[key], f"{key} carries a drive letter"
 
 
+def test_a_g1_report_names_the_structural_graph_producer(tmp_path: Path) -> None:
+    report = _report_for(_write_fixture(tmp_path), pool_arm="G1")
+    provenance = report["provenance"]
+
+    assert report["schema_version"] == "gr-structure-graph-retrieval/v1.0"
+    assert report["kind"] == "gr-structure-graph-retrieval"
+    assert "--arm G1" in provenance["pool_produced_by"]
+    assert provenance["config"]["pool_arm"] == "G1"
+    assert provenance["config"]["category_prefilter"] == "exact available case labels"
+    assert provenance["config"]["section_coherence"] == "production structural graph"
+    assert render_bucket_table(report).startswith(
+        "GR-1b structural graph retrieval by question class\n"
+    )
+
+
 def test_a_path_outside_the_project_is_stored_as_the_stable_placeholder() -> None:
     outside = PROJECT_ROOT.parent / "elsewhere" / "ab_candidates_phase2_C.json"
 
