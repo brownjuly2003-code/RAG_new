@@ -40,7 +40,32 @@ Mac test checkout: `/Users/julia/RAG_new_gr2_20260912_build`; Python environment
 
 ## Resume
 
-Next: resumable extraction with corpus/prompt/model provenance; then entity
-matching from SGR `entities[]`, bounded traversal and RRF integration, followed
-by the GR-2 bucket measurement. No entity lane or default activation is claimed.
+Resumable extraction is implemented in `scripts/extract_graph_entities.py`.
+Default `--max-calls 0` verifies the pinned input and cache without credentials
+or API calls. Explicit batches use the shared probe prompt, temperature zero,
+a pinned model ID, strict JSON validation and a single-writer lock. Each completed
+chunk is flushed to `entities.jsonl`; restart skips it. Changed corpus, prompt,
+model or chunk text is rejected, as are corrupt/incomplete cache rows. A corrupt
+tail requires inspection; the runner never silently truncates it.
+
+Mac input: `ab_phase2_G1_graph_chunks.json`, 5,589 chunks, SHA-256
+`5b35883f741deefc0698eb829f927413fc6588b72b9add9ee7697f3fc5806c94`.
+Corpus reference: `c8562a64f88f72172f29e30865091be79f08d00ce65fbf675f34de64dcebe343`.
+The CLI pins the supplied corpus reference and checks the chunk payload hash;
+it does not rederive historical chunk provenance from source documents.
+Cache is under `reports/kb_graph/<corpus_sha256>/` in the same Mac test checkout.
+The external provider does not supply a weights digest: `model_digest` remains
+explicitly null, so this is not full model-weight provenance.
+
+A three-call smoke budget using `mistral-small-2506` produced zero cached chunks:
+the first request failed, and one diagnostic request confirmed HTTP 429. No more
+requests or key rotation were attempted. Resume live extraction only after the
+provider limit is resolved. Keys were passed over SSH stdin, never logged or stored
+in the checkout. Focused extraction tests cover resume, invalid output, cache/input
+guards, no-key dry run, and compatibility with the entity builder. Both CI mypy
+commands passed on Mac (134 main modules, 31 API/vectordb).
+
+Next: complete extraction when available; entity matching from SGR `entities[]`,
+bounded traversal and RRF integration, then the GR-2 bucket measurement.
+No entity lane or default activation is claimed.
 Reuse existing embeddings. The structural GR-1b NO-SHIP result is unchanged.

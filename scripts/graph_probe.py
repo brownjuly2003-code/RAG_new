@@ -33,19 +33,8 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
+from ingestion.entity_extraction import EXTRACT_PROMPT  # noqa: E402
 from scripts.aircargo_ragas_free import FreeChatLLM  # noqa: E402
-
-EXTRACT_PROMPT = (
-    "Извлеки из фрагмента корпоративного регламента ключевые СУЩНОСТИ:\n"
-    "процессы, роли, документы, системы, типы грузов/операций, термины.\n"
-    "Не извлекай общие слова (сотрудник, компания, документ без уточнения).\n"
-    "Нормализуй: именительный падеж, единственное число, нижний регистр.\n"
-    "Ответ — ТОЛЬКО JSON-массив строк, без пояснений. 3-12 сущностей.\n"
-    "\n"
-    "Фрагмент:\n{chunk}\n"
-    "\n"
-    "JSON:"
-)
 
 
 def _parse_entities(raw: str) -> list[str]:
