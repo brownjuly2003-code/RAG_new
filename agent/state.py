@@ -112,6 +112,8 @@ class GraphState(TypedDict, total=False):
     needs_multi_hop: bool
     reason_code: str
     retrieval_strategy: Literal["vector", "hybrid", "graph", "factcard"]
+    retrieval_strategy_effective: str
+    retrieval_path: dict[str, Any]
     route: Optional[
         Literal[
             "auto",

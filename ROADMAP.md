@@ -96,7 +96,7 @@ uncapped top-five. [Stage replay](docs/evidence/gr1b-stage-replay.md) recovers m
 100/100 outputs; expansion alone gives 0.5125 / 0.9300 without G1 fact losses,
 still NO-SHIP. [Seed reservation](docs/evidence/gr1b-seed-expansion.md) prevents displaced seed
 text but yields no metric gain (0.5472 / 0.9200 with coherence). This bounded
-experiment is closed. Next: GR-4 structural product wiring, then GR-2/GR-3. Do not repeat this
+experiment is closed. [GR-4 structural wiring](docs/evidence/gr4-structural-product-wiring.md) now passes HTTP and browser checks. Next: GR-2/GR-3. Do not repeat this
 pool or its embeddings. Resume details are in `CURRENT_STATE.md`.
 
 Both inherited CI failures ([ADR 0008](docs/adr/0008-inherited-ci-red-disposition.md))

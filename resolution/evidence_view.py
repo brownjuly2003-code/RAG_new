@@ -298,9 +298,19 @@ def evidence_view(trace: Mapping[str, Any]) -> dict[str, Any]:
         shadow_status = _JOURNEY_DECLINED
     else:
         shadow_status = _SHADOW_DISABLED
-    return {
+    view = {
         "trace_id": _as_text(trace.get("trace_id")),
         "started_at": _as_text(trace.get("started_at")),
         "shadow_status": shadow_status,
         "journeys": journeys,
     }
+    paths = [
+        {"strategy": state.get("retrieval_strategy_effective"), "path": dict(path)}
+        for step in (_as_mapping(item) for item in _as_sequence(trace.get("steps")))
+        if step.get("node") == "retrieve"
+        if (state := _as_mapping(step.get("state")))
+        if (path := _as_mapping(state.get("retrieval_path")))
+    ]
+    if paths:
+        view["retrieval_paths"] = paths
+    return view

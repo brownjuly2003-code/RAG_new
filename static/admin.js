@@ -289,12 +289,26 @@
     loadedEvidence = view;
     evidencePane.textContent = "";
     var journeys = view && Array.isArray(view.journeys) ? view.journeys : [];
-    exportEvidenceButton.disabled = journeys.length === 0;
+    var retrievalPaths = view && Array.isArray(view.retrieval_paths) ? view.retrieval_paths : [];
+    exportEvidenceButton.disabled = journeys.length === 0 && retrievalPaths.length === 0;
 
     if (!view) {
       evidencePane.appendChild(el("p", "empty", "Evidence could not be loaded for this trace."));
       return;
     }
+    retrievalPaths.forEach(function (retrieval) {
+      var path = retrieval.path || {};
+      evidencePane.appendChild(el("h3", null, "Structural retrieval path"));
+      evidencePane.appendChild(definitionList([
+        ["strategy", retrieval.strategy],
+        ["category prefilter", path.prefilter_applied ? "applied" : "not applied"],
+        ["sections", (path.sections || []).join(", ") || "none"],
+        ["retrieved contexts", path.retrieved_contexts],
+        ["retained contexts", path.retained_contexts],
+        ["expanded contexts", path.expanded_contexts]
+      ]));
+      evidencePane.appendChild(el("p", "source", "Structural retrieval only; no entity traversal."));
+    });
     if (!journeys.length) {
       evidencePane.appendChild(el(
         "p",

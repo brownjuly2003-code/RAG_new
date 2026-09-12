@@ -993,7 +993,16 @@ def get_retriever(
     if chunks is None and vector_store is not None:
         chunks = _restore_chunks_from_store(vector_store, tenant)
 
-    retriever = _base_manager.get_retriever(vector_store, chunks=chunks, k=k)
+    if getattr(settings, "graph_retrieval", "off") == "on" and chunks:
+        from ingestion.structure_graph import build_structural_graph
+        from ingestion.structure_graph_projection import project_structure_graph
+
+        projection = project_structure_graph(build_structural_graph(chunks, tenant_id=tenant))
+        retriever = _base_manager.get_retriever(
+            vector_store, chunks=chunks, k=k, graph_projection=projection,
+        )
+    else:
+        retriever = _base_manager.get_retriever(vector_store, chunks=chunks, k=k)
     _report_bm25_state(retriever, tenant)
 
     with _cache_lock:

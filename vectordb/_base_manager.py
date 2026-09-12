@@ -727,8 +727,13 @@ class HybridRetriever:
         self, query: str, *, categories: Sequence[str] | None = None
     ) -> list[Document]:
         """Structural retrieval with category prefilter and section coherence."""
+        return self.get_graph_documents_with_path(query, categories=categories)[0]
+
+    def get_graph_documents_with_path(
+        self, query: str, *, categories: Sequence[str] | None = None
+    ) -> tuple[list[Document], dict[str, Any] | None]:
         if self._graph_projection is None:
-            return self.get_relevant_documents(query)
+            return self.get_relevant_documents(query), None
 
         sources = self._graph_sources_for_categories(categories)
         vector_results = (
@@ -747,7 +752,18 @@ class HybridRetriever:
         else:
             merged = merged[: self._rerank_k]
         coherent = self._apply_graph_coherence(merged)
-        return self._expand_graph_sections(coherent)
+        expanded = self._expand_graph_sections(coherent)
+        sections = sorted({
+            self._graph_chunk_sections[key]
+            for doc in coherent
+            if (key := _rrf_document_key(doc, self._doc_key_chars)) in self._graph_chunk_sections
+        })
+        return expanded, {
+            "kind": "structural", "prefilter_applied": sources is not None,
+            "sections": sections, "entities": [], "hops": 0,
+            "retrieved_contexts": len(merged), "retained_contexts": len(coherent),
+            "expanded_contexts": sum(bool(doc.metadata.get("graph_section_expanded")) for doc in expanded),
+        }
 
     def get_relevant_documents(self, query: str) -> list[Document]:
         """Гибридный поиск с RRF и reranking."""
@@ -1508,13 +1524,14 @@ def build_retriever(
     vector_store: Any | None = None,
     chunks: list[Document] | None = None,
     k: int | None = None,
+    graph_projection: Any = None,
 ) -> Any:
     """Builds a retriever according to current settings."""
     from config.settings import get_settings
 
     settings = get_settings()
 
-    if settings.parent_child:
+    if settings.parent_child and graph_projection is None:
         logger.info("Retriever: ParentDocumentStore (parent_child=true)")
         return ParentDocumentStore(
             docs=docs,
@@ -1541,7 +1558,7 @@ def build_retriever(
     parent_expansion = bool(getattr(settings, "parent_expansion", False))
     logger.info("Retriever: HybridRetriever (parent_child=false)")
 
-    if use_bm25 or reranker or (parent_expansion and bool(chunks)):
+    if use_bm25 or reranker or (parent_expansion and bool(chunks)) or graph_projection is not None:
         return HybridRetriever(
             vector_store=vector_store,
             chunks=chunks or [],
@@ -1554,6 +1571,7 @@ def build_retriever(
             parent_expansion=parent_expansion,
             parent_expansion_window=getattr(settings, "parent_expansion_window", 1),
             parent_expansion_max_chars=getattr(settings, "parent_expansion_max_chars", 2400),
+            graph_projection=graph_projection,
         )
 
     if hasattr(vector_store, "as_retriever"):
@@ -1581,6 +1599,7 @@ def get_retriever(
     vector_store: Any,
     chunks: list[Document] | None = None,
     k: int | None = None,
+    graph_projection: Any = None,
 ) -> Any:
     """Возвращает retriever с hybrid search и reranker.
 
@@ -1602,6 +1621,7 @@ def get_retriever(
             vector_store=vector_store,
             chunks=chunks,
             k=k,
+            graph_projection=graph_projection,
         )
 
     from config.settings import get_settings
@@ -1617,7 +1637,7 @@ def get_retriever(
     reranker = get_reranker() if use_hybrid_components and settings.reranker_model else None
     parent_expansion = bool(getattr(settings, "parent_expansion", False))
 
-    if use_bm25 or reranker or (parent_expansion and bool(chunks)):
+    if use_bm25 or reranker or (parent_expansion and bool(chunks)) or graph_projection is not None:
         return HybridRetriever(
             vector_store=vector_store,
             chunks=chunks or [],
@@ -1630,6 +1650,7 @@ def get_retriever(
             parent_expansion=parent_expansion,
             parent_expansion_window=getattr(settings, "parent_expansion_window", 1),
             parent_expansion_max_chars=getattr(settings, "parent_expansion_max_chars", 2400),
+            graph_projection=graph_projection,
         )
 
     # Fallback: simple vector retriever

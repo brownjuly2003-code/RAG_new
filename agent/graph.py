@@ -1576,6 +1576,7 @@ def make_retrieve_node(retriever: Any) -> Callable[[GraphState], GraphState]:
             query = state.get("hyde_query") or state.get("search_query") or state.get("question", "")
             requested_strategy = _select_retrieval_strategy(state)
             effective_strategy = requested_strategy
+            retrieval_path = None
             tracer = get_otel_tracer()
             with tracer.start_as_current_span("rag.retrieve") as span:
                 span.set_attribute("rag.question_length", len(str(state.get("question", "") or "")))
@@ -1597,6 +1598,10 @@ def make_retrieve_node(retriever: Any) -> Callable[[GraphState], GraphState]:
                             docs = retriever.get_relevant_documents(query)
                     elif requested_strategy == "vector" and hasattr(retriever, "get_vector_documents"):
                         docs = retriever.get_vector_documents(query)
+                    elif requested_strategy == "graph" and hasattr(retriever, "get_graph_documents_with_path"):
+                        docs, retrieval_path = retriever.get_graph_documents_with_path(query)
+                        if retrieval_path is None:
+                            effective_strategy = "hybrid"
                     elif requested_strategy == "graph" and hasattr(retriever, "get_graph_documents"):
                         docs = retriever.get_graph_documents(query)
                     else:
@@ -1616,6 +1621,11 @@ def make_retrieve_node(retriever: Any) -> Callable[[GraphState], GraphState]:
                 "context_docs": plain_docs,
                 "retrieval_strategy": effective_strategy,
             }
+            if requested_strategy == "graph":
+                new_state["retrieval_strategy_effective"] = effective_strategy
+                new_state.pop("retrieval_path", None)
+                if retrieval_path is not None:
+                    new_state["retrieval_path"] = retrieval_path
             log_step(trace_id, "retrieve", new_state)
             return new_state
         except RequestDeadlineExceeded:
