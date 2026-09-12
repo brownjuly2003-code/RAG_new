@@ -441,7 +441,7 @@ class KbGraphNode(Base):
             name="uq_kb_graph_nodes_tenant_kind_key",
         ),
         CheckConstraint(
-            "kind IN ('document', 'section', 'chunk', 'category')",
+            "kind IN ('document', 'section', 'chunk', 'category', 'entity')",
             name="ck_kb_graph_nodes_kind",
         ),
         Index("ix_kb_graph_nodes_tenant_kind", "tenant_id", "kind"),
@@ -480,7 +480,7 @@ class KbGraphEdge(Base):
             name="uq_kb_graph_edges_tenant_kind_nodes",
         ),
         CheckConstraint(
-            "kind IN ('contains', 'next', 'same_section', 'cross_ref', 'category')",
+            "kind IN ('contains', 'next', 'same_section', 'cross_ref', 'category', 'mentions', 'co_occurs')",
             name="ck_kb_graph_edges_kind",
         ),
         Index(

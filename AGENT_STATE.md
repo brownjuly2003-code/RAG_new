@@ -92,7 +92,7 @@ FULL/PART/MISS 88/8/4; short-context fix `b2db542`. [Report, archived input and
 provenance limits](docs/evidence/gr1b-structure-graph.md): NO-SHIP at 0.63,
 prefilter 0/100. [Oracle](docs/evidence/gr1b-safe-subset-oracle.md): 0.6780 / 0.9250 with labels and G1 fallback. Query-only control: 0.6268 / 0.7250, NO-SHIP; [diagnosis](docs/evidence/gr1b-query-control.md) finds missing hits outside uncapped top-five. [Stage replay](docs/evidence/gr1b-stage-replay.md): metadata recovered, 100/100 exact; expansion alone 0.5125 / 0.9300, NO-SHIP. [Seed reservation](docs/evidence/gr1b-seed-expansion.md): 0.5472 / 0.9200 with coherence, no gain. [GR-4 structural wiring](docs/evidence/gr4-structural-product-wiring.md) passes HTTP, browser and strict type checks. Next: GR-2/GR-3; reuse embeddings.
 Windows is for editing and focused checks only. Models, full-suite tests,
-PostgreSQL integration and containers run on the Mac; no WSL/Docker/VM here, no push.
+PostgreSQL integration and containers run on the Mac; no WSL/Docker/VM here, no push. GR-2 [builder preparation](docs/operations/gr2-entity-builder-preparation.md) verified; extraction, entity retrieval and measurement remain open. Not a completed slice.
 
 **Slice acceptance rule (binding, including for autopilot):** a slice counts
 only if it changes observable `/api/ask` or UI behaviour with an E2E test, or

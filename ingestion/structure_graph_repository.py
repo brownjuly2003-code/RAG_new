@@ -11,6 +11,7 @@ from sqlalchemy.orm import Session
 
 from db.models import KbGraphEdge, KbGraphNode
 from ingestion.structure_graph import (
+    ENTITY_GRAPH_BUILDER_VERSION,
     STRUCTURAL_GRAPH_BUILDER_VERSION,
     EdgeKind,
     NodeKind,
@@ -109,7 +110,11 @@ class StructuralGraphRepository:
 
         return StructuralGraph(
             tenant_id=tenant_id,
-            builder_version=STRUCTURAL_GRAPH_BUILDER_VERSION,
+            builder_version=(
+                f"{STRUCTURAL_GRAPH_BUILDER_VERSION}+{ENTITY_GRAPH_BUILDER_VERSION}"
+                if any(row.kind == "entity" for row in node_rows)
+                else STRUCTURAL_GRAPH_BUILDER_VERSION
+            ),
             nodes=tuple(
                 StructuralGraphNode(
                     node_id=str(row.node_id),

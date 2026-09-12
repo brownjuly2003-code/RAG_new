@@ -17,9 +17,10 @@ from typing import Any, Literal
 from uuid import UUID, uuid5
 
 STRUCTURAL_GRAPH_BUILDER_VERSION = "gr1-structural-v1"
+ENTITY_GRAPH_BUILDER_VERSION = "gr2-entity-v1"
 
-NodeKind = Literal["document", "section", "chunk", "category"]
-EdgeKind = Literal["contains", "next", "same_section", "cross_ref", "category"]
+NodeKind = Literal["document", "section", "chunk", "category", "entity"]
+EdgeKind = Literal["contains", "next", "same_section", "cross_ref", "category", "mentions", "co_occurs"]
 ReferenceKind = Literal["file", "section", "order"]
 
 _GRAPH_NAMESPACE = UUID("84a48f8c-d00b-5b10-a244-bc07a44dc331")
