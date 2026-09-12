@@ -86,8 +86,10 @@ pipeline wiring (`782f03f`) and retrieval lane (`6e23630`) are now committed.
 GR-1b's recovered Mac pool is now measured: precision 0.5475, recall 0.9200,
 FULL/PART/MISS 88/8/4. It misses 0.63; category prefilter applied to zero cases.
 The [capsule](docs/evidence/gr1b-structure-graph.md) links exact archived input,
-reproduction tests and source-attribution limits. Continue planned GR-4/GR-2/GR-3;
-do not repeat this pool or its embeddings. Resume details are in `CURRENT_STATE.md`.
+reproduction tests and source-attribution limits. The owner's 2026-09-12
+[Astra/Fable review](docs/specs/precision-improvement-review.md) puts same-pool
+top-k controls and bounded diagnosis before GR-4/GR-2/GR-3. Do not repeat this
+pool or its embeddings. Resume details are in `CURRENT_STATE.md`.
 
 Both inherited CI failures ([ADR 0008](docs/adr/0008-inherited-ci-red-disposition.md))
 are closed. On `6cc810d` (T-17, pushed) both workflows that run on

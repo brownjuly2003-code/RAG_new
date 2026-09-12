@@ -112,7 +112,7 @@ B.1 is preparation until a batch is approved.
 | GR-0.3 | Retrieval baseline by class over pool `91ce1745…`: 0.5067 / 0.9050 at top-5 (= C.1a), `single_hop` 0.5063 / 0.9091 over 99 cases, `multi_hop` over 1, two classes empty — a ruler, not a comparison ([capsule](docs/evidence/gr0-bucket-baseline.md)) | **done** (c) |
 | GR-0.4 | SGR schema adds `question_class`, bounded `entities`, `needs_multi_hop` and `reason_code`; default and legacy retrieval routes unchanged | **done as preparation**, graph still explicit |
 | GR-1a | Offline coherence: 0.5216 vs plain top-4 0.5214 at unchanged 87/7/6; 0.63 loses 16 FULL ([capsule](docs/evidence/gr1a-section-coherence.md)) | **done** (c) |
-| GR-1b | Recovered Mac pool validated: precision 0.5475, recall 0.9200, FULL/PART/MISS 88/8/4; prefilter 0/100. [Report and archived-input reproduction](docs/evidence/gr1b-structure-graph.md). **NO-SHIP** at 0.63; do not rerun embeddings. Next: planned GR-4/GR-2/GR-3. | **measured**, provenance limits in capsule |
+| GR-1b | Mac pool: precision 0.5475, recall 0.9200, FULL/PART/MISS 88/8/4; prefilter 0/100. [Evidence](docs/evidence/gr1b-structure-graph.md). **NO-SHIP** at 0.63. Next: [Astra/Fable same-pool controls](docs/specs/precision-improvement-review.md), then GR-4/GR-2/GR-3; no new embeddings. | **measured**, provenance limits in capsule |
 
 ## Open questions for Julia
 
