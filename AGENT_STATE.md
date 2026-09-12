@@ -85,14 +85,14 @@ Limit: the eval bucket is 99 `single_hop`, 1 `multi_hop`, 0 `aggregation`,
 most needs a separate candidate pool for GR-0.2's prepared 15 multi-hop /
 aggregation questions. "Needed" is measured; "will work" is not claimed.
 
-**Resume point 2026-09-12 — GR-1b artifact validation.** Pipeline wiring is
+**Resume point 2026-09-12 — GR-1b measured.** Pipeline wiring is
 committed at `782f03f`, the retrieval lane at `6e23630`, and pool provenance
-guards through `f9ba47a`. The existing handoff records a completed Mac rerank
-over 100 cases at source `4436d61`; reuse `.tmp/gr1b-recovered-4436d61/` and
-validate the JSON before publishing a report. Do not regenerate embeddings.
+guards through `f9ba47a`. GR-1b: 100 cases, precision 0.5475, recall 0.9200,
+FULL/PART/MISS 88/8/4; short-context fix `b2db542`. [Report, archived input and
+provenance limits](docs/evidence/gr1b-structure-graph.md): NO-SHIP at 0.63,
+prefilter 0/100. Do not regenerate embeddings. Next: GR-4/GR-2/GR-3.
 Windows is for editing and focused checks only. Models, full-suite tests,
-PostgreSQL integration and containers run on the Mac; no WSL, Docker or VMs
-on this laptop. No push is authorized by the current task.
+PostgreSQL integration and containers run on the Mac; no WSL/Docker/VM here, no push.
 
 **Slice acceptance rule (binding, including for autopilot):** a slice counts
 only if it changes observable `/api/ask` or UI behaviour with an E2E test, or

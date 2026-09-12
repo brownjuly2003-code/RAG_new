@@ -1,0 +1,917 @@
+{
+  "schema_version": "gr-structure-graph-retrieval/v1.0",
+  "kind": "gr-structure-graph-retrieval",
+  "evidence_class": "measured",
+  "labels": {
+    "evidence_class": "agent_labelled",
+    "approved": 0,
+    "case_source": "agent_authored_over_real_documents",
+    "note": "The questions were agent-authored over real documents and the question classes are agent-assigned; no human has approved either."
+  },
+  "provenance": {
+    "pool_path": ".tmp/gr1b-recovered-4436d61/ab_candidates_phase2_G1.json",
+    "pool_sha256": "c862dcb76878d7a79db040ac13099b733ad769b08092094d174cc6814be4ee26",
+    "pool_bytes": 8338583,
+    "pool_produced_by": "scripts/ab_remote_contextual.py --stage pools/rerank --arm G1 (BGE-M3 + bge-reranker-v2-m3, structural chunking + exact category prefilter + structural graph coherence/expansion)",
+    "dataset": "evaluation/curated_cases_aircargo.jsonl",
+    "dataset_sha256": "3737d694362d1867ca3d5983e3765d02c01110d2409145ba7e0f05c021d9c720",
+    "label_sidecar": "evaluation/curated_cases_question_class.jsonl",
+    "label_sidecar_sha256": "cc6356b9faa46d4b952a955e1d47e9a8b15003284c42f48e7e5236471f8ff17c",
+    "label_manifest": "evaluation/curated_cases_question_class.manifest.json",
+    "label_manifest_sha256": "e2010fc94ee283c29308e6fa53e522c70b57d767aacf00113628858a061f7b10",
+    "corpus": {
+      "manifest": "evaluation/aircargo_corpus.manifest.json",
+      "manifest_sha256": "2b2e9232e69b4f52a55237f3ee620f34c91d1900383877c2310ba616c6590444",
+      "name": "aircargo",
+      "root": "data/uploads/aircargo",
+      "corpus_sha256": "c8562a64f88f72172f29e30865091be79f08d00ce65fbf675f34de64dcebe343",
+      "file_count": 201
+    },
+    "code": {
+      "commit": "b2db5425daf3507aab2c46af147ca45cb2b6236b",
+      "tree_clean": false,
+      "files": {
+        "scripts/ab_context_precision.py": "21692f225d503fa94a866c040b51172c9051ada2222139d37cf15c7a57239818",
+        "scripts/generator_benchmark.py": "668a318ca8c4eea3e1924cc22e7e6ba664ae2c98e80489d0f91133b2b3c9c156",
+        "scripts/ab_remote_contextual.py": "9ab4ce29dabe93f2394b2a4b5afc70f1072c047bca45294350aa66d1bc63f2ed",
+        "evaluation/ragas_eval.py": "d08ae8b2fe18bbae237b278090f0ca1d284225c0e4f27a8bf2c136a03a8f0987",
+        "evaluation/question_class_labels.py": "fb175ecb7c36c914c3025eff5dc55e07ac53f59530a8fae59fc1534d1c9623f6",
+        "vectordb/_base_manager.py": "684abcdf1ac6d3ad02807032cd4a1435e826955a9d089438b230fc1f5245e520",
+        "ingestion/structure_graph.py": "24a55cfd0c89b931df24b9a7850707a4b40e2d63f1c76ef428154520a27e4bd7",
+        "ingestion/structure_graph_projection.py": "0ed54c99a552cc79dae834f7ff31c583b477ffb82073a8a4fe2b74caa9635641"
+      }
+    },
+    "config": {
+      "top_k": 5,
+      "pool_rerank_k": [
+        5
+      ],
+      "context_chars": 6000,
+      "parent_expansion": false,
+      "grade_docs": false,
+      "context_builder": "scripts.generator_benchmark.load_benchmark_cases",
+      "metrics": "evaluation.ragas_eval.context_precision / context_recall (keyword, the phase C code path)",
+      "kw_status": "scripts.ab_remote_contextual._kw_status",
+      "rounding": "per case to 4 decimals, then the mean, then 4 decimals",
+      "pool_arm": "G1",
+      "allow_short_contexts": true,
+      "category_prefilter": "exact available case labels",
+      "section_coherence": "production structural graph",
+      "section_expansion": "same-section structural graph boundary"
+    }
+  },
+  "buckets": [
+    {
+      "question_class": "aggregation",
+      "num_cases": 0,
+      "context_precision": null,
+      "context_recall": null,
+      "FULL": 0,
+      "PART": 0,
+      "MISS": 0
+    },
+    {
+      "question_class": "global",
+      "num_cases": 0,
+      "context_precision": null,
+      "context_recall": null,
+      "FULL": 0,
+      "PART": 0,
+      "MISS": 0
+    },
+    {
+      "question_class": "multi_hop",
+      "num_cases": 1,
+      "context_precision": 0.4327,
+      "context_recall": 0.5,
+      "FULL": 0,
+      "PART": 1,
+      "MISS": 0
+    },
+    {
+      "question_class": "single_hop",
+      "num_cases": 99,
+      "context_precision": 0.5487,
+      "context_recall": 0.9242,
+      "FULL": 88,
+      "PART": 7,
+      "MISS": 4
+    }
+  ],
+  "aggregate": {
+    "question_class": "all cases",
+    "num_cases": 100,
+    "context_precision": 0.5475,
+    "context_recall": 0.92,
+    "FULL": 88,
+    "PART": 8,
+    "MISS": 4
+  },
+  "per_case": [
+    {
+      "case_id": "aircargo-probation-data",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.6465,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-probation-extend",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.7273,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-probation-dismissal",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.6667,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-dismissal-check",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.7614,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-dismissal-lawyer",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.5795,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-dismissal-order",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.7143,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-leave-sources",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.7159,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-leave-compensation",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.5844,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-leave-risk",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.5065,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-matliab-check",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.8442,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-matliab-disputed",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.6136,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-templates-choose",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.5974,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-templates-checklist",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.1023,
+      "context_recall": 0.5,
+      "kw_status": "PART"
+    },
+    {
+      "case_id": "aircargo-templates-insufficient",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.4805,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-secret-check",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.7273,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-secret-not-auto",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.7172,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-secret-disclosure",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.6705,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-pdp-scope",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.7792,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-pdp-data",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.7091,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-pdp-uncertain",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.798,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-claims-delay",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.7692,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-claims-damage",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.7273,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-claims-lawyer",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.4545,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-claims-forbidden",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.6465,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-expedition-vs-carrier",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.7727,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-expedition-mawb-hawb",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.7879,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-expedition-risks",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.6623,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-road-cutoff",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.7045,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-road-penalty",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.6515,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-road-seal",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.7727,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-road-driver-pdn",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.7576,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-business-trip-advance-report",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.3636,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-business-trip-foreign-approval",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.4416,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-remote-work-monitoring-limits",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.1948,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-remote-work-equipment-compensation",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.314,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-maternity-duration-normal",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.4818,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-maternity-dismissal-ban",
+      "question_class": "single_hop",
+      "n_docs": 4,
+      "context_precision": 0.26,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-internal-transfer-consent",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.3545,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-internal-transfer-documents",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.5227,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-contract-termination-open-awb",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.5524,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-contract-termination-fields",
+      "question_class": "single_hop",
+      "n_docs": 2,
+      "context_precision": 0.6667,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-road-contract-aircargo-fields",
+      "question_class": "single_hop",
+      "n_docs": 2,
+      "context_precision": 0.4815,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-dangerous-goods-fields",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.447,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-dangerous-goods-clearance",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.2636,
+      "context_recall": 0.5,
+      "kw_status": "PART"
+    },
+    {
+      "case_id": "aircargo-customs-clearance-fields",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.4444,
+      "context_recall": 0.0,
+      "kw_status": "MISS"
+    },
+    {
+      "case_id": "aircargo-customs-special-cargo-manual-check",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.1111,
+      "context_recall": 0.0,
+      "kw_status": "MISS"
+    },
+    {
+      "case_id": "aircargo-waybill-first-mile-fields",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.4132,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-waybill-escalation-events",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.3,
+      "context_recall": 0.5,
+      "kw_status": "PART"
+    },
+    {
+      "case_id": "aircargo-trade-compliance-hold",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.5051,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-trade-compliance-screening",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.5636,
+      "context_recall": 0.5,
+      "kw_status": "PART"
+    },
+    {
+      "case_id": "aircargo-incident-response-bridge",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.6061,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-incident-response-required-fields",
+      "question_class": "single_hop",
+      "n_docs": 4,
+      "context_precision": 0.56,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-access-control-need-to-know",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.5657,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-access-control-review",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.4242,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-employment-contract-essential-terms",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.3131,
+      "context_recall": 0.5,
+      "kw_status": "PART"
+    },
+    {
+      "case_id": "aircargo-employment-contract-special-form",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.3636,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-driver-job-documents",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.4343,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-driver-dangerous-goods-refusal",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.5354,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-sick-leave-required-fields",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.6136,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-sick-leave-lawyer-escalation",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.2338,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-cargo-loss-evidence-bundle",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.7,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-cargo-loss-required-fields",
+      "question_class": "single_hop",
+      "n_docs": 4,
+      "context_precision": 0.52,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-late-delivery-reply-evidence",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.6455,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-late-delivery-reply-no-admission",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.6727,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-driver-hours-required-fields",
+      "question_class": "single_hop",
+      "n_docs": 4,
+      "context_precision": 0.5467,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-driver-hours-terminal-discrepancy",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.8182,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-warehouse-3pl-required-fields",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.6091,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-warehouse-3pl-escalation",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.4909,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-perishable-temperature-controls",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.6294,
+      "context_recall": 0.0,
+      "kw_status": "MISS"
+    },
+    {
+      "case_id": "aircargo-perishable-special-cargo-evidence",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.404,
+      "context_recall": 0.5,
+      "kw_status": "PART"
+    },
+    {
+      "case_id": "aircargo-oversized-permit-route",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.6364,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-oversized-manual-check",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.5455,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-data-retention-legal-hold",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.4949,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-data-retention-required-fields",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.5455,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-subject-rights-third-party-masking",
+      "question_class": "multi_hop",
+      "n_docs": 4,
+      "context_precision": 0.4327,
+      "context_recall": 0.5,
+      "kw_status": "PART"
+    },
+    {
+      "case_id": "aircargo-subject-rights-required-fields",
+      "question_class": "single_hop",
+      "n_docs": 2,
+      "context_precision": 0.7179,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-customs-broker-evidence",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.5303,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-customs-broker-escalation",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.2364,
+      "context_recall": 0.0,
+      "kw_status": "MISS"
+    },
+    {
+      "case_id": "aircargo-salary-payment-dates",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.5636,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-salary-bonus-conditions",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.5568,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-overtime-limits",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.5844,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-overtime-protected-categories",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.697,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-harassment-complaint-data",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.5455,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-harassment-investigation-timeline",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.2727,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-conflict-interest-disclosure",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.5364,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-conflict-interest-sanctions",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.4205,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-cargo-insurance-evidence",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.6364,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-cargo-insurance-operational-limits",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.3939,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-fuel-supply-evidence",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.562,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-fuel-supply-required-fields",
+      "question_class": "single_hop",
+      "n_docs": 2,
+      "context_precision": 0.6,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-gps-monitoring-required-fields",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.6281,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-gps-monitoring-scope",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.7,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-weight-control-required-fields",
+      "question_class": "single_hop",
+      "n_docs": 2,
+      "context_precision": 0.6333,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-weight-control-discrepancy",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.7273,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-cross-border-required-fields",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.2929,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-cross-border-special-cargo",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.4132,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-breach-notification-required-fields",
+      "question_class": "single_hop",
+      "n_docs": 5,
+      "context_precision": 0.2216,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-breach-notification-participants",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.5734,
+      "context_recall": 0.5,
+      "kw_status": "PART"
+    },
+    {
+      "case_id": "aircargo-cross-border-pdn-required-fields",
+      "question_class": "single_hop",
+      "n_docs": 4,
+      "context_precision": 0.4933,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    },
+    {
+      "case_id": "aircargo-cross-border-pdn-no-transfer",
+      "question_class": "single_hop",
+      "n_docs": 4,
+      "context_precision": 0.5429,
+      "context_recall": 1.0,
+      "kw_status": "FULL"
+    }
+  ],
+  "pool_diagnostics": {
+    "row_count": 100,
+    "graph_postprocessed_count": 100,
+    "graph_prefiltered_count": 0
+  }
+}

@@ -83,8 +83,11 @@ paths stay safe. Default `simple → vector`, other complexity → hybrid routin
 is unchanged, and graph still requires explicit graph configuration. This is
 preparation for GR-2 entity matching, not a measured slice. The GR-1 builder,
 pipeline wiring (`782f03f`) and retrieval lane (`6e23630`) are now committed.
-Next: validate and publish the existing GR-1b Mac rerank artifacts; do not
-repeat pool construction or embeddings. Resume details are in `CURRENT_STATE.md`.
+GR-1b's recovered Mac pool is now measured: precision 0.5475, recall 0.9200,
+FULL/PART/MISS 88/8/4. It misses 0.63; category prefilter applied to zero cases.
+The [capsule](docs/evidence/gr1b-structure-graph.md) links exact archived input,
+reproduction tests and source-attribution limits. Continue planned GR-4/GR-2/GR-3;
+do not repeat this pool or its embeddings. Resume details are in `CURRENT_STATE.md`.
 
 Both inherited CI failures ([ADR 0008](docs/adr/0008-inherited-ci-red-disposition.md))
 are closed. On `6cc810d` (T-17, pushed) both workflows that run on

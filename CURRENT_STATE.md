@@ -3,7 +3,7 @@
 **The only entry point for a new session.** Read this, then [`ROADMAP.md`](ROADMAP.md);
 follow other links only when needed.
 
-Last updated: 2026-09-11 · Plan: [`plan_06_09_26.md`](plan_06_09_26.md)
+Last updated: 2026-09-12 · Plan: [`plan_06_09_26.md`](plan_06_09_26.md)
 (mode B, adopted by the owner 2026-09-10) · Audit of record:
 [`docs/audits/audit_final_23_08_2026.md`](docs/audits/audit_final_23_08_2026.md)
 · Phase C benchmark source: `c06bdf5` · push is the owner's call (§1)
@@ -111,7 +111,8 @@ B.1 is preparation until a batch is approved.
 | GR-0.2 | Separate pinned bucket: 15 cases over 13 documents; 10 `multi_hop`, 5 `aggregation`; original phase-C dataset unchanged | **done as preparation**, not a measured slice |
 | GR-0.3 | Retrieval baseline by class over pool `91ce1745…`: 0.5067 / 0.9050 at top-5 (= C.1a), `single_hop` 0.5063 / 0.9091 over 99 cases, `multi_hop` over 1, two classes empty — a ruler, not a comparison ([capsule](docs/evidence/gr0-bucket-baseline.md)) | **done** (c) |
 | GR-0.4 | SGR schema adds `question_class`, bounded `entities`, `needs_multi_hop` and `reason_code`; default and legacy retrieval routes unchanged | **done as preparation**, graph still explicit |
-| GR-1a | Section coherence as a narrowing arm over the same pool: 0.5216 / 0.9050 with 87/7/6 held, but plain top-4 gives 0.5214 with the same coverage — the gain is a smaller `k`, not structure. 0.63 only by losing 16 FULL cases ([capsule](docs/evidence/gr1a-section-coherence.md)) | **done** (c) |
+| GR-1a | Offline coherence: 0.5216 vs plain top-4 0.5214 at unchanged 87/7/6; 0.63 loses 16 FULL ([capsule](docs/evidence/gr1a-section-coherence.md)) | **done** (c) |
+| GR-1b | Recovered Mac pool validated: precision 0.5475, recall 0.9200, FULL/PART/MISS 88/8/4; prefilter 0/100. [Report and archived-input reproduction](docs/evidence/gr1b-structure-graph.md). **NO-SHIP** at 0.63; do not rerun embeddings. Next: planned GR-4/GR-2/GR-3. | **measured**, provenance limits in capsule |
 
 ## Open questions for Julia
 
