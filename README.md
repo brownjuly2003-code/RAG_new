@@ -45,23 +45,25 @@ The full design, invariants, and decision register are in
 
 ## Quick start
 
-Requirements: Python 3.11+, PostgreSQL, Redis, and either an Ollama model or a
+For this workspace, run the service, models, containers and full test suite on
+the Mac. Windows is for editing and focused checks; do not install or launch
+WSL, Docker or a local VM here.
+
+Requirements on the runtime host: Python 3.11+, PostgreSQL, Redis, and either an Ollama model or a
 configured external provider. The complete walkthrough is
 [`docs/QUICKSTART.md`](docs/QUICKSTART.md).
 
-```powershell
+```bash
 python -m venv .venv
-. .venv\Scripts\Activate.ps1
+. .venv/bin/activate
 pip install --require-hashes -r requirements.lock
-Copy-Item .env.example .env
+cp .env.example .env
 alembic upgrade head
 python main.py
 ```
 
-On Linux and macOS the same bootstrap is `cp .env.example .env`.
-
 To bring up the application together with PostgreSQL and Redis instead of
-installing them yourself, use the checked-in `docker-compose.yml`:
+installing them yourself, use the checked-in `docker-compose.yml` on the Mac:
 
 ```bash
 cp .env.example .env
@@ -142,13 +144,18 @@ pip install --require-hashes -r requirements-dev.lock
 Focused Windows test workflow:
 
 ```powershell
-python -m pytest -p no:schemathesis --basetemp=.tmp/pytest
+python -m pytest tests/test_docs_hygiene.py -q -p no:schemathesis --basetemp=.tmp/pytest-docs
 ```
 
-Useful scoped gates:
+Static checks (Windows):
 
 ```powershell
 ruff check .
+```
+
+Full checks and database integration (Mac, from its checkout):
+
+```bash
 pre-commit run --all-files
 python -m pytest tests -q --ignore=tests/integration -p no:cacheprovider
 python -m pytest tests/integration -q

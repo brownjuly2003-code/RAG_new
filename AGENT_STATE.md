@@ -82,16 +82,17 @@ smaller `k`, not structure — and 0.63 only with FULL falling 87 → 71
 was tried and does not reach the gate; the remaining GR steps are what is left.
 Limit: the eval bucket is 99 `single_hop`, 1 `multi_hop`, 0 `aggregation`,
 0 `global` (`6cde0b1`), so a per-class A/B on the classes a graph should help
-most cannot run on this corpus until GR-0.2 adds its ≥ 15 multi-hop /
+most needs a separate candidate pool for GR-0.2's prepared 15 multi-hop /
 aggregation questions. "Needed" is measured; "will work" is not claimed.
 
-**Stop point 2026-09-11 — GR-1 pipeline wiring verified.** Builder, persistence,
-manifest, and projection are committed through `2124935`; the current wiring is
-verified but uncommitted. It injects a caller-owned transactional repository into
-`IngestPipeline` and replaces the tenant graph from final chunks on both ingest
-paths. Red tests came first; fresh gates passed: 37 focused + 8 docs tests,
-Ruff, mypy, and `git diff --check`. PostgreSQL integration/full suite remain off
-this laptop. Next is GR-1b pool/measurement on Mac; no push is authorized.
+**Resume point 2026-09-12 — GR-1b artifact validation.** Pipeline wiring is
+committed at `782f03f`, the retrieval lane at `6e23630`, and pool provenance
+guards through `f9ba47a`. The existing handoff records a completed Mac rerank
+over 100 cases at source `4436d61`; reuse `.tmp/gr1b-recovered-4436d61/` and
+validate the JSON before publishing a report. Do not regenerate embeddings.
+Windows is for editing and focused checks only. Models, full-suite tests,
+PostgreSQL integration and containers run on the Mac; no WSL, Docker or VMs
+on this laptop. No push is authorized by the current task.
 
 **Slice acceptance rule (binding, including for autopilot):** a slice counts
 only if it changes observable `/api/ask` or UI behaviour with an E2E test, or

@@ -81,8 +81,10 @@ Schema-capable providers now fill `complexity`, `question_class`, bounded
 `entities`, `needs_multi_hop` and `reason_code`; initial and legacy-provider
 paths stay safe. Default `simple → vector`, other complexity → hybrid routing
 is unchanged, and graph still requires explicit graph configuration. This is
-preparation for GR-2 entity matching, not a measured slice. The next local item
-is the GR-1 structural builder.
+preparation for GR-2 entity matching, not a measured slice. The GR-1 builder,
+pipeline wiring (`782f03f`) and retrieval lane (`6e23630`) are now committed.
+Next: validate and publish the existing GR-1b Mac rerank artifacts; do not
+repeat pool construction or embeddings. Resume details are in `CURRENT_STATE.md`.
 
 Both inherited CI failures ([ADR 0008](docs/adr/0008-inherited-ci-red-disposition.md))
 are closed. On `6cc810d` (T-17, pushed) both workflows that run on
@@ -113,8 +115,9 @@ so this is two of five. The chromadb CVE ignores carry a **review date of 2026-0
 | **D** | pgvector spike, ADR 0007 — now measured against the graph tables too | a table of numbers in the ADR; no migration without it |
 | **E** | Public artefact: README-first, 3-minute demo, `resolution-contracts` sub-package | repo public, CI green, numbers in README |
 
-Heavy runs (models, full suite, Docker) go to the iMac or Colab — never the
-Windows laptop. See Q3 in the plan.
+Heavy runs (models, full suite, Docker) go to the Mac — never the Windows
+laptop. Do not install or launch WSL, Docker or VMs on Windows (owner direction,
+2026-09-12).
 
 ## Frozen
 

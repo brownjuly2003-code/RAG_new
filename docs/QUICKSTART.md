@@ -1,6 +1,9 @@
 # Quickstart — RAG Support Assistant
 
-> The minimum steps to run the service **locally** and verify it works.
+> The minimum steps to run the service on its runtime host and verify it works.
+> For this workspace that host is the Mac. Do not install or launch WSL,
+> Docker or virtual machines on the Windows editing laptop. Run the commands
+> below on the Mac; Windows is limited to editing and focused verification.
 >
 > **No hosted Hugging Face Space** is provided or planned. Users run this
 > application on their own machine. Hugging Face is not a required publication
@@ -9,7 +12,8 @@
 ## 0. Requirements
 
 - Python 3.11+ (tested on 3.13)
-- Docker Desktop (for Postgres + Redis in dev and for regression eval)
+- Docker on the Mac (for disposable Postgres + Redis in dev and regression eval),
+  or existing native services on that host
 - Disk/RAM depend on the selected profile (Ollama models need extra space;
   the external Mistral + remote embeddings path does not download local
   embedding/reranker weights)
@@ -27,7 +31,7 @@ Per selected profile:
 ```bash
 # From your clone of this repository
 python -m venv .venv
-. .venv/Scripts/activate          # Windows PowerShell: . .venv\Scripts\Activate.ps1
+. .venv/bin/activate
 pip install --require-hashes -r requirements.lock
 ```
 
