@@ -24,6 +24,7 @@ root — that habit is what produced 29 of them and is now closed.
 
 | Slice | Capsule | Evidence class |
 |---|---|---|
+| GR-1b bounded safe-subset oracle: 0.6780 / 0.9250 with G1 fallback; label-dependent diagnostic only | [GR-1b oracle](docs/evidence/gr1b-safe-subset-oracle.md) | measured |
 | Postgres append immutability | [c4](docs/evidence/c4-postgres-append-immutability.md) | synthetic |
 | Postgres temporal evidence | [c5](docs/evidence/c5-postgres-temporal-evidence.md) | synthetic |
 | Protected evidence encryption + redaction | [c6](docs/evidence/c6-protected-evidence-encryption-redaction.md) | synthetic |

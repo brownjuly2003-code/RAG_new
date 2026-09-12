@@ -111,6 +111,12 @@ this case set; shared-source cases require cluster-aware confirmation. A CI
 for improvement is not proof that the population score exceeds 0.63. Generator
 seeds over fixed contexts do not provide independent retrieval measurements.
 
-The first task reuses the exact gzip archive, without embeddings, model calls
+Steps 1 and 2 are measured: [controls](../evidence/gr1b-same-pool-controls.md)
+fail joint gates; the [bounded oracle](../evidence/gr1b-safe-subset-oracle.md)
+reaches 0.6780 / 0.9250 with labels and G1 fallback, without keyword losses.
+Next is a query-only selection control and investigation of three infeasible
+cases; the oracle does not establish deployable quality.
+
+This work reuses the exact gzip archive, without embeddings, model calls
 or deployment. Windows runs focused checks only; models, full suites and
 containers belong on the Mac. GR-4/GR-2/GR-3 remain planned after this diagnosis.

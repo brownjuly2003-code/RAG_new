@@ -1,0 +1,3429 @@
+{
+  "schema_version": "gr1b-oracle/v1.0",
+  "kind": "oracle_diagnostic_not_deployable",
+  "provenance": {
+    "pool_path": "evaluation/gr1b-4436d61-candidates.json.gz (decompressed)",
+    "pool_sha256": "c862dcb76878d7a79db040ac13099b733ad769b08092094d174cc6814be4ee26",
+    "pool_bytes": 8338583,
+    "pool_produced_by": "scripts/ab_remote_contextual.py --stage pools/rerank --arm G1 (BGE-M3 + bge-reranker-v2-m3, structural chunking + exact category prefilter + structural graph coherence/expansion)",
+    "dataset": "evaluation/curated_cases_aircargo.jsonl",
+    "dataset_sha256": "3737d694362d1867ca3d5983e3765d02c01110d2409145ba7e0f05c021d9c720",
+    "label_sidecar": "evaluation/curated_cases_question_class.jsonl",
+    "label_sidecar_sha256": "cc6356b9faa46d4b952a955e1d47e9a8b15003284c42f48e7e5236471f8ff17c",
+    "label_manifest": "evaluation/curated_cases_question_class.manifest.json",
+    "label_manifest_sha256": "e2010fc94ee283c29308e6fa53e522c70b57d767aacf00113628858a061f7b10",
+    "corpus": {
+      "manifest": "evaluation/aircargo_corpus.manifest.json",
+      "manifest_sha256": "2b2e9232e69b4f52a55237f3ee620f34c91d1900383877c2310ba616c6590444",
+      "name": "aircargo",
+      "root": "data/uploads/aircargo",
+      "corpus_sha256": "c8562a64f88f72172f29e30865091be79f08d00ce65fbf675f34de64dcebe343",
+      "file_count": 201
+    },
+    "code": {
+      "commit": "715193cc0dcbaf6c4b90bb793e1e8a352fd01080",
+      "tree_clean": true,
+      "files": {
+        "scripts/ab_context_precision.py": "c1762f3deaa0913aeaf9ade2ab08d22f5348cdfe406f07da1522e16052b783c4",
+        "scripts/generator_benchmark.py": "668a318ca8c4eea3e1924cc22e7e6ba664ae2c98e80489d0f91133b2b3c9c156",
+        "scripts/ab_remote_contextual.py": "9ab4ce29dabe93f2394b2a4b5afc70f1072c047bca45294350aa66d1bc63f2ed",
+        "evaluation/ragas_eval.py": "d08ae8b2fe18bbae237b278090f0ca1d284225c0e4f27a8bf2c136a03a8f0987",
+        "evaluation/question_class_labels.py": "fb175ecb7c36c914c3025eff5dc55e07ac53f59530a8fae59fc1534d1c9623f6",
+        "vectordb/_base_manager.py": "684abcdf1ac6d3ad02807032cd4a1435e826955a9d089438b230fc1f5245e520",
+        "ingestion/structure_graph.py": "24a55cfd0c89b931df24b9a7850707a4b40e2d63f1c76ef428154520a27e4bd7",
+        "ingestion/structure_graph_projection.py": "0ed54c99a552cc79dae834f7ff31c583b477ffb82073a8a4fe2b74caa9635641",
+        "scripts/gr1b_controls.py": "00f2c92185496daa54159072b81c7fdb0505fcf41c359802721334c243771996"
+      }
+    },
+    "config": {
+      "top_k": 5,
+      "pool_rerank_k": [
+        5
+      ],
+      "context_chars": 6000,
+      "parent_expansion": false,
+      "grade_docs": false,
+      "context_builder": "scripts.generator_benchmark.load_benchmark_cases",
+      "metrics": "evaluation.ragas_eval.context_precision / context_recall (keyword, the phase C code path)",
+      "kw_status": "scripts.ab_remote_contextual._kw_status",
+      "rounding": "per case to 4 decimals, then the mean, then 4 decimals",
+      "pool_arm": "G1",
+      "allow_short_contexts": true,
+      "category_prefilter": "exact available case labels",
+      "section_coherence": "production structural graph",
+      "section_expansion": "same-section structural graph boundary",
+      "controls": {
+        "candidate_fields": [
+          "cands",
+          "reranked_cands",
+          "prerank_cands"
+        ],
+        "reranked_top_k": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "bootstrap_samples": 2000,
+        "bootstrap_seed": 42,
+        "ci": "paired case bootstrap percentile 95%, linear quantiles",
+        "scope": "exploratory; cases not held out; shared-source dependence not modelled",
+        "keyword_losses": "recall-normalised keyword sets; FULL uses original kw_status"
+      },
+      "oracle": {
+        "subsets_per_case": 31,
+        "candidate_limit": 5,
+        "order": "original",
+        "preservation": "normalised and raw keyword identities present in capped G1",
+        "objective": "max four-decimal precision, then fewer contexts, then indices",
+        "fallback": "G1 when infeasible or precision does not improve"
+      }
+    },
+    "archive_path": "evaluation/gr1b-4436d61-candidates.json.gz",
+    "archive_sha256": "4fdf2a128a23fedea08a2d465ee0605181ab5b014bfb4611f66b6acc62bbbb49"
+  },
+  "labels": {
+    "evidence_class": "agent_labelled",
+    "approved": 0,
+    "case_source": "agent_authored_over_real_documents",
+    "note": "The questions were agent-authored over real documents and the question classes are agent-assigned; no human has approved either."
+  },
+  "baseline": {
+    "question_class": "all cases",
+    "num_cases": 100,
+    "context_precision": 0.5475,
+    "context_recall": 0.92,
+    "FULL": 88,
+    "PART": 8,
+    "MISS": 4
+  },
+  "feasible_cases_only": {
+    "question_class": "feasible cases only",
+    "num_cases": 97,
+    "context_precision": 0.689,
+    "context_recall": 0.9278,
+    "FULL": 87,
+    "PART": 6,
+    "MISS": 4
+  },
+  "all_cases_with_g1_fallback": {
+    "question_class": "all cases",
+    "num_cases": 100,
+    "context_precision": 0.678,
+    "context_recall": 0.925,
+    "FULL": 89,
+    "PART": 7,
+    "MISS": 4
+  },
+  "comparison": {
+    "precision_delta": 0.130473,
+    "precision_delta_ci95": [
+      0.112445,
+      0.149158
+    ],
+    "recall_delta": 0.005,
+    "recall_delta_ci95": [
+      0.0,
+      0.015
+    ],
+    "full_regressions": [],
+    "lost_keyword_cases": [],
+    "transitions": {
+      "FULL->FULL": 88,
+      "FULL->PART": 0,
+      "FULL->MISS": 0,
+      "PART->FULL": 1,
+      "PART->PART": 7,
+      "PART->MISS": 0,
+      "MISS->FULL": 0,
+      "MISS->PART": 0,
+      "MISS->MISS": 4
+    }
+  },
+  "per_case": [
+    {
+      "case_id": "aircargo-probation-data",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 0.7778,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "должность",
+        "трудов"
+      ],
+      "context_chars": 348,
+      "candidate_indices": [
+        0
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.7778,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "должность",
+          "трудов"
+        ],
+        "context_chars": 348,
+        "n_docs": 1,
+        "candidate_indices": [
+          0
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-probation-extend",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 0.8571,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "не допускается",
+        "ст. 70"
+      ],
+      "context_chars": 460,
+      "candidate_indices": [
+        0
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.8571,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "не допускается",
+          "ст. 70"
+        ],
+        "context_chars": 460,
+        "n_docs": 1,
+        "candidate_indices": [
+          0
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-probation-dismissal",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 0.8889,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "критери",
+        "уведомлени"
+      ],
+      "context_chars": 337,
+      "candidate_indices": [
+        0
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.8889,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "критери",
+          "уведомлени"
+        ],
+        "context_chars": 337,
+        "n_docs": 1,
+        "candidate_indices": [
+          0
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-dismissal-check",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 0.875,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "основание",
+        "приказ"
+      ],
+      "context_chars": 364,
+      "candidate_indices": [
+        0
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.875,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "основание",
+          "приказ"
+        ],
+        "context_chars": 364,
+        "n_docs": 1,
+        "candidate_indices": [
+          0
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-dismissal-lawyer",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 0.75,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "работодател",
+        "сокращени"
+      ],
+      "context_chars": 330,
+      "candidate_indices": [
+        0
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.75,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "работодател",
+          "сокращени"
+        ],
+        "context_chars": 330,
+        "n_docs": 1,
+        "candidate_indices": [
+          0
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-dismissal-order",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.7143,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "черновик",
+        "шаблон"
+      ],
+      "context_chars": 2080,
+      "selection": "g1_fallback",
+      "feasible_subset": {
+        "context_precision": 0.7143,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "черновик",
+          "шаблон"
+        ],
+        "context_chars": 323,
+        "n_docs": 1,
+        "candidate_indices": [
+          0
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-leave-sources",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 1.0,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "график отпусков",
+        "ТК РФ"
+      ],
+      "context_chars": 402,
+      "candidate_indices": [
+        0
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 1.0,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "график отпусков",
+          "ТК РФ"
+        ],
+        "context_chars": 402,
+        "n_docs": 1,
+        "candidate_indices": [
+          0
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-leave-compensation",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 0.7143,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "расчет",
+        "бухгалтери"
+      ],
+      "context_chars": 324,
+      "candidate_indices": [
+        0
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.7143,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "расчет",
+          "бухгалтери"
+        ],
+        "context_chars": 324,
+        "n_docs": 1,
+        "candidate_indices": [
+          0
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-leave-risk",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 0.8571,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "перенос",
+        "декрет"
+      ],
+      "context_chars": 329,
+      "candidate_indices": [
+        0
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.8571,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "перенос",
+          "декрет"
+        ],
+        "context_chars": 329,
+        "n_docs": 1,
+        "candidate_indices": [
+          0
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-matliab-check",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 1.0,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "ущерб",
+        "объяснени"
+      ],
+      "context_chars": 404,
+      "candidate_indices": [
+        0
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 1.0,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "ущерб",
+          "объяснени"
+        ],
+        "context_chars": 404,
+        "n_docs": 1,
+        "candidate_indices": [
+          0
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-matliab-disputed",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 0.875,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "основани",
+        "договор"
+      ],
+      "context_chars": 336,
+      "candidate_indices": [
+        0
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.875,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "основани",
+          "договор"
+        ],
+        "context_chars": 336,
+        "n_docs": 1,
+        "candidate_indices": [
+          0
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-templates-choose",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 0.8571,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "предмет",
+        "перевозка"
+      ],
+      "context_chars": 336,
+      "candidate_indices": [
+        0
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.8571,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "предмет",
+          "перевозка"
+        ],
+        "context_chars": 336,
+        "n_docs": 1,
+        "candidate_indices": [
+          0
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-templates-checklist",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 0.625,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "стороны",
+        "ответственность"
+      ],
+      "context_chars": 312,
+      "candidate_indices": [
+        3
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.625,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "стороны",
+          "ответственность"
+        ],
+        "context_chars": 312,
+        "n_docs": 1,
+        "candidate_indices": [
+          3
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-templates-insufficient",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 0.7143,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "иностранн",
+        "санкционн"
+      ],
+      "context_chars": 319,
+      "candidate_indices": [
+        0
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.7143,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "иностранн",
+          "санкционн"
+        ],
+        "context_chars": 319,
+        "n_docs": 1,
+        "candidate_indices": [
+          0
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-secret-check",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 0.8571,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "NDA",
+        "доступ"
+      ],
+      "context_chars": 357,
+      "candidate_indices": [
+        0
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.8571,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "NDA",
+          "доступ"
+        ],
+        "context_chars": 357,
+        "n_docs": 1,
+        "candidate_indices": [
+          0
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-secret-not-auto",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 1.0,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "режим",
+        "доступ"
+      ],
+      "context_chars": 366,
+      "candidate_indices": [
+        0
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 1.0,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "режим",
+          "доступ"
+        ],
+        "context_chars": 366,
+        "n_docs": 1,
+        "candidate_indices": [
+          0
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-secret-disclosure",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 0.875,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "зафиксировать",
+        "compliance"
+      ],
+      "context_chars": 321,
+      "candidate_indices": [
+        0
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.875,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "зафиксировать",
+          "compliance"
+        ],
+        "context_chars": 321,
+        "n_docs": 1,
+        "candidate_indices": [
+          0
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-pdp-scope",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 1.0,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "согласие",
+        "передача"
+      ],
+      "context_chars": 363,
+      "candidate_indices": [
+        0
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 1.0,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "согласие",
+          "передача"
+        ],
+        "context_chars": 363,
+        "n_docs": 1,
+        "candidate_indices": [
+          0
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-pdp-data",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 0.8,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "цель обработки",
+        "срок хранения"
+      ],
+      "context_chars": 319,
+      "candidate_indices": [
+        0
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.8,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "цель обработки",
+          "срок хранения"
+        ],
+        "context_chars": 319,
+        "n_docs": 1,
+        "candidate_indices": [
+          0
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-pdp-uncertain",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 1.0,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "основани",
+        "утечк"
+      ],
+      "context_chars": 310,
+      "candidate_indices": [
+        0
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 1.0,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "основани",
+          "утечк"
+        ],
+        "context_chars": 310,
+        "n_docs": 1,
+        "candidate_indices": [
+          0
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-claims-delay",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 1.0,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "AWB",
+        "вину"
+      ],
+      "context_chars": 509,
+      "candidate_indices": [
+        0
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 1.0,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "AWB",
+          "вину"
+        ],
+        "context_chars": 509,
+        "n_docs": 1,
+        "candidate_indices": [
+          0
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-claims-damage",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 0.8889,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "акт",
+        "фото"
+      ],
+      "context_chars": 439,
+      "candidate_indices": [
+        0
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.8889,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "акт",
+          "фото"
+        ],
+        "context_chars": 439,
+        "n_docs": 1,
+        "candidate_indices": [
+          0
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-claims-lawyer",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 0.5556,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "суд",
+        "срок"
+      ],
+      "context_chars": 363,
+      "candidate_indices": [
+        0
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.5556,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "суд",
+          "срок"
+        ],
+        "context_chars": 363,
+        "n_docs": 1,
+        "candidate_indices": [
+          0
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-claims-forbidden",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 0.8889,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "долг",
+        "вину"
+      ],
+      "context_chars": 366,
+      "candidate_indices": [
+        0
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.8889,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "долг",
+          "вину"
+        ],
+        "context_chars": 366,
+        "n_docs": 1,
+        "candidate_indices": [
+          0
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-expedition-vs-carrier",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 1.0,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "экспедитор",
+        "AWB"
+      ],
+      "context_chars": 522,
+      "candidate_indices": [
+        0
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 1.0,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "экспедитор",
+          "AWB"
+        ],
+        "context_chars": 522,
+        "n_docs": 1,
+        "candidate_indices": [
+          0
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-expedition-mawb-hawb",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 1.0,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "HAWB",
+        "MAWB"
+      ],
+      "context_chars": 422,
+      "candidate_indices": [
+        0
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 1.0,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "HAWB",
+          "MAWB"
+        ],
+        "context_chars": 422,
+        "n_docs": 1,
+        "candidate_indices": [
+          0
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-expedition-risks",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 0.8571,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "ответственност",
+        "customs"
+      ],
+      "context_chars": 426,
+      "candidate_indices": [
+        0
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.8571,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "ответственност",
+          "customs"
+        ],
+        "context_chars": 426,
+        "n_docs": 1,
+        "candidate_indices": [
+          0
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-road-cutoff",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 0.9167,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "cut-off",
+        "терминал"
+      ],
+      "context_chars": 489,
+      "candidate_indices": [
+        0
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.9167,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "cut-off",
+          "терминал"
+        ],
+        "context_chars": 489,
+        "n_docs": 1,
+        "candidate_indices": [
+          0
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-road-penalty",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 0.9167,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "GPS",
+        "договорное"
+      ],
+      "context_chars": 476,
+      "candidate_indices": [
+        0
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.9167,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "GPS",
+          "договорное"
+        ],
+        "context_chars": 476,
+        "n_docs": 1,
+        "candidate_indices": [
+          0
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-road-seal",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 1.0,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "пломб",
+        "акт"
+      ],
+      "context_chars": 439,
+      "candidate_indices": [
+        0
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 1.0,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "пломб",
+          "акт"
+        ],
+        "context_chars": 439,
+        "n_docs": 1,
+        "candidate_indices": [
+          0
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-road-driver-pdn",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 1.0,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "раскрывать",
+        "основание"
+      ],
+      "context_chars": 468,
+      "candidate_indices": [
+        0
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 1.0,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "раскрывать",
+          "основание"
+        ],
+        "context_chars": 468,
+        "n_docs": 1,
+        "candidate_indices": [
+          0
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-business-trip-advance-report",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 0.4444,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "авансовый отчет",
+        "билеты"
+      ],
+      "context_chars": 580,
+      "candidate_indices": [
+        4
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.4444,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "авансовый отчет",
+          "билеты"
+        ],
+        "context_chars": 580,
+        "n_docs": 1,
+        "candidate_indices": [
+          4
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-business-trip-foreign-approval",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 0.5714,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "генеральным директором",
+        "за пределы РФ"
+      ],
+      "context_chars": 387,
+      "candidate_indices": [
+        0
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.5714,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "генеральным директором",
+          "за пределы РФ"
+        ],
+        "context_chars": 387,
+        "n_docs": 1,
+        "candidate_indices": [
+          0
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-remote-work-monitoring-limits",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 0.2857,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "клавиатуры",
+        "видеонаблюдение"
+      ],
+      "context_chars": 588,
+      "candidate_indices": [
+        0
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.2857,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "клавиатуры",
+          "видеонаблюдение"
+        ],
+        "context_chars": 588,
+        "n_docs": 1,
+        "candidate_indices": [
+          0
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-remote-work-equipment-compensation",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 0.4545,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "VPN",
+        "800 руб"
+      ],
+      "context_chars": 554,
+      "candidate_indices": [
+        0
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.4545,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "VPN",
+          "800 руб"
+        ],
+        "context_chars": 554,
+        "n_docs": 1,
+        "candidate_indices": [
+          0
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-maternity-duration-normal",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 0.5,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "140 календар",
+        "70 до"
+      ],
+      "context_chars": 740,
+      "candidate_indices": [
+        0
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.5,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "140 календар",
+          "70 до"
+        ],
+        "context_chars": 740,
+        "n_docs": 1,
+        "candidate_indices": [
+          0
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-maternity-dismissal-ban",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 0.5,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "ст. 261",
+        "ликвидации"
+      ],
+      "context_chars": 464,
+      "candidate_indices": [
+        0
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.5,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "ст. 261",
+          "ликвидации"
+        ],
+        "context_chars": 464,
+        "n_docs": 1,
+        "candidate_indices": [
+          0
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-internal-transfer-consent",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 0.4,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "письменного согласия",
+        "ст. 74"
+      ],
+      "context_chars": 471,
+      "candidate_indices": [
+        0
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.4,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "письменного согласия",
+          "ст. 74"
+        ],
+        "context_chars": 471,
+        "n_docs": 1,
+        "candidate_indices": [
+          0
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-internal-transfer-documents",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 0.625,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "дополнительное соглашение",
+        "приказ"
+      ],
+      "context_chars": 484,
+      "candidate_indices": [
+        0
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.625,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "дополнительное соглашение",
+          "приказ"
+        ],
+        "context_chars": 484,
+        "n_docs": 1,
+        "candidate_indices": [
+          0
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-contract-termination-open-awb",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.5524,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "open AWB",
+        "claims register"
+      ],
+      "context_chars": 2917,
+      "selection": "g1_fallback",
+      "feasible_subset": {
+        "context_precision": 0.5524,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "open AWB",
+          "claims register"
+        ],
+        "context_chars": 2643,
+        "n_docs": 3,
+        "candidate_indices": [
+          0,
+          1,
+          2
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-contract-termination-fields",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 0.75,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "termination_date",
+        "settlements_status"
+      ],
+      "context_chars": 893,
+      "candidate_indices": [
+        0
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.75,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "termination_date",
+          "settlements_status"
+        ],
+        "context_chars": 893,
+        "n_docs": 1,
+        "candidate_indices": [
+          0
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-road-contract-aircargo-fields",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 0.5556,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "terminal_slot",
+        "seal_numbers"
+      ],
+      "context_chars": 931,
+      "candidate_indices": [
+        1
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.5556,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "terminal_slot",
+          "seal_numbers"
+        ],
+        "context_chars": 931,
+        "n_docs": 1,
+        "candidate_indices": [
+          1
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-dangerous-goods-fields",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 0.5833,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "cargo_un_number",
+        "cargo_class"
+      ],
+      "context_chars": 943,
+      "candidate_indices": [
+        1
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.5833,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "cargo_un_number",
+          "cargo_class"
+        ],
+        "context_chars": 943,
+        "n_docs": 1,
+        "candidate_indices": [
+          1
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-dangerous-goods-clearance",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.2636,
+      "context_recall": 0.5,
+      "kw_status": "PART",
+      "matched_keywords": [
+        "UN"
+      ],
+      "context_chars": 3877,
+      "selection": "g1_fallback",
+      "feasible_subset": null,
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-customs-clearance-fields",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 0.5556,
+      "context_recall": 0.0,
+      "kw_status": "MISS",
+      "matched_keywords": [],
+      "context_chars": 864,
+      "candidate_indices": [
+        3
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.5556,
+        "context_recall": 0.0,
+        "kw_status": "MISS",
+        "matched_keywords": [],
+        "context_chars": 864,
+        "n_docs": 1,
+        "candidate_indices": [
+          3
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-customs-special-cargo-manual-check",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.1111,
+      "context_recall": 0.0,
+      "kw_status": "MISS",
+      "matched_keywords": [],
+      "context_chars": 1421,
+      "selection": "g1_fallback",
+      "feasible_subset": {
+        "context_precision": 0.1111,
+        "context_recall": 0.0,
+        "kw_status": "MISS",
+        "matched_keywords": [],
+        "context_chars": 472,
+        "n_docs": 1,
+        "candidate_indices": [
+          0
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-waybill-first-mile-fields",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.4132,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "waybill_number",
+        "vehicle_number"
+      ],
+      "context_chars": 4738,
+      "selection": "g1_fallback",
+      "feasible_subset": null,
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-waybill-escalation-events",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.3,
+      "context_recall": 0.5,
+      "kw_status": "PART",
+      "matched_keywords": [
+        "missed cutoff"
+      ],
+      "context_chars": 1685,
+      "selection": "g1_fallback",
+      "feasible_subset": {
+        "context_precision": 0.3,
+        "context_recall": 0.5,
+        "kw_status": "PART",
+        "matched_keywords": [
+          "missed cutoff"
+        ],
+        "context_chars": 558,
+        "n_docs": 1,
+        "candidate_indices": [
+          0
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-trade-compliance-hold",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 0.5556,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "compliance hold",
+        "dual-use"
+      ],
+      "context_chars": 593,
+      "candidate_indices": [
+        0
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.5556,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "compliance hold",
+          "dual-use"
+        ],
+        "context_chars": 593,
+        "n_docs": 1,
+        "candidate_indices": [
+          0
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-trade-compliance-screening",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 0.6,
+      "context_recall": 0.5,
+      "kw_status": "PART",
+      "matched_keywords": [
+        "код ТН ВЭД"
+      ],
+      "context_chars": 556,
+      "candidate_indices": [
+        0
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.6,
+        "context_recall": 0.5,
+        "kw_status": "PART",
+        "matched_keywords": [
+          "код ТН ВЭД"
+        ],
+        "context_chars": 556,
+        "n_docs": 1,
+        "candidate_indices": [
+          0
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-incident-response-bridge",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 0.75,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "incident bridge",
+        "DPO"
+      ],
+      "context_chars": 510,
+      "candidate_indices": [
+        0
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.75,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "incident bridge",
+          "DPO"
+        ],
+        "context_chars": 510,
+        "n_docs": 1,
+        "candidate_indices": [
+          0
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-incident-response-required-fields",
+      "question_class": "single_hop",
+      "n_docs": 2,
+      "context_precision": 0.625,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "containment_measures",
+        "shipment_or_data_hold"
+      ],
+      "context_chars": 1396,
+      "candidate_indices": [
+        0,
+        1
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.625,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "containment_measures",
+          "shipment_or_data_hold"
+        ],
+        "context_chars": 1396,
+        "n_docs": 2,
+        "candidate_indices": [
+          0,
+          1
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-access-control-need-to-know",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 0.6667,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "need-to-know",
+        "журнала действий"
+      ],
+      "context_chars": 498,
+      "candidate_indices": [
+        0
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.6667,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "need-to-know",
+          "журнала действий"
+        ],
+        "context_chars": 498,
+        "n_docs": 1,
+        "candidate_indices": [
+          0
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-access-control-review",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 0.6667,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "role_matrix",
+        "review_frequency"
+      ],
+      "context_chars": 893,
+      "candidate_indices": [
+        1
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.6667,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "role_matrix",
+          "review_frequency"
+        ],
+        "context_chars": 893,
+        "n_docs": 1,
+        "candidate_indices": [
+          1
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-employment-contract-essential-terms",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 0.3333,
+      "context_recall": 0.5,
+      "kw_status": "PART",
+      "matched_keywords": [
+        "ст. 57"
+      ],
+      "context_chars": 622,
+      "candidate_indices": [
+        1
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.3333,
+        "context_recall": 0.5,
+        "kw_status": "PART",
+        "matched_keywords": [
+          "ст. 57"
+        ],
+        "context_chars": 622,
+        "n_docs": 1,
+        "candidate_indices": [
+          1
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-employment-contract-special-form",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 0.5,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "срочный трудовой договор",
+        "удаленным работником"
+      ],
+      "context_chars": 474,
+      "candidate_indices": [
+        1
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.5,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "срочный трудовой договор",
+          "удаленным работником"
+        ],
+        "context_chars": 474,
+        "n_docs": 1,
+        "candidate_indices": [
+          1
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-driver-job-documents",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 0.5556,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "путевые листы",
+        "ТТН"
+      ],
+      "context_chars": 900,
+      "candidate_indices": [
+        1
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.5556,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "путевые листы",
+          "ТТН"
+        ],
+        "context_chars": 900,
+        "n_docs": 1,
+        "candidate_indices": [
+          1
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-driver-dangerous-goods-refusal",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 0.7778,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "опасных грузов",
+        "допуска"
+      ],
+      "context_chars": 621,
+      "candidate_indices": [
+        0
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.7778,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "опасных грузов",
+          "допуска"
+        ],
+        "context_chars": 621,
+        "n_docs": 1,
+        "candidate_indices": [
+          0
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-sick-leave-required-fields",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 0.75,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "sick_leave_number",
+        "payment_amount"
+      ],
+      "context_chars": 626,
+      "candidate_indices": [
+        2
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.75,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "sick_leave_number",
+          "payment_amount"
+        ],
+        "context_chars": 626,
+        "n_docs": 1,
+        "candidate_indices": [
+          2
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-sick-leave-lawyer-escalation",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 0.2857,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "защищённой категории",
+        "спорных условиях"
+      ],
+      "context_chars": 575,
+      "candidate_indices": [
+        0
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.2857,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "защищённой категории",
+          "спорных условиях"
+        ],
+        "context_chars": 575,
+        "n_docs": 1,
+        "candidate_indices": [
+          0
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-cargo-loss-evidence-bundle",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.7,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "shortage report",
+        "seal photos"
+      ],
+      "context_chars": 2483,
+      "selection": "g1_fallback",
+      "feasible_subset": {
+        "context_precision": 0.7,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "shortage report",
+          "seal photos"
+        ],
+        "context_chars": 799,
+        "n_docs": 1,
+        "candidate_indices": [
+          0
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-cargo-loss-required-fields",
+      "question_class": "single_hop",
+      "n_docs": 2,
+      "context_precision": 0.5556,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "dispute_card_id",
+        "response_deadline"
+      ],
+      "context_chars": 1372,
+      "candidate_indices": [
+        1,
+        3
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.5556,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "dispute_card_id",
+          "response_deadline"
+        ],
+        "context_chars": 1372,
+        "n_docs": 2,
+        "candidate_indices": [
+          1,
+          3
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-late-delivery-reply-evidence",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 0.7,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "offload reason",
+        "terminal timestamps"
+      ],
+      "context_chars": 768,
+      "candidate_indices": [
+        0
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.7,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "offload reason",
+          "terminal timestamps"
+        ],
+        "context_chars": 768,
+        "n_docs": 1,
+        "candidate_indices": [
+          0
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-late-delivery-reply-no-admission",
+      "question_class": "single_hop",
+      "n_docs": 2,
+      "context_precision": 0.7,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "вину",
+        "liability cap"
+      ],
+      "context_chars": 1537,
+      "candidate_indices": [
+        0,
+        2
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.7,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "вину",
+          "liability cap"
+        ],
+        "context_chars": 1537,
+        "n_docs": 2,
+        "candidate_indices": [
+          0,
+          2
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-driver-hours-required-fields",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 0.6667,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "tachograph_card_number",
+        "daily_driving_limit"
+      ],
+      "context_chars": 880,
+      "candidate_indices": [
+        0
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.6667,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "tachograph_card_number",
+          "daily_driving_limit"
+        ],
+        "context_chars": 880,
+        "n_docs": 1,
+        "candidate_indices": [
+          0
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-driver-hours-terminal-discrepancy",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.8182,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "TMS/WMS/terminal log",
+        "актом"
+      ],
+      "context_chars": 1895,
+      "selection": "g1_fallback",
+      "feasible_subset": {
+        "context_precision": 0.8182,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "TMS/WMS/terminal log",
+          "актом"
+        ],
+        "context_chars": 625,
+        "n_docs": 1,
+        "candidate_indices": [
+          0
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-warehouse-3pl-required-fields",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 0.7,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "warehouse_address",
+        "inventory_accuracy_target"
+      ],
+      "context_chars": 563,
+      "candidate_indices": [
+        1
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.7,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "warehouse_address",
+          "inventory_accuracy_target"
+        ],
+        "context_chars": 563,
+        "n_docs": 1,
+        "candidate_indices": [
+          1
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-warehouse-3pl-escalation",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 0.6,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "temperature excursion",
+        "insurance regress"
+      ],
+      "context_chars": 577,
+      "candidate_indices": [
+        1
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.6,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "temperature excursion",
+          "insurance regress"
+        ],
+        "context_chars": 577,
+        "n_docs": 1,
+        "candidate_indices": [
+          1
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-perishable-temperature-controls",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 0.6923,
+      "context_recall": 0.0,
+      "kw_status": "MISS",
+      "matched_keywords": [],
+      "context_chars": 905,
+      "candidate_indices": [
+        2
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.6923,
+        "context_recall": 0.0,
+        "kw_status": "MISS",
+        "matched_keywords": [],
+        "context_chars": 905,
+        "n_docs": 1,
+        "candidate_indices": [
+          2
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-perishable-special-cargo-evidence",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 0.4444,
+      "context_recall": 0.5,
+      "kw_status": "PART",
+      "matched_keywords": [
+        "temperature logger"
+      ],
+      "context_chars": 835,
+      "candidate_indices": [
+        0
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.4444,
+        "context_recall": 0.5,
+        "kw_status": "PART",
+        "matched_keywords": [
+          "temperature logger"
+        ],
+        "context_chars": 835,
+        "n_docs": 1,
+        "candidate_indices": [
+          0
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-oversized-permit-route",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 0.7,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "permit_number",
+        "escort_vehicle_count"
+      ],
+      "context_chars": 916,
+      "candidate_indices": [
+        0
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.7,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "permit_number",
+          "escort_vehicle_count"
+        ],
+        "context_chars": 916,
+        "n_docs": 1,
+        "candidate_indices": [
+          0
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-oversized-manual-check",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 0.75,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "ручную проверку",
+        "carrier/GSA"
+      ],
+      "context_chars": 582,
+      "candidate_indices": [
+        0
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.75,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "ручную проверку",
+          "carrier/GSA"
+        ],
+        "context_chars": 582,
+        "n_docs": 1,
+        "candidate_indices": [
+          0
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-data-retention-legal-hold",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 0.6667,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "legal hold",
+        "incident hold"
+      ],
+      "context_chars": 886,
+      "candidate_indices": [
+        0
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.6667,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "legal hold",
+          "incident hold"
+        ],
+        "context_chars": 886,
+        "n_docs": 1,
+        "candidate_indices": [
+          0
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-data-retention-required-fields",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 0.6,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "retention_period",
+        "system_of_record"
+      ],
+      "context_chars": 854,
+      "candidate_indices": [
+        1
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.6,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "retention_period",
+          "system_of_record"
+        ],
+        "context_chars": 854,
+        "n_docs": 1,
+        "candidate_indices": [
+          1
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-subject-rights-third-party-masking",
+      "question_class": "multi_hop",
+      "n_docs": 1,
+      "context_precision": 0.7273,
+      "context_recall": 0.5,
+      "kw_status": "PART",
+      "matched_keywords": [
+        "чужих данных"
+      ],
+      "context_chars": 551,
+      "candidate_indices": [
+        0
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.7273,
+        "context_recall": 0.5,
+        "kw_status": "PART",
+        "matched_keywords": [
+          "чужих данных"
+        ],
+        "context_chars": 551,
+        "n_docs": 1,
+        "candidate_indices": [
+          0
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-subject-rights-required-fields",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 0.7692,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "request_type",
+        "awb_booking_reference"
+      ],
+      "context_chars": 877,
+      "candidate_indices": [
+        0
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.7692,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "request_type",
+          "awb_booking_reference"
+        ],
+        "context_chars": 877,
+        "n_docs": 1,
+        "candidate_indices": [
+          0
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-customs-broker-evidence",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 0.6667,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "packing list",
+        "broker authority"
+      ],
+      "context_chars": 773,
+      "candidate_indices": [
+        0
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.6667,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "packing list",
+          "broker authority"
+        ],
+        "context_chars": 773,
+        "n_docs": 1,
+        "candidate_indices": [
+          0
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-customs-broker-escalation",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 0.3,
+      "context_recall": 0.0,
+      "kw_status": "MISS",
+      "matched_keywords": [],
+      "context_chars": 830,
+      "candidate_indices": [
+        0
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.3,
+        "context_recall": 0.0,
+        "kw_status": "MISS",
+        "matched_keywords": [],
+        "context_chars": 830,
+        "n_docs": 1,
+        "candidate_indices": [
+          0
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-salary-payment-dates",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 0.7,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "20-го числа",
+        "5-го числа"
+      ],
+      "context_chars": 455,
+      "candidate_indices": [
+        0
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.7,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "20-го числа",
+          "5-го числа"
+        ],
+        "context_chars": 455,
+        "n_docs": 1,
+        "candidate_indices": [
+          0
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-salary-bonus-conditions",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 0.75,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "6 месяцев",
+        "дисциплинарных взысканий"
+      ],
+      "context_chars": 486,
+      "candidate_indices": [
+        0
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.75,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "6 месяцев",
+          "дисциплинарных взысканий"
+        ],
+        "context_chars": 486,
+        "n_docs": 1,
+        "candidate_indices": [
+          0
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-overtime-limits",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 0.7143,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "4 часов",
+        "120 часов"
+      ],
+      "context_chars": 369,
+      "candidate_indices": [
+        0
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.7143,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "4 часов",
+          "120 часов"
+        ],
+        "context_chars": 369,
+        "n_docs": 1,
+        "candidate_indices": [
+          0
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-overtime-protected-categories",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 1.0,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "беременные",
+        "несовершеннолетние"
+      ],
+      "context_chars": 635,
+      "candidate_indices": [
+        0
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 1.0,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "беременные",
+          "несовершеннолетние"
+        ],
+        "context_chars": 635,
+        "n_docs": 1,
+        "candidate_indices": [
+          0
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-harassment-complaint-data",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 0.7778,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "дату",
+        "свидетелей"
+      ],
+      "context_chars": 473,
+      "candidate_indices": [
+        0
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.7778,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "дату",
+          "свидетелей"
+        ],
+        "context_chars": 473,
+        "n_docs": 1,
+        "candidate_indices": [
+          0
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-harassment-investigation-timeline",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 0.4444,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "2 рабочих дней",
+        "10 рабочих дней"
+      ],
+      "context_chars": 499,
+      "candidate_indices": [
+        0
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.4444,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "2 рабочих дней",
+          "10 рабочих дней"
+        ],
+        "context_chars": 499,
+        "n_docs": 1,
+        "candidate_indices": [
+          0
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-conflict-interest-disclosure",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 0.6,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "родственных связях",
+        "подарков"
+      ],
+      "context_chars": 552,
+      "candidate_indices": [
+        0
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.6,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "родственных связях",
+          "подарков"
+        ],
+        "context_chars": 552,
+        "n_docs": 1,
+        "candidate_indices": [
+          0
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-conflict-interest-sanctions",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 0.5,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "дисциплинарное взыскание",
+        "убытков"
+      ],
+      "context_chars": 422,
+      "candidate_indices": [
+        0
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.5,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "дисциплинарное взыскание",
+          "убытков"
+        ],
+        "context_chars": 422,
+        "n_docs": 1,
+        "candidate_indices": [
+          0
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-cargo-insurance-evidence",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 0.75,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "insurance application",
+        "temperature log"
+      ],
+      "context_chars": 940,
+      "candidate_indices": [
+        1
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.75,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "insurance application",
+          "temperature log"
+        ],
+        "context_chars": 940,
+        "n_docs": 1,
+        "candidate_indices": [
+          1
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-cargo-insurance-operational-limits",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 0.5556,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "special cargo",
+        "excluded route"
+      ],
+      "context_chars": 815,
+      "candidate_indices": [
+        1
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.5556,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "special cargo",
+          "excluded route"
+        ],
+        "context_chars": 815,
+        "n_docs": 1,
+        "candidate_indices": [
+          1
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-fuel-supply-evidence",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 0.6364,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "batch certificate",
+        "safety sheet"
+      ],
+      "context_chars": 748,
+      "candidate_indices": [
+        2
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.6364,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "batch certificate",
+          "safety sheet"
+        ],
+        "context_chars": 748,
+        "n_docs": 1,
+        "candidate_indices": [
+          2
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-fuel-supply-required-fields",
+      "question_class": "single_hop",
+      "n_docs": 2,
+      "context_precision": 0.6,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "fuel_type",
+        "terminal_delivery_point"
+      ],
+      "context_chars": 1392,
+      "selection": "g1_fallback",
+      "feasible_subset": {
+        "context_precision": 0.6,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "fuel_type",
+          "terminal_delivery_point"
+        ],
+        "context_chars": 910,
+        "n_docs": 1,
+        "candidate_indices": [
+          3
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-gps-monitoring-required-fields",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 0.7273,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "gps_device_id",
+        "data_retention_period"
+      ],
+      "context_chars": 837,
+      "candidate_indices": [
+        1
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.7273,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "gps_device_id",
+          "data_retention_period"
+        ],
+        "context_chars": 837,
+        "n_docs": 1,
+        "candidate_indices": [
+          1
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-gps-monitoring-scope",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.7,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "first/last mile",
+        "cargo release"
+      ],
+      "context_chars": 1674,
+      "selection": "g1_fallback",
+      "feasible_subset": {
+        "context_precision": 0.7,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "first/last mile",
+          "cargo release"
+        ],
+        "context_chars": 556,
+        "n_docs": 1,
+        "candidate_indices": [
+          0
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-weight-control-required-fields",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 0.7,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "axle_loads",
+        "weighbridge_certificate"
+      ],
+      "context_chars": 912,
+      "candidate_indices": [
+        0
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.7,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "axle_loads",
+          "weighbridge_certificate"
+        ],
+        "context_chars": 912,
+        "n_docs": 1,
+        "candidate_indices": [
+          0
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-weight-control-discrepancy",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.7273,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "фиксируются актом",
+        "следующему участнику"
+      ],
+      "context_chars": 1497,
+      "selection": "g1_fallback",
+      "feasible_subset": {
+        "context_precision": 0.7273,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "фиксируются актом",
+          "следующему участнику"
+        ],
+        "context_chars": 535,
+        "n_docs": 1,
+        "candidate_indices": [
+          0
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-cross-border-required-fields",
+      "question_class": "single_hop",
+      "n_docs": 3,
+      "context_precision": 0.2929,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "route_countries",
+        "vehicle_tir_carnet"
+      ],
+      "context_chars": 4019,
+      "selection": "g1_fallback",
+      "feasible_subset": null,
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-cross-border-special-cargo",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 0.5455,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "lithium batteries",
+        "valuable cargo"
+      ],
+      "context_chars": 686,
+      "candidate_indices": [
+        1
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.5455,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "lithium batteries",
+          "valuable cargo"
+        ],
+        "context_chars": 686,
+        "n_docs": 1,
+        "candidate_indices": [
+          1
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-breach-notification-required-fields",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 0.3636,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "breach_type",
+        "affected_systems"
+      ],
+      "context_chars": 854,
+      "candidate_indices": [
+        2
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.3636,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "breach_type",
+          "affected_systems"
+        ],
+        "context_chars": 854,
+        "n_docs": 1,
+        "candidate_indices": [
+          2
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-breach-notification-participants",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 0.6923,
+      "context_recall": 0.5,
+      "kw_status": "PART",
+      "matched_keywords": [
+        "DPO"
+      ],
+      "context_chars": 913,
+      "candidate_indices": [
+        0
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.6923,
+        "context_recall": 0.5,
+        "kw_status": "PART",
+        "matched_keywords": [
+          "DPO"
+        ],
+        "context_chars": 913,
+        "n_docs": 1,
+        "candidate_indices": [
+          0
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-cross-border-pdn-required-fields",
+      "question_class": "single_hop",
+      "n_docs": 2,
+      "context_precision": 0.5556,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "recipient_country",
+        "sanctions_route_check"
+      ],
+      "context_chars": 1303,
+      "candidate_indices": [
+        0,
+        3
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.5556,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "recipient_country",
+          "sanctions_route_check"
+        ],
+        "context_chars": 1303,
+        "n_docs": 2,
+        "candidate_indices": [
+          0,
+          3
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    },
+    {
+      "case_id": "aircargo-cross-border-pdn-no-transfer",
+      "question_class": "single_hop",
+      "n_docs": 1,
+      "context_precision": 0.7143,
+      "context_recall": 1.0,
+      "kw_status": "FULL",
+      "matched_keywords": [
+        "без цели",
+        "country/routing assessment"
+      ],
+      "context_chars": 486,
+      "candidate_indices": [
+        0
+      ],
+      "subsets_evaluated": 31,
+      "selection": "oracle_subset",
+      "feasible_subset": {
+        "context_precision": 0.7143,
+        "context_recall": 1.0,
+        "kw_status": "FULL",
+        "matched_keywords": [
+          "без цели",
+          "country/routing assessment"
+        ],
+        "context_chars": 486,
+        "n_docs": 1,
+        "candidate_indices": [
+          0
+        ],
+        "subsets_evaluated": 31
+      },
+      "lost_keywords": []
+    }
+  ]
+}

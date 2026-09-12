@@ -148,3 +148,20 @@ def test_oracle_excludes_sixth_candidate_and_remains_diagnostic(tmp_path: Path) 
     assert report["kind"] == "oracle_diagnostic_not_deployable"
     assert report["all_cases_with_g1_fallback"]["num_cases"] == 4
     assert all(row["lost_keywords"] == [] for row in report["per_case"])
+
+
+def test_published_oracle_reproduces_cases_and_provenance() -> None:
+    report = json.loads(controls.DEFAULT_ORACLE_REPORT.read_text(encoding="utf-8"))
+    rebuilt = controls.build_oracle_report()
+    for field in ("per_case", "comparison", "baseline", "feasible_cases_only",
+                  "all_cases_with_g1_fallback", "labels"):
+        assert rebuilt[field] == report[field]
+    for field in ("archive_sha256", "pool_sha256", "dataset_sha256", "label_sidecar_sha256",
+                  "label_manifest_sha256", "corpus", "config"):
+        assert rebuilt["provenance"][field] == report["provenance"][field]
+    assert report["all_cases_with_g1_fallback"]["context_precision"] == 0.678
+    assert report["feasible_cases_only"]["num_cases"] == 97
+    assert report["comparison"]["lost_keyword_cases"] == []
+    assert report["comparison"]["full_regressions"] == []
+    capsule = (controls.PROJECT_ROOT / "docs/evidence/gr1b-safe-subset-oracle.md").read_text(encoding="utf-8")
+    assert "| Oracle with G1 fallback | 100 | 0.6780 | 0.9250 | 89/7/4 |" in capsule
