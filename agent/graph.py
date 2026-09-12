@@ -1555,7 +1555,8 @@ def _select_retrieval_strategy(state: GraphState) -> Literal["vector", "hybrid",
         return "factcard"
     if complexity == "simple":
         return "vector"
-    if configured == "graph" and complexity == "global":
+    if configured == "graph" and (complexity == "global" or
+                                   state.get("question_class") in {"multi_hop", "aggregation", "global"}):
         return "graph"
     return "hybrid"
 
@@ -1599,7 +1600,10 @@ def make_retrieve_node(retriever: Any) -> Callable[[GraphState], GraphState]:
                     elif requested_strategy == "vector" and hasattr(retriever, "get_vector_documents"):
                         docs = retriever.get_vector_documents(query)
                     elif requested_strategy == "graph" and hasattr(retriever, "get_graph_documents_with_path"):
-                        docs, retrieval_path = retriever.get_graph_documents_with_path(query)
+                        docs, retrieval_path = retriever.get_graph_documents_with_path(
+                            query, question_class=state.get("question_class", "single_hop"),
+                            entities=state.get("entities", []),
+                        )
                         if retrieval_path is None:
                             effective_strategy = "hybrid"
                     elif requested_strategy == "graph" and hasattr(retriever, "get_graph_documents"):

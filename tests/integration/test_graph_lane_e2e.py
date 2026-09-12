@@ -14,7 +14,8 @@ from vectordb import manager
 
 
 @pytest.mark.parametrize("mode", ["on", "off", "auto"])
-def test_ask_persists_structural_path_only_when_enabled(monkeypatch, client, tmp_path, mode):
+@pytest.mark.parametrize("entity_lane", [False, True])
+def test_ask_persists_structural_path_only_when_enabled(monkeypatch, client, tmp_path, mode, entity_lane):
     import api.app as api_app
     import config.settings
     from api.routers import conversation
@@ -44,20 +45,54 @@ def test_ask_persists_structural_path_only_when_enabled(monkeypatch, client, tmp
     seed = _chunk("Seed policy.", source="policy.md", chunk_index=0, section="Rules", category="shipping")
     neighbour = _chunk("Required neighbouring fact.", source="policy.md", chunk_index=1,
                        section="Rules", category="shipping")
+    chunks = [seed, neighbour]
+    if entity_lane:
+        from contextlib import nullcontext
+
+        from ingestion import jobs
+        from ingestion.entity_graph import add_entity_graph
+        from ingestion.structure_graph import build_structural_graph
+        from ingestion.structure_graph_repository import StructuralGraphRepository
+
+        chunks.append(_chunk("Linked AWB requirement.", source="awb.md", chunk_index=0,
+                             section="AWB", category="shipping"))
+        structural = build_structural_graph(chunks, tenant_id="default")
+        enriched = add_entity_graph(structural, {node.node_id: ["awb"] for node in structural.nodes
+                                                 if node.kind == "chunk"})
+        monkeypatch.setenv("DATABASE_URL", "postgresql://fixture")
+        monkeypatch.setattr(jobs, "sync_session", lambda: nullcontext(object()))
+        monkeypatch.setattr(StructuralGraphRepository, "load", lambda self, tenant: enriched)
     retriever = manager.get_retriever(
         vector_store=SimpleNamespace(similarity_search=lambda query, k: [seed]),
-        chunks=[seed, neighbour], embeddings=object(), tenant_id="default",
+        chunks=chunks, embeddings=object(), tenant_id="default",
     )
 
     class FixtureModel:
         def __init__(self):
+            self.supports_structured_output = entity_lane
+            if not entity_lane:
+                self.generate_with_schema = None
             self.answers = iter([
-                "GLOBAL", "policy", "YES", "Seed policy [1].",
+                *([] if entity_lane else ["GLOBAL"]), "policy",
+                ('{"grades":[{"index":1,"relevant":true},{"index":2,"relevant":true},'
+                 '{"index":3,"relevant":true}]}' if entity_lane and mode == "on" else "YES"),
+                "Seed policy [1].",
                 '{"score": 90, "reason": "Fixture answer"}', "[]",
             ])
 
         def invoke(self, prompt):
             return next(self.answers, "[]")
+
+        def generate_with_schema(self, messages, schema, **kwargs):
+            from llm.providers.base import LLMResponse
+
+            assert "complexity" in schema["properties"]
+            self.supports_structured_output = False
+            self.generate_with_schema = None
+            return LLMResponse(text="GLOBAL", provider="fixture", model="fixture",
+                               structured_output={"complexity": "global", "question_class": "aggregation",
+                                                  "entities": ["air waybill"], "needs_multi_hop": True,
+                                                  "reason_code": "MULTI_SOURCE_CHAIN"})
 
     session = graph.ConversationSession(retriever, FixtureModel(), max_iterations=0)
 
@@ -89,8 +124,14 @@ def test_ask_persists_structural_path_only_when_enabled(monkeypatch, client, tmp
     evidence = evidence_response.json()
     if mode == "on":
         assert evidence["retrieval_paths"][0]["path"] == state["retrieval_path"]
-        assert state["retrieval_path"]["expanded_contexts"] == 1
-        assert "Required neighbouring fact." in state["context_docs"][0]["page_content"]
+        if entity_lane:
+            assert state["retrieval_path"]["kind"] == "structural_entity"
+            assert state["retrieval_path"]["entities"] == ["awb"]
+            assert any("Linked AWB requirement." in doc["page_content"] for doc in state["context_docs"])
+            assert any("Required neighbouring fact." in doc["page_content"] for doc in state["context_docs"])
+        else:
+            assert state["retrieval_path"]["expanded_contexts"] == 1
+            assert "Required neighbouring fact." in state["context_docs"][0]["page_content"]
     else:
         assert "retrieval_paths" not in evidence
         assert "retrieval_path" not in state

@@ -994,10 +994,12 @@ def get_retriever(
         chunks = _restore_chunks_from_store(vector_store, tenant)
 
     if getattr(settings, "graph_retrieval", "off") == "on" and chunks:
+        from ingestion.entity_graph_loading import load_matching_entity_graph
         from ingestion.structure_graph import build_structural_graph
         from ingestion.structure_graph_projection import project_structure_graph
 
-        projection = project_structure_graph(build_structural_graph(chunks, tenant_id=tenant))
+        structural = build_structural_graph(chunks, tenant_id=tenant)
+        projection = project_structure_graph(load_matching_entity_graph(structural))
         retriever = _base_manager.get_retriever(
             vector_store, chunks=chunks, k=k, graph_projection=projection,
         )

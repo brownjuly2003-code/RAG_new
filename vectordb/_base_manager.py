@@ -457,6 +457,7 @@ class HybridRetriever:
         self._graph_category_sources: dict[str, set[str]] = {}
         self._graph_chunk_sections: dict[str, str] = {}
         self._graph_section_chunks: dict[str, list[Document]] = {}
+        self._entity_index: Any = None
         if graph_projection is not None:
             self._index_graph_projection(graph_projection)
 
@@ -537,6 +538,9 @@ class HybridRetriever:
                 if identity is not None and identity in docs_by_identity:
                     graph_chunk_docs[str(node_id)] = docs_by_identity[identity]
 
+        from ingestion.entity_retrieval import EntityIndex
+
+        self._entity_index = EntityIndex(projection, graph_chunk_docs)
         for section_id, chunk_id, edge_data in projection.edges(data=True):
             if edge_data.get("kind") != "contains":
                 continue
@@ -730,7 +734,8 @@ class HybridRetriever:
         return self.get_graph_documents_with_path(query, categories=categories)[0]
 
     def get_graph_documents_with_path(
-        self, query: str, *, categories: Sequence[str] | None = None
+        self, query: str, *, categories: Sequence[str] | None = None,
+        question_class: str = "single_hop", entities: Sequence[str] = (),
     ) -> tuple[list[Document], dict[str, Any] | None]:
         if self._graph_projection is None:
             return self.get_relevant_documents(query), None
@@ -742,9 +747,14 @@ class HybridRetriever:
             else self._vector_search(query)
         )
         bm25_results = self._graph_bm25_documents(query, sources)
+        entity_docs: list[Document] = []
+        matched: list[str] = []
+        hops = 0
+        if question_class in {"multi_hop", "aggregation", "global"}:
+            entity_docs, matched, hops = self._entity_index.search(entities, sources=sources)
         merged = (
-            self._rrf_merge(vector_results, bm25_results)
-            if bm25_results
+            self._rrf_merge(vector_results, bm25_results, entity_docs)
+            if bm25_results or entity_docs
             else vector_results
         )
         if self._reranker is not None and merged:
@@ -759,8 +769,8 @@ class HybridRetriever:
             if (key := _rrf_document_key(doc, self._doc_key_chars)) in self._graph_chunk_sections
         })
         return expanded, {
-            "kind": "structural", "prefilter_applied": sources is not None,
-            "sections": sections, "entities": [], "hops": 0,
+            "kind": "structural_entity" if entity_docs else "structural", "prefilter_applied": sources is not None,
+            "sections": sections, "entities": matched, "hops": hops,
             "retrieved_contexts": len(merged), "retained_contexts": len(coherent),
             "expanded_contexts": sum(bool(doc.metadata.get("graph_section_expanded")) for doc in expanded),
         }
@@ -796,8 +806,9 @@ class HybridRetriever:
 
         return merged
 
-    def _rrf_merge(self, list_a: list[Document], list_b: list[Document]) -> list[Document]:
-        """Reciprocal Rank Fusion: объединяет два ранжированных списка.
+    def _rrf_merge(self, list_a: list[Document], list_b: list[Document],
+                   *additional: list[Document]) -> list[Document]:
+        """Reciprocal Rank Fusion: объединяет ранжированные списки.
 
         score(doc) = sum( 1 / (k + rank_in_list) ) для каждого списка.
         k = 60 (стандарт) — сглаживает доминирование высоких рангов.
@@ -805,15 +816,11 @@ class HybridRetriever:
         scores: dict[str, float] = {}
         doc_map: dict[str, Document] = {}
 
-        for rank, doc in enumerate(list_a):
-            key = _rrf_document_key(doc, self._doc_key_chars)
-            scores[key] = scores.get(key, 0) + 1.0 / (self._rrf_k + rank)
-            doc_map[key] = doc
-
-        for rank, doc in enumerate(list_b):
-            key = _rrf_document_key(doc, self._doc_key_chars)
-            scores[key] = scores.get(key, 0) + 1.0 / (self._rrf_k + rank)
-            doc_map[key] = doc
+        for documents in (list_a, list_b, *additional):
+            for rank, doc in enumerate(documents):
+                key = _rrf_document_key(doc, self._doc_key_chars)
+                scores[key] = scores.get(key, 0) + 1.0 / (self._rrf_k + rank)
+                doc_map[key] = doc
 
         sorted_keys = sorted(scores, key=lambda k: scores[k], reverse=True)
         return [doc_map[k] for k in sorted_keys]

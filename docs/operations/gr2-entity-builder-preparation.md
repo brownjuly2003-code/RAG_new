@@ -65,7 +65,8 @@ in the checkout. Focused extraction tests cover resume, invalid output, cache/in
 guards, no-key dry run, and compatibility with the entity builder. Both CI mypy
 commands passed on Mac (134 main modules, 31 API/vectordb).
 
-Next: complete extraction when available; entity matching from SGR `entities[]`,
-bounded traversal and RRF integration, then the GR-2 bucket measurement.
-No entity lane or default activation is claimed.
+Entity matching, bounded traversal, third-list RRF and opt-in runtime loading
+are now covered by [synthetic HTTP evidence](../evidence/gr2-entity-retrieval-wiring.md).
+Next: complete extraction when available, persist the enriched tenant graph,
+reset its retriever cache, then run the GR-2 bucket measurement. No default activation.
 Reuse existing embeddings. The structural GR-1b NO-SHIP result is unchanged.
