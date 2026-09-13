@@ -22,6 +22,8 @@ Arms:
      rerank F. Rationale: docs/operations/2026-06-06-arm-e-field-hyde-results.md.
   G1 structural graph: arm-C chunking plus exact available-category prefilter,
      then graph section coherence and same-section expansion after reranking.
+  G2 entity graph: G1 plus the product entity lane (third RRF list) for cases
+     the T-23 classification cache routes as multi_hop/aggregation/global.
 
 All arms run the post-4844094 header path (body never truncated, header clamped 200).
 
@@ -43,16 +45,27 @@ Usage:
   python scripts/ab_remote_contextual.py --stage rerank --arm C
   python scripts/ab_remote_contextual.py --stage pools  --arm G1
   python scripts/ab_remote_contextual.py --stage rerank --arm G1
+  python scripts/ab_remote_contextual.py --stage pools  --arm G2 \\
+      --entities-cache DIR --classifications DIR
+  python scripts/ab_remote_contextual.py --stage rerank --arm G2
   python scripts/ab_remote_contextual.py --stage report
 """
+
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import sys
+import tempfile
 import time
+import zipfile
+from collections import Counter
+from collections.abc import Sequence
+from dataclasses import dataclass
 from pathlib import Path
+from typing import Any
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 if str(PROJECT_ROOT) not in sys.path:
@@ -105,9 +118,7 @@ def _set_arm_env(arm: str) -> None:
     os.environ["RAG_RERANKER_MODEL"] = ""  # pools stage never loads the reranker
     os.environ["RAG_SEMANTIC_CHUNKING"] = "false"
     # Arm E = arm C chunking + expanded queries (query side only).
-    os.environ["RAG_STRUCTURAL_CHUNKING"] = (
-        "true" if arm in ("C", "E", "G1") else "false"
-    )
+    os.environ["RAG_STRUCTURAL_CHUNKING"] = "true" if arm in ("C", "E", "G1", "G2") else "false"
     # RAG_CONTEXTUAL_HEADERS stays at the production default (on).
 
 
@@ -129,6 +140,287 @@ def _matching_graph_categories(case: dict, available_categories: list[str]) -> l
             seen.add(key)
             matched.append(available[key])
     return matched
+
+
+_ENTITY_QUESTION_CLASSES = frozenset({"multi_hop", "aggregation", "global"})
+
+
+@dataclass(frozen=True)
+class GraphPoolResult:
+    documents: list[Any]
+    graph_categories: list[str]
+    graph_sources: list[str] | None
+    matched_entities: list[str]
+    entity_hops: int
+    entity_candidates: int
+    timing_ms: dict[str, float]
+    vector_count: int
+
+
+def _peak_rss() -> int | None:
+    try:
+        import resource
+    except ImportError:
+        return None
+    rss = int(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss)
+    if sys.platform == "darwin":
+        return rss
+    return rss * 1024
+
+
+def _sha256_bytes(data: bytes) -> str:
+    return hashlib.sha256(data).hexdigest()
+
+
+def _sha256_file(path: Path) -> str:
+    return _sha256_bytes(path.read_bytes())
+
+
+def _candidates_artifact(arm: str, out_dir: Path) -> Path:
+    return out_dir / f"ab_candidates_phase2_{arm}.json"
+
+
+def _unlink_if_exists(path: Path) -> None:
+    try:
+        path.unlink()
+    except FileNotFoundError:
+        pass
+
+
+def _pool_artifact_paths(arm: str, out_dir: Path) -> list[Path]:
+    paths = [out_dir / f"ab_phase2_{arm}_pool.json"]
+    if arm in ("G1", "G2"):
+        paths.append(out_dir / f"ab_phase2_{arm}_graph_chunks.json")
+    if arm == "G2":
+        paths.append(out_dir / f"ab_phase2_{arm}_pool_meta.json")
+    paths.append(_candidates_artifact(arm, out_dir))
+    return paths
+
+
+def _remove_previous_pool_outputs(arm: str, out_dir: Path) -> None:
+    for path in _pool_artifact_paths(arm, out_dir):
+        _unlink_if_exists(path)
+
+
+def _atomic_write_text(path: Path, text: str) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    fd, tmp_name = tempfile.mkstemp(
+        prefix=f".{path.name}.",
+        suffix=".tmp",
+        dir=str(path.parent),
+    )
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as handle:
+            handle.write(text)
+        os.replace(tmp_name, path)
+    except BaseException:
+        try:
+            os.unlink(tmp_name)
+        except OSError:
+            pass
+        raise
+
+
+def _embeddings_cache_is_npz(path: Path) -> bool:
+    return path.name.endswith(".npz")
+
+
+def _chunk_texts_digest(texts: Sequence[str]) -> str:
+    hasher = hashlib.sha256()
+    for text in texts:
+        encoded = text.encode("utf-8")
+        hasher.update(len(encoded).to_bytes(8, "big"))
+        hasher.update(encoded)
+    return hasher.hexdigest()
+
+
+def _npz_text(value: Any) -> str:
+    import numpy as np
+
+    array = np.asarray(value)
+    if array.shape == ():
+        raw = array.item()
+        if isinstance(raw, bytes):
+            return raw.decode("utf-8")
+        if isinstance(raw, str):
+            return raw
+        return str(raw)
+    return bytes(array).decode("utf-8")
+
+
+def _load_embeddings_cache(path: Path) -> tuple[Any, str, str, int] | None:
+    import numpy as np
+
+    try:
+        with np.load(path, allow_pickle=False) as data:
+            matrix = np.asarray(data["embeddings"], dtype=np.float32)
+            digest = _npz_text(data["chunk_text_digest"])
+            model_name = _npz_text(data["embedding_model"])
+            row_count = int(data["row_count"])
+    except (OSError, ValueError, KeyError, TypeError, zipfile.BadZipFile, EOFError):
+        return None
+    return matrix, digest, model_name, row_count
+
+
+def _save_embeddings_cache(path: Path, matrix: Any, digest: str, model_name: str) -> None:
+    import numpy as np
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    stored = np.asarray(matrix, dtype=np.float32)
+    fd, tmp_name = tempfile.mkstemp(
+        prefix=f".{path.stem}.",
+        suffix=".npz",
+        dir=str(path.parent),
+    )
+    os.close(fd)
+    tmp_path = Path(tmp_name)
+    try:
+        np.savez(
+            tmp_path,
+            embeddings=stored,
+            chunk_text_digest=np.bytes_(digest.encode("ascii")),
+            embedding_model=np.bytes_(model_name.encode("utf-8")),
+            row_count=np.int64(stored.shape[0]),
+        )
+        os.replace(tmp_path, path)
+    except BaseException:
+        tmp_path.unlink(missing_ok=True)
+        raise
+
+
+def _encode_chunk_matrix(embeddings: Any, texts: list[str], *, embed_batch: int) -> Any:
+    import numpy as np
+
+    st_model = getattr(embeddings, "_model", None)
+    if st_model is not None:
+        return st_model.encode(
+            texts,
+            normalize_embeddings=True,
+            batch_size=embed_batch,
+            show_progress_bar=True,
+        ).astype(np.float32)
+    return np.asarray(embeddings.embed_documents(texts), dtype=np.float32)
+
+
+def _encode_query_matrix(embeddings: Any, queries: list[str], *, embed_batch: int) -> Any:
+    import numpy as np
+
+    st_model = getattr(embeddings, "_model", None)
+    if st_model is not None:
+        return st_model.encode(
+            queries,
+            normalize_embeddings=True,
+            batch_size=min(embed_batch, 16),
+        ).astype(np.float32)
+    return np.asarray([embeddings.embed_query(query) for query in queries], dtype=np.float32)
+
+
+def _chunk_embeddings_for_run(
+    arm: str,
+    embeddings: Any,
+    texts: list[str],
+    *,
+    embed_batch: int,
+    model_name: str,
+    cache_path: Path | None,
+) -> Any | None:
+    """Return the chunk matrix, or None when an existing cache does not match."""
+    import numpy as np
+
+    digest = _chunk_texts_digest(texts)
+    if cache_path is not None and cache_path.exists():
+        loaded = _load_embeddings_cache(cache_path)
+        if loaded is None:
+            print(f"[pools/{arm}] embeddings cache is unreadable: {cache_path}", flush=True)
+            return None
+        matrix, stored_digest, stored_model, stored_count = loaded
+        if (
+            stored_digest != digest
+            or stored_model != model_name
+            or stored_count != len(texts)
+            or int(matrix.shape[0]) != len(texts)
+        ):
+            print(
+                f"[pools/{arm}] embeddings cache mismatch: "
+                f"digest cache={stored_digest} run={digest}; "
+                f"model cache={stored_model!r} run={model_name!r}; "
+                f"rows cache={stored_count} run={len(texts)}",
+                flush=True,
+            )
+            return None
+        print(f"[pools/{arm}] loaded {len(texts)} cached embeddings", flush=True)
+        return np.asarray(matrix, dtype=np.float32)
+    t0 = time.time()
+    matrix = _encode_chunk_matrix(embeddings, texts, embed_batch=embed_batch)
+    print(f"[pools/{arm}] encoded {len(texts)} chunks in {time.time() - t0:.0f}s", flush=True)
+    if cache_path is not None:
+        _save_embeddings_cache(cache_path, matrix, digest, model_name)
+        print(f"[pools/{arm}] wrote embeddings cache -> {cache_path}", flush=True)
+    return matrix
+
+
+def _assemble_graph_candidates(
+    retriever: Any,
+    query: str,
+    case: dict[str, Any],
+    *,
+    question_class: str = "single_hop",
+    entities: Sequence[str] = (),
+) -> GraphPoolResult:
+    """G1 candidate assembly plus the product entity lane for routed classes."""
+    graph_categories = _matching_graph_categories(case, list(retriever._graph_category_sources))
+    graph_sources = retriever._graph_sources_for_categories(graph_categories)
+    t0 = time.perf_counter()
+    vector_results = (
+        retriever._vector_search_for_sources(query, graph_sources)
+        if graph_sources is not None
+        else retriever._vector_search(query)
+    )
+    vector_ms = (time.perf_counter() - t0) * 1000.0
+    t0 = time.perf_counter()
+    bm25_results = retriever._graph_bm25_documents(query, graph_sources)
+    bm25_ms = (time.perf_counter() - t0) * 1000.0
+    entity_docs: list[Any] = []
+    matched: list[str] = []
+    hops = 0
+    entity_ms = 0.0
+    if question_class in _ENTITY_QUESTION_CLASSES:
+        t0 = time.perf_counter()
+        entity_docs, matched, hops = retriever._entity_index.search(entities, sources=graph_sources)
+        entity_ms = (time.perf_counter() - t0) * 1000.0
+    merged = (
+        retriever._rrf_merge(vector_results, bm25_results, entity_docs)
+        if bm25_results or entity_docs
+        else vector_results
+    )
+    return GraphPoolResult(
+        documents=merged,
+        graph_categories=graph_categories,
+        graph_sources=graph_sources,
+        matched_entities=list(matched),
+        entity_hops=int(hops),
+        entity_candidates=len(entity_docs),
+        timing_ms={"vector": vector_ms, "bm25": bm25_ms, "entity": entity_ms},
+        vector_count=len(vector_results),
+    )
+
+
+def _apply_graph_post_rerank(retriever: Any, ranked_docs: Sequence[Any], top_k: int) -> list[Any]:
+    coherent = retriever._apply_graph_coherence(list(ranked_docs[:top_k]))
+    return retriever._expand_graph_sections(coherent)
+
+
+def _graph_chunks_payload(chunks: Sequence[Any], tenant_id: str) -> dict[str, Any]:
+    return {
+        "tenant_id": tenant_id,
+        "chunks": [
+            {
+                "page_content": chunk.page_content,
+                "metadata": dict(chunk.metadata or {}),
+            }
+            for chunk in chunks
+        ],
+    }
 
 
 def _load_expansions(path: Path) -> dict[str, str]:
@@ -165,8 +457,19 @@ def stage_pools(
     cases_path: Path,
     out_dir: Path,
     expansions: dict[str, str] | None = None,
+    *,
+    entities_cache: Path | None = None,
+    classifications: Path | None = None,
+    embeddings_cache: Path | None = None,
 ) -> int:
     _set_arm_env(arm)
+    _remove_previous_pool_outputs(arm, out_dir)
+    if embeddings_cache is not None and not _embeddings_cache_is_npz(embeddings_cache):
+        print(
+            f"[pools/{arm}] --embeddings-cache must name a .npz file: {embeddings_cache}",
+            flush=True,
+        )
+        return 2
     import numpy as np
 
     from config.settings import get_settings
@@ -199,22 +502,6 @@ def stage_pools(
         chunks = manager.add_contextual_headers(chunks, docs, chunk_size=settings.chunk_size)
     print(f"[pools/{arm}] {len(docs)} docs -> {len(chunks)} chunks", flush=True)
 
-    # Encode batch is env-tunable so memory-constrained runtimes (e.g. an 8 GB
-    # Mac whose MPS/unified pool is shared with other workloads) can shrink it;
-    # default 32 preserves the original behaviour.
-    embed_batch = int(os.environ.get("RAG_EMBED_BATCH", "32"))
-    embeddings = get_embeddings()
-    st_model = getattr(embeddings, "_model", None)
-    texts = [c.page_content for c in chunks]
-    t0 = time.time()
-    if st_model is not None:
-        mat = st_model.encode(
-            texts, normalize_embeddings=True, batch_size=embed_batch, show_progress_bar=True
-        ).astype(np.float32)
-    else:  # pragma: no cover - fallback for exotic wrappers
-        mat = np.asarray(embeddings.embed_documents(texts), dtype=np.float32)
-    print(f"[pools/{arm}] encoded {len(texts)} chunks in {time.time()-t0:.0f}s", flush=True)
-
     cases = _load_cases(cases_path)
     expansions = expansions or {}
     if arm == "E" and expansions:
@@ -222,17 +509,55 @@ def stage_pools(
         if missing:
             print(f"[pools/{arm}] {len(missing)} cases lack expansions: {missing[:5]}", flush=True)
             return 2
+
+    tenant_id = str(cases[0].get("tenant_id") or "aircargo") if cases else "aircargo"
+    extraction = None
+    loaded_classifications: dict[str, dict[str, Any]] = {}
+    if arm == "G2":
+        if entities_cache is None or classifications is None:
+            print(
+                f"[pools/{arm}] --entities-cache and --classifications are required",
+                flush=True,
+            )
+            return 2
+        from evaluation.query_classification import load_classifications
+        from ingestion.entity_extraction import load_extraction_cache
+
+        try:
+            extraction = load_extraction_cache(entities_cache, chunks, tenant_id=tenant_id)
+        except ValueError as exc:
+            print(f"[pools/{arm}] {exc}", flush=True)
+            return 2
+        dataset_sha256 = _sha256_file(cases_path)
+        try:
+            loaded_classifications = load_classifications(
+                classifications, cases=cases, dataset_sha256=dataset_sha256
+            )
+        except ValueError as exc:
+            print(f"[pools/{arm}] {exc}", flush=True)
+            return 2
+
+    # Encode batch is env-tunable so memory-constrained runtimes (e.g. an 8 GB
+    # Mac whose MPS/unified pool is shared with other workloads) can shrink it;
+    # default 32 preserves the original behaviour.
+    embed_batch = int(os.environ.get("RAG_EMBED_BATCH", "32"))
+    embeddings = get_embeddings()
+    texts = [c.page_content for c in chunks]
+    mat = _chunk_embeddings_for_run(
+        arm,
+        embeddings,
+        texts,
+        embed_batch=embed_batch,
+        model_name=str(settings.embedding_model),
+        cache_path=embeddings_cache,
+    )
+    if mat is None:
+        return 2
+
     # Retrieval queries: arm E uses the precomputed expanded query (mirrors the
     # production retrieve node where hyde_query drives get_relevant_documents).
     eff_queries = [expansions.get(c["case_id"], c["query"]) for c in cases]
-    if st_model is not None:
-        qmat = st_model.encode(
-            eff_queries, normalize_embeddings=True, batch_size=min(embed_batch, 16)
-        ).astype(np.float32)
-    else:  # pragma: no cover
-        qmat = np.asarray(
-            [embeddings.embed_query(q) for q in eff_queries], dtype=np.float32
-        )
+    qmat = _encode_query_matrix(embeddings, eff_queries, embed_batch=embed_batch)
 
     class _MatrixStore:
         """similarity_search-compatible stub: exact cosine over normalized vectors."""
@@ -245,22 +570,29 @@ def stage_pools(
             if filter is not None:
                 allowed = set(filter["source"]["$in"])
                 idx = [
-                    item
-                    for item in idx
-                    if (chunks[item].metadata or {}).get("source") in allowed
+                    item for item in idx if (chunks[item].metadata or {}).get("source") in allowed
                 ]
             return [chunks[i] for i in idx[:k]]
 
     store = _MatrixStore()
     graph_projection = None
-    if arm == "G1":
+    enriched_graph = None
+    projection_build_s = 0.0
+    if arm in ("G1", "G2"):
         from ingestion.structure_graph import build_structural_graph
         from ingestion.structure_graph_projection import project_structure_graph
 
-        tenant_id = str(cases[0].get("tenant_id") or "aircargo") if cases else "aircargo"
-        graph_projection = project_structure_graph(
-            build_structural_graph(chunks, tenant_id=tenant_id)
-        )
+        structural = build_structural_graph(chunks, tenant_id=tenant_id)
+        if arm == "G2":
+            from ingestion.entity_graph import add_entity_graph
+
+            assert extraction is not None
+            enriched_graph = add_entity_graph(structural, extraction.entities)
+        else:
+            enriched_graph = structural
+        t_proj = time.perf_counter()
+        graph_projection = project_structure_graph(enriched_graph)
+        projection_build_s = time.perf_counter() - t_proj
     retriever = HybridRetriever(
         vector_store=store,
         chunks=chunks,
@@ -272,35 +604,60 @@ def stage_pools(
 
     rows = []
     for case, eff_query in zip(cases, eff_queries, strict=True):
-        graph_categories = (
-            _matching_graph_categories(
-                case, list(retriever._graph_category_sources)
+        if arm in ("G1", "G2"):
+            question_class = "single_hop"
+            query_entities: list[str] = []
+            if arm == "G2":
+                classification = loaded_classifications[case["case_id"]]
+                question_class = str(classification["question_class"])
+                query_entities = list(classification["entities"] or [])
+            pool = _assemble_graph_candidates(
+                retriever,
+                eff_query,
+                case,
+                question_class=question_class,
+                entities=query_entities,
             )
-            if arm == "G1"
-            else []
-        )
-        graph_sources = (
-            retriever._graph_sources_for_categories(graph_categories)
-            if graph_categories
-            else None
-        )
-        vector_results = (
-            retriever._vector_search_for_sources(eff_query, graph_sources)
-            if graph_sources is not None
-            else store.similarity_search(eff_query, k=retriever._retrieval_k)
-        )
-        bm25_results = (
-            retriever._graph_bm25_documents(eff_query, graph_sources)
-            if arm == "G1"
-            else []
-        )
-        if arm != "G1" and retriever._bm25 is not None:
+            if chunks and pool.graph_sources is None and pool.vector_count == 0:
+                print(
+                    f"[pools/{arm}] vector search returned no documents for {case['case_id']}",
+                    flush=True,
+                )
+                return 2
+            merged = pool.documents
+            row = {
+                "case_id": case["case_id"],
+                "query": case["query"],
+                "kws": case["expected"]["answer_contains"],
+                "rerank_k": settings.rerank_top_k,
+                "cands": [d.page_content for d in merged],
+                "cand_sources": [(d.metadata or {}).get("source", "?") for d in merged],
+                "graph_categories": pool.graph_categories,
+                "graph_prefiltered": pool.graph_sources is not None,
+                "cand_metadata": [dict(d.metadata or {}) for d in merged],
+            }
+            if eff_query != case["query"]:
+                row["expanded_query"] = eff_query
+            if arm == "G2":
+                row["routed_question_class"] = question_class
+                row["query_entities"] = query_entities
+                row["matched_entities"] = pool.matched_entities
+                row["entity_hops"] = pool.entity_hops
+                row["entity_candidates"] = pool.entity_candidates
+                row["timing_ms"] = pool.timing_ms
+            rows.append(row)
+            continue
+        vector_results = store.similarity_search(eff_query, k=retriever._retrieval_k)
+        bm25_results = []
+        if retriever._bm25 is not None:
             scores = retriever._bm25.get_scores(_tokenize_for_bm25(eff_query))
             top = sorted(range(len(scores)), key=lambda i: scores[i], reverse=True)
             bm25_results = [
                 retriever._chunks[i] for i in top[: retriever._retrieval_k] if scores[i] > 0
             ]
-        merged = retriever._rrf_merge(vector_results, bm25_results) if bm25_results else vector_results
+        merged = (
+            retriever._rrf_merge(vector_results, bm25_results) if bm25_results else vector_results
+        )
         row = {
             # The ORIGINAL query — the LLM-judge generates from it.
             "case_id": case["case_id"],
@@ -312,41 +669,44 @@ def stage_pools(
         }
         if eff_query != case["query"]:
             row["expanded_query"] = eff_query
-        if arm == "G1":
-            row["graph_categories"] = graph_categories
-            row["graph_prefiltered"] = graph_sources is not None
-            row["cand_metadata"] = [dict(d.metadata or {}) for d in merged]
         rows.append(row)
 
     out_dir.mkdir(parents=True, exist_ok=True)
-    if arm == "G1":
-        graph_chunks_path = out_dir / "ab_phase2_G1_graph_chunks.json"
-        graph_chunks_path.write_text(
-            json.dumps(
-                {
-                    "tenant_id": str(cases[0].get("tenant_id") or "aircargo")
-                    if cases
-                    else "aircargo",
-                    "chunks": [
-                        {
-                            "page_content": chunk.page_content,
-                            "metadata": dict(chunk.metadata or {}),
-                        }
-                        for chunk in chunks
-                    ],
-                },
-                ensure_ascii=False,
-            ),
-            encoding="utf-8",
-        )
+    pool_path = out_dir / f"ab_phase2_{arm}_pool.json"
+    _atomic_write_text(pool_path, json.dumps(rows, ensure_ascii=False))
+    if arm in ("G1", "G2"):
+        graph_chunks_path = out_dir / f"ab_phase2_{arm}_graph_chunks.json"
+        payload = _graph_chunks_payload(chunks, tenant_id)
+        encoded = json.dumps(payload, ensure_ascii=False)
+        _atomic_write_text(graph_chunks_path, encoded)
         matched_cases = sum(bool(row["graph_categories"]) for row in rows)
         print(
             f"[pools/{arm}] category prefilter matched {matched_cases}/{len(rows)} cases; "
             f"graph chunks -> {graph_chunks_path}",
             flush=True,
         )
-    pool_path = out_dir / f"ab_phase2_{arm}_pool.json"
-    pool_path.write_text(json.dumps(rows, ensure_ascii=False), encoding="utf-8")
+        if arm == "G2":
+            from ingestion.structure_graph_projection import structure_graph_digest
+
+            assert extraction is not None and entities_cache is not None
+            assert classifications is not None and enriched_graph is not None
+            meta = {
+                "cases_sha256": _sha256_file(cases_path),
+                "graph_chunks_sha256": _sha256_bytes(encoded.encode("utf-8")),
+                "entities_manifest_sha256": _sha256_file(entities_cache / "manifest.json"),
+                "classifications_manifest_sha256": _sha256_file(classifications / "manifest.json"),
+                "structure_graph_digest": structure_graph_digest(enriched_graph),
+                "node_counts": dict(Counter(node.kind for node in enriched_graph.nodes)),
+                "edge_counts": dict(Counter(edge.kind for edge in enriched_graph.edges)),
+                "projection_build_s": projection_build_s,
+                "peak_rss_bytes": _peak_rss(),
+                "routed_class_counts": dict(Counter(row["routed_question_class"] for row in rows)),
+                "rejected_chunk_ids": sorted(extraction.rejected),
+                "rejected_count": len(extraction.rejected),
+            }
+            meta_path = out_dir / "ab_phase2_G2_pool_meta.json"
+            _atomic_write_text(meta_path, json.dumps(meta, ensure_ascii=False))
+            print(f"[pools/{arm}] pool meta -> {meta_path}", flush=True)
     print(f"[pools/{arm}] saved {len(rows)} pools -> {pool_path}", flush=True)
     return 0
 
@@ -357,6 +717,8 @@ def stage_rerank(arm: str, out_dir: Path) -> int:
     from vectordb._base_manager import Document, HybridRetriever, get_reranker
 
     settings = get_settings()
+    out_path = _candidates_artifact(arm, out_dir)
+    _unlink_if_exists(out_path)
     pool_path = out_dir / f"ab_phase2_{arm}_pool.json"
     if not pool_path.exists():
         print(f"[rerank/{arm}] missing {pool_path} — run --stage pools first", flush=True)
@@ -364,11 +726,11 @@ def stage_rerank(arm: str, out_dir: Path) -> int:
     rows = json.loads(pool_path.read_text(encoding="utf-8"))
 
     graph_retriever = None
-    if arm == "G1":
+    if arm in ("G1", "G2"):
         from ingestion.structure_graph import build_structural_graph
         from ingestion.structure_graph_projection import project_structure_graph
 
-        graph_chunks_path = out_dir / "ab_phase2_G1_graph_chunks.json"
+        graph_chunks_path = out_dir / f"ab_phase2_{arm}_graph_chunks.json"
         if not graph_chunks_path.exists():
             print(
                 f"[rerank/{arm}] missing {graph_chunks_path} — run --stage pools first",
@@ -395,9 +757,7 @@ def stage_rerank(arm: str, out_dir: Path) -> int:
             rerank_k=settings.rerank_top_k,
             reranker=None,
             use_bm25=False,
-            parent_expansion_max_chars=getattr(
-                settings, "parent_expansion_max_chars", 2400
-            ),
+            parent_expansion_max_chars=getattr(settings, "parent_expansion_max_chars", 2400),
             graph_projection=graph_projection,
         )
 
@@ -418,6 +778,7 @@ def stage_rerank(arm: str, out_dir: Path) -> int:
         # Arm F (split-query): pools came from the expanded query, but the
         # reranker scores against the ORIGINAL query — the E diagnosis showed
         # the cross-encoder demotes kw-chunks when fed the long expanded text.
+        t_row = time.perf_counter()
         if arm == "F":
             rerank_query = row["query"]
         else:
@@ -429,10 +790,9 @@ def stage_rerank(arm: str, out_dir: Path) -> int:
         row["prerank_sources"] = row.get("cand_sources", [])
         reranked_cands = [row["prerank_cands"][j] for j in order]
         reranked_sources = [
-            row["prerank_sources"][j] if j < len(row["prerank_sources"]) else "?"
-            for j in order
+            row["prerank_sources"][j] if j < len(row["prerank_sources"]) else "?" for j in order
         ]
-        if arm == "G1":
+        if arm in ("G1", "G2"):
             metadata = row.get("cand_metadata") or []
             if len(metadata) != len(row["prerank_cands"]):
                 print(
@@ -443,30 +803,25 @@ def stage_rerank(arm: str, out_dir: Path) -> int:
             reranked_metadata = [metadata[j] for j in order]
             ranked_docs = [
                 Document(page_content=text, metadata=dict(doc_metadata or {}))
-                for text, doc_metadata in zip(
-                    reranked_cands, reranked_metadata, strict=True
-                )
+                for text, doc_metadata in zip(reranked_cands, reranked_metadata, strict=True)
             ]
             top_k = int(row.get("rerank_k", settings.rerank_top_k))
             assert graph_retriever is not None
-            coherent = graph_retriever._apply_graph_coherence(ranked_docs[:top_k])
-            graph_docs = graph_retriever._expand_graph_sections(coherent)
+            graph_docs = _apply_graph_post_rerank(graph_retriever, ranked_docs, top_k)
             row["reranked_cands"] = reranked_cands
             row["reranked_sources"] = reranked_sources
             row["cands"] = [doc.page_content for doc in graph_docs]
-            row["cand_sources"] = [
-                (doc.metadata or {}).get("source", "?") for doc in graph_docs
-            ]
+            row["cand_sources"] = [(doc.metadata or {}).get("source", "?") for doc in graph_docs]
             row["cand_metadata"] = [dict(doc.metadata or {}) for doc in graph_docs]
             row["graph_postprocessed"] = True
         else:
             row["cands"] = reranked_cands
             row["cand_sources"] = reranked_sources
+        row["rerank_s"] = time.perf_counter() - t_row
         if i % 20 == 0:
-            print(f"[rerank/{arm}] {i}/{len(rows)} ({time.time()-t0:.0f}s)", flush=True)
+            print(f"[rerank/{arm}] {i}/{len(rows)} ({time.time() - t0:.0f}s)", flush=True)
 
-    out_path = out_dir / f"ab_candidates_phase2_{arm}.json"
-    out_path.write_text(json.dumps(rows, ensure_ascii=False), encoding="utf-8")
+    _atomic_write_text(out_path, json.dumps(rows, ensure_ascii=False))
     print(
         f"[rerank/{arm}] saved -> {out_path} "
         f"(consumable by scripts/aircargo_ragas_free.py --contexts ...)",
@@ -501,7 +856,7 @@ def stage_report(out_dir: Path) -> int:
             counts[_kw_status(r["kws"], r["cands"][: int(r.get("rerank_k", 5))])] += 1
         n = len(rows)
         emit(
-            f"- arm {arm}: FULL {counts['FULL']}/{n} = {100*counts['FULL']/max(n,1):.0f}% "
+            f"- arm {arm}: FULL {counts['FULL']}/{n} = {100 * counts['FULL'] / max(n, 1):.0f}% "
             f"PART {counts['PART']} MISS {counts['MISS']}"
         )
 
@@ -546,9 +901,7 @@ def stage_report(out_dir: Path) -> int:
     return 0
 
 
-def stage_expand(
-    src: Path, corpus: Path, window: int, max_chars: int, label: str = "D"
-) -> int:
+def stage_expand(src: Path, corpus: Path, window: int, max_chars: int, label: str = "D") -> int:
     """Arm D = arm C post-rerank candidates + parent-expansion. Local, no models.
 
     With --label E the same machinery turns arm-E rerank candidates into the
@@ -644,10 +997,7 @@ def stage_expand(
         lines.append(line)
 
     src_label = "C" if label == "D" else f"{label}-pre"
-    emit(
-        f"# Arm {label} = {src_label} + parent-expansion "
-        f"(window={window}, max_chars={max_chars})"
-    )
+    emit(f"# Arm {label} = {src_label} + parent-expansion (window={window}, max_chars={max_chars})")
     emit()
     by_id = {r["case_id"]: r for r in out_rows}
     for arm_label, key_rows in ((src_label, rows), (label, out_rows)):
@@ -656,7 +1006,7 @@ def stage_expand(
             counts[_kw_status(r["kws"], r["cands"][: int(r.get("rerank_k", 5))])] += 1
         n = len(key_rows)
         emit(
-            f"- arm {arm_label}: FULL {counts['FULL']}/{n} = {100*counts['FULL']/max(n,1):.0f}% "
+            f"- arm {arm_label}: FULL {counts['FULL']}/{n} = {100 * counts['FULL'] / max(n, 1):.0f}% "
             f"PART {counts['PART']} MISS {counts['MISS']}"
         )
     emit()
@@ -666,7 +1016,9 @@ def stage_expand(
         if c_st == d_st:
             emit(f"- {c_st} -> {d_st}: {len(ids)}")
         else:
-            emit(f"- {c_st} -> {d_st}: {len(ids)} ({', '.join(i.removeprefix('aircargo-') for i in ids)})")
+            emit(
+                f"- {c_st} -> {d_st}: {len(ids)} ({', '.join(i.removeprefix('aircargo-') for i in ids)})"
+            )
     emit()
     emit("## 8 residual problem cases (4 regressions + 4 deep)")
     emit()
@@ -695,7 +1047,7 @@ def stage_expand(
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--stage", required=True, choices=("pools", "rerank", "report", "expand"))
-    parser.add_argument("--arm", default="", choices=("", "A", "C", "E", "F", "G1"))
+    parser.add_argument("--arm", default="", choices=("", "A", "C", "E", "F", "G1", "G2"))
     parser.add_argument("--corpus", default=str(PROJECT_ROOT / "data" / "uploads" / "aircargo"))
     parser.add_argument(
         "--cases", default=str(PROJECT_ROOT / "evaluation" / "curated_cases_aircargo.jsonl")
@@ -710,27 +1062,56 @@ def main(argv: list[str] | None = None) -> int:
     )
     parser.add_argument("--window", type=int, default=1, help="--stage expand: sections per side")
     parser.add_argument("--max-chars", type=int, default=2400, help="--stage expand: text cap")
-    parser.add_argument(
-        "--label", default="D", help="--stage expand: output arm label (D or E)"
-    )
+    parser.add_argument("--label", default="D", help="--stage expand: output arm label (D or E)")
     parser.add_argument(
         "--expansions",
         default=str(PROJECT_ROOT / ".tmp" / "query_expansions_field_hyde.json"),
         help="--arm E: precomputed expanded queries (scripts/precompute_field_hyde.py)",
     )
+    parser.add_argument(
+        "--entities-cache",
+        default="",
+        help="--arm G2 --stage pools: T-22 extraction cache directory",
+    )
+    parser.add_argument(
+        "--classifications",
+        default="",
+        help="--arm G2 --stage pools: T-23 classification cache directory",
+    )
+    parser.add_argument(
+        "--embeddings-cache",
+        default="",
+        help="optional chunk embedding matrix .npz for --stage pools",
+    )
     args = parser.parse_args(argv)
 
     out_dir = Path(args.out_dir)
     if args.stage == "pools":
-        if args.arm not in ("A", "C", "E", "G1"):
-            parser.error("--stage pools requires --arm A|C|E|G1")
+        if args.arm not in ("A", "C", "E", "G1", "G2"):
+            parser.error("--stage pools requires --arm A|C|E|G1|G2")
+        if args.arm == "G2" and (not args.entities_cache or not args.classifications):
+            parser.error("--stage pools --arm G2 requires --entities-cache and --classifications")
         expansions = _load_expansions(Path(args.expansions)) if args.arm == "E" else None
+        pool_kwargs: dict[str, Any] = {}
+        if args.arm == "G2":
+            pool_kwargs["entities_cache"] = Path(args.entities_cache)
+            pool_kwargs["classifications"] = Path(args.classifications)
+        if args.embeddings_cache:
+            cache_path = Path(args.embeddings_cache)
+            if not _embeddings_cache_is_npz(cache_path):
+                parser.error("--embeddings-cache must name a .npz file")
+            pool_kwargs["embeddings_cache"] = cache_path
         return stage_pools(
-            args.arm, Path(args.corpus), Path(args.cases), out_dir, expansions=expansions
+            args.arm,
+            Path(args.corpus),
+            Path(args.cases),
+            out_dir,
+            expansions=expansions,
+            **pool_kwargs,
         )
     if args.stage == "rerank":
-        if args.arm not in ("A", "C", "E", "F", "G1"):
-            parser.error("--stage rerank requires --arm A|C|E|F|G1")
+        if args.arm not in ("A", "C", "E", "F", "G1", "G2"):
+            parser.error("--stage rerank requires --arm A|C|E|F|G1|G2")
         return stage_rerank(args.arm, out_dir)
     if args.stage == "expand":
         return stage_expand(
