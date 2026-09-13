@@ -20,7 +20,9 @@ whenever the provider reports one (`null` only for providers that expose none).
 A run SHALL refuse a cache whose manifest differs from its own inputs, a moving
 model alias, and a provider that reports a different weights digest for the same
 model identifier than the manifest pins. Only rows that pass validation are
-written, and a resumed run SHALL NOT resend a cached chunk.
+written as entities; an answer that fails validation SHALL either stop the run
+or, when the run opts in, be recorded as a rejection with its chunk and content
+digests. A resumed run SHALL NOT resend a cached or rejected chunk.
 
 ### Scenario: a local model is pinned by its weights digest
 
@@ -43,6 +45,13 @@ written, and a resumed run SHALL NOT resend a cached chunk.
 - **WHEN** the run restarts with the same inputs
 - **THEN** only the missing chunks reach the provider, and a corrupt or
   incomplete row stops the run instead of being truncated silently
+
+### Scenario: an invalid answer is recorded, not cached
+
+- **GIVEN** a run that records invalid answers and a model answer that fails validation
+- **WHEN** the run reaches that chunk
+- **THEN** a rejection row is written instead of entities, the next chunk is
+  processed, and a resumed run sends neither the cached nor the rejected chunk
 
 ## Requirement: measurement routing comes from the production classifier, never from labels
 

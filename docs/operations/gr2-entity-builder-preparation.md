@@ -65,6 +65,50 @@ in the checkout. Focused extraction tests cover resume, invalid output, cache/in
 guards, no-key dry run, and compatibility with the entity builder. Both CI mypy
 commands passed on Mac (134 main modules, 31 API/vectordb).
 
+## Local route
+
+2026-09-13. The Mistral free tier cannot finish the 5,589-chunk payload: it
+answered HTTP 429 and does not report a weights digest. The Mac runs Ollama
+0.33.2 with `qwen2.5:7b`, manifest digest
+`845dbda0ea48ed749caafd9e6037047aa19acfcfd82e704d7ca97d631a0b697e`, on CPU.
+
+Benchmark on eight chunks at evenly spaced payload indices, the unchanged
+`EXTRACT_PROMPT`, temperature 0, seed 42, `num_ctx` 4096:
+
+- no response format: 5 of 8 answers valid (three had more than 12 entities),
+  warm mean 23.2 s per chunk, about 36 h for the payload;
+- JSON schema as Ollama's `format` (`EXTRACT_SCHEMA`, at most 12 strings of
+  1–128 characters): 8 of 8 valid, warm mean 11.4 s per chunk, about 17.7 h.
+
+Chunks are 176–973 characters (median 648) and prompts 292–460 tokens, so
+`num_ctx` 4096 never truncates a prompt.
+
+This is preparation, not a measurement. `--max-calls 0` verifies the server,
+digest, inputs and cache without a generation request. `--min-interval` does
+not throttle this route.
+
+Give each provider/model its own cache directory. The 2026-09-12 Mistral smoke
+already wrote a schema_version 1 `manifest.json` under
+`reports/kb_graph/<corpus_sha256>/` (`mistral-small-2506`, no `provider` or
+`generation`, zero cached chunks). After the schema bump, `extract_entities`
+compares the whole manifest, so both `--provider ollama` and a Mistral rerun
+against that directory stop with `Extraction cache provenance mismatch`.
+Existing schema_version 1 caches are refused. The zero-row Mistral manifest may
+be removed only after confirming there is no `entities.jsonl` beside it.
+
+```
+python scripts/extract_graph_entities.py \
+  --provider ollama \
+  --base-url http://127.0.0.1:11434 \
+  --model qwen2.5:7b \
+  --on-invalid record \
+  --chunks ab_phase2_G1_graph_chunks.json \
+  --chunks-sha256 5b35883f741deefc0698eb829f927413fc6588b72b9add9ee7697f3fc5806c94 \
+  --corpus-sha256 c8562a64f88f72172f29e30865091be79f08d00ce65fbf675f34de64dcebe343 \
+  --cache-dir reports/kb_graph/c8562a64f88f72172f29e30865091be79f08d00ce65fbf675f34de64dcebe343/ollama-qwen2.5-7b \
+  --max-calls 0
+```
+
 Entity matching, bounded traversal, third-list RRF and opt-in runtime loading
 are now covered by [synthetic HTTP evidence](../evidence/gr2-entity-retrieval-wiring.md).
 Next: complete extraction when available, persist the enriched tenant graph,
