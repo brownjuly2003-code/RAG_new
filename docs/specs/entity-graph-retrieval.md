@@ -81,6 +81,47 @@ transport failure SHALL NOT be cached as a classification.
 - **WHEN** the entity arm is run with a dataset whose digest or query text differs
 - **THEN** the arm refuses to build a pool and names the mismatch
 
+## Requirement: the pools embeddings cache is keyed on the encoder actually in use
+
+An offline pools run that writes `--embeddings-cache` SHALL record the identity
+of the embedding backend `get_embeddings()` builds from the same settings
+object: backend `local` records `embedding_model`; backend `remote` records
+`embedding_remote_model` and the remote endpoint. A later pools run SHALL
+refuse, with exit 2, a cache whose identity differs from its own encoder or
+that lacks those identity fields, naming the mismatch or the missing field, and
+SHALL NOT encode chunks against that cache. A later run whose identity matches
+SHALL reuse the cached matrix.
+
+### Scenario: a local matrix is not reused under the remote backend
+
+- **GIVEN** a pools embeddings cache written with the local embedding backend
+- **WHEN** a later pools run uses `embedding_backend="remote"` over the same chunks
+- **THEN** the run exits 2, names the identity mismatch, and does not call the encoder
+
+### Scenario: a remote matrix is not reused under the local backend
+
+- **GIVEN** a pools embeddings cache written with the remote embedding backend
+- **WHEN** a later pools run uses the local backend over the same chunks
+- **THEN** the run exits 2, names the identity mismatch, and does not call the encoder
+
+### Scenario: a matching backend reuses the cache
+
+- **GIVEN** a pools embeddings cache written for one backend and model
+- **WHEN** a later pools run uses the same backend, model and endpoint
+- **THEN** the cached matrix is reused and the encoder is not called
+
+### Scenario: a different remote model or endpoint is refused
+
+- **GIVEN** a pools embeddings cache written with the remote embedding backend
+- **WHEN** a later pools run uses the same backend but a different remote model or endpoint
+- **THEN** the run exits 2, names the model or endpoint mismatch, and does not call the encoder
+
+### Scenario: a cache written before identity fields is refused
+
+- **GIVEN** a pools embeddings cache that lacks the backend identity fields
+- **WHEN** a pools run reads that cache
+- **THEN** the run exits 2, names the missing field, and does not call the encoder
+
 ## Requirement: the offline entity arm reproduces the product lane
 
 The offline `G2` arm SHALL assemble each case's contexts in the same order as

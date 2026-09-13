@@ -225,6 +225,38 @@ def _embeddings_cache_is_npz(path: Path) -> bool:
     return path.name.endswith(".npz")
 
 
+_EMBEDDING_CACHE_IDENTITY_FIELDS = ("embedding_backend", "embedding_endpoint")
+
+
+@dataclass(frozen=True)
+class _EmbeddingCacheIdentity:
+    backend: str
+    model_name: str
+    endpoint: str
+
+
+class _MissingEmbeddingsCacheField(Exception):
+    def __init__(self, field: str) -> None:
+        self.field = field
+        super().__init__(field)
+
+
+def _embedding_cache_identity(settings: Any) -> _EmbeddingCacheIdentity:
+    """Identity of the encoder `get_embeddings()` builds from these settings."""
+    backend = str(getattr(settings, "embedding_backend", "local") or "local").strip().lower()
+    if backend == "remote":
+        return _EmbeddingCacheIdentity(
+            backend="remote",
+            model_name=str(getattr(settings, "embedding_remote_model", "mistral-embed")),
+            endpoint=str(getattr(settings, "embedding_remote_url", "")),
+        )
+    return _EmbeddingCacheIdentity(
+        backend="local",
+        model_name=str(settings.embedding_model),
+        endpoint="",
+    )
+
+
 def _chunk_texts_digest(texts: Sequence[str]) -> str:
     hasher = hashlib.sha256()
     for text in texts:
@@ -248,21 +280,28 @@ def _npz_text(value: Any) -> str:
     return bytes(array).decode("utf-8")
 
 
-def _load_embeddings_cache(path: Path) -> tuple[Any, str, str, int] | None:
+def _load_embeddings_cache(path: Path) -> tuple[Any, str, str, int, str, str] | None:
     import numpy as np
 
     try:
         with np.load(path, allow_pickle=False) as data:
+            for field in _EMBEDDING_CACHE_IDENTITY_FIELDS:
+                if field not in data:
+                    raise _MissingEmbeddingsCacheField(field)
             matrix = np.asarray(data["embeddings"], dtype=np.float32)
             digest = _npz_text(data["chunk_text_digest"])
             model_name = _npz_text(data["embedding_model"])
             row_count = int(data["row_count"])
+            backend = _npz_text(data["embedding_backend"])
+            endpoint = _npz_text(data["embedding_endpoint"])
     except (OSError, ValueError, KeyError, TypeError, zipfile.BadZipFile, EOFError):
         return None
-    return matrix, digest, model_name, row_count
+    return matrix, digest, model_name, row_count, backend, endpoint
 
 
-def _save_embeddings_cache(path: Path, matrix: Any, digest: str, model_name: str) -> None:
+def _save_embeddings_cache(
+    path: Path, matrix: Any, digest: str, identity: _EmbeddingCacheIdentity
+) -> None:
     import numpy as np
 
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -279,7 +318,9 @@ def _save_embeddings_cache(path: Path, matrix: Any, digest: str, model_name: str
             tmp_path,
             embeddings=stored,
             chunk_text_digest=np.bytes_(digest.encode("ascii")),
-            embedding_model=np.bytes_(model_name.encode("utf-8")),
+            embedding_model=np.bytes_(identity.model_name.encode("utf-8")),
+            embedding_backend=np.bytes_(identity.backend.encode("utf-8")),
+            embedding_endpoint=np.bytes_(identity.endpoint.encode("utf-8")),
             row_count=np.int64(stored.shape[0]),
         )
         os.replace(tmp_path, path)
@@ -321,7 +362,7 @@ def _chunk_embeddings_for_run(
     texts: list[str],
     *,
     embed_batch: int,
-    model_name: str,
+    identity: _EmbeddingCacheIdentity,
     cache_path: Path | None,
 ) -> Any | None:
     """Return the chunk matrix, or None when an existing cache does not match."""
@@ -329,21 +370,40 @@ def _chunk_embeddings_for_run(
 
     digest = _chunk_texts_digest(texts)
     if cache_path is not None and cache_path.exists():
-        loaded = _load_embeddings_cache(cache_path)
+        try:
+            loaded = _load_embeddings_cache(cache_path)
+        except _MissingEmbeddingsCacheField as exc:
+            print(
+                f"[pools/{arm}] embeddings cache lacks identity field {exc.field}: "
+                f"{cache_path} (written before identity keying; delete it to re-encode)",
+                flush=True,
+            )
+            return None
         if loaded is None:
             print(f"[pools/{arm}] embeddings cache is unreadable: {cache_path}", flush=True)
             return None
-        matrix, stored_digest, stored_model, stored_count = loaded
+        (
+            matrix,
+            stored_digest,
+            stored_model,
+            stored_count,
+            stored_backend,
+            stored_endpoint,
+        ) = loaded
         if (
             stored_digest != digest
-            or stored_model != model_name
+            or stored_model != identity.model_name
+            or stored_backend != identity.backend
+            or stored_endpoint != identity.endpoint
             or stored_count != len(texts)
             or int(matrix.shape[0]) != len(texts)
         ):
             print(
                 f"[pools/{arm}] embeddings cache mismatch: "
                 f"digest cache={stored_digest} run={digest}; "
-                f"model cache={stored_model!r} run={model_name!r}; "
+                f"backend cache={stored_backend!r} run={identity.backend!r}; "
+                f"model cache={stored_model!r} run={identity.model_name!r}; "
+                f"endpoint cache={stored_endpoint!r} run={identity.endpoint!r}; "
                 f"rows cache={stored_count} run={len(texts)}",
                 flush=True,
             )
@@ -354,7 +414,7 @@ def _chunk_embeddings_for_run(
     matrix = _encode_chunk_matrix(embeddings, texts, embed_batch=embed_batch)
     print(f"[pools/{arm}] encoded {len(texts)} chunks in {time.time() - t0:.0f}s", flush=True)
     if cache_path is not None:
-        _save_embeddings_cache(cache_path, matrix, digest, model_name)
+        _save_embeddings_cache(cache_path, matrix, digest, identity)
         print(f"[pools/{arm}] wrote embeddings cache -> {cache_path}", flush=True)
     return matrix
 
@@ -483,11 +543,14 @@ def stage_pools(
     )
 
     settings = get_settings()
+    identity = _embedding_cache_identity(settings)
+    embedder = f"{identity.backend}:{identity.model_name}"
+    endpoint_note = f" endpoint={identity.endpoint}" if identity.endpoint else ""
     print(
         f"[pools/{arm}] structural={settings.structural_chunking} "
         f"ctx_headers={settings.contextual_headers} chunk={settings.chunk_size}/"
         f"{settings.chunk_overlap} retr_k={settings.retrieval_top_k} "
-        f"embedder={settings.embedding_model}",
+        f"embedder={embedder}{endpoint_note}",
         flush=True,
     )
 
@@ -548,7 +611,7 @@ def stage_pools(
         embeddings,
         texts,
         embed_batch=embed_batch,
-        model_name=str(settings.embedding_model),
+        identity=identity,
         cache_path=embeddings_cache,
     )
     if mat is None:

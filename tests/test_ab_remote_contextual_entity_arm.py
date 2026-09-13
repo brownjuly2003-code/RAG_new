@@ -139,6 +139,10 @@ class FakeReranker:
         return [-float(index) for index, _pair in enumerate(pairs)]
 
 
+REMOTE_EMBED_MODEL = "fake-remote-embed"
+REMOTE_EMBED_URL = "https://example.invalid/v1/embeddings"
+
+
 def _settings() -> SimpleNamespace:
     return SimpleNamespace(
         structural_chunking=True,
@@ -148,9 +152,40 @@ def _settings() -> SimpleNamespace:
         retrieval_top_k=20,
         rerank_top_k=5,
         embedding_model=EMBED_MODEL,
+        embedding_backend="local",
+        embedding_remote_model=REMOTE_EMBED_MODEL,
+        embedding_remote_url=REMOTE_EMBED_URL,
         reranker_model="fake-rerank",
         parent_expansion_max_chars=2400,
     )
+
+
+def _remote_embed_settings() -> SimpleNamespace:
+    settings = _settings()
+    settings.embedding_backend = "remote"
+    return settings
+
+
+def _prepare_g2_embeddings_cache_run(
+    monkeypatch: Any, tmp_path: Path
+) -> tuple[FakeEmbeddings, Path, dict[str, Any]]:
+    chunks = synthetic_chunks()
+    cases = [_case()]
+    cases_path = tmp_path / "cases.jsonl"
+    digest = _write_cases(cases_path, cases)
+    entities_dir = tmp_path / "entities"
+    _write_extraction_cache(entities_dir, chunks, _entity_answer)
+    class_dir = tmp_path / "classifications"
+    _write_classifications(class_dir, cases, digest, {"case-1": _single_hop_route()})
+    embeddings = FakeEmbeddings()
+    _install_pool_fakes(monkeypatch, chunks=chunks, embeddings=embeddings)
+    cache_path = tmp_path / "emb.npz"
+    kwargs = {
+        "entities_cache": entities_dir,
+        "classifications": class_dir,
+        "embeddings_cache": cache_path,
+    }
+    return embeddings, cases_path, kwargs
 
 
 def _case(
@@ -738,6 +773,8 @@ def test_embeddings_cache_mismatch_exits_2(
     matrix = np.array(loaded["embeddings"])
     chunk_digest = bytes(np.asarray(loaded["chunk_text_digest"]).item()).decode("ascii")
     model_name = bytes(np.asarray(loaded["embedding_model"]).item()).decode("utf-8")
+    backend = bytes(np.asarray(loaded["embedding_backend"]).item()).decode("utf-8")
+    endpoint = bytes(np.asarray(loaded["embedding_endpoint"]).item()).decode("utf-8")
     loaded.close()
     if kind == "digest":
         chunk_digest = "0" * 64
@@ -748,6 +785,8 @@ def test_embeddings_cache_mismatch_exits_2(
         embeddings=matrix,
         chunk_text_digest=np.bytes_(chunk_digest.encode("ascii")),
         embedding_model=np.bytes_(model_name.encode("utf-8")),
+        embedding_backend=np.bytes_(backend.encode("utf-8")),
+        embedding_endpoint=np.bytes_(endpoint.encode("utf-8")),
         row_count=np.int64(matrix.shape[0]),
     )
     (out_dir / "ab_phase2_G2_pool.json").unlink()
@@ -765,6 +804,10 @@ def test_embeddings_cache_mismatch_exits_2(
     )
     captured = capsys.readouterr().out
     assert "embeddings cache mismatch" in captured
+    if kind == "digest":
+        assert "digest cache=" in captured
+    else:
+        assert f"model cache='other-model' run={EMBED_MODEL!r}" in captured
     assert not (out_dir / "ab_phase2_G2_pool.json").exists()
     assert embeddings.embed_document_calls == 1
 
@@ -1048,21 +1091,30 @@ def test_embeddings_cache_non_npz_skips_encoder(monkeypatch: Any, tmp_path: Path
     assert embeddings.embed_document_calls == 0
 
 
-def test_arm_env_restored_after_own_monkeypatch_undo() -> None:
+@pytest.mark.parametrize("shell_state", ["present", "absent"])
+def test_arm_env_restored_after_own_monkeypatch_undo(shell_state: str) -> None:
+    outer = pytest.MonkeyPatch()
     patch = pytest.MonkeyPatch()
+    expected = "__sentinel__" if shell_state == "present" else None
     try:
+        for key in _ARM_ENV_KEYS:
+            if shell_state == "present":
+                outer.setenv(key, "__sentinel__")
+            else:
+                outer.delenv(key, raising=False)
         recorded = {key: os.environ.get(key) for key in _ARM_ENV_KEYS}
         _register_arm_env(patch)
         remote._set_arm_env("G2")
         assert os.environ["RAG_STRUCTURAL_CHUNKING"] == "true"
         assert os.environ["RAG_SEMANTIC_CHUNKING"] == "false"
         assert os.environ["RAG_RERANKER_MODEL"] == ""
-        assert any(os.environ.get(key) != recorded[key] for key in _ARM_ENV_KEYS)
         patch.undo()
         for key, value in recorded.items():
+            assert value == expected
             assert os.environ.get(key) == value
     finally:
         patch.undo()
+        outer.undo()
 
 
 def test_truncated_embeddings_cache_exits_2(monkeypatch: Any, tmp_path: Path, capsys: Any) -> None:
@@ -1285,3 +1337,177 @@ def test_pools_run_removes_stale_candidates(monkeypatch: Any, tmp_path: Path) ->
     )
     assert not stale.exists()
     assert (out_dir / "ab_phase2_G2_pool.json").exists()
+
+
+def test_embeddings_cache_local_refused_by_remote_run(
+    monkeypatch: Any, tmp_path: Path, capsys: Any
+) -> None:
+    embeddings, cases_path, kwargs = _prepare_g2_embeddings_cache_run(monkeypatch, tmp_path)
+    out_dir = tmp_path / "out"
+    assert remote.stage_pools("G2", tmp_path / "corpus", cases_path, out_dir, **kwargs) == 0
+    assert embeddings.embed_document_calls == 1
+    query_calls = embeddings.embed_query_calls
+    monkeypatch.setattr("config.settings.get_settings", _remote_embed_settings)
+    assert remote.stage_pools("G2", tmp_path / "corpus", cases_path, out_dir, **kwargs) == 2
+    captured = capsys.readouterr().out
+    assert "embeddings cache mismatch" in captured
+    assert "backend cache='local' run='remote'" in captured
+    assert not (out_dir / "ab_phase2_G2_pool.json").exists()
+    assert embeddings.embed_document_calls == 1
+    assert embeddings.embed_query_calls == query_calls
+
+
+def _remote_backend_only_settings() -> SimpleNamespace:
+    settings = _remote_embed_settings()
+    settings.embedding_remote_model = EMBED_MODEL
+    settings.embedding_remote_url = ""
+    return settings
+
+
+def test_embeddings_cache_local_refused_when_only_backend_differs(
+    monkeypatch: Any, tmp_path: Path, capsys: Any
+) -> None:
+    embeddings, cases_path, kwargs = _prepare_g2_embeddings_cache_run(monkeypatch, tmp_path)
+    out_dir = tmp_path / "out"
+    assert remote.stage_pools("G2", tmp_path / "corpus", cases_path, out_dir, **kwargs) == 0
+    assert embeddings.embed_document_calls == 1
+    query_calls = embeddings.embed_query_calls
+    monkeypatch.setattr("config.settings.get_settings", _remote_backend_only_settings)
+    assert remote.stage_pools("G2", tmp_path / "corpus", cases_path, out_dir, **kwargs) == 2
+    captured = capsys.readouterr().out
+    assert "embeddings cache mismatch" in captured
+    assert "backend cache='local' run='remote'" in captured
+    assert f"model cache={EMBED_MODEL!r} run={EMBED_MODEL!r}" in captured
+    assert "endpoint cache='' run=''" in captured
+    assert not (out_dir / "ab_phase2_G2_pool.json").exists()
+    assert embeddings.embed_document_calls == 1
+    assert embeddings.embed_query_calls == query_calls
+
+
+def test_embeddings_cache_remote_refused_by_local_run(
+    monkeypatch: Any, tmp_path: Path, capsys: Any
+) -> None:
+    embeddings, cases_path, kwargs = _prepare_g2_embeddings_cache_run(monkeypatch, tmp_path)
+    monkeypatch.setattr("config.settings.get_settings", _remote_embed_settings)
+    out_dir = tmp_path / "out"
+    assert remote.stage_pools("G2", tmp_path / "corpus", cases_path, out_dir, **kwargs) == 0
+    assert embeddings.embed_document_calls == 1
+    query_calls = embeddings.embed_query_calls
+    monkeypatch.setattr("config.settings.get_settings", _settings)
+    assert remote.stage_pools("G2", tmp_path / "corpus", cases_path, out_dir, **kwargs) == 2
+    captured = capsys.readouterr().out
+    assert "embeddings cache mismatch" in captured
+    assert "backend cache='remote' run='local'" in captured
+    assert not (out_dir / "ab_phase2_G2_pool.json").exists()
+    assert embeddings.embed_document_calls == 1
+    assert embeddings.embed_query_calls == query_calls
+
+
+def test_embeddings_cache_remote_second_run_skips_encoder(monkeypatch: Any, tmp_path: Path) -> None:
+    embeddings, cases_path, kwargs = _prepare_g2_embeddings_cache_run(monkeypatch, tmp_path)
+    monkeypatch.setattr("config.settings.get_settings", _remote_embed_settings)
+    out_dir = tmp_path / "out"
+    assert remote.stage_pools("G2", tmp_path / "corpus", cases_path, out_dir, **kwargs) == 0
+    assert embeddings.embed_document_calls == 1
+    assert remote.stage_pools("G2", tmp_path / "corpus", cases_path, out_dir, **kwargs) == 0
+    assert embeddings.embed_document_calls == 1
+    assert embeddings.embed_query_calls == 2
+
+
+def test_embeddings_cache_missing_identity_fields_exits_2(
+    monkeypatch: Any, tmp_path: Path, capsys: Any
+) -> None:
+    embeddings, cases_path, kwargs = _prepare_g2_embeddings_cache_run(monkeypatch, tmp_path)
+    chunks = synthetic_chunks()
+    texts = [chunk.page_content for chunk in chunks]
+    digest = remote._chunk_texts_digest(texts)
+    matrix = np.asarray([_embed_text(text) for text in texts], dtype=np.float32)
+    cache_path = kwargs["embeddings_cache"]
+    np.savez(
+        cache_path,
+        embeddings=matrix,
+        chunk_text_digest=np.bytes_(digest.encode("ascii")),
+        embedding_model=np.bytes_(EMBED_MODEL.encode("utf-8")),
+        row_count=np.int64(matrix.shape[0]),
+    )
+    out_dir = tmp_path / "out"
+    assert remote.stage_pools("G2", tmp_path / "corpus", cases_path, out_dir, **kwargs) == 2
+    captured = capsys.readouterr().out
+    assert "[pools/G2] embeddings cache lacks identity field embedding_backend" in captured
+    refusal = next(line for line in captured.splitlines() if "lacks identity field" in line)
+    assert str(cache_path) in refusal
+    assert "(written before identity keying; delete it to re-encode)" in refusal
+    assert "embeddings cache mismatch" not in captured
+    assert embeddings.embed_document_calls == 0
+    assert embeddings.embed_query_calls == 0
+    assert not (out_dir / "ab_phase2_G2_pool.json").exists()
+
+
+def test_embeddings_cache_remote_refused_by_different_remote_model(
+    monkeypatch: Any, tmp_path: Path, capsys: Any
+) -> None:
+    embeddings, cases_path, kwargs = _prepare_g2_embeddings_cache_run(monkeypatch, tmp_path)
+    monkeypatch.setattr("config.settings.get_settings", _remote_embed_settings)
+    out_dir = tmp_path / "out"
+    assert remote.stage_pools("G2", tmp_path / "corpus", cases_path, out_dir, **kwargs) == 0
+    assert embeddings.embed_document_calls == 1
+    query_calls = embeddings.embed_query_calls
+
+    def other_remote_model() -> SimpleNamespace:
+        settings = _remote_embed_settings()
+        settings.embedding_remote_model = "other-remote-embed"
+        return settings
+
+    monkeypatch.setattr("config.settings.get_settings", other_remote_model)
+    assert remote.stage_pools("G2", tmp_path / "corpus", cases_path, out_dir, **kwargs) == 2
+    captured = capsys.readouterr().out
+    assert "embeddings cache mismatch" in captured
+    assert f"model cache={REMOTE_EMBED_MODEL!r} run='other-remote-embed'" in captured
+    assert not (out_dir / "ab_phase2_G2_pool.json").exists()
+    assert embeddings.embed_document_calls == 1
+    assert embeddings.embed_query_calls == query_calls
+
+
+def test_embeddings_cache_remote_refused_by_different_remote_endpoint(
+    monkeypatch: Any, tmp_path: Path, capsys: Any
+) -> None:
+    embeddings, cases_path, kwargs = _prepare_g2_embeddings_cache_run(monkeypatch, tmp_path)
+    monkeypatch.setattr("config.settings.get_settings", _remote_embed_settings)
+    out_dir = tmp_path / "out"
+    assert remote.stage_pools("G2", tmp_path / "corpus", cases_path, out_dir, **kwargs) == 0
+    assert embeddings.embed_document_calls == 1
+    query_calls = embeddings.embed_query_calls
+    other_url = "https://other.invalid/v1/embeddings"
+
+    def other_remote_url() -> SimpleNamespace:
+        settings = _remote_embed_settings()
+        settings.embedding_remote_url = other_url
+        return settings
+
+    monkeypatch.setattr("config.settings.get_settings", other_remote_url)
+    assert remote.stage_pools("G2", tmp_path / "corpus", cases_path, out_dir, **kwargs) == 2
+    captured = capsys.readouterr().out
+    assert "embeddings cache mismatch" in captured
+    assert f"endpoint cache={REMOTE_EMBED_URL!r} run={other_url!r}" in captured
+    assert not (out_dir / "ab_phase2_G2_pool.json").exists()
+    assert embeddings.embed_document_calls == 1
+    assert embeddings.embed_query_calls == query_calls
+
+
+def test_pools_banner_names_remote_embedder_identity(
+    monkeypatch: Any, tmp_path: Path, capsys: Any
+) -> None:
+    _embeddings, cases_path, kwargs = _prepare_g2_embeddings_cache_run(monkeypatch, tmp_path)
+    monkeypatch.setattr("config.settings.get_settings", _remote_embed_settings)
+    assert (
+        remote.stage_pools("G2", tmp_path / "corpus", cases_path, tmp_path / "out", **kwargs) == 0
+    )
+    captured = capsys.readouterr().out
+    banner_lines = [line for line in captured.splitlines() if "embedder=" in line]
+    assert banner_lines
+    banner = banner_lines[0]
+    assert f"embedder=remote:{REMOTE_EMBED_MODEL}" in banner
+    assert f"endpoint={REMOTE_EMBED_URL}" in banner
+    assert f"embedder={EMBED_MODEL}" not in banner
+    assert f"embedder=local:{EMBED_MODEL}" not in banner
+    assert EMBED_MODEL not in banner.replace(REMOTE_EMBED_MODEL, "")
