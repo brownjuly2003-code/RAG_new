@@ -3,10 +3,10 @@
 **Entry point for a new session.** Read this, then [`ROADMAP.md`](ROADMAP.md);
 follow other links only when needed.
 
-Last updated: 2026-09-12 · Plan: [`plan_06_09_26.md`](plan_06_09_26.md)
+Last updated: 2026-09-13 · Plan: [`plan_06_09_26.md`](plan_06_09_26.md)
 (mode B, adopted by the owner 2026-09-10) · Audit of record:
 [`docs/audits/audit_final_23_08_2026.md`](docs/audits/audit_final_23_08_2026.md)
-· Phase C benchmark source: `c06bdf5` · push is the owner's call (§1)
+· Phase C benchmark source: `c06bdf5` · push is the owner's call (§1), delegated to the agent for the 2026-09-13 run
 
 ## Start here
 
@@ -73,11 +73,15 @@ mypy needs locked numpy 2.4.4; Postgres integration tests do not run here.
   documents are real; questions were agent-written (`325d63c`, `6b7417d`,
   `32e841f`). Question classes live in a sidecar (`6cde0b1`) — 99 `single_hop`,
   1 `multi_hop`, 0 `aggregation`, 0 `global` (plan §5, GR-0.2).
-- **On pushed `6cc810d`, both push-triggered workflows passed** (`CI`
-  34461559172, 11/11; docs build 34461559218). Deploy skipped because the repo
-  is private. Schedule/dispatch-only workflows were not run. Run 34359692687 on
-  `69a5140` verified the CVE-2026-9856 floor `transformers>=5.10.0` under
-  `--require-hashes`, pip-audit clean.
+- **CI last ran on pushed `386ee10`** (2026-09-10): `CI` 34471656422 passed
+  11 of 11 jobs. Run 34359692687 on `69a5140` verified the CVE-2026-9856 floor
+  `transformers>=5.10.0` under `--require-hashes`, pip-audit clean.
+- **No CI job has run on any later commit.** GitHub started no job for the
+  2026-09-13 pushes `386ee10..2876f54` (`CI` 34775257921, docs 34775257909)
+  and `2876f54..b3c38df` (`CI` 34778428984, docs 34778428888): every job failed
+  within 2 s, and the docs run names failed account payments or the spending
+  limit. Until the owner fixes billing and re-runs the head commit, local full
+  gates are the only check.
 
 ## Accepted open risks
 
@@ -115,6 +119,7 @@ B.1 is preparation until a batch is approved.
 | GR-1a | Offline coherence: 0.5216 vs plain top-4 0.5214 at unchanged 87/7/6; 0.63 loses 16 FULL ([capsule](docs/evidence/gr1a-section-coherence.md)) | **done** (c) |
 | GR-1b | [Mac measurement](docs/evidence/gr1b-structure-graph.md): 0.5475 / 0.9200, 88/8/4; NO-SHIP. [Seed reservation](docs/evidence/gr1b-seed-expansion.md): no gain; bounded diagnosis closed. Reuse embeddings. | **measured**, provenance limits in capsule |
 | GR-4 structural | [Opt-in ask → SQLite → Evidence](docs/evidence/gr4-structural-product-wiring.md): 100 Mac tests, browser rendering/export, strict mypy green; off/auto retain fallback. Next: GR-2, then GR-3. | **done** (a), synthetic fixtures; no default activation |
+| GR-2 entity | Extraction of 5589 chunks runs on the Mac through digest-pinned local `qwen2.5:7b` (`845dbda0…`, route committed in `b3c38df`): 99 cached at 2026-09-13 19:40 UTC, about 38 h left. Then query classification (T-23), offline G2 arm (T-24) and the report (T-25) | **in progress**, preparation until measured |
 
 ## Open questions for Julia
 
