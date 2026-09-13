@@ -652,5 +652,5 @@ def test_restore_inventory_tracks_session_turn_orm_table() -> None:
 
     assert set(_TABLES) <= set(EXPECTED_MODEL_TABLES)
     assert "session_turns" in EXPECTED_MODEL_TABLES
-    assert len(EXPECTED_MODEL_TABLES) == 32
-    assert len(EXPECTED_PUBLIC_TABLES) == 38
+    assert len(EXPECTED_MODEL_TABLES) == 34
+    assert len(EXPECTED_PUBLIC_TABLES) == 40

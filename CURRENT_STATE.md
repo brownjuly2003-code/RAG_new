@@ -75,7 +75,9 @@ mypy needs locked numpy 2.4.4; Postgres integration tests do not run here.
   1 `multi_hop`, 0 `aggregation`, 0 `global` (plan §5, GR-0.2).
 - **On pushed `6cc810d`, both push-triggered workflows passed** (`CI`
   34461559172, 11/11; docs build 34461559218). Deploy skipped because the repo
-  is private. Schedule/dispatch-only workflows were not run.
+  is private. Schedule/dispatch-only workflows were not run. Run 34359692687 on
+  `69a5140` verified the CVE-2026-9856 floor `transformers>=5.10.0` under
+  `--require-hashes`, pip-audit clean.
 
 ## Accepted open risks
 
