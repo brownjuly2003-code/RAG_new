@@ -151,7 +151,13 @@ A GR-2 report SHALL compare `G2` with `G1` over the same cases for the
 supplemental multi-document bucket and for the phase-C dataset, per labelled
 question class with case counts, with keyword FULL/PART/MISS, context precision
 and recall, paired per-case transitions and keyword losses, the routed-class
-counts, entity-search latency, rerank time per case and peak resident memory. It
+counts, entity-search latency, rerank time per case and peak resident memory.
+Entity-search percentiles SHALL be measured only over rows routed to the entity
+lane, and SHALL carry that lane's case count; when no row uses the lane, those
+percentiles SHALL be `null`. The report SHALL also list, without refusing, any
+candidate-pool divergence for rows routed outside the entity lane. It
+SHALL round calculated per-case retrieve sums and paired rerank deltas to four
+decimal places before nearest-rank percentile selection. It
 SHALL pin the pool digests, the extraction and classification manifests, the
 corpus digest, the code commit and the configuration, and SHALL NOT change the
 graph retrieval default.
@@ -162,6 +168,14 @@ graph retrieval default.
 - **WHEN** the report is read
 - **THEN** that transition is listed with its case id, and the single-hop
   precision delta against `G1` is printed next to the multi-hop delta
+
+### Scenario: non-lane rows do not dilute entity-search latency
+
+- **GIVEN** four entity-lane rows with non-zero entity-search time and 96
+  `single_hop` rows whose entity timing is zero because the lane did not run
+- **WHEN** the report is built
+- **THEN** its entity-search p95 is selected from the four lane rows, and its
+  non-lane parity diagnostic lists any candidate-pool difference from `G1`
 
 ### Scenario: the report reproduces from archived inputs
 

@@ -576,13 +576,24 @@ def build_pool(out_dir: Path, arm: str = "C") -> Path:
 
 BUCKET_REPORT_SCHEMA_VERSION = "gr-bucket-baseline/v1.0"
 STRUCTURAL_GRAPH_REPORT_SCHEMA_VERSION = "gr-structure-graph-retrieval/v1.0"
+ENTITY_GRAPH_REPORT_SCHEMA_VERSION = "gr-entity-graph-retrieval/v1.0"
 DEFAULT_BUCKET_REPORT_PATH = PROJECT_ROOT / "reports" / "gr" / "gr0-bucket-baseline.json"
+DEFAULT_GR2_REPORT_PATH = PROJECT_ROOT / "reports" / "gr" / "gr2-entity-graph.json"
 DEFAULT_DATASET_PATH = PROJECT_ROOT / "evaluation" / "curated_cases_aircargo.jsonl"
 DEFAULT_SIDECAR_PATH = PROJECT_ROOT / "evaluation" / "curated_cases_question_class.jsonl"
 DEFAULT_LABEL_MANIFEST_PATH = (
     PROJECT_ROOT / "evaluation" / "curated_cases_question_class.manifest.json"
 )
 DEFAULT_CORPUS_MANIFEST_PATH = PROJECT_ROOT / "evaluation" / "aircargo_corpus.manifest.json"
+DEFAULT_MULTI_DOC_DATASET_PATH = (
+    PROJECT_ROOT / "evaluation" / "curated_cases_aircargo_gr_multihop.jsonl"
+)
+DEFAULT_MULTI_DOC_SIDECAR_PATH = (
+    PROJECT_ROOT / "evaluation" / "curated_cases_aircargo_gr_multihop_question_class.jsonl"
+)
+DEFAULT_MULTI_DOC_LABEL_MANIFEST_PATH = (
+    PROJECT_ROOT / "evaluation" / "curated_cases_aircargo_gr_multihop_question_class.manifest.json"
+)
 
 #: Phase C.1a sliced each pool row at its own `rerank_k` (5 for all 100 cases)
 #: and capped the joined context at 6000 characters, with no parent expansion.
@@ -607,6 +618,16 @@ STRUCTURAL_GRAPH_CODE_PATHS: tuple[str, ...] = (
     "ingestion/structure_graph_projection.py",
 )
 
+ENTITY_GRAPH_CODE_PATHS: tuple[str, ...] = (
+    *STRUCTURAL_GRAPH_CODE_PATHS,
+    "ingestion/entity_extraction.py",
+    "ingestion/entity_normalization.py",
+    "ingestion/entity_graph.py",
+    "ingestion/entity_retrieval.py",
+    "llm/providers/pinned_ollama.py",
+    "evaluation/query_classification.py",
+)
+
 _EMPTY_CELL = "—"
 
 _BASELINE_POOL_PRODUCER = (
@@ -617,6 +638,10 @@ _STRUCTURAL_GRAPH_POOL_PRODUCER = (
     "scripts/ab_remote_contextual.py --stage pools/rerank --arm G1 "
     "(BGE-M3 + bge-reranker-v2-m3, structural chunking + exact category "
     "prefilter + structural graph coherence/expansion)"
+)
+_ENTITY_GRAPH_POOL_PRODUCER = (
+    "scripts/ab_remote_contextual.py --stage pools/rerank --arm G2 "
+    "(BGE-M3 + bge-reranker-v2-m3, structural graph + entity graph lane)"
 )
 
 
@@ -812,6 +837,170 @@ def _bucket_rows_by_class(scored: Sequence[dict[str, Any]]) -> list[dict[str, An
     return [_bucket_row(name, by_class[name]) for name in sorted(by_class)]
 
 
+def _g2_case_id(row: dict[str, Any]) -> str:
+    return str(row.get("case_id") or "?")
+
+
+def _numeric_pool_value(value: Any, *, field: str, case_id: str) -> float | int:
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        raise ValueError(f"G2 pool has invalid {field} for case {case_id}")
+    return value
+
+
+def _load_g2_pool_meta(
+    *,
+    pool_meta_path: Path | None,
+    dataset_path: Path,
+    pool_rows: Sequence[dict[str, Any]],
+) -> tuple[dict[str, Any], dict[str, int]]:
+    """Read T-24's sidecar and prove it belongs to these routed pool rows."""
+    if pool_meta_path is None:
+        raise ValueError("G2 pool requires pool_meta_path")
+    meta = json.loads(pool_meta_path.read_text(encoding="utf-8"))
+    if not isinstance(meta, dict):
+        raise ValueError("G2 pool meta must be a JSON object")
+
+    dataset_digest = sha256_file(dataset_path)
+    meta_digest = meta.get("cases_sha256")
+    if meta_digest != dataset_digest:
+        raise ValueError(
+            "G2 pool meta cases_sha256="
+            f"{meta_digest!r} differs from dataset_sha256={dataset_digest!r}"
+        )
+
+    routed_counts: dict[str, int] = {}
+    for row in pool_rows:
+        routed = row.get("routed_question_class")
+        if not isinstance(routed, str) or not routed:
+            raise ValueError(f"G2 pool requires routed_question_class for case {_g2_case_id(row)}")
+        routed_counts[routed] = routed_counts.get(routed, 0) + 1
+    routed_counts = dict(sorted(routed_counts.items()))
+    meta_counts = meta.get("routed_class_counts")
+    if meta_counts != routed_counts:
+        raise ValueError(
+            "G2 pool meta routed_class_counts="
+            f"{meta_counts!r} differs from pool routed_class_counts={routed_counts!r}"
+        )
+    return meta, routed_counts
+
+
+def _validate_g2_pool_rows(pool_rows: Sequence[dict[str, Any]]) -> None:
+    for row in pool_rows:
+        case_id = _g2_case_id(row)
+        if row.get("graph_postprocessed") is not True:
+            raise ValueError(f"G2 pool requires graph_postprocessed=true for case {case_id}")
+        routed = row.get("routed_question_class")
+        if not isinstance(routed, str) or not routed:
+            raise ValueError(f"G2 pool requires routed_question_class for case {case_id}")
+        candidates = _numeric_pool_value(
+            row.get("entity_candidates"),
+            field="entity_candidates",
+            case_id=case_id,
+        )
+        if int(candidates) != candidates or candidates < 0 or candidates > 50:
+            raise ValueError(
+                "G2 pool entity_candidates must be an integer from 0 to 50 for case "
+                f"{case_id}: {candidates}"
+            )
+        hops = _numeric_pool_value(row.get("entity_hops"), field="entity_hops", case_id=case_id)
+        if int(hops) != hops or hops < 0 or hops > 2:
+            raise ValueError(
+                f"G2 pool entity_hops must be an integer from 0 to 2 for case {case_id}: {hops}"
+            )
+        timing = row.get("timing_ms")
+        if not isinstance(timing, dict):
+            raise ValueError(f"G2 pool requires timing_ms for case {case_id}")
+        for timing_field in ("vector", "bm25", "entity"):
+            _numeric_pool_value(
+                timing.get(timing_field),
+                field=f"timing_ms.{timing_field}",
+                case_id=case_id,
+            )
+        rerank_s = row.get("rerank_s")
+        if isinstance(rerank_s, bool) or not isinstance(rerank_s, (int, float)):
+            raise ValueError(f"rerank_s missing for case {case_id} arm G2")
+
+
+def _nearest_rank(
+    values: Sequence[float | int], *, numerator: int, denominator: int
+) -> float | int:
+    """Nearest-rank percentile; every selected value is an input pool value."""
+    if not values:
+        return 0
+    ordered = sorted(values)
+    index = max(0, ((len(ordered) * numerator + denominator - 1) // denominator) - 1)
+    return ordered[index]
+
+
+def _g2_latency(
+    pool_rows: Sequence[dict[str, Any]],
+) -> dict[str, dict[str, float | int | None]]:
+    from scripts.ab_remote_contextual import _ENTITY_QUESTION_CLASSES
+
+    entity_lane_ms = [
+        row["timing_ms"]["entity"]
+        for row in pool_rows
+        if row["routed_question_class"] in _ENTITY_QUESTION_CLASSES
+    ]
+    retrieve_ms = [
+        round(
+            row["timing_ms"]["vector"] + row["timing_ms"]["bm25"] + row["timing_ms"]["entity"],
+            4,
+        )
+        for row in pool_rows
+    ]
+    rerank_s = [row["rerank_s"] for row in pool_rows]
+
+    def _summary(values: Sequence[float | int]) -> dict[str, float | int]:
+        return {
+            "cases": len(values),
+            "p50": _nearest_rank(values, numerator=1, denominator=2),
+            "p95": _nearest_rank(values, numerator=19, denominator=20),
+            "max": max(values) if values else 0,
+        }
+
+    return {
+        "entity_lane_ms": {
+            "cases": len(entity_lane_ms),
+            "p50": _nearest_rank(entity_lane_ms, numerator=1, denominator=2)
+            if entity_lane_ms
+            else None,
+            "p95": _nearest_rank(entity_lane_ms, numerator=19, denominator=20)
+            if entity_lane_ms
+            else None,
+            "max": max(entity_lane_ms) if entity_lane_ms else None,
+        },
+        "retrieve_ms": _summary(retrieve_ms),
+        "rerank_s": _summary(rerank_s),
+    }
+
+
+def _g2_meta_provenance(pool_meta_path: Path, meta: dict[str, Any]) -> dict[str, Any]:
+    """Copy T-24's stable names verbatim, plus the digest of the sidecar itself."""
+    required = (
+        "cases_sha256",
+        "graph_chunks_sha256",
+        "entities_manifest_sha256",
+        "classifications_manifest_sha256",
+        "structure_graph_digest",
+        "node_counts",
+        "edge_counts",
+        "projection_build_s",
+        "peak_rss_bytes",
+        "routed_class_counts",
+        "rejected_chunk_ids",
+        "rejected_count",
+    )
+    missing = [field for field in required if field not in meta]
+    if missing:
+        raise ValueError(f"G2 pool meta missing required field(s): {', '.join(missing)}")
+    return {
+        "pool_meta_path": _stored_path(pool_meta_path),
+        "pool_meta_sha256": sha256_file(pool_meta_path),
+        **{field: meta[field] for field in required},
+    }
+
+
 def build_bucket_report(
     *,
     pool_path: Path,
@@ -824,13 +1013,14 @@ def build_bucket_report(
     context_chars: int = PHASE_C_CONTEXT_CHARS,
     code_commit: str | None = None,
     pool_arm: str = "C",
+    pool_meta_path: Path | None = None,
 ) -> dict[str, Any]:
     """The GR-0.3 report: per-class and aggregate retrieval metrics over a pinned pool.
 
     Deterministic by construction — the body carries no timestamp, so two runs
     over the same inputs are byte-identical.
     """
-    if pool_arm not in {"C", "G1"}:
+    if pool_arm not in {"C", "G1", "G2"}:
         raise ValueError(f"unsupported retrieval pool arm: {pool_arm!r}")
 
     scored, approved = score_cases_by_class(
@@ -841,11 +1031,13 @@ def build_bucket_report(
         expected_cases=expected_cases,
         top_k=top_k,
         context_chars=context_chars,
-        allow_short_contexts=pool_arm == "G1",
+        allow_short_contexts=pool_arm in {"G1", "G2"},
     )
 
     pool_rows = json.loads(pool_path.read_text(encoding="utf-8"))
-    pool_diagnostics: dict[str, int] | None = None
+    pool_diagnostics: dict[str, Any] | None = None
+    g2_meta: dict[str, Any] | None = None
+    routed_counts: dict[str, int] | None = None
     if pool_arm == "G1":
         unprocessed = [
             str(row.get("case_id") or "?")
@@ -863,6 +1055,34 @@ def build_bucket_report(
             "graph_prefiltered_count": sum(
                 row.get("graph_prefiltered") is True for row in pool_rows
             ),
+        }
+    elif pool_arm == "G2":
+        from scripts.ab_remote_contextual import _ENTITY_QUESTION_CLASSES
+
+        _validate_g2_pool_rows(pool_rows)
+        g2_meta, routed_counts = _load_g2_pool_meta(
+            pool_meta_path=pool_meta_path,
+            dataset_path=dataset_path,
+            pool_rows=pool_rows,
+        )
+        routed_by_case = {_g2_case_id(row): str(row["routed_question_class"]) for row in pool_rows}
+        for row in scored:
+            row["routed_question_class"] = routed_by_case[row["case_id"]]
+        pool_diagnostics = {
+            "row_count": len(pool_rows),
+            "graph_postprocessed_count": len(pool_rows),
+            "graph_prefiltered_count": sum(
+                row.get("graph_prefiltered") is True for row in pool_rows
+            ),
+            "routed_class_counts": routed_counts,
+            "entity_lane_cases": sum(
+                row["routed_question_class"] in _ENTITY_QUESTION_CLASSES for row in pool_rows
+            ),
+            "entity_candidates_max": max(
+                (row["entity_candidates"] for row in pool_rows),
+                default=0,
+            ),
+            "entity_hops_max": max((row["entity_hops"] for row in pool_rows), default=0),
         }
 
     config: dict[str, Any] = {
@@ -889,17 +1109,36 @@ def build_bucket_report(
                 "section_expansion": "same-section structural graph boundary",
             }
         )
+    elif pool_arm == "G2":
+        config.update(
+            {
+                "pool_arm": "G2",
+                "allow_short_contexts": True,
+                "entity_candidates_limit": 50,
+                "entity_hops_limit": 2,
+                "section_coherence": "production structural graph",
+                "section_expansion": "same-section structural graph boundary",
+            }
+        )
 
     report = {
         "schema_version": (
-            STRUCTURAL_GRAPH_REPORT_SCHEMA_VERSION
-            if pool_arm == "G1"
-            else BUCKET_REPORT_SCHEMA_VERSION
+            ENTITY_GRAPH_REPORT_SCHEMA_VERSION
+            if pool_arm == "G2"
+            else (
+                STRUCTURAL_GRAPH_REPORT_SCHEMA_VERSION
+                if pool_arm == "G1"
+                else BUCKET_REPORT_SCHEMA_VERSION
+            )
         ),
         "kind": (
-            "gr-structure-graph-retrieval"
-            if pool_arm == "G1"
-            else "gr-retrieval-bucket-baseline"
+            "gr-entity-graph-retrieval"
+            if pool_arm == "G2"
+            else (
+                "gr-structure-graph-retrieval"
+                if pool_arm == "G1"
+                else "gr-retrieval-bucket-baseline"
+            )
         ),
         "evidence_class": "measured",
         "labels": _label_block(approved),
@@ -912,14 +1151,16 @@ def build_bucket_report(
             code_commit=code_commit,
             config=config,
             pool_produced_by=(
-                _STRUCTURAL_GRAPH_POOL_PRODUCER
-                if pool_arm == "G1"
-                else _BASELINE_POOL_PRODUCER
+                _ENTITY_GRAPH_POOL_PRODUCER
+                if pool_arm == "G2"
+                else (
+                    _STRUCTURAL_GRAPH_POOL_PRODUCER if pool_arm == "G1" else _BASELINE_POOL_PRODUCER
+                )
             ),
             code_paths=(
-                STRUCTURAL_GRAPH_CODE_PATHS
-                if pool_arm == "G1"
-                else BUCKET_CODE_PATHS
+                ENTITY_GRAPH_CODE_PATHS
+                if pool_arm == "G2"
+                else (STRUCTURAL_GRAPH_CODE_PATHS if pool_arm == "G1" else BUCKET_CODE_PATHS)
             ),
         ),
         "buckets": _bucket_rows_by_class(scored),
@@ -928,6 +1169,10 @@ def build_bucket_report(
     }
     if pool_diagnostics is not None:
         report["pool_diagnostics"] = pool_diagnostics
+    if pool_arm == "G2":
+        assert g2_meta is not None and pool_meta_path is not None
+        report["provenance"]["pool_meta"] = _g2_meta_provenance(pool_meta_path, g2_meta)
+        report["latency"] = _g2_latency(pool_rows)
     return report
 
 
@@ -939,9 +1184,13 @@ def render_bucket_table(report: dict[str, Any]) -> str:
     """The printed table. Every class row carries its case count, always."""
     provenance = report["provenance"]
     title = (
-        "GR-1b structural graph retrieval by question class"
-        if report["kind"] == "gr-structure-graph-retrieval"
-        else "GR-0.3 retrieval baseline by question class"
+        "GR-2 entity graph retrieval by question class"
+        if report["kind"] == "gr-entity-graph-retrieval"
+        else (
+            "GR-1b structural graph retrieval by question class"
+            if report["kind"] == "gr-structure-graph-retrieval"
+            else "GR-0.3 retrieval baseline by question class"
+        )
     )
     lines = [
         title,
@@ -989,16 +1238,531 @@ def run_bucket_report(args: argparse.Namespace) -> int:
         top_k=args.top_k,
         context_chars=args.context_chars,
         pool_arm=args.pool_arm,
+        pool_meta_path=Path(args.pool_meta) if args.pool_meta else None,
     )
     out = write_bucket_report(report, Path(args.bucket_report))
     print(render_bucket_table(report), end="", flush=True)
-    print(json.dumps({
-        "status": "ok",
-        "report_json": _stored_path(out),
-        "num_cases": report["aggregate"]["num_cases"],
-        "context_precision": report["aggregate"]["context_precision"],
-        "context_recall": report["aggregate"]["context_recall"],
-    }, ensure_ascii=False))
+    print(
+        json.dumps(
+            {
+                "status": "ok",
+                "report_json": _stored_path(out),
+                "num_cases": report["aggregate"]["num_cases"],
+                "context_precision": report["aggregate"]["context_precision"],
+                "context_recall": report["aggregate"]["context_recall"],
+            },
+            ensure_ascii=False,
+        )
+    )
+    return 0
+
+
+def _comparison_rows_by_case(report: dict[str, Any], *, arm: str) -> dict[str, dict[str, Any]]:
+    rows = report.get("per_case")
+    if not isinstance(rows, list):
+        raise ValueError(f"{arm} report has no per_case rows")
+    by_case: dict[str, dict[str, Any]] = {}
+    for row in rows:
+        case_id = str(row.get("case_id") or "?")
+        if case_id in by_case:
+            raise ValueError(f"{arm} report repeats case id {case_id}")
+        by_case[case_id] = row
+    return by_case
+
+
+def _comparison_metrics(rows: Sequence[dict[str, Any]]) -> dict[str, Any]:
+    bucket = _bucket_row("", rows)
+    return {
+        "context_precision": bucket["context_precision"],
+        "context_recall": bucket["context_recall"],
+        "FULL": bucket["FULL"],
+        "PART": bucket["PART"],
+        "MISS": bucket["MISS"],
+    }
+
+
+def _metric_delta(g1: float | None, g2: float | None) -> float | None:
+    return round(g2 - g1, 4) if g1 is not None and g2 is not None else None
+
+
+def _comparison_bucket(
+    *,
+    question_class: str,
+    g1_rows: Sequence[dict[str, Any]],
+    g2_rows: Sequence[dict[str, Any]],
+) -> dict[str, Any]:
+    g1 = _comparison_metrics(g1_rows)
+    g2 = _comparison_metrics(g2_rows)
+    return {
+        "question_class": question_class,
+        "num_cases": len(g1_rows),
+        "G1": g1,
+        "G2": g2,
+        "context_precision_delta": _metric_delta(
+            g1["context_precision"],
+            g2["context_precision"],
+        ),
+        "context_recall_delta": _metric_delta(g1["context_recall"], g2["context_recall"]),
+    }
+
+
+def _comparison_same_input(g1_report: dict[str, Any], g2_report: dict[str, Any]) -> None:
+    if g1_report.get("kind") != "gr-structure-graph-retrieval":
+        raise ValueError(f"G1 report kind differs: {g1_report.get('kind')!r}")
+    if g2_report.get("kind") != "gr-entity-graph-retrieval":
+        raise ValueError(f"G2 report kind differs: {g2_report.get('kind')!r}")
+    g1_provenance = g1_report["provenance"]
+    g2_provenance = g2_report["provenance"]
+    checks = (
+        ("dataset digest", g1_provenance["dataset_sha256"], g2_provenance["dataset_sha256"]),
+        (
+            "label sidecar digest",
+            g1_provenance["label_sidecar_sha256"],
+            g2_provenance["label_sidecar_sha256"],
+        ),
+        (
+            "corpus digest",
+            g1_provenance["corpus"]["corpus_sha256"],
+            g2_provenance["corpus"]["corpus_sha256"],
+        ),
+        (
+            "top_k",
+            g1_provenance["config"]["top_k"],
+            g2_provenance["config"]["top_k"],
+        ),
+        (
+            "context_chars",
+            g1_provenance["config"]["context_chars"],
+            g2_provenance["config"]["context_chars"],
+        ),
+    )
+    for name, g1_value, g2_value in checks:
+        if g1_value != g2_value:
+            raise ValueError(f"{name} differs: G1={g1_value!r} G2={g2_value!r}")
+
+
+def _require_rerank_seconds(
+    *,
+    values: dict[str, float | int] | None,
+    case_ids: Sequence[str],
+    arm: str,
+) -> dict[str, float | int]:
+    if values is None:
+        raise ValueError(f"rerank_s missing for case {case_ids[0] if case_ids else '?'} arm {arm}")
+    checked: dict[str, float | int] = {}
+    for case_id in case_ids:
+        value = values.get(case_id)
+        if isinstance(value, bool) or not isinstance(value, (int, float)):
+            raise ValueError(f"rerank_s missing for case {case_id} arm {arm}")
+        checked[case_id] = value
+    return checked
+
+
+def build_arm_comparison(
+    g1_report: dict[str, Any],
+    g2_report: dict[str, Any],
+    *,
+    g1_rerank_s: dict[str, float | int] | None = None,
+    g2_rerank_s: dict[str, float | int] | None = None,
+) -> dict[str, Any]:
+    """Compare the two graph arms after proving that their ruler is identical."""
+    _comparison_same_input(g1_report, g2_report)
+    g1_by_case = _comparison_rows_by_case(g1_report, arm="G1")
+    g2_by_case = _comparison_rows_by_case(g2_report, arm="G2")
+    if set(g1_by_case) != set(g2_by_case):
+        raise ValueError(
+            "case ids differ: "
+            f"only G1={sorted(set(g1_by_case) - set(g2_by_case))[:5]} "
+            f"only G2={sorted(set(g2_by_case) - set(g1_by_case))[:5]}"
+        )
+    case_ids = sorted(g1_by_case)
+    g1_rerank = _require_rerank_seconds(values=g1_rerank_s, case_ids=case_ids, arm="G1")
+    g2_rerank = _require_rerank_seconds(values=g2_rerank_s, case_ids=case_ids, arm="G2")
+
+    report_classes = [str(row["question_class"]) for row in g1_report.get("buckets", [])]
+    classes = list(dict.fromkeys(report_classes))
+    for question_class in sorted({str(row["question_class"]) for row in g1_by_case.values()}):
+        if question_class not in classes:
+            classes.append(question_class)
+    buckets: list[dict[str, Any]] = []
+    for question_class in classes:
+        g1_rows = [
+            g1_by_case[case_id]
+            for case_id in case_ids
+            if g1_by_case[case_id]["question_class"] == question_class
+        ]
+        g2_rows = [g2_by_case[row["case_id"]] for row in g1_rows]
+        buckets.append(
+            _comparison_bucket(
+                question_class=question_class,
+                g1_rows=g1_rows,
+                g2_rows=g2_rows,
+            )
+        )
+
+    transitions: dict[str, dict[str, Any]] = {}
+    downgrades: list[dict[str, str]] = []
+    keyword_losses: list[str] = []
+    downgrade_transitions = {"FULL->PART", "FULL->MISS", "PART->MISS"}
+    for case_id in case_ids:
+        g1_row = g1_by_case[case_id]
+        g2_row = g2_by_case[case_id]
+        transition = f"{g1_row['kw_status']}->{g2_row['kw_status']}"
+        entry = transitions.setdefault(transition, {"count": 0, "case_ids": []})
+        entry["count"] += 1
+        entry["case_ids"].append(case_id)
+        if g2_row["context_recall"] < g1_row["context_recall"]:
+            keyword_losses.append(case_id)
+        if transition in downgrade_transitions:
+            downgrades.append(
+                {
+                    "case_id": case_id,
+                    "question_class": str(g1_row["question_class"]),
+                    "routed_question_class": str(g2_row["routed_question_class"]),
+                    "transition": transition,
+                }
+            )
+
+    aggregate = _comparison_bucket(
+        question_class="all cases",
+        g1_rows=[g1_by_case[case_id] for case_id in case_ids],
+        g2_rows=[g2_by_case[case_id] for case_id in case_ids],
+    )
+    by_class = {row["question_class"]: row for row in buckets}
+    rerank_deltas = [round(g2_rerank[case_id] - g1_rerank[case_id], 4) for case_id in case_ids]
+    g2_meta = g2_report["provenance"]["pool_meta"]
+    return {
+        "buckets": buckets,
+        "aggregate": aggregate,
+        "keyword_transitions": dict(sorted(transitions.items())),
+        "keyword_loss_case_ids": keyword_losses,
+        "downgrades": downgrades,
+        "precision_deltas": {
+            "single_hop": by_class.get("single_hop", {}).get("context_precision_delta"),
+            "multi_hop": by_class.get("multi_hop", {}).get("context_precision_delta"),
+        },
+        "cost": {
+            "G2_entity_search_ms": {
+                "cases": g2_report["latency"]["entity_lane_ms"]["cases"],
+                "p50": g2_report["latency"]["entity_lane_ms"]["p50"],
+                "p95": g2_report["latency"]["entity_lane_ms"]["p95"],
+            },
+            "paired_rerank_s_delta": {
+                "p50": _nearest_rank(rerank_deltas, numerator=1, denominator=2),
+                "p95": _nearest_rank(rerank_deltas, numerator=19, denominator=20),
+            },
+            "G2_peak_rss_bytes": g2_meta["peak_rss_bytes"],
+        },
+    }
+
+
+def _rerank_seconds_from_pool(pool_path: Path, *, arm: str) -> dict[str, float | int]:
+    rows = json.loads(pool_path.read_text(encoding="utf-8"))
+    if not isinstance(rows, list):
+        raise ValueError(f"{arm} pool must be a JSON array")
+    values: dict[str, float | int] = {}
+    for row in rows:
+        if not isinstance(row, dict):
+            raise ValueError(f"{arm} pool has a non-object row")
+        case_id = _g2_case_id(row)
+        value = row.get("rerank_s")
+        if isinstance(value, bool) or not isinstance(value, (int, float)):
+            raise ValueError(f"rerank_s missing for case {case_id} arm {arm}")
+        values[case_id] = value
+    return values
+
+
+def _non_lane_parity(g1_pool_path: Path, g2_pool_path: Path) -> dict[str, Any]:
+    """List G2's non-lane candidate differences without rejecting a report."""
+    from scripts.ab_remote_contextual import _ENTITY_QUESTION_CLASSES
+
+    g1_rows = json.loads(g1_pool_path.read_text(encoding="utf-8"))
+    g2_rows = json.loads(g2_pool_path.read_text(encoding="utf-8"))
+    g1_by_case = {str(row["case_id"]): row for row in g1_rows}
+    non_lane_rows = [
+        row for row in g2_rows if row["routed_question_class"] not in _ENTITY_QUESTION_CLASSES
+    ]
+    divergent_case_ids = sorted(
+        str(row["case_id"])
+        for row in non_lane_rows
+        if g1_by_case[str(row["case_id"])].get("cands") != row.get("cands")
+    )
+    return {"cases": len(non_lane_rows), "divergent_case_ids": divergent_case_ids}
+
+
+def _gr2_pair(
+    *,
+    g1_pool_path: Path,
+    g2_pool_path: Path,
+    g2_pool_meta_path: Path,
+    dataset_path: Path,
+    sidecar_path: Path,
+    label_manifest_path: Path,
+    corpus_manifest_path: Path,
+    expected_cases: int,
+    top_k: int,
+    context_chars: int,
+    code_commit: str | None,
+) -> dict[str, Any]:
+    g1 = build_bucket_report(
+        pool_path=g1_pool_path,
+        dataset_path=dataset_path,
+        sidecar_path=sidecar_path,
+        label_manifest_path=label_manifest_path,
+        corpus_manifest_path=corpus_manifest_path,
+        expected_cases=expected_cases,
+        top_k=top_k,
+        context_chars=context_chars,
+        code_commit=code_commit,
+        pool_arm="G1",
+    )
+    g2 = build_bucket_report(
+        pool_path=g2_pool_path,
+        dataset_path=dataset_path,
+        sidecar_path=sidecar_path,
+        label_manifest_path=label_manifest_path,
+        corpus_manifest_path=corpus_manifest_path,
+        expected_cases=expected_cases,
+        top_k=top_k,
+        context_chars=context_chars,
+        code_commit=code_commit,
+        pool_arm="G2",
+        pool_meta_path=g2_pool_meta_path,
+    )
+    comparison = build_arm_comparison(
+        g1,
+        g2,
+        g1_rerank_s=_rerank_seconds_from_pool(g1_pool_path, arm="G1"),
+        g2_rerank_s=_rerank_seconds_from_pool(g2_pool_path, arm="G2"),
+    )
+    comparison["non_lane_parity"] = _non_lane_parity(g1_pool_path, g2_pool_path)
+    return {
+        "G1": g1,
+        "G2": g2,
+        "comparison": comparison,
+    }
+
+
+def _gr2_inputs_provenance(pair: dict[str, Any]) -> dict[str, Any]:
+    g1 = pair["G1"]["provenance"]
+    g2 = pair["G2"]["provenance"]
+    return {
+        "G1": {"pool_path": g1["pool_path"], "pool_sha256": g1["pool_sha256"]},
+        "G2": {
+            "pool_path": g2["pool_path"],
+            "pool_sha256": g2["pool_sha256"],
+            "pool_meta": g2["pool_meta"],
+        },
+        "dataset_sha256": g1["dataset_sha256"],
+        "label_sidecar_sha256": g1["label_sidecar_sha256"],
+        "label_manifest_sha256": g1["label_manifest_sha256"],
+        "corpus": g1["corpus"],
+    }
+
+
+def build_gr2_report(
+    *,
+    g1_pool_path: Path,
+    g2_pool_path: Path,
+    g2_pool_meta_path: Path,
+    bucket_g1_pool_path: Path,
+    bucket_g2_pool_path: Path,
+    bucket_g2_pool_meta_path: Path,
+    dataset_path: Path = DEFAULT_DATASET_PATH,
+    sidecar_path: Path = DEFAULT_SIDECAR_PATH,
+    label_manifest_path: Path = DEFAULT_LABEL_MANIFEST_PATH,
+    corpus_manifest_path: Path = DEFAULT_CORPUS_MANIFEST_PATH,
+    bucket_dataset_path: Path = DEFAULT_MULTI_DOC_DATASET_PATH,
+    bucket_sidecar_path: Path = DEFAULT_MULTI_DOC_SIDECAR_PATH,
+    bucket_label_manifest_path: Path = DEFAULT_MULTI_DOC_LABEL_MANIFEST_PATH,
+    bucket_corpus_manifest_path: Path = DEFAULT_CORPUS_MANIFEST_PATH,
+    expected_cases: int = 100,
+    bucket_expected_cases: int = 15,
+    top_k: int = PHASE_C_TOP_K,
+    context_chars: int = PHASE_C_CONTEXT_CHARS,
+    code_commit: str | None = None,
+) -> dict[str, Any]:
+    """Bundle phase C and the supplemental multi-document GR-2 comparisons."""
+    phase_c = _gr2_pair(
+        g1_pool_path=g1_pool_path,
+        g2_pool_path=g2_pool_path,
+        g2_pool_meta_path=g2_pool_meta_path,
+        dataset_path=dataset_path,
+        sidecar_path=sidecar_path,
+        label_manifest_path=label_manifest_path,
+        corpus_manifest_path=corpus_manifest_path,
+        expected_cases=expected_cases,
+        top_k=top_k,
+        context_chars=context_chars,
+        code_commit=code_commit,
+    )
+    multi_doc_bucket = _gr2_pair(
+        g1_pool_path=bucket_g1_pool_path,
+        g2_pool_path=bucket_g2_pool_path,
+        g2_pool_meta_path=bucket_g2_pool_meta_path,
+        dataset_path=bucket_dataset_path,
+        sidecar_path=bucket_sidecar_path,
+        label_manifest_path=bucket_label_manifest_path,
+        corpus_manifest_path=bucket_corpus_manifest_path,
+        expected_cases=bucket_expected_cases,
+        top_k=top_k,
+        context_chars=context_chars,
+        code_commit=code_commit,
+    )
+    code = _git_commit() if code_commit is None else {"commit": code_commit, "tree_clean": None}
+    code["files"] = _code_digests(ENTITY_GRAPH_CODE_PATHS)
+    return {
+        "schema_version": ENTITY_GRAPH_REPORT_SCHEMA_VERSION,
+        "kind": "gr-entity-graph-retrieval",
+        "evidence_class": "measured",
+        "provenance": {
+            "phase_c": _gr2_inputs_provenance(phase_c),
+            "multi_doc_bucket": _gr2_inputs_provenance(multi_doc_bucket),
+            "code": code,
+            "config": {
+                "top_k": top_k,
+                "context_chars": context_chars,
+                "graph_retrieval_default": "unchanged",
+            },
+        },
+        "phase_c": phase_c,
+        "multi_doc_bucket": multi_doc_bucket,
+    }
+
+
+def write_gr2_report(report: dict[str, Any], path: Path) -> Path:
+    return write_bucket_report(report, path)
+
+
+def _render_gr2_comparison(name: str, pair: dict[str, Any]) -> list[str]:
+    comparison = pair["comparison"]
+    lines = [
+        f"GR-2 entity graph retrieval comparison: {name}",
+        "| labelled class | cases | G1 precision | G2 precision | delta | G1 recall | G2 recall | delta | G1 FULL/PART/MISS | G2 FULL/PART/MISS |",
+        "|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|",
+    ]
+    for row in [*comparison["buckets"], comparison["aggregate"]]:
+        g1 = row["G1"]
+        g2 = row["G2"]
+        lines.append(
+            f"| {row['question_class']} | {row['num_cases']} | "
+            f"{_metric_cell(g1['context_precision'])} | {_metric_cell(g2['context_precision'])} | "
+            f"{_metric_cell(row['context_precision_delta'])} | "
+            f"{_metric_cell(g1['context_recall'])} | {_metric_cell(g2['context_recall'])} | "
+            f"{_metric_cell(row['context_recall_delta'])} | "
+            f"{g1['FULL']}/{g1['PART']}/{g1['MISS']} | "
+            f"{g2['FULL']}/{g2['PART']}/{g2['MISS']} |"
+        )
+    for arm, arm_report in (("G1", pair["G1"]), ("G2", pair["G2"])):
+        count = arm_report["pool_diagnostics"]["graph_prefiltered_count"]
+        total = arm_report["pool_diagnostics"]["row_count"]
+        lines.append(f"{arm} graph_prefiltered=true: {count}/{total}")
+        if count:
+            lines.append(
+                "NOTE: /api/ask passes no categories to the graph lane; these cases differ "
+                "from the product call."
+            )
+    g2_diagnostics = pair["G2"]["pool_diagnostics"]
+    lines.append(f"G2 routed class counts: {g2_diagnostics['routed_class_counts']}")
+    lines.append(
+        "G2 entity lane: "
+        f"{g2_diagnostics['entity_lane_cases']} cases, "
+        f"candidates max={g2_diagnostics['entity_candidates_max']}, "
+        f"hops max={g2_diagnostics['entity_hops_max']}"
+    )
+    cost = comparison["cost"]
+    entity_search = cost["G2_entity_search_ms"]
+    if entity_search["cases"] == 0:
+        entity_search_text = "no entity-lane cases"
+    else:
+        entity_search_text = (
+            f"{entity_search['cases']} lane cases, p50={entity_search['p50']} ms "
+            f"p95={entity_search['p95']} ms"
+        )
+    lines.append(
+        "Cost: G2 entity-search "
+        f"{entity_search_text}; paired rerank_s delta "
+        f"p50={cost['paired_rerank_s_delta']['p50']} s "
+        f"p95={cost['paired_rerank_s_delta']['p95']} s"
+    )
+    peak_rss_bytes = cost["G2_peak_rss_bytes"]
+    if peak_rss_bytes is None:
+        lines.append("G2 peak_rss_bytes: null (MiB unavailable)")
+    else:
+        lines.append(
+            f"G2 peak_rss_bytes: {peak_rss_bytes} ({peak_rss_bytes / (1024 * 1024):.2f} MiB)"
+        )
+    non_lane_parity = comparison["non_lane_parity"]
+    divergent_case_ids = non_lane_parity["divergent_case_ids"]
+    lines.append(
+        "G2 non-lane parity with G1: "
+        f"{len(divergent_case_ids)} divergent of {non_lane_parity['cases']} cases"
+    )
+    if divergent_case_ids:
+        lines.append(f"G2 non-lane divergent case ids: {', '.join(divergent_case_ids)}")
+    transitions = comparison["keyword_transitions"]
+    lines.append(
+        "Keyword transitions: "
+        + ", ".join(
+            f"{transition}: {details['count']}"
+            for transition, details in sorted(transitions.items())
+        )
+    )
+    keyword_losses = comparison["keyword_loss_case_ids"]
+    lines.append(
+        "Keyword loss case ids: " + (", ".join(keyword_losses) if keyword_losses else "none")
+    )
+    if comparison["downgrades"]:
+        lines.append("Keyword downgrades:")
+        for item in comparison["downgrades"]:
+            lines.append(
+                f"- {item['case_id']}: {item['transition']} "
+                f"(labelled={item['question_class']}, routed={item['routed_question_class']})"
+            )
+    return lines
+
+
+def render_gr2_table(report: dict[str, Any]) -> str:
+    """Render both comparisons for the GR-2 capsule without adding a timestamp."""
+    lines = _render_gr2_comparison("phase_c", report["phase_c"])
+    lines.append("")
+    lines.extend(_render_gr2_comparison("multi_doc_bucket", report["multi_doc_bucket"]))
+    return "\n".join(lines) + "\n"
+
+
+def run_gr2_report(args: argparse.Namespace) -> int:
+    report = build_gr2_report(
+        g1_pool_path=Path(args.g1_pool),
+        g2_pool_path=Path(args.g2_pool),
+        g2_pool_meta_path=Path(args.g2_pool_meta),
+        bucket_g1_pool_path=Path(args.bucket_g1_pool),
+        bucket_g2_pool_path=Path(args.bucket_g2_pool),
+        bucket_g2_pool_meta_path=Path(args.bucket_g2_pool_meta),
+        dataset_path=Path(args.dataset),
+        sidecar_path=Path(args.sidecar),
+        label_manifest_path=Path(args.label_manifest),
+        corpus_manifest_path=Path(args.corpus_manifest),
+        bucket_dataset_path=Path(args.bucket_dataset),
+        bucket_sidecar_path=Path(args.bucket_sidecar),
+        bucket_label_manifest_path=Path(args.bucket_label_manifest),
+        bucket_corpus_manifest_path=Path(args.bucket_corpus_manifest),
+        expected_cases=args.expected_cases,
+        bucket_expected_cases=args.bucket_expected_cases,
+        top_k=args.top_k,
+        context_chars=args.context_chars,
+    )
+    out = write_gr2_report(report, Path(args.gr2_out))
+    print(render_gr2_table(report), end="", flush=True)
+    print(
+        json.dumps(
+            {
+                "status": "ok",
+                "report_json": _stored_path(out),
+                "graph_retrieval_default": "unchanged",
+            },
+            ensure_ascii=False,
+        )
+    )
     return 0
 
 
@@ -1902,11 +2666,54 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     buckets.add_argument("--corpus-manifest", default=str(DEFAULT_CORPUS_MANIFEST_PATH),
                          help="corpus manifest (T-10) naming the measured corpus")
     buckets.add_argument("--bucket-report", default=str(DEFAULT_BUCKET_REPORT_PATH))
-    buckets.add_argument("--pool-arm", choices=("C", "G1"), default="C",
-                         help="producer arm recorded in the bucket report provenance")
+    buckets.add_argument(
+        "--pool-arm",
+        choices=("C", "G1", "G2"),
+        default="C",
+        help="producer arm recorded in the bucket report provenance",
+    )
+    buckets.add_argument(
+        "--pool-meta", help="ab_phase2_G2_pool_meta.json required when --pool-arm G2"
+    )
     buckets.add_argument("--expected-cases", type=int, default=100)
     buckets.add_argument("--top-k", type=int, default=PHASE_C_TOP_K)
     buckets.add_argument("--context-chars", type=int, default=PHASE_C_CONTEXT_CHARS)
+
+    gr2 = p.add_argument_group(
+        "GR-2 entity graph report (no models, no network; bucket run uses --out-dir .tmp/gr2_bucket)"
+    )
+    gr2.add_argument(
+        "--gr2-report",
+        action="store_true",
+        help="compare reranked G2 pools against G1 on both GR-2 datasets",
+    )
+    gr2.add_argument(
+        "--g1-pool", default=str(PROJECT_ROOT / ".tmp" / "ab_candidates_phase2_G1.json")
+    )
+    gr2.add_argument(
+        "--g2-pool", default=str(PROJECT_ROOT / ".tmp" / "ab_candidates_phase2_G2.json")
+    )
+    gr2.add_argument(
+        "--g2-pool-meta", default=str(PROJECT_ROOT / ".tmp" / "ab_phase2_G2_pool_meta.json")
+    )
+    gr2.add_argument(
+        "--bucket-g1-pool",
+        default=str(PROJECT_ROOT / ".tmp" / "gr2_bucket" / "ab_candidates_phase2_G1.json"),
+    )
+    gr2.add_argument(
+        "--bucket-g2-pool",
+        default=str(PROJECT_ROOT / ".tmp" / "gr2_bucket" / "ab_candidates_phase2_G2.json"),
+    )
+    gr2.add_argument(
+        "--bucket-g2-pool-meta",
+        default=str(PROJECT_ROOT / ".tmp" / "gr2_bucket" / "ab_phase2_G2_pool_meta.json"),
+    )
+    gr2.add_argument("--bucket-dataset", default=str(DEFAULT_MULTI_DOC_DATASET_PATH))
+    gr2.add_argument("--bucket-sidecar", default=str(DEFAULT_MULTI_DOC_SIDECAR_PATH))
+    gr2.add_argument("--bucket-label-manifest", default=str(DEFAULT_MULTI_DOC_LABEL_MANIFEST_PATH))
+    gr2.add_argument("--bucket-corpus-manifest", default=str(DEFAULT_CORPUS_MANIFEST_PATH))
+    gr2.add_argument("--bucket-expected-cases", type=int, default=15)
+    gr2.add_argument("--gr2-out", default=str(DEFAULT_GR2_REPORT_PATH))
 
     coherence = p.add_argument_group("GR-1a section coherence arm (no models, no network)")
     coherence.add_argument("--section-coherence", action="store_true",
@@ -1937,6 +2744,9 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     if args.section_coherence:
         return run_section_coherence_report(args)
+
+    if args.gr2_report:
+        return run_gr2_report(args)
 
     if args.buckets:
         return run_bucket_report(args)
