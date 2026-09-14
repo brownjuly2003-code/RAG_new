@@ -93,6 +93,7 @@ flowchart LR
 - [Migration plan](migration-plan.md): source-to-target seams, staged delivery, compatibility, rollback, and the first milestone.
 - [Resolution Contract schema v0.1](resolution-contract-schema-v0.1.md): strict authoring model, canonical identity, fixtures, and compatibility policy.
 - [Implementation plan](rag-new-architecture.md): short ordered backlog with verification.
+- [Graph search explained](graph-search.md): in Russian and in plain words — the structural graph (GR-1), the entity graph (GR-2), when the graph lane runs, why it is off by default, and how it is measured.
 
 ## Research basis
 
