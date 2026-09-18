@@ -706,6 +706,7 @@ def _load_checkpoint(
 
 
 def _render_markdown(report: Mapping[str, Any]) -> str:
+    allow_short = bool(report["provenance"]["config"].get("allow_short_contexts", False))
     lines = [
         "# Phase C generator benchmark",
         "",
@@ -714,6 +715,7 @@ def _render_markdown(report: Mapping[str, Any]) -> str:
         f"- Code SHA: `{report['provenance']['code_sha']}`",
         f"- Dataset SHA-256: `{report['provenance']['dataset_sha256']}`",
         f"- Contexts SHA-256: `{report['provenance']['contexts_sha256']}`",
+        f"- Short context lists allowed: `{'true' if allow_short else 'false'}`",
         f"- Ollama model: `{report['provenance']['ollama_model']}` "
         f"(`{report['provenance']['ollama_model_digest']}`)",
         f"- NLI: `{report['provenance']['nli_model']}` @ `{report['provenance']['nli_revision']}`",
@@ -755,6 +757,7 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--max-cases", type=int, default=0)
     parser.add_argument("--top-k", type=int, default=None)
     parser.add_argument("--context-chars", type=int, default=6000)
+    parser.add_argument("--allow-short-contexts", action="store_true")
     parser.add_argument("--seed-base", type=int, default=42)
     parser.add_argument("--temperature", type=float, default=0.0)
     parser.add_argument("--num-ctx", type=int, default=4096)
@@ -786,7 +789,11 @@ def main(argv: Sequence[str] | None = None) -> int:
         expected_cases=args.expected_cases,
         top_k=args.top_k,
         context_chars=args.context_chars,
+        allow_short_contexts=args.allow_short_contexts,
     )
+    for case in cases:
+        if not case["contexts"]:
+            raise BenchmarkInputError(f"no contexts for case_id={case['case_id']}")
     if args.max_cases > 0:
         cases = cases[: args.max_cases]
 
@@ -809,6 +816,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         "selected_cases": len(cases),
         "top_k_override": args.top_k,
         "context_chars": args.context_chars,
+        "allow_short_contexts": args.allow_short_contexts,
         "seed_base": args.seed_base,
         "temperature": args.temperature,
         "num_ctx": args.num_ctx,
@@ -961,6 +969,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                     "nli_valid": False,
                     "error": error,
                     "scores": scores,
+                    "context_count": len(case["contexts"]),
                 }
             )
             save_checkpoint()

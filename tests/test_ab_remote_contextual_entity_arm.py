@@ -858,14 +858,27 @@ def test_g2_rerank_keeps_pool_fields_and_g1_gains_only_rerank_s(
     g1_out = tmp_path / "g1"
     assert remote.stage_pools("G1", tmp_path / "corpus", cases_path, g1_out) == 0
     g1_pool = json.loads((g1_out / "ab_phase2_G1_pool.json").read_text(encoding="utf-8"))[0]
-    for field in g2_fields:
+    g2_only_fields = (
+        "routed_question_class",
+        "query_entities",
+        "matched_entities",
+        "entity_hops",
+        "entity_candidates",
+    )
+    for field in g2_only_fields:
         assert field not in g1_pool
     assert remote.stage_rerank("G1", g1_out) == 0
     g1 = json.loads((g1_out / "ab_candidates_phase2_G1.json").read_text(encoding="utf-8"))[0]
-    for field in g2_fields:
+    for field in g2_only_fields:
         assert field not in g1
     assert isinstance(g1["rerank_s"], float)
     assert g1["graph_postprocessed"] is True
+    for row in (g1_pool, g1):
+        timing = row["timing_ms"]
+        assert set(timing) == {"vector", "bm25", "entity"}
+        assert isinstance(timing["vector"], float) and timing["vector"] >= 0.0
+        assert isinstance(timing["bm25"], float) and timing["bm25"] >= 0.0
+        assert isinstance(timing["entity"], float) and timing["entity"] == 0.0
 
 
 def test_g2_stages_match_product_lane(monkeypatch: Any, tmp_path: Path) -> None:

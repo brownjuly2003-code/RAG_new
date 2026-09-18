@@ -707,10 +707,13 @@ def stage_pools(
                 row["matched_entities"] = pool.matched_entities
                 row["entity_hops"] = pool.entity_hops
                 row["entity_candidates"] = pool.entity_candidates
-                row["timing_ms"] = pool.timing_ms
+            row["timing_ms"] = pool.timing_ms
             rows.append(row)
             continue
+        t0 = time.perf_counter()
         vector_results = store.similarity_search(eff_query, k=retriever._retrieval_k)
+        vector_ms = (time.perf_counter() - t0) * 1000.0
+        t0 = time.perf_counter()
         bm25_results = []
         if retriever._bm25 is not None:
             scores = retriever._bm25.get_scores(_tokenize_for_bm25(eff_query))
@@ -718,6 +721,9 @@ def stage_pools(
             bm25_results = [
                 retriever._chunks[i] for i in top[: retriever._retrieval_k] if scores[i] > 0
             ]
+            bm25_ms = (time.perf_counter() - t0) * 1000.0
+        else:
+            bm25_ms = 0.0
         merged = (
             retriever._rrf_merge(vector_results, bm25_results) if bm25_results else vector_results
         )
@@ -732,6 +738,7 @@ def stage_pools(
         }
         if eff_query != case["query"]:
             row["expanded_query"] = eff_query
+        row["timing_ms"] = {"vector": vector_ms, "bm25": bm25_ms}
         rows.append(row)
 
     out_dir.mkdir(parents=True, exist_ok=True)
