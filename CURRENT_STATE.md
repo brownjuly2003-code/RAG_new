@@ -3,7 +3,7 @@
 **Entry point for a new session.** Read this, then [`ROADMAP.md`](ROADMAP.md);
 follow other links only when needed.
 
-Last updated: 2026-09-13 · Plan: [`plan_06_09_26.md`](plan_06_09_26.md)
+Last updated: 2026-09-17 · Plan: [`plan_06_09_26.md`](plan_06_09_26.md)
 (mode B, adopted by the owner 2026-09-10) · Audit of record:
 [`docs/audits/audit_final_23_08_2026.md`](docs/audits/audit_final_23_08_2026.md)
 · Phase C benchmark source: `c06bdf5` · push is the owner's call (§1), delegated to the agent for the 2026-09-13 run
@@ -120,7 +120,7 @@ B.1 is preparation until a batch is approved.
 | GR-1a | Offline coherence: 0.5216 vs plain top-4 0.5214 at unchanged 87/7/6; 0.63 loses 16 FULL ([capsule](docs/evidence/gr1a-section-coherence.md)) | **done** (c) |
 | GR-1b | [Mac measurement](docs/evidence/gr1b-structure-graph.md): 0.5475 / 0.9200, 88/8/4; NO-SHIP. [Seed reservation](docs/evidence/gr1b-seed-expansion.md): no gain; bounded diagnosis closed. Reuse embeddings. | **measured**, provenance limits in capsule |
 | GR-4 structural | [Opt-in ask → SQLite → Evidence](docs/evidence/gr4-structural-product-wiring.md): 100 Mac tests, browser rendering/export, strict mypy green; off/auto retain fallback. Next: GR-2, then GR-3. | **done** (a), synthetic fixtures; no default activation |
-| GR-2 entity | Extraction of 5589 chunks runs on the Mac through digest-pinned local `qwen2.5:7b` (`845dbda0…`, route `b3c38df`): 1159 cached, 0 rejected at 2026-09-14 00:57 UTC, about 22 h left. Committed: query classification cache (`1e66bc7`), offline G2 arm (`c468440`), embeddings-cache identity (`6aca4c2`), GR-2 report builder (`a54d6f7`). Next: the Mac G1/G2 run, report and capsule (T-26) once extraction is done | **in progress**, preparation until measured |
+| GR-2 entity | [Mac measurement](docs/evidence/gr2-entity-graph-lane.md) on `9ca8630`: phase C 0.5475 → **0.5487** / 0.9200 → 0.9250 (single-hop 0.5487 → 0.5499), lane on 6/100 cases, one PART→FULL, no losses; the 15-case multi-document bucket is **identical in both arms** although the lane fired on 11 of 15. G1 reproduces the published GR-1b pool case by case. Extraction 5589 cached / 0 rejected through digest-pinned local `qwen2.5:7b` (`845dbda0…`), not the plan's `mistral-small`. NO-SHIP at 0.63; entity lane and graph default stay off | **measured** (c), no default activation |
 
 ## Open questions for Julia
 
