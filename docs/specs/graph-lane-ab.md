@@ -95,8 +95,11 @@ precision rose; keyword FULL did not fall; LLM faithfulness and NLI
 faithfulness did not fall significantly, meaning the upper bound of the paired
 case-level 95% bootstrap interval of `graph − hybrid` is not below zero; and
 retrieve p95, counted as pools stage plus rerank, rose by at most 200 ms.
-Otherwise the default stays unchanged and the capsule records NO-SHIP-to-default
-with the criteria that failed. Both outcomes are results.
+A faithfulness criterion holds only when both generation reports are
+`measured`: computed from a report that is not, it is recorded as
+`not_evidence` next to its interval and does not hold. Otherwise the default
+stays unchanged and the capsule records NO-SHIP-to-default with the criteria
+that failed. Both outcomes are results.
 
 ### Scenario: identical seeds do not stand in for variance
 - **GIVEN** C.1a's run-level interval for LLM faithfulness is
@@ -104,6 +107,15 @@ with the criteria that failed. Both outcomes are results.
 - **WHEN** the graph run is compared with it
 - **THEN** the comparison uses the paired case-level bootstrap interval
   (fixed seed, published resample count), not the run-level interval
+
+### Scenario: a generation report that is not evidence passes no criterion
+- **GIVEN** a graph generation report whose `evidence_class` is `not_evidence`
+  because one case in every run has no valid judge score
+- **WHEN** the decision is taken
+- **THEN** the paired comparison leaves that case out and names it, the report
+  records each generation report's evidence class with its reasons, both
+  faithfulness criteria are `not_evidence` rather than `pass` whatever their
+  interval, and the verdict is not `AUTO_DEFAULT_AUTHORIZED`
 
 ### Scenario: a latency gate that times only entity search is refused
 - **GIVEN** entity search at p95 9.39 ms and reranking of the lane pool at about a
