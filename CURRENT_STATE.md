@@ -1,7 +1,5 @@
 # Current state — RAG_new
 
-Read this, then [`ROADMAP.md`](ROADMAP.md).
-
 2026-09-21 · Plan: [`plan_06_09_26.md`](plan_06_09_26.md)
 (mode B, adopted 2026-09-10) · Audit:
 [`docs/audits/audit_final_23_08_2026.md`](docs/audits/audit_final_23_08_2026.md)
@@ -16,7 +14,7 @@ vs hybrid 0.5067, FULL 89 vs 87; multi-document bucket recall 0.5000 → 0.4000 
 (both graph arms); retrieve p95 +8765.2 ms vs 200 ms — fail. Generation:
 `not_evidence` (297/300 valid; excluded case in capsule).
 `RAG_GRAPH_RETRIEVAL` stays `off`. **C.4 closed:** [NO-SHIP of Qwen3](docs/evidence/c4-generator-model-decision.md): faithfulness 0.8986 < 0.90; host RAM unknown.
-Default stays Qwen2.5, below gate. **C.3 done:** [HTTP](docs/evidence/c3-contract-shaped-response.md) and [manual copilot drafts](docs/evidence/c3-copilot-contract-draft.md), default off; 555 Mac tests. **Next: phase D pgvector spike**, per plan.
+Default: Qwen2.5, below gate. **C.3 done:** [HTTP](docs/evidence/c3-contract-shaped-response.md) and [manual copilot drafts](docs/evidence/c3-copilot-contract-draft.md), default off; 555 Mac tests. **D.1 measured:** [ADR 0007](docs/adr/0007-pgvector-spike.md); next: ANN query, graph/evidence parity, reranking and RAM.
 
 ### Phase C.1a Qwen 2.5 7B baseline — measured on Mac
 
@@ -56,8 +54,8 @@ B.2/B.3/B.5 need data; label approval alone cannot fix this.
 Review: `python scripts/aircargo_labels.py report --batch 1`;
 approve: `python scripts/aircargo_labels.py approve --batch 1 --approver julia`.
 
-**This laptop:** deselect the headless-Chrome a11y test (CI runs it); strict
-mypy needs locked numpy 2.4.4; Postgres integration tests do not run here.
+**Windows:** focused checks only; strict mypy needs numpy 2.4.4. PostgreSQL and
+browser checks run on Mac.
 
 ## Current facts
 
