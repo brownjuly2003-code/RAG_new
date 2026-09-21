@@ -14,8 +14,10 @@ by ``rerank_indices``; model errors intentionally propagate untouched.
 from __future__ import annotations
 
 import math
+from collections.abc import Callable
+from typing import Any
 
-__all__ = ["rerank_indices", "validate_d1_rankings"]
+__all__ = ["rerank_indices", "run_offline_rerank", "validate_d1_rankings"]
 
 
 def _check_query(query: object) -> None:
@@ -250,3 +252,178 @@ def validate_d1_rankings(
         arm_name: [list(ranking) for ranking in first_run[arm_name]["rankings"]]
         for arm_name in arm_names
     }
+
+
+def _validate_cases(cases: object) -> None:
+    if not isinstance(cases, list):
+        raise TypeError(f"cases must be a list, got {type(cases).__name__}")
+    if not cases:
+        raise ValueError("cases must be a non-empty list")
+    seen_ids: set[str] = set()
+    for position, case in enumerate(cases):
+        if not isinstance(case, dict):
+            raise TypeError(f"cases[{position}] must be a dict")
+        if set(case) != {"case_id", "query", "kws"}:
+            raise ValueError(
+                f"cases[{position}] must have exactly case_id, query and kws"
+            )
+        for key in ("case_id", "query"):
+            value = case[key]
+            if not isinstance(value, str):
+                raise TypeError(f"cases[{position}][{key!r}] must be a str")
+            if not value:
+                raise ValueError(f"cases[{position}][{key!r}] must be non-empty")
+        case_id = case["case_id"]
+        if case_id in seen_ids:
+            raise ValueError(f"duplicate case_id: {case_id}")
+        seen_ids.add(case_id)
+        keywords = case["kws"]
+        if not isinstance(keywords, list):
+            raise TypeError(f"cases[{position}]['kws'] must be a list")
+        if any(not isinstance(keyword, str) for keyword in keywords):
+            raise TypeError(f"cases[{position}]['kws'] must contain only str values")
+
+
+def _validate_d1_config(report: dict, *, chunk_count: int, case_count: int) -> None:
+    config = report.get("config")
+    if not isinstance(config, dict):
+        raise TypeError("d1_report['config'] must be a dict")
+    expected = {
+        "chunks": chunk_count,
+        "cases": case_count,
+        "repetitions": 3,
+        "branch_limit": 20,
+    }
+    for key, value in expected.items():
+        actual = config.get(key)
+        if isinstance(actual, bool) or not isinstance(actual, int):
+            raise TypeError(f"d1_report config {key!r} must be an int")
+        if actual != value:
+            raise ValueError(
+                f"d1_report config {key!r} must be {value}, got {actual!r}"
+            )
+    if config.get("reranker") is not False:
+        raise ValueError("d1_report must contain pre-reranker rankings")
+
+
+def _validate_buckets(
+    buckets: object,
+    *,
+    case_count: int,
+) -> list[tuple[str, tuple[int, int]]]:
+    if not isinstance(buckets, dict):
+        raise TypeError(f"buckets must be a dict, got {type(buckets).__name__}")
+    if not buckets:
+        raise ValueError("buckets must be non-empty")
+    checked: list[tuple[str, tuple[int, int]]] = []
+    cursor = 0
+    for name, bounds in buckets.items():
+        if not isinstance(name, str):
+            raise TypeError("bucket names must be str values")
+        if not name:
+            raise ValueError("bucket names must be non-empty")
+        if not isinstance(bounds, tuple):
+            raise TypeError(f"bucket {name!r} bounds must be a tuple")
+        if len(bounds) != 2:
+            raise ValueError(f"bucket {name!r} bounds must contain start and end")
+        start, end = bounds
+        if any(isinstance(value, bool) or not isinstance(value, int) for value in bounds):
+            raise TypeError(f"bucket {name!r} bounds must be non-bool ints")
+        if start != cursor or end <= start or end > case_count:
+            raise ValueError(f"bucket {name!r} does not form a contiguous partition")
+        checked.append((name, (start, end)))
+        cursor = end
+    if cursor != case_count:
+        raise ValueError("bucket ranges must cover every case")
+    return checked
+
+
+def _linear_percentile(values: list[float], fraction: float) -> float:
+    ordered = sorted(values)
+    position = (len(ordered) - 1) * fraction
+    lower = math.floor(position)
+    upper = math.ceil(position)
+    if lower == upper:
+        return ordered[lower]
+    weight = position - lower
+    return ordered[lower] + (ordered[upper] - ordered[lower]) * weight
+
+
+def run_offline_rerank(
+    reranker: Any,
+    d1_report: dict,
+    cases: list[dict],
+    texts: list[str],
+    buckets: dict[str, tuple[int, int]],
+    *,
+    clock: Callable[[], float],
+    top_k: int = 5,
+) -> dict[str, dict]:
+    """Rerank saved D.1 candidates once and score the resulting order."""
+    if not isinstance(d1_report, dict):
+        raise TypeError(f"d1_report must be a dict, got {type(d1_report).__name__}")
+    _check_texts(texts)
+    _validate_cases(cases)
+    _validate_d1_config(
+        d1_report,
+        chunk_count=len(texts),
+        case_count=len(cases),
+    )
+    saved_rankings = validate_d1_rankings(
+        d1_report,
+        chunk_count=len(texts),
+        case_count=len(cases),
+        repetitions=3,
+        candidate_limit=40,
+    )
+    checked_buckets = _validate_buckets(buckets, case_count=len(cases))
+    _check_positive_int(top_k, "top_k")
+    if any(
+        top_k > len(ranking)
+        for arm_name in ("postgres", "chroma_bm25")
+        for ranking in saved_rankings[arm_name]
+    ):
+        raise ValueError("top_k must not exceed any saved candidate ranking")
+
+    from scripts.pgvector_spike import score_rows
+
+    output: dict[str, dict] = {}
+    metric_ranges = [("global", (0, len(cases))), *checked_buckets]
+    for arm_name in ("postgres", "chroma_bm25"):
+        reranked: list[list[int]] = []
+        latencies: list[float] = []
+        for case, ranking in zip(cases, saved_rankings[arm_name], strict=True):
+            started = _finite_float(clock(), "clock start")
+            ordered = rerank_indices(
+                reranker,
+                case["query"],
+                ranking,
+                texts,
+                top_k=len(ranking),
+            )
+            finished = _finite_float(clock(), "clock finish")
+            elapsed_ms = 1000.0 * (finished - started)
+            if not math.isfinite(elapsed_ms) or elapsed_ms <= 0:
+                raise ValueError("rerank elapsed time must be finite and positive")
+            reranked.append(ordered)
+            latencies.append(elapsed_ms)
+
+        metrics: dict[str, dict] = {}
+        for metric_name, (start, end) in metric_ranges:
+            measured = score_rows(
+                cases[start:end],
+                reranked[start:end],
+                texts,
+                top_k=top_k,
+            )
+            bucket_latencies = latencies[start:end]
+            measured["cases"] = end - start
+            measured["latency_p50_ms"] = _linear_percentile(bucket_latencies, 0.50)
+            measured["latency_p95_ms"] = _linear_percentile(bucket_latencies, 0.95)
+            metrics[metric_name] = measured
+        output[arm_name] = {
+            "rankings": reranked,
+            "latency_ms": latencies,
+            "metrics": metrics,
+        }
+    return output
