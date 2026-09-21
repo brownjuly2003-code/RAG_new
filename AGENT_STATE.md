@@ -79,20 +79,19 @@ generation tuning. Measured over pool `91ce1745…`: baseline 0.5067 at top-5
 narrowing arm 0.5216, while plain top-4 gives 0.5214 at the same coverage — a
 smaller `k`, not structure — and 0.63 only with FULL falling 87 → 71
 ([GR-1a](docs/evidence/gr1a-section-coherence.md)). The cheap structural arm
-was tried and does not reach the gate; the remaining GR steps are what is left.
+was tried and does not reach the gate; nor did GR-2/GR-3 (below).
 Limit: the eval bucket is 99 `single_hop`, 1 `multi_hop`, 0 `aggregation`,
-0 `global` (`6cde0b1`), so a per-class A/B on the classes a graph should help
-most needs a separate candidate pool for GR-0.2's prepared 15 multi-hop /
-aggregation questions. "Needed" is measured; "will work" is not claimed.
+0 `global` (`6cde0b1`). GR-3 now measures the separate 15-case multi-hop /
+aggregation bucket; recall and FULL fell under both graph arms.
 
-**Resume point 2026-09-12 — GR-1b measured.** Pipeline wiring is
+**Resume point 2026-09-21 — GR-3 measured: NO-SHIP-to-default.** Pipeline wiring is
 committed at `782f03f`, the retrieval lane at `6e23630`, and pool provenance
 guards through `f9ba47a`. GR-1b: 100 cases, precision 0.5475, recall 0.9200,
 FULL/PART/MISS 88/8/4; short-context fix `b2db542`. [Report, archived input and
 provenance limits](docs/evidence/gr1b-structure-graph.md): NO-SHIP at 0.63,
-prefilter 0/100. [Oracle](docs/evidence/gr1b-safe-subset-oracle.md): 0.6780 / 0.9250 with labels and G1 fallback. Query-only control: 0.6268 / 0.7250, NO-SHIP; [diagnosis](docs/evidence/gr1b-query-control.md) finds missing hits outside uncapped top-five. [Stage replay](docs/evidence/gr1b-stage-replay.md): metadata recovered, 100/100 exact; expansion alone 0.5125 / 0.9300, NO-SHIP. [Seed reservation](docs/evidence/gr1b-seed-expansion.md): 0.5472 / 0.9200 with coherence, no gain. [GR-4 structural wiring](docs/evidence/gr4-structural-product-wiring.md) passes HTTP, browser and strict type checks. GR-2 is published; next is GR-3.
+prefilter 0/100. [Oracle](docs/evidence/gr1b-safe-subset-oracle.md): 0.6780 / 0.9250 with labels and G1 fallback. Query-only control: 0.6268 / 0.7250, NO-SHIP; [diagnosis](docs/evidence/gr1b-query-control.md) finds missing hits outside uncapped top-five. [Stage replay](docs/evidence/gr1b-stage-replay.md): metadata recovered, 100/100 exact; expansion alone 0.5125 / 0.9300, NO-SHIP. [Seed reservation](docs/evidence/gr1b-seed-expansion.md): 0.5472 / 0.9200 with coherence, no gain. [GR-4 structural wiring](docs/evidence/gr4-structural-product-wiring.md) passes HTTP, browser and strict type checks.
 Windows is for editing and focused checks only. Models, full-suite tests,
-PostgreSQL integration and containers run on the Mac; no WSL/Docker/VM here. The owner delegated commits and pushes for the 2026-09-13 run; GitHub Actions has started no job since that day's pushes (account billing; run ids in CURRENT_STATE). GR-2 [builder and extraction preparation](docs/operations/gr2-entity-builder-preparation.md) and [entity retrieval wiring](docs/evidence/gr2-entity-retrieval-wiring.md) verified on synthetic fixtures. Extraction finished 5589/5589 cached, 0 rejected, through digest-pinned local Ollama `qwen2.5:7b` (`845dbda0…`). [GR-2 measurement](docs/evidence/gr2-entity-graph-lane.md) published 2026-09-17: phase C 0.5475 → 0.5487, NO-SHIP at 0.63; graph default unchanged. Committed harness: classification cache `1e66bc7`, offline G2 arm `c468440`, embeddings-cache identity `6aca4c2`, GR-2 report builder `a54d6f7`. Next: GR-3; reuse embeddings. Quality gate remains open.
+PostgreSQL integration and containers run on the Mac; no WSL/Docker/VM here. The owner delegated commits and pushes for the 2026-09-13 run; GitHub Actions has started no job since that day's pushes (account billing; run ids in CURRENT_STATE). GR-2 [builder and extraction preparation](docs/operations/gr2-entity-builder-preparation.md) and [entity retrieval wiring](docs/evidence/gr2-entity-retrieval-wiring.md) verified on synthetic fixtures. Extraction finished 5589/5589 cached, 0 rejected, through digest-pinned local Ollama `qwen2.5:7b` (`845dbda0…`). [GR-2 measurement](docs/evidence/gr2-entity-graph-lane.md) published 2026-09-17: phase C 0.5475 → 0.5487, NO-SHIP at 0.63; graph default unchanged. Committed harness: classification cache `1e66bc7`, offline G2 arm `c468440`, embeddings-cache identity `6aca4c2`, GR-2 report builder `a54d6f7`. [GR-3](docs/evidence/gr3-graph-lane-ab.md) measured 2026-09-18/19, published at `4cca363`: phase-C `G2` 0.5487 vs hybrid 0.5067 (FULL 89 vs 87); multi-document bucket recall 0.5000 → 0.4000, FULL 4 → 1; retrieve p95 +8765.2 ms (fail); generation half `not_evidence` (297/300 valid rows) — verdict NO-SHIP-to-default, `RAG_GRAPH_RETRIEVAL` stays `off`, `auto` gate unchanged. Quality gate remains open. **Next action: C.4** (plan §10.4) — the model decision from C.1a/C.1b faithfulness, NLI, latency and RAM only; no model swap.
 
 **Slice acceptance rule (binding, including for autopilot):** a slice counts
 only if it changes observable `/api/ask` or UI behaviour with an E2E test, or

@@ -1,21 +1,27 @@
 # Current state — RAG_new
 
-**Entry point for a new session.** Read this, then [`ROADMAP.md`](ROADMAP.md);
-follow other links only when needed.
+Read this, then [`ROADMAP.md`](ROADMAP.md).
 
-Last updated: 2026-09-17 · Plan: [`plan_06_09_26.md`](plan_06_09_26.md)
-(mode B, adopted by the owner 2026-09-10) · Audit of record:
+Last updated: 2026-09-21 · Plan: [`plan_06_09_26.md`](plan_06_09_26.md)
+(mode B, adopted 2026-09-10) · Audit:
 [`docs/audits/audit_final_23_08_2026.md`](docs/audits/audit_final_23_08_2026.md)
-· Phase C benchmark source: `c06bdf5` · push is the owner's call (§1), delegated to the agent for the 2026-09-13 run
+· Phase C source: `c06bdf5` · owner delegated commits and pushes (§1).
 
 ## Start here
 
+### GR-3 measured — NO-SHIP-to-default
+
+Measured 2026-09-18/19 on `deproject-mac` ([capsule](docs/evidence/gr3-graph-lane-ab.md)): phase-C `G2` 0.5487
+vs hybrid 0.5067, FULL 89 vs 87; multi-document bucket recall 0.5000 → 0.4000 and FULL 4 → 1
+(both graph arms); retrieve p95 +8765.2 ms vs 200 ms — fail. Generation:
+`not_evidence` (297/300 valid; excluded case in capsule).
+`RAG_GRAPH_RETRIEVAL` stays `off` by default. **Next action (plan §10.4): C.4**, the model
+decision — C.1a/C.1b faithfulness, NLI, latency and RAM only; no model swap.
+
 ### Phase C.1a Qwen 2.5 7B baseline — measured on Mac
 
-`c1a-qwen25-7b-c06bdf5` completed on `deproject-mac`: exactly 3 × 100 cases,
-300 valid generations, LLM-judge and NLI results, and zero failures. The
-checked-in [raw report](evaluation/c1a-qwen25-7b-c06bdf5-phase-c-generator-benchmark.json)
-is `measured`; sidecar SHA-256 is guarded by `tests/test_phase_c_baseline_artifact.py`.
+Mac: 3 × 100 valid generations, LLM-judge and NLI, zero failures.
+[Raw report](evaluation/c1a-qwen25-7b-c06bdf5-phase-c-generator-benchmark.json): `measured`; SHA-256 guarded by `tests/test_phase_c_baseline_artifact.py`.
 
 | Metric | Mean | Run-level 95% CI |
 |---|---:|---:|
@@ -26,37 +32,29 @@ is `measured`; sidecar SHA-256 is guarded by `tests/test_phase_c_baseline_artifa
 | Answer relevancy | 0.8960 | [0.8960, 0.8960] |
 | Mean latency per case | 197.50 s | [192.10 s, 202.90 s] |
 
-The guarded report pins full provenance and config: code `c06bdf5`, model
+Pinned provenance: code `c06bdf5`, model
 `qwen2.5:7b` at `845dbda0…`, dataset `3737d694…`, cached contexts `91ce1745…`,
-NLI `8adb042d…`, seeds 42–44, temperature 0. NLI peak RSS was 2.12 GB and the
-loaded Ollama model 5.06 GB; neither is total-host peak RAM. Both the 0.90
-faithfulness and 0.63 precision gates are missed. **Stream GR is required:**
-only retrieval can move precision over fixed contexts. GR-0.3 measured 0.5067
-at top-5; GR-1a measured 0.5216 versus plain top-4's 0.5214.
+NLI `8adb042d…`, seeds 42–44, temperature 0; NLI peak RSS 2.12 GB, loaded model
+5.06 GB, neither total-host. Gates missed: faithfulness 0.90, precision 0.63.
 
-**C.1b `qwen3:8b` is published** (2026-09-11): 3 × 100 Mac cases,
-zero failures, LLM faithfulness 0.8986, NLI 0.9908, relevancy 0.8095,
-precision 0.506657 and mean latency 176.81 s. The guarded [raw report](evaluation/c1b-qwen3-8b-b8ecc8e-phase-c-generator-benchmark.json)
-and [capsule](docs/evidence/c1b-qwen3-generator-benchmark.md) hold provenance and
-limitations. This is C.4 input, not a model change; host peak RAM is unknown.
+**C.1b Qwen3 8B** (2026-09-11): 3 × 100 Mac cases, zero failures;
+faithfulness 0.8986, NLI 0.9908, relevancy 0.8095, precision 0.506657,
+latency 176.81 s. [Raw report](evaluation/c1b-qwen3-8b-b8ecc8e-phase-c-generator-benchmark.json),
+[provenance/limits](docs/evidence/c1b-qwen3-generator-benchmark.md): C.4 input; host peak RAM unknown.
 
-### 1. The gate can reach Russian traffic. The corpus still cannot measure it.
+### 1. Russian gate wired; resolution unmeasurable
 
-T-01…T-09 are closed; commits and tests are in the
-[A.6–A.8 capsule](docs/evidence/a6-journey-admission-and-clarification.md).
-Push remains the owner's call:
+T-01…T-09 closed: [commits/tests](docs/evidence/a6-journey-admission-and-clarification.md).
+Authorized push:
 `git -c credential.helper='!gh auth git-credential' push origin master`.
 
-The corpus cannot measure resolution for three independent reasons
-([capsule](docs/evidence/a6-journey-admission-and-clarification.md)): no case
-names a shipment; the original English-only gate could not measure the Russian
-corpus; and the bilingual gate still has admission recall **0.0000** over 100
-agent-written, `agent_labelled`, unapproved cases. Its sole admission is an
-`exception_escalation` false positive; no case belongs to this journey.
-
-B.2/B.3/B.5 stay blocked on data. Label review does not fix that:
-`python scripts/aircargo_labels.py report --batch 1`, then
-`python scripts/aircargo_labels.py approve --batch 1 --approver julia`.
+Resolution remains unmeasurable ([evidence](docs/evidence/a6-journey-admission-and-clarification.md)):
+no case names a shipment; the original gate was English-only; the bilingual
+gate has recall **0.0000**, with one `exception_escalation` false positive.
+None of 100 `agent_labelled`, unapproved cases belongs to the journey.
+B.2/B.3/B.5 need data; label approval alone cannot fix this.
+Review: `python scripts/aircargo_labels.py report --batch 1`;
+approve: `python scripts/aircargo_labels.py approve --batch 1 --approver julia`.
 
 **This laptop:** deselect the headless-Chrome a11y test (CI runs it); strict
 mypy needs locked numpy 2.4.4; Postgres integration tests do not run here.
@@ -65,24 +63,22 @@ mypy needs locked numpy 2.4.4; Postgres integration tests do not run here.
 
 - **Remote exists** (2026-08-24): `brownjuly2003-code/RAG_new`, private, tag
   `freeze-2026-08-23` = `26866e9`. Pushes go over HTTPS (command in §1).
-- **Phase A closed:** `/api/ask` runs the shipment-status journey read-only.
-  Only its clarification terminal may project when both default-off allowlists
-  name it; disabled/declined/failed states remain explicit.
+- **Phase A closed:** read-only shipment-status `/api/ask`; clarification projects
+  only under both default-off allowlists. Disabled/declined/failed stay explicit.
 - **Zero real labelled cases.** 100/100 labelled, 0 approved, 0 binding a
-  shipment, `expected_terminal` `verified` for all 100. 201 source
-  documents are real; questions were agent-written (`325d63c`, `6b7417d`,
+  shipment; all expect `verified`. 201 real documents; agent-written questions
+  (`325d63c`, `6b7417d`,
   `32e841f`). Question classes live in a sidecar (`6cde0b1`) — 99 `single_hop`,
   1 `multi_hop`, 0 `aggregation`, 0 `global` (plan §5, GR-0.2).
 - **CI last ran on pushed `386ee10`** (2026-09-10): `CI` 34471656422 passed
   11 of 11 jobs. Run 34359692687 on `69a5140` verified the CVE-2026-9856 floor
   `transformers>=5.10.0` under `--require-hashes`, pip-audit clean.
-- **No CI job has run on any later commit.** GitHub started no job for the
-  2026-09-13 and 2026-09-14 pushes: `CI` 34775257921 on `2876f54`, 34778428984
-  on `b3c38df`, 34778591640 on `75600dc`, 34781877875 on `1e66bc7`, 34786436221
-  on `c468440`, 34789759186 on `6aca4c2`, 34789953376 on `2a18ad3` and
-  34794870657 on `a54d6f7`. Each job's annotation names failed account payments
-  or the spending limit. Until the owner fixes billing and re-runs the head
-  commit, local full gates are the only check.
+- **Later CI jobs did not start** (account billing/spending limit). September
+  13–14 runs 34775257921, 34778428984, 34778591640, 34781877875, 34786436221,
+  34789759186, 34789953376 and 34794870657 were blocked. September 18:
+  `CI` 35348088420 on `32de532`, 35354816855 on `db70da5`, 11 jobs each,
+  no steps started; all 22 annotations confirm billing. Until billing is
+  fixed and head rerun, use Mac gates.
 
 ## Accepted open risks
 
@@ -93,14 +89,13 @@ mypy needs locked numpy 2.4.4; Postgres integration tests do not run here.
 - **The integration job connects to Postgres as a superuser**, so RLS is
   inert unless the assertion uses a NOBYPASSRLS runtime role.
 
-## The rule that governs every slice
+## Slice rule
 
-A slice counts only if **(a)** observable `/api/ask` or UI behaviour changed
-with an E2E test proving it, **(b)** real labelled cases went up, or **(c)** a
-published number changed with provenance. T-02/T-08/T-05 are (c); T-03 is (a).
-B.1 is preparation until a batch is approved.
+Count only **(a)** `/api/ask` or UI change proven by E2E, **(b)** more real
+labelled cases, or **(c)** published numbers with provenance. T-02/T-08/T-05: (c);
+T-03: (a). B.1 remains preparation until approval.
 
-## Phases 0 and A — done · GR — required stream (plan §2) · B — waits on the owner (Q2)
+## Phases 0/A done · GR required · B blocked (Q2)
 
 | # | Item | Status |
 |---|---|---|
@@ -115,29 +110,28 @@ B.1 is preparation until a batch is approved.
 | B.4 | Judge calibration 10 → ≥40 double-annotated routes | not started |
 | B.5 | Corpus v1.0 at `real_labelled` | needs Q2 route 1 |
 | GR-0.2 | Separate pinned bucket: 15 cases over 13 documents; 10 `multi_hop`, 5 `aggregation`; original phase-C dataset unchanged | **done as preparation**, not a measured slice |
-| GR-0.3 | Retrieval baseline by class over pool `91ce1745…`: 0.5067 / 0.9050 at top-5 (= C.1a), `single_hop` 0.5063 / 0.9091 over 99 cases, `multi_hop` over 1, two classes empty — a ruler, not a comparison ([capsule](docs/evidence/gr0-bucket-baseline.md)) | **done** (c) |
-| GR-0.4 | SGR schema adds `question_class`, bounded `entities`, `needs_multi_hop` and `reason_code`; default and legacy retrieval routes unchanged | **done as preparation**, graph still explicit |
+| GR-0.3 | [Baseline](docs/evidence/gr0-bucket-baseline.md), `91ce1745…`: top-5 0.5067 / 0.9050; 99 single-hop 0.5063 / 0.9091, one multi-hop | **done** (c) |
+| GR-0.4 | SGR adds question class, bounded entities, multi-hop flag and reason; default/legacy retrieval unchanged | **preparation**, graph explicit |
 | GR-1a | Offline coherence: 0.5216 vs plain top-4 0.5214 at unchanged 87/7/6; 0.63 loses 16 FULL ([capsule](docs/evidence/gr1a-section-coherence.md)) | **done** (c) |
-| GR-1b | [Mac measurement](docs/evidence/gr1b-structure-graph.md): 0.5475 / 0.9200, 88/8/4; NO-SHIP. [Seed reservation](docs/evidence/gr1b-seed-expansion.md): no gain; bounded diagnosis closed. Reuse embeddings. | **measured**, provenance limits in capsule |
-| GR-4 structural | [Opt-in ask → SQLite → Evidence](docs/evidence/gr4-structural-product-wiring.md): 100 Mac tests, browser rendering/export, strict mypy green; off/auto retain fallback. Next: GR-2, then GR-3. | **done** (a), synthetic fixtures; no default activation |
-| GR-2 entity | [Mac measurement](docs/evidence/gr2-entity-graph-lane.md) on `9ca8630`: phase C 0.5475 → **0.5487** / 0.9200 → 0.9250 (single-hop 0.5487 → 0.5499), lane on 6/100 cases, one PART→FULL, no losses; the 15-case multi-document bucket is **identical in both arms** although the lane fired on 11 of 15. G1 reproduces the published GR-1b pool case by case. Extraction 5589 cached / 0 rejected through digest-pinned local `qwen2.5:7b` (`845dbda0…`), not the plan's `mistral-small`. NO-SHIP at 0.63; entity lane and graph default stay off | **measured** (c), no default activation |
+| GR-1b | [Mac](docs/evidence/gr1b-structure-graph.md): 0.5475 / 0.9200, 88/8/4. [Seed reservation](docs/evidence/gr1b-seed-expansion.md): no gain; diagnosis closed | **measured**, NO-SHIP |
+| GR-4 | [Ask → SQLite → Evidence](docs/evidence/gr4-structural-product-wiring.md): 100 Mac tests, browser/export, strict mypy | **done** (a), synthetic; off/auto fallback |
+| GR-2 entity | [Mac](docs/evidence/gr2-entity-graph-lane.md), `9ca8630`: 0.5487 / 0.9250, lane 6/100; bucket unchanged (lane 11/15). G1 matches GR-1b; 5589 cached / 0 rejected via pinned Qwen2.5 (`845dbda0…`) | **measured** (c), NO-SHIP at 0.63; off |
+| GR-3 A/B | [Comparison](docs/evidence/gr3-graph-lane-ab.md), `32de532`: precision 0.5067 → 0.5487; bucket recall 0.5 → 0.4, FULL 4 → 1; p95 +8765.2 ms; generation `not_evidence`, 297/300 valid | **measured** (c), NO-SHIP-to-default; off |
 
 ## Open questions for Julia
 
-Q1 is answered (separate private repo). Each blocks only its own phase:
+Q1 answered: private repo. Others block their phase:
 
-- **Q2 (phase B), two questions.** (a) Approve proposed labels in batches of
-  20 — command in §1. (b) Can 100 real support requests that name a shipment
-  be obtained? Without them B.2/B.3/B.5 stay blocked. If no, record that the
-  repository measures resolution on synthetic instances wherever a number is
-  published.
+- **Q2 (B):** approve labels in batches of 20 (§1); obtain 100 real shipment-bound
+  support requests. B.2/B.3/B.5 stay blocked without them. Otherwise, all
+  published resolution numbers must identify synthetic instances.
 - **Q3 (phase C):** heavy runs on Colab or the iMac. **Q4 (phase E):** publish
   as `RAG_new` or rename.
 
 ## Links
 
-- Roadmap and what is frozen — [`ROADMAP.md`](ROADMAP.md)
-- One row per slice, with evidence — [`EVIDENCE_INDEX.md`](EVIDENCE_INDEX.md)
-- Open work after T-04, plus the pre-audit queue — [`BACKLOG.md`](BACKLOG.md)
-- Agent conventions — [`CLAUDE.md`](CLAUDE.md) · removed surfaces —
+- Frozen streams — [`ROADMAP.md`](ROADMAP.md)
+- Evidence — [`EVIDENCE_INDEX.md`](EVIDENCE_INDEX.md)
+- Queue — [`BACKLOG.md`](BACKLOG.md)
+- Conventions — [`CLAUDE.md`](CLAUDE.md) · removed surfaces —
   [`DEPRECATIONS.md`](DEPRECATIONS.md) · [`AGENT_STATE.md`](AGENT_STATE.md)

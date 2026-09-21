@@ -96,8 +96,12 @@ uncapped top-five. [Stage replay](docs/evidence/gr1b-stage-replay.md) recovers m
 100/100 outputs; expansion alone gives 0.5125 / 0.9300 without G1 fact losses,
 still NO-SHIP. [Seed reservation](docs/evidence/gr1b-seed-expansion.md) prevents displaced seed
 text but yields no metric gain (0.5472 / 0.9200 with coherence). This bounded
-experiment is closed. [GR-4 structural wiring](docs/evidence/gr4-structural-product-wiring.md) now passes HTTP and browser checks. Next: GR-2/GR-3. Do not repeat this
-pool or its embeddings. Resume details are in `CURRENT_STATE.md`.
+experiment is closed. [GR-4 structural wiring](docs/evidence/gr4-structural-product-wiring.md) now passes HTTP and
+browser checks. GR-2 is measured — 0.5487 / 0.9250, NO-SHIP at 0.63, lane on 6 of 100
+cases ([capsule](docs/evidence/gr2-entity-graph-lane.md)). GR-3 is measured (2026-09-18/19):
+NO-SHIP-to-default, `RAG_GRAPH_RETRIEVAL` default stays `off`
+([capsule](docs/evidence/gr3-graph-lane-ab.md)). Do not repeat this pool or its embeddings.
+Next is C.4. Resume details are in `CURRENT_STATE.md`.
 
 Both inherited CI failures ([ADR 0008](docs/adr/0008-inherited-ci-red-disposition.md))
 are closed. On `6cc810d` (T-17, pushed) both workflows that run on
@@ -124,7 +128,7 @@ so this is two of five. The chromadb CVE ignores carry a **review date of 2026-0
 | **A** | Wire the shipment-status shadow into `/api/ask` | rule (a): E2E test on real endpoint behaviour + evidence bundle + replay receipt |
 | **B** | 100 real labelled air-cargo cases | rule (b): corpus v1.0 at `evidence_class: real_labelled`, ≥40 double-annotated calibration routes. B.1 done (`agent_labelled`); B.2/B.3/B.5 blocked on data, now for three reasons rather than one |
 | **C** | Quality leverage: Qwen3 benchmark, NLI second judge, claim-level compilation | rule (c): faithfulness ≥ 0.90 and precision ≥ 0.63 over 3 runs with a CI, **or** a NO-SHIP report with a cause |
-| **GR** | Graph retrieval: structure graph (0 LLM calls) → entity graph → A/B → wired behind flags. Unfrozen 2026-09-06; **required** under the plan the owner adopted on 2026-09-10 — the only stream that can move the precision gate (0.5067 → ≥ 0.63), which is computed over cached contexts (plan §2); GR-1a's cheap arm gave 0.5216, no better than plain top-4's 0.5214 ([capsule](docs/evidence/gr1a-section-coherence.md)) | rule (c): published context precision / multi-hop coverage with provenance per step; rule (a): graph lane behind `RAG_GRAPH_RETRIEVAL` with an E2E test; `auto` default only after GR-3 |
+| **GR** | Graph retrieval: structure graph (0 LLM calls) → entity graph → A/B → wired behind flags. Unfrozen 2026-09-06; **required** under the plan the owner adopted on 2026-09-10 — the only stream that can move the precision gate (0.5067 → ≥ 0.63), which is computed over cached contexts (plan §2); GR-1a's cheap arm gave 0.5216, no better than plain top-4's 0.5214 ([capsule](docs/evidence/gr1a-section-coherence.md)) | rule (c): published context precision / multi-hop coverage with provenance per step; rule (a): graph lane behind `RAG_GRAPH_RETRIEVAL` with an E2E test; GR-3 measured 2026-09-18/19 — NO-SHIP-to-default, default stays `off` ([capsule](docs/evidence/gr3-graph-lane-ab.md)) |
 | **D** | pgvector spike, ADR 0007 — now measured against the graph tables too | a table of numbers in the ADR; no migration without it |
 | **E** | Public artefact: README-first, 3-minute demo, `resolution-contracts` sub-package | repo public, CI green, numbers in README |
 
