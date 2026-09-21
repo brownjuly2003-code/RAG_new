@@ -4,8 +4,8 @@
 
 The first C.3 step now replaces the inherited answer only when both
 `RESOLUTION_SHADOW_JOURNEYS` and `RESOLUTION_RESPONSE_JOURNEYS` name
-`shipment-status`. Both default to empty. Copilot `ai_draft` is the next step;
-C.3 as a whole remains open. No production flag was enabled.
+`shipment-status`. Both default to empty. The later [manual copilot slice](c3-copilot-contract-draft.md)
+completes the second C.3 step. No production flag was enabled.
 
 ## Contract and observable behavior
 
@@ -63,5 +63,5 @@ original contract identity. Mac logs: `RAG_new_c3_gate_0.log` through `_4.log`.
 
 This is fixture TMS evidence, with no real shipment connector or new quality
 measurement. Legacy pipeline execution still precedes the deterministic answer.
-Streaming and copilot drafts are unchanged. GitHub Actions remains unavailable;
+Streaming and copilot drafts were unchanged in this first slice. GitHub Actions remains unavailable;
 the checks above ran on the Mac. Windows ran no containers, VMs or full suite.

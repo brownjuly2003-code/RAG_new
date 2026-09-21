@@ -8,6 +8,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import BaseModel, Field
 
 from api._shared import app_module as _app_module
+from api.correlation import get_request_id
 from auth.dependencies import get_current_user, require_role
 from monitoring import prometheus as prometheus_metrics
 
@@ -88,6 +89,34 @@ async def escalate_to_human(
             "Черновик ответа: Спасибо за обращение. Мы получили ваш запрос и передали его оператору. "
             "Проверим детали и вернёмся с решением."
         )
+
+    shadow_journeys = tuple(getattr(app.get_settings(), "resolution_shadow_journeys", ()) or ())
+    response_journeys = tuple(getattr(app.get_settings(), "resolution_response_journeys", ()) or ())
+    if question_text and "shipment-status" in shadow_journeys and "shipment-status" in response_journeys:
+        from api.routers.conversation import (  # noqa: PLC0415
+            AskResponse,
+            _persist_shadow_evidence,
+            _project_resolution_response,
+            _run_resolution_shadows,
+        )
+
+        shadow_results: list[Any] = []
+        shadow_response = _run_resolution_shadows(
+            response=AskResponse(answer=draft or ""),
+            tenant_id=tenant,
+            session_id=body.session_id,
+            correlation_id=get_request_id() or "",
+            question=question_text,
+            collect=shadow_results,
+        )
+        projected = _project_resolution_response(
+            response=shadow_response,
+            results=shadow_results,
+            journeys=response_journeys,
+        )
+        if projected is not shadow_response:
+            draft = projected.answer
+        await _persist_shadow_evidence(shadow_results)
 
     outcome = await create_escalation(
         tenant_id=tenant,

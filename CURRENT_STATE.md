@@ -16,7 +16,7 @@ vs hybrid 0.5067, FULL 89 vs 87; multi-document bucket recall 0.5000 → 0.4000 
 (both graph arms); retrieve p95 +8765.2 ms vs 200 ms — fail. Generation:
 `not_evidence` (297/300 valid; excluded case in capsule).
 `RAG_GRAPH_RETRIEVAL` stays `off`. **C.4 closed:** [NO-SHIP of Qwen3](docs/evidence/c4-generator-model-decision.md): faithfulness 0.8986 < 0.90; host RAM unknown.
-Default stays Qwen2.5, below gate. **C.3 HTTP done:** [contract-shaped fixture answers](docs/evidence/c3-contract-shaped-response.md), default off, E2E and off parity. **Next: copilot `ai_draft`**, same skeleton.
+Default stays Qwen2.5, below gate. **C.3 done:** [HTTP](docs/evidence/c3-contract-shaped-response.md) and [manual copilot drafts](docs/evidence/c3-copilot-contract-draft.md), default off; 555 Mac tests. **Next: phase D pgvector spike**, per plan.
 
 ### Phase C.1a Qwen 2.5 7B baseline — measured on Mac
 

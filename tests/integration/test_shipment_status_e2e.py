@@ -833,3 +833,176 @@ def test_response_projection_does_not_promote_an_unverified_journey(
     assert response.status_code == 200
     assert response.json()["answer"] == _LEGACY_ANSWER
     assert response.json()["route"] == "auto"
+
+
+@pytest.fixture
+def copilot_escalations(monkeypatch):
+    from types import SimpleNamespace
+
+    from services.escalation import EscalationOutcome
+
+    captured = []
+    ticket_id = uuid.UUID("00000000-0000-0000-0000-000000000301")
+
+    async def create(**kwargs):
+        captured.append(kwargs)
+        return EscalationOutcome(
+            ticket_id=str(ticket_id), delivery_state="delivered", durable=True,
+            already_existed=False, user_message="Ticket created", source="manual",
+        )
+
+    class TicketSession:
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, *args):
+            return None
+
+        async def get(self, model, key):
+            if key != ticket_id or not captured:
+                return None
+            entry = captured[-1]
+            return SimpleNamespace(
+                id=ticket_id, tenant_id=entry["tenant_id"],
+                session_id=entry["session_id"], user_question=entry["question"],
+                ai_draft=entry["ai_draft"], operator_response=None, status="open",
+                created_at=None, resolved_at=None,
+            )
+
+        async def execute(self, statement):
+            return SimpleNamespace(scalars=lambda: SimpleNamespace(all=lambda: []))
+
+    monkeypatch.setattr("services.escalation.create_escalation", create)
+    monkeypatch.setattr("db.engine.async_session", TicketSession)
+    return captured
+
+
+def test_copilot_manual_draft_matches_ask_and_agent_readback(
+    wired_app, integration_client, integration_api_app, integration_headers,
+    monkeypatch, persisted, copilot_escalations,
+):
+    fixtures, documents = _recent_evidence()
+    wired_app(policy_documents=documents, shipment_fixtures=fixtures)()
+    monkeypatch.setattr(integration_api_app.get_settings(), "resolution_response_journeys",
+                        ("shipment-status",), raising=False)
+    headers = integration_headers("default", "admin")
+    payload = {"question": _QUESTION, "session_id": uuid.uuid4().hex}
+    answer = integration_client.post("/api/ask", json=payload, headers=headers)
+    assert answer.status_code == 200
+    assert answer.json()["answer"].startswith("Fixture TMS. AI assistance.")
+    assert len(persisted) == 1
+    response = integration_client.post("/api/escalate", json=payload, headers=headers)
+    assert response.status_code == 200
+    assert response.json()["message"] == "Ticket created"
+    assert len(copilot_escalations) == 1
+    assert copilot_escalations[0]["ai_draft"] == answer.json()["answer"]
+    assert "trace_id" not in copilot_escalations[0]
+    assert copilot_escalations[0]["source"] == "manual"
+    assert len(persisted) == 2
+    assert persisted[-1].evidence_export.contract.version == "0.2.0"
+    detail = integration_client.get(
+        f"/api/agent/tickets/{response.json()['ticket_id']}", headers=headers,
+    )
+    assert detail.status_code == 200
+    assert detail.json()["ticket"]["ai_draft"] == answer.json()["answer"]
+    foreign = integration_client.get(
+        f"/api/agent/tickets/{response.json()['ticket_id']}",
+        headers=integration_headers("other", "agent"),
+    )
+    assert foreign.status_code == 404
+
+
+@pytest.mark.parametrize("mode", ["off", "shadow_only", "response_only"])
+def test_copilot_disabled_draft_and_http_are_unchanged(
+    wired_app, integration_client, integration_api_app, integration_headers,
+    monkeypatch, persisted, copilot_escalations, mode,
+):
+    fixtures, documents = _recent_evidence()
+    enable = wired_app(policy_documents=documents, shipment_fixtures=fixtures)
+    settings = integration_api_app.get_settings()
+    monkeypatch.setattr(settings, "resolution_shadow_journeys", (), raising=False)
+    monkeypatch.setattr(settings, "resolution_response_journeys", (), raising=False)
+    payload = {"question": _QUESTION, "session_id": uuid.uuid4().hex}
+    headers = integration_headers("default", "admin")
+    baseline = integration_client.post("/api/escalate", json=payload, headers=headers)
+    legacy = copilot_escalations[-1].copy()
+    if mode == "shadow_only":
+        enable()
+    elif mode == "response_only":
+        monkeypatch.setattr(settings, "resolution_response_journeys", ("shipment-status",), raising=False)
+
+    def forbidden(**kwargs):
+        pytest.fail("disabled projection must not run the shadow")
+
+    monkeypatch.setattr("api.routers.conversation._run_resolution_shadows", forbidden)
+    response = integration_client.post("/api/escalate", json=payload, headers=headers)
+    assert baseline.status_code == response.status_code == 200
+    assert response.content == baseline.content
+    assert copilot_escalations[-1] == legacy
+    assert persisted == []
+
+
+@pytest.mark.parametrize("failure", ["stale", "denied", "declined", "producer", "missing_id", "empty", "tenant"])
+def test_copilot_unverified_draft_preserves_legacy(
+    wired_app, integration_client, integration_api_app, integration_headers,
+    monkeypatch, copilot_escalations, failure,
+):
+    from dataclasses import replace
+
+    fixtures, documents = _recent_evidence()
+    question = _QUESTION
+    if failure == "stale":
+        fixtures = (replace(fixtures[0], observed_at=datetime.now(UTC) - timedelta(hours=1)),)
+    elif failure == "denied":
+        documents[0]["metadata"]["status_disclosure_allowed"] = False
+    elif failure == "declined":
+        question = "How do I prepare an air waybill?"
+    elif failure == "missing_id":
+        question = "What is my shipment status?"
+    elif failure == "empty":
+        question = ""
+    elif failure == "producer":
+        def explode(*args, **kwargs):
+            raise RuntimeError("producer failure")
+        monkeypatch.setattr("resolution.application.shipment_status.ShipmentStatusShadowLoop.run", explode)
+    enable = wired_app(policy_documents=documents, shipment_fixtures=fixtures)
+    settings = integration_api_app.get_settings()
+    monkeypatch.setattr(settings, "resolution_shadow_journeys", (), raising=False)
+    monkeypatch.setattr(settings, "resolution_response_journeys", (), raising=False)
+    payload = {"question": question, "session_id": uuid.uuid4().hex}
+    headers = integration_headers("other" if failure == "tenant" else "default", "admin")
+    baseline = integration_client.post("/api/escalate", json=payload, headers=headers)
+    legacy = copilot_escalations[-1].copy()
+    enable()
+    monkeypatch.setattr(settings, "resolution_response_journeys", ("shipment-status",), raising=False)
+    response = integration_client.post("/api/escalate", json=payload, headers=headers)
+    assert baseline.status_code == response.status_code == 200
+    assert response.content == baseline.content
+    assert copilot_escalations[-1] == legacy
+
+
+def test_copilot_verified_draft_does_not_hide_ticket_creation_failure(
+    wired_app, integration_client, integration_api_app, integration_headers,
+    monkeypatch,
+):
+    from services.escalation import EscalationOutcome
+
+    fixtures, documents = _recent_evidence()
+    wired_app(policy_documents=documents, shipment_fixtures=fixtures)()
+    monkeypatch.setattr(integration_api_app.get_settings(), "resolution_response_journeys",
+                        ("shipment-status",), raising=False)
+
+    async def failed(**kwargs):
+        assert kwargs["ai_draft"].startswith("Fixture TMS. AI assistance.")
+        return EscalationOutcome(
+            ticket_id=None, delivery_state="failed", durable=False,
+            already_existed=False, user_message="Failed", source="manual",
+        )
+
+    monkeypatch.setattr("services.escalation.create_escalation", failed)
+    response = integration_client.post(
+        "/api/escalate", json={"question": _QUESTION, "session_id": uuid.uuid4().hex},
+        headers=integration_headers("default", "admin"),
+    )
+    assert response.status_code == 500
+    assert response.json()["detail"] == "Escalation failed: durable ticket was not created"
