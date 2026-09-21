@@ -511,6 +511,16 @@ def _case_metric(row: Mapping[str, Any], metric: str) -> float:
     raise ValueError(f"unknown metric {metric}")
 
 
+def _evidence_class(report: Mapping[str, Any]) -> str | None:
+    value = report.get("evidence_class")
+    return None if value is None else str(value)
+
+
+def _evidence_reasons(report: Mapping[str, Any]) -> list[str]:
+    value = report.get("evidence_reasons")
+    return [str(reason) for reason in value] if isinstance(value, list) else []
+
+
 def _mean_context_count(report: Mapping[str, Any]) -> float | None:
     values: list[float] = []
     for run in report.get("runs", []):
@@ -653,6 +663,10 @@ def paired_generation(
         "seed": seed,
         "cases": n,
         "excluded_case_ids": excluded,
+        "hybrid_evidence_class": _evidence_class(hybrid_report),
+        "graph_evidence_class": _evidence_class(graph_report),
+        "hybrid_evidence_reasons": _evidence_reasons(hybrid_report),
+        "graph_evidence_reasons": _evidence_reasons(graph_report),
         "metrics": metrics,
         "hybrid_aggregate": dict(hybrid_aggregate)
         if isinstance(hybrid_aggregate, Mapping)
@@ -707,6 +721,18 @@ def decide(report: Mapping[str, Any]) -> dict[str, Any]:
         ci_high = _dig(report, "generation", "metrics", name, "ci_high")
         ci_high_raw = _dig(report, "generation", "metrics", name, "ci_high_raw")
         mean_difference = _dig(report, "generation", "metrics", name, "mean_difference")
+        if report.get("generation") is not None:
+            hybrid_class = _dig(report, "generation", "hybrid_evidence_class")
+            graph_class = _dig(report, "generation", "graph_evidence_class")
+            if hybrid_class != "measured" or graph_class != "measured":
+                return _criterion(
+                    "not_evidence",
+                    ci_high=ci_high,
+                    ci_high_raw=ci_high_raw,
+                    mean_difference=mean_difference,
+                    hybrid_evidence_class=hybrid_class,
+                    graph_evidence_class=graph_class,
+                )
         if ci_high_raw is None:
             return _criterion(
                 "not_measured",
@@ -941,6 +967,17 @@ def _metric_cell(value: Any) -> str:
     return str(value)
 
 
+def _evidence_cell(value: Any) -> str:
+    return "none" if value is None else str(value)
+
+
+def _evidence_line(side: str, generation: Mapping[str, Any]) -> str:
+    rendered = _evidence_cell(generation.get(f"{side}_evidence_class"))
+    reasons = generation.get(f"{side}_evidence_reasons") or []
+    suffix = f" ({'; '.join(str(reason) for reason in reasons)})" if reasons else ""
+    return f"{side} evidence: {rendered}{suffix}"
+
+
 def _fpm(row: Mapping[str, Any]) -> str:
     return f"{row.get('FULL', _EMPTY_CELL)}/{row.get('PART', _EMPTY_CELL)}/{row.get('MISS', _EMPTY_CELL)}"
 
@@ -1074,6 +1111,8 @@ def render_gr3_table(report: Mapping[str, Any]) -> str:
             f"{generation['method']}; resamples={generation['resamples']}; "
             f"seed={generation['seed']}; cases={generation['cases']}"
         )
+        lines.append(_evidence_line("hybrid", generation))
+        lines.append(_evidence_line("graph", generation))
         if generation.get("excluded_case_ids"):
             lines.append("excluded: " + ", ".join(generation["excluded_case_ids"]))
         if generation.get("graph_mean_context_count") is not None:
@@ -1113,6 +1152,9 @@ def render_gr3_table(report: Mapping[str, Any]) -> str:
             extra.append(f"host={payload['host']}")
         if payload.get("delta_ms") is not None:
             extra.append(f"delta_ms={payload['delta_ms']}")
+        if payload["status"] == "not_evidence":
+            extra.append(f"hybrid={_evidence_cell(payload.get('hybrid_evidence_class'))}")
+            extra.append(f"graph={_evidence_cell(payload.get('graph_evidence_class'))}")
         suffix = f" ({'; '.join(extra)})" if extra else ""
         lines.append(f"| {name} | {payload['status']}{suffix} |")
     if decision.get("failed_criteria"):

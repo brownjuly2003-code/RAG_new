@@ -209,6 +209,8 @@ def _write_generation(
     provenance_update: dict[str, Any] | None = None,
     config_update: dict[str, Any] | None = None,
     aggregate_update: dict[str, Any] | None = None,
+    evidence_class: str | None = "measured",
+    evidence_reasons: list[str] | None = None,
 ) -> Path:
     runs: list[dict[str, Any]] = []
     for run_index in range(1, 4):
@@ -292,16 +294,15 @@ def _write_generation(
     if aggregate_update:
         for name, payload in aggregate_update.items():
             aggregate[name] = {**aggregate[name], **payload}
-    return _write_json(
-        path,
-        {
-            "kind": "phase-c-generator-benchmark",
-            "evidence_class": "measured",
-            "provenance": provenance,
-            "aggregate": aggregate,
-            "runs": runs,
-        },
-    )
+    payload: dict[str, Any] = {"kind": "phase-c-generator-benchmark"}
+    if evidence_class is not None:
+        payload["evidence_class"] = evidence_class
+    if evidence_reasons is not None:
+        payload["evidence_reasons"] = list(evidence_reasons)
+    payload["provenance"] = provenance
+    payload["aggregate"] = aggregate
+    payload["runs"] = runs
+    return _write_json(path, payload)
 
 
 def _bundle(
@@ -313,6 +314,10 @@ def _bundle(
     g2m_rerank_extra_s: float = 0.0,
     with_generation: bool = True,
     generation_identical: bool = True,
+    hybrid_evidence_class: str | None = "measured",
+    hybrid_evidence_reasons: list[str] | None = None,
+    graph_evidence_class: str | None = "measured",
+    graph_evidence_reasons: list[str] | None = None,
 ) -> tuple[dict[str, Path], dict[str, Any]]:
     phase_meta = _write_dataset(tmp_path / "phase", prefix="phase")
     bucket_meta = _write_dataset(tmp_path / "bucket", prefix="bucket")
@@ -384,6 +389,8 @@ def _bundle(
             tmp_path / "hybrid-generation.json",
             case_ids=case_ids,
             faithfulness=0.83,
+            evidence_class=hybrid_evidence_class,
+            evidence_reasons=hybrid_evidence_reasons,
         )
         graph_update: dict[str, Any] = {
             "code_sha": "d" * 40,
@@ -399,6 +406,8 @@ def _bundle(
             context_count=g2_n_cands,
             provenance_update=graph_update,
             config_update=graph_config,
+            evidence_class=graph_evidence_class,
+            evidence_reasons=graph_evidence_reasons,
         )
         kwargs["hybrid_generation"] = paths["hybrid_generation"]
         kwargs["graph_generation"] = paths["graph_generation"]
@@ -903,6 +912,8 @@ def test_faithfulness_criterion_uses_unrounded_ci_high_raw() -> None:
                 },
             },
             "generation": {
+                "hybrid_evidence_class": "measured",
+                "graph_evidence_class": "measured",
                 "metrics": {
                     "llm_faithfulness": {
                         "mean_difference": raw,
@@ -914,7 +925,7 @@ def test_faithfulness_criterion_uses_unrounded_ci_high_raw() -> None:
                         "ci_high": 0.1,
                         "ci_high_raw": 0.1,
                     },
-                }
+                },
             },
         }
     )
@@ -925,3 +936,176 @@ def test_faithfulness_criterion_uses_unrounded_ci_high_raw() -> None:
     assert decision["criteria"]["nli_faithfulness_not_significantly_fallen"]["status"] == "pass"
     assert decision["verdict"] == "NO_SHIP_TO_DEFAULT"
     assert "llm_faithfulness_not_significantly_fallen" in decision["failed_criteria"]
+
+
+_FAITHFULNESS_CRITERIA: tuple[tuple[str, str], ...] = (
+    ("llm_faithfulness_not_significantly_fallen", "llm_faithfulness"),
+    ("nli_faithfulness_not_significantly_fallen", "nli_faithfulness"),
+)
+
+
+def _assert_no_criterion_from_an_unmeasured_report(
+    report: dict[str, Any],
+    *,
+    hybrid_class: str | None,
+    graph_class: str | None,
+) -> str:
+    decision = report["decision"]
+    for name, metric in _FAITHFULNESS_CRITERIA:
+        criterion = decision["criteria"][name]
+        assert criterion["status"] == "not_evidence"
+        assert criterion["passed"] is False
+        assert criterion["ci_high_raw"] == report["generation"]["metrics"][metric]["ci_high_raw"]
+        assert criterion["ci_high_raw"] >= 0
+        assert criterion["hybrid_evidence_class"] == hybrid_class
+        assert criterion["graph_evidence_class"] == graph_class
+        assert name in decision["failed_criteria"]
+    assert decision["verdict"] == "NO_SHIP_TO_DEFAULT"
+    for name in ("precision_rose", "full_not_fallen", "retrieve_p95_within_200ms"):
+        assert decision["criteria"][name]["status"] == "pass"
+    return render_gr3_table(report)
+
+
+def test_graph_generation_that_is_not_evidence_passes_no_faithfulness_criterion(
+    tmp_path: Path,
+) -> None:
+    reasons = ["run 1 failed_cases=1", "run 2 failed_cases=1", "run 3 failed_cases=1"]
+    _paths, kwargs = _bundle(
+        tmp_path,
+        graph_evidence_class="not_evidence",
+        graph_evidence_reasons=reasons,
+    )
+    report = build_gr3_report(**kwargs)
+
+    generation = report["generation"]
+    assert generation["hybrid_evidence_class"] == "measured"
+    assert generation["graph_evidence_class"] == "not_evidence"
+    assert generation["hybrid_evidence_reasons"] == []
+    assert generation["graph_evidence_reasons"] == reasons
+
+    table = _assert_no_criterion_from_an_unmeasured_report(
+        report,
+        hybrid_class="measured",
+        graph_class="not_evidence",
+    )
+    assert "hybrid evidence: measured" in table
+    assert f"graph evidence: not_evidence ({'; '.join(reasons)})" in table
+    assert "not_evidence (hybrid=measured; graph=not_evidence)" in table
+    assert "AUTO_DEFAULT_AUTHORIZED" not in table
+
+
+def test_hybrid_generation_that_is_not_evidence_alone_passes_no_criterion(tmp_path: Path) -> None:
+    reasons = ["run 2 failed_cases=1"]
+    _paths, kwargs = _bundle(
+        tmp_path,
+        hybrid_evidence_class="not_evidence",
+        hybrid_evidence_reasons=reasons,
+    )
+    report = build_gr3_report(**kwargs)
+
+    generation = report["generation"]
+    assert generation["hybrid_evidence_class"] == "not_evidence"
+    assert generation["hybrid_evidence_reasons"] == reasons
+    assert generation["graph_evidence_class"] == "measured"
+    assert generation["graph_evidence_reasons"] == []
+
+    table = _assert_no_criterion_from_an_unmeasured_report(
+        report,
+        hybrid_class="not_evidence",
+        graph_class="measured",
+    )
+    assert f"hybrid evidence: not_evidence ({'; '.join(reasons)})" in table
+    assert "graph evidence: measured" in table
+    assert "not_evidence (hybrid=not_evidence; graph=measured)" in table
+    assert "AUTO_DEFAULT_AUTHORIZED" not in table
+
+
+def test_generation_report_without_an_evidence_class_fails_closed(tmp_path: Path) -> None:
+    _paths, kwargs = _bundle(tmp_path, graph_evidence_class=None)
+    assert "evidence_class" not in json.loads(
+        kwargs["graph_generation"].read_text(encoding="utf-8")
+    )
+    report = build_gr3_report(**kwargs)
+
+    generation = report["generation"]
+    assert generation["graph_evidence_class"] is None
+    assert generation["graph_evidence_reasons"] == []
+
+    table = _assert_no_criterion_from_an_unmeasured_report(
+        report,
+        hybrid_class="measured",
+        graph_class=None,
+    )
+    assert "graph evidence: none" in table
+    assert "not_evidence (hybrid=measured; graph=none)" in table
+
+
+def test_two_measured_reports_still_authorize_and_only_gain_two_lines(tmp_path: Path) -> None:
+    _paths, kwargs = _bundle(tmp_path)
+    report = build_gr3_report(**kwargs)
+
+    generation = report["generation"]
+    assert generation["hybrid_evidence_class"] == "measured"
+    assert generation["graph_evidence_class"] == "measured"
+    decision = report["decision"]
+    assert decision["verdict"] == "AUTO_DEFAULT_AUTHORIZED"
+    assert decision["failed_criteria"] == []
+    for name, _metric in _FAITHFULNESS_CRITERIA:
+        criterion = decision["criteria"][name]
+        assert criterion["status"] == "pass"
+        assert criterion["passed"] is True
+        assert "hybrid_evidence_class" not in criterion
+        assert "graph_evidence_class" not in criterion
+
+    lines = render_gr3_table(report).splitlines()
+    method_index = lines.index(
+        f"{generation['method']}; resamples={generation['resamples']}; "
+        f"seed={generation['seed']}; cases={generation['cases']}"
+    )
+    assert lines[method_index + 1] == "hybrid evidence: measured"
+    assert lines[method_index + 2] == "graph evidence: measured"
+    remaining = [
+        line for line in lines if not line.startswith(("hybrid evidence:", "graph evidence:"))
+    ]
+    assert len(lines) - len(remaining) == 2
+    assert all("evidence" not in line for line in remaining)
+
+
+def test_graph_not_evidence_with_invalid_rows_excludes_case_and_fails_closed(
+    tmp_path: Path,
+) -> None:
+    reasons = ["run 1 failed_cases=1", "run 2 failed_cases=1", "run 3 failed_cases=1"]
+    _paths, kwargs = _bundle(
+        tmp_path,
+        graph_evidence_class="not_evidence",
+        graph_evidence_reasons=reasons,
+    )
+    excluded_case = _CASE_SPECS[0][0]
+    graph_path = kwargs["graph_generation"]
+    graph_payload = json.loads(graph_path.read_text(encoding="utf-8"))
+    for run in graph_payload["runs"]:
+        for row in run["cases"]:
+            if row["case_id"] == excluded_case:
+                row["llm_judge_valid"] = False
+    graph_path.write_text(json.dumps(graph_payload), encoding="utf-8")
+
+    report = build_gr3_report(**kwargs)
+
+    generation = report["generation"]
+    assert generation["cases"] == 2
+    assert generation["excluded_case_ids"] == [excluded_case]
+    assert generation["hybrid_evidence_class"] == "measured"
+    assert generation["hybrid_evidence_reasons"] == []
+    assert generation["graph_evidence_class"] == "not_evidence"
+    assert generation["graph_evidence_reasons"] == reasons
+
+    table = _assert_no_criterion_from_an_unmeasured_report(
+        report,
+        hybrid_class="measured",
+        graph_class="not_evidence",
+    )
+    assert excluded_case in table
+    for reason in reasons:
+        assert reason in table
+    assert f"graph evidence: not_evidence ({'; '.join(reasons)})" in table
+    assert "AUTO_DEFAULT_AUTHORIZED" not in table
