@@ -24,6 +24,7 @@ root — that habit is what produced 29 of them and is now closed.
 
 | Slice | Capsule | Evidence class |
 |---|---|---|
+| D.2 pgvector ANN: recall@20 0.965217 over 115 cases; HNSW warm p95 3.45–3.64 ms, one 0.20 outlier; Phase D open | [Measurement and full replay](docs/evidence/d2-pgvector-ann.md) | measured |
 | D.1 pgvector pre-reranker comparison: 115 cases, 3 runs; sequential scans, non-owner RLS; Phase D open | [Measurement and replay](docs/evidence/d1-pgvector-prererank.md) | measured |
 | C.3 manual copilot: validated shipment skeleton in `ai_draft`, agent API readback, off parity and fallback | [Copilot verification](docs/evidence/c3-copilot-contract-draft.md) | synthetic |
 | C.3 HTTP: pinned response shape → verified fixture answer; evidence binding and legacy-off parity | [HTTP verification](docs/evidence/c3-contract-shaped-response.md) | synthetic |

@@ -105,10 +105,12 @@ NO-SHIP-to-default, `RAG_GRAPH_RETRIEVAL` default stays `off`
 C.3 [HTTP answers](docs/evidence/c3-contract-shaped-response.md) and
 [manual copilot drafts](docs/evidence/c3-copilot-contract-draft.md) now share
 the validated skeleton behind default-off flags; 555 Mac tests and both strict
-type gates pass. Automatic/error/email drafts remain legacy. D.1 now measured:
-[ADR 0007](docs/adr/0007-pgvector-spike.md), pre-reranker SQL trails Chroma/BM25;
-sequential scans. Next: index-friendly candidates, actual graph/evidence joins,
-final reranking and cold-start RAM. Phase D remains open.
+type gates pass. Automatic/error/email drafts remain legacy. D.1 and D.2 are
+now measured in [ADR 0007](docs/adr/0007-pgvector-spike.md): the original
+pre-reranker SQL trails Chroma/BM25, while the index-friendly HNSW arm reaches
+recall@20 0.965217 and warm p95 3.45–3.64 ms over 115 cases, with one 0.20
+outlier. Next: diagnose it, complete actual graph/evidence joins, final
+reranking and cold-start RAM. Phase D remains open.
 
 Both inherited CI failures ([ADR 0008](docs/adr/0008-inherited-ci-red-disposition.md))
 are closed. On `6cc810d` (T-17, pushed) both workflows that run on
