@@ -66,8 +66,9 @@ completed 3 × 100 cases on the Mac with zero failures at LLM faithfulness
 completed the same contract at 0.8986 / 0.9908 / 0.506657, also with zero
 failures; its report, sidecar and [capsule](docs/evidence/c1b-qwen3-generator-benchmark.md)
 were published on 2026-09-11. Both reports pin the corpus, cached contexts,
-source SHA, model digest and full config. C.4 remains open: C.1b is comparison
-evidence, not a default-model decision, and its LLM mean is still below 0.90.
+source SHA, model digest and full config. C.4 is [closed as NO-SHIP](docs/evidence/c4-generator-model-decision.md):
+Qwen3 misses 0.90, host peak RAM is unknown, and the default stays Qwen2.5.
+This is a decision on existing evidence, not a new measurement.
 
 **GR-0.2 now has a separate, provenance-pinned evaluation bucket** (2026-09-11):
 15 agent-written questions over 13 real corpus documents, split into 10
@@ -101,7 +102,7 @@ browser checks. GR-2 is measured — 0.5487 / 0.9250, NO-SHIP at 0.63, lane on 6
 cases ([capsule](docs/evidence/gr2-entity-graph-lane.md)). GR-3 is measured (2026-09-18/19):
 NO-SHIP-to-default, `RAG_GRAPH_RETRIEVAL` default stays `off`
 ([capsule](docs/evidence/gr3-graph-lane-ab.md)). Do not repeat this pool or its embeddings.
-Next is C.4. Resume details are in `CURRENT_STATE.md`.
+Next is C.3. Resume details are in `CURRENT_STATE.md`.
 
 Both inherited CI failures ([ADR 0008](docs/adr/0008-inherited-ci-red-disposition.md))
 are closed. On `6cc810d` (T-17, pushed) both workflows that run on

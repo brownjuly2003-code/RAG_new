@@ -258,6 +258,8 @@ detail to the API.
 | C.1a Qwen 2.5 7B baseline over 3 × 100 cases | `measured` over `agent_labelled` | [raw report](evaluation/c1a-qwen25-7b-c06bdf5-phase-c-generator-benchmark.json) · [SHA-256](evaluation/c1a-qwen25-7b-c06bdf5-phase-c-generator-benchmark.json.sha256) · `tests/test_phase_c_baseline_artifact.py` |
 | C.1b Qwen3 8B over 3 × 100 cases | `measured` over `agent_labelled` | [c1b-qwen3-generator-benchmark](docs/evidence/c1b-qwen3-generator-benchmark.md) · [raw report](evaluation/c1b-qwen3-8b-b8ecc8e-phase-c-generator-benchmark.json) · [SHA-256](evaluation/c1b-qwen3-8b-b8ecc8e-phase-c-generator-benchmark.json.sha256) · `tests/test_phase_c_qwen3_artifact.py` |
 
+**C.4 decision (2026-09-21):** [NO-SHIP of Qwen3 as default](docs/evidence/c4-generator-model-decision.md), based on the two reports above; no new measurement. Faithfulness 0.8986 misses 0.90; NLI does not replace that gate, and total-host peak RAM is unknown. Existing artifact tests reproduce both reports.
+
 **C.1a is a slice under rule (c):** a Mac run that actually happened, with
 exact source, corpus, cached-context, model and config provenance. All 300
 rows have valid generation, LLM-judge and NLI output; none has an error. The

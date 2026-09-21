@@ -2,7 +2,7 @@
 
 Read this, then [`ROADMAP.md`](ROADMAP.md).
 
-Last updated: 2026-09-21 · Plan: [`plan_06_09_26.md`](plan_06_09_26.md)
+2026-09-21 · Plan: [`plan_06_09_26.md`](plan_06_09_26.md)
 (mode B, adopted 2026-09-10) · Audit:
 [`docs/audits/audit_final_23_08_2026.md`](docs/audits/audit_final_23_08_2026.md)
 · Phase C source: `c06bdf5` · owner delegated commits and pushes (§1).
@@ -15,8 +15,8 @@ Measured 2026-09-18/19 on `deproject-mac` ([capsule](docs/evidence/gr3-graph-lan
 vs hybrid 0.5067, FULL 89 vs 87; multi-document bucket recall 0.5000 → 0.4000 and FULL 4 → 1
 (both graph arms); retrieve p95 +8765.2 ms vs 200 ms — fail. Generation:
 `not_evidence` (297/300 valid; excluded case in capsule).
-`RAG_GRAPH_RETRIEVAL` stays `off` by default. **Next action (plan §10.4): C.4**, the model
-decision — C.1a/C.1b faithfulness, NLI, latency and RAM only; no model swap.
+`RAG_GRAPH_RETRIEVAL` stays `off`. **C.4 closed:** [NO-SHIP of Qwen3](docs/evidence/c4-generator-model-decision.md): faithfulness 0.8986 < 0.90; host RAM unknown.
+Default stays Qwen2.5, still below gate. **Next: C.3**, default-off contract-shaped answers with endpoint E2E and legacy-off parity.
 
 ### Phase C.1a Qwen 2.5 7B baseline — measured on Mac
 
@@ -59,7 +59,7 @@ approve: `python scripts/aircargo_labels.py approve --batch 1 --approver julia`.
 **This laptop:** deselect the headless-Chrome a11y test (CI runs it); strict
 mypy needs locked numpy 2.4.4; Postgres integration tests do not run here.
 
-## What is true right now
+## Current facts
 
 - **Remote exists** (2026-08-24): `brownjuly2003-code/RAG_new`, private, tag
   `freeze-2026-08-23` = `26866e9`. Pushes go over HTTPS (command in §1).
@@ -70,14 +70,13 @@ mypy needs locked numpy 2.4.4; Postgres integration tests do not run here.
   (`325d63c`, `6b7417d`,
   `32e841f`). Question classes live in a sidecar (`6cde0b1`) — 99 `single_hop`,
   1 `multi_hop`, 0 `aggregation`, 0 `global` (plan §5, GR-0.2).
-- **CI last ran on pushed `386ee10`** (2026-09-10): `CI` 34471656422 passed
+- **Last successful CI: `386ee10`** (2026-09-10): run 34471656422 passed
   11 of 11 jobs. Run 34359692687 on `69a5140` verified the CVE-2026-9856 floor
   `transformers>=5.10.0` under `--require-hashes`, pip-audit clean.
 - **GitHub Actions unavailable until early October 2026** (owner, 2026-09-21).
   Use Mac gates; no workflow retries or billing probes.
-  Recheck in early October; recovery date is unconfirmed.
-  September 18 runs 35348088420 (`32de532`) and 35354816855 (`db70da5`):
-  all 22 jobs had no steps; all 22 annotations confirm billing.
+  Recheck in early October; recovery unconfirmed. Runs 35348088420 / 35354816855:
+  22 jobs blocked by billing.
 - **Executor:** [direct GLM 5.3 xhigh](docs/operations/direct-glm-5.3.md).
 
 ## Accepted open risks
