@@ -715,3 +715,121 @@ def test_a_trace_from_a_question_with_the_shadow_off_has_no_journeys(
     )
 
     assert view["journeys"] == []
+
+
+def test_response_projection_replaces_the_legacy_answer_when_both_flags_are_on(
+    wired_app,
+    integration_client,
+    integration_api_app,
+    integration_headers,
+    integration_store,
+    monkeypatch,
+    persisted,
+) -> None:
+    """The enabled response and its trace carry the same supported claims."""
+    fixtures, documents = _recent_evidence()
+    enable_shadow = wired_app(
+        open_trace=True, policy_documents=documents, shipment_fixtures=fixtures
+    )
+    enable_shadow()
+    settings = integration_api_app.get_settings()
+    monkeypatch.setattr(
+        settings, "resolution_response_journeys", ("shipment-status",), raising=False
+    )
+    session_id = "3f1c9c2e5b7d4a8fae2d6b0c19f43a77"
+    headers = integration_headers("default", "admin")
+    response = integration_client.post(
+        "/api/ask", json={"question": _QUESTION, "session_id": session_id}, headers=headers
+    )
+    assert response.status_code == 200, response.text
+    body = response.json()
+    answer = body["answer"]
+    assert answer.startswith("Fixture TMS. AI assistance. ")
+    assert "Shipment AC-100001 status is in_transit." in answer
+    assert "Last reported location is FRA." in answer
+    assert "Estimated delivery is 2026-08-27." in answer
+    assert _LEGACY_ANSWER not in answer
+    assert body["route"] == "verified"
+    assert body["quality_score"] == 0
+    assert body["sources"] == []
+    assert body["citations"] == []
+    assert persisted[-1].evidence_export.contract.version == "0.2.0"
+    assert len(persisted) == 1
+    view = _evidence_for(integration_client, headers, body["trace_id"])
+    (journey,) = view["journeys"]
+    assert journey["contract"]["version"] == "0.2.0"
+    assert len(journey["claims"]) == 3
+    assert all(not claim["unresolved"] for claim in journey["claims"])
+    session = integration_store["sessions"][("default", session_id)]
+    assert session.history[-1]["content"] == answer
+
+
+def test_response_projection_needs_both_flags_and_leaves_bytes_untouched_otherwise(
+    wired_app,
+    integration_client,
+    integration_api_app,
+    integration_headers,
+    monkeypatch,
+    persisted,
+) -> None:
+    """Shadow on with the response flag empty is byte-identical to the baseline; response flag on with the shadow empty never runs the journey."""
+    fixtures, documents = _recent_evidence()
+    enable_shadow = wired_app(
+        open_trace=False, policy_documents=documents, shipment_fixtures=fixtures
+    )
+    settings = integration_api_app.get_settings()
+    session_id = "3f1c9c2e5b7d4a8fae2d6b0c19f43a77"
+    headers = integration_headers("default", "admin")
+    payload = {"question": _QUESTION, "session_id": session_id}
+
+    baseline = integration_client.post("/api/ask", json=payload, headers=headers)
+    assert baseline.status_code == 200
+    assert _LEGACY_ANSWER in baseline.json()["answer"]
+
+    enable_shadow()
+    monkeypatch.setattr(settings, "resolution_response_journeys", (), raising=False)
+    shadow_without_response = integration_client.post("/api/ask", json=payload, headers=headers)
+    assert shadow_without_response.status_code == 200
+    assert shadow_without_response.content == baseline.content
+    assert persisted[-1].terminal_state.value == "verified"
+    assert persisted[-1].evidence_export.contract.version == "0.1.0"
+
+    monkeypatch.setattr(settings, "resolution_shadow_journeys", (), raising=False)
+    monkeypatch.setattr(
+        settings, "resolution_response_journeys", ("shipment-status",), raising=False
+    )
+    response_without_shadow = integration_client.post("/api/ask", json=payload, headers=headers)
+    assert response_without_shadow.status_code == 200
+    assert response_without_shadow.content == baseline.content
+    assert len(persisted) == 1
+
+
+@pytest.mark.parametrize("failure", ["stale", "denied", "declined", "producer"])
+def test_response_projection_does_not_promote_an_unverified_journey(
+    wired_app, integration_client, integration_api_app, integration_headers,
+    monkeypatch, failure,
+) -> None:
+    from dataclasses import replace
+
+    fixtures, documents = _recent_evidence()
+    question = _QUESTION
+    if failure == "stale":
+        fixtures = (replace(fixtures[0], observed_at=datetime.now(UTC) - timedelta(hours=1)),)
+    elif failure == "denied":
+        documents[0]["metadata"]["status_disclosure_allowed"] = False
+    elif failure == "declined":
+        question = "How do I prepare an air waybill?"
+    else:
+        def explode(*args, **kwargs):
+            raise RuntimeError("producer failure")
+
+        monkeypatch.setattr("resolution.application.shipment_status.ShipmentStatusShadowLoop.run", explode)
+    enable_shadow = wired_app(policy_documents=documents, shipment_fixtures=fixtures)
+    enable_shadow()
+    monkeypatch.setattr(integration_api_app.get_settings(), "resolution_response_journeys",
+                        ("shipment-status",), raising=False)
+    response = integration_client.post("/api/ask", json={"question": question},
+                                       headers=integration_headers("default", "admin"))
+    assert response.status_code == 200
+    assert response.json()["answer"] == _LEGACY_ANSWER
+    assert response.json()["route"] == "auto"

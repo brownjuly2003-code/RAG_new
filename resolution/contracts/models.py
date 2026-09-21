@@ -629,6 +629,58 @@ class ContractBudgets(_StrictModel):
         return self
 
 
+class ResponseShapeField(_StrictModel):
+    """A single response slot, the claim that fills it, and the evidence behind it."""
+
+    _CLAIM_IDS: ClassVar[dict[str, SymbolId]] = {
+        "status": "shipment-status",
+        "location": "shipment-location",
+        "estimated_delivery": "estimated-delivery",
+    }
+    _EVIDENCE_REQUIREMENT_IDS: ClassVar[tuple[SymbolId, ...]] = (
+        "shipment-observation",
+        "shipment-policy",
+    )
+
+    field: Literal["status", "location", "estimated_delivery"]
+    claim_id: SymbolId
+    evidence_requirement_ids: tuple[SymbolId, ...]
+
+    @model_validator(mode="after")
+    def _validate_response_shape_field(self) -> ResponseShapeField:
+        if self.claim_id != self._CLAIM_IDS[self.field]:
+            raise ValueError(
+                f"response shape field '{self.field}' must carry claim "
+                f"'{self._CLAIM_IDS[self.field]}'"
+            )
+        if self.evidence_requirement_ids != self._EVIDENCE_REQUIREMENT_IDS:
+            raise ValueError(
+                "response shape field evidence must be exactly "
+                f"{self._EVIDENCE_REQUIREMENT_IDS}"
+            )
+        return self
+
+
+class ResponseShape(_StrictModel):
+    """Ordered claim slots a shaped contract renders into its response."""
+
+    version: Literal["1.0.0"]
+    fields: Annotated[tuple[ResponseShapeField, ...], Field(min_length=1, max_length=3)]
+
+    @model_validator(mode="after")
+    def _validate_response_shape(self) -> ResponseShape:
+        def duplicates(values: list[str]) -> list[str]:
+            return sorted({value for value in values if values.count(value) > 1})
+
+        duplicate_fields = duplicates([item.field for item in self.fields])
+        if duplicate_fields:
+            raise ValueError(f"duplicate response shape fields: {duplicate_fields}")
+        duplicate_claim_ids = duplicates([item.claim_id for item in self.fields])
+        if duplicate_claim_ids:
+            raise ValueError(f"duplicate response shape claim ids: {duplicate_claim_ids}")
+        return self
+
+
 class ResolutionContract(_StrictModel):
     model_config = ConfigDict(
         json_schema_extra={"$id": "https://rag-new.local/schemas/resolution-contract/v0.1"}
@@ -653,6 +705,7 @@ class ResolutionContract(_StrictModel):
     escalation: EscalationPolicy
     disclosure: DisclosurePolicy
     budgets: ContractBudgets
+    response_shape: ResponseShape | None = None
 
     @model_validator(mode="after")
     def _validate_contract(self) -> ResolutionContract:
@@ -672,6 +725,7 @@ class ResolutionContract(_StrictModel):
             postcondition_ids=postcondition_ids,
         )
         self._validate_field_paths(input_ids=input_ids, evidence_ids=evidence_ids)
+        self._validate_response_shape_evidence(evidence_ids=evidence_ids)
         self._validate_graph(step_ids)
         self._validate_terminal_safety()
         self._validate_risk_tier()
@@ -686,6 +740,22 @@ class ResolutionContract(_StrictModel):
         if duplicates:
             raise ValueError(f"duplicate {label} ids: {duplicates}")
         return set(identifiers)
+
+    def _validate_response_shape_evidence(self, *, evidence_ids: set[str]) -> None:
+        if self.response_shape is None:
+            return
+        missing = sorted(
+            {
+                requirement_id
+                for shape_field in self.response_shape.fields
+                for requirement_id in shape_field.evidence_requirement_ids
+                if requirement_id not in evidence_ids
+            }
+        )
+        if missing:
+            raise ValueError(
+                f"response shape references undeclared evidence requirements: {missing}"
+            )
 
     def _validate_references(
         self,

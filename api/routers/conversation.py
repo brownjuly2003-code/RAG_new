@@ -37,12 +37,12 @@ _TERMINAL_ESCALATE_ROUTES = frozenset({"human", "error", "error_escalation"})
 # --- Resolution kernel shadow journeys (plan 2026-08-23, phase A) ------------
 # Off unless RESOLUTION_SHADOW_JOURNEYS names a journey. The shadow observes
 # the same question the legacy pipeline just answered and writes an evidence
-# bundle to the trace. A separate, off-by-default clarification allowlist may
-# project one terminal into the response; without it the caller receives the
+# bundle to the trace. Separate, off-by-default projection allowlists may
+# project clarification or verified answers; without them the caller receives the
 # same object unchanged. Before this seam existed the kernel had no production
 # caller at all, which is finding FIN-01 of the 2026-08-24 audit.
 _shadow_observers: dict[str, Any] = {}
-_shadow_observers_key: tuple[Any, tuple[str, ...]] | None = None
+_shadow_observers_key: tuple[Any, tuple[str, ...], tuple[str, ...]] | None = None
 
 # The observers are built once and reused, so the sink cannot close over a
 # per-request trace id. It reads it from here instead. Without this the
@@ -63,15 +63,21 @@ _shadow_collect: contextvars.ContextVar[list[Any] | None] = contextvars.ContextV
 )
 
 
-def _resolution_shadow_observers(journeys: tuple[str, ...], retriever: Any) -> dict[str, Any]:
+def _resolution_shadow_observers(
+    journeys: tuple[str, ...],
+    retriever: Any,
+    response_journeys: tuple[str, ...] = (),
+) -> dict[str, Any]:
     """Build the observers once and reuse them; rebuild if the wiring changes.
 
     Keyed on the retriever identity as well as the journey list because the
     app swaps its retriever on reindex, and a shadow holding the old one would
-    silently gather policy evidence from a stale index.
+    silently gather policy evidence from a stale index. `response_journeys`
+    is part of the key for the same reason: it decides which pinned contract
+    an observer is built against.
     """
     global _shadow_observers, _shadow_observers_key
-    key = (id(retriever), journeys)
+    key = (id(retriever), journeys, response_journeys)
     if _shadow_observers_key != key:
         from resolution.composition import build_shadow_observers
 
@@ -79,6 +85,7 @@ def _resolution_shadow_observers(journeys: tuple[str, ...], retriever: Any) -> d
             journeys=journeys,
             retriever=retriever,
             sink=_record_shadow_evidence,
+            response_journeys=response_journeys,
         )
         _shadow_observers_key = key
     return _shadow_observers
@@ -208,6 +215,9 @@ def _run_resolution_shadows(
         journeys = tuple(getattr(_app.get_settings(), "resolution_shadow_journeys", ()) or ())
         if not journeys:
             return response
+        response_journeys = tuple(
+            getattr(_app.get_settings(), "resolution_response_journeys", ()) or ()
+        )
         retriever = getattr(_app, "_retriever", None)
         if retriever is None:
             for journey in journeys:
@@ -216,7 +226,7 @@ def _run_resolution_shadows(
 
         from resolution.application.shipment_status import run_legacy_ask_shadow
 
-        observers = _resolution_shadow_observers(journeys, retriever)
+        observers = _resolution_shadow_observers(journeys, retriever, response_journeys)
         for journey in journeys:
             observer = observers.get(journey)
             if observer is None:
@@ -784,6 +794,109 @@ def _project_resolution_clarification(
         return response
 
 
+def _project_resolution_response(
+    *,
+    response: AskResponse,
+    results: list[Any],
+    journeys: tuple[str, ...],
+) -> AskResponse:
+    try:
+        if not journeys:  # projection disabled
+            return response
+        from resolution.application.shipment_status import (
+            _SHIPMENT_RESPONSE_CONTRACT_DIGEST,
+            ClaimCandidate,
+            ShipmentShadowResult,
+            ShipmentStatusShadowLoop,
+        )
+        from resolution.composition import load_shipment_response_contract
+        from resolution.contracts import TerminalOutcome, contract_digest
+
+        verified = [
+            item
+            for item in results
+            if isinstance(item, ShipmentShadowResult)
+            and item.terminal_state == TerminalOutcome.VERIFIED
+        ]
+        if not verified:
+            return response
+        result = verified[0]
+        export = result.evidence_export
+        if export.terminal_state != TerminalOutcome.VERIFIED:
+            return response
+        if result.reason_codes or export.reason_codes:
+            return response
+        if export.source_observation is None or export.policy is None:
+            return response
+        if export.policy.decision != "allow":
+            return response
+        if not export.claim_links or not export.postcondition_versions:
+            return response
+        if any(item.result != "pass" for item in export.postcondition_versions):
+            return response
+        contract = export.contract
+        if (
+            contract.schema_identity != "resolution-contract/v0.1"
+            or contract.contract_id != "aircargo.shipment-status"
+            or contract.version != "0.2.0"
+            or contract.digest != _SHIPMENT_RESPONSE_CONTRACT_DIGEST
+        ):
+            return response
+        pinned = load_shipment_response_contract()
+        if contract_digest(pinned) != _SHIPMENT_RESPONSE_CONTRACT_DIGEST:
+            return response
+        if pinned.response_shape is None:
+            return response
+        claim_ids = [link.claim_id for link in export.claim_links]
+        if len(set(claim_ids)) != len(claim_ids):
+            return response
+        candidates = tuple(
+            ClaimCandidate(
+                claim_id=link.claim_id,
+                text=link.text,
+                evidence_requirement_ids=link.evidence_requirement_ids,
+            )
+            for link in export.claim_links
+        )
+        recompiled = ShipmentStatusShadowLoop._compile_claims(
+            candidates=candidates,
+            source_observation=export.source_observation,
+            policy=export.policy,
+        )
+        if recompiled is None or recompiled != export.claim_links:
+            return response
+        fields = pinned.response_shape.fields
+        field_claim_ids = {field.claim_id for field in fields}
+        if any(claim_id not in field_claim_ids for claim_id in claim_ids):
+            return response
+        texts_by_claim = {link.claim_id: link.text for link in recompiled}
+        parts: list[str] = []
+        for field in fields:
+            text = texts_by_claim.get(field.claim_id)
+            if text is None:
+                return response
+            parts.append(text)
+        answer = "Fixture TMS. AI assistance. " + " ".join(parts)
+        return response.model_copy(
+            update={
+                "answer": answer,
+                "quality_score": 0,
+                "route": "verified",
+                "sources": [],
+                "citations": [],
+                "suggested_questions": [],
+                "requires_confirmation": False,
+                "action_summary": "",
+                "cached": False,
+                "ticket_id": None,
+                "delivery_state": None,
+            }
+        )
+    except Exception:
+        logger.warning("verified resolution projection failed", exc_info=True)
+        return response
+
+
 def _replace_latest_session_answer(session: Any, *, question: str, answer: str) -> None:
     """Keep in-memory history aligned with the response the endpoint returns."""
     history = (
@@ -1299,8 +1412,9 @@ async def _answer_ask(
         )
 
     clarification_journeys = tuple(getattr(settings, "resolution_clarification_journeys", ()) or ())
+    response_journeys = tuple(getattr(settings, "resolution_response_journeys", ()) or ())
     shadow_results: list[Any] = []
-    if clarification_journeys:
+    if clarification_journeys or response_journeys:
         response = _run_resolution_shadows(
             response=response,
             tenant_id=tenant,
@@ -1315,6 +1429,12 @@ async def _answer_ask(
             results=shadow_results,
             journeys=clarification_journeys,
         )
+        if projected_response is response:
+            projected_response = _project_resolution_response(
+                response=response,
+                results=shadow_results,
+                journeys=response_journeys,
+            )
         if projected_response is not response:
             response = projected_response
             quality_source = "unmeasured"
@@ -1372,7 +1492,7 @@ async def _answer_ask(
     prometheus_metrics.ACTIVE_SESSIONS.set(len(_app._sessions))
     if response.citations:
         spawn_tracked(_app._record_citation_stats(tenant, list(response.citations)))
-    if not clarification_journeys:
+    if not clarification_journeys and not response_journeys:
         response = _run_resolution_shadows(
             response=response,
             tenant_id=tenant,

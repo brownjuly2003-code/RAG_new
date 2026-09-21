@@ -102,7 +102,9 @@ browser checks. GR-2 is measured — 0.5487 / 0.9250, NO-SHIP at 0.63, lane on 6
 cases ([capsule](docs/evidence/gr2-entity-graph-lane.md)). GR-3 is measured (2026-09-18/19):
 NO-SHIP-to-default, `RAG_GRAPH_RETRIEVAL` default stays `off`
 ([capsule](docs/evidence/gr3-graph-lane-ab.md)). Do not repeat this pool or its embeddings.
-Next is C.3. Resume details are in `CURRENT_STATE.md`.
+C.3 HTTP [contract-shaped fixture answers](docs/evidence/c3-contract-shaped-response.md)
+are verified behind a default-off flag. Next: the same skeleton for copilot
+`ai_draft`; C.3 remains open until that second step. Resume in `CURRENT_STATE.md`.
 
 Both inherited CI failures ([ADR 0008](docs/adr/0008-inherited-ci-red-disposition.md))
 are closed. On `6cc810d` (T-17, pushed) both workflows that run on

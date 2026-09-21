@@ -16,7 +16,7 @@ vs hybrid 0.5067, FULL 89 vs 87; multi-document bucket recall 0.5000 → 0.4000 
 (both graph arms); retrieve p95 +8765.2 ms vs 200 ms — fail. Generation:
 `not_evidence` (297/300 valid; excluded case in capsule).
 `RAG_GRAPH_RETRIEVAL` stays `off`. **C.4 closed:** [NO-SHIP of Qwen3](docs/evidence/c4-generator-model-decision.md): faithfulness 0.8986 < 0.90; host RAM unknown.
-Default stays Qwen2.5, still below gate. **Next: C.3**, default-off contract-shaped answers with endpoint E2E and legacy-off parity.
+Default stays Qwen2.5, below gate. **C.3 HTTP done:** [contract-shaped fixture answers](docs/evidence/c3-contract-shaped-response.md), default off, E2E and off parity. **Next: copilot `ai_draft`**, same skeleton.
 
 ### Phase C.1a Qwen 2.5 7B baseline — measured on Mac
 
@@ -75,8 +75,6 @@ mypy needs locked numpy 2.4.4; Postgres integration tests do not run here.
   `transformers>=5.10.0` under `--require-hashes`, pip-audit clean.
 - **GitHub Actions unavailable until early October 2026** (owner, 2026-09-21).
   Use Mac gates; no workflow retries or billing probes.
-  Recheck in early October; recovery unconfirmed. Runs 35348088420 / 35354816855:
-  22 jobs blocked by billing.
 - **Executor:** [direct GLM 5.3 xhigh](docs/operations/direct-glm-5.3.md).
 
 ## Accepted open risks

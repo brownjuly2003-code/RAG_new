@@ -228,6 +228,10 @@ def _load_resolution_clarification_journeys() -> tuple[str, ...]:
     return _load_resolution_journeys("RESOLUTION_CLARIFICATION_JOURNEYS")
 
 
+def _load_resolution_response_journeys() -> tuple[str, ...]:
+    return _load_resolution_journeys("RESOLUTION_RESPONSE_JOURNEYS")
+
+
 def _load_experiment_override_payload() -> dict[str, Any]:
     if not EXPERIMENT_OVERRIDE_PATH.exists():
         return {}
@@ -1073,6 +1077,15 @@ class Settings:
     # Empty = off, so enabling the read-only shadow alone remains byte-identical.
     resolution_clarification_journeys: tuple[str, ...] = field(
         default_factory=_load_resolution_clarification_journeys
+    )
+
+    # Journeys whose fully verified, pinned-contract (0.2.0) shipment-status
+    # terminal may replace the legacy /api/ask answer. Same allowlist
+    # discipline as clarification: a journey must be named in both flags
+    # before it can own the response. Empty = off, which is the default
+    # everywhere including production.
+    resolution_response_journeys: tuple[str, ...] = field(
+        default_factory=_load_resolution_response_journeys
     )
 
     # --- Durable session turns (plan 2026-08-23, phase A.2) ---

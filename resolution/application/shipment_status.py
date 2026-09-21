@@ -8,6 +8,7 @@ from typing import Protocol, TypeVar
 from uuid import NAMESPACE_URL, UUID, uuid5
 
 from resolution.contracts import ResolutionContract, TerminalOutcome, contract_digest
+from resolution.contracts.models import ResponseShape
 
 # Two shipment reference forms, because the repository has always had two.
 # `SHP-` is what the kernel's own scenarios use. `AC-<digits>` is what the
@@ -35,6 +36,13 @@ _SHIPMENT_ID_PATTERN = re.compile(
 _TRUNCATED_SHIPMENT_REFERENCE_PATTERN = re.compile(
     r"(?<![A-Z0-9])(?:SHP-|AC-)(?![A-Z0-9])",
     re.IGNORECASE,
+)
+# The response-shaped shipment contract is the v0.1.0 journey carrying a
+# `response_shape`; both it and the legacy contract are pinned by digest so the
+# shadow only ever runs against a contract it was compiled for.
+_SHIPMENT_RESPONSE_CONTRACT_VERSION = "0.2.0"
+_SHIPMENT_RESPONSE_CONTRACT_DIGEST = (
+    "4f0daf1c5410dfecec1d382e1fbb83f0d540a5337971c175b5c34220e31be31a"
 )
 # English tokens stay the T-01 class `[a-z0-9]+`. Russian tokens are a
 # separate `[а-яё]+` pass over the same text, so a mixed-script run like
@@ -900,9 +908,13 @@ class ShipmentStatusShadowLoop:
         if (
             contract.schema_version != "resolution-contract/v0.1"
             or contract.id != _SHIPMENT_CONTRACT_ID
-            or contract.version != _SHIPMENT_CONTRACT_VERSION
-            or digest != _SHIPMENT_CONTRACT_DIGEST
         ):
+            raise ValueError("shipment shadow loop requires the pinned shipment-status contract")
+        expected_digests = {
+            _SHIPMENT_CONTRACT_VERSION: _SHIPMENT_CONTRACT_DIGEST,
+            _SHIPMENT_RESPONSE_CONTRACT_VERSION: _SHIPMENT_RESPONSE_CONTRACT_DIGEST,
+        }
+        if expected_digests.get(contract.version) != digest:
             raise ValueError("shipment shadow loop requires the pinned shipment-status contract")
         self._contract = contract
         self._source = source
@@ -1037,6 +1049,13 @@ class ShipmentStatusShadowLoop:
             )
 
         candidates = request.candidate_claims or self._default_claims(source_export)
+        response_shape = self._contract.response_shape
+        if response_shape is not None:
+            candidates = self._filter_shaped_claims(
+                candidates=candidates,
+                response_shape=response_shape,
+                source_observation=source_export,
+            )
         claim_links = self._compile_claims(
             candidates=candidates,
             source_observation=source_export,
@@ -1061,6 +1080,8 @@ class ShipmentStatusShadowLoop:
             for item in self._postconditions
         )
         response_text = " ".join(link.text for link in claim_links)
+        if response_shape is not None:
+            response_text = f"Fixture TMS. AI assistance. {response_text}"
         return self._finish(
             request=request,
             terminal_state=TerminalOutcome.VERIFIED,
@@ -1283,6 +1304,30 @@ class ShipmentStatusShadowLoop:
                 evidence_requirement_ids=requirements,
             ),
         )
+
+    @staticmethod
+    def _filter_shaped_claims(
+        *,
+        candidates: tuple[ClaimCandidate, ...],
+        response_shape: ResponseShape,
+        source_observation: SourceObservationExport,
+    ) -> tuple[ClaimCandidate, ...]:
+        supported = {
+            item.claim_id: item
+            for item in ShipmentStatusShadowLoop._default_claims(source_observation)
+        }
+        selected: list[ClaimCandidate] = []
+        for shape_field in response_shape.fields:
+            expected = supported[shape_field.claim_id]
+            for candidate in candidates:
+                if (
+                    candidate.claim_id == shape_field.claim_id
+                    and candidate.text == expected.text
+                    and candidate.evidence_requirement_ids == shape_field.evidence_requirement_ids
+                ):
+                    selected.append(candidate)
+                    break
+        return tuple(selected)
 
     @staticmethod
     def _compile_claims(

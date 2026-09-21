@@ -38,6 +38,9 @@ SHIPMENT_STATUS_JOURNEY = "shipment-status"
 
 _PACKAGE_ROOT = Path(__file__).resolve().parent
 SHIPMENT_CONTRACT_PATH = _PACKAGE_ROOT / "contracts" / "versions" / "v0.1" / "shipment-status.json"
+SHIPMENT_RESPONSE_CONTRACT_PATH = (
+    _PACKAGE_ROOT / "contracts" / "versions" / "v0.1" / "shipment-status-response.json"
+)
 SHIPMENT_FIXTURE_PATH = _PACKAGE_ROOT / "adapters" / "fixtures" / "shipment-status-v0.1.json"
 
 
@@ -59,6 +62,17 @@ def load_shipment_contract(path: Path | None = None) -> ResolutionContract:
     rather than quietly changing what the shadow measures.
     """
     source = path or SHIPMENT_CONTRACT_PATH
+    return ResolutionContract.model_validate_json(source.read_text(encoding="utf-8"))
+
+
+def load_shipment_response_contract(path: Path | None = None) -> ResolutionContract:
+    """Load the pinned shipment-status response contract (0.2.0).
+
+    Kept separate from the 0.1.0 shadow contract, which stays untouched: this
+    is the contract a terminal must be bound to before it is allowed to own
+    the legacy answer, so it is pinned and loaded by name.
+    """
+    source = path or SHIPMENT_RESPONSE_CONTRACT_PATH
     return ResolutionContract.model_validate_json(source.read_text(encoding="utf-8"))
 
 
@@ -148,8 +162,14 @@ def build_shadow_observers(
     journeys: Sequence[str],
     retriever: object,
     sink: Callable[[ShipmentShadowResult | ShadowProducerOutcome], None] | None = None,
+    response_journeys: Sequence[str] = (),
 ) -> dict[str, Callable[[ShipmentShadowRequest], Any]]:
     """Build every enabled shadow observer. Empty `journeys` means empty dict.
+
+    `response_journeys` names journeys that run under the pinned response
+    contract (0.2.0) so their terminal can own the /api/ask answer; only an
+    enabled shipment-status journey gets the new contract path, everything
+    else keeps the original (`None`).
 
     A journey that cannot be constructed is logged and skipped rather than
     taking the process down: the shadow is not allowed to make the inherited
@@ -162,7 +182,13 @@ def build_shadow_observers(
             continue
         try:
             observers[journey] = build_shipment_status_observer(
-                retriever=retriever, sink=sink
+                retriever=retriever,
+                sink=sink,
+                contract_path=(
+                    SHIPMENT_RESPONSE_CONTRACT_PATH
+                    if journey in response_journeys
+                    else None
+                ),
             )
         except Exception:
             logger.warning("could not build %r shadow observer", journey, exc_info=True)
@@ -171,6 +197,7 @@ def build_shadow_observers(
 
 __all__ = [
     "SHIPMENT_CONTRACT_PATH",
+    "SHIPMENT_RESPONSE_CONTRACT_PATH",
     "SHIPMENT_FIXTURE_PATH",
     "SHIPMENT_STATUS_JOURNEY",
     "ShadowProducerOutcome",
@@ -178,4 +205,5 @@ __all__ = [
     "build_shipment_status_observer",
     "load_shipment_contract",
     "load_shipment_fixtures",
+    "load_shipment_response_contract",
 ]

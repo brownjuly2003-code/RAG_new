@@ -24,6 +24,7 @@ root — that habit is what produced 29 of them and is now closed.
 
 | Slice | Capsule | Evidence class |
 |---|---|---|
+| C.3 HTTP: pinned response shape → verified fixture answer; evidence binding and legacy-off parity | [HTTP verification](docs/evidence/c3-contract-shaped-response.md) | synthetic |
 | GR-2 entity retrieval: bounded traversal → third RRF list → `/api/ask` → Evidence; stale graph rejection and off/auto fallback | [HTTP and retrieval verification](docs/evidence/gr2-entity-retrieval-wiring.md) | synthetic |
 | GR-4 structural path: opt-in `/api/ask` → SQLite → Evidence; off/auto fallback, browser rendering and export | [HTTP and browser verification](docs/evidence/gr4-structural-product-wiring.md) | synthetic |
 | GR-1b seed reservation: coherent 0.5472 / 0.9200; seed text preserved, no metric gain, NO-SHIP | [report and tests](docs/evidence/gr1b-seed-expansion.md) | measured |

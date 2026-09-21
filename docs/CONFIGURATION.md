@@ -190,15 +190,24 @@ Resilience layers apply in this order:
 |---|---|---|
 | `RESOLUTION_SHADOW_JOURNEYS` | *(empty — off)* | Comma-separated journey names run as read-only shadows alongside `/api/ask`. Only `shipment-status` is known; an unknown name **fails at startup** rather than being ignored |
 | `RESOLUTION_CLARIFICATION_JOURNEYS` | *(empty — off)* | Comma-separated shadow journeys whose `CLARIFICATION_REQUIRED` terminal may replace the legacy `/api/ask` answer. Only `shipment-status` is known; an unknown name **fails at startup** |
+| `RESOLUTION_RESPONSE_JOURNEYS` | *(empty — off)* | Allows `shipment-status` VERIFIED answers from pinned response contract `0.2.0`. Requires the same journey in `RESOLUTION_SHADOW_JOURNEYS`; unknown names fail at startup |
 
 A shadow observes the question the legacy pipeline has just answered and
 records what a contract-driven resolution journey would have concluded. It
 remains read-only. Naming the same journey in
 `RESOLUTION_CLARIFICATION_JOURNEYS` separately allows only its
 `CLARIFICATION_REQUIRED` terminal to own the answer; both flags are required.
-With the clarification allowlist empty, the response stays byte-for-byte the
-same with the shadow off and on. A declined journey, any other terminal or a
-shadow/projection failure leaves the legacy response unchanged.
+`RESOLUTION_RESPONSE_JOURNEYS=shipment-status` separately permits verified
+fixture answers: status, location and estimated delivery are rendered from
+claims bound to source and policy evidence, prefixed `Fixture TMS. AI assistance.`
+Unsupported candidates are removed; only a complete verified shape replaces
+the answer. Legacy citations, actions and suggestions are cleared; the quality
+score stays unmeasured (`0`). Session history and message persistence receive
+the projected answer. This applies to synchronous `/api/ask` and its `/api/chat`
+alias; streaming and copilot drafts are outside this slice.
+With both projection allowlists empty, the response stays byte-for-byte the
+same with the shadow off and on. Declined, stale, denied or failed journeys
+leave the legacy response unchanged. Disable the response allowlist to roll back.
 
 Two things are written when a journey is enabled:
 

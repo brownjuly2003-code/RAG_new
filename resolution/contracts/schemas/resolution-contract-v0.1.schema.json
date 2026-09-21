@@ -915,6 +915,71 @@
       "title": "PredicateOperator",
       "type": "string"
     },
+    "ResponseShape": {
+      "additionalProperties": false,
+      "description": "Ordered claim slots a shaped contract renders into its response.",
+      "properties": {
+        "fields": {
+          "items": {
+            "$ref": "#/$defs/ResponseShapeField"
+          },
+          "maxItems": 3,
+          "minItems": 1,
+          "title": "Fields",
+          "type": "array"
+        },
+        "version": {
+          "const": "1.0.0",
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "version",
+        "fields"
+      ],
+      "title": "ResponseShape",
+      "type": "object"
+    },
+    "ResponseShapeField": {
+      "additionalProperties": false,
+      "description": "A single response slot, the claim that fills it, and the evidence behind it.",
+      "properties": {
+        "claim_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9]*(?:[_-][a-z0-9]+)*$",
+          "title": "Claim Id",
+          "type": "string"
+        },
+        "evidence_requirement_ids": {
+          "items": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-z][a-z0-9]*(?:[_-][a-z0-9]+)*$",
+            "type": "string"
+          },
+          "title": "Evidence Requirement Ids",
+          "type": "array"
+        },
+        "field": {
+          "enum": [
+            "status",
+            "location",
+            "estimated_delivery"
+          ],
+          "title": "Field",
+          "type": "string"
+        }
+      },
+      "required": [
+        "field",
+        "claim_id",
+        "evidence_requirement_ids"
+      ],
+      "title": "ResponseShapeField",
+      "type": "object"
+    },
     "RuleDefinition": {
       "additionalProperties": false,
       "properties": {
@@ -1181,6 +1246,17 @@
       "minItems": 1,
       "title": "Required Inputs",
       "type": "array"
+    },
+    "response_shape": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ResponseShape"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
     },
     "risk_tier": {
       "$ref": "#/$defs/ContractRiskTier"
