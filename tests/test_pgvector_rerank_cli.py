@@ -167,7 +167,7 @@ def test_run_from_files_writes_full_provenance(
 
     monkeypatch.setattr(runner.importlib.metadata, "version", fake_version)
     factory_calls: list[str] = []
-    reranker = object()
+    reranker = SimpleNamespace(_target_device="mock-device")
     result = runner.run_from_files(
         **_run_args(fixture, output_path),
         reranker_factory=_factory(factory_calls, reranker),
@@ -206,6 +206,7 @@ def test_run_from_files_writes_full_provenance(
             "cases": 2,
             "top_k": 1,
             "reranker_model": "mock-model",
+            "reranker_device": "mock-device",
             "reranker": True,
             "source_report": fixture.d1.name,
             "source_report_sha256": fixture.d1_sha256,

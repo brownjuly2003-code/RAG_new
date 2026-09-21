@@ -243,6 +243,10 @@ def run_from_files(
     reranker = factory(model_name)
     if reranker is None:
         raise RuntimeError(f"reranker factory returned None for {model_name!r}")
+    target_device = getattr(reranker, "_target_device", None)
+    if target_device is None:
+        raise RuntimeError("reranker target device is unavailable")
+    reranker_device = str(target_device)
     versions = _versions()
 
     arms = run_offline_rerank(
@@ -269,6 +273,7 @@ def run_from_files(
             "cases": len(cases),
             "top_k": top_k,
             "reranker_model": model_name,
+            "reranker_device": reranker_device,
             "reranker": True,
             "source_report": d1_report_path.name,
             "source_report_sha256": d1_digest,
