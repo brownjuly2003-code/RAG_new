@@ -73,12 +73,12 @@ mypy needs locked numpy 2.4.4; Postgres integration tests do not run here.
 - **CI last ran on pushed `386ee10`** (2026-09-10): `CI` 34471656422 passed
   11 of 11 jobs. Run 34359692687 on `69a5140` verified the CVE-2026-9856 floor
   `transformers>=5.10.0` under `--require-hashes`, pip-audit clean.
-- **Later CI jobs did not start** (account billing/spending limit). September
-  13–14 runs 34775257921, 34778428984, 34778591640, 34781877875, 34786436221,
-  34789759186, 34789953376 and 34794870657 were blocked. September 18:
-  `CI` 35348088420 on `32de532`, 35354816855 on `db70da5`, 11 jobs each,
-  no steps started; all 22 annotations confirm billing. Until billing is
-  fixed and head rerun, use Mac gates.
+- **GitHub Actions unavailable until early October 2026** (owner, 2026-09-21).
+  Use Mac gates; no workflow retries or billing probes.
+  Recheck in early October; recovery date is unconfirmed.
+  September 18 runs 35348088420 (`32de532`) and 35354816855 (`db70da5`):
+  all 22 jobs had no steps; all 22 annotations confirm billing.
+- **Executor:** [direct GLM 5.3 xhigh](docs/operations/direct-glm-5.3.md).
 
 ## Accepted open risks
 

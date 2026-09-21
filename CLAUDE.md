@@ -35,7 +35,11 @@ binds autopilot too.
   answered 2026-08-24). The account's git protocol is ssh with no key loaded,
   so pushes go over HTTPS:
   `git -c credential.helper='!gh auth git-credential' push origin master`.
-- **CI is fully green** as of 2026-08-25 and must stay that way. A red job now
-  means a new problem, not an inherited one. Do not "fix" a gate by relaxing
-  it; if something does turn red, compare against `baseline/freeze-2026-08-23`
-  before assuming it is yours.
+- **GitHub Actions CI is unavailable until early October 2026** (owner,
+  2026-09-21). Work without Actions for now; run relevant verification on
+  the Mac before committing/pushing. Do not repeatedly probe billing or
+  retry blocked workflows. Recheck availability in early October; recovery
+  is not guaranteed on October 1. Do not weaken checks or claim CI passed.
+- **Executor: GLM 5.3, called directly with `xhigh`.** Follow the
+  [direct API runbook](docs/operations/direct-glm-5.3.md); do not substitute
+  Grok, OpenCode or a Claude CLI wrapper for the direct request.
