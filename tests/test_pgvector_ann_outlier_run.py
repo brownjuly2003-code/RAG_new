@@ -73,6 +73,92 @@ class _Connection:
         self.closed = True
 
 
+def _local_admin_fields():
+    return {
+        "host": "127.0.0.1",
+        "port": "55432",
+        "user": "spike",
+        "dbname": "rag_spike_admin_source",
+    }
+
+
+def test_connect_existing_overrides_database_and_sets_role(monkeypatch):
+    monkeypatch.setattr(
+        mod.psycopg2.extensions,
+        "parse_dsn",
+        lambda _dsn: _local_admin_fields(),
+    )
+    connection = _Connection()
+
+    def connect(**kwargs):
+        connection.connect_kwargs = kwargs
+        return connection
+
+    monkeypatch.setattr(mod.psycopg2, "connect", connect)
+
+    result = mod._connect_existing("password=secret-admin", "rag_spike_d2_source")
+
+    assert result is connection
+    assert connection.connect_kwargs["dbname"] == "rag_spike_d2_source"
+    assert "rag_spike_admin_source" not in connection.connect_kwargs.values()
+    assert connection.commits == 1
+    assert len(connection.cursors) == 1
+    cursor = connection.cursors[0]
+    assert cursor.closed
+    assert len(cursor.executed) == 1
+    sql, params = cursor.executed[0]
+    assert params is None
+    assert "SET ROLE" in str(sql)
+    assert "rag_spike_d2_source" in str(sql)
+    assert "secret-admin" not in str(sql)
+
+
+@pytest.mark.parametrize(
+    ("database", "host", "port"),
+    [
+        ("postgres", "127.0.0.1", "55432"),
+        ("RAG_spike_source", "127.0.0.1", "55432"),
+        ("rag_spike_" + "x" * 41, "127.0.0.1", "55432"),
+        ("rag_spike_source", "10.9.8.7", "55432"),
+        ("rag_spike_source", "localhost", "5432"),
+    ],
+)
+def test_connect_existing_rejects_unsafe_targets(monkeypatch, database, host, port):
+    fields = {"host": host, "port": port, "dbname": "admin", "password": "secret-admin"}
+    monkeypatch.setattr(mod.psycopg2.extensions, "parse_dsn", lambda _dsn: fields)
+    monkeypatch.setattr(
+        mod.psycopg2,
+        "connect",
+        lambda **_kwargs: pytest.fail("psycopg2.connect must not be called"),
+    )
+
+    with pytest.raises(ValueError):
+        mod._connect_existing("password=secret-admin", database)
+
+
+def test_connect_existing_closes_cursor_and_connection_on_role_error(monkeypatch):
+    monkeypatch.setattr(
+        mod.psycopg2.extensions,
+        "parse_dsn",
+        lambda _dsn: _local_admin_fields(),
+    )
+    connection = _Connection()
+    monkeypatch.setattr(mod.psycopg2, "connect", lambda **_kwargs: connection)
+    monkeypatch.setattr(
+        _Cursor,
+        "execute",
+        lambda _self, _sql, _params=None: (_ for _ in ()).throw(RuntimeError("role failed")),
+    )
+
+    with pytest.raises(RuntimeError, match="role failed"):
+        mod._connect_existing("password=secret-admin", "rag_spike_d2_source")
+
+    assert len(connection.cursors) == 1
+    assert connection.cursors[0].closed
+    assert connection.closed
+    assert connection.commits == 0
+
+
 def test_constants():
     assert (mod.CASE_ID, mod.REPETITIONS, mod.SCHEMA_VERSION) == (CASE_ID, 3, SCHEMA)
 
@@ -234,10 +320,14 @@ def _argv(output):
 
 
 def _patch_main(monkeypatch, connection):
-    state = {"setup": 0, "verify": 0, "explain": 0}
+    state = {"setup": 0, "connect": 0, "verify": 0, "explain": 0}
 
     def setup(*_args, **_kwargs):
         state["setup"] += 1
+        return connection
+
+    def connect_existing(*_args, **_kwargs):
+        state["connect"] += 1
         return connection
 
     def verify(*_args, **_kwargs):
@@ -253,6 +343,7 @@ def _patch_main(monkeypatch, connection):
     monkeypatch.setattr(mod, "_load_inputs", lambda _args: _inputs([CASE_ID]))
     monkeypatch.setattr(mod, "_sha256", lambda _path: "f" * 64)
     monkeypatch.setattr(mod, "setup", setup)
+    monkeypatch.setattr(mod, "_connect_existing", connect_existing)
     monkeypatch.setattr(mod, "_verify_rls", verify)
     monkeypatch.setattr(mod, "_index_definition", lambda _connection: INDEX_DEFINITION)
     monkeypatch.setattr(mod, "explain_ann", explain)
@@ -261,6 +352,18 @@ def _patch_main(monkeypatch, connection):
     monkeypatch.setattr(mod, "_summarize", lambda _runs: SUMMARY)
     monkeypatch.setattr(mod.importlib.metadata, "version", lambda package: f"test-{package}")
     return state
+
+
+def test_main_reuse_existing_database_skips_setup(tmp_path, monkeypatch):
+    output, connection = tmp_path / "report.json", _Connection()
+    state = _patch_main(monkeypatch, connection)
+
+    assert mod.main([*_argv(output), "--reuse-existing-database"]) in (None, 0)
+
+    assert state == {"setup": 0, "connect": 1, "verify": 1, "explain": 1}
+    report = json.loads(output.read_text(encoding="utf-8"))
+    assert report["config"]["database_mode"] == "existing_index"
+    assert connection.closed
 
 
 def test_main_writes_provenance_report(tmp_path, monkeypatch, capsys):
@@ -291,13 +394,14 @@ def test_main_writes_provenance_report(tmp_path, monkeypatch, capsys):
     assert config["baseline_ef_search"] == 100 and config["repetitions"] == 3
     assert config["distance"] == "cosine" and config["reranker"] is False
     assert config["embedding_action"] == "reused_without_reembedding"
+    assert config["database_mode"] == "fresh_rebuild"
     assert payload["rls"] == {"ok": True}
     assert payload["planner"]["baseline_uses_hnsw"] is True
     assert payload["exact"] == SUMMARY["exact"]
     assert payload["ef_rows"] == SUMMARY["ef_rows"]
     assert payload["summary"] == SUMMARY["summary"]
     assert len(payload["runs"]) == 3
-    assert state == {"setup": 1, "verify": 1, "explain": 1}
+    assert state == {"setup": 1, "connect": 0, "verify": 1, "explain": 1}
     assert connection.closed and "DONE" in capsys.readouterr().out
 
 

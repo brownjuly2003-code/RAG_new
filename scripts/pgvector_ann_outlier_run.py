@@ -6,8 +6,12 @@ import json
 import math
 import os
 import platform
+import re
 import time
 from pathlib import Path
+
+import psycopg2
+from psycopg2.sql import SQL, Identifier
 
 from scripts.pgvector_ann import explain_ann, plan_uses_hnsw, recall_at_k
 from scripts.pgvector_ann_outlier import (
@@ -158,11 +162,41 @@ def _index_definition(connection):
     return definition
 
 
+def _connect_existing(dsn, database):
+    """Connect to an existing local spike database and assume its role."""
+    if len(database) > 50 or re.fullmatch(r"rag_spike_[a-z0-9_]+", database) is None:
+        raise ValueError(f"refusing unexpected database name: {database!r}")
+    admin_fields = psycopg2.extensions.parse_dsn(dsn)
+    if admin_fields.get("host") not in {"127.0.0.1", "localhost"}:
+        raise ValueError(f"refusing non-local admin host: {admin_fields.get('host')!r}")
+    if str(admin_fields.get("port")) != "55432":
+        raise ValueError(f"refusing unexpected admin port: {admin_fields.get('port')!r}")
+    admin_fields.pop("dbname", None)
+    connection = psycopg2.connect(**admin_fields, dbname=database)
+    try:
+        cursor = connection.cursor()
+        try:
+            cursor.execute(SQL("SET ROLE {}").format(Identifier(database)))
+        finally:
+            cursor.close()
+        connection.commit()
+    except Exception:
+        connection.close()
+        raise
+    return connection
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     for name in ("chunks", "vectors", "queries", "database", "output"):
         parser.add_argument("--" + name, required=True)
     parser.add_argument("--cases", action="append", required=True)
+    parser.add_argument(
+        "--reuse-existing-database",
+        action="store_true",
+        default=False,
+        help="Measure the existing source index instead of a fresh rebuild.",
+    )
     args = parser.parse_args(argv)
 
     output_path = Path(args.output)
@@ -178,9 +212,14 @@ def main(argv=None):
         flush=True,
     )
 
-    connection = setup(
-        os.environ["SPIKE_ADMIN_DSN"], args.database, inputs["texts"], inputs["vectors"]
-    )
+    if args.reuse_existing_database:
+        connection = _connect_existing(os.environ["SPIKE_ADMIN_DSN"], args.database)
+        database_mode = "existing_index"
+    else:
+        connection = setup(
+            os.environ["SPIKE_ADMIN_DSN"], args.database, inputs["texts"], inputs["vectors"]
+        )
+        database_mode = "fresh_rebuild"
     try:
         rls, postgres, pgvector = _verify_rls(connection, len(inputs["texts"]))
         index_definition = _index_definition(connection)
@@ -229,6 +268,7 @@ def main(argv=None):
             "graph": "post-limit synthetic chunk-membership join",
             "embedding_action": "reused_without_reembedding",
             "reranker": False,
+            "database_mode": database_mode,
         },
         "rls": rls,
         "planner": {
