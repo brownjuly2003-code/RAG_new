@@ -14,7 +14,7 @@ vs hybrid 0.5067, FULL 89 vs 87; multi-document bucket recall 0.5000 → 0.4000 
 (both graph arms); retrieve p95 +8765.2 ms vs 200 ms — fail. Generation:
 `not_evidence` (297/300 valid; excluded case in capsule).
 `RAG_GRAPH_RETRIEVAL` stays `off`. **C.4 closed:** [NO-SHIP of Qwen3](docs/evidence/c4-generator-model-decision.md): faithfulness 0.8986 < 0.90; host RAM unknown.
-Default: Qwen2.5, below gate. **C.3 done:** [HTTP](docs/evidence/c3-contract-shaped-response.md) and [copilot](docs/evidence/c3-copilot-contract-draft.md), off; 555 Mac tests. **D.2 measured:** [ANN evidence](docs/evidence/d2-pgvector-ann.md): recall@20 0.965217/115, min 0.20; D open for diagnosis, reranking, graph/evidence parity and RAM.
+Default: Qwen2.5, below gate. **C.3 done:** [HTTP](docs/evidence/c3-contract-shaped-response.md) and [copilot](docs/evidence/c3-copilot-contract-draft.md), off; 555 Mac tests. **D.3 measured:** [rerank](docs/evidence/d3-pgvector-rerank.md): final precision 0.4610/0.4729; D open for outlier diagnosis, graph/evidence parity and RAM.
 
 ### Phase C.1a Qwen 2.5 7B baseline — measured on Mac
 

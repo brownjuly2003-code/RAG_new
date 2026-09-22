@@ -1,10 +1,11 @@
 # ADR 0007 — retrieval storage spike
 
-Status: **provisional; D.1 and D.2 measured, Phase D incomplete**. 2026-09-21.
+Status: **provisional; D.1–D.3 measured, Phase D incomplete**. 2026-09-21.
 
 Decision: retain the current retrieval backend. The experiments to date do not
-justify migration. They measure a controlled pre-reranker comparison and ANN
-behaviour, not final product quality or the full graph/evidence trust boundary.
+justify migration. They measure a controlled pre-reranker comparison, ANN
+behaviour and one offline final-rerank pass, not final product quality or the
+full graph/evidence trust boundary.
 
 ## D.1 numbers
 
@@ -52,6 +53,29 @@ Rankings are stable across three alternating-order repetitions. Of 115 cases,
 ANN overlap with exact vector top-20, not context quality or final reranked
 quality.
 
+## D.3 final-rerank numbers
+
+One offline CPU pass reranks the byte-pinned D.1 candidate lists with
+`BAAI/bge-reranker-v2-m3`; it does not retrieve or embed again.
+
+| Bucket / saved arm | Pre-rerank precision | Rerank precision | Pre-rerank recall | Rerank recall |
+|---|---:|---:|---:|---:|
+| 100 phase-C / PostgreSQL | 0.456188 | 0.495865 | 0.840000 | 0.905000 |
+| 100 phase-C / Chroma + BM25 | 0.501882 | 0.505916 | 0.830000 | 0.905000 |
+| 15 multi-hop/aggregation / PostgreSQL | 0.204128 | 0.228451 | 0.422222 | 0.466667 |
+| 15 multi-hop/aggregation / Chroma + BM25 | 0.264656 | 0.252723 | 0.477778 | 0.500000 |
+
+Across all 115 cases, post-rerank precision / recall is 0.460985 / 0.847826
+for PostgreSQL and 0.472891 / 0.852174 for Chroma + BM25. Every full order
+changed; the top-five set changed in 112 and 114 cases respectively. The
+reranker narrows but does not reverse the precision gap. This is a bounded
+keyword-proxy result, not a migration decision or the Phase-C quality gate.
+
+PostgreSQL reranks exactly 20 candidates per case at global p50/p95
+14115.76/21885.67 ms. Chroma + BM25 reranks 23–40 (mean 34.85) at
+28418.78/40548.97 ms. These single-run `predict` timings use fixed arm order
+and unequal work; they do not establish a cross-arm performance difference.
+
 ## Isolation and limits
 
 The scratch databases have FORCE RLS on retrieval and synthetic graph
@@ -66,16 +90,18 @@ NetworkX traversal parity. Production graph edges, evidence joins and write
 policies are untested. Chroma/BM25 is a single-tenant collection for this run;
 the experiment does not prove its application-level isolation.
 
-No cold-start RAM or final reranked quality was measured. D.1 RRF uses rank 1
-for both arms; production currently starts at rank 0. These numbers must not
-replace GR-3 final reranked numbers or close the 0.63 gate. No runtime defaults
-changed.
+No cold-start RAM was measured. D.1 RRF uses rank 1 for both arms; production
+currently starts at rank 0. D.3 stores orders but not reranker scores or a
+fully pinned inference configuration, and its arithmetic replay is not an
+independent semantic check. These numbers must not replace GR-3 final reranked
+numbers or close the 0.63 gate. No runtime defaults changed.
 
 ## Next bounded Phase D experiment
 
-Diagnose the D.2 recall outlier and compare final reranked quality. Complete
-actual graph/NetworkX and evidence-join parity plus cold-start/host RAM before
-a migration decision. Do not rerun or re-embed the unchanged corpus.
+Diagnose the D.2 recall outlier. Complete actual graph/NetworkX and
+evidence-join parity plus cold-start/host RAM before a migration decision. Do
+not rerun or re-embed the unchanged corpus.
 
-Full provenance, reproduction and acceptance: [D.1](../evidence/d1-pgvector-prererank.md)
-and [D.2](../evidence/d2-pgvector-ann.md) evidence.
+Full provenance, reproduction and acceptance: [D.1](../evidence/d1-pgvector-prererank.md),
+[D.2](../evidence/d2-pgvector-ann.md) and
+[D.3](../evidence/d3-pgvector-rerank.md) evidence.
