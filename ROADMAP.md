@@ -110,8 +110,14 @@ now measured in [ADR 0007](docs/adr/0007-pgvector-spike.md): the original
 pre-reranker SQL trails Chroma/BM25, while the index-friendly HNSW arm reaches
 recall@20 0.965217 and warm p95 3.45–3.64 ms over 115 cases. Final offline
 rerank precision is 0.460985 vs 0.472891 for PostgreSQL and Chroma/BM25.
-Next: diagnose the 0.20 ANN outlier, complete actual graph/evidence joins and
-cold-start RAM. Phase D remains open.
+The 0.20 ANN outlier is measured and closed as a bounded replay
+([capsule](docs/evidence/d2-pgvector-ann.md)): on the retained original index
+ef_search=100 reproduces the canonical 4/20 ranking while ef_search 40 and
+200 are both 20/20 — non-monotonic, not ordinary insufficient ef_search —
+and a fresh rebuild is 20/20 across the measured grid; the behaviour is
+localized to the retained index state, with no pgvector/HNSW root cause
+claimed. Next: complete actual graph/evidence joins and cold-start RAM.
+Phase D remains open.
 
 Both inherited CI failures ([ADR 0008](docs/adr/0008-inherited-ci-red-disposition.md))
 are closed. On `6cc810d` (T-17, pushed) both workflows that run on

@@ -49,9 +49,20 @@ top-20 disables index scans.
 Rankings are stable across three alternating-order repetitions. Of 115 cases,
 76 have recall 1.00 and 22 have 0.95. The sole severe outlier,
 `aircargo-harassment-investigation-timeline`, overlaps exact search at only
-4/20; its cause and higher-`ef` behaviour remain unmeasured. Recall here is
-ANN overlap with exact vector top-20, not context quality or final reranked
-quality.
+4/20. Two focused replays (2026-09-21) close the diagnostic as a bounded
+investigation. Both match canonical D.2's exact top-20 IDs. On the retained
+original index, `ef_search=100` exactly reproduces the canonical HNSW ranking
+and the 4/20 overlap across three stable repetitions, `ef_search=200`
+restores 20/20 while `ef_search=40` is also 20/20, so the curve is
+non-monotonic and is not ordinary insufficient `ef_search`; a fresh rebuild
+is 20/20 across the whole measured grid, including `ef_search=100`, and does
+not reproduce the canonical ANN ranking there. The evidence localizes the
+behaviour to the retained index state under this controlled replay; it does
+not establish an internal pgvector/HNSW root cause, and no corruption,
+randomness or pgvector defect is asserted. Recall here is ANN overlap with
+exact vector top-20, not context quality or final reranked quality. Raw
+artifacts: `evaluation/d2-pgvector-ann-outlier.json` and
+`evaluation/d2-pgvector-ann-outlier-original-index.json`.
 
 ## D.3 final-rerank numbers
 
@@ -98,9 +109,12 @@ numbers or close the 0.63 gate. No runtime defaults changed.
 
 ## Next bounded Phase D experiment
 
-Diagnose the D.2 recall outlier. Complete actual graph/NetworkX and
-evidence-join parity plus cold-start/host RAM before a migration decision. Do
-not rerun or re-embed the unchanged corpus.
+The D.2 severe-outlier diagnostic is measured and closed as a bounded
+investigation; no pgvector/HNSW root cause is claimed. Complete actual
+graph/NetworkX and evidence-join parity plus cold-start/host RAM before a
+migration decision; final reranking is already measured in D.3. Do not
+rerun or re-embed the unchanged corpus, do not overwrite the pinned D.2
+artifacts, and do not delete the retained scratch database.
 
 Full provenance, reproduction and acceptance: [D.1](../evidence/d1-pgvector-prererank.md),
 [D.2](../evidence/d2-pgvector-ann.md) and

@@ -25,7 +25,7 @@ root — that habit is what produced 29 of them and is now closed.
 | Slice | Capsule | Evidence class |
 |---|---|---|
 | D.3 offline rerank: final PostgreSQL/Chroma precision 0.460985/0.472891 over 115 cases; no migration decision; Phase D open | [Integrity, metrics and limits](docs/evidence/d3-pgvector-rerank.md) | measured |
-| D.2 pgvector ANN: recall@20 0.965217 over 115 cases; HNSW warm p95 3.45–3.64 ms, one 0.20 outlier; Phase D open | [Measurement and full replay](docs/evidence/d2-pgvector-ann.md) | measured |
+| D.2 pgvector ANN: recall@20 0.965217 over 115 cases; HNSW warm p95 3.45–3.64 ms; 0.20 outlier closed by focused replay (retained original index non-monotonic: ef 100 0.20, ef 40 and ef 200 both 1.0; fresh rebuild 1.0 across the measured grid; localized to the retained index state, no root cause claimed); no migration decision; Phase D open | [Measurement and full replay](docs/evidence/d2-pgvector-ann.md) | measured |
 | D.1 pgvector pre-reranker comparison: 115 cases, 3 runs; sequential scans, non-owner RLS; Phase D open | [Measurement and replay](docs/evidence/d1-pgvector-prererank.md) | measured |
 | C.3 manual copilot: validated shipment skeleton in `ai_draft`, agent API readback, off parity and fallback | [Copilot verification](docs/evidence/c3-copilot-contract-draft.md) | synthetic |
 | C.3 HTTP: pinned response shape → verified fixture answer; evidence binding and legacy-off parity | [HTTP verification](docs/evidence/c3-contract-shaped-response.md) | synthetic |
