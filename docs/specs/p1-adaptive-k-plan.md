@@ -1,9 +1,14 @@
 # P1 — label-free adaptive-k on fresh reranker scores: pre-registration and plan
 
-Status 2026-09-24: **code ready, not measured** (code and scores: `a67f517`). No grid
-cell, CV fold or score distribution has been computed on the real score artifacts. This
-file is committed before the measurement so the rules below are visibly older than any
-result.
+Status 2026-09-24: **measured — NO_SHIP**. [Capsule](../evidence/p1-adaptive-k.md);
+report `reports/p1/p1-adaptive-k.json` published at `2edf19a`, built once in a clean
+Mac clone at `4999ea3`. This plan records the grid, ruler, CV selection rule and
+verdict thresholds as fixed on 2026-09-23, before any score was seen. Git shows
+the plan committed together with the score artifacts in `a67f517`, and the report
+built afterwards at `4999ea3`; the rules are visibly older than the result.
+The verdict is H-relative exploratory on 100 agent-authored `agent_labelled` cases
+(0 approved) in the phase-C harness without parent-window expansion. P1 is an
+offline evaluator; no product behaviour changed.
 
 ## Question
 
@@ -74,6 +79,10 @@ Cuts act on the fresh top-5; rank 1 is always kept.
   "> 0 and ≥ g" reading: a zero gap (ties) never cuts.
 - Executors: GLM 5.3 direct (requests 006–014c, 009a) until its weekly quota ran out
   (`1310`, reset 2026-09-28 05:56 UTC+8); then Codex GPT-6-Sol on the owner's go-ahead.
+- The report was built once in a clean Mac clone at `4999ea3`, after the X2 tests
+  were committed there. Up to that commit, this plan's status recorded the real
+  score artifacts as not measured. The evaluator code did not change afterwards;
+  the report's code digests equal the blobs at `4999ea3`, as the artifact test checks.
 
 ## Exploratory diagnostics (Codex GPT-6-Sol, 2026-09-24; not evidence)
 
@@ -96,12 +105,12 @@ Recomputed from the H archive with the official ruler; no committed report backs
 
 ## Next
 
-1. Finish P1: remaining CV/oracle and end-to-end report tests; commit; build
-   `reports/p1/p1-adaptive-k.json` in a clean Mac clone at that commit
-   (`.tmp/p1-run/p1_report_mac.sh`); artifact test; capsule; EVIDENCE_INDEX row.
-2. **P1b** — overlay the frozen P1 rule on production expansion: expanded top-5 control,
-   frozen cut then identical expansion, expanded k3 as a diagnostic; paired bootstrap;
-   no retuning on H.
+1. **P1 done** — [report](../../reports/p1/p1-adaptive-k.json) at `2edf19a`,
+   [capsule](../evidence/p1-adaptive-k.md), **NO_SHIP**.
+2. **P1b** — overlay frozen `rel_0.2` (the pre-registered selection on all of H,
+   transferred to Hm) on production expansion: expanded top-5 control, frozen cut
+   then identical expansion, expanded k3 as a diagnostic; paired bootstrap; no
+   retuning on H.
 3. **P2** — an independent, blinded per-document relevance/sufficiency judgment beside
    the frozen official ruler: question and source text only, keywords and arm hidden,
    randomized order, a stratified human-adjudicated sample, agreement reported, Hm

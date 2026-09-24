@@ -119,15 +119,18 @@ localized to the retained index state, with no pgvector/HNSW root cause
 claimed. Next: complete actual graph/evidence joins and cold-start RAM.
 Phase D remains open.
 
-P1 (2026-09-23/24) is prepared, not measured: a label-free adaptive-k cut of the
-reranked top-5 on fresh `bge-reranker-v2-m3` scores, with rules pre-registered in the
-[plan](docs/specs/p1-adaptive-k-plan.md) before any score was seen; code and scores are
-at `a67f517`, and no grid cell has been evaluated. Its verdict is H-relative and
-exploratory: a cut of the top five cannot reach the review floor, and the phase-C
-harness has no parent-window expansion. Next: the Mac report and capsule, then P1b (the
-frozen rule over production expansion) and P2 (a blinded relevance judgment beside the
-official ruler; the judge is Julia's data-governance call). Alternative rerankers are a
-model swap and stay on the stop-list below until Julia decides otherwise.
+P1 was measured 2026-09-24 ([capsule](docs/evidence/p1-adaptive-k.md)): 5-fold
+held-out H precision 0.5372 vs valid `top_k_5` control 0.5067, recall 0.8900 vs
+0.9050, FULL/PART/MISS 86/6/8 vs 87/7/6. **NO_SHIP**: the 0.63 precision gate,
+H-relative coverage constraints and unreachable review floor are unmet. The
+label-using, nondeployable prefix oracle bounds any cut that keeps every fact at
+0.6505. This is H-relative exploratory evidence on 100 agent-authored
+`agent_labelled` cases (0 approved) in the phase-C harness without parent-window
+expansion. P1 is an offline evaluator; product behaviour is unchanged. Next, P1b
+tests the frozen `rel_0.2` over production expansion with an expanded top-5
+control and no retuning on H; then P2, whose judge is Julia's data-governance
+call. Alternative rerankers are a model swap and stay on the stop-list below
+until Julia decides otherwise.
 
 Both inherited CI failures ([ADR 0008](docs/adr/0008-inherited-ci-red-disposition.md))
 are closed. On `6cc810d` (T-17, pushed) both workflows that run on

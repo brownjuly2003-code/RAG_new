@@ -7,17 +7,19 @@
 
 ## Start here
 
-### P1 adaptive-k — code ready, not measured
+### P1 adaptive-k — measured, NO_SHIP
 
-`a67f517` adds a label-free cut of the reranked top-5 on fresh `bge-reranker-v2-m3` scores
-(archived order reproduced 100/100 on H, 15/15 on Hm). The rules were pre-registered in the
-[plan](docs/specs/p1-adaptive-k-plan.md) before any score was seen; no grid cell has been
-evaluated. A pass is unlikely: the label-using prefix oracle, 0.6505 (exploratory), bounds
-any cut that keeps every fact. The verdict is H-relative: the phase-C harness has no
-parent-window expansion, and production expanded top-5 measured 0.5768 / 0.980 on the Q1
-pool. Next: end-to-end tests, the Mac report at a committed sha, capsule; then P1b over
-production expansion and P2, a blinded relevance judge (choosing the judge is Julia's
-data-governance call).
+[Capsule](docs/evidence/p1-adaptive-k.md), published at `2edf19a`. Held-out 5-fold H
+(n = 100): precision 0.5372, recall 0.8900, 86/6/8, mean kept 4.30, vs the valid `top_k_5`
+control 0.5067, 0.9050, 87/7/6; delta +0.0306, CI95 [0.0167, 0.0468]. **NO_SHIP:** the
+0.63 gate, the H-relative recall/FULL/MISS constraints and the review floor (recall 0.92,
+FULL 88, MISS 4; unreachable by construction) are unmet. The label-using prefix oracle,
+the ceiling for a cut that keeps every fact, reaches 0.6505 / 0.9050 (not deployable);
+in-sample `rel_0.2`, 0.5278 / 0.9050, is optimistic. On Hm, `rel_0.2` equals the control:
+0.2527 / 0.5000, 4/7/4, mean kept 5.00. Exploratory, H-relative: 100 agent-authored
+`agent_labelled` cases (0 approved), phase-C harness without parent-window expansion.
+P1 is offline, with no product change. Production expanded top-5 measured 0.5768 / 0.980
+on the Q1 pool. Next: P1b, then P2 (the judge is Julia's data-governance call).
 
 ### GR-3 measured — NO-SHIP-to-default
 
@@ -126,7 +128,7 @@ T-03: (a). B.1 remains preparation until approval.
 | GR-4 | [Ask → SQLite → Evidence](docs/evidence/gr4-structural-product-wiring.md): 100 Mac tests, browser/export, strict mypy | **done** (a), synthetic; off/auto fallback |
 | GR-2 entity | [Mac](docs/evidence/gr2-entity-graph-lane.md), `9ca8630`: 0.5487 / 0.9250, lane 6/100; bucket unchanged (lane 11/15). G1 matches GR-1b; 5589 cached / 0 rejected via pinned Qwen2.5 (`845dbda0…`) | **measured** (c), NO-SHIP at 0.63; off |
 | GR-3 A/B | [Comparison](docs/evidence/gr3-graph-lane-ab.md), `32de532`: precision 0.5067 → 0.5487; bucket recall 0.5 → 0.4, FULL 4 → 1; p95 +8765.2 ms; generation `not_evidence`, 297/300 valid | **measured** (c), NO-SHIP-to-default; off |
-| P1 | [Adaptive-k](docs/specs/p1-adaptive-k-plan.md), `a67f517`: pre-registered cut of the reranked top-5 on fresh scores, parity 100/100 and 15/15; no cell evaluated | **preparation**, not measured |
+| P1 | [Adaptive-k](docs/evidence/p1-adaptive-k.md), `2edf19a`: H-relative exploratory held-out precision 0.5372 vs control 0.5067, 86/6/8; label-using oracle 0.6505; offline only | **measured** (c), NO_SHIP |
 
 ## Open questions for Julia
 
