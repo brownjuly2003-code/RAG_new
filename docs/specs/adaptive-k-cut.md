@@ -92,7 +92,7 @@ worse than the control's; it is reported as a diagnostic that is not deployable.
 A committed P1 report SHALL be guarded by a test that pins the report's SHA-256, the
 code commit it was built at, the score-capture commit, both score artifacts' SHA-256 and
 its decision, and the evidence capsule SHALL quote no number that the report does not
-contain.
+contain, the counts of its named case lists included.
 
 ### Scenario: the committed report changes
 
@@ -104,4 +104,6 @@ contain.
 
 - **GIVEN** a number written in the capsule outside code spans
 - **WHEN** the artifact test runs
-- **THEN** it fails unless that number occurs in the report
+- **THEN** it fails unless that number occurs in the report, either as a JSON number
+  (not a boolean) or as a count the report's table prints, the number of entries of a
+  comparison's `lost_keyword_cases` or `full_regressions` list
