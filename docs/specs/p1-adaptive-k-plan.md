@@ -1,8 +1,9 @@
 # P1 — label-free adaptive-k on fresh reranker scores: pre-registration and plan
 
-Status 2026-09-24: **code ready, not measured.** No grid cell, CV fold or score
-distribution has been computed on the real score artifacts. This file is committed
-before the measurement so the rules below are visibly older than any result.
+Status 2026-09-24: **code ready, not measured** (code and scores: `a67f517`). No grid
+cell, CV fold or score distribution has been computed on the real score artifacts. This
+file is committed before the measurement so the rules below are visibly older than any
+result.
 
 ## Question
 
@@ -108,4 +109,5 @@ Recomputed from the H archive with the official ruler; no committed report backs
    data-governance decision for the owner.
 4. Later candidates, ranked by the consultation: document-first retrieval for routed
    single-hop questions; section-level small-to-big; evidence-span reranking; Russian
-   lexical fusion in BM25; alternative rerankers one at a time on the 8 GB Mac.
+   lexical fusion in BM25; alternative rerankers one at a time on the 8 GB Mac (a model
+   swap: on the ROADMAP stop-list, so only by the owner's decision).

@@ -1,11 +1,23 @@
 # Current state — RAG_new
 
-2026-09-21 · Plan: [`plan_06_09_26.md`](plan_06_09_26.md)
+2026-09-24 · Plan: [`plan_06_09_26.md`](plan_06_09_26.md)
 (mode B, adopted 2026-09-10) · Audit:
 [`docs/audits/audit_final_23_08_2026.md`](docs/audits/audit_final_23_08_2026.md)
 · Phase C source: `c06bdf5` · owner delegated commits and pushes (§1).
 
 ## Start here
+
+### P1 adaptive-k — code ready, not measured
+
+`a67f517` adds a label-free cut of the reranked top-5 on fresh `bge-reranker-v2-m3` scores
+(archived order reproduced 100/100 on H, 15/15 on Hm). The rules were pre-registered in the
+[plan](docs/specs/p1-adaptive-k-plan.md) before any score was seen; no grid cell has been
+evaluated. A pass is unlikely: the label-using prefix oracle, 0.6505 (exploratory), bounds
+any cut that keeps every fact. The verdict is H-relative: the phase-C harness has no
+parent-window expansion, and production expanded top-5 measured 0.5768 / 0.980 on the Q1
+pool. Next: end-to-end tests, the Mac report at a committed sha, capsule; then P1b over
+production expansion and P2, a blinded relevance judge (choosing the judge is Julia's
+data-governance call).
 
 ### GR-3 measured — NO-SHIP-to-default
 
@@ -73,7 +85,8 @@ browser checks run on Mac.
   `transformers>=5.10.0` under `--require-hashes`, pip-audit clean.
 - **GitHub Actions unavailable until early October 2026** (owner, 2026-09-21).
   Use Mac gates; no workflow retries or billing probes.
-- **Executor:** [direct GLM 5.3 xhigh](docs/operations/direct-glm-5.3.md).
+- **Executor:** [direct GLM 5.3 xhigh](docs/operations/direct-glm-5.3.md). Weekly quota
+  (`1310`) until 2026-09-28 05:56 UTC+8; meanwhile Codex GPT-6-Sol (`cw` profile), owner's go-ahead.
 
 ## Accepted open risks
 
@@ -112,6 +125,7 @@ T-03: (a). B.1 remains preparation until approval.
 | GR-4 | [Ask → SQLite → Evidence](docs/evidence/gr4-structural-product-wiring.md): 100 Mac tests, browser/export, strict mypy | **done** (a), synthetic; off/auto fallback |
 | GR-2 entity | [Mac](docs/evidence/gr2-entity-graph-lane.md), `9ca8630`: 0.5487 / 0.9250, lane 6/100; bucket unchanged (lane 11/15). G1 matches GR-1b; 5589 cached / 0 rejected via pinned Qwen2.5 (`845dbda0…`) | **measured** (c), NO-SHIP at 0.63; off |
 | GR-3 A/B | [Comparison](docs/evidence/gr3-graph-lane-ab.md), `32de532`: precision 0.5067 → 0.5487; bucket recall 0.5 → 0.4, FULL 4 → 1; p95 +8765.2 ms; generation `not_evidence`, 297/300 valid | **measured** (c), NO-SHIP-to-default; off |
+| P1 | [Adaptive-k](docs/specs/p1-adaptive-k-plan.md), `a67f517`: pre-registered cut of the reranked top-5 on fresh scores, parity 100/100 and 15/15; no cell evaluated | **preparation**, not measured |
 
 ## Open questions for Julia
 

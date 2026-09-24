@@ -119,6 +119,16 @@ localized to the retained index state, with no pgvector/HNSW root cause
 claimed. Next: complete actual graph/evidence joins and cold-start RAM.
 Phase D remains open.
 
+P1 (2026-09-23/24) is prepared, not measured: a label-free adaptive-k cut of the
+reranked top-5 on fresh `bge-reranker-v2-m3` scores, with rules pre-registered in the
+[plan](docs/specs/p1-adaptive-k-plan.md) before any score was seen; code and scores are
+at `a67f517`, and no grid cell has been evaluated. Its verdict is H-relative and
+exploratory: a cut of the top five cannot reach the review floor, and the phase-C
+harness has no parent-window expansion. Next: the Mac report and capsule, then P1b (the
+frozen rule over production expansion) and P2 (a blinded relevance judgment beside the
+official ruler; the judge is Julia's data-governance call). Alternative rerankers are a
+model swap and stay on the stop-list below until Julia decides otherwise.
+
 Both inherited CI failures ([ADR 0008](docs/adr/0008-inherited-ci-red-disposition.md))
 are closed. On `6cc810d` (T-17, pushed) both workflows that run on
 push ended `success`: `CI` run 34461559172 with 11 of 11 jobs, and `Deploy docs
