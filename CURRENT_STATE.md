@@ -91,7 +91,8 @@ browser checks run on Mac.
 ## Accepted open risks
 
 - **ChromaDB CVEs** (CVE-2026-45830 / 45833 / 45831), no fix version.
-  Ignored by id per ADR 0008. **Review 2026-09-24.**
+  Ignored by id per ADR 0008. Reviewed 2026-09-24: no fixed release.
+  **Next review 2026-10-24.**
 - **The fixture TMS is a stand-in.** Every number measured through it is
   fixture-sourced and has to say so.
 - **The integration job connects to Postgres as a superuser**, so RLS is

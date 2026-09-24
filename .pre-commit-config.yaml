@@ -47,11 +47,12 @@ repos:
         # untrusted input. Drop this ignore once an upstream fix ships.
         # CVE-2026-45830, CVE-2026-45833, CVE-2026-45831 (chromadb): ignored
         # from 2026-08-25, none with a fix version — 1.5.9 is the latest
-        # chromadb release on PyPI (re-checked 2026-08-25), so there is nothing
-        # to upgrade to. Accepted under ADR 0008, whose conditions are
-        # mandatory: by CVE id only, never a blanket ignore on the package,
-        # never dropping --strict, so a new chromadb advisory still fails this
-        # hook. REVIEW 2026-09-24: re-check for a fixed release; if one exists,
+        # chromadb release on PyPI (re-checked 2026-08-25 and 2026-09-24), so
+        # there is nothing to upgrade to. Accepted under ADR 0008, whose
+        # conditions are mandatory: by CVE id only, never a blanket ignore on
+        # the package, never dropping --strict, so a new chromadb advisory still
+        # fails this hook. Reviewed 2026-09-24: still no fixed release.
+        # NEXT REVIEW 2026-10-24: re-check for a fixed release; if one exists,
         # upgrade and delete these three entries.
         # Keep this list in sync with the security job in
         # .github/workflows/ci.yml.

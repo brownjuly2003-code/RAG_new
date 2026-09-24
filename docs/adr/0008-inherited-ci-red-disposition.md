@@ -144,6 +144,12 @@ If phase D later moves off chromadb, these entries are deleted with the
 dependency, and this ADR's argument becomes a footnote in ADR 0007 rather than
 its driver.
 
+### Review log
+
+- 2026-09-24 — no fixed release: PyPI latest `1.5.9` (2026-05-05),
+  PyPI `fixed_in` empty for all three advisories, OSV has no `fixed` event
+  (modified 2026-09-10); the ignores stay; next review 2026-10-24.
+
 ## Q2 — the labelling commitment (not decided here)
 
 Q2 asks Julia to act as domain-owner-proxy: approving 100 labels in batches of

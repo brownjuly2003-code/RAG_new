@@ -16,8 +16,8 @@ conditions, read [`ROADMAP.md`](ROADMAP.md). The active delivery plan is
 - P1 adaptive-k: finish per [`docs/specs/p1-adaptive-k-plan.md`](docs/specs/p1-adaptive-k-plan.md)
   § Next — end-to-end tests, the Mac report at a committed sha, capsule. The score
   artifacts are not evaluated before those tests are committed.
-- Review the three accepted ChromaDB CVE exceptions on **2026-09-24** and
-  remove them if a fixed release exists.
+- Review the three accepted ChromaDB CVE exceptions on **2026-10-24** and
+  remove them if a fixed release exists (2026-09-24 review: no fixed release).
 - MyFlow tree pinning has been silently off here since 2026-09-08 — a defect in
   the shared controller under `~/.claude/skills/`, not in this repository.
   `worktree_hash()` (`mf_util.py:853-895`) runs
