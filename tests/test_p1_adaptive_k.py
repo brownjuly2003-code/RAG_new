@@ -1,11 +1,16 @@
 """Tests for P1 adaptive-k cut rules: cell names, cut-rule counts, artifact loading."""
 
+import gzip
+import hashlib
+import json
 import math
+from pathlib import Path
 
 import pytest
 
 from scripts import p1_adaptive_k as p1
 from scripts import rerank_score_capture
+from tests.test_gr_bucket_baseline import _write_fixture
 
 
 def _row(case_id, n=6):
@@ -585,3 +590,450 @@ def test_verdict_flags_review_floor_exact_boundary():
 
     too_many_miss = floor_rows(miss=5)
     assert p1.verdict_flags(too_many_miss, too_many_miss)["review_floor_met"] is False
+
+
+def test_cross_validate_returns_each_case_in_control_order_with_its_fold_choice():
+    case_ids = ("a", "b", "c", "d")
+    per_cell = {
+        p1.CONTROL_CELL: [_case(case_id, 0.5) for case_id in case_ids],
+        "better": [_case(case_id, 0.9, kept=2) for case_id in case_ids],
+    }
+    folds = {"a": 0, "b": 1, "c": 0, "d": 1}
+
+    held_out, choices = p1.cross_validate(per_cell, ["better"], p1.CONTROL_CELL, folds)
+
+    assert [row["case_id"] for row in held_out] == list(case_ids)
+    assert len({row["case_id"] for row in held_out}) == 4
+    assert [(row["fold"], row["cell"], row["kept"]) for row in held_out] == [
+        (folds[case_id], "better", 2) for case_id in case_ids
+    ]
+    assert [(choice["fold"], choice["cell"]) for choice in choices] == [
+        (0, "better"),
+        (1, "better"),
+    ]
+    assert [(choice["train_cases"], choice["test_cases"]) for choice in choices] == [
+        (2, 2),
+        (2, 2),
+    ]
+
+
+def test_cross_validate_selects_on_training_cases_only():
+    control = [_case(case_id, 0.5) for case_id in ("a", "b", "c", "d")]
+    better = [
+        _case("a", 0.9, status="PART", kept=2),
+        _case("b", 0.9, kept=2),
+        _case("c", 0.9, kept=2),
+        _case("d", 0.9, kept=2),
+    ]
+    folds = {"a": 0, "b": 0, "c": 1, "d": 1}
+
+    held_out, choices = p1.cross_validate(
+        {p1.CONTROL_CELL: control, "better": better}, ["better"], p1.CONTROL_CELL, folds
+    )
+
+    assert [(choice["fold"], choice["cell"]) for choice in choices] == [
+        (0, "better"),
+        (1, p1.CONTROL_CELL),
+    ]
+    assert [(row["cell"], row["kw_status"]) for row in held_out] == [
+        ("better", "PART"),
+        ("better", "FULL"),
+        (p1.CONTROL_CELL, "FULL"),
+        (p1.CONTROL_CELL, "FULL"),
+    ]
+
+
+def test_cross_validate_rejects_missing_case_fold():
+    per_cell = {p1.CONTROL_CELL: [_case("a", 0.5), _case("b", 0.5)]}
+    with pytest.raises(ValueError, match="folds_by_case"):
+        p1.cross_validate(per_cell, [], p1.CONTROL_CELL, {"a": 0})
+
+
+def test_oracle_best_prefix_preserves_keywords_then_precision_then_shortest_tie():
+    prefixes = {
+        1: (0.99, ("alpha",)),
+        2: (0.7, ("alpha", "beta")),
+        3: (0.8, ("alpha", "beta")),
+        4: (0.8, ("alpha", "beta")),
+        5: (0.5, ("alpha", "beta")),
+    }
+    per_cell = {
+        f"top_k_{k}": [_case("a", precision, kept=k, matched=matched)]
+        for k, (precision, matched) in prefixes.items()
+    }
+
+    picked = p1.oracle_best_prefix(per_cell)
+
+    assert len(picked) == 1
+    assert picked[0]["oracle_k"] == 3
+    assert picked[0]["context_precision"] == 0.8
+    assert picked[0]["matched_keywords"] == ["alpha", "beta"]
+
+
+def test_oracle_best_prefix_rejects_worse_status_even_with_same_keywords():
+    per_cell = {
+        "top_k_1": [_case("a", 0.99, status="PART", kept=1, matched=("alpha",))],
+        "top_k_2": [_case("a", 0.8, kept=2, matched=("alpha",))],
+        "top_k_3": [_case("a", 0.7, kept=3, matched=("alpha",))],
+        "top_k_4": [_case("a", 0.6, kept=4, matched=("alpha",))],
+        "top_k_5": [_case("a", 0.5, matched=("alpha",))],
+    }
+
+    picked = p1.oracle_best_prefix(per_cell)
+
+    assert picked[0]["oracle_k"] == 2
+    assert picked[0]["kw_status"] == "FULL"
+    assert picked[0]["context_precision"] == 0.8
+
+
+def test_select_cell_rejects_miss_increase_without_recall_or_full_loss():
+    control = [_case("a", 0.5), _case("b", 0.5, status="PART")]
+    adds_miss = [_case("a", 0.9), _case("b", 0.9, status="MISS")]
+    keeps_part = [_case("a", 0.9), _case("b", 0.9, status="PART")]
+    per_cell = {p1.CONTROL_CELL: control, "adds_miss": adds_miss, "keeps_part": keeps_part}
+
+    assert p1.aggregate(adds_miss)["context_recall"] == p1.aggregate(control)["context_recall"]
+    assert p1.aggregate(adds_miss)["FULL"] == p1.aggregate(control)["FULL"]
+    assert p1.select_cell(per_cell, ["adds_miss"], p1.CONTROL_CELL, ("a", "b")) == p1.CONTROL_CELL
+    assert p1.select_cell(per_cell, ["keeps_part"], p1.CONTROL_CELL, ("a", "b")) == "keeps_part"
+
+
+def _inputs(tmp_path: Path, *, model=None, swap_case=None) -> dict:
+    paths = _write_fixture(tmp_path / "fx")
+    rows = json.loads(paths["pool"].read_text(encoding="utf-8"))
+    for row in rows:
+        row["prerank_cands"] = row["cands"] + [
+            f"filler {i} text without keywords" for i in range(4)
+        ]
+        row["cands"] = list(row["prerank_cands"])
+        row["rerank_k"] = 5
+        if row["case_id"] == swap_case:
+            row["cands"][-2], row["cands"][-1] = row["cands"][-1], row["cands"][-2]
+    raw = json.dumps(rows, ensure_ascii=False).encode("utf-8")
+    archive = tmp_path / "archive.json.gz"
+    archive.write_bytes(gzip.compress(raw, mtime=0))
+    digest = hashlib.sha256(raw).hexdigest()
+    probabilities = [0.9, 0.8, 0.3, 0.2, 0.1, 0.05]
+    scores = {
+        "schema_version": rerank_score_capture.SCHEMA_VERSION,
+        "complete": True,
+        "parity": {"order_matches": 4, "top_k_matches": 4, "mismatched_case_ids": []},
+        "provenance": {
+            "pool_sha256": digest,
+            "code": {"commit": "f" * 40},
+            "reranker": {"model": model or p1.RERANKER_MODEL},
+            "config": {"batch_size": 8},
+        },
+        "per_case": [
+            {
+                "case_id": row["case_id"],
+                "n_candidates": 6,
+                "probabilities": probabilities,
+                "logits": [math.log(p / (1 - p)) for p in probabilities],
+                "fresh_order": list(range(6)),
+            }
+            for row in rows
+        ],
+    }
+    scores_path = tmp_path / "scores.json"
+    scores_path.write_text(json.dumps(scores, ensure_ascii=False), encoding="utf-8")
+    return {
+        "h_scores": scores_path,
+        "hm_scores": scores_path,
+        "h_archive": archive,
+        "hm_archive": archive,
+        "h_pool_sha256": digest,
+        "hm_pool_sha256": digest,
+        "dataset_path": paths["dataset"],
+        "hm_dataset_path": paths["dataset"],
+        "sidecar_path": paths["sidecar"],
+        "hm_sidecar_path": paths["sidecar"],
+        "label_manifest_path": paths["label_manifest"],
+        "hm_label_manifest_path": paths["label_manifest"],
+        "corpus_manifest_path": paths["corpus_manifest"],
+        "folds": 2,
+        "grid_bootstrap_samples": 50,
+        "headline_bootstrap_samples": 50,
+        "code_commit": "0" * 40,
+    }
+
+
+@pytest.fixture(scope="module")
+def synthetic_report(tmp_path_factory):
+    inputs = _inputs(tmp_path_factory.mktemp("p1_synthetic"))
+    return inputs, p1.build_report(**inputs)
+
+
+def test_score_selection_keeps_dataset_order_and_keyword_evidence(synthetic_report):
+    inputs, _report = synthetic_report
+    rows = json.loads(gzip.decompress(inputs["h_archive"].read_bytes()))
+    scores = json.loads(inputs["h_scores"].read_text(encoding="utf-8"))
+    rankings = p1.fresh_rankings(rows, scores["per_case"])
+    kept = [1, 2, 5, 1]
+
+    selected, _approved = p1.score_selection(
+        list(reversed(rows)),
+        list(reversed(rankings)),
+        list(reversed(kept)),
+        dataset_path=inputs["dataset_path"],
+        sidecar_path=inputs["sidecar_path"],
+        label_manifest_path=inputs["label_manifest_path"],
+    )
+
+    dataset_ids = [
+        json.loads(line)["case_id"]
+        for line in inputs["dataset_path"].read_text(encoding="utf-8").splitlines()
+    ]
+    assert [row["case_id"] for row in selected] == dataset_ids
+    assert [row["kept"] for row in selected] == kept
+    assert [row["matched_keywords"] for row in selected] == [
+        ["поля", "допуск"],
+        ["юрист", "эскалаци"],
+        [],
+        ["хранени"],
+    ]
+    assert [row["context_chars"] for row in selected] == [
+        sum(len(text) for text in ranking["texts"][:k])
+        for ranking, k in zip(rankings, kept, strict=True)
+    ]
+    assert all(0 < row["n_docs"] <= row["kept"] for row in selected)
+
+
+def test_build_report_has_pinned_top_level_and_grid_config(synthetic_report):
+    _, report = synthetic_report
+    assert list(report) == [
+        "schema_version",
+        "evidence_class",
+        "labels",
+        "provenance",
+        "config",
+        "h",
+        "hm",
+        "verdict",
+    ]
+    assert report["schema_version"] == p1.SCHEMA_VERSION
+    assert report["config"]["cells"] == [name for name, *_ in p1.grid_cells()]
+    assert list(report["config"]["rules"]) == [
+        "top_k",
+        "abs",
+        "rel",
+        "gap_prob",
+        "gap_logit",
+    ]
+
+
+def test_build_report_h_cells_follow_grid_and_cut_counts(synthetic_report):
+    _, report = synthetic_report
+    cells = report["h"]["cells"]
+    by_name = {cell["name"]: cell for cell in cells}
+    assert [cell["name"] for cell in cells] == [name for name, *_ in p1.grid_cells()]
+    assert by_name["top_k_1"]["kept"] == [1] * 4
+    assert by_name["abs_0.5"]["kept"] == [2] * 4
+    assert by_name["gap_prob_inf"]["aggregate"] == by_name["top_k_5"]["aggregate"]
+    assert all(len(cell["comparison"]["precision_delta_ci95"]) == 2 for cell in cells)
+
+
+def test_build_report_cross_validation_has_held_out_primary_choices(synthetic_report):
+    _, report = synthetic_report
+    cv = report["h"]["cross_validation"]
+    choices = cv["choices"]
+    per_case = cv["per_case"]
+    assert report["verdict"]["headline"].startswith("2-fold ")
+    assert len(per_case) == 4
+    assert len({row["case_id"] for row in per_case}) == 4
+    assert {row["fold"] for row in per_case} == {0, 1}
+    assert [choice["fold"] for choice in choices] == [0, 1]
+    assert all(choice["cell"] in report["config"]["primary"] for choice in choices)
+    assert all(row["cell"] == choices[row["fold"]]["cell"] for row in per_case)
+
+
+def test_build_report_decision_fails_closed_then_uses_both_gates(synthetic_report, monkeypatch):
+    inputs, report = synthetic_report
+    published_h = p1.PUBLISHED_H
+    assert report["h"]["control_reproduces_published"] is False
+    assert report["verdict"]["decision"] == "INVALID_CONTROL"
+    assert isinstance(report["verdict"]["scope"], str) and report["verdict"]["scope"]
+
+    control = next(cell for cell in report["h"]["cells"] if cell["name"] == p1.CONTROL_CELL)
+    agg = control["aggregate"]
+    monkeypatch.setattr(p1, "PUBLISHED_H", {key: agg[key] for key in published_h})
+    rebuilt = p1.build_report(**inputs)
+    verdict = rebuilt["verdict"]
+    expected = (
+        "SHIP_CANDIDATE"
+        if verdict["precision_gate_met"] and verdict["h_relative_constraints_met"]
+        else "NO_SHIP"
+    )
+    assert rebuilt["h"]["control_reproduces_published"] is True
+    assert verdict["decision"] == expected
+
+    calls = []
+    current_flags = {
+        "precision_gate_met": True,
+        "h_relative_constraints_met": True,
+        "review_floor_met": False,
+    }
+
+    def fake_verdict_flags(held_out, control_rows):
+        calls.append((len(held_out), len(control_rows)))
+        return dict(current_flags)
+
+    monkeypatch.setattr(p1, "verdict_flags", fake_verdict_flags)
+    for gate, relative, decision in (
+        (True, True, "SHIP_CANDIDATE"),
+        (True, False, "NO_SHIP"),
+        (False, True, "NO_SHIP"),
+    ):
+        current_flags = {
+            "precision_gate_met": gate,
+            "h_relative_constraints_met": relative,
+            "review_floor_met": False,
+        }
+        call_count = len(calls)
+        rebuilt = p1.build_report(**inputs)
+        assert len(calls) == call_count + 1
+        assert rebuilt["h"]["control_reproduces_published"] is True
+        assert rebuilt["verdict"]["decision"] == decision
+        assert {key: rebuilt["verdict"][key] for key in current_flags} == current_flags
+
+    monkeypatch.setattr(p1, "PUBLISHED_H", published_h)
+    current_flags = {
+        "precision_gate_met": True,
+        "h_relative_constraints_met": True,
+        "review_floor_met": False,
+    }
+    call_count = len(calls)
+    rebuilt = p1.build_report(**inputs)
+    assert len(calls) == call_count + 1
+    assert rebuilt["h"]["control_reproduces_published"] is False
+    assert rebuilt["verdict"]["decision"] == "INVALID_CONTROL"
+    assert {key: rebuilt["verdict"][key] for key in current_flags} == current_flags
+    assert calls == [(4, 4)] * 4
+
+
+def test_build_report_fact_loss_shapes_and_table_bullets(synthetic_report):
+    _, report = synthetic_report
+    cv_losses = report["h"]["cross_validation"]["fact_losses"]
+    hm_losses = report["hm"]["transfer"]["fact_losses"]
+    assert isinstance(cv_losses, list)
+    assert isinstance(hm_losses, list)
+    assert cv_losses == [
+        {
+            "case_id": "syn-two",
+            "fold": 1,
+            "cell": "abs_0.9",
+            "kept": 1,
+            "lost_keywords": ["эскалаци"],
+            "control_status": "FULL",
+            "status": "PART",
+        }
+    ]
+    # H and Hm use the same synthetic data, so this transfer has no fact losses.
+    assert hm_losses == []
+    losses = p1.fact_losses(
+        [_case("a", 0.5, status="PART", kept=1)],
+        [_case("a", 0.5, matched=("x",))],
+    )
+    assert len(losses) == 1
+    assert list(losses[0]) == [
+        "case_id",
+        "kept",
+        "lost_keywords",
+        "control_status",
+        "status",
+    ]
+    lines = p1.render_table(report).splitlines()
+    assert sum(line.startswith("- Held-out fact losses:") for line in lines) == 1
+    assert sum(line.startswith("- Hm transfer fact losses:") for line in lines) == 1
+    with_loss = dict(report)
+    with_loss["hm"] = dict(report["hm"])
+    with_loss["hm"]["transfer"] = dict(report["hm"]["transfer"], fact_losses=losses)
+    assert (
+        "- Hm transfer fact losses: `a` (FULL->PART): `x`"
+        in p1.render_table(with_loss).splitlines()
+    )
+
+
+def test_build_report_transfers_h_choice_and_marks_oracle_diagnostic(synthetic_report):
+    _, report = synthetic_report
+    oracle = report["h"]["oracle_best_prefix"]
+    assert report["hm"]["transfer"]["cell"] == report["h"]["in_sample_best"]["cell"]
+    assert oracle["kind"] == "oracle_diagnostic_not_deployable"
+    assert len(oracle["oracle_k"]) == 4
+    assert all(1 <= k <= 5 for k in oracle["oracle_k"])
+
+
+def test_build_report_records_synthetic_provenance(synthetic_report):
+    inputs, report = synthetic_report
+    pools = report["provenance"]["pools"]
+    assert pools["H"]["pool_sha256"] == inputs["h_pool_sha256"]
+    assert pools["H"]["scores_code_commit"] == "f" * 40
+    assert pools["H"]["reranker"]["model"] == p1.RERANKER_MODEL
+    assert report["provenance"]["code"]["commit"] == "0" * 40
+
+
+def test_build_report_is_deterministic_and_json_finite(synthetic_report):
+    inputs, report = synthetic_report
+    assert p1.build_report(**inputs) == report
+    assert isinstance(json.dumps(report, allow_nan=False), str)
+
+
+def test_build_report_rejects_incomplete_wrong_model_and_order(tmp_path):
+    incomplete = _inputs(tmp_path / "incomplete")
+    scores_path = incomplete["h_scores"]
+    scores = json.loads(scores_path.read_text(encoding="utf-8"))
+    scores["complete"] = False
+    scores_path.write_text(json.dumps(scores, ensure_ascii=False), encoding="utf-8")
+    with pytest.raises(ValueError, match="complete"):
+        p1.build_report(**incomplete)
+
+    wrong_model = _inputs(tmp_path / "wrong_model", model="other/model")
+    with pytest.raises(ValueError, match="model"):
+        p1.build_report(**wrong_model)
+
+    swapped = _inputs(tmp_path / "swapped", swap_case="syn-one")
+    with pytest.raises(ValueError) as exc:
+        p1.build_report(**swapped)
+    message = str(exc.value)
+    assert "syn-one" in message
+    assert all(case_id not in message for case_id in ("syn-two", "syn-three", "syn-four"))
+
+
+def test_render_table_and_write_report_cover_grid_and_round_trip(synthetic_report, tmp_path):
+    _, report = synthetic_report
+    lines = p1.render_table(report).splitlines()
+    assert lines[2].startswith("| cell | role | precision | recall |")
+    grid_rows = [line for line in lines if line.startswith("| ") and line != lines[2]]
+    assert [line.split("|")[1].strip() for line in grid_rows] == report["config"]["cells"]
+    assert any(line.startswith("- CV held-out ") for line in lines)
+    assert any(line.startswith("**Decision: ") for line in lines)
+
+    path = tmp_path / "report.json"
+    assert p1.write_report(path, report) == path
+    assert json.loads(path.read_text(encoding="utf-8")) == report
+    raw = path.read_bytes()
+    assert raw.endswith(b"\n") and not raw.endswith(b"\n\n")
+    assert b"\r\n" not in raw
+
+
+def test_main_writes_requested_report_and_prints_table(
+    synthetic_report, tmp_path, monkeypatch, capsys
+):
+    inputs, report = synthetic_report
+    path = tmp_path / "cli" / "report.json"
+    monkeypatch.setattr(p1, "build_report", lambda **kw: report)
+
+    result = p1.main(
+        [
+            "--h-scores",
+            str(inputs["h_scores"]),
+            "--hm-scores",
+            str(inputs["hm_scores"]),
+            "--report",
+            str(path),
+        ]
+    )
+
+    assert result == 0
+    assert json.loads(path.read_text(encoding="utf-8")) == report
+    assert capsys.readouterr().out == p1.render_table(report)
