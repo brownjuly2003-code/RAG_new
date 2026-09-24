@@ -13,6 +13,9 @@ conditions, read [`ROADMAP.md`](ROADMAP.md). The active delivery plan is
   approval. Do not manufacture more fixture cases to make the gate pass.
 - Phase C benchmark execution and resume instructions belong in
   `CURRENT_STATE.md`; do not launch a duplicate run from this file.
+- P1 adaptive-k: finish per [`docs/specs/p1-adaptive-k-plan.md`](docs/specs/p1-adaptive-k-plan.md)
+  § Next — end-to-end tests, the Mac report at a committed sha, capsule. The score
+  artifacts are not evaluated before those tests are committed.
 - Review the three accepted ChromaDB CVE exceptions on **2026-09-24** and
   remove them if a fixed release exists.
 - MyFlow tree pinning has been silently off here since 2026-09-08 — a defect in
