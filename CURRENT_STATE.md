@@ -1,6 +1,6 @@
 # Current state — RAG_new
 
-2026-09-24 · Plan: [`plan_06_09_26.md`](plan_06_09_26.md)
+2026-09-25 · Plan: [`plan_06_09_26.md`](plan_06_09_26.md)
 (mode B, adopted 2026-09-10) · Audit:
 [`docs/audits/audit_final_23_08_2026.md`](docs/audits/audit_final_23_08_2026.md)
 · Phase C source: `c06bdf5` · owner delegated commits and pushes (§1).
@@ -28,7 +28,7 @@ vs hybrid 0.5067, FULL 89 vs 87; multi-document bucket recall 0.5000 → 0.4000 
 (both graph arms); retrieve p95 +8765.2 ms vs 200 ms — fail. Generation:
 `not_evidence` (297/300 valid; excluded case in capsule).
 `RAG_GRAPH_RETRIEVAL` stays `off`. **C.4 closed:** [NO-SHIP of Qwen3](docs/evidence/c4-generator-model-decision.md): faithfulness 0.8986 < 0.90; host RAM unknown.
-Default: Qwen2.5, below gate. **C.3 done:** [HTTP](docs/evidence/c3-contract-shaped-response.md) and [copilot](docs/evidence/c3-copilot-contract-draft.md), off; 555 Mac tests. **D.3 measured:** [rerank](docs/evidence/d3-pgvector-rerank.md): final precision 0.4610/0.4729. **D.2 outlier closed as a bounded replay:** retained original index non-monotonic (ef_search 100 0.20; ef 40 and 200 both 20/20), fresh rebuild 20/20 across the measured grid, no pgvector/HNSW root cause claimed ([capsule](docs/evidence/d2-pgvector-ann.md)); D open for graph/evidence parity and cold-start/host RAM.
+Default: Qwen2.5, below gate. **C.3 done:** [HTTP](docs/evidence/c3-contract-shaped-response.md) and [copilot](docs/evidence/c3-copilot-contract-draft.md), off; 555 Mac tests. **D.3 measured:** [rerank](docs/evidence/d3-pgvector-rerank.md): final precision 0.4610/0.4729. **D.2 outlier closed as a bounded replay:** retained original index non-monotonic (ef_search 100 0.20; ef 40 and 200 both 20/20), fresh rebuild 20/20 across the measured grid, no pgvector/HNSW root cause claimed ([capsule](docs/evidence/d2-pgvector-ann.md)); **D.4 measured:** [graph/evidence parity](docs/evidence/d4-pgvector-graph-evidence.md), `25c21e4`: 10300 nodes / 17327 edges reload with an identical persisted contract, 5589 chunk nodes join 5589 synthetic evidence rows, RLS forced on four tables with 0 cross-tenant rows; no migration decision; D open for cold-start/host RAM.
 
 ### Phase C.1a Qwen 2.5 7B baseline — measured on Mac
 

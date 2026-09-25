@@ -116,8 +116,15 @@ ef_search=100 reproduces the canonical 4/20 ranking while ef_search 40 and
 200 are both 20/20 — non-monotonic, not ordinary insufficient ef_search —
 and a fresh rebuild is 20/20 across the measured grid; the behaviour is
 localized to the retained index state, with no pgvector/HNSW root cause
-claimed. Next: complete actual graph/evidence joins and cold-start RAM.
-Phase D remains open.
+claimed. D.4 was measured on 2026-09-25
+([capsule](docs/evidence/d4-pgvector-graph-evidence.md)), published at `25c21e4`:
+on a fresh migrated scratch database, 10300 nodes and 17327 edges reload
+through `StructuralGraphRepository` with an identical persisted contract;
+5589 chunk nodes join 5589 synthetic evidence rows by a diagnostic semantic
+join, not a schema foreign key; RLS is forced on four tables, with 0
+cross-tenant rows. This was one run on one corpus and one host;
+`RAG_GRAPH_RETRIEVAL` remains `off` and the retrieval backend is unchanged.
+Next: cold-start and host RAM before any migration decision. Phase D remains open.
 
 P1 was measured 2026-09-24 ([capsule](docs/evidence/p1-adaptive-k.md)): 5-fold
 held-out H precision 0.5372 vs valid `top_k_5` control 0.5067, recall 0.8900 vs
@@ -163,7 +170,7 @@ so this is two of five. The chromadb CVE ignores carry a **review date of 2026-0
 | **B** | 100 real labelled air-cargo cases | rule (b): corpus v1.0 at `evidence_class: real_labelled`, ≥40 double-annotated calibration routes. B.1 done (`agent_labelled`); B.2/B.3/B.5 blocked on data, now for three reasons rather than one |
 | **C** | Quality leverage: Qwen3 benchmark, NLI second judge, claim-level compilation | rule (c): faithfulness ≥ 0.90 and precision ≥ 0.63 over 3 runs with a CI, **or** a NO-SHIP report with a cause |
 | **GR** | Graph retrieval: structure graph (0 LLM calls) → entity graph → A/B → wired behind flags. Unfrozen 2026-09-06; **required** under the plan the owner adopted on 2026-09-10 — the only stream that can move the precision gate (0.5067 → ≥ 0.63), which is computed over cached contexts (plan §2); GR-1a's cheap arm gave 0.5216, no better than plain top-4's 0.5214 ([capsule](docs/evidence/gr1a-section-coherence.md)) | rule (c): published context precision / multi-hop coverage with provenance per step; rule (a): graph lane behind `RAG_GRAPH_RETRIEVAL` with an E2E test; GR-3 measured 2026-09-18/19 — NO-SHIP-to-default, default stays `off` ([capsule](docs/evidence/gr3-graph-lane-ab.md)) |
-| **D** | pgvector spike, ADR 0007 — now measured against the graph tables too | a table of numbers in the ADR; no migration without it |
+| **D** | pgvector spike, ADR 0007 — D.1–D.4 measured, production graph tables and evidence join included; cold-start/host RAM open | a table of numbers in the ADR; no migration without it |
 | **E** | Public artefact: README-first, 3-minute demo, `resolution-contracts` sub-package | repo public, CI green, numbers in README |
 
 Heavy runs (models, full suite, Docker) go to the Mac — never the Windows

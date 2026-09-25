@@ -19,6 +19,10 @@ conditions, read [`ROADMAP.md`](ROADMAP.md). The active delivery plan is
   P1 and P1b are both `NO_SHIP` ([P1b capsule](docs/evidence/p1b-expanded-cut.md)):
   H-relative exploratory verdicts on 100 agent-authored `agent_labelled` cases
   (0 approved); neither changed product behaviour.
+- Phase D: measure cold-start and host RAM before any pgvector migration
+  decision ([ADR 0007](docs/adr/0007-pgvector-spike.md)). D.1–D.4 are
+  measured ([D.4 capsule](docs/evidence/d4-pgvector-graph-evidence.md));
+  the retrieval backend stays as it is and `RAG_GRAPH_RETRIEVAL` stays `off`.
 - Review the three accepted ChromaDB CVE exceptions on **2026-10-24** and
   remove them if a fixed release exists (2026-09-24 review: no fixed release).
 - MyFlow tree pinning has been silently off here since 2026-09-08 — a defect in
