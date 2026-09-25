@@ -1,11 +1,12 @@
 # ADR 0007 — retrieval storage spike
 
-Status: **provisional; D.1–D.3 measured, Phase D incomplete**. 2026-09-21.
+Status: **provisional; D.1–D.4 measured, Phase D incomplete**. 2026-09-25.
 
 Decision: retain the current retrieval backend. The experiments to date do not
 justify migration. They measure a controlled pre-reranker comparison, ANN
-behaviour and one offline final-rerank pass, not final product quality or the
-full graph/evidence trust boundary.
+behaviour, one offline final-rerank pass, and production graph/evidence parity
+and tenant policies on a migrated scratch database. Final product quality
+remains unmeasured.
 
 ## D.1 numbers
 
@@ -87,6 +88,24 @@ PostgreSQL reranks exactly 20 candidates per case at global p50/p95
 28418.78/40548.97 ms. These single-run `predict` timings use fixed arm order
 and unequal work; they do not establish a cross-arm performance difference.
 
+## D.4 graph and evidence numbers
+
+On 2026-09-25, the tracked aircargo graph round-tripped through the production
+repository on a fresh migrated PostgreSQL scratch database. Synthetic evidence rows
+joined the production graph schema; a disposable role observed tenant isolation through
+a cross-tenant insert rejected by RLS and append-only evidence through evidence update
+and delete probes rejected by immutability triggers.
+
+| Observation | Measured result |
+|---|---|
+| Graph round trip | 10300 nodes, 17327 edges; identical persisted contract |
+| Mismatches | 0 traversal, node and edge |
+| Unresolved references | 5877 as built, not persisted by the schema |
+| Evidence join | 5589 chunk nodes, 5589 links, 5589 join rows |
+| RLS | Forced on 4 tables; own rows 10300, 17327, 5589, 5589; unset and cross-tenant 0 |
+| Write probes | Cross-tenant insert `42501`; evidence update `55000`; evidence delete `55000` |
+| Cleanup | 0 rows in 6 measured tables; disposable role absent; scratch database dropped |
+
 ## Isolation and limits
 
 The scratch databases have FORCE RLS on retrieval and synthetic graph
@@ -96,10 +115,13 @@ context. Explicit cross-tenant predicates return zero. The D.1 integration
 acceptance also checks ranked retrieval for aircargo, sentinel and nonexistent
 tenants; D.2 records the same six RLS counts in its artifact.
 
-This is **synthetic membership**, not production `kb_graph_nodes` schema or
-NetworkX traversal parity. Production graph edges, evidence joins and write
-policies are untested. Chroma/BM25 is a single-tenant collection for this run;
-the experiment does not prove its application-level isolation.
+D.1–D.3 used synthetic graph membership. D.4 measured the production
+`kb_graph_nodes` and `kb_graph_edges` schema, NetworkX traversal parity, the
+production evidence join, tenant isolation (a cross-tenant insert rejected with
+`42501` by the RLS policy), and append-only evidence (update and delete rejected with
+`55000` by immutability triggers) on a fresh migrated scratch database with synthetic
+evidence rows. Chroma/BM25 is a single-tenant collection
+for this run; the experiment does not prove its application-level isolation.
 
 No cold-start RAM was measured. D.1 RRF uses rank 1 for both arms; production
 currently starts at rank 0. D.3 stores orders but not reranker scores or a
@@ -110,12 +132,13 @@ numbers or close the 0.63 gate. No runtime defaults changed.
 ## Next bounded Phase D experiment
 
 The D.2 severe-outlier diagnostic is measured and closed as a bounded
-investigation; no pgvector/HNSW root cause is claimed. Complete actual
-graph/NetworkX and evidence-join parity plus cold-start/host RAM before a
-migration decision; final reranking is already measured in D.3. Do not
+investigation; no pgvector/HNSW root cause is claimed. D.4 measured
+graph/NetworkX and evidence-join parity. Measure cold-start and host RAM
+before any migration decision; final reranking is already measured in D.3. Do not
 rerun or re-embed the unchanged corpus, do not overwrite the pinned D.2
 artifacts, and do not delete the retained scratch database.
 
 Full provenance, reproduction and acceptance: [D.1](../evidence/d1-pgvector-prererank.md),
-[D.2](../evidence/d2-pgvector-ann.md) and
-[D.3](../evidence/d3-pgvector-rerank.md) evidence.
+[D.2](../evidence/d2-pgvector-ann.md),
+[D.3](../evidence/d3-pgvector-rerank.md) and
+[D.4](../evidence/d4-pgvector-graph-evidence.md) evidence.

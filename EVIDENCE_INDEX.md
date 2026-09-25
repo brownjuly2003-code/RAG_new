@@ -24,6 +24,7 @@ root — that habit is what produced 29 of them and is now closed.
 
 | Slice | Capsule | Evidence class |
 |---|---|---|
+| D.4 graph and evidence parity on the production schema: 10300 nodes and 17327 edges reload with an identical persisted contract; 5589 chunk nodes join 5589 evidence rows; RLS forced on 4 tables with 0 cross-tenant rows; probes `42501`/`55000`/`55000`; 5877 unresolved cross-references not persisted; no migration decision, Phase D open | [Measurement and limits](docs/evidence/d4-pgvector-graph-evidence.md); [raw report](evaluation/d4-pgvector-graph-evidence.json); `tests/test_pgvector_graph_evidence_artifact.py` | measured |
 | D.3 offline rerank: final PostgreSQL/Chroma precision 0.460985/0.472891 over 115 cases; no migration decision; Phase D open | [Integrity, metrics and limits](docs/evidence/d3-pgvector-rerank.md) | measured |
 | D.2 pgvector ANN: recall@20 0.965217 over 115 cases; HNSW warm p95 3.45–3.64 ms; 0.20 outlier closed by focused replay (retained original index non-monotonic: ef 100 0.20, ef 40 and ef 200 both 1.0; fresh rebuild 1.0 across the measured grid; localized to the retained index state, no root cause claimed); no migration decision; Phase D open | [Measurement and full replay](docs/evidence/d2-pgvector-ann.md) | measured |
 | D.1 pgvector pre-reranker comparison: 115 cases, 3 runs; sequential scans, non-owner RLS; Phase D open | [Measurement and replay](docs/evidence/d1-pgvector-prererank.md) | measured |

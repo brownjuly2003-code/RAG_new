@@ -268,3 +268,26 @@ Mac PostgreSQL SHALL skip, naming the missing variable, unless
 - **WHEN** the D.4 test files run
 - **THEN** every unit test passes, and each database test is skipped with a message that
   names the variable
+
+## Requirement: the published report is pinned and quoted exactly
+
+A committed D.4 report SHALL be guarded by a test that pins the report's SHA-256, the
+code commit it was built at, the SHA-256 of the tracked archive and of the JSON it
+decompresses to, and each recorded source digest as the SHA-256 of that file's blob at
+the code commit. The test SHALL rebuild the report from its recorded observations with
+the committed report builder and require the result to equal the report. The evidence
+capsule, its `EVIDENCE_INDEX.md` row and the D.4 section of ADR 0007 SHALL quote no
+number that the report does not contain, apart from the number of tables it observed.
+
+### Scenario: a mutated report
+
+- **GIVEN** `evaluation/d4-pgvector-graph-evidence.json` altered by any byte
+- **WHEN** the artifact test runs
+- **THEN** it fails on the pinned SHA-256
+
+### Scenario: a number the report does not hold
+
+- **GIVEN** a number written in the capsule outside code spans
+- **WHEN** the artifact test runs
+- **THEN** it fails unless that number is a JSON number of the report (not a boolean),
+  or the number of tables whose row-level security or post-rollback rows it observed

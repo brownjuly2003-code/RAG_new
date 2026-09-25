@@ -1,0 +1,121 @@
+{
+  "schema_version": "d4-pgvector-graph-evidence-v1",
+  "evidence_class": "measured",
+  "reasons": [],
+  "provenance": {
+    "code_base_sha": "67a9dbc9814b8baa4e291158c9fd9a924fce92ab",
+    "corpus_digest": "5b35883f741deefc0698eb829f927413fc6588b72b9add9ee7697f3fc5806c94",
+    "input_sha256": {
+      "decompressed_json": "5b35883f741deefc0698eb829f927413fc6588b72b9add9ee7697f3fc5806c94",
+      "gzip_archive": "2a9da515a4c69b46453a59ed6d0bb772b0aad6fed23c87ee465851b43dbdef12"
+    },
+    "source_sha256": {
+      "scripts/pgvector_graph_evidence_run.py": "9d820cda370e28b8919a35fdecbf6dee4ced244aee735a5432e3a14da9c388a4",
+      "scripts/pgvector_graph_evidence.py": "eb3aebbfd7fd8cec3371b64ef4ef9e3d83b5a82207d32f1a2bb7533c842bca0a",
+      "ingestion/structure_graph.py": "2ba6d606f3dbee759d78f4766c7ad43160dc3b047d5f98ba7245c033da8937fc",
+      "ingestion/structure_graph_repository.py": "c01833571f3a08e8dc9e010439ade03d2f2d42a7193658c246eaac8a0931c123",
+      "ingestion/structure_graph_projection.py": "0ed54c99a552cc79dae834f7ff31c583b477ffb82073a8a4fe2b74caa9635641"
+    },
+    "clean_tree": true,
+    "alembic_head": "033",
+    "server_version": "16.15 (Homebrew)",
+    "vector_version": "0.8.1",
+    "versions": {
+      "python": "3.11.15",
+      "sqlalchemy": "2.0.52",
+      "psycopg2": "2.9.13 (dt dec pq3 ext lo64)",
+      "networkx": "3.5"
+    }
+  },
+  "graph": {
+    "built_digest": "92d2fdd920ffc9bdf58c7f16193cd9fa3db00c8d1d6339b5768f4f1aada206c6",
+    "reloaded_digest": "39a998494c5cfbd9b755f69ab0ec67b890939ac0b0903927489e8a13d967c395",
+    "built_persisted_contract_digest": "39a998494c5cfbd9b755f69ab0ec67b890939ac0b0903927489e8a13d967c395",
+    "reloaded_persisted_contract_digest": "39a998494c5cfbd9b755f69ab0ec67b890939ac0b0903927489e8a13d967c395",
+    "unresolved_cross_refs": {
+      "built_count": 5877,
+      "persistence": "not persisted by the schema"
+    },
+    "load_preserved_node_order": true,
+    "load_preserved_edge_order": true,
+    "parity": {
+      "identical": true,
+      "node_mismatch_ids": [],
+      "edge_mismatch_ids": []
+    },
+    "evidence_match": "diagnostic semantic join, not a schema foreign key"
+  },
+  "counts": {
+    "node_count": 10300,
+    "edge_count": 17327,
+    "chunk_node_count": 5589,
+    "evidence_link_count": 5589,
+    "evidence_join_count": 5589,
+    "traversal_mismatch_count": 0,
+    "node_mismatch_count": 0,
+    "edge_mismatch_count": 0
+  },
+  "rls_observations": {
+    "kb_graph_nodes": {
+      "table_name": "kb_graph_nodes",
+      "row_security": true,
+      "force_rls": true,
+      "unset_visible_rows": 0,
+      "own_tenant_rows": 10300,
+      "expected_own_rows": 10300,
+      "cross_tenant_visible_rows": 0
+    },
+    "kb_graph_edges": {
+      "table_name": "kb_graph_edges",
+      "row_security": true,
+      "force_rls": true,
+      "unset_visible_rows": 0,
+      "own_tenant_rows": 17327,
+      "expected_own_rows": 17327,
+      "cross_tenant_visible_rows": 0
+    },
+    "evidence_snapshots": {
+      "table_name": "evidence_snapshots",
+      "row_security": true,
+      "force_rls": true,
+      "unset_visible_rows": 0,
+      "own_tenant_rows": 5589,
+      "expected_own_rows": 5589,
+      "cross_tenant_visible_rows": 0
+    },
+    "case_evidence_links": {
+      "table_name": "case_evidence_links",
+      "row_security": true,
+      "force_rls": true,
+      "unset_visible_rows": 0,
+      "own_tenant_rows": 5589,
+      "expected_own_rows": 5589,
+      "cross_tenant_visible_rows": 0
+    }
+  },
+  "runtime_role": {
+    "superuser": false,
+    "bypassrls": false
+  },
+  "sqlstates": {
+    "cross_tenant_insert": "42501",
+    "evidence_update": "55000",
+    "evidence_delete": "55000"
+  },
+  "post_rollback": {
+    "table_counts": {
+      "support_cases": 0,
+      "case_events": 0,
+      "kb_graph_nodes": 0,
+      "kb_graph_edges": 0,
+      "evidence_snapshots": 0,
+      "case_evidence_links": 0
+    },
+    "role_absent": true
+  },
+  "scratch": {
+    "name": "rag_spike_d4_4922dcac21bfbee4",
+    "dropped": true
+  },
+  "limitations": "D.4 supersedes only D.1's limitation, a simplified `kb_graph_nodes` membership table under `app.tenant_id`. It changes no D.1–D.3 retrieval number, no product default, and `RAG_GRAPH_RETRIEVAL` stays `off`. The schema stores no unresolved cross-reference, so D.4 compares the persisted contract, the graph without them in a fixed order, and counts the references it leaves out."
+}
