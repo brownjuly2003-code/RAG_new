@@ -138,6 +138,12 @@ PostgreSQL server were not controlled. D.5 measured no retrieval
 quality. Phase D is measured, and [ADR 0007](docs/adr/0007-pgvector-spike.md)
 is accepted: retain the current retrieval backend. No runtime default
 changed; `RAG_GRAPH_RETRIEVAL` stays `off`.
+The Chroma restart measurement followed on 2026-09-25
+([capsule](docs/evidence/chroma-restart-stability.md), published at `49db561`):
+on production's own write path, 128 of 5589 records stayed in the
+write-ahead log, and one of seven restarted processes changed the
+candidate set of one of 115 cases. No runtime default changed; the
+fix is a separate slice with an end-to-end test.
 
 P1 was measured 2026-09-24 ([capsule](docs/evidence/p1-adaptive-k.md)): 5-fold
 held-out H precision 0.5372 vs valid `top_k_5` control 0.5067, recall 0.8900 vs
@@ -174,7 +180,8 @@ filter in `docs-site.yml:6-17` starts no run for a push touching none of its
 paths, so `d026804` (T-19, only `CURRENT_STATE.md` and `ROADMAP.md`) got `CI`
 run 34449244275 alone. The other three workflows (`live-provider-gate`,
 `live-quality-metrics-gate`, `weekly-report`) run on schedule or dispatch only,
-so this is two of five. The chromadb CVE ignores carry a **review date of 2026-09-24**.
+so this is two of five. The chromadb CVE ignores were reviewed on
+2026-09-24 (no fixed release); the next review is **2026-10-24**.
 
 | Phase | What | Acceptance |
 |---|---|---|

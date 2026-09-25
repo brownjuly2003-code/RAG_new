@@ -19,32 +19,17 @@ conditions, read [`ROADMAP.md`](ROADMAP.md). The active delivery plan is
   P1 and P1b are both `NO_SHIP` ([P1b capsule](docs/evidence/p1b-expanded-cut.md)):
   H-relative exploratory verdicts on 100 agent-authored `agent_labelled` cases
   (0 approved); neither changed product behaviour.
-- Chroma answer stability across restarts: Phase D is measured; [ADR 0007](docs/adr/0007-pgvector-spike.md)
-  retains the current backend. In [D.5](docs/evidence/d5-pgvector-cold-start.md), Chroma answers changed
-  in 13 of 115 cases between processes; each new process re-inserted the collection's unpersisted
-  write-ahead-log tail. Production sets no Chroma index persistence setting (`vectordb/manager.py`).
-  A diagnostic outside the protocol (not evidence; [spec amendment 1](docs/specs/pgvector-cold-start.md))
-  linked the changes to the tail and saw production ingestion batching leave a tail too. Measure the
-  production collection before changing that runtime default, in its own slice.
+- Chroma restart fix. [Measured](docs/evidence/chroma-restart-stability.md)
+  on production's write path: ingestion leaves 128 of 5589 records to
+  the write-ahead log, and one of seven restarted processes handed the
+  reranker a different candidate set in one of 115 cases. The fix is
+  its own slice under rule (a): an end-to-end test that a restarted
+  process answers as the ingesting one did, then a rerun of the
+  measurement under [its spec](docs/specs/chroma-restart-stability.md)
+  at the new commit. Candidate remedy, unverified: a Chroma setting on
+  production's write path that leaves no unpersisted tail.
 - Review the three accepted ChromaDB CVE exceptions on **2026-10-24** and
   remove them if a fixed release exists (2026-09-24 review: no fixed release).
-- MyFlow tree pinning has been silently off here since 2026-09-08 — a defect in
-  the shared controller under `~/.claude/skills/`, not in this repository.
-  `worktree_hash()` (`mf_util.py:853-895`) runs
-  `git add -A -- . ':(exclude).myflow'`, which exits 1 because `.myflow/` is
-  gitignored, and on a non-zero exit returns "" instead of the hash. In the run
-  journal every `gate`, `gate_green` and `slice_done` event at or after
-  2026-09-08T14:12:02 is unmeasured and every earlier one carries a hash. The
-  totals grow with every gate; up to the journal entry of 2026-09-10T06:50:04
-  they read `gate` 69 events, 28 measured, 41 not; `gate_green` 53/21/32;
-  `slice_done` 13/4/9. For those slices "the full gate ran on the commit's tree" is a manual claim,
-  not a machine-checked one. T-19 and T-17 were pinned by hand (`git read-tree
-  HEAD` + `git add -A -- .` + `git write-tree` in a private index: before the
-  full gate, after it and at the commit, equal to `d026804^{tree}` 97ddd508 and
-  `6cc810d^{tree}` 22519835). T-18 (`0aacb7b`) has no pin at all — it was
-  committed before that manual script existed. Not fixed from here: the controller
-  has 208 tests, other projects depend on it, and the fix is conditional —
-  ignored paths must not fail the add.
 
 The local corrective queue after T-09 is otherwise empty. New work must satisfy
 the slice rule in `CURRENT_STATE.md`: observable product behaviour, more real
@@ -56,3 +41,12 @@ The former 22 KB backlog, including inherited CI analysis and superseded
 autopilot tasks, is preserved at
 [`archive/docs/status/backlog-through-2026-08-27.md`](archive/docs/status/backlog-through-2026-08-27.md).
 It is evidence, not a source of new work.
+
+MyFlow tree pinning was off from 2026-09-08T14:12:02 to
+2026-09-10T07:37:47: `worktree_hash()` returned an empty hash when
+`git add` exited 1 on the gitignored `.myflow/`. In that window, 47
+`gate` (two of them final gates with no task), 34 `gate_green` and 11
+`slice_done` journal events of T-11…T-21 carry no tree hash. For
+those slices, "the full gate ran on the commit's tree" is a manual
+claim: T-17 and T-19 were pinned by hand, T-18 not at all. Every gate
+event since 2026-09-13T13:44:16 carries a hash.
