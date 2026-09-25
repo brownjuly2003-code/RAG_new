@@ -6,6 +6,8 @@ Six trials answered all 115 cases as the build did. Trial 5 changed case
 93's last vector result and with it that case's candidate set. This slice
 changes no runtime default; `RAG_GRAPH_RETRIEVAL` stays `off`.
 
+**Rerun after the fix:** [chroma-restart-stability-after-fix](chroma-restart-stability-after-fix.md).
+
 ## Question and protocol
 
 The [protocol](../specs/chroma-restart-stability.md) asks whether a

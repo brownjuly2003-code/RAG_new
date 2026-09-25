@@ -303,7 +303,16 @@ def test_evidence_index_row_points_at_capsule_report_and_test(published):
     assert len(rows) == 1
     row = rows[0]
     slices = index.split("## Slices\n", 1)[1].splitlines()
-    assert slices[slices.index("| Slice | Capsule | Evidence class |") + 2] == row
+    first_row = slices.index("| Slice | Capsule | Evidence class |") + 2
+    last_row = next(
+        (
+            position
+            for position in range(first_row, len(slices))
+            if not slices[position].startswith("|")
+        ),
+        len(slices),
+    )
+    assert row in slices[first_row:last_row]
     assert "evaluation/chroma-restart-stability.json" in row
     assert "tests/test_chroma_restart_stability_artifact.py" in row
     assert "measured" in row
