@@ -126,9 +126,14 @@ H-relative coverage constraints and unreachable review floor are unmet. The
 label-using, nondeployable prefix oracle bounds any cut that keeps every fact at
 0.6505. This is H-relative exploratory evidence on 100 agent-authored
 `agent_labelled` cases (0 approved) in the phase-C harness without parent-window
-expansion. P1 is an offline evaluator; product behaviour is unchanged. Next, P1b
-tests the frozen `rel_0.2` over production expansion with an expanded top-5
-control and no retuning on H; then P2, whose judge is Julia's data-governance
+expansion. P1 is an offline evaluator; product behaviour is unchanged. P1b was
+measured the same day ([capsule](docs/evidence/p1b-expanded-cut.md)), also an
+H-relative exploratory verdict on 100 agent-authored `agent_labelled` cases
+(0 approved). On H, `rel_0.2+exp` precision 0.5975 vs expanded control 0.5768,
+delta +0.0207, CI95 [0.0104, 0.0327]; one FULL→MISS fact loss
+(`aircargo-customs-broker-escalation`); held-out `p1_cv+exp` precision 0.6062.
+**NO_SHIP**: no measured arm reaches the 0.63 gate. P1b is an offline evaluator;
+product behaviour is unchanged. Next: P2, whose judge is Julia's data-governance
 call. Alternative rerankers are a model swap and stay on the stop-list below
 until Julia decides otherwise.
 

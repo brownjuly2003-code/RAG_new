@@ -1,11 +1,11 @@
 # P1b — the frozen P1 cut under production expansion: pre-registration and plan
 
-Status 2026-09-24: **pre-registered, not measured**. This plan fixes the arms, the ruler
-and the verdict before any expanded-context metric exists for the H or Hm pool. The
-evaluator `scripts/p1b_expanded_cut.py` and its tests come next, against the capability
-spec [`expanded-cut-overlay.md`](expanded-cut-overlay.md); the report is built once, in a
-clean Mac clone, after both are committed. P1b is an offline evaluator; it changes no
-product behaviour.
+Status 2026-09-24: **measured — NO_SHIP**. [Capsule](../evidence/p1b-expanded-cut.md);
+report `reports/p1b/p1b-expanded-cut.json` at `c5f1d31`, built once in a clean Mac
+clone at the evaluator commit `d1adbbb`. This plan fixed the arms, the rulers and
+the verdict on 2026-09-24, before any expanded-context metric existed for H or Hm.
+Git shows the plan at `05f6799`, the evaluator at `d1adbbb` and the report built
+afterwards. P1b is an offline evaluator; no product behaviour changed.
 
 ## Question
 
@@ -139,13 +139,19 @@ arm is chosen, tuned or added on the expanded results.
 - A new arm, threshold, window or character cap needs a new pre-registration.
 - Executor: Codex GPT-6-Sol on the `cw` profile, the owner-authorized stand-in while
   GLM 5.3 is at weekly quota `1310` (reset 2026-09-28 05:56 UTC+8).
+- The report was built once in a clean Mac clone at `d1adbbb`, after the
+  evaluator and its 32 synthetic tests were committed there. Before that, no
+  expanded-context precision, recall or keyword status existed for H or Hm.
+  The evaluator did not change afterwards: the report's code digests equal
+  the blobs at `d1adbbb`; the artifact test checks them and, when the corpus
+  directory and `langchain_core` are present, rebuilds the whole report from
+  the corpus.
 
 ## Next
 
-1. The evaluator `scripts/p1b_expanded_cut.py` with tests on synthetic fixtures, against
-   [`expanded-cut-overlay.md`](expanded-cut-overlay.md). Nothing runs on the real pools
-   before it is committed.
-2. One build in a clean Mac clone at the committed code, with the corpus directory
-   passed explicitly; then the report, its artifact test, the capsule and the index row.
+1. **Done:** evaluator `scripts/p1b_expanded_cut.py` and its 32 synthetic tests at
+   `d1adbbb`.
+2. **Done:** report `reports/p1b/p1b-expanded-cut.json` at `c5f1d31`,
+   [capsule](../evidence/p1b-expanded-cut.md), **NO_SHIP**.
 3. P2, the blinded relevance judgment ([P1 plan](p1-adaptive-k-plan.md) § Next item 3);
    the judge is Julia's data-governance call.

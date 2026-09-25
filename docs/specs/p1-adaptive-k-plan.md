@@ -107,11 +107,8 @@ Recomputed from the H archive with the official ruler; no committed report backs
 
 1. **P1 done** — [report](../../reports/p1/p1-adaptive-k.json) at `2edf19a`,
    [capsule](../evidence/p1-adaptive-k.md), **NO_SHIP**.
-2. **P1b** — overlay frozen `rel_0.2` (the pre-registered selection on all of H,
-   transferred to Hm) on production expansion: expanded top-5 control, frozen cut
-   then identical expansion, expanded k3 as a diagnostic; paired bootstrap; no
-   retuning on H. Pre-registered in
-   [`p1b-expanded-cut-plan.md`](p1b-expanded-cut-plan.md).
+2. **P1b done** — frozen `rel_0.2` over production expansion, **NO_SHIP**;
+   [capsule](../evidence/p1b-expanded-cut.md) at `c5f1d31`, [plan](p1b-expanded-cut-plan.md).
 3. **P2** — an independent, blinded per-document relevance/sufficiency judgment beside
    the frozen official ruler: question and source text only, keywords and arm hidden,
    randomized order, a stratified human-adjudicated sample, agreement reported, Hm

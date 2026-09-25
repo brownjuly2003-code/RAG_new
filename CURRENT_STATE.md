@@ -7,19 +7,19 @@
 
 ## Start here
 
-### P1 adaptive-k — measured, NO_SHIP
+### P1 / P1b adaptive-k — measured, NO_SHIP
 
-[Capsule](docs/evidence/p1-adaptive-k.md), published at `2edf19a`. Held-out 5-fold H
-(n = 100): precision 0.5372, recall 0.8900, 86/6/8, mean kept 4.30, vs the valid `top_k_5`
-control 0.5067, 0.9050, 87/7/6; delta +0.0306, CI95 [0.0167, 0.0468]. **NO_SHIP:** the
-0.63 gate, the H-relative recall/FULL/MISS constraints and the review floor (recall 0.92,
-FULL 88, MISS 4; unreachable by construction) are unmet. The label-using prefix oracle,
-the ceiling for a cut that keeps every fact, reaches 0.6505 / 0.9050 (not deployable);
-in-sample `rel_0.2`, 0.5278 / 0.9050, is optimistic. On Hm, `rel_0.2` equals the control:
-0.2527 / 0.5000, 4/7/4, mean kept 5.00. Exploratory, H-relative: 100 agent-authored
-`agent_labelled` cases (0 approved), phase-C harness without parent-window expansion.
-P1 is offline, with no product change. Production expanded top-5 measured 0.5768 / 0.980
-on the Q1 pool. Next: P1b, then P2 (the judge is Julia's data-governance call).
+[P1b capsule](docs/evidence/p1b-expanded-cut.md), `c5f1d31`: on H, `rel_0.2+exp` 0.5975 vs
+expanded `top_k_5+exp` 0.5768, delta +0.0207, CI95 [0.0104, 0.0327]; recall 0.9700 vs
+0.9800, 96/2/2 vs 97/2/1. One FULL→MISS fact loss: `aircargo-customs-broker-escalation`.
+**NO_SHIP:** 0.63 precision gate, coverage-and-facts and held-out (`p1_cv+exp` 0.6062)
+fail; no measured arm reaches 0.63. Review floor and Hm (all five kept) hold. Unexpanded
+selections reproduce P1; expanded control and `top_k_3+exp` equal Q1's expanded rows.
+[P1 capsule](docs/evidence/p1-adaptive-k.md), `2edf19a`: held-out 0.5372 vs control
+0.5067 on the phase-C harness without expansion, **NO_SHIP**; label-using oracle for a
+cut that keeps every fact at 0.6505 (not deployable). Both are H-relative exploratory on
+100 agent-authored `agent_labelled` cases (0 approved), offline with no product change.
+Next: P2; judge: Julia's data-governance call.
 
 ### GR-3 measured — NO-SHIP-to-default
 
@@ -129,6 +129,7 @@ T-03: (a). B.1 remains preparation until approval.
 | GR-2 entity | [Mac](docs/evidence/gr2-entity-graph-lane.md), `9ca8630`: 0.5487 / 0.9250, lane 6/100; bucket unchanged (lane 11/15). G1 matches GR-1b; 5589 cached / 0 rejected via pinned Qwen2.5 (`845dbda0…`) | **measured** (c), NO-SHIP at 0.63; off |
 | GR-3 A/B | [Comparison](docs/evidence/gr3-graph-lane-ab.md), `32de532`: precision 0.5067 → 0.5487; bucket recall 0.5 → 0.4, FULL 4 → 1; p95 +8765.2 ms; generation `not_evidence`, 297/300 valid | **measured** (c), NO-SHIP-to-default; off |
 | P1 | [Adaptive-k](docs/evidence/p1-adaptive-k.md), `2edf19a`: H-relative exploratory held-out precision 0.5372 vs control 0.5067, 86/6/8; label-using oracle 0.6505; offline only | **measured** (c), NO_SHIP |
+| P1b | [Expanded cut](docs/evidence/p1b-expanded-cut.md), `c5f1d31`: H-relative exploratory `rel_0.2+exp` 0.5975 vs expanded control 0.5768, 96/2/2 vs 97/2/1, one fact loss; offline only | **measured** (c), NO_SHIP |
 
 ## Open questions for Julia
 
