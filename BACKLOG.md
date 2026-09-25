@@ -13,12 +13,12 @@ conditions, read [`ROADMAP.md`](ROADMAP.md). The active delivery plan is
   approval. Do not manufacture more fixture cases to make the gate pass.
 - Phase C benchmark execution and resume instructions belong in
   `CURRENT_STATE.md`; do not launch a duplicate run from this file.
-- P1b: overlay the frozen P1 rule `rel_0.2` on production parent-window expansion, per
-  the [plan](docs/specs/p1-adaptive-k-plan.md) § Next item 2: expanded top-5 control, no
-  retuning on H. P1 itself is `NO_SHIP`, an H-relative exploratory verdict on 100
-  agent-authored `agent_labelled` cases (0 approved) in the phase-C harness without
-  parent-window expansion; it changed no product behaviour. Then P2, whose judge is
-  Julia's data-governance call.
+- P1b: overlay the frozen P1 rule `rel_0.2` on production parent-window expansion, as
+  pre-registered in [`p1b-expanded-cut-plan.md`](docs/specs/p1b-expanded-cut-plan.md):
+  expanded top-5 control, no retuning on H. P1 itself is `NO_SHIP`, an H-relative
+  exploratory verdict on 100 agent-authored `agent_labelled` cases (0 approved) in the
+  phase-C harness without parent-window expansion; it changed no product behaviour.
+  Then P2, whose judge is Julia's data-governance call.
 - Review the three accepted ChromaDB CVE exceptions on **2026-10-24** and
   remove them if a fixed release exists (2026-09-24 review: no fixed release).
 - MyFlow tree pinning has been silently off here since 2026-09-08 — a defect in
