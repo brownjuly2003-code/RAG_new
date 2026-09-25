@@ -89,6 +89,7 @@ def _fake_chroma(state: _FakeChromaState) -> type[Any]:
             embedding: Any,
             persist_directory: str,
             collection_name: str,
+            collection_configuration: Any = None,
         ) -> Any:
             state.events.append(f"build:{collection_name}")
             state.built_names.append(collection_name)

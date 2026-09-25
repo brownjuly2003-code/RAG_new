@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 from types import SimpleNamespace
+from typing import Any
 from unittest.mock import MagicMock, patch
 
 import agent.graph as agent_graph
@@ -103,6 +104,7 @@ def test_tenant_vector_store_uses_settings_chunk_defaults(
             embedding,
             persist_directory,
             collection_name,
+            collection_configuration: Any = None,
         ):
             _ = embedding, persist_directory, collection_name
             captured["documents"] = list(documents)

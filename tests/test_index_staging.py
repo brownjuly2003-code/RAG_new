@@ -96,6 +96,7 @@ def _fake_chroma(state: _FakeChromaState) -> type[Any]:
             embedding: Any,
             persist_directory: str,
             collection_name: str,
+            collection_configuration: Any = None,
         ) -> Any:
             state.built_names.append(collection_name)
             state.counts[collection_name] = len(documents)
@@ -192,6 +193,42 @@ def test_staging_build_validates_count_and_dimension_without_switching_active(
     assert state.deleted_names == []
     assert "rag_docs_acme" not in state.opened_names
     assert manifest_path.read_bytes() == manifest_before
+
+
+def test_staging_build_passes_only_persistent_index_configuration(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    staging = _staging_module()
+    state = _FakeChromaState()
+    calls: list[dict[str, Any]] = []
+
+    class RecordingChroma(_fake_chroma(state)):
+        @classmethod
+        def from_documents(cls, **kwargs: Any) -> Any:
+            calls.append(kwargs)
+            return super().from_documents(**kwargs)
+
+    with _held_tenant_lock(monkeypatch, "acme") as lock_token:
+        staging.build_staged_collection(
+            [object()],
+            _Embeddings(),
+            tenant_id="acme",
+            lock_token=lock_token,
+            chroma_cls=RecordingChroma,
+            chroma_directory=tmp_path / "chroma",
+            candidate_id=_CANDIDATE_ID,
+        )
+
+    assert len(calls) == 1
+    assert set(calls[0]) == {
+        "documents",
+        "embedding",
+        "persist_directory",
+        "collection_name",
+        "collection_configuration",
+    }
+    assert calls[0]["collection_configuration"] == {"hnsw": {"sync_threshold": 1}}
 
 
 def test_count_mismatch_deletes_only_the_unpublished_candidate(

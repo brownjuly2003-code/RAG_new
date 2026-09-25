@@ -222,3 +222,36 @@ hold outside its answers, apart from the number of cases a trial changed on a pa
 - **WHEN** the artifact test runs
 - **THEN** it fails unless that number is a JSON number of the report outside its
   answers (not a boolean), or the number of cases a trial changed on a path
+
+## Requirement: amendment 1, the rerun makes production's new write call
+
+The orchestrator wrote this requirement on 2026-09-25, after the first report was published
+at `49db561` and before any rerun. The fix
+([chroma-index-persistence](chroma-index-persistence.md)) makes `build_staged_collection`
+pass `collection_configuration={"hnsw": {"sync_threshold": 1}}` to `from_documents`. From
+the commit that makes that change on, the build process SHALL make production's call with
+the same `collection_configuration`. The words "with no collection metadata, no collection
+configuration and no client settings" above then no longer describe production, and stop
+applying. The source pin SHALL accept exactly the keywords `documents`, `embedding`,
+`persist_directory`, `collection_name` and `collection_configuration`, with that literal
+value, and SHALL fail on any other keyword or value. Every other requirement of this file
+holds unchanged, the schema version included.
+
+The first report, `evaluation/chroma-restart-stability.json`, stays as published and
+pinned. The rerun's report SHALL be published as
+`evaluation/chroma-restart-stability-after-fix.json`, under the previous requirement, with
+its own artifact test, its own capsule and its own `EVIDENCE_INDEX.md` row.
+
+### Scenario: another threshold
+
+- **GIVEN** a `build_staged_collection` whose `collection_configuration` holds a
+  `sync_threshold` other than 1
+- **WHEN** the source pin test runs
+- **THEN** it fails
+
+### Scenario: the configuration dropped
+
+- **GIVEN** a `build_staged_collection` whose `from_documents` call passes only
+  `documents`, `embedding`, `persist_directory` and `collection_name`
+- **WHEN** the source pin test runs
+- **THEN** it fails

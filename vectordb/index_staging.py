@@ -311,11 +311,15 @@ def build_staged_collection(
     )
     store: Any | None = None
     try:
+        # Persist the vector index at the end of every add call. Chroma's default threshold of 1000
+        # left the last batch in the write-ahead log, and every new process re-inserted it
+        # (docs/specs/chroma-index-persistence.md).
         store = chroma_cls.from_documents(
             documents=documents,
             embedding=embeddings,
             persist_directory=persist_directory,
             collection_name=collection_name,
+            collection_configuration={"hnsw": {"sync_threshold": 1}},
         )
         persist = getattr(store, "persist", None)
         if callable(persist):

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from types import SimpleNamespace
+from typing import Any
 from unittest.mock import MagicMock
 
 import vectordb.manager as tenant_manager
@@ -129,6 +130,7 @@ def test_build_vector_store_adds_contextual_headers_when_enabled(
             embedding,
             persist_directory,
             collection_name,
+            collection_configuration: Any = None,
         ):
             _ = embedding, persist_directory, collection_name
             return FakeStore(documents)
@@ -215,6 +217,7 @@ def test_build_vector_store_skips_contextual_headers_when_disabled(
             embedding,
             persist_directory,
             collection_name,
+            collection_configuration: Any = None,
         ):
             _ = embedding, persist_directory, collection_name
             return FakeStore(documents)

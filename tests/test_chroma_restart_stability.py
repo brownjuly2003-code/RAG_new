@@ -116,7 +116,14 @@ def test_build_uses_production_calls_and_records_facts(tmp_path):
         expected_cases=2,
     )
     build = calls[0][1]
-    assert set(build) == {"documents", "embedding", "persist_directory", "collection_name"}
+    assert set(build) == {
+        "documents",
+        "embedding",
+        "persist_directory",
+        "collection_name",
+        "collection_configuration",
+    }
+    assert build["collection_configuration"] == {"hnsw": {"sync_threshold": 1}}
     assert build["collection_name"] == "restart_aircargo"
     assert [d.metadata["chunk_index"] for d in build["documents"]] == [0, 1]
     assert build["documents"][0].metadata["source"] == "one"

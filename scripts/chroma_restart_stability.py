@@ -196,6 +196,7 @@ def build_collection(
         embedding=adapter,
         persist_directory=str(chroma_dir),
         collection_name=COLLECTION,
+        collection_configuration={"hnsw": {"sync_threshold": 1}},
     )
     if store._client.get_settings().anonymized_telemetry is not False:
         raise ValueError("telemetry is enabled")
@@ -446,8 +447,21 @@ def assert_staged_build_call(source):
         and isinstance(call.func.value, ast.Name)
         and call.func.value.id == "chroma_cls"
     ]
-    expected = {"documents", "embedding", "persist_directory", "collection_name"}
+    expected = {
+        "documents",
+        "embedding",
+        "persist_directory",
+        "collection_name",
+        "collection_configuration",
+    }
     if len(calls) != 1 or calls[0].args or {key.arg for key in calls[0].keywords} != expected:
+        raise ValueError("build_staged_collection from_documents call changed")
+    configuration = next(
+        key.value for key in calls[0].keywords if key.arg == "collection_configuration"
+    )
+    if ast.dump(configuration) != ast.dump(
+        ast.parse('{"hnsw": {"sync_threshold": 1}}', mode="eval").body
+    ):
         raise ValueError("build_staged_collection from_documents call changed")
 
 

@@ -150,6 +150,7 @@ def _fake_chroma(state: _FakeChromaState) -> type[Any]:
             embedding: Any,
             persist_directory: str,
             collection_name: str,
+            collection_configuration: Any = None,
         ) -> Any:
             state.note(f"build:{collection_name}")
             with state._guard:
