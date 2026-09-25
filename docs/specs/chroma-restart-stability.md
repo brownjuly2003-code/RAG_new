@@ -196,3 +196,29 @@ batch size.
 - **WHEN** the result is published
 - **THEN** the publishing slice changes no runtime default, and names the fix as a
   separate slice
+
+## Requirement: the published report is pinned and quoted exactly
+
+A committed report of this measurement SHALL be guarded by a test that pins the report's
+SHA-256 and the code commit it was built at, requires each recorded source digest to be
+the SHA-256 of that file's blob at the code commit, and requires each recorded input
+digest to equal the digest D.1 recorded for that input. From the report alone, the test
+SHALL rebuild every trial's answers, trial 0's as recorded and each later trial's as the
+build's with that trial's recorded differences applied, recompute the comparison with the
+committed `compare_answers`, and require the recorded comparison. It SHALL require the
+unpersisted tail to equal the difference of the two recorded sequence ids. The evidence
+capsule and its `EVIDENCE_INDEX.md` row SHALL quote no number that the report does not
+hold outside its answers, apart from the number of cases a trial changed on a path.
+
+### Scenario: a mutated report
+
+- **GIVEN** the published report altered by any byte
+- **WHEN** the artifact test runs
+- **THEN** it fails on the pinned SHA-256
+
+### Scenario: a number the report does not hold
+
+- **GIVEN** a number written in the capsule outside code spans
+- **WHEN** the artifact test runs
+- **THEN** it fails unless that number is a JSON number of the report outside its
+  answers (not a boolean), or the number of cases a trial changed on a path
