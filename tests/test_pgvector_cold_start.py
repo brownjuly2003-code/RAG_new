@@ -3,6 +3,7 @@
 import hashlib
 import json
 import math
+import sqlite3
 
 import pytest
 
@@ -10,7 +11,9 @@ from scripts.pgvector_cold_start import (
     build_report,
     compare_d1,
     parse_rss,
+    ranking_variation,
     rankings_sha256,
+    read_log_positions,
     summarize,
     text_digest,
     trial_order,
@@ -107,6 +110,133 @@ def test_rankings_digest_stability_and_d1_comparison():
     assert compare_d1(rankings, rankings) == {"equal": True, "matching_cases": 2}
 
 
+def test_a_varying_chroma_ranking():
+    """Scenario: a varying Chroma ranking."""
+    records = []
+    for trial in range(7):
+        rows = [[case] for case in range(6)]
+        if trial == 2:
+            rows[3] = [5]
+        if trial == 4:
+            for case in (5, 3):
+                rows[case] = [0]
+        records.append({"trial": trial, "rankings": {"chroma_fused": rows}})
+    expected = {
+        "trials": [
+            {"trial": trial, "differing_cases": cases}
+            for trial, cases in enumerate(([], [], [3], [], [3, 5], [], []))
+            if trial
+        ],
+        "distinct_cases": 2,
+    }
+    assert ranking_variation(records, "chroma_fused", 7) == expected
+    report_records = []
+    for record in records:
+        trial = record["trial"]
+        postgres_rows = [[case] for case in range(6)]
+        report_records.extend(
+            [
+                {**_trial("chroma_bm25", record["rankings"]), "trial": trial},
+                {
+                    **_trial(
+                        "postgres",
+                        {"postgres_fused": postgres_rows, "postgres_hnsw": postgres_rows},
+                    ),
+                    "trial": trial,
+                },
+            ]
+        )
+    context = {
+        "code_base": "a" * 40,
+        "database": "rag_spike_d5_0123456789abcdef",
+        "input_sha256": {},
+        "source_sha256": {},
+        "versions": {},
+        "python": "3.11",
+        "platform": "darwin",
+        "host": {},
+        "postgres": "PostgreSQL 16",
+        "pgvector": "0.7",
+        "server_settings": {},
+        "setup": {"chroma_log_max_seq_id": 5589, "chroma_vector_persisted_seq_id": 5000},
+        "host_load": {},
+        "d1_cross_check": {},
+        "chunks": 5589,
+        "cases": 6,
+        "trials": 7,
+    }
+    clean = {"database_dropped": True, "role_dropped": True, "chroma_dir_removed": True}
+    assert build_report(context, report_records, clean)["chroma_fused_variation"] == expected
+
+
+@pytest.mark.parametrize("change", ["missing", "duplicate", "case_count"])
+def test_ranking_variation_refuses_incomplete_records(change):
+    records = [{"trial": trial, "rankings": {"chroma_fused": [[0], [1]]}} for trial in range(3)]
+    if change == "missing":
+        records.pop()
+    elif change == "duplicate":
+        records[2]["trial"] = 1
+    else:
+        records[2]["rankings"]["chroma_fused"].pop()
+    with pytest.raises(ValueError):
+        ranking_variation(records, "chroma_fused", 3)
+
+
+def _log_store(tmp_path, log_seq_id, vector_seq_id, *, vector_segments=1):
+    chroma_dir = tmp_path / "chroma"
+    chroma_dir.mkdir()
+    with sqlite3.connect(chroma_dir / "chroma.sqlite3") as connection:
+        connection.executescript(
+            "CREATE TABLE embeddings_queue (seq_id INTEGER);"
+            "CREATE TABLE segments (id TEXT, type TEXT, scope TEXT, collection TEXT);"
+            "CREATE TABLE max_seq_id (segment_id TEXT, seq_id INTEGER);"
+        )
+        connection.execute(
+            "INSERT INTO segments VALUES ('metadata', 'type', 'METADATA', 'collection')"
+        )
+        connection.execute("INSERT INTO max_seq_id VALUES ('metadata', ?)", (log_seq_id,))
+        for index in range(vector_segments):
+            connection.execute(
+                "INSERT INTO segments VALUES (?, 'type', 'VECTOR', 'collection')",
+                (f"vector-{index}",),
+            )
+        if log_seq_id is not None:
+            connection.execute("INSERT INTO embeddings_queue VALUES (?)", (log_seq_id,))
+        if vector_seq_id is not None:
+            connection.execute("INSERT INTO max_seq_id VALUES ('vector-0', ?)", (vector_seq_id,))
+    return chroma_dir
+
+
+@pytest.mark.parametrize("log_seq_id, vector_seq_id", [(40, None), (5589, 5000)])
+def test_read_log_positions_accepts_valid_tail(tmp_path, log_seq_id, vector_seq_id):
+    chroma_dir = _log_store(tmp_path, log_seq_id, vector_seq_id)
+    assert read_log_positions(chroma_dir) == {
+        "chroma_log_max_seq_id": log_seq_id,
+        "chroma_vector_persisted_seq_id": vector_seq_id or 0,
+    }
+
+
+@pytest.mark.parametrize(
+    "log_seq_id, vector_seq_id, vector_segments",
+    [
+        (None, None, 1),
+        (40, None, 0),
+        (40, None, 2),
+        ("invalid", None, 1),
+        (40, "invalid", 1),
+        (-1, None, 1),
+        (40, -1, 1),
+        (40, 41, 1),
+    ],
+)
+def test_read_log_positions_refuses_invalid_tail(
+    tmp_path, log_seq_id, vector_seq_id, vector_segments
+):
+    chroma_dir = _log_store(tmp_path, log_seq_id, vector_seq_id, vector_segments=vector_segments)
+    with pytest.raises(ValueError):
+        read_log_positions(chroma_dir)
+
+
 def test_build_report_status_keys_and_separate_memory():
     """Scenario: a cleanup failure."""
     password = "secret-db-password"
@@ -122,7 +252,7 @@ def test_build_report_status_keys_and_separate_memory():
         "postgres": "PostgreSQL 16",
         "pgvector": "0.7",
         "server_settings": {},
-        "setup": {},
+        "setup": {"chroma_log_max_seq_id": 40, "chroma_vector_persisted_seq_id": 0},
         "host_load": {},
         "d1_cross_check": {},
         "chunks": 2,
@@ -146,6 +276,10 @@ def test_build_report_status_keys_and_separate_memory():
     clean = {"database_dropped": True, "role_dropped": True, "chroma_dir_removed": True}
     report = build_report(context, records, clean)
     assert report["status"] == "measured"
+    assert report["schema_version"] == "d5-pgvector-cold-start-v2"
+    assert report["config"]["gated_ranking_paths"] == ["postgres_fused", "postgres_hnsw"]
+    assert report["setup"] == context["setup"]
+    assert report["chroma_fused_variation"] == {"trials": [], "distinct_cases": 0}
     assert set(report) == {
         "schema_version",
         "status",
@@ -166,6 +300,7 @@ def test_build_report_status_keys_and_separate_memory():
         "trials",
         "summary",
         "rankings",
+        "chroma_fused_variation",
         "d1_cross_check",
         "cleanup",
     }

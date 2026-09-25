@@ -141,7 +141,11 @@ def _harness(tmp_path, monkeypatch, inputs, **overrides):
         calls.append(("spawn", args, kwargs))
         if "--build-collection" in args:
             Path(args[args.index("--chroma-dir") + 1], "store.bin").write_bytes(b"data")
-            payload = {"build_ms": 1.0}
+            payload = {
+                "build_ms": 1.0,
+                "chroma_log_max_seq_id": 3,
+                "chroma_vector_persisted_seq_id": 0,
+            }
         else:
             arm = args[args.index("--trial") + 1]
             rankings = (
@@ -456,10 +460,37 @@ def test_child_error_cannot_echo_admin_username(tmp_path, monkeypatch):
     assert error.value.detail == "exit code 2"
 
 
-def test_an_unstable_ranking(tmp_path, monkeypatch):
-    """Scenario: an unstable ranking."""
+@pytest.mark.parametrize("path", ["postgres_fused", "postgres_hnsw"])
+def test_an_unstable_postgresql_ranking(tmp_path, monkeypatch, path):
+    """Scenario: an unstable PostgreSQL ranking."""
     inputs = write_inputs(tmp_path)
     calls, _, params = _harness(tmp_path, monkeypatch, inputs)
+    original = params["spawner"]
+    seen = 0
+
+    def change(args, **kwargs):
+        nonlocal seen
+        result = original(args, **kwargs)
+        if "--trial" in args and args[args.index("--trial") + 1] == "postgres":
+            seen += 1
+            if seen == 2:
+                payload = json.loads(result.stdout)
+                payload["rankings"][path][0] = [1]
+                result.stdout = json.dumps(payload) + "\n"
+        return result
+
+    params["spawner"] = change
+    with pytest.raises(RunnerError, match="ranking") as error:
+        run_measurement(tmp_path / "out.json", **params)
+    assert error.value.stage == "stability"
+    assert error.value.detail == f"ranking path {path}: ValueError"
+    assert any(item[0] == "rmtree" for item in calls)
+    assert not (tmp_path / "out.json").exists()
+
+
+def test_a_varying_chroma_ranking_is_measured(tmp_path, monkeypatch):
+    inputs = write_inputs(tmp_path)
+    _, _, params = _harness(tmp_path, monkeypatch, inputs)
     original = params["spawner"]
     seen = 0
 
@@ -475,12 +506,71 @@ def test_an_unstable_ranking(tmp_path, monkeypatch):
         return result
 
     params["spawner"] = change
-    with pytest.raises(RunnerError, match="ranking") as error:
-        run_measurement(tmp_path / "out.json", **params)
-    assert error.value.stage == "stability"
-    assert "chroma_fused" in error.value.detail
+    report = run_measurement(tmp_path / "out.json", **params)
+    assert report["status"] == "measured"
+    assert report["chroma_fused_variation"] == {
+        "trials": [{"trial": 1, "differing_cases": [0]}],
+        "distinct_cases": 1,
+    }
+    assert (tmp_path / "out.json").exists()
+
+
+@pytest.mark.parametrize("log_seq_id, vector_seq_id", [(40, 0), (5589, 5000)])
+def test_runner_accepts_valid_log_positions(tmp_path, monkeypatch, log_seq_id, vector_seq_id):
+    inputs = write_inputs(tmp_path)
+    _, _, params = _harness(tmp_path, monkeypatch, inputs)
+    original = params["spawner"]
+
+    def valid_build(args, **kwargs):
+        result = original(args, **kwargs)
+        if "--build-collection" in args:
+            payload = json.loads(result.stdout)
+            payload["chroma_log_max_seq_id"] = log_seq_id
+            payload["chroma_vector_persisted_seq_id"] = vector_seq_id
+            result.stdout = json.dumps(payload) + "\n"
+        return result
+
+    params["spawner"] = valid_build
+    report = run_measurement(tmp_path / "out.json", **params)
+    assert report["status"] == "measured"
+    assert report["setup"]["chroma_log_max_seq_id"] == log_seq_id
+    assert report["setup"]["chroma_vector_persisted_seq_id"] == vector_seq_id
+
+
+@pytest.mark.parametrize(
+    "change",
+    ["missing_log", "missing_vector", "bool_log", "bool_vector", "persisted_ahead"],
+)
+def test_runner_rejects_invalid_build_result(tmp_path, monkeypatch, change):
+    inputs = write_inputs(tmp_path)
+    calls, _, params = _harness(tmp_path, monkeypatch, inputs)
+    original = params["spawner"]
+
+    def invalid_build(args, **kwargs):
+        result = original(args, **kwargs)
+        if "--build-collection" in args:
+            payload = json.loads(result.stdout)
+            if change == "missing_log":
+                del payload["chroma_log_max_seq_id"]
+            elif change == "missing_vector":
+                del payload["chroma_vector_persisted_seq_id"]
+            elif change == "bool_log":
+                payload["chroma_log_max_seq_id"] = True
+            elif change == "bool_vector":
+                payload["chroma_vector_persisted_seq_id"] = False
+            else:
+                payload["chroma_vector_persisted_seq_id"] = 4
+            result.stdout = json.dumps(payload) + "\n"
+        return result
+
+    params["spawner"] = invalid_build
+    output = tmp_path / "out.json"
+    with pytest.raises(RunnerError) as error:
+        run_measurement(output, **params)
+    assert error.value.stage == "build"
+    assert error.value.detail == "ValueError"
     assert any(item[0] == "rmtree" for item in calls)
-    assert not (tmp_path / "out.json").exists()
+    assert not output.exists()
 
 
 def test_a_cleanup_failure(tmp_path, monkeypatch):

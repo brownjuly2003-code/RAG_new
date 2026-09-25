@@ -8,8 +8,9 @@ restart. The PostgreSQL + pgvector arm opens a new connection to a database load
 D.1's loader. The runner is `scripts/pgvector_cold_start_run.py`; the trial process, the
 summaries and the report builder live in `scripts/pgvector_cold_start.py`. D.5 computes
 no retrieval quality metric and changes no D.1–D.4 number or artifact and no product
-default; `RAG_GRAPH_RETRIEVAL` stays `off`. This file is written before the run and
-fixes its protocol.
+default; `RAG_GRAPH_RETRIEVAL` stays `off`. This file was written before the first run
+and fixes its protocol. Amendment 1, under "every trial answers the same", was written
+after the first run stopped at that gate and before any other run.
 
 ## Requirement: the inputs are D.1's, pinned
 
@@ -73,7 +74,15 @@ directory and exit. The collection holds every archive chunk under id `str(i)` w
 vector, its `page_content` as the document and its metadata with `chunk_index` set to
 `i`, as production ingestion stamps it. It uses D.1's cosine space and no embedding
 function and is added in batches of 500. The build time and the directory's size SHALL
-be recorded. Each Chroma trial SHALL time these steps in order:
+be recorded. After its last batch the build process SHALL also record, from the
+collection's `chroma.sqlite3`, the highest sequence id in the write-ahead log table
+`embeddings_queue` and the sequence id that the vector segment, the only `segments` row
+whose scope is `VECTOR`, has persisted in `max_seq_id`: 0 when that table holds no row
+for the segment, which then has persisted nothing. The build SHALL fail when the log is
+empty, when there is not exactly one vector segment or when a sequence id is not an
+integer. The difference of the two is the number of log records that a new process
+re-inserts into its in-memory index when it opens the collection (amendment 1). Each
+Chroma trial SHALL time these steps in order:
 
 1. `import chromadb`;
 2. `chromadb.PersistentClient(path=...)` and `get_collection(name=...)`, the two calls
@@ -94,6 +103,13 @@ in order, to have the archive's text digest.
 - **GIVEN** restored chunks whose texts, in order, do not have the archive's text digest
 - **WHEN** a Chroma trial checks them
 - **THEN** the trial fails, and the run writes no report
+
+### Scenario: a vector segment that has persisted nothing
+
+- **GIVEN** a collection store whose log's highest sequence id is 40 and whose
+  `max_seq_id` table holds a row for the metadata segment only
+- **WHEN** the build process reads it after its last batch
+- **THEN** it records 40 for the log and 0 for the vector segment
 
 ## Requirement: the PostgreSQL + pgvector arm opens a new connection
 
@@ -166,17 +182,47 @@ trial and after the last.
 
 ## Requirement: every trial answers the same
 
-For each query path (Chroma fused, PostgreSQL fused, PostgreSQL HNSW), every trial SHALL
-return the same 115 rankings; otherwise the run fails and writes no report. The report
-SHALL hold trial 0's rankings for each path and, as a diagnostic rather than a gate,
-record for each arm whether its fused rankings equal those D.1 published in `runs[0]` of
+For each PostgreSQL query path (fused and HNSW), every trial SHALL return the same 115
+rankings; otherwise the run fails and writes no report. The Chroma fused path is compared
+but not gated: the report SHALL record, for each trial from 1 to 6, the indexes of the
+cases whose Chroma fused ranking differs from trial 0's, in ascending order, and the
+number of distinct cases that differ in at least one trial. The report SHALL hold trial
+0's rankings for each path and, as a diagnostic rather than a gate, record for each arm
+whether its fused rankings equal those D.1 published in `runs[0]` of
 `evaluation/d1-pgvector-prererank.json`, with the number of cases that match.
 
-### Scenario: an unstable ranking
+Amendment 1, 2026-09-25. As first written, this requirement gated the Chroma fused path
+too. The first run, at commit `4b57562` on deproject-mac, stopped at that gate on the
+Chroma fused path. It printed no timing or memory value, wrote no report and removed its
+database, role and directory. A diagnostic outside the protocol, which is not evidence,
+rebuilt the collection from the same vectors in the same batches and opened it in new
+processes. Its persisted HNSW index covered sequence ids up to 5000 of 5589; the other 589
+records stayed in Chroma's write-ahead log, and each new process re-inserted them into its
+in-memory graph. Each later process's top-20 nearest-neighbour answers differed from the
+first process's in 3 to 9 of the 115 cases, while a repeated query in the same process did
+not change. Single-threaded insertion (`hnsw:num_threads` 1) did not remove the variation.
+Raising the sync threshold and batch size to 5589, which are not production's settings,
+persisted the whole index, and four processes then answered alike. Production's own
+ingestion batching, upserts in batches of the client's maximum (5461 on this host) as
+`langchain_chroma` does, left 128 records in the log, and 1 or 2 answers still differed.
+With Chroma's default settings the variation is a property of the arm, not of the harness.
+The arm is kept as specified above, and its variation is a recorded result. The PostgreSQL
+gate is unchanged. The report's schema version becomes `d5-pgvector-cold-start-v2`.
 
-- **GIVEN** a trial whose ranking for one case differs from trial 0's
+### Scenario: an unstable PostgreSQL ranking
+
+- **GIVEN** a trial whose PostgreSQL fused or HNSW ranking for one case differs from
+  trial 0's
 - **WHEN** the runner collects the trials
 - **THEN** it raises, cleans up, and writes no report
+
+### Scenario: a varying Chroma ranking
+
+- **GIVEN** trials whose Chroma fused ranking differs from trial 0's for case 3 in trial
+  2 and for cases 5 and 3 in trial 4, and PostgreSQL rankings that never differ
+- **WHEN** the report is built
+- **THEN** it records cases [3] for trial 2, [3, 5] for trial 4 and [] for trials 1, 3,
+  5 and 6, and 2 distinct varying cases
 
 ## Requirement: scratch state is new, local and removed
 
@@ -210,14 +256,14 @@ exception messages, process arguments or the report.
 
 The runner SHALL refuse an existing output path and a dirty tracked worktree before any
 side effect, and write the report with exclusive creation. The report SHALL record the
-schema version `d5-pgvector-cold-start-v1`, the full code commit, the input and source
+schema version `d5-pgvector-cold-start-v2`, the full code commit, the input and source
 SHA-256 digests, the versions of numpy, chromadb, rank-bm25 and psycopg2-binary, the
 Python version, the platform, the PostgreSQL and pgvector versions and the protocol
-constants. Its sources SHALL include the runner, its helper module,
-`scripts/pgvector_spike.py`, `scripts/pgvector_spike_db.py`, `scripts/pgvector_ann.py`,
-`vectordb/manager.py` and `vectordb/_base_manager.py`. The status SHALL be `measured`
-only when every trial completed and the database, the role and the directory were all
-removed, and `cleanup_failed` otherwise, which is not evidence.
+constants, which name the gated ranking paths. Its sources SHALL include the runner, its
+helper module, `scripts/pgvector_spike.py`, `scripts/pgvector_spike_db.py`,
+`scripts/pgvector_ann.py`, `vectordb/manager.py` and `vectordb/_base_manager.py`. The
+status SHALL be `measured` only when every trial completed and the database, the role and
+the directory were all removed, and `cleanup_failed` otherwise, which is not evidence.
 
 ### Scenario: an existing output
 

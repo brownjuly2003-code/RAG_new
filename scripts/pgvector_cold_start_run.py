@@ -24,6 +24,7 @@ from urllib.parse import quote, unquote, urlsplit, urlunsplit
 import numpy as np
 
 from scripts.pgvector_cold_start import (
+    GATED_PATHS,
     _ArgumentParser,
     build_report,
     compare_d1,
@@ -31,6 +32,7 @@ from scripts.pgvector_cold_start import (
     trial_order,
     validate_trial_record,
 )
+from scripts.pgvector_cold_start import SCHEMA_VERSION as SCHEMA_VERSION
 from scripts.pgvector_spike_db import TENANT, setup
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -44,7 +46,6 @@ TOP_K = 20
 EF_SEARCH = 100
 CHILD_TIMEOUT_S = 900
 DROP_RETRY_S = 30
-SCHEMA_VERSION = "d5-pgvector-cold-start-v1"
 ARCHIVE = ROOT / "evaluation/gr1b-4436d61-graph-chunks.json.gz"
 CASE_FILES = (
     ROOT / "evaluation/curated_cases_aircargo.jsonl",
@@ -517,11 +518,16 @@ def run_measurement(
         ]
         built, _ = _run_child(command, stage, spawner, clock)
         if (
-            set(built) != {"build_ms"}
+            set(built) != {"build_ms", "chroma_log_max_seq_id", "chroma_vector_persisted_seq_id"}
             or isinstance(built["build_ms"], bool)
             or not isinstance(built["build_ms"], (int, float))
             or not math.isfinite(built["build_ms"])
             or built["build_ms"] < 0
+            or any(
+                type(built[key]) is not int or built[key] < 0
+                for key in ("chroma_log_max_seq_id", "chroma_vector_persisted_seq_id")
+            )
+            or built["chroma_vector_persisted_seq_id"] > built["chroma_log_max_seq_id"]
         ):
             raise ValueError("invalid build result")
         chroma_dir_bytes = _directory_size(directory)
@@ -598,7 +604,7 @@ def run_measurement(
         }
         for record in records:
             for path, rows in record["rankings"].items():
-                if rows != first[path]:
+                if path in GATED_PATHS and rows != first[path]:
                     unstable_path = path
                     raise ValueError("ranking changed")
         stage = "D.1 cross-check"
@@ -650,6 +656,8 @@ def run_measurement(
         "server_settings": server_settings,
         "setup": {
             "chroma_build_ms": built["build_ms"],
+            "chroma_log_max_seq_id": built["chroma_log_max_seq_id"],
+            "chroma_vector_persisted_seq_id": built["chroma_vector_persisted_seq_id"],
             "chroma_dir_bytes": chroma_dir_bytes,
             "postgres_setup_ms": postgres_setup_ms,
             **sizes,

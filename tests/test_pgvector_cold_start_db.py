@@ -99,6 +99,10 @@ def test_database_acceptance_on_tiny_corpus(tmp_path):
         code_base_provider=lambda: "a" * 40,
     )
     assert report["status"] == "measured"
+    assert report["schema_version"] == "d5-pgvector-cold-start-v2"
+    assert report["setup"]["chroma_log_max_seq_id"] == 40
+    assert report["setup"]["chroma_vector_persisted_seq_id"] == 0
+    assert report["chroma_fused_variation"]["trials"][0]["trial"] == 1
     assert all(report["cleanup"].values())
     assert len(report["trials"]) == 4
     for record in report["trials"]:

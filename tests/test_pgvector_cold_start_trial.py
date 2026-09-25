@@ -13,6 +13,7 @@ import numpy as np
 import pytest
 
 from scripts.pgvector_cold_start import (
+    build_collection,
     main,
     run_chroma_trial,
     run_postgres_trial,
@@ -277,6 +278,52 @@ def test_postgres_trial_rejects_preloaded_driver_before_timing(tmp_path):
     assert ("import", "psycopg2") not in calls
 
 
+def test_build_collection_reads_log_after_last_batch(tmp_path):
+    texts = [f"document {index}" for index in range(3)]
+    archive = tmp_path / "chunks.json.gz"
+    with gzip.open(archive, "wt", encoding="utf-8") as stream:
+        json.dump({"chunks": [{"page_content": text, "metadata": {}} for text in texts]}, stream)
+    vectors = tmp_path / "vectors.npz"
+    np.savez(vectors, embeddings=np.ones((3, 1024), dtype="float32"))
+    events = []
+
+    class Collection:
+        def add(self, *, ids, documents, metadatas, embeddings):
+            assert ids == ["0", "1", "2"]
+            assert documents == texts
+            assert [row["chunk_index"] for row in metadatas] == [0, 1, 2]
+            assert len(embeddings) == 3
+            events.append("add")
+
+    def clock():
+        events.append("clock")
+        return 10 if events.count("clock") == 1 else 12
+
+    def log_reader(path):
+        assert path == tmp_path / "chroma"
+        assert events == ["clock", "add", "clock"]
+        return {"chroma_log_max_seq_id": 3, "chroma_vector_persisted_seq_id": 0}
+
+    result = build_collection(
+        tmp_path / "chroma",
+        "test",
+        archive,
+        vectors,
+        text_digest(texts),
+        importer=lambda name: SimpleNamespace(),
+        client_factory=lambda module, path: SimpleNamespace(
+            create_collection=lambda **kwargs: Collection()
+        ),
+        clock=clock,
+        log_reader=log_reader,
+    )
+    assert result == {
+        "build_ms": 2000,
+        "chroma_log_max_seq_id": 3,
+        "chroma_vector_persisted_seq_id": 0,
+    }
+
+
 def test_real_mode_refuses_non_mac_and_telemetry(monkeypatch, capsys):
     """Real mode refusal before the first timed step."""
     argv = [
@@ -354,7 +401,10 @@ def test_real_chroma_trial_child_process(tmp_path):
         env=env,
     )
     assert build.returncode == 0, build.stdout[-500:]
-    assert json.loads(build.stdout.splitlines()[-1])["build_ms"] > 0
+    build_result = json.loads(build.stdout.splitlines()[-1])
+    assert build_result["build_ms"] > 0
+    assert build_result["chroma_log_max_seq_id"] == 30
+    assert build_result["chroma_vector_persisted_seq_id"] == 0
     command = [
         sys.executable,
         "-m",

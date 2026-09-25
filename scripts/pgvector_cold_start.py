@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import contextlib
 import gzip
 import hashlib
 import importlib
@@ -10,6 +11,7 @@ import json
 import math
 import os
 import re
+import sqlite3
 import subprocess
 import sys
 import time
@@ -19,6 +21,8 @@ from types import SimpleNamespace
 import numpy as np
 
 TENANT = "aircargo"
+SCHEMA_VERSION = "d5-pgvector-cold-start-v2"
+GATED_PATHS = ("postgres_fused", "postgres_hnsw")
 
 
 class _ArgumentParser(argparse.ArgumentParser):
@@ -89,6 +93,57 @@ def compare_d1(actual: list[list[int]], d1: list[list[int]]) -> dict[str, int | 
     return {
         "equal": actual == d1,
         "matching_cases": sum(left == right for left, right in zip(actual, d1, strict=False)),
+    }
+
+
+def ranking_variation(records: list[dict], path: str, trials: int) -> dict:
+    by_trial = {}
+    for record in records:
+        trial = record["trial"]
+        if trial in by_trial:
+            raise ValueError("duplicate trial")
+        by_trial[trial] = record["rankings"][path]
+    if set(by_trial) != set(range(trials)):
+        raise ValueError("incomplete trials")
+    first = by_trial[0]
+    changed = set()
+    trial_variation = []
+    for trial in range(1, trials):
+        rows = by_trial[trial]
+        if len(rows) != len(first):
+            raise ValueError("ranking case count mismatch")
+        differing_cases = [
+            index
+            for index, (left, right) in enumerate(zip(rows, first, strict=True))
+            if left != right
+        ]
+        changed.update(differing_cases)
+        trial_variation.append({"trial": trial, "differing_cases": differing_cases})
+    return {"trials": trial_variation, "distinct_cases": len(changed)}
+
+
+def read_log_positions(chroma_dir) -> dict[str, int]:
+    database_uri = (Path(chroma_dir) / "chroma.sqlite3").resolve().as_uri() + "?mode=ro"
+    with contextlib.closing(sqlite3.connect(database_uri, uri=True)) as connection:
+        log_seq_id = connection.execute("SELECT MAX(seq_id) FROM embeddings_queue").fetchone()[0]
+        segments = connection.execute("SELECT id FROM segments WHERE scope = 'VECTOR'").fetchall()
+        if len(segments) != 1:
+            raise ValueError("expected one vector segment")
+        row = connection.execute(
+            "SELECT seq_id FROM max_seq_id WHERE segment_id = ?", (segments[0][0],)
+        ).fetchone()
+        vector_seq_id = row[0] if row is not None else 0
+    if (
+        type(log_seq_id) is not int
+        or type(vector_seq_id) is not int
+        or log_seq_id < 0
+        or vector_seq_id < 0
+        or vector_seq_id > log_seq_id
+    ):
+        raise ValueError("invalid Chroma sequence ids")
+    return {
+        "chroma_log_max_seq_id": log_seq_id,
+        "chroma_vector_persisted_seq_id": vector_seq_id,
     }
 
 
@@ -181,6 +236,7 @@ def build_report(context: dict, records: list[dict], cleanup: dict[str, bool]) -
         report_records.append(reduced)
     config = {
         "trials": context.get("trials", 7),
+        "gated_ranking_paths": list(GATED_PATHS),
         "order": "chroma_bm25 first on even trials; postgres first on odd trials",
         "top_k": 20,
         "rrf_k": 60,
@@ -200,7 +256,7 @@ def build_report(context: dict, records: list[dict], cleanup: dict[str, bool]) -
         "postgres_restart": "not_controlled",
     }
     return {
-        "schema_version": "d5-pgvector-cold-start-v1",
+        "schema_version": SCHEMA_VERSION,
         "status": "measured" if all(cleanup.values()) and len(cleanup) == 3 else "cleanup_failed",
         "code_base": context["code_base"],
         "database": context["database"],
@@ -219,6 +275,11 @@ def build_report(context: dict, records: list[dict], cleanup: dict[str, bool]) -
         "trials": report_records,
         "summary": summary,
         "rankings": first_rankings,
+        "chroma_fused_variation": ranking_variation(
+            [record for record in records if record["arm"] == "chroma_bm25"],
+            "chroma_fused",
+            expected_trials,
+        ),
         "d1_cross_check": context["d1_cross_check"],
         "cleanup": cleanup,
     }
@@ -410,6 +471,7 @@ def build_collection(
     importer=importlib.import_module,
     client_factory=_client,
     clock=time.perf_counter,
+    log_reader=read_log_positions,
 ) -> dict:
     with gzip.open(archive, "rb") as stream:
         chunks = json.loads(stream.read())["chunks"]
@@ -438,7 +500,8 @@ def build_collection(
             ],
             embeddings=vectors[start:end].tolist(),
         )
-    return {"build_ms": 1000 * (clock() - started)}
+    build_ms = 1000 * (clock() - started)
+    return {"build_ms": build_ms, **log_reader(chroma_dir)}
 
 
 def _require_real_mode():
