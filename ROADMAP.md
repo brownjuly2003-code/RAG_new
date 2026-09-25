@@ -143,7 +143,14 @@ The Chroma restart measurement followed on 2026-09-25
 on production's own write path, 128 of 5589 records stayed in the
 write-ahead log, and one of seven restarted processes changed the
 candidate set of one of 115 cases. No runtime default changed; the
-fix is a separate slice with an end-to-end test.
+fix is a separate slice with an end-to-end test. The fix landed at
+`534612e`: production's staged build persists the vector index at
+the end of every add call, proven by an end-to-end restart test.
+The rerun at that commit
+([capsule](docs/evidence/chroma-restart-stability-after-fix.md),
+published at `4e4273d`) left no record in the write-ahead log,
+and all seven restarted processes answered all 115 cases as the
+build did.
 
 P1 was measured 2026-09-24 ([capsule](docs/evidence/p1-adaptive-k.md)): 5-fold
 held-out H precision 0.5372 vs valid `top_k_5` control 0.5067, recall 0.8900 vs

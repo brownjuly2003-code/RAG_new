@@ -19,15 +19,9 @@ conditions, read [`ROADMAP.md`](ROADMAP.md). The active delivery plan is
   P1 and P1b are both `NO_SHIP` ([P1b capsule](docs/evidence/p1b-expanded-cut.md)):
   H-relative exploratory verdicts on 100 agent-authored `agent_labelled` cases
   (0 approved); neither changed product behaviour.
-- Chroma restart fix. [Measured](docs/evidence/chroma-restart-stability.md)
-  on production's write path: ingestion leaves 128 of 5589 records to
-  the write-ahead log, and one of seven restarted processes handed the
-  reranker a different candidate set in one of 115 cases. The fix is
-  its own slice under rule (a): an end-to-end test that a restarted
-  process answers as the ingesting one did, then a rerun of the
-  measurement under [its spec](docs/specs/chroma-restart-stability.md)
-  at the new commit. Candidate remedy, unverified: a Chroma setting on
-  production's write path that leaves no unpersisted tail.
+- Re-ingest any Chroma collection built before `534612e`: it keeps its
+  unpersisted write-ahead-log tail until it is rebuilt
+  ([rerun after the fix](docs/evidence/chroma-restart-stability-after-fix.md)).
 - Review the three accepted ChromaDB CVE exceptions on **2026-10-24** and
   remove them if a fixed release exists (2026-09-24 review: no fixed release).
 
