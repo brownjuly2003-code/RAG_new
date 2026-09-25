@@ -315,7 +315,7 @@ def test_adr_d4_section_quotes_the_report(published):
     for number in (10300, 17327, 5589, 5877):
         assert str(number) in section
     status = next(line for line in adr.splitlines() if line.startswith("Status:"))
-    assert "D.1–D.4 measured" in status
+    assert re.search(r"D\.1–D\.[4-9] measured", status)
     assert "../evidence/d4-pgvector-graph-evidence.md" in adr
 
 

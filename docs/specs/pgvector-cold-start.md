@@ -276,3 +276,31 @@ the directory were all removed, and `cleanup_failed` otherwise, which is not evi
 - **GIVEN** a run whose trials completed but whose scratch database could not be dropped
 - **WHEN** the report is built
 - **THEN** its status is `cleanup_failed`, and it names the database but not the URL
+
+## Requirement: the published report is pinned and quoted exactly
+
+A committed D.5 report SHALL be guarded by a test that pins the report's SHA-256 and the
+code commit it was built at, requires each recorded source digest to be the SHA-256 of
+that file's blob at the code commit, and requires each recorded input digest to equal the
+digest D.1 recorded for that input. From the report alone, the test SHALL recompute every
+summary with the committed `summarize`, the digest of each trial-0 ranking with
+`rankings_sha256` and the D.1 cross-check with `compare_d1`, and require the recorded
+values. It SHALL require every trial's PostgreSQL ranking digests to equal trial 0's, and
+a Chroma trial's digest to equal trial 0's exactly when the report records no differing
+case for that trial. The evidence capsule, its `EVIDENCE_INDEX.md` row and the D.5
+section of ADR 0007 SHALL quote no number that the report does not hold outside its
+rankings, apart from the number of cases each trial changed and the log tail, the
+difference of the two recorded sequence ids.
+
+### Scenario: a mutated report
+
+- **GIVEN** `evaluation/d5-pgvector-cold-start.json` altered by any byte
+- **WHEN** the artifact test runs
+- **THEN** it fails on the pinned SHA-256
+
+### Scenario: a number the report does not hold
+
+- **GIVEN** a number written in the capsule outside code spans
+- **WHEN** the artifact test runs
+- **THEN** it fails unless that number is a JSON number of the report outside its
+  rankings (not a boolean), the number of cases a trial changed, or the log tail

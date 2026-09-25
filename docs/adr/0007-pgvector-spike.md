@@ -1,12 +1,16 @@
 # ADR 0007 — retrieval storage spike
 
-Status: **provisional; D.1–D.4 measured, Phase D incomplete**. 2026-09-25.
+Status: **accepted: retain the current retrieval backend; D.1–D.5 measured**. 2026-09-25.
 
-Decision: retain the current retrieval backend. The experiments to date do not
-justify migration. They measure a controlled pre-reranker comparison, ANN
-behaviour, one offline final-rerank pass, and production graph/evidence parity
-and tenant policies on a migrated scratch database. Final product quality
-remains unmeasured.
+Decision: retain the current retrieval backend. D.1–D.5 measured a controlled
+pre-reranker comparison, ANN behaviour, one offline final-rerank pass, production
+graph/evidence parity and tenant policies on a migrated scratch database, and the
+cold start and memory of both arms. The PostgreSQL arm reaches its first result
+sooner, its client holds less memory and its answers did not change across
+restarts. Its server holds memory of its own, and its keyword-proxy precision
+was lower than Chroma + BM25's in every D.1 and D.3 bucket, before and after
+the rerank. The measured differences do not justify a migration. Final product
+quality remains unmeasured.
 
 ## D.1 numbers
 
@@ -106,6 +110,28 @@ and delete probes rejected by immutability triggers.
 | Write probes | Cross-tenant insert `42501`; evidence update `55000`; evidence delete `55000` |
 | Cleanup | 0 rows in 6 measured tables; disposable role absent; scratch database dropped |
 
+## D.5 cold-start and memory numbers
+
+On 2026-09-25, seven new-process trials per arm on one Mac reopened a persisted
+Chroma collection and opened new connections to a PostgreSQL scratch database
+loaded by D.1's loader. Both used D.1's pinned inputs and precomputed query vectors.
+
+| Median observation | PostgreSQL + pgvector | Chroma + BM25 |
+|---|---:|---:|
+| Time to first fused result, ms (range) | 85.7 (84.8–90.0) | 1494.7 (1492.7–1998.2) |
+| Driver import, ms | 12.5 | 417.5 |
+| Open, ms | 22.7 | 61.2 |
+| Restore, ms | — | 703.2 |
+| BM25 index, ms | — | 297.9 |
+| First fused query, ms | 50.5 | 17.3 |
+| Client resident set after workload, bytes | 68,644,864 | 310,738,944 |
+| Backend resident set, bytes; never added | 98,246,656 | — |
+| Answers across trials | Fused and HNSW identical in all seven | Fused changed in 13 of 115 cases |
+
+The collection's persisted index covered 5000 of its 5589 records, so each new
+process re-inserted 589 from the write-ahead log. The spec's amendment 1 records
+why Chroma's answers are compared, not gated.
+
 ## Isolation and limits
 
 The scratch databases have FORCE RLS on retrieval and synthetic graph
@@ -123,22 +149,32 @@ production evidence join, tenant isolation (a cross-tenant insert rejected with
 evidence rows. Chroma/BM25 is a single-tenant collection
 for this run; the experiment does not prove its application-level isolation.
 
-No cold-start RAM was measured. D.1 RRF uses rank 1 for both arms; production
-currently starts at rank 0. D.3 stores orders but not reranker scores or a
-fully pinned inference configuration, and its arithmetic replay is not an
-independent semantic check. These numbers must not replace GR-3 final reranked
-numbers or close the 0.63 gate. No runtime defaults changed.
+D.5 measured cold start and resident memory with precomputed query vectors and
+no model load, against a running PostgreSQL server shared with other databases
+and an uncontrolled file cache; a backend's resident set is recorded apart
+from the client's and never added to it. D.1 RRF uses rank 1 for both arms;
+production currently starts at rank 0. D.3 stores orders but not reranker
+scores or a fully pinned inference configuration, and its arithmetic replay
+is not an independent semantic check. These numbers must not replace GR-3
+final reranked numbers or close the 0.63 gate. No runtime defaults changed.
 
-## Next bounded Phase D experiment
+## When to revisit
 
-The D.2 severe-outlier diagnostic is measured and closed as a bounded
-investigation; no pgvector/HNSW root cause is claimed. D.4 measured
-graph/NetworkX and evidence-join parity. Measure cold-start and host RAM
-before any migration decision; final reranking is already measured in D.3. Do not
-rerun or re-embed the unchanged corpus, do not overwrite the pinned D.2
+Phase D is measured, and no further bounded experiment is planned. The decision
+reopens if one of these becomes a requirement:
+
+- Storage-level tenant isolation, which PostgreSQL row-level security gave in D.1
+  and D.4 and the Chroma/BM25 collection does not.
+- Answers that do not change across process restarts, which the Chroma arm did not
+  give under its default settings.
+- A per-process memory or start-up budget that the Chroma arm's client does not meet.
+- A PostgreSQL lexical arm that matches Chroma/BM25 quality.
+
+Do not rerun or re-embed the unchanged corpus, do not overwrite the pinned D.2
 artifacts, and do not delete the retained scratch database.
 
 Full provenance, reproduction and acceptance: [D.1](../evidence/d1-pgvector-prererank.md),
 [D.2](../evidence/d2-pgvector-ann.md),
 [D.3](../evidence/d3-pgvector-rerank.md) and
-[D.4](../evidence/d4-pgvector-graph-evidence.md) evidence.
+[D.4](../evidence/d4-pgvector-graph-evidence.md) and
+[D.5](../evidence/d5-pgvector-cold-start.md) evidence.
