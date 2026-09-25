@@ -19,10 +19,13 @@ conditions, read [`ROADMAP.md`](ROADMAP.md). The active delivery plan is
   P1 and P1b are both `NO_SHIP` ([P1b capsule](docs/evidence/p1b-expanded-cut.md)):
   H-relative exploratory verdicts on 100 agent-authored `agent_labelled` cases
   (0 approved); neither changed product behaviour.
-- Phase D: measure cold-start and host RAM before any pgvector migration
-  decision ([ADR 0007](docs/adr/0007-pgvector-spike.md)). D.1–D.4 are
-  measured ([D.4 capsule](docs/evidence/d4-pgvector-graph-evidence.md));
-  the retrieval backend stays as it is and `RAG_GRAPH_RETRIEVAL` stays `off`.
+- Chroma answer stability across restarts: Phase D is measured; [ADR 0007](docs/adr/0007-pgvector-spike.md)
+  retains the current backend. In [D.5](docs/evidence/d5-pgvector-cold-start.md), Chroma answers changed
+  in 13 of 115 cases between processes; each new process re-inserted the collection's unpersisted
+  write-ahead-log tail. Production sets no Chroma index persistence setting (`vectordb/manager.py`).
+  A diagnostic outside the protocol (not evidence; [spec amendment 1](docs/specs/pgvector-cold-start.md))
+  linked the changes to the tail and saw production ingestion batching leave a tail too. Measure the
+  production collection before changing that runtime default, in its own slice.
 - Review the three accepted ChromaDB CVE exceptions on **2026-10-24** and
   remove them if a fixed release exists (2026-09-24 review: no fixed release).
 - MyFlow tree pinning has been silently off here since 2026-09-08 — a defect in
