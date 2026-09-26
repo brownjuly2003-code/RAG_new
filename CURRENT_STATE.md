@@ -19,7 +19,8 @@ selections reproduce P1; expanded control and `top_k_3+exp` equal Q1's expanded 
 0.5067 on the phase-C harness without expansion, **NO_SHIP**; label-using oracle for a
 cut that keeps every fact at 0.6505 (not deployable). Both are H-relative exploratory on
 100 agent-authored `agent_labelled` cases (0 approved), offline with no product change.
-Next: P2; judge: Julia's data-governance call.
+Next: P2, pre-registered 2026-09-25 ([plan](docs/specs/p2-blinded-judge-plan.md)); judges
+(Julia, 2026-09-25): Sonnet 5 via GraceKelly, GLM 5.3 xhigh, Mistral, each when reachable.
 
 ### GR-3 measured — NO-SHIP-to-default
 
@@ -63,10 +64,9 @@ Authorized push:
 Resolution remains unmeasurable ([evidence](docs/evidence/a6-journey-admission-and-clarification.md)):
 no case names a shipment; the original gate was English-only; the bilingual
 gate has recall **0.0000**, with one `exception_escalation` false positive.
-None of 100 `agent_labelled`, unapproved cases belongs to the journey.
-B.2/B.3/B.5 need data; label approval alone cannot fix this.
-Review: `python scripts/aircargo_labels.py report --batch 1`;
-approve: `python scripts/aircargo_labels.py approve --batch 1 --approver julia`.
+None of the 100 cases belongs to the journey; their labels are `real_labelled` since
+Julia approved all five batches on 2026-09-25 (T-54, `73b13b9`). B.2/B.3/B.5 need
+data, which the approval cannot supply. Check: `python scripts/aircargo_labels.py verify`.
 
 **Windows:** focused checks only; strict mypy needs numpy 2.4.4. PostgreSQL and
 browser checks run on Mac.
@@ -77,8 +77,8 @@ browser checks run on Mac.
   `freeze-2026-08-23` = `26866e9`. Pushes go over HTTPS (command in §1).
 - **Phase A closed:** read-only shipment-status `/api/ask`; clarification projects
   only under both default-off allowlists. Disabled/declined/failed stay explicit.
-- **Zero real labelled cases.** 100/100 labelled, 0 approved, 0 binding a
-  shipment; all expect `verified`. 201 real documents; agent-written questions
+- **100 real labelled cases, none bound to a shipment.** 100/100 approved 2026-09-25,
+  0 binding a shipment; all expect `verified`. 201 real documents; agent-written questions
   (`325d63c`, `6b7417d`,
   `32e841f`). Question classes live in a sidecar (`6cde0b1`) — 99 `single_hop`,
   1 `multi_hop`, 0 `aggregation`, 0 `global` (plan §5, GR-0.2).
@@ -104,9 +104,9 @@ browser checks run on Mac.
 
 Count only **(a)** `/api/ask` or UI change proven by E2E, **(b)** more real
 labelled cases, or **(c)** published numbers with provenance. T-02/T-08/T-05: (c);
-T-03: (a). B.1 remains preparation until approval.
+T-03: (a). B.1: (b) since the 2026-09-25 approval, real labelled 0 → 100 (T-54).
 
-## Phases 0/A done · GR required · B blocked (Q2)
+## Phases 0/A done · GR required · B blocked on data (Q2b)
 
 | # | Item | Status |
 |---|---|---|
@@ -115,11 +115,11 @@ T-03: (a). B.1 remains preparation until approval.
 | A.6 | Admission gate; 100 agent-authored cases, `agent_labelled`, 0 approved, recall 0.0000 | **done** (c) |
 | A.7 | Opt-in clarification projection through `/api/ask` | **done** (a), default off |
 | A.8 | Evidence distinguishes disabled, declined and failed producers | **done** (a) |
-| B.1 | Labels on all 100 cases | **done**, `agent_labelled`, 0 approved |
+| B.1 | Labels on all 100 cases | **done** (b), `real_labelled`: approved 2026-09-25 (T-54) |
 | B.2 | Fixture TMS covering the cases | **blocked** — three reasons, not one |
 | B.3 | First real numbers on the labelled cases | **blocked** — same |
 | B.4 | Judge calibration 10 → ≥40 double-annotated routes | not started |
-| B.5 | Corpus v1.0 at `real_labelled` | needs Q2 route 1 |
+| B.5 | Corpus v1.0 at `real_labelled` | labels approved; **blocked** on shipment-bound data (Q2b) |
 | GR-0.2 | Separate pinned bucket: 15 cases over 13 documents; 10 `multi_hop`, 5 `aggregation`; original phase-C dataset unchanged | **done as preparation**, not a measured slice |
 | GR-0.3 | [Baseline](docs/evidence/gr0-bucket-baseline.md), `91ce1745…`: top-5 0.5067 / 0.9050; 99 single-hop 0.5063 / 0.9091, one multi-hop | **done** (c) |
 | GR-0.4 | SGR adds question class, bounded entities, multi-hop flag and reason; default/legacy retrieval unchanged | **preparation**, graph explicit |
@@ -133,13 +133,13 @@ T-03: (a). B.1 remains preparation until approval.
 
 ## Open questions for Julia
 
-Q1 answered: private repo. Others block their phase:
+Q1, Q2a and Q4 answered; the rest block their phase:
 
-- **Q2 (B):** approve labels in batches of 20 (§1); obtain 100 real shipment-bound
-  support requests. B.2/B.3/B.5 stay blocked without them. Otherwise, all
-  published resolution numbers must identify synthetic instances.
-- **Q3 (phase C):** heavy runs on Colab or the iMac. **Q4 (phase E):** publish
-  as `RAG_new` or rename.
+- **Q2 (B):** label approval answered 2026-09-25 («Одобряю», all five batches). Open (Q2b):
+  40 double-annotated calibration routes and 100 real shipment-bound support requests;
+  B.2/B.3/B.5 stay blocked without them, and resolution numbers stay synthetic.
+- **Q3 (phase C):** heavy runs on Colab or the iMac. **Q4 (phase E)** answered 2026-09-25:
+  «Под раг ассистент»: publish under the RAG assistant name; confirm the target at E.
 
 ## Links
 

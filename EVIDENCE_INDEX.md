@@ -10,8 +10,8 @@ on this list.
   works; proves nothing about the domain.
 - `agent_labelled` — cases the agent labelled and no human has approved
   (ADR 0008's fallback for phase B). It is a proposal, not evidence.
-- `real_labelled` — cases labelled from real air-cargo data by a human.
-  **Nothing carries this class yet.** Phase B is the work of earning it.
+- `real_labelled` — cases with labels over real air-cargo documents
+  approved by a human; 100 carry this class since 2026-09-25 (T-54).
 - `measured` — a number produced by a run that actually happened, with
   provenance (corpus SHA + code SHA + config).
 
@@ -191,6 +191,19 @@ The provenance is narrower than the audit's shorthand as well: the 201 source
 documents are real, the 100 questions over them were written by an agent
 (`325d63c`, `6b7417d`, `32e841f`). An approval makes the **labelling** real,
 not the cases — the manifest says so in `case_source`.
+
+## B.1 approval (2026-09-25) — the labels become real
+
+| Slice | Evidence class | Evidence |
+|---|---|---|
+| T-54 label approvals in a sidecar pinned to the dataset; Julia approved batches 1–5 | `real_labelled` (100 labels; cases agent-authored) | [spec](docs/specs/aircargo-label-approval.md) · `tests/test_aircargo_label_approvals.py` · `evaluation/curated_cases_aircargo.approvals.json` · `evaluation/curated_cases_aircargo.manifest.json` |
+
+Rule (b): `real_labelled` goes from 0 to 100 at `73b13b9`. The dataset stays
+byte-identical, so every published measurement that pins it still replays. The
+labelling is real. The cases are still agent-authored over real documents, and
+none names a shipment, so B.2, B.3 and B.5 stay blocked on data. Reports published
+before `73b13b9` describe their labels as `agent_labelled` (0 approved). That was
+true when they ran.
 
 ## A.6 (2026-08-27) — admission scored, and what the score says
 

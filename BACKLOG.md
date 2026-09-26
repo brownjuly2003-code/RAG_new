@@ -9,16 +9,21 @@ conditions, read [`ROADMAP.md`](ROADMAP.md). The active delivery plan is
 
 ## Current queue
 
-- Phase B remains blocked on real shipment-bound support data and owner label
-  approval. Do not manufacture more fixture cases to make the gate pass.
+- Phase B remains blocked on real shipment-bound support data and the 40
+  double-annotated calibration routes; the 100 labels were approved 2026-09-25.
+  Do not manufacture more fixture cases to make the gate pass.
 - Phase C benchmark execution and resume instructions belong in
   `CURRENT_STATE.md`; do not launch a duplicate run from this file.
-- P2: independent, blinded per-document relevance judgment beside the frozen
-  official ruler ([P1 plan](docs/specs/p1-adaptive-k-plan.md), § Next item 3).
-  Julia's data-governance call chooses the judge; P2 waits for that decision.
+- P2: blinded per-document relevance judgment beside the frozen official ruler,
+  pre-registered 2026-09-25 ([plan](docs/specs/p2-blinded-judge-plan.md),
+  [capability](docs/specs/blinded-relevance-judge.md)). Judges (Julia, 2026-09-25):
+  Sonnet 5 via GraceKelly, which needs a Perplexity login in its Chrome profile;
+  Mistral, whose keys get a zero limit even from a Canadian exit (owner checks the
+  account); GLM 5.3 xhigh after 2026-09-28. Next: the runner, then runs as the
+  judges become reachable.
   P1 and P1b are both `NO_SHIP` ([P1b capsule](docs/evidence/p1b-expanded-cut.md)):
   H-relative exploratory verdicts on 100 agent-authored `agent_labelled` cases
-  (0 approved); neither changed product behaviour.
+  (0 approved at the time); neither changed product behaviour.
 - Re-ingest any Chroma collection built before `534612e`: it keeps its
   unpersisted write-ahead-log tail until it is rebuilt
   ([rerun after the fix](docs/evidence/chroma-restart-stability-after-fix.md)).

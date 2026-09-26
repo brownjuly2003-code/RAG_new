@@ -56,9 +56,9 @@ the 100 agent-authored-over-real-documents cases, still `agent_labelled`
 and 0 approved, admission recall is still 0.0000 — the corpus contains no
 case this journey should admit.
 **B.2, B.3 and B.5 are blocked on data, not on work** — the brief's own
-NO-GO check (§15) is what fired. The labels themselves stay `agent_labelled`
-until a batch of 20 is approved (Q2); ADR 0008 decided that fallback in
-advance and the code enforces it.
+NO-GO check (§15) is what fired. On 2026-09-25 Julia approved all five label
+batches (T-54, `73b13b9`), so the labels are `real_labelled`; the cases stay
+agent-authored over real documents, so B.2, B.3 and B.5 stay blocked on data.
 
 **Phase C.1 now has two published generator benchmarks.** Qwen 2.5 7B
 completed 3 × 100 cases on the Mac with zero failures at LLM faithfulness
@@ -166,9 +166,11 @@ H-relative exploratory verdict on 100 agent-authored `agent_labelled` cases
 delta +0.0207, CI95 [0.0104, 0.0327]; one FULL→MISS fact loss
 (`aircargo-customs-broker-escalation`); held-out `p1_cv+exp` precision 0.6062.
 **NO_SHIP**: no measured arm reaches the 0.63 gate. P1b is an offline evaluator;
-product behaviour is unchanged. Next: P2, whose judge is Julia's data-governance
-call. Alternative rerankers are a model swap and stay on the stop-list below
-until Julia decides otherwise.
+product behaviour is unchanged. Next: P2, pre-registered 2026-09-25
+([plan](docs/specs/p2-blinded-judge-plan.md)). Julia chose its judges the same
+day: Sonnet 5 through GraceKelly with thinking, GLM 5.3 at xhigh and Mistral,
+each run when it is reachable. Alternative rerankers are a model swap and stay
+on the stop-list below until Julia decides otherwise.
 
 Both inherited CI failures ([ADR 0008](docs/adr/0008-inherited-ci-red-disposition.md))
 are closed. On `6cc810d` (T-17, pushed) both workflows that run on
@@ -194,11 +196,11 @@ so this is two of five. The chromadb CVE ignores were reviewed on
 |---|---|---|
 | **0** | Freeze, publish, truth about gates | root ≤ 8 md, remote exists, CI status known, pricing/README/eval-gate claims true |
 | **A** | Wire the shipment-status shadow into `/api/ask` | rule (a): E2E test on real endpoint behaviour + evidence bundle + replay receipt |
-| **B** | 100 real labelled air-cargo cases | rule (b): corpus v1.0 at `evidence_class: real_labelled`, ≥40 double-annotated calibration routes. B.1 done (`agent_labelled`); B.2/B.3/B.5 blocked on data, now for three reasons rather than one |
+| **B** | 100 real labelled air-cargo cases | rule (b): corpus v1.0 at `evidence_class: real_labelled`, ≥40 double-annotated calibration routes. B.1 done (`real_labelled` since the 2026-09-25 approval); B.2/B.3/B.5 blocked on data, now for three reasons rather than one |
 | **C** | Quality leverage: Qwen3 benchmark, NLI second judge, claim-level compilation | rule (c): faithfulness ≥ 0.90 and precision ≥ 0.63 over 3 runs with a CI, **or** a NO-SHIP report with a cause |
 | **GR** | Graph retrieval: structure graph (0 LLM calls) → entity graph → A/B → wired behind flags. Unfrozen 2026-09-06; **required** under the plan the owner adopted on 2026-09-10 — the only stream that can move the precision gate (0.5067 → ≥ 0.63), which is computed over cached contexts (plan §2); GR-1a's cheap arm gave 0.5216, no better than plain top-4's 0.5214 ([capsule](docs/evidence/gr1a-section-coherence.md)) | rule (c): published context precision / multi-hop coverage with provenance per step; rule (a): graph lane behind `RAG_GRAPH_RETRIEVAL` with an E2E test; GR-3 measured 2026-09-18/19 — NO-SHIP-to-default, default stays `off` ([capsule](docs/evidence/gr3-graph-lane-ab.md)) |
 | **D** | pgvector spike, ADR 0007 — D.1–D.5 measured; accepted 2026-09-25: retain the current retrieval backend (a vector-DB swap stays on the stop-list) | a table of numbers in the ADR; no migration without it |
-| **E** | Public artefact: README-first, 3-minute demo, `resolution-contracts` sub-package | repo public, CI green, numbers in README |
+| **E** | Public artefact: README-first, 3-minute demo, `resolution-contracts` sub-package; name (Q4, Julia 2026-09-25): «Под раг ассистент», with the target confirmed at the start of E | repo public, CI green, numbers in README |
 
 Heavy runs (models, full suite, Docker) go to the Mac — never the Windows
 laptop. Do not install or launch WSL, Docker or VMs on Windows (owner direction,
