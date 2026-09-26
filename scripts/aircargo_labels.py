@@ -1,17 +1,17 @@
 """Review, approve and pin the journey labels on the air-cargo cases.
 
 Phase B labels 100 cases in batches of 20 (plan Q2): the agent proposes, the
-domain-owner proxy approves. This script is the only supported way to record
-an approval, so the dataset, the manifest digest and the ``real_labelled``
-count can never drift apart -- hand-editing twenty lines is exactly how they
-would.
+domain-owner proxy approves. Approvals live in a sidecar pinned to the dataset;
+the dataset is never rewritten. The manifest pins both files and their merged
+``real_labelled`` count.
 
     python scripts/aircargo_labels.py report --batch 1     # what to review
     python scripts/aircargo_labels.py approve --batch 1 --approver julia
     python scripts/aircargo_labels.py verify               # gate
 
 ``verify`` is the gate: it fails when a case has no label, when a label
-contradicts itself, or when the manifest no longer describes the dataset.
+contradicts itself, or when the manifest no longer describes the dataset and
+the sidecar.
 """
 
 from __future__ import annotations
@@ -19,6 +19,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+from datetime import date
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
@@ -26,9 +27,15 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 from evaluation.aircargo_labels import (  # noqa: E402
+    APPROVALS_SCHEMA_VERSION,
     BATCH_SIZE,
+    ApprovalSidecar,
+    BatchApproval,
     LabelledCase,
+    apply_approvals,
     build_manifest,
+    dataset_digest,
+    load_approval_sidecar,
     load_labelled_cases,
     summarise,
     verify_manifest,
@@ -36,7 +43,9 @@ from evaluation.aircargo_labels import (  # noqa: E402
 
 DATASET_PATH = PROJECT_ROOT / "evaluation" / "curated_cases_aircargo.jsonl"
 MANIFEST_PATH = PROJECT_ROOT / "evaluation" / "curated_cases_aircargo.manifest.json"
+APPROVALS_PATH = PROJECT_ROOT / "evaluation" / "curated_cases_aircargo.approvals.json"
 DATASET_NAME = "evaluation/curated_cases_aircargo.jsonl"
+APPROVALS_NAME = "evaluation/curated_cases_aircargo.approvals.json"
 
 CASE_SOURCE = "agent_authored_over_real_documents"
 CASE_SOURCE_NOTE = (
@@ -48,7 +57,7 @@ CASE_SOURCE_NOTE = (
 
 
 def _load() -> tuple[LabelledCase, ...]:
-    return load_labelled_cases(DATASET_PATH)
+    return load_labelled_cases(DATASET_PATH, approvals_path=APPROVALS_PATH)
 
 
 def _write_manifest(cases: tuple[LabelledCase, ...]) -> dict[str, object]:
@@ -58,6 +67,8 @@ def _write_manifest(cases: tuple[LabelledCase, ...]) -> dict[str, object]:
         dataset=DATASET_NAME,
         case_source=CASE_SOURCE,
         case_source_note=CASE_SOURCE_NOTE,
+        approvals_path=APPROVALS_PATH,
+        approvals_name=APPROVALS_NAME,
     )
     MANIFEST_PATH.write_text(
         json.dumps(manifest, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
@@ -67,31 +78,19 @@ def _write_manifest(cases: tuple[LabelledCase, ...]) -> dict[str, object]:
     return manifest
 
 
-def _rewrite_dataset(approvals: dict[str, str]) -> None:
-    """Rewrite the dataset with ``approved_by`` set on the named cases."""
-    lines: list[str] = []
-    for raw_line in DATASET_PATH.read_text(encoding="utf-8").splitlines():
-        line = raw_line.strip()
-        if not line:
-            continue
-        payload = json.loads(line)
-        approver = approvals.get(payload["case_id"])
-        if approver is not None:
-            label = dict(payload["label"])
-            label["approved_by"] = approver
-            label["evidence_class"] = "real_labelled"
-            payload["label"] = label
-        lines.append(json.dumps(payload, ensure_ascii=False))
-    DATASET_PATH.write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
-
-
 def command_verify(_: argparse.Namespace) -> int:
     cases = _load()
     if not MANIFEST_PATH.exists():
         print(f"missing manifest: {MANIFEST_PATH}", file=sys.stderr)
         return 1
     manifest = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
-    problems = verify_manifest(manifest, DATASET_PATH, cases)
+    problems = verify_manifest(
+        manifest,
+        DATASET_PATH,
+        cases,
+        approvals_path=APPROVALS_PATH,
+        approvals_name=APPROVALS_NAME,
+    )
     if problems:
         for problem in problems:
             print(problem, file=sys.stderr)
@@ -130,6 +129,7 @@ def command_report(args: argparse.Namespace) -> int:
 
 
 def command_approve(args: argparse.Namespace) -> int:
+    dataset_before = DATASET_PATH.read_bytes()
     cases = _load()
     batch = [case for case in cases if case.label.batch == args.batch]
     if not batch:
@@ -143,9 +143,34 @@ def command_approve(args: argparse.Namespace) -> int:
             file=sys.stderr,
         )
         return 1
-    _rewrite_dataset({case.case_id: args.approver for case in batch})
+    approval = BatchApproval(
+        batch=args.batch,
+        approver=args.approver,
+        approved_at=args.approved_at,
+        case_ids=tuple(case.case_id for case in batch),
+        note=args.note,
+    )
+    if APPROVALS_PATH.exists():
+        existing = load_approval_sidecar(APPROVALS_PATH)
+        approvals = tuple(item for item in existing.approvals if item.batch != args.batch)
+    else:
+        approvals = ()
+    sidecar = ApprovalSidecar(
+        schema_version=APPROVALS_SCHEMA_VERSION,
+        dataset=DATASET_NAME,
+        dataset_sha256=dataset_digest(DATASET_PATH),
+        approvals=(*approvals, approval),
+    )
+    apply_approvals(load_labelled_cases(DATASET_PATH), sidecar, dataset_path=DATASET_PATH)
+    APPROVALS_PATH.write_text(
+        json.dumps(sidecar.as_dict(), ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+        newline="\n",
+    )
     refreshed = _load()
     _write_manifest(refreshed)
+    if DATASET_PATH.read_bytes() != dataset_before:
+        raise RuntimeError("dataset bytes changed while recording the approval")
     summary = summarise(refreshed)
     print(
         f"batch {args.batch}: {len(batch)} cases approved by {args.approver}; "
@@ -167,6 +192,8 @@ def main(argv: list[str] | None = None) -> int:
     approve = subparsers.add_parser("approve", help="record a human approval for one batch")
     approve.add_argument("--batch", type=int, required=True)
     approve.add_argument("--approver", required=True, help="who approved, e.g. julia")
+    approve.add_argument("--approved-at", type=date.fromisoformat, default=date.today())
+    approve.add_argument("--note", default="", help="review note of at most 512 characters")
     approve.add_argument("--reapprove", action="store_true", help="overwrite existing approvals")
 
     args = parser.parse_args(argv)

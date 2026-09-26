@@ -37,7 +37,7 @@ import hashlib
 import json
 from collections import Counter
 from collections.abc import Iterable, Mapping, Sequence
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from datetime import date
 from enum import StrEnum
 from pathlib import Path
@@ -46,7 +46,9 @@ from typing import Any
 from resolution.contracts import TerminalOutcome
 
 LABEL_SCHEMA_VERSION = "aircargo-case-labels/v1.0"
-MANIFEST_SCHEMA_VERSION = "aircargo-case-label-manifest/v1.0"
+MANIFEST_SCHEMA_VERSION = "aircargo-case-label-manifest/v1.1"
+APPROVALS_SCHEMA_VERSION = "aircargo-label-approvals/v1.0"
+DATASET_NAME = "evaluation/curated_cases_aircargo.jsonl"
 
 #: Review batch size agreed with the domain-owner proxy (plan Q2).
 BATCH_SIZE = 20
@@ -239,6 +241,132 @@ _REQUIRED_LABEL_FIELDS = frozenset(
 
 
 @dataclass(frozen=True, slots=True)
+class BatchApproval:
+    """A human approval of every case in one review batch."""
+
+    batch: int
+    approver: str
+    approved_at: date
+    case_ids: tuple[str, ...]
+    note: str = ""
+
+    def __post_init__(self) -> None:
+        if not isinstance(self.batch, int) or isinstance(self.batch, bool) or self.batch < 1:
+            raise ValueError("batch must be a positive integer")
+        _require_name(self.approver, "approver")
+        if self.approver.casefold().startswith("agent"):
+            raise ValueError("approver cannot start with 'agent'")
+        if type(self.approved_at) is not date:
+            raise ValueError("approved_at must be a date")
+        if not isinstance(self.case_ids, tuple) or not self.case_ids:
+            raise ValueError("case_ids must be a non-empty tuple")
+        for case_id in self.case_ids:
+            _require_name(case_id, "case_id")
+        _require_note(self.note, "note")
+
+    @classmethod
+    def from_mapping(cls, payload: Mapping[str, Any]) -> BatchApproval:
+        if not isinstance(payload, Mapping):
+            raise ValueError("approval must be a JSON object")
+        unknown = sorted(set(payload) - _APPROVAL_FIELDS)
+        if unknown:
+            raise ValueError(f"unknown approval fields: {unknown}")
+        missing = sorted(_REQUIRED_APPROVAL_FIELDS - set(payload))
+        if missing:
+            raise ValueError(f"missing approval fields: {missing}")
+        raw_date = payload["approved_at"]
+        if not isinstance(raw_date, str):
+            raise ValueError("approved_at must be an ISO date string")
+        try:
+            approved_at = date.fromisoformat(raw_date)
+        except ValueError as error:
+            raise ValueError(f"approved_at is not an ISO date: {raw_date!r}") from error
+        raw_ids = payload["case_ids"]
+        if not isinstance(raw_ids, list):
+            raise ValueError("case_ids must be a JSON array")
+        return cls(
+            batch=payload["batch"],
+            approver=payload["approver"],
+            approved_at=approved_at,
+            case_ids=tuple(raw_ids),
+            note=payload.get("note", ""),
+        )
+
+    def as_dict(self) -> dict[str, Any]:
+        return {
+            "batch": self.batch,
+            "approver": self.approver,
+            "approved_at": self.approved_at.isoformat(),
+            "case_ids": list(self.case_ids),
+            "note": self.note,
+        }
+
+
+_APPROVAL_FIELDS = frozenset({"batch", "approver", "approved_at", "case_ids", "note"})
+_REQUIRED_APPROVAL_FIELDS = _APPROVAL_FIELDS - {"note"}
+
+
+@dataclass(frozen=True, slots=True)
+class ApprovalSidecar:
+    """Approvals pinned to one immutable dataset snapshot."""
+
+    schema_version: str
+    dataset: str
+    dataset_sha256: str
+    approvals: tuple[BatchApproval, ...]
+
+    def __post_init__(self) -> None:
+        if self.schema_version != APPROVALS_SCHEMA_VERSION:
+            raise ValueError(f"schema_version must be {APPROVALS_SCHEMA_VERSION!r}")
+        if self.dataset != DATASET_NAME:
+            raise ValueError(f"dataset must be {DATASET_NAME!r}")
+        if (
+            not isinstance(self.dataset_sha256, str)
+            or len(self.dataset_sha256) != 64
+            or any(character not in "0123456789abcdef" for character in self.dataset_sha256)
+        ):
+            raise ValueError("dataset_sha256 must be a lowercase SHA-256 digest")
+        if not isinstance(self.approvals, tuple) or any(
+            not isinstance(approval, BatchApproval) for approval in self.approvals
+        ):
+            raise ValueError("approvals must be a tuple of batch approvals")
+
+    @classmethod
+    def from_mapping(cls, payload: Mapping[str, Any]) -> ApprovalSidecar:
+        if not isinstance(payload, Mapping):
+            raise ValueError("sidecar must be a JSON object")
+        unknown = sorted(set(payload) - _SIDECAR_FIELDS)
+        if unknown:
+            raise ValueError(f"unknown sidecar fields: {unknown}")
+        missing = sorted(_SIDECAR_FIELDS - set(payload))
+        if missing:
+            raise ValueError(f"missing sidecar fields: {missing}")
+        raw_approvals = payload["approvals"]
+        if not isinstance(raw_approvals, list):
+            raise ValueError("approvals must be a JSON array")
+        return cls(
+            schema_version=payload["schema_version"],
+            dataset=payload["dataset"],
+            dataset_sha256=payload["dataset_sha256"],
+            approvals=tuple(BatchApproval.from_mapping(item) for item in raw_approvals),
+        )
+
+    def as_dict(self) -> dict[str, Any]:
+        return {
+            "schema_version": self.schema_version,
+            "dataset": self.dataset,
+            "dataset_sha256": self.dataset_sha256,
+            "approvals": [
+                approval.as_dict()
+                for approval in sorted(self.approvals, key=lambda item: item.batch)
+            ],
+        }
+
+
+_SIDECAR_FIELDS = frozenset({"schema_version", "dataset", "dataset_sha256", "approvals"})
+
+
+@dataclass(frozen=True, slots=True)
 class LabelledCase:
     case_id: str
     query: str
@@ -353,9 +481,67 @@ def load_labelled_cases_from_bytes(
     return tuple(cases)
 
 
-def load_labelled_cases(path: Path) -> tuple[LabelledCase, ...]:
-    """Read the dataset and require every case to carry a label."""
-    return load_labelled_cases_from_bytes(path.read_bytes(), source_name=path.name)
+def load_approval_sidecar(path: Path) -> ApprovalSidecar:
+    """Parse one approval sidecar without changing the dataset."""
+    return ApprovalSidecar.from_mapping(json.loads(path.read_text(encoding="utf-8")))
+
+
+def apply_approvals(
+    cases: Sequence[LabelledCase], sidecar: ApprovalSidecar, *, dataset_path: Path
+) -> tuple[LabelledCase, ...]:
+    """Validate and merge complete batch approvals onto dataset labels."""
+    actual_digest = dataset_digest(dataset_path)
+    if sidecar.dataset_sha256 != actual_digest:
+        raise ValueError(
+            "approval sidecar dataset digest mismatch: "
+            f"pinned {sidecar.dataset_sha256}, actual {actual_digest}"
+        )
+    by_id = {case.case_id: case for case in cases}
+    batch_ids: dict[int, set[str]] = {}
+    for case in cases:
+        batch_ids.setdefault(case.label.batch, set()).add(case.case_id)
+    approved_by_id: dict[str, str] = {}
+    seen_batches: set[int] = set()
+    for approval in sidecar.approvals:
+        batch = approval.batch
+        if batch in seen_batches:
+            raise ValueError(f"batch {batch} approved twice")
+        seen_batches.add(batch)
+        expected_ids = batch_ids.get(batch)
+        if expected_ids is None:
+            raise ValueError(f"batch {batch} is not in the dataset")
+        for case_id in approval.case_ids:
+            if case_id in approved_by_id:
+                raise ValueError(f"case {case_id!r} approved twice in batch {batch}")
+            approved_case = by_id.get(case_id)
+            if approved_case is None:
+                raise ValueError(f"batch {batch} names case {case_id!r} not in the dataset")
+            if approved_case.label.batch != batch:
+                raise ValueError(
+                    f"batch {batch} names case {case_id!r} from batch {approved_case.label.batch}"
+                )
+            if approved_case.label.approved_by is not None:
+                raise ValueError(f"case {case_id!r} already carries approved_by in the dataset")
+            approved_by_id[case_id] = approval.approver
+        missing = expected_ids - set(approval.case_ids)
+        if missing:
+            raise ValueError(f"batch {batch} approval does not cover {sorted(missing)}")
+    return tuple(
+        replace(case, label=replace(case.label, approved_by=approved_by_id[case.case_id]))
+        if case.case_id in approved_by_id
+        else case
+        for case in cases
+    )
+
+
+def load_labelled_cases(
+    path: Path, *, approvals_path: Path | None = None
+) -> tuple[LabelledCase, ...]:
+    """Read labels, merging an existing approval sidecar when requested."""
+    cases = load_labelled_cases_from_bytes(path.read_bytes(), source_name=path.name)
+    if approvals_path is None or not approvals_path.exists():
+        return cases
+    return apply_approvals(cases, load_approval_sidecar(approvals_path), dataset_path=path)
 
 
 def dataset_digest_bytes(dataset_bytes: bytes) -> str:
@@ -380,6 +566,8 @@ def build_manifest(
     case_source: str,
     case_source_note: str,
     batch_size: int = BATCH_SIZE,
+    approvals_path: Path | None = None,
+    approvals_name: str | None = None,
 ) -> dict[str, Any]:
     summary = summarise(cases)
     corpus_class = (
@@ -392,6 +580,14 @@ def build_manifest(
         "label_schema_version": LABEL_SCHEMA_VERSION,
         "dataset": dataset,
         "dataset_sha256": dataset_digest(path),
+        "approvals": (
+            {
+                "file": approvals_name or approvals_path.name,
+                "sha256": dataset_digest(approvals_path),
+            }
+            if approvals_path is not None and approvals_path.exists()
+            else None
+        ),
         "batch_size": batch_size,
         "case_source": case_source,
         "case_source_note": case_source_note,
@@ -404,8 +600,11 @@ def verify_manifest(
     manifest: Mapping[str, Any],
     path: Path,
     cases: Sequence[LabelledCase],
+    *,
+    approvals_path: Path | None = None,
+    approvals_name: str | None = None,
 ) -> tuple[str, ...]:
-    """Return every disagreement between the manifest and the dataset."""
+    """Return every disagreement with the dataset and approval sidecar."""
     expected = build_manifest(
         path,
         cases,
@@ -413,19 +612,41 @@ def verify_manifest(
         case_source=str(manifest.get("case_source", "")),
         case_source_note=str(manifest.get("case_source_note", "")),
         batch_size=int(manifest.get("batch_size", BATCH_SIZE)),
+        approvals_path=approvals_path,
+        approvals_name=approvals_name,
     )
+    legacy_without_sidecar = (
+        manifest.get("schema_version") == "aircargo-case-label-manifest/v1.0"
+        and "approvals" not in manifest
+        and expected["approvals"] is None
+    )
+    if legacy_without_sidecar:
+        expected["schema_version"] = "aircargo-case-label-manifest/v1.0"
+        del expected["approvals"]
     problems: list[str] = []
     for key, value in expected.items():
         stored = manifest.get(key)
         if stored != value:
-            problems.append(f"{key}: manifest has {stored!r}, dataset says {value!r}")
+            if key == "approvals" and isinstance(stored, Mapping) and isinstance(value, Mapping):
+                for field in ("file", "sha256"):
+                    if stored.get(field) != value[field]:
+                        problems.append(
+                            f"approvals.{field}: manifest has {stored.get(field)!r}, "
+                            f"sidecar says {value[field]!r}"
+                        )
+            else:
+                problems.append(f"{key}: manifest has {stored!r}, dataset says {value!r}")
     return tuple(problems)
 
 
 __all__ = [
+    "APPROVALS_SCHEMA_VERSION",
     "BATCH_SIZE",
+    "DATASET_NAME",
     "LABEL_SCHEMA_VERSION",
     "MANIFEST_SCHEMA_VERSION",
+    "ApprovalSidecar",
+    "BatchApproval",
     "CaseLabel",
     "EvidenceClass",
     "Journey",
@@ -433,9 +654,11 @@ __all__ = [
     "LabelSummary",
     "LabelledCase",
     "RootCause",
+    "apply_approvals",
     "build_manifest",
     "dataset_digest",
     "dataset_digest_bytes",
+    "load_approval_sidecar",
     "load_labelled_cases",
     "load_labelled_cases_from_bytes",
     "summarise",

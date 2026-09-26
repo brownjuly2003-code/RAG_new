@@ -32,6 +32,8 @@ from resolution.contracts import TerminalOutcome
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 DATASET = PROJECT_ROOT / "evaluation" / "curated_cases_aircargo.jsonl"
 MANIFEST = PROJECT_ROOT / "evaluation" / "curated_cases_aircargo.manifest.json"
+APPROVALS = PROJECT_ROOT / "evaluation" / "curated_cases_aircargo.approvals.json"
+APPROVALS_NAME = "evaluation/curated_cases_aircargo.approvals.json"
 
 
 def _label(**overrides: object) -> dict[str, object]:
@@ -70,28 +72,37 @@ def test_batches_are_the_size_the_reviewer_agreed_to() -> None:
 
 
 def test_manifest_still_describes_the_dataset() -> None:
-    cases = load_labelled_cases(DATASET)
+    cases = load_labelled_cases(DATASET, approvals_path=APPROVALS)
     manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
 
-    assert verify_manifest(manifest, DATASET, cases) == ()
+    assert (
+        verify_manifest(
+            manifest, DATASET, cases, approvals_path=APPROVALS, approvals_name=APPROVALS_NAME
+        )
+        == ()
+    )
     assert manifest["dataset_sha256"] == dataset_digest(DATASET)
 
 
-def test_the_phase_b_gate_is_not_met_by_labelling_alone() -> None:
-    """Nothing here may read as 100 real labelled cases (ADR 0008 fallback).
-
-    Until the domain-owner proxy approves a batch, every label is the agent's
-    proposal. The corpus class follows the weakest label, not the intent.
-    """
-    cases = load_labelled_cases(DATASET)
+def test_the_corpus_class_follows_the_weakest_label() -> None:
+    """The corpus class follows the weakest label (ADR 0008)."""
+    cases = load_labelled_cases(DATASET, approvals_path=APPROVALS)
     manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
     summary = summarise(cases)
 
+    assert (
+        verify_manifest(
+            manifest, DATASET, cases, approvals_path=APPROVALS, approvals_name=APPROVALS_NAME
+        )
+        == ()
+    )
     approved = sum(1 for case in cases if case.label.approved_by is not None)
     assert summary.real_labelled_count == approved
     assert summary.agent_labelled_count == len(cases) - approved
     if approved < len(cases):
         assert manifest["evidence_class"] == EvidenceClass.AGENT_LABELLED.value
+    else:
+        assert manifest["evidence_class"] == EvidenceClass.REAL_LABELLED.value
 
 
 def test_no_case_binds_a_shipment_without_saying_why_the_kernel_stops() -> None:
