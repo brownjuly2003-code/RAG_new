@@ -19,8 +19,9 @@ conditions, read [`ROADMAP.md`](ROADMAP.md). The active delivery plan is
   [capability](docs/specs/blinded-relevance-judge.md)). Judges (Julia, 2026-09-25):
   Sonnet 5 via GraceKelly, which needs a Perplexity login in its Chrome profile;
   Mistral, whose keys get a zero limit even from a Canadian exit (owner checks the
-  account); GLM 5.3 xhigh after 2026-09-28. Next: the runner, then runs as the
-  judges become reachable.
+  account); GLM 5.3 xhigh after 2026-09-28. The runner is implemented and
+  locally verified (`5a7ba7e`); no corpus judge has run and no P2 report exists.
+  Next: run each judge when its route becomes reachable.
   P1 and P1b are both `NO_SHIP` ([P1b capsule](docs/evidence/p1b-expanded-cut.md)):
   H-relative exploratory verdicts on 100 agent-authored `agent_labelled` cases
   (0 approved at the time); neither changed product behaviour.
