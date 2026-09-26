@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+import io
 import json
 import random
 from pathlib import Path
@@ -356,7 +357,8 @@ def test_report_without_grades_writes_nothing(tmp_path: Path) -> None:
 def test_sonnet_route_payload_and_failure_code(monkeypatch: pytest.MonkeyPatch) -> None:
     sent: list[tuple[str, dict, dict]] = []
 
-    def fake_post(url: str, payload: dict, headers: dict) -> dict:
+    def fake_post(url: str, payload: dict, headers: dict, *, timeout: float) -> dict:
+        assert timeout == 300.0
         sent.append((url, payload, headers))
         return {
             "output_text": _reply().text,
@@ -378,10 +380,27 @@ def test_sonnet_route_payload_and_failure_code(monkeypatch: pytest.MonkeyPatch) 
         },
         {},
     )
-    monkeypatch.setattr(clients, "_post_json", lambda *_: {"failure_code": "model_auth_required"})
+    monkeypatch.setattr(clients, "_post_json", lambda *_, **__: {"failure_code": "model_auth_required"})
     with pytest.raises(JudgeUnavailable) as error:
         clients.SonnetClient().grade("blind")
     assert error.value.code == "model_auth_required"
+
+
+def test_sonnet_waits_for_browser_response(monkeypatch: pytest.MonkeyPatch) -> None:
+    timeouts: list[float] = []
+
+    def fake_open(_request: object, *, timeout: float = 60.0) -> io.BytesIO:
+        timeouts.append(timeout)
+        return io.BytesIO(json.dumps({
+            "output_text": _reply().text,
+            "model": {"id": "claude-sonnet-5"},
+        }).encode("utf-8"))
+
+    monkeypatch.setattr(clients, "_open", fake_open)
+    reply = clients.SonnetClient().grade("blind")
+
+    assert reply.model == "claude-sonnet-5"
+    assert timeouts == [300.0]
 
 
 def test_mistral_route_reads_first_key_at_call_time(

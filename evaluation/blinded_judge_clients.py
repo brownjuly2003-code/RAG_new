@@ -113,13 +113,15 @@ def _open(request: urllib.request.Request, *, timeout: float = 60.0) -> Any:
         raise TransportError() from None
 
 
-def _post_json(url: str, payload: dict[str, Any], headers: dict[str, str]) -> dict[str, Any]:
+def _post_json(
+    url: str, payload: dict[str, Any], headers: dict[str, str], *, timeout: float = 60.0
+) -> dict[str, Any]:
     request = urllib.request.Request(
         url,
         data=json.dumps(payload, ensure_ascii=False).encode("utf-8"),
         headers={"Content-Type": "application/json", **headers},
     )
-    with _open(request) as response:
+    with _open(request, timeout=timeout) as response:
         try:
             data = json.load(response)
         except (UnicodeError, ValueError):
@@ -153,6 +155,7 @@ class SonnetClient:
             self.base + "/api/v1/orchestrate",
             {"prompt": request_text, **self.parameters},
             {},
+            timeout=300.0,
         )
         if data.get("failure_code"):
             raise JudgeUnavailable(_safe_code(data["failure_code"]), "Judge is unavailable")
