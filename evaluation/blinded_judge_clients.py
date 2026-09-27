@@ -133,7 +133,10 @@ def _post_json(
     if isinstance(detail, dict):
         failure = failure or detail.get("code") or detail.get("type")
     if failure:
-        raise JudgeUnavailable(_safe_code(failure), "Judge rejected the request")
+        code = _safe_code(failure)
+        if code == "remote_failure":
+            raise TransportError()
+        raise JudgeUnavailable(code, "Judge rejected the request")
     return data
 
 

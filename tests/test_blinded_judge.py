@@ -403,6 +403,17 @@ def test_sonnet_waits_for_browser_response(monkeypatch: pytest.MonkeyPatch) -> N
     assert timeouts == [300.0]
 
 
+def test_sonnet_unknown_browser_failure_is_retryable(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(
+        clients,
+        "_open",
+        lambda *_args, **_kwargs: io.BytesIO(b'{"failure_code":"unknown_error"}'),
+    )
+
+    with pytest.raises(TransportError):
+        clients.SonnetClient().grade("blind")
+
+
 def test_mistral_route_reads_first_key_at_call_time(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
