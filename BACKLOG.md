@@ -14,14 +14,13 @@ conditions, read [`ROADMAP.md`](ROADMAP.md). The active delivery plan is
   Do not manufacture more fixture cases to make the gate pass.
 - Phase C benchmark execution and resume instructions belong in
   `CURRENT_STATE.md`; do not launch a duplicate run from this file.
-- P2: blinded per-document relevance judgment beside the frozen official ruler,
-  pre-registered 2026-09-25 ([plan](docs/specs/p2-blinded-judge-plan.md),
-  [capability](docs/specs/blinded-relevance-judge.md)). Judges (Julia, 2026-09-25):
-  Sonnet 5 via GraceKelly, which needs a Perplexity login in its Chrome profile;
-  Mistral, whose keys get a zero limit even from a Canadian exit (owner checks the
-  account); GLM 5.3 xhigh after 2026-09-28. The runner is implemented and
-  locally verified (`5a7ba7e`); no corpus judge has run and no P2 report exists.
-  Next: run each judge when its route becomes reachable.
+- P2: the pre-registered [plan](docs/specs/p2-blinded-judge-plan.md) now has a
+  complete local Sonnet 5 thinking run: 115/115 cases, zero missing units,
+  provisional `RULER_DOES_NOT_TRACK` (H per-case τ_b 0.1537, CI95
+  [0.0155, 0.2869]). The [handoff](docs/operations/p2-sonnet-handoff.md)
+  explains the result and artifact status. Next: blind human sample, then GLM
+  and Mistral when reachable; validate reliability before any gate decision.
+  The report is untracked and has not entered the evidence index.
   P1 and P1b are both `NO_SHIP` ([P1b capsule](docs/evidence/p1b-expanded-cut.md)):
   H-relative exploratory verdicts on 100 agent-authored `agent_labelled` cases
   (0 approved at the time); neither changed product behaviour.
