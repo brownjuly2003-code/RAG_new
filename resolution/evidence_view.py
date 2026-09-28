@@ -268,6 +268,7 @@ def _journey_view(state: Mapping[str, Any], step_ts: Any) -> dict[str, Any]:
         "observation": _source_evidence(observation, as_of) if observation else None,
         "claims": claims,
         "postconditions": postconditions,
+        "stepwise_checks": dict(_as_mapping(state.get("stepwise_checks"))) or None,
         "escalation_brief": (
             dict(_as_mapping(evidence.get("escalation_brief")))
             if evidence.get("escalation_brief")

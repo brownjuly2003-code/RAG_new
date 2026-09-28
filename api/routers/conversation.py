@@ -120,23 +120,53 @@ def _record_shadow_evidence(result: Any) -> None:
         )
         return
     export = result.evidence_export
+    checks = None
+    try:
+        from evaluation.resolution.stepwise_judge import grade_evidence_export
+        from resolution.composition import load_shipment_contract, load_shipment_response_contract
+
+        contract = (
+            load_shipment_response_contract()
+            if export.contract.version == "0.2.0"
+            else load_shipment_contract()
+        )
+        judged_at = datetime.now(UTC)
+        grade = grade_evidence_export(export, contract=contract, as_of=judged_at)
+        checks = {
+            "method": "contract_rules_only",
+            "as_of": judged_at.isoformat(),
+            "status": grade.status.value,
+            "steps": [
+                {
+                    "name": step.name,
+                    "status": step.status.value,
+                    "reason_codes": list(step.reason_codes),
+                }
+                for step in grade.steps
+            ],
+        }
+    except Exception:
+        logger.warning("shipment-status stepwise grading failed", exc_info=True)
+    state = {
+        "journey": "shipment-status",
+        "outcome": "journey_recorded",
+        "evidence": export.as_dict(),
+        "terminal_state": result.terminal_state.value,
+        "reason_codes": list(result.reason_codes),
+        # The kernel's own case/correlation identity, kept alongside the
+        # legacy trace id rather than instead of it.
+        "case_id": str(export.case_id),
+        "kernel_correlation_id": str(export.correlation_id),
+        # The shadow's own answer, recorded for comparison only. It is
+        # never returned to anyone.
+        "shadow_response_text": result.response_text,
+    }
+    if checks is not None:
+        state["stepwise_checks"] = checks
     log_step(
         trace_id,
         "resolution_shadow",
-        {
-            "journey": "shipment-status",
-            "outcome": "journey_recorded",
-            "evidence": export.as_dict(),
-            "terminal_state": result.terminal_state.value,
-            "reason_codes": list(result.reason_codes),
-            # The kernel's own case/correlation identity, kept alongside the
-            # legacy trace id rather than instead of it.
-            "case_id": str(export.case_id),
-            "kernel_correlation_id": str(export.correlation_id),
-            # The shadow's own answer, recorded for comparison only. It is
-            # never returned to anyone.
-            "shadow_response_text": result.response_text,
-        },
+        state,
     )
 
 

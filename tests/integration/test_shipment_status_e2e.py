@@ -671,6 +671,27 @@ def test_a_real_question_produces_an_evidence_view_an_operator_can_read(
     assert receipt["policy_digest"] == "0" * 64
 
 
+def test_evidence_view_shows_stepwise_checks_from_the_recorded_ask(
+    wired_app,
+    integration_client,
+    integration_headers,
+    _isolated_trace_store,
+) -> None:
+    headers = integration_headers(_POLICY_TENANT, "admin")
+
+    view, _ = _ask_and_open_evidence(wired_app, integration_client, headers)
+
+    (journey,) = view["journeys"]
+    checks = journey["stepwise_checks"]
+    assert checks["method"] == "contract_rules_only"
+    assert checks["status"] == "pass"
+    assert [step["name"] for step in checks["steps"]] == [
+        "contract", "source", "policy", "claims", "terminal"
+    ]
+    assert all(step["status"] == "pass" for step in checks["steps"])
+    assert all(step["reason_codes"] == [] for step in checks["steps"])
+
+
 def test_every_claim_the_run_made_names_the_evidence_under_it(
     wired_app,
     integration_client,

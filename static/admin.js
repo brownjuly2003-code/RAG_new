@@ -215,6 +215,27 @@
     }
     box.appendChild(outcome);
 
+    var checks = journey.stepwise_checks;
+    if (checks) {
+      box.appendChild(el("h3", null, "Step-wise checks"));
+      box.appendChild(el(
+        "p", "muted",
+        "Experimental contract checks on fixture-sourced evidence; disputed claims need NLI or human review."
+      ));
+      box.appendChild(definitionList([
+        ["method", checks.method],
+        ["status", checks.status],
+        ["checked at", checks.as_of]
+      ]));
+      (Array.isArray(checks.steps) ? checks.steps : []).forEach(function (step) {
+        var reasons = Array.isArray(step.reason_codes) ? step.reason_codes : [];
+        box.appendChild(el(
+          "p", "source",
+          step.name + ": " + step.status + (reasons.length ? " (" + reasons.join(", ") + ")" : "")
+        ));
+      });
+    }
+
     box.appendChild(el("h3", null, "Policy decision"));
     if (journey.policy) {
       var policyDetail = journey.policy.detail || {};

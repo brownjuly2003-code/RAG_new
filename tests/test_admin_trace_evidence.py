@@ -227,6 +227,7 @@ def test_the_admin_script_fetches_and_renders_the_evidence() -> None:
     for heading in (
         "Contract",
         "Outcome",
+        "Step-wise checks",
         "Policy decision",
         "Claims and the evidence behind them",
         "Postconditions",
