@@ -10,7 +10,6 @@ import pytest
 from evaluation import blinded_judge as p2
 from scripts import p1_adaptive_k as p1
 
-
 ROOT = Path(__file__).resolve().parent.parent
 REPORT = ROOT / "reports/p2/p2-blinded-judge-glm+sonnet.json"
 SONNET_REPORT = ROOT / "reports/p2/p2-blinded-judge-sonnet.json"
