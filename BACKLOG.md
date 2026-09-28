@@ -14,6 +14,10 @@ conditions, read [`ROADMAP.md`](ROADMAP.md). The active delivery plan is
   Do not manufacture more fixture cases to make the gate pass.
 - Phase C benchmark execution and resume instructions belong in
   `CURRENT_STATE.md`; do not launch a duplicate run from this file.
+- C.2 has a local step-wise judge for shipment evidence and GR-4 section paths.
+  It uses contract rules first and can call the existing NLI scorer only for
+  disputed claims. This is preparation, not a measured slice: the pinned model
+  has not run on this judge, and B.4 still needs Julia's human route grades.
 - P2: the [blinded judgment](docs/evidence/p2-blinded-relevance-judgment.md)
   has complete GLM and Sonnet runs (115/115 cases each). H α is 0.8566;
   primary τ_b is 0.1561, CI95 [0.0197, 0.2880], giving the registered
