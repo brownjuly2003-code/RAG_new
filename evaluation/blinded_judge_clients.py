@@ -242,7 +242,7 @@ class GlmClient:
                         if code in _KNOWN_FAILURES:
                             raise JudgeUnavailable(code, "Judge rejected the request")
                         raise TransportError()
-            except (UnicodeError, ValueError, KeyError, TypeError):
+            except (UnicodeError, ValueError, KeyError, TypeError, OSError):
                 raise TransportError() from None
         if model != "glm-5.3":
             raise JudgeUnavailable("model_mismatch", "GLM returned a different model")

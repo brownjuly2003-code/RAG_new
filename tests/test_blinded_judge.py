@@ -508,6 +508,39 @@ def test_glm_route_sse_model_check_and_token_read_at_call_time(
     assert error.value.code == "model_mismatch"
 
 
+def test_glm_stream_reset_is_retryable(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    settings = tmp_path / "settings.json"
+    settings.write_text(
+        json.dumps(
+            {
+                "env": {
+                    "ANTHROPIC_BASE_URL": "https://api.z.ai/api/anthropic",
+                    "ANTHROPIC_AUTH_TOKEN": "FAKE_SECRET_TOKEN",
+                }
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    class ResetStream:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *_):
+            return False
+
+        def __iter__(self):
+            yield b'data: {"type":"message_start","message":{"model":"glm-5.3"}}\n'
+            raise ConnectionResetError(10054, "remote host closed connection")
+
+    monkeypatch.setattr(clients, "_open", lambda *_args, **_kwargs: ResetStream())
+
+    with pytest.raises(TransportError):
+        clients.GlmClient(settings).grade("blind")
+
+
 def test_http_unavailable_rate_reset_and_secret_safe_error(monkeypatch: pytest.MonkeyPatch) -> None:
     for status in (401, 403):
         with pytest.raises(JudgeUnavailable) as error:
