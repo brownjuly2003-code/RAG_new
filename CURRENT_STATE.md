@@ -1,6 +1,6 @@
 # Current state — RAG_new
 
-2026-09-27 · Plan: [`plan_06_09_26.md`](plan_06_09_26.md)
+2026-09-28 · Plan: [`plan_06_09_26.md`](plan_06_09_26.md)
 (mode B, adopted 2026-09-10) · Audit:
 [`docs/audits/audit_final_23_08_2026.md`](docs/audits/audit_final_23_08_2026.md)
 · Phase C source: `c06bdf5` · owner delegated commits and pushes (§1).
@@ -19,8 +19,8 @@ selections reproduce P1; expanded control and `top_k_3+exp` equal Q1's expanded 
 0.5067 on the phase-C harness without expansion, **NO_SHIP**; label-using oracle for a
 cut that keeps every fact at 0.6505 (not deployable). Both are H-relative exploratory on
 100 agent-authored `agent_labelled` cases (0 approved), offline with no product change.
-P2 local Sonnet 5 thinking: 115/115, `PROVISIONAL_RULER_DOES_NOT_TRACK`.
-[Handoff](docs/operations/p2-sonnet-handoff.md): untracked report, other judges and blind human grades pending; no gate or default change.
+**P2 measured:** [GLM + Sonnet blinded judgment](docs/evidence/p2-blinded-relevance-judgment.md), 115/115 cases each; H α 0.8566, primary τ_b 0.1561 (CI95 [0.0197, 0.2880]): `RULER_DOES_NOT_TRACK`.
+Julia's blind grades are pending; Mistral returned `zero_limit`. No gate or default changed.
 
 ### GR-3 measured — NO-SHIP-to-default
 

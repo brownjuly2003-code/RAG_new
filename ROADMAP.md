@@ -166,11 +166,14 @@ H-relative exploratory verdict on 100 agent-authored `agent_labelled` cases
 delta +0.0207, CI95 [0.0104, 0.0327]; one FULL→MISS fact loss
 (`aircargo-customs-broker-escalation`); held-out `p1_cv+exp` precision 0.6062.
 **NO_SHIP**: no measured arm reaches the 0.63 gate. P1b is an offline evaluator;
-product behaviour is unchanged. Next: P2, pre-registered 2026-09-25
-([plan](docs/specs/p2-blinded-judge-plan.md)). Julia chose its judges the same
-day: Sonnet 5 through GraceKelly with thinking, GLM 5.3 at xhigh and Mistral,
-each run when it is reachable. Alternative rerankers are a model swap and stay
-on the stop-list below until Julia decides otherwise.
+product behaviour is unchanged. P2 was pre-registered 2026-09-25
+([plan](docs/specs/p2-blinded-judge-plan.md)) and is now
+[measured](docs/evidence/p2-blinded-relevance-judgment.md): GLM 5.3 and Sonnet 5
+each graded 115/115 cases. On H, α 0.8566 and per-case τ_b 0.1561 (CI95
+[0.0197, 0.2880]) give `RULER_DOES_NOT_TRACK` under the registered rule.
+Julia's blind grades are pending; Mistral returned `zero_limit`. No ruler gate
+or retrieval default changed. Alternative rerankers remain on the stop-list
+below until Julia decides otherwise.
 
 Both inherited CI failures ([ADR 0008](docs/adr/0008-inherited-ci-red-disposition.md))
 are closed. On `6cc810d` (T-17, pushed) both workflows that run on

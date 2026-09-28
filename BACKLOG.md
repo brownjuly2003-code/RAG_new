@@ -14,13 +14,12 @@ conditions, read [`ROADMAP.md`](ROADMAP.md). The active delivery plan is
   Do not manufacture more fixture cases to make the gate pass.
 - Phase C benchmark execution and resume instructions belong in
   `CURRENT_STATE.md`; do not launch a duplicate run from this file.
-- P2: the pre-registered [plan](docs/specs/p2-blinded-judge-plan.md) now has a
-  complete local Sonnet 5 thinking run: 115/115 cases, zero missing units,
-  provisional `RULER_DOES_NOT_TRACK` (H per-case τ_b 0.1537, CI95
-  [0.0155, 0.2869]). The [handoff](docs/operations/p2-sonnet-handoff.md)
-  explains the result and artifact status. Next: blind human sample, then GLM
-  and Mistral when reachable; validate reliability before any gate decision.
-  The report is untracked and has not entered the evidence index.
+- P2: the [blinded judgment](docs/evidence/p2-blinded-relevance-judgment.md)
+  has complete GLM and Sonnet runs (115/115 cases each). H α is 0.8566;
+  primary τ_b is 0.1561, CI95 [0.0197, 0.2880], giving the registered
+  `RULER_DOES_NOT_TRACK` verdict. Julia's blind 10-case grades are pending;
+  Mistral returned `zero_limit` and needs a changed account limit before a new
+  attempt. Keep the official gate and retrieval defaults unchanged.
   P1 and P1b are both `NO_SHIP` ([P1b capsule](docs/evidence/p1b-expanded-cut.md)):
   H-relative exploratory verdicts on 100 agent-authored `agent_labelled` cases
   (0 approved at the time); neither changed product behaviour.
