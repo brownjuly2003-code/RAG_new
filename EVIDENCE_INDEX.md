@@ -20,6 +20,11 @@ on this list.
 New evidence is a test plus one row here. Not a new capsule file in the repo
 root — that habit is what produced 29 of them and is now closed.
 
+## Publication gate checks
+
+- E.5 local history scan: [secret-scan record](docs/evidence/e5-secret-scan.md).
+  No unallowlisted findings; the full pre-publication gate remains open.
+
 ## Slices
 
 | Slice | Capsule | Evidence class |

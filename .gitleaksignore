@@ -1,0 +1,16 @@
+# Historical false positives triaged for the E.5 publication scan.
+# Each entry is an exact commit/path/rule/line fingerprint, not a rule-wide bypass.
+# Test fixture encryption keys and idempotency values:
+ae52cf760a8e6238895103225ff45a9fd8ea99cf:tests/integration/test_resolution_shadow_postgres.py:generic-api-key:65
+18d47e6455b1feec27d76272711258c0af62fd19:tests/integration/test_temporal_knowledge_postgres.py:generic-api-key:74
+a1dcd5ceb04d3c57648420d7d31402e6d89dff0c:tests/test_upload_idempotency.py:generic-api-key:1607
+1cebd144e65c6b2cbd67c68e3f6ff753b477f487:tests/test_upload_idempotency.py:generic-api-key:800
+# Documentation prose, placeholder commands, and adjacent .env.example fields:
+f838c349b134e53f0731e4d2cdd4501e38fa2177:docs/operations/2026-06-14-adaptive-retrieval-r1.md:generic-api-key:133
+160082f883f34f6d5de02b68136e0cd5b4c5613a:.env.example:generic-api-key:3
+09526e650a7e726054940f8aa75251b616e4b302:codex-tasks/Archive/task-171-migration-round-trip-audit.md:generic-api-key:23
+d9be60478ff87fbdc835fbc7455c6aa20191ff9f:.env.example:generic-api-key:16
+12c4befe79204300f44acb8045b328a4b49129cc:rec.md:generic-api-key:263
+# Local CI and migration-round-trip test keys:
+804344040a7c277f60aeb05500d8464787b02160:.github/workflows/ci.yml:generic-api-key:27
+804344040a7c277f60aeb05500d8464787b02160:scripts/migration_round_trip.py:generic-api-key:24
