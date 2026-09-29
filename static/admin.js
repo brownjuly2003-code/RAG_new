@@ -400,6 +400,30 @@
     URL.revokeObjectURL(url);
   });
 
+  async function loadTrace(traceId, openEvidence) {
+    var detail = document.getElementById("trace-detail");
+    var path = "/api/admin/traces/" + encodeURIComponent(traceId);
+    var detailResult = await api("GET", path);
+    detail.textContent = JSON.stringify({ status: detailResult.status, body: detailResult.body }, null, 2);
+
+    var evidenceResult = await api("GET", path + "/evidence");
+    setEvidence(evidenceResult.ok ? evidenceResult.body : null);
+    if (openEvidence) {
+      showTraceView(detailResult.ok && evidenceResult.ok ? "evidence" : "raw");
+    }
+  }
+
+  var traceIdInput = document.getElementById("trace-id-input");
+  document.getElementById("trace-lookup").addEventListener("submit", function (event) {
+    event.preventDefault();
+    var traceId = traceIdInput.value.trim();
+    if (!traceId) {
+      traceIdInput.focus();
+      return;
+    }
+    loadTrace(traceId, true);
+  });
+
   document.getElementById("btn-load-traces").addEventListener("click", async function () {
     var limit = document.getElementById("traces-limit").value;
     var output = document.getElementById("traces-output");
@@ -431,16 +455,8 @@
 
       detailsButton.type = "button";
       detailsButton.textContent = "Details";
-      detailsButton.addEventListener("click", async function () {
-        var traceId = trace.trace_id || "";
-        var detailResult = await api("GET", "/api/admin/traces/" + encodeURIComponent(traceId));
-        detail.textContent = JSON.stringify({ status: detailResult.status, body: detailResult.body }, null, 2);
-
-        var evidenceResult = await api(
-          "GET",
-          "/api/admin/traces/" + encodeURIComponent(traceId) + "/evidence"
-        );
-        setEvidence(evidenceResult.ok ? evidenceResult.body : null);
+      detailsButton.addEventListener("click", function () {
+        loadTrace(trace.trace_id || "", false);
       });
 
       actionCell.appendChild(detailsButton);
@@ -535,6 +551,13 @@
       refreshMetrics();
     }
   }, 5000);
+
+  var linkedTraceId = new URLSearchParams(window.location.search).get("trace_id");
+  if (linkedTraceId) {
+    traceIdInput.value = linkedTraceId;
+    document.querySelector('.tabs button[data-tab="traces"]').click();
+    loadTrace(linkedTraceId, true);
+  }
 
   refreshMetrics();
 })();
