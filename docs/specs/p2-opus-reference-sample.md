@@ -30,7 +30,9 @@ request was the synthetic `Reply with exactly OK.` model and effort probe.
 - Save raw replies, model ids, usage, request hashes, timings, and parsed grades
   under `reports/p2/opus-reference/`. The runner resumes from saved valid
   grades. Local summaries mark partial runs incomplete; publish complete
-  ratings only after checking all ten cases.
+  ratings only after checking all ten cases. In `ratings.json`, `grades` follows
+  the original top-five order, while `presented_grades` follows the human
+  page's blind D1–D5 order.
 
 These are **model reference grades**. They do not replace Julia's blind human
 grades, join the pre-registered three-judge P2 consensus, change the P2 ruler

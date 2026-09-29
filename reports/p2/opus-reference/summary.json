@@ -1,0 +1,41 @@
+{
+  "boundary": "Model reference only; not human grades or the registered P2 verdict.",
+  "cli_arguments": [
+    "-p",
+    "--model",
+    "claude-opus-5-5",
+    "--effort",
+    "max",
+    "--tools",
+    "",
+    "--permission-mode",
+    "dontAsk",
+    "--disable-slash-commands",
+    "--strict-mcp-config",
+    "--no-session-persistence",
+    "--output-format",
+    "json",
+    "--system-prompt",
+    "You are an independent document relevance judge. Use only the supplied text, grade each document on its own, and return only the requested JSON object."
+  ],
+  "cli_version": "2.1.283 (Claude Code)",
+  "complete": true,
+  "effort": "max",
+  "generated_utc": "2026-09-29T11:06:17.471731+00:00",
+  "grade_distribution": {
+    "0": 2,
+    "1": 20,
+    "2": 16,
+    "3": 12
+  },
+  "graded_cases": 10,
+  "graded_documents": 50,
+  "instruction_sha256": "7877c3845a742013e3c189e260ef506ba07dc65749fa3df8455a181a4dcedc33",
+  "model": "claude-opus-5-5",
+  "ratings_order": "grades use original top-five order; presented_grades use blind D1-D5 order",
+  "reply_store_sha256": "f17b1b973249365ba51a5e0c476024e7933de698ffeb2cf29b32ea1ff1aa3a8f",
+  "reported_cost_usd": 1.477868,
+  "route": "Claude Code CLI, firstParty claude.ai Max",
+  "sample_cases": 10,
+  "schema_version": "p2-opus-reference/v1"
+}

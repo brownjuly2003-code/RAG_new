@@ -150,6 +150,7 @@ def write_summary(
             continue
         if row.get("model") != MODEL or len(row.get("grades", [])) != 5:
             raise ValueError(f"invalid Opus rating for {case.case_id}")
+        presented = p2.parse_grades(row["raw_text"], tuple(f"D{index}" for index in range(1, 6)))
         ratings.append(
             {
                 "pool": case.pool,
@@ -157,6 +158,7 @@ def write_summary(
                 "request_sha256": request.sha256,
                 "model": row["model"],
                 "grades": row["grades"],
+                "presented_grades": [presented[f"D{index}"] for index in range(1, 6)],
                 "raw_text": row["raw_text"],
             }
         )
@@ -178,6 +180,7 @@ def write_summary(
         "graded_cases": len(ratings),
         "graded_documents": len(ratings) * 5,
         "complete": len(ratings) == len(sample),
+        "ratings_order": "grades use original top-five order; presented_grades use blind D1-D5 order",
         "grade_distribution": distribution,
         "reported_cost_usd": round(
             sum(float(cost) for cost in costs if isinstance(cost, (int, float))), 6
