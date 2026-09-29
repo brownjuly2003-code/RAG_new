@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="data:,">
+  <title>RAG_new — финальный кадр демо</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #f2f0e8;
+      --ink: #172126;
+      --muted: #536169;
+      --accent: #d94d28;
+      --line: #bfc4bd;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: #d6d8d2;
+      color: var(--ink);
+      font-family: Bahnschrift, "Arial Narrow", sans-serif;
+    }
+
+    .frame {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      min-height: 100vh;
+      overflow: hidden;
+      padding: clamp(34px, 4.2vw, 80px);
+      background: var(--paper);
+      isolation: isolate;
+    }
+
+    .frame::before {
+      position: absolute;
+      z-index: -1;
+      inset: 0;
+      background-image: linear-gradient(#1721260b 1px, transparent 1px),
+        linear-gradient(90deg, #1721260b 1px, transparent 1px);
+      background-size: 80px 80px;
+      content: "";
+    }
+
+    header, footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    header {
+      padding-bottom: 24px;
+      border-bottom: 2px solid var(--ink);
+    }
+
+    .brand {
+      font-size: clamp(24px, 2vw, 38px);
+      font-weight: 800;
+      letter-spacing: -0.06em;
+    }
+
+    .brand span { color: var(--accent); }
+
+    .folio, .eyebrow, .label, .verdict, footer {
+      font-family: Consolas, "Courier New", monospace;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .folio {
+      color: var(--muted);
+      font-size: clamp(12px, 0.83vw, 16px);
+      text-align: right;
+    }
+
+    .content {
+      display: grid;
+      flex: 1;
+      grid-template-columns: minmax(0, 1.15fr) minmax(480px, 0.85fr);
+      align-items: center;
+      gap: clamp(44px, 5vw, 96px);
+      padding: 52px 0;
+    }
+
+    .eyebrow {
+      margin: 0 0 28px;
+      color: var(--accent);
+      font-size: clamp(14px, 1vw, 19px);
+      font-weight: 700;
+    }
+
+    h1 {
+      max-width: 950px;
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(68px, 6.7vw, 129px);
+      font-weight: 400;
+      letter-spacing: -0.075em;
+      line-height: 0.95;
+    }
+
+    h1 span { color: var(--accent); }
+
+    .lede {
+      max-width: 690px;
+      margin: 52px 0 0;
+      color: var(--muted);
+      font-size: clamp(22px, 1.65vw, 32px);
+      line-height: 1.25;
+    }
+
+    .path {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      margin-top: 48px;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: clamp(15px, 1vw, 20px);
+    }
+
+    .path b { font-weight: 700; }
+    .path span { color: var(--accent); }
+
+    .metric {
+      position: relative;
+      align-self: stretch;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: clamp(38px, 3.5vw, 68px);
+      background: var(--ink);
+      color: var(--paper);
+      box-shadow: 18px 18px 0 #d8d9cf;
+    }
+
+    .metric::before {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 120px;
+      height: 120px;
+      background: var(--accent);
+      clip-path: polygon(100% 0, 100% 100%, 0 0);
+      content: "";
+    }
+
+    .label {
+      margin: 0 0 40px;
+      color: #c2cbc8;
+      font-size: clamp(13px, 0.9vw, 17px);
+    }
+
+    .baseline {
+      color: #a4aeac;
+      font-size: clamp(49px, 4.5vw, 86px);
+      font-weight: 300;
+      letter-spacing: -0.07em;
+      line-height: 1;
+    }
+
+    .arrow {
+      margin: 4px 0 0 6px;
+      color: var(--accent);
+      font-family: Georgia, serif;
+      font-size: clamp(46px, 4vw, 76px);
+      line-height: 1;
+    }
+
+    .result {
+      color: #f2f0e8;
+      font-size: clamp(65px, 6.5vw, 126px);
+      font-weight: 800;
+      letter-spacing: -0.09em;
+      line-height: 1;
+    }
+
+    .metric-name {
+      max-width: 500px;
+      margin: 24px 0 34px;
+      font-size: clamp(22px, 1.4vw, 27px);
+      line-height: 1.2;
+    }
+
+    .verdict {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      align-self: flex-start;
+      padding: 14px 18px;
+      border: 1px solid var(--accent);
+      color: #f8a080;
+      font-size: clamp(15px, 1vw, 19px);
+      line-height: 1.35;
+    }
+
+    .verdict span {
+      letter-spacing: 0;
+      text-transform: none;
+    }
+
+    footer {
+      padding-top: 28px;
+      border-top: 2px solid var(--ink);
+      color: var(--muted);
+      font-size: clamp(12px, 0.83vw, 16px);
+      line-height: 1.35;
+    }
+
+    footer strong { color: var(--ink); }
+
+    @media (max-width: 1100px) {
+      .content { grid-template-columns: 1fr; }
+      .metric { min-height: 450px; }
+      footer { align-items: flex-start; flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <main class="frame">
+    <header>
+      <div class="brand">RAG<span>_</span>new</div>
+      <div class="folio">Демо продукта / 2026<br>Проверяемый ответ</div>
+    </header>
+
+    <div class="content">
+      <section aria-label="Путь от вопроса к доказательствам">
+        <p class="eyebrow">01 / Проверяемый ответ</p>
+        <h1>Ответ можно<br>проверить<span>.</span></h1>
+        <p class="lede">При включённом shipment-status shadow trace показывает, почему данные источника позволяют или не позволяют подтвердить ответ.</p>
+        <div class="path"><b>/api/ask</b><span>→</span><b>trace</b><span>→</span><b>Evidence</b></div>
+      </section>
+
+      <section class="metric" aria-label="Измеренная точность поиска">
+        <p class="label">Контекстная точность / 100 вопросов</p>
+        <div class="baseline">0.5067</div>
+        <div class="arrow">↗</div>
+        <div class="result">0.5487</div>
+        <p class="metric-name">Hybrid → экспериментальный графовый поиск G2</p>
+        <div class="verdict"><strong>NO-SHIP</strong><span>Цель 0.63 не достигнута<br>G2 выключен по умолчанию</span></div>
+      </section>
+    </div>
+
+    <footer>
+      <div><strong>Источник:</strong> GR-3 A/B · вопросы составлены агентом по реальным документам</div>
+      <div>Реальная точность разрешения запросов о грузах ещё не измерена</div>
+    </footer>
+  </main>
+</body>
+</html>
