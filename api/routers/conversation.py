@@ -147,6 +147,17 @@ def _record_shadow_evidence(result: Any) -> None:
         }
     except Exception:
         logger.warning("shipment-status stepwise grading failed", exc_info=True)
+        checks = {
+            "method": "contract_rules_only",
+            "status": "unavailable",
+            "steps": [
+                {
+                    "name": "judge",
+                    "status": "unavailable",
+                    "reason_codes": ["stepwise_grading_failed"],
+                }
+            ],
+        }
     state = {
         "journey": "shipment-status",
         "outcome": "journey_recorded",

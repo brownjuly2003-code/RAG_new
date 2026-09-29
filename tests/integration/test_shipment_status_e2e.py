@@ -692,6 +692,39 @@ def test_evidence_view_shows_stepwise_checks_from_the_recorded_ask(
     assert all(step["reason_codes"] == [] for step in checks["steps"])
 
 
+def test_evidence_view_reports_when_stepwise_grading_is_unavailable(
+    monkeypatch,
+    wired_app,
+    integration_client,
+    integration_headers,
+    _isolated_trace_store,
+) -> None:
+    from evaluation.resolution import stepwise_judge
+
+    def fail_grading(*args, **kwargs):
+        raise RuntimeError("fixture judge failure")
+
+    monkeypatch.setattr(stepwise_judge, "grade_evidence_export", fail_grading)
+    headers = integration_headers(_POLICY_TENANT, "admin")
+
+    view, _ = _ask_and_open_evidence(wired_app, integration_client, headers)
+
+    assert view["shadow_status"] == "journey_recorded"
+    (journey,) = view["journeys"]
+    assert journey["observation"] is not None
+    assert journey["stepwise_checks"] == {
+        "method": "contract_rules_only",
+        "status": "unavailable",
+        "steps": [
+            {
+                "name": "judge",
+                "status": "unavailable",
+                "reason_codes": ["stepwise_grading_failed"],
+            }
+        ],
+    }
+
+
 def test_every_claim_the_run_made_names_the_evidence_under_it(
     wired_app,
     integration_client,
