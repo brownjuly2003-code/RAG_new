@@ -1,33 +1,55 @@
-# RAG_new — Verifiable Resolution OS
+# RAG_new — support answers with inspectable evidence
 
-`RAG_new` is a self-hosted support system that combines a production-style RAG
-runtime with a deterministic resolution kernel for versioned procedures,
-evidence, policy decisions, governed actions, and verified business outcomes.
+`RAG_new` helps support teams answer logistics and air-cargo questions from a
+knowledge base. An optional shipment-status journey records the source facts,
+policy decision, claims, and replay receipt behind the synchronous `/api/ask`.
+Reviewers can inspect that record in the admin Evidence tab.
 
-The first product wedge is multilingual logistics and air-cargo support. The
-inherited chat runtime remains the compatibility baseline while the new
-shipment-status journey is introduced behind default-off feature flags.
+The journey uses a fixture TMS and is off by default. See
+[`CURRENT_STATE.md`](CURRENT_STATE.md) for the current gate,
+[`ROADMAP.md`](ROADMAP.md) for frozen work, and
+[`plan_06_09_26.md`](plan_06_09_26.md) for the delivery plan.
 
-> **Current status:** start with [`CURRENT_STATE.md`](CURRENT_STATE.md), then
-> [`ROADMAP.md`](ROADMAP.md). The active plan is
-> [`plan_06_09_26.md`](plan_06_09_26.md). The resolution journey is wired
-> into synchronous `/api/ask` as a read-only shadow, but it still uses a
-> fixture TMS and the repository has zero approved real shipment-bound cases.
-> Fixture measurements are not production evidence.
+## Measured results
 
-## Architecture
+These are offline measurements on agent-written questions over real documents,
+not verified shipment resolutions. The graph and Qwen3 arms remain off by
+default; each comparison changes only the component named in its row.
+
+| Measure | Current baseline | Experimental arm | Evidence |
+|---|---:|---:|---|
+| Context precision, 100-case H pool | 0.5067, hybrid | 0.5487, graph G2 | [GR-3 A/B](docs/evidence/gr3-graph-lane-ab.md) |
+| Context recall, same H pool | 0.9050, hybrid | 0.9250, graph G2 | [GR-3 A/B](docs/evidence/gr3-graph-lane-ab.md) |
+| Recall, 15-case multi-document bucket | 0.5000, hybrid | 0.4000, graph G2 | [GR-3 A/B](docs/evidence/gr3-graph-lane-ab.md) |
+| LLM faithfulness, three runs of 100 cases | 0.8295, Qwen2.5 7B | 0.8986, Qwen3 8B | [C.1a](evaluation/c1a-qwen25-7b-c06bdf5-phase-c-generator-benchmark.json) · [C.1b](docs/evidence/c1b-qwen3-generator-benchmark.md) |
+
+Graph G2 missed the multi-document coverage and latency gates; Qwen3 missed
+the 0.90 LLM faithfulness gate. Neither changed the default. The linked reports
+pin corpus, code, configuration, and measurement limits. There is no measured
+VR precision, verified-resolution yield (VRY), or cost per resolution: none of
+the 100 approved journey labels names a real shipment, and the 40 human
+calibration routes are still pending. See the [admission and outcome
+analysis](docs/evidence/a6-journey-admission-and-clarification.md).
+
+## Design
 
 ```mermaid
 flowchart LR
-    Client[Web / email / API] --> API[FastAPI + auth]
-    API --> RAG[LangGraph RAG pipeline]
-    API -. default-off shadow .-> Kernel[Resolution kernel]
-    RAG --> Vector[(ChromaDB + BM25)]
-    RAG --> LLM[Ollama / Mistral / GraceKelly]
-    API --> Data[(PostgreSQL + Redis + traces)]
-    Kernel --> Evidence[Evidence and replay ledger]
-    Kernel --> Data
+    Question[Support question] --> Ask[POST /api/ask]
+    Ask --> Retrieval[Hybrid retrieval and answer]
+    Retrieval --> Response[Answer with citations]
+    Ask -. optional flags .-> Journey[Shipment-status journey]
+    Fixture[Fixture TMS] --> Journey
+    Journey --> Ledger[Trace and evidence records]
+    Ledger --> Review[Admin Evidence tab]
 ```
+
+The versioned `ResolutionContract` defines the journey's required evidence and
+outcomes. The read-only shadow links claims to source facts and policy decisions;
+its trace includes the evidence age and replay receipt. The Evidence tab shows
+these records alongside the answer. The legacy answer path remains active when
+the journey flags are off. See the [resolution evidence walkthrough](EVIDENCE_INDEX.md)
+and [configuration](docs/CONFIGURATION.md).
 
 The application is a modular monolith:
 
@@ -42,6 +64,16 @@ The application is a modular monolith:
 
 The full design, invariants, and decision register are in
 [`docs/architecture/README.md`](docs/architecture/README.md).
+
+## Limitations
+
+- Shipment-status is the only wired resolution journey, and its TMS is a fixture.
+- The 100 approved journey labels are on agent-written questions, with no
+  shipment-bound support requests. Human relevance grades are still pending.
+- Graph retrieval, contract-shaped answers, and clarification projection require
+  explicit flags; the graph arm failed its default-on gate.
+- The local Compose setup runs one web replica. It is a development setup, not
+  a measured production deployment.
 
 ## Quick start
 
