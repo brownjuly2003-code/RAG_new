@@ -49,7 +49,9 @@ outcomes. The read-only shadow links claims to source facts and policy decisions
 its trace includes the evidence age and replay receipt. The Evidence tab shows
 these records alongside the answer. The legacy answer path remains active when
 the journey flags are off. See the [resolution evidence walkthrough](EVIDENCE_INDEX.md)
-and [configuration](docs/CONFIGURATION.md).
+and [configuration](docs/CONFIGURATION.md). The
+[reviewer contract bundle](resolution-contracts/README.md) contains the JSON
+Schema and complete shipment-status contract examples.
 
 The application is a modular monolith:
 

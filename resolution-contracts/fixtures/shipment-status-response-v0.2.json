@@ -1,0 +1,354 @@
+{
+  "schema_version": "resolution-contract/v0.1",
+  "id": "aircargo.shipment-status",
+  "version": "0.2.0",
+  "owner": "logistics-ops",
+  "risk_tier": "read_only",
+  "effective": {
+    "from": "2026-09-01T00:00:00Z",
+    "to": null
+  },
+  "eligibility": {
+    "op": "all",
+    "args": [
+      {
+        "op": "exists",
+        "field": "tenant.id"
+      },
+      {
+        "op": "in",
+        "field": "actor.channel",
+        "values": [
+          "chat",
+          "email",
+          "api"
+        ]
+      }
+    ]
+  },
+  "entrypoint": "validate-inputs",
+  "required_inputs": [
+    {
+      "id": "shipment_id",
+      "type": "string",
+      "required": true,
+      "sensitive": false
+    }
+  ],
+  "evidence_requirements": [
+    {
+      "id": "shipment-observation",
+      "source_kind": "source_system",
+      "authority": "shipment-source-primary",
+      "freshness": {
+        "observed_at": "evidence.shipment-observation.observed_at",
+        "max_age_seconds": 300
+      },
+      "valid_time": {
+        "reference": "case.effective_at",
+        "require_overlap": true
+      },
+      "on_missing": "clarify",
+      "on_stale": "escalate",
+      "on_conflict": "escalate"
+    },
+    {
+      "id": "shipment-policy",
+      "source_kind": "knowledge",
+      "authority": "logistics-policy-primary",
+      "freshness": {
+        "observed_at": "evidence.shipment-policy.recorded_at",
+        "max_age_seconds": 86400
+      },
+      "valid_time": {
+        "reference": "case.effective_at",
+        "require_overlap": true
+      },
+      "on_missing": "escalate",
+      "on_stale": "escalate",
+      "on_conflict": "escalate"
+    }
+  ],
+  "rules": [
+    {
+      "id": "shipment-policy-allows-status",
+      "predicate": {
+        "op": "all",
+        "args": [
+          {
+            "op": "exists",
+            "field": "evidence.shipment-observation.status"
+          },
+          {
+            "op": "eq",
+            "left": {
+              "kind": "field",
+              "path": "evidence.shipment-policy.status-disclosure-allowed"
+            },
+            "right": {
+              "kind": "literal",
+              "value": true
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "steps": [
+    {
+      "id": "validate-inputs",
+      "kind": "input",
+      "transitions": {
+        "complete": {
+          "type": "step",
+          "id": "read-shipment"
+        },
+        "missing": {
+          "type": "terminal",
+          "outcome": "clarification_required"
+        },
+        "failure": {
+          "type": "terminal",
+          "outcome": "escalated"
+        }
+      }
+    },
+    {
+      "id": "read-shipment",
+      "kind": "read_action",
+      "action": {
+        "manifest_id": "shipment-status-lookup",
+        "manifest_version": "0.1.0",
+        "manifest_schema_digest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "risk": "read",
+        "required_scopes": [
+          "shipment.status.read"
+        ],
+        "input_fields": [
+          "inputs.shipment_id"
+        ],
+        "output_evidence_requirement_id": "shipment-observation",
+        "timeout_seconds": 5,
+        "confirmation": {
+          "mode": "not_required"
+        },
+        "idempotency": {
+          "strategy": "not_required",
+          "key_fields": []
+        },
+        "postcondition_id": "shipment-observation-current"
+      },
+      "transitions": {
+        "success": {
+          "type": "step",
+          "id": "gather-policy"
+        },
+        "timeout": {
+          "type": "terminal",
+          "outcome": "escalated"
+        },
+        "failure": {
+          "type": "terminal",
+          "outcome": "escalated"
+        }
+      }
+    },
+    {
+      "id": "gather-policy",
+      "kind": "gather_evidence",
+      "evidence_requirement_ids": [
+        "shipment-policy"
+      ],
+      "transitions": {
+        "complete": {
+          "type": "step",
+          "id": "apply-policy"
+        },
+        "missing": {
+          "type": "terminal",
+          "outcome": "escalated"
+        },
+        "stale": {
+          "type": "terminal",
+          "outcome": "escalated"
+        },
+        "conflict": {
+          "type": "terminal",
+          "outcome": "escalated"
+        },
+        "failure": {
+          "type": "terminal",
+          "outcome": "escalated"
+        }
+      }
+    },
+    {
+      "id": "apply-policy",
+      "kind": "policy",
+      "rule_id": "shipment-policy-allows-status",
+      "transitions": {
+        "allow": {
+          "type": "step",
+          "id": "check-shipment-observation"
+        },
+        "clarify": {
+          "type": "terminal",
+          "outcome": "clarification_required"
+        },
+        "deny": {
+          "type": "terminal",
+          "outcome": "escalated"
+        },
+        "escalate": {
+          "type": "terminal",
+          "outcome": "escalated"
+        },
+        "failure": {
+          "type": "terminal",
+          "outcome": "escalated"
+        }
+      }
+    },
+    {
+      "id": "check-shipment-observation",
+      "kind": "postcondition",
+      "postcondition_ids": [
+        "shipment-observation-current"
+      ],
+      "transitions": {
+        "pass": {
+          "type": "step",
+          "id": "compile-response"
+        },
+        "fail": {
+          "type": "terminal",
+          "outcome": "escalated"
+        },
+        "unknown": {
+          "type": "terminal",
+          "outcome": "escalated"
+        }
+      }
+    },
+    {
+      "id": "compile-response",
+      "kind": "response",
+      "transitions": {
+        "success": {
+          "type": "terminal",
+          "outcome": "verified"
+        },
+        "unsupported": {
+          "type": "terminal",
+          "outcome": "escalated"
+        },
+        "failure": {
+          "type": "terminal",
+          "outcome": "escalated"
+        }
+      }
+    }
+  ],
+  "postconditions": [
+    {
+      "id": "shipment-observation-current",
+      "checker": {
+        "id": "shipment-observation-current",
+        "version": "0.1.0",
+        "schema_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "evidence_requirement_ids": [
+        "shipment-observation"
+      ],
+      "required_for": [
+        "verified"
+      ],
+      "on_unknown": "escalate"
+    }
+  ],
+  "terminal_outcomes": {
+    "verified": {
+      "claim_policy": "supported_only",
+      "requires_all_postconditions": true,
+      "handoff_required": false,
+      "disclosure_id": "ai-assistance"
+    },
+    "clarification_required": {
+      "claim_policy": "no_material_claims",
+      "requires_all_postconditions": false,
+      "handoff_required": false,
+      "disclosure_id": "ai-assistance"
+    },
+    "escalated": {
+      "claim_policy": "supported_only",
+      "requires_all_postconditions": false,
+      "handoff_required": true,
+      "disclosure_id": "ai-assistance"
+    }
+  },
+  "escalation": {
+    "enabled": true,
+    "reason_codes": [
+      "SOURCE_UNAVAILABLE",
+      "EVIDENCE_STALE",
+      "EVIDENCE_CONFLICT",
+      "POLICY_DENIED",
+      "UNSUPPORTED_CLAIM"
+    ],
+    "required_payload_fields": [
+      "case_id",
+      "contract_version",
+      "evidence_summary",
+      "reason_codes"
+    ]
+  },
+  "disclosure": {
+    "id": "ai-assistance",
+    "version": "1.0.0",
+    "required": true,
+    "locales": [
+      "en",
+      "ru"
+    ]
+  },
+  "budgets": {
+    "wall_clock_seconds": 30,
+    "max_llm_calls": 3,
+    "max_input_tokens": 12000,
+    "max_output_tokens": 2000,
+    "max_retrieval_candidates": 20,
+    "max_rerank_candidates": 8,
+    "max_action_attempts": 2,
+    "max_clarification_turns": 3,
+    "max_evidence_items": 20
+  },
+  "response_shape": {
+    "version": "1.0.0",
+    "fields": [
+      {
+        "field": "status",
+        "claim_id": "shipment-status",
+        "evidence_requirement_ids": [
+          "shipment-observation",
+          "shipment-policy"
+        ]
+      },
+      {
+        "field": "location",
+        "claim_id": "shipment-location",
+        "evidence_requirement_ids": [
+          "shipment-observation",
+          "shipment-policy"
+        ]
+      },
+      {
+        "field": "estimated_delivery",
+        "claim_id": "estimated-delivery",
+        "evidence_requirement_ids": [
+          "shipment-observation",
+          "shipment-policy"
+        ]
+      }
+    ]
+  }
+}
