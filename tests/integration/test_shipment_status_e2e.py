@@ -692,6 +692,29 @@ def test_evidence_view_shows_stepwise_checks_from_the_recorded_ask(
     assert all(step["reason_codes"] == [] for step in checks["steps"])
 
 
+def test_escalated_ask_exposes_its_handoff_in_the_evidence_view(
+    wired_app,
+    integration_client,
+    integration_headers,
+    _isolated_trace_store,
+) -> None:
+    fixtures, _ = _recent_evidence()
+    enable_shadow = wired_app(shipment_fixtures=fixtures)
+    enable_shadow()
+    headers = integration_headers(_POLICY_TENANT, "admin")
+
+    answer = integration_client.post("/api/ask", json={"question": _QUESTION}, headers=headers)
+    assert answer.status_code == 200
+    view = _evidence_for(integration_client, headers, answer.json()["trace_id"])
+
+    (journey,) = view["journeys"]
+    assert journey["terminal_state"] == "escalated"
+    handoff = journey["escalation_brief"]
+    assert handoff["case_id"] == journey["case_id"]
+    assert handoff["reason_codes"] == journey["reason_codes"]
+    assert handoff["contract_version"].startswith("aircargo.shipment-status@")
+
+
 def test_evidence_view_reports_when_stepwise_grading_is_unavailable(
     monkeypatch,
     wired_app,

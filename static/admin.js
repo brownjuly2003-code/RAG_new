@@ -215,6 +215,28 @@
     }
     box.appendChild(outcome);
 
+    if (journey.terminal_state === "escalated") {
+      box.appendChild(el("h3", null, "Escalation handoff"));
+      var handoff = journey.escalation_brief;
+      if (handoff) {
+        box.appendChild(definitionList([
+          ["case", handoff.case_id],
+          ["contract version", handoff.contract_version],
+          ["reasons", Array.isArray(handoff.reason_codes) ? handoff.reason_codes.join(", ") : null]
+        ]));
+        var summary = Array.isArray(handoff.evidence_summary) ? handoff.evidence_summary : [];
+        if (summary.length) {
+          summary.forEach(function (item) {
+            box.appendChild(el("p", "source", item));
+          });
+        } else {
+          box.appendChild(el("p", "empty", "No evidence summary was recorded."));
+        }
+      } else {
+        box.appendChild(el("p", "empty", "No escalation handoff was recorded."));
+      }
+    }
+
     var checks = journey.stepwise_checks;
     if (checks) {
       box.appendChild(el("h3", null, "Step-wise checks"));
