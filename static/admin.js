@@ -322,13 +322,15 @@
       evidencePane.appendChild(el("h3", null, "Structural retrieval path"));
       evidencePane.appendChild(definitionList([
         ["strategy", retrieval.strategy],
+        ["kind", path.kind],
         ["category prefilter", path.prefilter_applied ? "applied" : "not applied"],
         ["sections", (path.sections || []).join(", ") || "none"],
+        ["entities", Array.isArray(path.entities) ? path.entities.join(", ") || "none" : null],
+        ["entity hops", path.hops],
         ["retrieved contexts", path.retrieved_contexts],
         ["retained contexts", path.retained_contexts],
         ["expanded contexts", path.expanded_contexts]
       ]));
-      evidencePane.appendChild(el("p", "source", "Structural retrieval only; no entity traversal."));
     });
     if (!journeys.length) {
       evidencePane.appendChild(el(

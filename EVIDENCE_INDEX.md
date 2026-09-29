@@ -34,6 +34,7 @@ root — that habit is what produced 29 of them and is now closed.
 | D.1 pgvector pre-reranker comparison: 115 cases, 3 runs; sequential scans, non-owner RLS; Phase D open | [Measurement and replay](docs/evidence/d1-pgvector-prererank.md) | measured |
 | C.3 manual copilot: validated shipment skeleton in `ai_draft`, agent API readback, off parity and fallback | [Copilot verification](docs/evidence/c3-copilot-contract-draft.md) | synthetic |
 | C.3 HTTP: pinned response shape → verified fixture answer; evidence binding and legacy-off parity | [HTTP verification](docs/evidence/c3-contract-shaped-response.md) | synthetic |
+| Evidence UI shows the actual structural/entity path kind, matched entities and entity hops; removes a false no-traversal claim | [Mac Chromium browser regression](scripts/qa/test_graph_evidence_ui.py); [GR-2 HTTP path](docs/evidence/gr2-entity-retrieval-wiring.md) | synthetic |
 | GR-2 entity retrieval: bounded traversal → third RRF list → `/api/ask` → Evidence; stale graph rejection and off/auto fallback | [HTTP and retrieval verification](docs/evidence/gr2-entity-retrieval-wiring.md) | synthetic |
 | GR-4 structural path: opt-in `/api/ask` → SQLite → Evidence; off/auto fallback, browser rendering and export | [HTTP and browser verification](docs/evidence/gr4-structural-product-wiring.md) | synthetic |
 | GR-1b seed reservation: coherent 0.5472 / 0.9200; seed text preserved, no metric gain, NO-SHIP | [report and tests](docs/evidence/gr1b-seed-expansion.md) | measured |

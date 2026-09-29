@@ -49,6 +49,16 @@ def test_structural_path_is_visible_and_exportable_without_resolution(tmp_path):
         with page.expect_download() as download:
             export.click()
         assert json.loads(Path(download.value.path()).read_text(encoding="utf-8")) == evidence
+        evidence["retrieval_paths"][0]["path"].update({
+            "kind": "structural_entity", "entities": ["awb"], "hops": 1,
+        })
+        page.get_by_role("button", name="Details", exact=True).click()
+        expect(page.get_by_text("structural_entity", exact=True)).to_be_visible()
+        expect(page.get_by_text("awb", exact=True)).to_be_visible()
+        expect(page.locator("#trace-evidence dt").filter(
+            has_text="entity hops"
+        ).locator("xpath=following-sibling::dd[1]")).to_have_text("1")
+        expect(page.get_by_text("Structural retrieval only; no entity traversal.")).to_have_count(0)
         evidence.pop("retrieval_paths")
         page.get_by_role("button", name="Details", exact=True).click()
         expect(page.get_by_role("heading", name="Structural retrieval path")).to_have_count(0)
