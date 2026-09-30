@@ -1,0 +1,21 @@
+[Script Info]
+Title: Phase E live demo captions
+ScriptType: v4.00+
+PlayResX: 1600
+PlayResY: 900
+WrapStyle: 2
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: Live,Segoe UI,29,&H00182226,&H00182226,&H00FFFFFF,&H00000000,-1,0,0,0,100,100,0,0,1,2,0,2,30,30,40,1
+Style: Evidence,Segoe UI,28,&H00182226,&H00182226,&H00FFFFFF,&H00000000,-1,0,0,0,100,100,0,0,1,2,0,6,30,45,0,1
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:00:15.00,0:00:36.00,Live,,0,0,0,,Реальный запрос: AC-100001 → /api/ask
+Dialogue: 0,0:00:36.00,0:00:45.00,Live,,0,0,0,,Ожидание ответа сокращено при монтаже
+Dialogue: 0,0:00:45.00,0:01:15.00,Live,,0,0,0,,Ответ API: pending [N/A] · маршрут human\NTrace ID связывает ответ с Evidence
+Dialogue: 0,0:01:15.00,0:01:43.00,Live,,0,0,0,,Открываем Evidence по ссылке из ответа
+Dialogue: 0,0:01:43.00,0:02:09.00,Evidence,,0,0,0,,{\an9\pos(1550,220)}Контракт shipment-status\NРезультат: escalated / EVIDENCE_STALE
+Dialogue: 0,0:02:09.00,0:02:30.00,Evidence,,0,0,0,,{\an9\pos(1550,220)}Создан handoff человеку\NПричина: EVIDENCE_STALE
+Dialogue: 0,0:02:30.00,0:02:45.00,Evidence,,0,0,0,,{\an9\pos(1550,220)}source: fail (source_stale)\Npolicy: not_observed\NTMS: наблюдение от 24.08.2026

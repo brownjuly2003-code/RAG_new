@@ -10,6 +10,11 @@ The journey uses a fixture TMS and is off by default. See
 [`ROADMAP.md`](ROADMAP.md) for frozen work, and
 [`plan_06_09_26.md`](plan_06_09_26.md) for the delivery plan.
 
+The [three-minute walkthrough](demo/phase-e-demo.mp4) follows a real
+`/api/ask` request into the admin Evidence view. It shows a fixture-sourced
+stale-data escalation; the [recording notes](demo/phase-e-screencast.md)
+describe the sequence and its limits.
+
 ## Measured results
 
 These are offline measurements on agent-written questions over real documents,
