@@ -48,13 +48,13 @@ const svg = `<?xml version="1.0" encoding="UTF-8"?>
         font-family="Inter, system-ui, sans-serif"
         font-size="84" font-weight="800"
         fill="${INK}"
-        letter-spacing="-2">RAG Support Assistant</text>
+        letter-spacing="-2">RAG assistant</text>
 
   <!-- Subtitle -->
   <text x="80" y="278"
         font-family="Inter, system-ui, sans-serif"
         font-size="30" font-weight="500"
-        fill="${MUTED}">LangGraph retrieval · observability · offline evaluation</text>
+        fill="${MUTED}">Air-cargo answers · inspectable evidence</text>
 
   <!-- Stats row -->
   <line x1="80" y1="358" x2="1120" y2="358" stroke="${RULE}" stroke-width="1"/>
@@ -62,16 +62,16 @@ const svg = `<?xml version="1.0" encoding="UTF-8"?>
 
   <g font-family="Inter, system-ui, sans-serif">
     <!-- Stat 1 -->
-    <text x="80" y="412" font-size="56" font-weight="800" fill="${INK}" letter-spacing="-1">9</text>
-    <text x="80" y="448" font-size="16" font-weight="600" fill="${MUTED}" letter-spacing="1.5">SIDEBAR PAGES · BILINGUAL</text>
+    <text x="80" y="412" font-size="56" font-weight="800" fill="${INK}" letter-spacing="-1">0.5067</text>
+    <text x="80" y="448" font-size="16" font-weight="600" fill="${MUTED}" letter-spacing="1.5">HYBRID CONTEXT PRECISION</text>
 
     <!-- Stat 2 -->
-    <text x="430" y="412" font-size="56" font-weight="800" fill="${INK}" letter-spacing="-1">E20</text>
-    <text x="430" y="448" font-size="16" font-weight="600" fill="${MUTED}" letter-spacing="1.5">REPRODUCIBLE TRACE</text>
+    <text x="430" y="412" font-size="56" font-weight="800" fill="${INK}" letter-spacing="-1">0.5487</text>
+    <text x="430" y="448" font-size="16" font-weight="600" fill="${MUTED}" letter-spacing="1.5">GRAPH G2 · NO SHIP</text>
 
     <!-- Stat 3 -->
-    <text x="780" y="412" font-size="56" font-weight="800" fill="${INK}" letter-spacing="-1">12</text>
-    <text x="780" y="448" font-size="16" font-weight="600" fill="${MUTED}" letter-spacing="1.5">OFFLINE BENCHMARK CASES</text>
+    <text x="780" y="412" font-size="56" font-weight="800" fill="${INK}" letter-spacing="-1">3 MIN</text>
+    <text x="780" y="448" font-size="16" font-weight="600" fill="${MUTED}" letter-spacing="1.5">PRODUCT WALKTHROUGH</text>
   </g>
 
   <!-- Author + custom inline SVG graph motif -->

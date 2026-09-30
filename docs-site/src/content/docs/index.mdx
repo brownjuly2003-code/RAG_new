@@ -1,20 +1,20 @@
 ---
-title: RAG Support Assistant
-description: Customer-support RAG assistant docs with a seeded KB, LangGraph path, and reproducible E20 scenario.
+title: RAG assistant
+description: Air-cargo support answers with measured retrieval and inspectable shipment evidence.
 template: splash
 hero:
   tagline: |
-    A customer-support agent that retrieves product docs, routes every answer
-    through LangGraph, and keeps replies grounded in known sources.
+    Air-cargo support answers grounded in documents, with a trace from a
+    shipment question to the evidence behind its escalation.
   actions:
-    - text: See the example
-      link: /RAG_Support_Assistant/examples/
+    - text: Watch the three-minute demo
+      link: https://github.com/brownjuly2003-code/RAG_new/blob/master/demo/phase-e-demo.mp4
       variant: primary
-    - text: Reproduce E20
-      link: /RAG_Support_Assistant/reproduce-e20/
+    - text: Read the overview
+      link: /RAG_new/guides/overview/
       variant: secondary
     - text: GitHub
-      link: https://github.com/brownjuly2003-code/RAG_Support_Assistant
+      link: https://github.com/brownjuly2003-code/RAG_new
       variant: minimal
 ---
 
@@ -23,79 +23,64 @@ hero:
 <div class="q-cardgrid q-cardgrid--accent">
   <article class="q-card">
     <h3 class="q-title">
-      <span class="q-label">Published docs hub</span>
+      <span class="q-label">Measured retrieval</span>
     </h3>
-    <div class="q-body"><p>Docs are published under <code>/RAG_Support_Assistant</code>. English and Russian entry pages are maintained explicitly.</p></div>
+    <div class="q-body"><p>Context precision on a 100-question pool was 0.5067 for hybrid retrieval and 0.5487 for graph G2. The graph arm missed coverage and latency gates and remains off by default.</p></div>
   </article>
 
   <article class="q-card">
     <h3 class="q-title">
-      <span class="q-label">Seeded support KB</span>
+      <span class="q-label">Inspectable evidence</span>
     </h3>
-    <div class="q-body"><p>The demo KB starts from three seed documents: warranty, returns, and E10-E30 errors. E20 is present in <code>errors_e10_e30.md</code>.</p></div>
+    <div class="q-body"><p>An optional read-only shipment journey records source facts, policy status, claims, and a replay receipt beside the answer in the admin Evidence view.</p></div>
   </article>
 
   <article class="q-card">
     <h3 class="q-title">
-      <span class="q-label">Fixture-backed evaluation</span>
+      <span class="q-label">Recorded product walkthrough</span>
     </h3>
-    <div class="q-body"><p>The fixture set has 12 cases across error codes, password reset, warranty, installation, billing, and general support. The three-document demo KB does not cover every fixture category.</p></div>
+    <div class="q-body"><p>The three-minute recording follows a real <code>/api/ask</code> request through its trace to a stale-evidence escalation. The shipment source is a fixture TMS.</p></div>
   </article>
 
   <article class="q-card">
     <h3 class="q-title">
-      <span class="q-label">Traceable integration surface</span>
+      <span class="q-label">Measured limits</span>
     </h3>
-    <div class="q-body"><p>The API catalog is tied to FastAPI route decorators, and <code>/api/ask</code> returns an answer with documents and citations.</p></div>
+    <div class="q-body"><p>There is no measured verified-resolution yield or cost per resolution. The shipment journey is off by default; the recorded case escalates rather than verifies a resolution.</p></div>
   </article>
 </div>
 
-### One question's path through LangGraph
+### One request, two inspectable paths
 
 ```mermaid
 flowchart LR
-  Q([Question]) --> CL[classify_complexity]
-  CL --> TR[transform_query]
-  TR --> RT[retrieve]
-  RT --> GR[grade_docs]
-  GR --> GE[generate]
-  GE --> VF[verify_facts]
-  VF --> EV[evaluate]
-  EV --> RO{route_or_retry}
-  RO -->|auto| OK([Answer + sources])
-  RO -.->|retry| TR
+  Q([Support question]) --> Ask[POST /api/ask]
+  Ask --> Retrieval[Hybrid retrieval and answer]
+  Retrieval --> Response[Answer with citations]
+  Ask -. optional flag .-> Journey[Read-only shipment journey]
+  Journey --> Ledger[Trace and evidence records]
+  Ledger --> Review[Admin Evidence view]
 ```
 
-The full flowchart, with all 12 nodes and conditional transitions, is generated
-automatically from `agent/graph.py` on the
-[LangGraph state machine](/RAG_Support_Assistant/architecture/langgraph/) page.
+The [API catalog](/RAG_new/architecture/routes/) is generated from the current
+FastAPI routes. The [project overview](/RAG_new/guides/overview/) explains the
+journey and its default-off flag.
 
-### What `/api/ask` returns for "How do I fix E20?"
+### Recorded shipment-status request
 
-```json
-{
-  "answer": "Error E20 is a water-drainage problem. Likely causes: a clogged drain filter, a kinked drain hose, or a faulty drain pump [1].",
-  "sources": [
-    { "source": "errors_e10_e30.md", "page_content": "E20 — water drainage problem …" }
-  ],
-  "citations": [
-    { "index": 1, "doc_id": "errors_e10_e30.md", "title": "errors_e10_e30.md", "excerpt": "drain valve / filter …" }
-  ]
-}
-```
-
-The shape is fixed by the Pydantic models `AskResponse`, `SourceInfo`, and
-`Citation` in `api/routers/conversation.py`. For the full node-by-node
-walkthrough, see [What it does](/RAG_Support_Assistant/examples/).
+The [three-minute recording](https://github.com/brownjuly2003-code/RAG_new/blob/master/demo/phase-e-demo.mp4)
+asks `What is the status of shipment AC-100001?` and opens its trace in Evidence.
+The fixture source is stale, so the journey routes to a human with
+`EVIDENCE_STALE`. The recording shows an escalation, not a verified resolution.
 
 ## Start here
 
 <div class="q-next">
 
-- [What it does](/RAG_Support_Assistant/examples/) walks one E20 question through the graph.
-- [Reproduce E20](/RAG_Support_Assistant/reproduce-e20/) gives the deterministic trust path: seed, ingest, ask, verify.
-- [Try locally](/RAG_Support_Assistant/guides/quickstart/) covers the local setup path.
-- [Evaluation](/RAG_Support_Assistant/evaluation/) covers what is measured, how, and where the limits are.
-- [GitHub](https://github.com/brownjuly2003-code/RAG_Support_Assistant) contains the source.
+- [Project overview](/RAG_new/guides/overview/) explains the product, measured results, and limits.
+- [Try locally](/RAG_new/guides/quickstart/) covers the local setup path.
+- [Graph A/B evidence](/RAG_new/guides/evidence/gr3-graph-lane-ab/) pins the retrieval comparison and its NO-SHIP verdict.
+- [API routes](/RAG_new/architecture/routes/) lists the current integration surface.
+- [GitHub](https://github.com/brownjuly2003-code/RAG_new) contains the source and demo.
 
 </div>

@@ -1,20 +1,20 @@
 ---
-title: RAG Support Assistant
-description: "Публичная документация RAG Support Assistant: демо-база, маршрут через LangGraph и воспроизводимый сценарий E20."
+title: RAG assistant
+description: "Ответы для поддержки авиагрузоперевозок: измеренный поиск и проверяемые свидетельства по отправкам."
 template: splash
 hero:
   tagline: |
-    Агент поддержки находит документы по продукту, проводит каждый ответ
-    через LangGraph и опирается только на известные источники.
+    Ответы для поддержки авиагрузоперевозок с опорой на документы и трассой
+    от вопроса об отправке до свидетельств, объясняющих эскалацию.
   actions:
-    - text: Смотреть пример
-      link: /RAG_Support_Assistant/ru/examples/
+    - text: Смотреть трёхминутное демо
+      link: https://github.com/brownjuly2003-code/RAG_new/blob/master/demo/phase-e-demo.mp4
       variant: primary
-    - text: Воспроизвести E20
-      link: /RAG_Support_Assistant/ru/reproduce-e20/
+    - text: Обзор проекта
+      link: /RAG_new/guides/overview/
       variant: secondary
     - text: GitHub
-      link: https://github.com/brownjuly2003-code/RAG_Support_Assistant
+      link: https://github.com/brownjuly2003-code/RAG_new
       variant: minimal
 ---
 
@@ -23,77 +23,64 @@ hero:
 <div class="q-cardgrid q-cardgrid--accent">
   <article class="q-card">
     <h3 class="q-title">
-      <span class="q-label">Опубликованная документация</span>
+      <span class="q-label">Измеренный поиск</span>
     </h3>
-    <div class="q-body"><p>Документация опубликована под <code>/RAG_Support_Assistant</code>. Английская и русская стартовые страницы поддерживаются явно.</p></div>
+    <div class="q-body"><p>Точность контекста на 100 вопросах: 0,5067 у гибридного поиска и 0,5487 у графа G2. Граф не прошёл пороги покрытия и задержки и по умолчанию выключен.</p></div>
   </article>
 
   <article class="q-card">
     <h3 class="q-title">
-      <span class="q-label">Засеянная демо-база</span>
+      <span class="q-label">Проверяемые свидетельства</span>
     </h3>
-    <div class="q-body"><p>Демо-база начинается с трёх документов: гарантия, возвраты и ошибки E10-E30. E20 описан в <code>errors_e10_e30.md</code>.</p></div>
+    <div class="q-body"><p>Опциональный маршрут чтения статуса отправки записывает факты источника, состояние политики, утверждения и квитанцию повтора рядом с ответом во вкладке Evidence.</p></div>
   </article>
 
   <article class="q-card">
     <h3 class="q-title">
-      <span class="q-label">Оценка по фикстуре</span>
+      <span class="q-label">Демо продукта</span>
     </h3>
-    <div class="q-body"><p>Набор содержит 12 кейсов по шести темам: коды ошибок, сброс пароля, гарантия, установка, биллинг и общие вопросы. Демо-база из трёх документов покрывает не все темы фикстуры.</p></div>
+    <div class="q-body"><p>Трёхминутная запись проводит реальный запрос <code>/api/ask</code> через трассу к эскалации из-за устаревших данных. Источник отправки — фикстура TMS.</p></div>
   </article>
 
   <article class="q-card">
     <h3 class="q-title">
-      <span class="q-label">Прослеживаемая API-поверхность</span>
+      <span class="q-label">Границы измерений</span>
     </h3>
-    <div class="q-body"><p>Каталог API строится из декораторов маршрутов FastAPI, а <code>/api/ask</code> возвращает ответ вместе с источниками и пронумерованными ссылками-цитатами.</p></div>
+    <div class="q-body"><p>Нет измеренного выхода проверенных решений или стоимости одного решения. Маршрут отправки по умолчанию выключен; записанный кейс заканчивается эскалацией.</p></div>
   </article>
 </div>
 
-### Путь одного вопроса через LangGraph
+### Один запрос, два проверяемых пути
 
 ```mermaid
 flowchart LR
-  Q([Вопрос]) --> CL[classify_complexity]
-  CL --> TR[transform_query]
-  TR --> RT[retrieve]
-  RT --> GR[grade_docs]
-  GR --> GE[generate]
-  GE --> VF[verify_facts]
-  VF --> EV[evaluate]
-  EV --> RO{route_or_retry}
-  RO -->|auto| OK([Ответ + источники])
-  RO -.->|retry| TR
+  Q([Вопрос поддержки]) --> Ask[POST /api/ask]
+  Ask --> Retrieval[Гибридный поиск и ответ]
+  Retrieval --> Response[Ответ с цитатами]
+  Ask -. опциональный флаг .-> Journey[Маршрут чтения статуса]
+  Journey --> Ledger[Трасса и свидетельства]
+  Ledger --> Review[Вкладка Evidence]
 ```
 
-Полный flowchart со всеми 12 узлами и условными переходами автоматически
-генерируется из `agent/graph.py` на странице
-[LangGraph state machine](/RAG_Support_Assistant/ru/architecture/langgraph/).
+Каталог [маршрутов API](/RAG_new/ru/architecture/routes/) создаётся из текущего
+кода FastAPI. [Обзор проекта](/RAG_new/guides/overview/) объясняет маршрут
+отправки и его флаг, выключенный по умолчанию.
 
-### Что возвращает `/api/ask` на вопрос «Как исправить E20?»
+### Записанный запрос о статусе отправки
 
-```json
-{
-  "answer": "Ошибка E20 связана с проблемой слива воды. Возможные причины: засорённый сливной фильтр, перегиб сливного шланга или неисправность сливного насоса [1].",
-  "sources": [
-    { "source": "errors_e10_e30.md", "page_content": "E20 — проблема со сливом воды …" }
-  ],
-  "citations": [
-    { "index": 1, "doc_id": "errors_e10_e30.md", "title": "errors_e10_e30.md", "excerpt": "клапан слива / фильтр …" }
-  ]
-}
-```
-
-Форма закреплена Pydantic-моделями `AskResponse`, `SourceInfo`, `Citation` в `api/routers/conversation.py`. Полный разбор узлов графа — на странице [Что делает ассистент](/RAG_Support_Assistant/ru/examples/).
+[Трёхминутная запись](https://github.com/brownjuly2003-code/RAG_new/blob/master/demo/phase-e-demo.mp4)
+показывает вопрос `What is the status of shipment AC-100001?` и переход по
+трассе во вкладку Evidence. Данные фикстуры устарели, поэтому маршрут передаёт
+кейс человеку с причиной `EVIDENCE_STALE`. Это эскалация, а не проверенное решение.
 
 ## Начать здесь
 
 <div class="q-next">
 
-- [Что делает ассистент](/RAG_Support_Assistant/ru/examples/) — один вопрос E20 проходит через весь граф.
-- [Воспроизвести E20](/RAG_Support_Assistant/ru/reproduce-e20/) — детерминированный путь доверия: засеять, загрузить, спросить, проверить.
-- [Запустить локально](/RAG_Support_Assistant/ru/guides/quickstart/) — как поднять стек локально.
-- [Оценка](/RAG_Support_Assistant/ru/evaluation/) — что измеряется, как, и где границы.
-- [GitHub](https://github.com/brownjuly2003-code/RAG_Support_Assistant) — исходный код.
+- [Обзор проекта](/RAG_new/guides/overview/) — продукт, измерения и ограничения.
+- [Запустить локально](/RAG_new/guides/quickstart/) — настройка среды.
+- [Сравнение поисковых маршрутов](/RAG_new/guides/evidence/gr3-graph-lane-ab/) — результаты и вердикт NO-SHIP.
+- [Маршруты API](/RAG_new/ru/architecture/routes/) — поверхность интеграции.
+- [GitHub](https://github.com/brownjuly2003-code/RAG_new) — код и демо.
 
 </div>

@@ -138,8 +138,8 @@ Q1, Q2a and Q4 answered; the rest block their phase:
 - **Q2 (B):** label approval answered 2026-09-25 («Одобряю», all five batches). Open (Q2b):
   40 double-annotated calibration routes and 100 real shipment-bound support requests;
   B.2/B.3/B.5 stay blocked without them, and resolution numbers stay synthetic.
-- **Q3 (phase C):** heavy runs on Colab or the iMac. **Q4 (phase E)** answered 2026-09-25:
-  «Под раг ассистент»: publish under the RAG assistant name; confirm the target at E.
+- **Q3 (phase C):** heavy runs on Colab or the iMac. **Q4 (phase E)** confirmed
+  2026-09-30: publish current `brownjuly2003-code/RAG_new` as **RAG assistant**, Pages `/RAG_new/`.
 
 ## Links
 

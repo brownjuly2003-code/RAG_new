@@ -1,5 +1,6 @@
 ---
 title: "Запустить локально — RAG Support Assistant"
+draft: true
 ---
 
 # Запустить локально — RAG Support Assistant

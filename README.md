@@ -1,7 +1,8 @@
-# RAG_new — support answers with inspectable evidence
+# RAG assistant — support answers with inspectable evidence
 
-`RAG_new` helps support teams answer logistics and air-cargo questions from a
-knowledge base. An optional shipment-status journey records the source facts,
+RAG assistant (the `RAG_new` repository) helps support teams answer logistics
+and air-cargo questions from a knowledge base. An optional shipment-status
+journey records the source facts,
 policy decision, claims, and replay receipt behind the synchronous `/api/ask`.
 Reviewers can inspect that record in the admin Evidence tab.
 

@@ -4,9 +4,9 @@ import { unified } from '@astrojs/markdown-remark';
 import starlight from '@astrojs/starlight';
 import rehypeMermaid from 'rehype-mermaid';
 
-const SITE_URL = 'https://brownjuly2003-code.github.io/RAG_Support_Assistant';
+const SITE_URL = 'https://brownjuly2003-code.github.io/RAG_new';
 const OG_IMAGE = `${SITE_URL}/og-image.png`;
-const REPO_URL = 'https://github.com/brownjuly2003-code/RAG_Support_Assistant';
+const REPO_URL = 'https://github.com/brownjuly2003-code/RAG_new';
 
 const personLd = {
   '@context': 'https://schema.org',
@@ -23,9 +23,9 @@ const projectLd = {
   '@context': 'https://schema.org',
   '@type': 'SoftwareSourceCode',
   '@id': `${SITE_URL}/#project`,
-  name: 'RAG Support Assistant',
+  name: 'RAG assistant',
   description:
-    'LangGraph-based RAG service with offline evaluation, observability, and a reproducible E20 walkthrough.',
+    'Evidence-linked answers for logistics and air-cargo support, with an inspectable shipment-status journey.',
   url: SITE_URL,
   codeRepository: REPO_URL,
   programmingLanguage: 'Python',
@@ -38,7 +38,7 @@ const projectLd = {
 /** @type {Array<{ tag: 'meta' | 'script'; attrs?: Record<string, string>; content?: string }>} */
 const headTags = [
   { tag: 'meta', attrs: { property: 'og:type', content: 'website' } },
-  { tag: 'meta', attrs: { property: 'og:site_name', content: 'RAG Support Assistant' } },
+  { tag: 'meta', attrs: { property: 'og:site_name', content: 'RAG assistant' } },
   { tag: 'meta', attrs: { property: 'og:image', content: OG_IMAGE } },
   { tag: 'meta', attrs: { property: 'og:image:width', content: '1200' } },
   { tag: 'meta', attrs: { property: 'og:image:height', content: '630' } },
@@ -47,12 +47,12 @@ const headTags = [
     tag: 'meta',
     attrs: {
       property: 'og:image:alt',
-      content: 'RAG Support Assistant — LangGraph retrieval, observability, offline evaluation.',
+      content: 'RAG assistant — air-cargo support answers with inspectable evidence.',
     },
   },
   { tag: 'meta', attrs: { name: 'twitter:card', content: 'summary_large_image' } },
   { tag: 'meta', attrs: { name: 'twitter:image', content: OG_IMAGE } },
-  { tag: 'meta', attrs: { name: 'twitter:image:alt', content: 'RAG Support Assistant — LangGraph retrieval, observability, offline evaluation.' } },
+  { tag: 'meta', attrs: { name: 'twitter:image:alt', content: 'RAG assistant — air-cargo support answers with inspectable evidence.' } },
   { tag: 'meta', attrs: { name: 'author', content: 'Julia Edomskikh' } },
   {
     tag: 'script',
@@ -68,7 +68,7 @@ const headTags = [
 
 export default defineConfig({
   site: 'https://brownjuly2003-code.github.io',
-  base: '/RAG_Support_Assistant',
+  base: '/RAG_new',
   // Preserve Astro 6 whitespace compression semantics (Astro 7 default changed).
   compressHTML: true,
   markdown: {
@@ -81,11 +81,11 @@ export default defineConfig({
   integrations: [
     starlight({
       title: {
-        en: 'RAG Support Assistant',
-        ru: 'RAG Support Assistant',
+        en: 'RAG assistant',
+        ru: 'RAG assistant',
       },
       description:
-        'Public docs for RAG Support Assistant: product examples, architecture, local setup, and API routes.',
+        'Documentation for RAG assistant: measured retrieval, shipment evidence, local setup, and API routes.',
       head: headTags,
       components: {
         Head: './src/components/Head.astro',
@@ -99,18 +99,12 @@ export default defineConfig({
         {
           icon: 'github',
           label: 'GitHub',
-          href: 'https://github.com/brownjuly2003-code/RAG_Support_Assistant',
+          href: REPO_URL,
         },
       ],
       sidebar: [
         { label: 'Home', translations: { ru: 'Главная' }, slug: 'index' },
-        { label: 'What it does', translations: { ru: 'Что делает' }, slug: 'examples' },
-        // Все верхнеуровневые пункты сайдбара имеют RU-зеркала:
-        // Architecture/* — через генераторы scripts/gen-*.mjs, остальные —
-        // как hand-written MDX под src/content/docs/ru/.
-        { label: 'Reproduce E20', translations: { ru: 'Воспроизвести E20' }, slug: 'reproduce-e20' },
-        { label: 'Architecture', translations: { ru: 'Архитектура' }, slug: 'architecture' },
-        { label: 'Evaluation', translations: { ru: 'Оценка' }, slug: 'evaluation' },
+        { label: 'Overview', translations: { ru: 'Обзор' }, slug: 'guides/overview' },
         { label: 'Try locally', translations: { ru: 'Запустить локально' }, slug: 'guides/quickstart' },
         { label: 'API', translations: { ru: 'API' }, slug: 'architecture/routes' },
       ],
