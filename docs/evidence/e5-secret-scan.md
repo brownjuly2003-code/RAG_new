@@ -157,6 +157,47 @@ python -m pytest tests/test_restore_verify_postgres.py tests/integration/test_re
 Logs and JUnit: `.tmp/e5-scan/docker-1.log`, `docker-2.log`, `docker-2.xml`;
 source/input hashes and cleanup result: `.tmp/e5-scan/docker-2-receipt.json`.
 
+## Rerun on the ratified tree (2026-09-30, late)
+
+Source: `b0386e9ce9ad327049e93b87469d71864c509a9e` (the ratified quality plan,
+its audits and the Astra reference spec; `git diff --stat 32b526b..b0386e9`
+touches no code or test file) plus two dirty files pinned by SHA-256 before
+the second run: `tests/test_docs_publication.py`
+`139b1edb8915473712508ad6a5d19e5ba4d6e61c5e9a0f6269d0a8c667c03139` (the F9
+I001 import-order fix from `ruff check --fix`) and `BACKLOG.md`
+`99effbfb4630a26bb365c8563c98846788a2a00694c76bcdf612e0797329383a`. The tree
+was shipped to the MyFlow gate checkout on the Mac by `.tmp/mf-mac/sync.py`;
+every step ran through `.tmp/mf-mac/remote.py --site` (gr4 venv plus the site
+overlay) with the same commands as the gate steps `unit` and `resolution-e2e`.
+
+- Unit suite, attempt 1 (synced tree `5456781976`, before the `BACKLOG.md`
+  edit): **1 failed, 3,721 passed, 43 skipped, 11 deselected**, 207.59 s. The
+  failure, `test_docs_quality.py::test_top_level_backlog_routes_to_live_state_and_preserves_history`,
+  was the ratification commit `122cfd4` growing `BACKLOG.md` to 70 lines
+  against its 60-line cap. The quality-thread bullet was condensed to four
+  lines (59 lines in total); no test changed.
+- Unit suite, attempt 2 (synced tree `b012b81851`): **3,722 passed, 43
+  skipped, 11 deselected**, exit 0, 192.58 s, with the gate's deselection of
+  `tests/test_a11y.py::test_axe_has_no_serious_or_critical_findings`.
+- `tests/integration/test_shipment_status_e2e.py` and
+  `tests/integration/test_conversation.py` (synced tree `5456781976`; the
+  later edit touched only `BACKLOG.md`): **36 passed**, exit 0, 2.83 s.
+- Gitleaks 8.30.1, `git --log-opts='--all' --redact --no-banner` on
+  `b0386e9`: 1,087 commits, 28,401,391 bytes, 4.34 s, exit 0, **no findings**;
+  the report `.tmp/e5-scan/final-b0386e9-20260930.json` is `[]`.
+- The Docker restore checks were not repeated: no file under `db/`, `scripts/`
+  or `tests/` changed since the `536cd59`/`32b526b` runs above.
+
+Logs: `.tmp/e5-scan/mac-unit-b0386e9-1.log`, `mac-unit-b0386e9-2.log`,
+`mac-e2e-b0386e9-1.log`; receipt with the exact commands, synced tree ids,
+exit codes, log and report SHA-256 values:
+`.tmp/e5-scan/verification-receipt-b0386e9-20260930.json` (written by
+`.tmp/e5-write-receipt-b0386e9-20260930.py`, which re-checks the pinned files,
+the log tails and the empty scan report before writing). This rerun is MyFlow task T-55 (plan slice 0.1 with
+0.2); its full gate (mypy strict, unit, e2e) runs once more on the committed
+tree and is journaled under `.myflow/`. Publication (E.4) still waits for
+GitHub Actions.
+
 ## Remaining gates
 
 - Of the original 16 unit skips, the nine Windows, three `age` and two

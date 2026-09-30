@@ -22,7 +22,7 @@ root — that habit is what produced 29 of them and is now closed.
 
 ## Publication gate checks
 
-- E.5 local checks, `c81de77`: [verification and secret-scan record](docs/evidence/e5-secret-scan.md).
+- E.5 local checks, `c81de77`, rerun on `b0386e9` (2026-09-30 late: 3,722 unit + 36 e2e passed on the Mac, history scan 0 findings): [verification and secret-scan record](docs/evidence/e5-secret-scan.md).
   Mac unit suite: **3,763 passed, 16 skipped**, coverage **77.78%** (gate 72%);
   PostgreSQL integrations: **93 passed, 1 skipped**; admin browser regression:
   **1 passed**. Corpus SHA, exact test-tree hashes, commands and skip reasons

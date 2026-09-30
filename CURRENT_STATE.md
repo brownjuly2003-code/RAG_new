@@ -83,8 +83,8 @@ browser checks run on Mac.
   23 tests, `astro check`, 239-page build and five link checks passed.
   `236f7c1` is unpushed; the repository remains private. The [E.5 capsule](docs/evidence/e5-secret-scan.md)
   records the Mac full suite (3,763 unit + 93 integration passed) and the history scan on
-  `c81de77`; HEAD `32b526b` is three commits later and needs the rerun before publication;
-  CI is unavailable. E.4 needs public/deploy checks.
+  `c81de77`, rerun 2026-09-30 (late) on `b0386e9`: 3,722 unit + 36 e2e passed on the Mac, history
+  scan 0 findings; the MyFlow full gate repeats it on the commit. CI is unavailable. E.4 needs public/deploy checks.
 - **Executor:** [direct GLM 5.3 xhigh](docs/operations/direct-glm-5.3.md); fallback
   (narrowed retry for recoverable failures, Codex `cw` on quota) in `CLAUDE.md` and the runbook.
 

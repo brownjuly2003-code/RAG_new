@@ -2,7 +2,6 @@
 
 from pathlib import Path
 
-
 ROOT = Path(__file__).resolve().parent.parent
 SITE = ROOT / "docs-site"
 CONTENT = SITE / "src" / "content" / "docs"

@@ -375,3 +375,37 @@ every Sol/GLM proposal (i)–(xvi) resolved per Astra §5; nothing weakened.
   gate for the owner (`git -c credential.helper='!gh auth git-credential'
   push origin master` after the Mac rerun of E.5 per `CLAUDE.md`).
 
+## Step 15 — Delegation continued: MyFlow registration, E.5 rerun, Astra reference (30.09, late)
+
+- Owner: «про за мной — я просила все сделать за меня», «регистрируй», and
+  «про разметку — проверь на кодекс astra xhigh». Human grading of the 10
+  blind cases stays a human step (an agent grade would calibrate a model
+  against a model); Astra is added as a third model reference instead.
+- MyFlow (`myflow_new` 2.4.14): plan tracks 0–2 registered with `task-add`
+  as T-55…T-65 (details in `.tmp/mf-plan/`), `plan-validate` OK (65 tasks),
+  `doctor` OK. T-57 (import of Julia's grades) parked until the grades exist;
+  `scope allow tests/…` pre-approved for the code/docs slices. Executor stays
+  GLM 5.3 direct per `CLAUDE.md`; MyFlow supplies gate, review and commit
+  (slice opened with `next --task`, patch applied by the lead agent, then
+  `done` → `review-run` → `gate --full` → `attach-commit`).
+- Astra reference spec `docs/specs/p2-astra-reference-sample.md` committed as
+  `b0386e9` before any corpus request; the only Astra request so far is the
+  route probe (`Reply with exactly OK.`, empty directory, `xhigh`, read-only
+  sandbox, thread `01a0f471-8824-76c2-96bc-f6bd3046692d`).
+- T-55 (slice 45, E.5 rerun + F9): gitleaks on `b0386e9` → 0 findings; Mac
+  unit attempt 1 → 1 failed (`BACKLOG.md` 70 > 60 lines after `122cfd4`),
+  condensed to 59 lines; attempt 2 → 3,722 passed, 43 skipped; e2e → 36
+  passed; I001 fixed in `tests/test_docs_publication.py`;
+  `docs/windows-test-workflow.md` already carried the `py -3.13` and «full
+  suite on the Mac» rules. Capsule section «Rerun on the ratified tree»,
+  `EVIDENCE_INDEX.md` and `CURRENT_STATE.md` updated.
+- T-56 (Astra collector): GLM 5.3 direct run `result-001` ended with
+  `stop_reason=max_tokens` at 48,000 output tokens and 1,675 characters of
+  text (the window went to reasoning) → recoverable failure, one narrowed
+  retry `result-002` (collector script only, 20,334-character prompt) ended
+  in `ConnectionResetError` (WinError 10054) mid-stream with no result file.
+  Second failure → executor for T-56 switches to Codex `cw` per the runbook
+  and `CLAUDE.md`, through MyFlow's own writer chain (`next --task T-56`,
+  `writer`), disclosed in the commit message; the collector run itself, the
+  SHA pins and the capsule stay with the lead agent.
+
