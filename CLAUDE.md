@@ -43,3 +43,9 @@ binds autopilot too.
 - **Executor: GLM 5.3, called directly with `xhigh`.** Follow the
   [direct API runbook](docs/operations/direct-glm-5.3.md); do not substitute
   Grok, OpenCode or a Claude CLI wrapper for the direct request.
+  Fallback on a GLM failure: output window exhausted or connection reset —
+  one narrowed retry, then Codex (profile `cw`); quota `1308`/`1310` — wait
+  for the reset or go to Codex at once, no retry before the reset. Allowed by
+  the owner on 2026-09-24 for `1310` and extended to the other failures on
+  2026-09-30 by delegation; the substitution is disclosed in the commit
+  message and all independent checks stay (runbook, recovery policy).

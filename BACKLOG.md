@@ -28,6 +28,21 @@ conditions, read [`ROADMAP.md`](ROADMAP.md). The active delivery plan is
   P1 and P1b are both `NO_SHIP` ([P1b capsule](docs/evidence/p1b-expanded-cut.md)):
   H-relative exploratory verdicts on 100 agent-authored `agent_labelled` cases
   (0 approved at the time); neither changed product behaviour.
+- Quality thread ([plan](docs/specs/plan_final_30_09_26.md), slices and
+  dependency graph in its §1; adopted and ratified by delegation 2026-09-30; 0.3 done).
+  Ready now: 1.1 — Julia grades the
+  10 blind P2 cases; 2.1 — executor implements route observability per plan
+  §5 (acceptance tests named there); 2.7 — judge contract parser; 1.3a — draft
+  the 30-case dev-set pilot (`agent_labelled`, batches for approval, gold
+  `complexity` per case). Then 2.3 lifecycle, 2.4 parity, 1.4 ruler in code,
+  2.5 expanded baseline on the Mac, 2.6 routing-verdict audit, 2.8 NLI-judge
+  validation, 1.5/1.5c/1.5d external benchmarks — ConditionalQA (primary, research-only
+  licence caveat accepted 2026-09-30), WixQA, MultiHop-RAG advisory (research in
+  [`external-benchmark-candidates.md`](docs/specs/external-benchmark-candidates.md));
+  track 3 opens with the 3.0 graph-enablement policy spec, then after 2.5 and
+  1.3e (locked holdout) 3.1 (H1).
+  Audits of the plan: [GLM](docs/audits/audit_glm_30_09_26_plan.md),
+  [Astra](docs/audits/audit_astra_30_09_26_plan.md).
 - Re-ingest any Chroma collection built before `534612e`: it keeps its
   unpersisted write-ahead-log tail until it is rebuilt
   ([rerun after the fix](docs/evidence/chroma-restart-stability-after-fix.md)).
