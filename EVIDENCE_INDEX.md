@@ -30,8 +30,10 @@ root — that habit is what produced 29 of them and is now closed.
   Follow-up on `813398c` plus the pinned planner fix: **9 Windows tests passed**
   after removing child-profile startup from the timeout, and **5 Mac tests passed**
   with `age` and the byte-identical pinned pool restored. Exact source/input
-  hashes and commands are in the record. This is publication preparation.
-  CI, Docker environment checks and public/deploy verification remain open.
+  hashes and commands are in the record. Docker follow-up on `536cd59` plus the
+  pinned restore fixture correction: **11 Mac tests passed, 0 skipped**,
+  including both previously unrun Docker scenarios. This is publication preparation.
+  CI and public/deploy verification remain open.
 
 ## Slices
 

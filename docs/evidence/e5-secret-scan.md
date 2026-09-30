@@ -4,7 +4,7 @@ Local verification covers the test tree committed at
 `c81de7743f1f7805796d2e15133f50ea43dae879` and every locally reachable ref.
 The Mac ran `236f7c1c1e97ae41f6303b46a535207ee1112f9e` plus the two exact test
 files pinned below; that tree equals `c81de77`. This is publication preparation.
-E.4/E.5 remain open for CI, the conditional checks listed below and publication.
+E.4/E.5 remain open for CI and publication.
 
 ## Scan and triage
 
@@ -127,15 +127,43 @@ Logs: Windows `.tmp/e5-scan/windows-autopilot-20260930-2.log`; Mac
 `/Users/julia/RAG_new_e5_conditional_813398c_20260930/.tmp/conditional-1.log`.
 This closes conditional verification gaps, not a new product or quality slice.
 
+## Docker checks completed on Mac
+
+Source: `536cd5935971cb1e8c7d6e94d5c9197c32ed574d` plus
+`tests/test_restore_verify_postgres.py` SHA-256
+`71c505a9f834ea827fc3f2c4d8a69988b3989a9e12abe7c17c8259a17df5ce15`.
+The same isolated checkout and Python 3.11.15 were used. Colima 0.10.1 ran a
+separate `rag-e5-20260930` profile with 2 CPUs and 2 GiB RAM; Docker server
+29.2.1 used `postgres:16-alpine`. Docker SDK 7.1.0 and testcontainers 4.15.0
+were installed in a separate overlay. The active Docker context was preserved.
+
+Attempt 1 was **1 failed, 1 skipped**: the restore fixture supplied revision
+017 while the real migrated database had revision 033, and the live test's
+`docker info` check timed out at 5 s. GLM 5.3 (direct Responses, `xhigh`)
+supplied the five-line fixture correction: copy the real migration files into
+the temporary project before backup. A CLI diagnostic then returned in
+0.12–0.24 s; the next run used an isolated CLI config and unchanged timeouts.
+
+Attempt 2: **11 passed, 0 skipped**, exit 0, 41.38 s. This includes all nine
+restore unit checks, the Docker backup/restore scenario and the live regression
+evaluation's asyncpg/FK checks. Both named Docker tests appear as passed in
+JUnit XML. No containers remained after the run; one testcontainers import
+deprecation warning was reported. The original full-suite counts are unchanged.
+
+```text
+python -m pytest tests/test_restore_verify_postgres.py tests/integration/test_regression_eval_live.py::test_regression_eval_live_no_asyncpg_race_no_fk_violation --noconftest -vv -p no:cacheprovider -p pytest_timeout -ra --tb=short --timeout=240 --timeout-method=thread
+```
+
+Logs and JUnit: `.tmp/e5-scan/docker-1.log`, `docker-2.log`, `docker-2.xml`;
+source/input hashes and cleanup result: `.tmp/e5-scan/docker-2-receipt.json`.
+
 ## Remaining gates
 
 - Of the original 16 unit skips, the nine Windows, three `age` and two
   pinned-pool checks passed separately above. The child-only Chroma restart
-  entry is intentional; its parent ran. The Docker restore check and the
-  integration `test_regression_eval_live.py` remain unrun: the Mac lacks the
-  Python Docker module, and `docker info` exited 1 because its configured
-  Colima daemon socket does not exist. Both suites report the existing
-  Starlette/AnyIO deprecation warning.
+  entry is intentional; its parent ran. The remaining Docker restore check and
+  the integration `test_regression_eval_live.py` passed separately above.
+  Both original suites report the existing Starlette/AnyIO deprecation warning.
 - GitHub Actions is unavailable until early October 2026. The CI matrix,
   security/build gates and Pages deployment have not been rerun for this tree.
 - The repository remains private; the prepared **RAG assistant** site at

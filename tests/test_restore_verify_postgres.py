@@ -335,6 +335,11 @@ def test_restore_verify_integration_end_to_end(
 
     compose_base = restore_verify_integration._compose_base()
     project_root = _build_source_project(tmp_path)
+    shutil.copytree(
+        Path(__file__).resolve().parent.parent / "alembic" / "versions",
+        project_root / "alembic" / "versions",
+        dirs_exist_ok=True,
+    )
     snapshot_dir = tmp_path / "snapshot"
     monkeypatch.setenv("DB_ENCRYPTION_KEY", "restore-verify-test-key")
 
