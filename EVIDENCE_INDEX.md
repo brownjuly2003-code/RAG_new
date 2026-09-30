@@ -22,8 +22,12 @@ root — that habit is what produced 29 of them and is now closed.
 
 ## Publication gate checks
 
-- E.5 local history scan: [secret-scan record](docs/evidence/e5-secret-scan.md).
-  No unallowlisted findings; the full pre-publication gate remains open.
+- E.5 local checks, `c81de77`: [verification and secret-scan record](docs/evidence/e5-secret-scan.md).
+  Mac unit suite: **3,763 passed, 16 skipped**, coverage **77.78%** (gate 72%);
+  PostgreSQL integrations: **93 passed, 1 skipped**; admin browser regression:
+  **1 passed**. Corpus SHA, exact test-tree hashes, commands and skip reasons
+  are recorded there. The all-ref scan found no unallowlisted secrets.
+  CI, conditional environment checks and public/deploy verification remain open.
 
 ## Slices
 
