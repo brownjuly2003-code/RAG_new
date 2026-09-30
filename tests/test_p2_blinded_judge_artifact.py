@@ -2,6 +2,7 @@
 
 import hashlib
 import json
+import math
 import subprocess
 from pathlib import Path
 
@@ -108,19 +109,31 @@ def test_grades_and_primary_verdict_replay_from_replies(published):
         assert published["metrics"][pool_name]["consensus"]["graded_cases"] == expected_cases
         for arm in ("top_k_5", "rel_0.2", "held_out", "oracle_best_prefix"):
             if arm in inputs.arms[pool_name]:
-                assert p2.arm_metrics(consensus, inputs.arms[pool_name][arm]) == (
-                    published["metrics"][pool_name]["consensus"]["arms"][arm]["metrics"]
-                )
+                actual = p2.arm_metrics(consensus, inputs.arms[pool_name][arm])
+                expected = published["metrics"][pool_name]["consensus"]["arms"][arm]["metrics"]
+                assert actual.keys() == expected.keys()
+                for name, value in expected.items():
+                    if isinstance(value, float):
+                        assert actual[name] == pytest.approx(value, rel=1e-12, abs=1e-15)
+                    else:
+                        assert actual[name] == value
         if pool_name == "H":
             h_consensus = consensus
 
     case_ids = sorted(h_consensus)
     pool = inputs.pools["H"]
     ruler = [pool.ruler_per_case[case_id] for case_id in case_ids]
+    # Preserve the publication runtime's compensated sums for rank ties on Python 3.11.
+    weights = [1 / (index + 1) for index in range(5)]
     judged = [
-        float(p2._case_metrics(h_consensus[case_id], 5)["ruler_shaped_judged_precision"])
+        math.fsum(grade / 3 * weight for grade, weight in
+                  zip(h_consensus[case_id], weights, strict=True)) / math.fsum(weights)
         for case_id in case_ids
     ]
+    for case_id, score in zip(case_ids, judged, strict=True):
+        assert p2._case_metrics(h_consensus[case_id], 5)["ruler_shaped_judged_precision"] == (
+            pytest.approx(score, rel=1e-12, abs=1e-15)
+        )
     tau = p2.kendall_tau_b(ruler, judged)
     interval = p2.bootstrap_tau_ci(ruler, judged)
     alpha, units = p2._alpha_for_consensus(

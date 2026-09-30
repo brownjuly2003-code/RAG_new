@@ -222,7 +222,8 @@ def test_the_admin_page_carries_the_evidence_view(client_with_key: TestClient) -
 def test_the_admin_script_fetches_and_renders_the_evidence() -> None:
     js = (PROJECT_ROOT / "static" / "admin.js").read_text(encoding="utf-8")
 
-    assert '"/api/admin/traces/" + encodeURIComponent(traceId) + "/evidence"' in js
+    assert 'var path = "/api/admin/traces/" + encodeURIComponent(traceId)' in js
+    assert 'api("GET", path + "/evidence")' in js
     # Every section A.3 owes a reviewer.
     for heading in (
         "Contract",
