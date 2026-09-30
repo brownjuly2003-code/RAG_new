@@ -96,13 +96,46 @@ Redacted local logs are retained under the ignored `.tmp/e5-scan/`, including
 `focused-green-compensated.log`. The configured runner and dependency overlays
 are local verification aids.
 
+## Conditional checks completed separately
+
+Follow-up source: `813398c01c829127cafbdcc2fdc91e0d74022d72` plus
+`scripts/autopilot.ps1` SHA-256
+`6f47d55cf2200c0b19782fc9c1d64e14ab7a5e20381b543a19bba1b6d8315662`.
+The original full-suite counts above are unchanged; these are separate checks.
+
+- Windows Python 3.14.6, PowerShell 5.1.26100.9444: **9 passed**, exit 0,
+  54.63 s. Attempt 1 failed the planner-timeout case (8 passed, 1 failed):
+  loading the child PowerShell profile took 4,349 ms against a 1 s timeout;
+  startup without the profile took 236 ms. GLM 5.3 (direct Responses, `xhigh`)
+  supplied the `-NoProfile` launch change; attempt 2 passed every existing test.
+- Mac Python 3.11.15: **5 passed**, exit 0, 2.76 s, attempt 1: three `age`
+  encryption/restore tests and both previously skipped pinned-pool checks.
+  `age` v1.3.2 was installed only in the verification tools directory; its
+  official `darwin-amd64` release asset digest matched SHA-256
+  `1d1e4bc66e1427edad7739ae7616157de0e79db8b6d2a1497d7d9925fb06a539`.
+  The restored pool was byte-identical: 7,692,098 bytes, SHA-256
+  `91ce1745e13ce24cc1b69d0655412385700f5028b4e6b4ed4bf056cb6188ff10`.
+
+Both checks disabled plugin autoload and used the standard pytest fixtures:
+
+```text
+python -m pytest tests/test_autopilot_runner.py --noconftest -q -p no:cacheprovider -ra --tb=short
+python -m pytest tests/test_backup_snapshot_encryption.py tests/test_restore_verify_encryption.py tests/test_section_coherence_arm.py::test_no_pool_candidate_carries_the_page_marker_at_all tests/test_section_coherence_arm.py::test_the_parser_agrees_with_the_pool_on_every_candidate --noconftest -q -p no:cacheprovider -ra --tb=short
+```
+
+Logs: Windows `.tmp/e5-scan/windows-autopilot-20260930-2.log`; Mac
+`/Users/julia/RAG_new_e5_conditional_813398c_20260930/.tmp/conditional-1.log`.
+This closes conditional verification gaps, not a new product or quality slice.
+
 ## Remaining gates
 
-- The 16 unit skips cover nine Windows PowerShell checks, three `age` checks,
-  one Docker restore check, two unavailable pinned-pool checks and the child-only
-  Chroma restart entry. The parent Chroma restart test ran. The integration skip
-  is `test_regression_eval_live.py`, whose Docker dependency is unavailable.
-  Both suites report the existing Starlette/AnyIO deprecation warning.
+- Of the original 16 unit skips, the nine Windows, three `age` and two
+  pinned-pool checks passed separately above. The child-only Chroma restart
+  entry is intentional; its parent ran. The Docker restore check and the
+  integration `test_regression_eval_live.py` remain unrun: the Mac lacks the
+  Python Docker module, and `docker info` exited 1 because its configured
+  Colima daemon socket does not exist. Both suites report the existing
+  Starlette/AnyIO deprecation warning.
 - GitHub Actions is unavailable until early October 2026. The CI matrix,
   security/build gates and Pages deployment have not been rerun for this tree.
 - The repository remains private; the prepared **RAG assistant** site at

@@ -27,7 +27,11 @@ root — that habit is what produced 29 of them and is now closed.
   PostgreSQL integrations: **93 passed, 1 skipped**; admin browser regression:
   **1 passed**. Corpus SHA, exact test-tree hashes, commands and skip reasons
   are recorded there. The all-ref scan found no unallowlisted secrets.
-  CI, conditional environment checks and public/deploy verification remain open.
+  Follow-up on `813398c` plus the pinned planner fix: **9 Windows tests passed**
+  after removing child-profile startup from the timeout, and **5 Mac tests passed**
+  with `age` and the byte-identical pinned pool restored. Exact source/input
+  hashes and commands are in the record. This is publication preparation.
+  CI, Docker environment checks and public/deploy verification remain open.
 
 ## Slices
 

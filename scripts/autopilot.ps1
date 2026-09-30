@@ -108,7 +108,7 @@ exit `$code
     [System.IO.File]::WriteAllText($stdinPath, "", [System.Text.Encoding]::UTF8)
     Remove-Item -Path $stdoutPath,$stderrPath,$exitCodePath -Force -ErrorAction SilentlyContinue
     Write-Log "RUN: pi --model openai-codex/gpt-5.3-codex-spark --thinking minimal --tools write --no-session -p @.autopilot/planner.prompt.md"
-    $process = Start-Process -FilePath "powershell" -ArgumentList @("-ExecutionPolicy", "Bypass", "-File", $runnerPath) -WorkingDirectory $ProjectRoot -RedirectStandardInput $stdinPath -RedirectStandardOutput $stdoutPath -RedirectStandardError $stderrPath -WindowStyle Hidden -PassThru
+    $process = Start-Process -FilePath "powershell" -ArgumentList @("-NoProfile", "-ExecutionPolicy", "Bypass", "-File", $runnerPath) -WorkingDirectory $ProjectRoot -RedirectStandardInput $stdinPath -RedirectStandardOutput $stdoutPath -RedirectStandardError $stderrPath -WindowStyle Hidden -PassThru
     try {
         $timeoutMs = [Math]::Max(1, $PlannerTimeoutSec) * 1000
         if (-not $process.WaitForExit($timeoutMs)) {
