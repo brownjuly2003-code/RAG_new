@@ -557,3 +557,129 @@ every Sol/GLM proposal (i)–(xvi) resolved per Astra §5; nothing weakened.
   Path back per MyFlow rule 8: `repair --no-findings` → `done` →
   `review-run` → `gate --full`; the gate results are in the commit message
   and the MyFlow journal.
+
+## Step 18 — Owner's word: executor sol, decisions delegated (01.10)
+
+- Julia, 2026-10-01: «Продолжи доработку по плану от вчера. В качестве
+  исполнителя используй sol (кодекс). Все решения на тебе. Комиты и пуши
+  тоже на тебе. Не разворачивай на этой машине wsl, docker и подобное. Для
+  этого используй мак. grok недоступен.»
+- Writer for every slice: `sol-high` (gpt-6.1-sol, Codex `cw`) through
+  `writer --use sol-high --no-fallback`. Each commit discloses this instead of
+  GLM 5.3 direct. Heavy gates run on deproject-mac (`.tmp/mf-mac/`).
+- `limits.writer_timeout_sec` was raised from 3600 to 5400: the T-63 writer,
+  attempt 1, was killed at 3600 s.
+
+## Step 19 — T-58: development ruler in code, P2 baseline (01.10, b448ee4)
+
+- `evaluation/semantic_ruler.py` implements the pre-registered development
+  ruler, including fact matcher `claim-window-v3`. Any negation cue or window
+  disagreement in it goes to blind judgment.
+- Published P2 development baseline (`provisional_ruler`):
+  - H: P@5 = sent_precision 0.6080 [0.5443, 0.6698], nDCG 0.9659;
+  - Hm: 0.8400 [0.75, 1.00].
+- Review: 3 passes. Pass 2 had F-T-58-1 confirmed incomplete; it was
+  reproduced and repaired. Mac full gate GREEN on tree `11185d6ace`.
+- Known matcher quirk, to hand to the owner: Russian «не более» / «не
+  менее» contain the negation cue «не». Every such numeric fact therefore
+  goes to blind judgment, never to a silent pass or fail. Candidate
+  follow-up: a v4 matcher with compound polarity markers. It is not
+  registered yet; a changed matcher recomputes every published
+  `fact_coverage`.
+
+## Step 20 — T-63: preliminary evidence-loss map, ledger entry 1 (01.10, c9d3b8c)
+
+- 100 historical H cases, 200 required-term occurrences. The proxy is
+  agent-authored `answer_contains` terms, not gold.
+- Loss by lane:
+  - hybrid: 0 index losses; 4 cases first lose a term after caps, 9 more
+    between the pool and the sent context;
+  - graph: 4 / 10;
+  - section expansion: 0 lost terms.
+- No index-stage loss, so no ingestion fix is due before the 2.5 baseline.
+  `evaluation/dev_ledger.jsonl` starts with entry 1.
+- Incident: the writer killed at the 3600 s timeout left its Codex companion
+  job `running` (the pid was gone). Every later resume in the workspace
+  failed «Task … is still running». During T-64, a sol capacity blip then fell
+  back to luna-high, which made no changes.
+  - Julia allowed the cleanup: «убей зомби задачу».
+  - `.tmp/notes/clear_stale_companion_job.py` marked the job cancelled; backups
+    are `*.json.bak-stale-fix`.
+  - From then on, writers run with `--no-fallback --fresh`.
+
+## Step 21 — T-64: dev-set pilot drafts, family register (01.10, 93b2c42)
+
+- `evaluation/devset_pilot.jsonl` holds 30 agent_labelled drafts, 0 approved;
+  rule (b) counts only after the 1.3b approval.
+  - Quotas 10/10/4/6, styles 15/15 (gpt-6.1-sol), 10 adversarial, every
+    trap type, derived RU→EN flag on 10, 38 spans.
+  - Seed 6413030 over a specificity-filtered frame of 982 sections. The
+    first, unfiltered draw (4007 sections) was discarded: 16 of 24 answerable
+    cases rested on template text.
+- Fact form `pilot-claim-quote-v2`, decided by the orchestrator in repair 1
+  after the writer refuted F-T-64-4:
+  - the claim (`text`) is atomic answer wording, grounded in its quote (or a
+    generic governing cue plus a quote substring);
+  - `source_quote` is a contiguous excerpt of the case's own span and carries
+    the specificity clause (≤ 3 documents);
+  - every case has a minimal `reference_answer` that must cover its claims;
+  - computed totals are `derived: true`.
+  - Why: the text matcher ignores polarity, so whole-list facts had made a
+    correct paraphrase score 0, and a department name cannot pass a
+    specificity rule meant for evidence.
+- Families (`evaluation/document_families.json`, draft): topic-only primary
+  map, 84 families with 57 singletons; the cross_ref closure and the folder
+  grouping are sensitivity views. Footprint 49 families; reserve 35 families /
+  36 documents.
+- **D3 for Julia:** under any cross_ref-aware rule, an independent holdout is
+  not feasible on this corpus.
+  - 105 direct dev↔reserve links; 25 of 35 reserve families are linked,
+    which leaves 10 HR families.
+  - Taken literally, G22 (folder ∪ topic ∪ cross_ref) makes the whole corpus
+    one family.
+  - Options: add independent sources, or accept topic-level independence
+    with the stated leakage.
+  - F-T-64-1 is accepted as a risk by delegation until she decides.
+- Review (codex astra): pass 1 had 4 findings; pass 2 confirmed three fixed
+  and found F-T-64-9 (numeric claim grounding), which was repaired; passes 3
+  and 4 were clean.
+- Full gate attempt 1 was RED: the read-only T-58 artifact test pins the P2
+  capsule phrase «provisional, replaced by the 1.3a family register», which
+  sol had reworded. The lead agent restored it in a no-findings repair. Mac
+  full gate GREEN on `ca6dc8bbaf`: unit 3977 / e2e 36 / task 77.
+
+## Step 22 — Stop point (01.10): T-61 writer output on disk, not gated
+
+- Julia: «поставь точку, где логично». The T-61 writer
+  (`writer-T-61-1001-155023`, sol-high) had just started. It was not cancelled,
+  because `job cancel` kills the process tree but leaves the Codex companion
+  job `running`, which is the stale-job hazard of Step 20. It ran to the end
+  (4213 s, exit 0, summary `.myflow/writer/T-61-1.txt`); no gate or review was
+  run.
+- The uncommitted T-61 change in the tree:
+  - new `vectordb/embedder_manifest.py`, `tests/test_embedder_manifest.py` and
+    `tests/test_ask_embedder_manifest.py`;
+  - edits to `config/settings.py`, `vectordb/{_base_manager,manager,index_staging}.py`,
+    `api/app.py`, `api/routers/admin_kb.py`, `agent/graph.py`,
+    `resolution/evidence_view.py`, `docs/operations/backup-restore.md`,
+    `CURRENT_STATE.md` and `EVIDENCE_INDEX.md`.
+- The writer's own checks are not evidence: 51 passed on the slice and
+  neighbour tests, 23 on the docs gate, with `py -3.13` and
+  `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1`. Before `done`, check its doc edits for
+  run-log residue.
+- Resume:
+  1. `$MF continue`, then check the writer summary (`.myflow/writer/T-61-1.txt`).
+  2. Verify locally with the focused tests and ruff.
+  3. Run `$MF done T-61 --detach`, then `review-run --detach`, repairs and
+     `gate --full --detach`.
+  4. Make a scoped commit and push.
+  - The T-61 `verify_cmd` now excludes `tests/integration`.
+- Then:
+  - T-62 (note `.tmp/notes/T-62-note.md`);
+  - T-60 (note `.tmp/notes/T-60-note.md`, written this session: a v2 request
+    on 1–10 addressed documents, strict parsers, `invalid`/`absent` outcomes,
+    truncation accounting; GR3 'Score: 1.0' stays invalid);
+  - T-65 (2.5 baseline on the Mac, needs T-61 + T-62).
+  - T-57 stays parked (Julia's D2 grades).
+- The notes live in `.tmp/notes/`, which is untracked; the next session must
+  read them from this machine.
