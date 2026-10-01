@@ -57,9 +57,25 @@ class TraceService:
             return
 
         safe_state = state_to_dict(state)
-        serialized = json.dumps(safe_state, ensure_ascii=False)
-        redacted_state = json.loads(self._redact_text(serialized))
+        # Normalise through JSON first, then redact the text leaves only.
+        # Redacting the serialized document let the card-number pattern eat
+        # the digits of a float (0.8999999761581421 has sixteen of them) and
+        # the step became unreadable JSON (review F-T-59-1).
+        normalised = json.loads(json.dumps(safe_state, ensure_ascii=False))
+        redacted_state = self._redact_values(normalised)
         self._backend.log_step(trace_id, node_name, redacted_state)
+
+    def _redact_values(self, value: Any) -> Any:
+        if isinstance(value, str):
+            return self._redact_text(value)
+        if isinstance(value, dict):
+            return {
+                (self._redact_text(key) if isinstance(key, str) else key): self._redact_values(item)
+                for key, item in value.items()
+            }
+        if isinstance(value, list):
+            return [self._redact_values(item) for item in value]
+        return value
 
     def finish_trace(self, trace_id: str, final_state: Any) -> None:
         self._backend.finish_trace(trace_id, final_state)

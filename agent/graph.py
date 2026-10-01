@@ -11,6 +11,7 @@ Level 3: + conversation memory, multi-query retrieval, contextual retrieval
 from __future__ import annotations
 
 import asyncio
+import hashlib
 import inspect
 import json
 import logging
@@ -99,7 +100,7 @@ from agent.prompts import (  # noqa: E402
 )
 from agent.response_safety import apply_pre_response_safety  # noqa: E402
 from agent.state import GraphState, create_initial_state  # noqa: E402
-from llm.providers.base import ProviderUnavailable  # noqa: E402
+from llm.providers.base import ProviderUnavailable, estimate_tokens  # noqa: E402
 from tracing.sqlite_trace import finish_trace, log_step, start_trace  # noqa: E402
 
 try:
@@ -1535,15 +1536,18 @@ def _normalize_retrieval_strategy(value: object) -> Literal["vector", "hybrid", 
     return "hybrid"
 
 
-def _select_retrieval_strategy(state: GraphState) -> Literal["vector", "hybrid", "graph", "factcard"]:
+def _configured_retrieval_strategy() -> str:
+    """The configured strategy, normalised; hybrid when settings are unavailable."""
     if get_settings is not None:
         settings = get_settings()
-        configured = _normalize_retrieval_strategy(
-            getattr(settings, "retrieval_strategy", "hybrid")
-        )
-    else:
-        configured = "hybrid"
+        return _normalize_retrieval_strategy(getattr(settings, "retrieval_strategy", "hybrid"))
+    return "hybrid"
 
+
+def _select_retrieval_strategy(
+    state: GraphState,
+) -> Literal["vector", "hybrid", "graph", "factcard"]:
+    configured = _configured_retrieval_strategy()
     complexity = state.get("complexity", "unknown")
     if configured == "vector":
         return "vector"
@@ -1555,10 +1559,103 @@ def _select_retrieval_strategy(state: GraphState) -> Literal["vector", "hybrid",
         return "factcard"
     if complexity == "simple":
         return "vector"
-    if configured == "graph" and (complexity == "global" or
-                                   state.get("question_class") in {"multi_hop", "aggregation", "global"}):
+    if configured == "graph" and (
+        complexity == "global"
+        or state.get("question_class") in {"multi_hop", "aggregation", "global"}
+    ):
         return "graph"
     return "hybrid"
+
+
+def _selection_reason(selected: str, configured: str) -> str:
+    """Bounded selection reason for a (selected, configured) pair (slice 2.1).
+
+    The inverse of the rule table in _select_retrieval_strategy: vector comes
+    only from configured_vector or complexity_simple, factcard only from
+    configured_factcard, graph only from graph_eligible_class, and hybrid from
+    graph_ineligible_class (graph configured, class or complexity not eligible,
+    incl. unknown) or configured_hybrid.
+    """
+    if selected == "vector":
+        return "configured_vector" if configured == "vector" else "complexity_simple"
+    if selected == "factcard":
+        return "configured_factcard"
+    if selected == "graph":
+        return "graph_eligible_class"
+    return "graph_ineligible_class" if configured == "graph" else "configured_hybrid"
+
+
+def _select_retrieval_strategy_with_reason(
+    state: GraphState,
+) -> tuple[Literal["vector", "hybrid", "graph", "factcard"], str, str]:
+    """Return (selected strategy, configured strategy, bounded selection reason).
+
+    The selection itself goes through the module-level _select_retrieval_strategy,
+    so a replaced selector (tests/test_factcard_store.py) stays the single source
+    of truth for the node and the route record describes what was selected.
+    """
+    configured = _configured_retrieval_strategy()
+    selected = _select_retrieval_strategy(state)
+    return selected, configured, _selection_reason(selected, configured)
+
+
+def _graph_retrieval_setting() -> str | None:
+    """Bounded read of settings.graph_retrieval; never raises (slice 2.1)."""
+    try:
+        if get_settings is None:
+            return None
+        value = getattr(get_settings(), "graph_retrieval", None)
+        return None if value is None else str(value)
+    except Exception:
+        return None
+
+
+def _query_transform_fingerprint(state: GraphState) -> tuple[str, str | None]:
+    """Name the transformation that produced the effective query and hash its template."""
+    question = str(state.get("question", "") or "")
+    if state.get("hyde_query"):
+        try:
+            template = _build_hyde_prompt("{question}")
+        except Exception:
+            return "hyde", None
+        return "hyde", hashlib.sha256(template.encode("utf-8")).hexdigest()
+    search_query = state.get("search_query")
+    if search_query and search_query != question:
+        try:
+            if int(state.get("iteration", 0) or 0) > 0:
+                template = build_query_rewrite_prompt("{question}", "{previous_answer}", 0)
+            elif state.get("chat_history"):
+                template = build_conversational_query_transform_prompt(
+                    "{question}", [{"role": "user", "content": "{history}"}]
+                )
+            else:
+                template = build_query_transform_prompt("{question}")
+        except Exception:
+            return "rewrite", None
+        return "rewrite", hashlib.sha256(template.encode("utf-8")).hexdigest()
+    return "none", None
+
+
+def _relevant_documents_with_lane_path(
+    retriever: Any, query: str
+) -> tuple[list[Any], dict[str, Any] | None]:
+    """Hybrid retrieval plus the lane path when the retriever really offers it.
+
+    The path API is detected by its result, not by attribute presence: test
+    doubles such as MagicMock answer every attribute, and a mock reply is not
+    a ``(docs, path)`` pair. Anything else falls back to the legacy call.
+    """
+    with_path = getattr(retriever, "get_relevant_documents_with_path", None)
+    if callable(with_path):
+        result = with_path(query)
+        if (
+            isinstance(result, tuple)
+            and len(result) == 2
+            and isinstance(result[0], list)
+            and (result[1] is None or isinstance(result[1], dict))
+        ):
+            return result[0], result[1]
+    return retriever.get_relevant_documents(query), None
 
 
 def make_retrieve_node(retriever: Any) -> Callable[[GraphState], GraphState]:
@@ -1575,9 +1672,17 @@ def make_retrieve_node(retriever: Any) -> Callable[[GraphState], GraphState]:
             # Re-raise so ConversationSession.ask maps to route=timeout (not empty docs).
             check_request_deadline("retrieve")
             query = state.get("hyde_query") or state.get("search_query") or state.get("question", "")
-            requested_strategy = _select_retrieval_strategy(state)
+            requested_strategy, configured_strategy, selection_reason = (
+                _select_retrieval_strategy_with_reason(state)
+            )
             effective_strategy = requested_strategy
             retrieval_path = None
+            # Hybrid-lane path dict when the retriever exposes it (slice 2.1);
+            # logged in the retrieval_route record, never stored in the state.
+            lane_path: dict[str, Any] | None = None
+            # Bounded, non-secret reason when a requested graph lane did not run
+            # (audit 2026-09-30, F3): visible in the trace, not only in logs.
+            fallback_reason: str | None = None
             tracer = get_otel_tracer()
             with tracer.start_as_current_span("rag.retrieve") as span:
                 span.set_attribute("rag.question_length", len(str(state.get("question", "") or "")))
@@ -1596,27 +1701,36 @@ def make_retrieve_node(retriever: Any) -> Callable[[GraphState], GraphState]:
                             # No card matched (or collection missing) — degrade to
                             # the hybrid lane so the request still gets an answer.
                             effective_strategy = "hybrid"
-                            docs = retriever.get_relevant_documents(query)
+                            docs, lane_path = _relevant_documents_with_lane_path(retriever, query)
                     elif requested_strategy == "vector" and hasattr(retriever, "get_vector_documents"):
                         docs = retriever.get_vector_documents(query)
                     elif requested_strategy == "graph" and hasattr(retriever, "get_graph_documents_with_path"):
+                        categories = [
+                            text for raw in (state.get("categories") or [])
+                            if (text := str(raw).strip())
+                        ]
                         docs, retrieval_path = retriever.get_graph_documents_with_path(
                             query, question_class=state.get("question_class", "single_hop"),
                             entities=state.get("entities", []),
+                            categories=categories or None,
                         )
                         if retrieval_path is None:
                             effective_strategy = "hybrid"
+                            fallback_reason = "graph_projection_missing"
                     elif requested_strategy == "graph" and hasattr(retriever, "get_graph_documents"):
                         docs = retriever.get_graph_documents(query)
                     else:
                         if requested_strategy == "graph":
                             effective_strategy = "hybrid"
-                        docs = retriever.get_relevant_documents(query)
+                            fallback_reason = "retriever_without_graph_lane"
+                        docs, lane_path = _relevant_documents_with_lane_path(retriever, query)
                 except RequestDeadlineExceeded:
                     raise
                 except Exception as exc:
                     logger.warning("[retrieve] Retriever error: %s", exc, extra={"trace_id": trace_id})
                     docs = []
+                    if requested_strategy == "graph":
+                        fallback_reason = "retriever_error"
                 span.set_attribute("rag.num_docs", len(docs))
                 span.set_attribute("rag.retrieval_strategy_effective", effective_strategy)
             plain_docs = _docs_to_plain_dicts(docs)
@@ -1626,10 +1740,35 @@ def make_retrieve_node(retriever: Any) -> Callable[[GraphState], GraphState]:
                 "retrieval_strategy": effective_strategy,
             }
             if requested_strategy == "graph":
+                new_state["retrieval_strategy_requested"] = requested_strategy
                 new_state["retrieval_strategy_effective"] = effective_strategy
                 new_state.pop("retrieval_path", None)
+                new_state.pop("retrieval_fallback_reason", None)
                 if retrieval_path is not None:
                     new_state["retrieval_path"] = retrieval_path
+                if fallback_reason is not None:
+                    new_state["retrieval_fallback_reason"] = fallback_reason
+            transform, transform_hash = _query_transform_fingerprint(state)
+            route_record: dict[str, Any] = {
+                "configured": configured_strategy,
+                "selected": requested_strategy,
+                "selected_reason": selection_reason,
+                "question_class": state.get("question_class"),
+                "complexity": state.get("complexity"),
+                "classifier_reason_code": state.get("reason_code"),
+                "confidence": None,  # no calibrated classifier confidence exists (G9)
+                "entities": [str(entity) for entity in (state.get("entities") or [])],
+                "effective": effective_strategy,
+                "fallback_reason": fallback_reason,
+                "query_original": str(state.get("question", "") or ""),
+                "query_effective": str(query or ""),
+                "query_transform": transform,
+                "query_transform_hash": transform_hash,
+                "graph_retrieval": _graph_retrieval_setting(),
+                "path": retrieval_path if retrieval_path is not None else lane_path,
+                "num_docs": len(plain_docs),
+            }
+            log_step(trace_id, "retrieval_route", route_record)
             log_step(trace_id, "retrieve", new_state)
             return new_state
         except RequestDeadlineExceeded:
@@ -1902,6 +2041,12 @@ def make_generate_node(
             # Plan §5.3: after grade_docs, empty graded_docs must not fall back
             # to raw context_docs (silent restore of rejected / failed grade).
             docs = resolve_generation_context_docs(state)
+            context_text: str = "\n\n".join(
+                str(doc.get("page_content", "") or "") if isinstance(doc, dict)
+                else str(getattr(doc, "page_content", "") or "")
+                for doc in docs
+            )
+            generation_context_tokens = estimate_tokens(context_text)
             chat_history = state.get("chat_history", [])
             complexity = state.get("complexity", "unknown")
             llm = llm_fast if complexity == "simple" else llm_strong
@@ -1974,6 +2119,7 @@ def make_generate_node(
                 **state,
                 "answer": answer,
                 "citations": citations,
+                "generation_context_tokens": generation_context_tokens,
                 "generation_error": None,
             }
             if complexity == "simple":

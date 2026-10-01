@@ -62,6 +62,8 @@ def test_ask_persists_structural_path_only_when_enabled(monkeypatch, client, tmp
         monkeypatch.setenv("DATABASE_URL", "postgresql://fixture")
         monkeypatch.setattr(jobs, "sync_session", lambda: nullcontext(object()))
         monkeypatch.setattr(StructuralGraphRepository, "load", lambda self, tenant: enriched)
+    else:
+        monkeypatch.delenv("DATABASE_URL", raising=False)
     retriever = manager.get_retriever(
         vector_store=SimpleNamespace(similarity_search=lambda query, k: [seed]),
         chunks=chunks, embeddings=object(), tenant_id="default",
@@ -124,6 +126,16 @@ def test_ask_persists_structural_path_only_when_enabled(monkeypatch, client, tmp
     evidence = evidence_response.json()
     if mode == "on":
         assert evidence["retrieval_paths"][0]["path"] == state["retrieval_path"]
+        assert evidence["retrieval_paths"][0]["requested"] == "graph"
+        assert "fallback_reason" not in evidence["retrieval_paths"][0]
+        path = state["retrieval_path"]
+        # The route is observable: who answered, with which graph, at what cost.
+        assert path["entity_graph_status"] == ("matched" if entity_lane else "no_database")
+        assert len(path["graph_version"]) == 64
+        assert path["candidates"]["vector"] == 1 and path["candidates"]["merged"] >= 1
+        assert path["rerank_status"] == "not_configured"
+        assert path["timings_ms"]["total"] >= 0
+        assert path["dropped"] == []
         if entity_lane:
             assert state["retrieval_path"]["kind"] == "structural_entity"
             assert state["retrieval_path"]["entities"] == ["awb"]
@@ -133,6 +145,14 @@ def test_ask_persists_structural_path_only_when_enabled(monkeypatch, client, tmp
             assert state["retrieval_path"]["expanded_contexts"] == 1
             assert "Required neighbouring fact." in state["context_docs"][0]["page_content"]
     else:
-        assert "retrieval_paths" not in evidence
+        # A requested graph lane that did not run is visible to the reviewer
+        # with its reason, instead of leaving the Evidence view silent. With
+        # graph retrieval off and no BM25/reranker, the factory builds a plain
+        # vector retriever, so the lane is absent rather than unprojected.
+        assert evidence["retrieval_paths"] == [{
+            "strategy": "hybrid", "path": None, "requested": "graph",
+            "fallback_reason": "retriever_without_graph_lane",
+        }]
         assert "retrieval_path" not in state
+        assert state["retrieval_fallback_reason"] == "retriever_without_graph_lane"
         assert state["context_docs"][0]["page_content"] == "Seed policy."

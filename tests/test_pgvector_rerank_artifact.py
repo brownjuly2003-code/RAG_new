@@ -6,6 +6,7 @@ import gzip
 import hashlib
 import json
 import math
+import subprocess
 from pathlib import Path
 
 import pytest
@@ -119,8 +120,12 @@ def test_pgvector_rerank_artifact() -> None:
 
     sources = artifact["source_sha256"]
     assert set(sources) == set(SOURCE_FILES)
+    # Provenance, not staleness: the digests are the blobs at CODE_BASE, the
+    # commit the artifact names. The live tree moves on (T-59 changed
+    # vectordb/_base_manager.py); the published numbers keep their code SHA.
     for relative in SOURCE_FILES:
-        assert sources[relative] == _sha256((ROOT / relative).read_bytes())
+        blob = subprocess.check_output(["git", "show", f"{CODE_BASE}:{relative}"], cwd=ROOT)
+        assert sources[relative] == _sha256(blob)
 
     assert artifact["config"] == {
         "chunks": CHUNKS,

@@ -442,6 +442,7 @@ class HybridRetriever:
         parent_expansion_window: int = 1,
         parent_expansion_max_chars: int = 2400,
         graph_projection: Any = None,
+        rerank_batch: int | None = None,
     ):
         self._vector_store = vector_store
         self._chunks = chunks
@@ -450,6 +451,7 @@ class HybridRetriever:
         self._rrf_k = rrf_k
         self._doc_key_chars = doc_key_chars
         self._reranker = reranker
+        self._rerank_batch = rerank_batch if rerank_batch and rerank_batch > 0 else None
         self._parent_expansion = parent_expansion
         self._parent_window = max(0, parent_expansion_window)
         self._parent_max_chars = parent_expansion_max_chars
@@ -458,6 +460,11 @@ class HybridRetriever:
         self._graph_chunk_sections: dict[str, str] = {}
         self._graph_section_chunks: dict[str, list[Document]] = {}
         self._entity_index: Any = None
+        # Provenance of the projected graph, recorded by the runtime factory on
+        # the projection's graph attributes; None when the caller set none.
+        graph_attrs = getattr(graph_projection, "graph", None) or {}
+        self._graph_version: str | None = graph_attrs.get("digest") or None
+        self._entity_graph_status: str | None = graph_attrs.get("entity_graph_status") or None
         if graph_projection is not None:
             self._index_graph_projection(graph_projection)
 
@@ -635,6 +642,17 @@ class HybridRetriever:
         return [self._chunks[index] for index in top_indices if scores[index] > 0]
 
     def _apply_graph_coherence(self, docs: list[Document]) -> list[Document]:
+        return self._graph_coherence_split(docs)[0]
+
+    def _graph_coherence_split(
+        self, docs: list[Document]
+    ) -> tuple[list[Document], list[dict[str, Any]]]:
+        """Section coherence: kept documents plus a record of every drop.
+
+        The drop record names the rank, source, chunk and section of each
+        document the filter removed and why, so a lost singleton source is
+        visible in the trace rather than inferred (audit 2026-09-30, F5).
+        """
         groups: dict[str, list[int]] = {}
         unmapped: set[int] = set()
         for rank, doc in enumerate(docs):
@@ -652,6 +670,7 @@ class HybridRetriever:
         }
         strongest = max(scores.values(), default=0.0)
         ordered: list[tuple[int, int]] = []
+        dropped: list[dict[str, Any]] = []
         for rank, doc in enumerate(docs):
             if rank in unmapped:
                 ordered.append((1, rank))
@@ -664,11 +683,33 @@ class HybridRetriever:
                 continue
             strength = scores[section] / strongest if strongest else 0.0
             if strength <= 0.25 and scores[section] < strongest:
+                metadata = doc.metadata or {}
+                dropped.append({
+                    "rank": rank,
+                    "source": metadata.get("source"),
+                    "chunk_index": metadata.get("chunk_index"),
+                    "section": section,
+                    "reason": "weak_singleton_section",
+                    "relative_strength": round(strength, 4),
+                })
                 continue
             ordered.append((2, rank))
 
         ordered.sort()
-        return [docs[rank] for _, rank in ordered[: self._rerank_k]]
+        kept_ranks = [rank for _, rank in ordered[: self._rerank_k]]
+        for _, rank in ordered[self._rerank_k:]:
+            metadata = docs[rank].metadata or {}
+            dropped.append({
+                "rank": rank,
+                "source": metadata.get("source"),
+                "chunk_index": metadata.get("chunk_index"),
+                "section": self._graph_chunk_sections.get(
+                    _rrf_document_key(docs[rank], self._doc_key_chars)
+                ),
+                "reason": "beyond_rerank_k",
+                "relative_strength": None,
+            })
+        return [docs[rank] for rank in kept_ranks], dropped
 
     def _expand_graph_sections(self, docs: list[Document]) -> list[Document]:
         used_keys = {_rrf_document_key(doc, self._doc_key_chars) for doc in docs}
@@ -740,6 +781,7 @@ class HybridRetriever:
         if self._graph_projection is None:
             return self.get_relevant_documents(query), None
 
+        started = time.perf_counter()
         sources = self._graph_sources_for_categories(categories)
         vector_results = (
             self._vector_search_for_sources(query, sources)
@@ -757,12 +799,23 @@ class HybridRetriever:
             if bm25_results or entity_docs
             else vector_results
         )
+        pool_size = len(merged)
+        pools_done = time.perf_counter()
+        rerank_status = "not_configured"
+        scores_by_key: dict[str, float] = {}
+        duplicate_drops: list[dict[str, Any]] = []
         if self._reranker is not None and merged:
-            merged = self._rerank(query, merged)
+            scored, reranker_ok = self._rerank_scored_with_status(query, merged)
+            merged = [doc for doc, _ in scored]
+            scores_by_key, duplicate_drops, rerank_status = self._score_table(scored, reranker_ok)
         else:
             merged = merged[: self._rerank_k]
-        coherent = self._apply_graph_coherence(merged)
+        rerank_done = time.perf_counter()
+        coherent, dropped = self._graph_coherence_split(merged)
+        # dropped = coherence drops first, duplicate-key drops after them.
+        dropped = dropped + duplicate_drops
         expanded = self._expand_graph_sections(coherent)
+        finished = time.perf_counter()
         sections = sorted({
             self._graph_chunk_sections[key]
             for doc in coherent
@@ -773,10 +826,41 @@ class HybridRetriever:
             "sections": sections, "entities": matched, "hops": hops,
             "retrieved_contexts": len(merged), "retained_contexts": len(coherent),
             "expanded_contexts": sum(bool(doc.metadata.get("graph_section_expanded")) for doc in expanded),
+            # Observability added 2026-09-30 (audit F3/F5/F7): what each source
+            # contributed, what the filter removed, what the reranker said, how
+            # long each stage took, and which graph answered.
+            "categories": [str(category) for category in (categories or ())],
+            "candidates": {
+                "vector": len(vector_results), "bm25": len(bm25_results),
+                "entity": len(entity_docs), "merged": pool_size,
+            },
+            "rerank_status": rerank_status,
+            "rerank_scores": [
+                scores_by_key.get(_rrf_document_key(doc, self._doc_key_chars))
+                for doc in coherent
+            ],
+            "rerank_batch_effective": self._rerank_batch,
+            "dropped": dropped,
+            "timings_ms": {
+                "pools": round((pools_done - started) * 1000.0, 3),
+                "rerank": round((rerank_done - pools_done) * 1000.0, 3),
+                "coherence_expand": round((finished - rerank_done) * 1000.0, 3),
+                "total": round((finished - started) * 1000.0, 3),
+            },
+            "graph_version": self._graph_version,
+            "entity_graph_status": self._entity_graph_status,
         }
 
     def get_relevant_documents(self, query: str) -> list[Document]:
         """Гибридный поиск с RRF и reranking."""
+        return self.get_relevant_documents_with_path(query)[0]
+
+    def get_relevant_documents_with_path(
+        self, query: str
+    ) -> tuple[list[Document], dict[str, Any]]:
+        """Hybrid retrieval with the observability dict of the graph lane."""
+        started = time.perf_counter()
+
         # Step 1: Vector search
         vector_results = self._vector_search(query)
 
@@ -785,26 +869,73 @@ class HybridRetriever:
         if self._bm25 is not None:
             tokenized_query = _tokenize_for_bm25(query)
             scores = self._bm25.get_scores(tokenized_query)
-            top_indices = sorted(range(len(scores)), key=lambda i: scores[i], reverse=True)[:self._retrieval_k]
+            top_indices = sorted(
+                range(len(scores)), key=lambda i: scores[i], reverse=True
+            )[: self._retrieval_k]
             bm25_results = [self._chunks[i] for i in top_indices if scores[i] > 0]
 
         # Step 3: Reciprocal Rank Fusion
+        merged_before_rerank: list[Document]
         if bm25_results:
-            merged = self._rrf_merge(vector_results, bm25_results)
+            merged_before_rerank = self._rrf_merge(vector_results, bm25_results)
         else:
-            merged = vector_results
+            merged_before_rerank = vector_results
+        pools_done = time.perf_counter()
 
         # Step 4: Reranker
-        if self._reranker is not None and merged:
-            merged = self._rerank(query, merged)
+        rerank_ran = self._reranker is not None and bool(merged_before_rerank)
+        rerank_status = "not_configured"
+        scores_by_key: dict[str, float] = {}
+        duplicate_drops: list[dict[str, Any]] = []
+        rerank_ms = 0.0
+        selected_after_rerank_cut: list[Document]
+        if rerank_ran:
+            rerank_started = time.perf_counter()
+            scored, reranker_ok = self._rerank_scored_with_status(query, merged_before_rerank)
+            selected_after_rerank_cut = [doc for doc, _ in scored]
+            scores_by_key, duplicate_drops, rerank_status = self._score_table(scored, reranker_ok)
+            rerank_ms = round((time.perf_counter() - rerank_started) * 1000.0, 3)
         else:
-            merged = merged[:self._rerank_k]
+            selected_after_rerank_cut = merged_before_rerank[: self._rerank_k]
+
+        # Scores are looked up before parent expansion: expansion may replace
+        # the selected objects and their content.
+        rerank_scores: list[float | None] = []
+        if rerank_ran:
+            rerank_scores = [
+                scores_by_key.get(_rrf_document_key(doc, self._doc_key_chars))
+                for doc in selected_after_rerank_cut
+            ]
 
         # Step 5: Parent expansion (post-rerank, selection unchanged)
-        if self._parent_expansion and merged:
-            merged = self._expand_parents(merged)
+        result_docs: list[Document]
+        if self._parent_expansion and selected_after_rerank_cut:
+            result_docs = self._expand_parents(selected_after_rerank_cut)
+        else:
+            result_docs = selected_after_rerank_cut
+        finished = time.perf_counter()
 
-        return merged
+        return result_docs, {
+            "kind": "hybrid",
+            "candidates": {
+                "vector": len(vector_results),
+                "bm25": len(bm25_results),
+                "merged": len(merged_before_rerank),
+            },
+            "rerank_status": rerank_status,
+            "rerank_scores": rerank_scores,
+            "rerank_batch_effective": self._rerank_batch,
+            "retrieved_contexts": len(merged_before_rerank),
+            "retained_contexts": len(selected_after_rerank_cut),
+            "dropped": duplicate_drops,
+            "timings_ms": {
+                "pools": round((pools_done - started) * 1000.0, 3),
+                "rerank": rerank_ms,
+                "total": round((finished - started) * 1000.0, 3),
+            },
+            "graph_version": None,
+            "entity_graph_status": None,
+        }
 
     def _rrf_merge(self, list_a: list[Document], list_b: list[Document],
                    *additional: list[Document]) -> list[Document]:
@@ -827,8 +958,27 @@ class HybridRetriever:
 
     def _rerank(self, query: str, docs: list[Document]) -> list[Document]:
         """Cross-encoder reranking: пересчитывает релевантность каждого документа."""
+        return [doc for doc, _ in self._rerank_scored(query, docs)]
+
+    def _rerank_scored(
+        self, query: str, docs: list[Document]
+    ) -> list[tuple[Document, float | None]]:
+        """Pairs only; see _rerank_scored_with_status for the reranker outcome."""
+        return self._rerank_scored_with_status(query, docs)[0]
+
+    def _rerank_scored_with_status(
+        self, query: str, docs: list[Document]
+    ) -> tuple[list[tuple[Document, float | None]], bool]:
+        """Rerank and keep each document's score beside it.
+
+        Documents are returned as the same objects the caller passed, so the
+        legacy selection contract is unchanged; a score is None on the
+        reranker-error fallback (which keeps input order) and for NaN/Inf
+        values, which keep their input order after every finite score. The
+        second element says whether the reranker call itself succeeded.
+        """
         if not docs:
-            return docs
+            return [], True
 
         # Cooperative deadline (plan §3.1h): refuse new reranker work after wall.
         # Fail-closed: do not degrade to top-k as silent success after expiry.
@@ -838,15 +988,71 @@ class HybridRetriever:
 
         pairs = [(query, doc.page_content) for doc in docs]
         try:
-            scores = self._reranker.predict(pairs)
+            if self._rerank_batch is not None:
+                scores = self._reranker.predict(pairs, batch_size=self._rerank_batch)
+            else:
+                scores = self._reranker.predict(pairs)
             # strict=True: predict returns exactly one score per (query, doc) pair.
-            scored_docs = sorted(zip(docs, scores, strict=True), key=lambda x: x[1], reverse=True)
-            return [doc for doc, _ in scored_docs[:self._rerank_k]]
+            converted: list[float | None] = []
+            for score in scores:
+                value = float(score)
+                converted.append(value if math.isfinite(value) else None)
+            # Deterministic ordering: one stable sort with reverse=True on the
+            # tuple key (score is finite, score or 0.0) — finite scores rank
+            # first in descending order; NaN/Inf share the key and keep their
+            # input order after every finite score.
+            scored_docs = sorted(
+                zip(docs, converted, strict=True),
+                key=lambda item: (item[1] is not None, item[1] or 0.0),
+                reverse=True,
+            )
+            return scored_docs[: self._rerank_k], True
         except RequestDeadlineExceeded:
             raise
         except Exception as e:
             logger.warning("[HybridRetriever] Reranker error: %s", e)
-            return docs[:self._rerank_k]
+            return [(doc, None) for doc in docs[: self._rerank_k]], False
+
+    def _score_table(
+        self, scored: list[tuple[Document, float | None]], reranker_ok: bool = True
+    ) -> tuple[dict[str, float], list[dict[str, Any]], str]:
+        """Score/duplicate bookkeeping shared by the graph and hybrid paths.
+
+        The maximum finite score wins when a document key repeats; every later
+        duplicate becomes a ``duplicate_key`` drop. The status tells a clean
+        rerank (``ok``) from NaN/Inf gaps (``partial``) and from the reranker
+        exception fallback (``reranker_ok`` False). ``scored`` is never empty.
+        """
+        scores_by_key: dict[str, float] = {}
+        duplicate_drops: list[dict[str, Any]] = []
+        seen_keys: set[str] = set()
+        for rank, (doc, score) in enumerate(scored):
+            key = _rrf_document_key(doc, self._doc_key_chars)
+            if key in seen_keys:
+                metadata = doc.metadata or {}
+                duplicate_drops.append({
+                    "rank": rank,
+                    "source": metadata.get("source"),
+                    "chunk_index": metadata.get("chunk_index"),
+                    "section": None,
+                    "reason": "duplicate_key",
+                    "relative_strength": None,
+                })
+            else:
+                seen_keys.add(key)
+            if score is not None:
+                current = scores_by_key.get(key)
+                scores_by_key[key] = score if current is None else max(current, score)
+        # The status follows the reranker outcome, not the count of usable
+        # scores: a predict() that returned only NaN/Inf is a partial result;
+        # the exception fallback is the only reranker error (review F-T-59-3).
+        if not reranker_ok:
+            rerank_status = "fallback:reranker_error"
+        elif all(score is not None for _, score in scored):
+            rerank_status = "ok"
+        else:
+            rerank_status = "partial"
+        return scores_by_key, duplicate_drops, rerank_status
 
     @staticmethod
     def _strip_contextual_header(text: str) -> str:
@@ -1579,6 +1785,7 @@ def build_retriever(
             parent_expansion_window=getattr(settings, "parent_expansion_window", 1),
             parent_expansion_max_chars=getattr(settings, "parent_expansion_max_chars", 2400),
             graph_projection=graph_projection,
+            rerank_batch=_effective_rerank_batch(settings),
         )
 
     if hasattr(vector_store, "as_retriever"):
@@ -1601,6 +1808,23 @@ def build_retriever(
 # ---------------------------------------------------------------------------
 # Get retriever (upgraded: hybrid + reranker)
 # ---------------------------------------------------------------------------
+
+def _effective_rerank_batch(settings: Any) -> int | None:
+    """RAG_RERANK_BATCH as of this retriever build.
+
+    The environment is re-read here so a runtime change applies to the next
+    build (after reset_retriever_cache); with the variable unset the Settings
+    value applies. Cached retrievers keep the batch they were built with
+    (review F-T-59-2).
+    """
+    raw = os.getenv("RAG_RERANK_BATCH")
+    if raw is not None and raw.strip():
+        from config.settings import _parse_rerank_batch
+
+        return _parse_rerank_batch(raw)
+    value = getattr(settings, "rerank_batch", None)
+    return value if isinstance(value, int) and value > 0 else None
+
 
 def get_retriever(
     vector_store: Any,
@@ -1658,6 +1882,7 @@ def get_retriever(
             parent_expansion_window=getattr(settings, "parent_expansion_window", 1),
             parent_expansion_max_chars=getattr(settings, "parent_expansion_max_chars", 2400),
             graph_projection=graph_projection,
+            rerank_batch=_effective_rerank_batch(settings),
         )
 
     # Fallback: simple vector retriever

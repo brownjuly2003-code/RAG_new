@@ -54,6 +54,11 @@ def _as_text(value: Any) -> str:
     return value if isinstance(value, str) else ""
 
 
+def _text_or_none(value: Any) -> str | None:
+    """Route-record fields are strings or null; null must survive the projection."""
+    return None if value is None else _as_text(value)
+
+
 def _parse_time(value: Any) -> datetime | None:
     if not isinstance(value, str) or not value:
         return None
@@ -299,19 +304,71 @@ def evidence_view(trace: Mapping[str, Any]) -> dict[str, Any]:
         shadow_status = _JOURNEY_DECLINED
     else:
         shadow_status = _SHADOW_DISABLED
-    view = {
+    view: dict[str, Any] = {
         "trace_id": _as_text(trace.get("trace_id")),
         "started_at": _as_text(trace.get("started_at")),
         "shadow_status": shadow_status,
         "journeys": journeys,
     }
-    paths = [
-        {"strategy": state.get("retrieval_strategy_effective"), "path": dict(path)}
-        for step in (_as_mapping(item) for item in _as_sequence(trace.get("steps")))
-        if step.get("node") == "retrieve"
-        if (state := _as_mapping(step.get("state")))
-        if (path := _as_mapping(state.get("retrieval_path")))
-    ]
+    paths: list[dict[str, Any]] = []
+    pending_route: Mapping[str, Any] | None = None
+    route_state: Mapping[str, Any] | None = None
+    generation_context_tokens: int | None = None
+    for step in (_as_mapping(item) for item in _as_sequence(trace.get("steps"))):
+        node = step.get("node")
+        state = _as_mapping(step.get("state"))
+        if node == "retrieval_route":
+            pending_route = state
+            route_state = state
+            continue
+        if node == "generate":
+            tokens = state.get("generation_context_tokens")
+            if isinstance(tokens, int):
+                generation_context_tokens = tokens
+            continue
+        if node != "retrieve":
+            continue
+        path = _as_mapping(state.get("retrieval_path"))
+        route_path = _as_mapping(pending_route.get("path")) if pending_route else {}
+        requested = _as_text(state.get("retrieval_strategy_requested"))
+        # A requested graph lane that fell back leaves no path; the reviewer
+        # still sees that it was asked for and why it did not run. The hybrid
+        # lane carries its path on the retrieval_route step, not in the legacy
+        # retrieve state, so it is lifted from the pending route record here.
+        if path or requested or route_path:
+            entry_path = dict(path) if path else (dict(route_path) if route_path else None)
+            entry: dict[str, Any] = {
+                "strategy": state.get("retrieval_strategy_effective")
+                or state.get("retrieval_strategy"),
+                "path": entry_path,
+            }
+            if requested:
+                entry["requested"] = requested
+            if reason := _as_text(state.get("retrieval_fallback_reason")):
+                entry["fallback_reason"] = reason
+            paths.append(entry)
+        pending_route = None
     if paths:
         view["retrieval_paths"] = paths
+    if route_state is not None:
+        route: dict[str, Any] = {
+            "configured": _text_or_none(route_state.get("configured")),
+            "selected": _text_or_none(route_state.get("selected")),
+            "selected_reason": _text_or_none(route_state.get("selected_reason")),
+            "question_class": _text_or_none(route_state.get("question_class")),
+            "complexity": _text_or_none(route_state.get("complexity")),
+            "classifier_reason_code": _text_or_none(route_state.get("classifier_reason_code")),
+            "confidence": route_state.get("confidence"),
+            "entities": [_as_text(item) for item in _as_sequence(route_state.get("entities"))],
+            "effective": _text_or_none(route_state.get("effective")),
+            "fallback_reason": _text_or_none(route_state.get("fallback_reason")),
+            "query_original": _text_or_none(route_state.get("query_original")),
+            "query_effective": _text_or_none(route_state.get("query_effective")),
+            "query_transform": _text_or_none(route_state.get("query_transform")),
+            "query_transform_hash": _text_or_none(route_state.get("query_transform_hash")),
+            "graph_retrieval": _text_or_none(route_state.get("graph_retrieval")),
+            "num_docs": route_state.get("num_docs"),
+            "generation_context_tokens": generation_context_tokens,
+        }
+        view["retrieval_route"] = route
     return view

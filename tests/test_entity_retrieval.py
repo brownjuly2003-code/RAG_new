@@ -40,9 +40,13 @@ def test_non_entity_classes_keep_structural_result(question_class):
     chunks, projection = entity_fixture()
     retriever = HybridRetriever(SimpleNamespace(similarity_search=lambda query, k: [chunks[0]]),
                                 chunks, graph_projection=projection, use_bm25=False)
-    expected = retriever.get_graph_documents_with_path("question")
-    assert retriever.get_graph_documents_with_path(
-        "question", question_class=question_class, entities=["awb"]) == expected
+    expected_docs, expected_path = retriever.get_graph_documents_with_path("question")
+    docs, path = retriever.get_graph_documents_with_path(
+        "question", question_class=question_class, entities=["awb"])
+    # Stage timings are observability, not part of the retrieval result.
+    assert docs == expected_docs
+    assert {k: v for k, v in path.items() if k != "timings_ms"} == {
+        k: v for k, v in expected_path.items() if k != "timings_ms"}
 
 
 def test_entity_candidates_are_capped_before_reranker():
@@ -64,7 +68,7 @@ def test_retrieve_node_forwards_sgr_fields(monkeypatch):
     monkeypatch.setattr(graph, "log_step", lambda *args: None)
     graph.make_retrieve_node(retriever)({"question": "q", "complexity": "global",
                                        "question_class": "aggregation", "entities": ["awb"]})
-    assert calls == [{"question_class": "aggregation", "entities": ["awb"]}]
+    assert calls == [{"question_class": "aggregation", "entities": ["awb"], "categories": None}]
 
 
 def test_entity_search_filters_sources_and_does_not_retain_request_state():

@@ -257,6 +257,22 @@ def _apply_deployed_settings(settings: "Settings") -> None:
     _apply_settings_overrides(settings, active_overrides)
 
 
+def _parse_rerank_batch(raw: str | None) -> Optional[int]:
+    """RAG_RERANK_BATCH: unset/blank -> None, positive integer -> int, else a configuration error."""
+    cleaned = (raw or "").strip()
+    if not cleaned:
+        return None
+    try:
+        value = int(cleaned)
+    except ValueError as exc:
+        raise ValueError(
+            f"RAG_RERANK_BATCH must be a positive integer, got '{raw}'"
+        ) from exc
+    if value <= 0:
+        raise ValueError(f"RAG_RERANK_BATCH must be a positive integer, got '{raw}'")
+    return value
+
+
 @dataclass
 class Settings:
     """
@@ -464,6 +480,17 @@ class Settings:
     # final docs after reranking
     rerank_top_k: int = field(
         default_factory=lambda: int(os.getenv("RAG_RERANK_TOP_K", "5"))
+    )
+    # Cross-encoder batch size for the runtime reranker (RAG_RERANK_BATCH).
+    # Unset keeps the library default. The retriever factory re-reads the
+    # variable each time it builds a retriever (vectordb._effective_rerank_batch);
+    # the per-tenant retriever caches are not invalidated by a runtime change,
+    # so a new value takes effect only after the retriever is rebuilt
+    # (reset_retriever_cache / restart). The effective value is written to
+    # every retrieval path as `rerank_batch_effective`, so runtime and harness
+    # batches stay comparable (slice 2.2).
+    rerank_batch: Optional[int] = field(
+        default_factory=lambda: _parse_rerank_batch(os.getenv("RAG_RERANK_BATCH"))
     )
     rrf_k: int = field(default_factory=lambda: int(os.getenv("RRF_K", "60")))
     rrf_doc_key_chars: int = field(

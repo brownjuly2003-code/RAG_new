@@ -432,3 +432,128 @@ every Sol/GLM proposal (i)–(xvi) resolved per Astra §5; nothing weakened.
   and companion arguments. Model reference only — 1.1 (D2) still waits on
   Julia's grades; T-57 stays parked.
 
+## Step 17 — T-59: 2.1/2.2 route observability implemented (01.10)
+
+- Owner's boundary for this stretch: «Остановись после завершения T-59» —
+  T-59 goes through commit, attach and push; T-58/T-63/T-64 are not started.
+- Base: the draft patch already in the tree (allowed by plan §5) plus
+  `tests/test_graph_route_observability.py`; the gaps against the spec were
+  split into one-file GLM 5.3 direct requests (`xhigh`, runbook
+  `docs/operations/direct-glm-5.3.md`, helper `.tmp/glm-direct.py`, prompts
+  and results under `.tmp/glm-2.1/`): R1 `vectordb/_base_manager.py`
+  (7,908 in / 19,105 out tokens), R2 `agent/graph.py` + `agent/state.py`
+  (7,895 / 22,677), R3 `config/settings.py` + `vectordb/manager.py` +
+  `resolution/evidence_view.py` (5,586 / 12,049), R4 `static/admin.js`
+  (2,246 / 3,781), R5b `tests/test_ask_contract_route.py` (7,968 / 16,887),
+  R5a unit tests (see below). R1–R5b ended `end_turn`; no Codex
+  substitution this slice.
+- R5a (11 unit groups, 57k-character prompt) ended `max_tokens` at 48,000
+  output tokens with 13,620 characters of text (the window went to
+  reasoning, as on T-56) — recoverable failure, `.partial.txt` not applied.
+  One narrowed retry per the runbook, split by file: R5a-1
+  `tests/test_route_trace_units.py` (U1–U6, U10; 6,387 / 18,235 tokens,
+  `end_turn`, 15 passed after one I001 fix) and R5a-2
+  `tests/test_route_trace_nodes.py` (U7–U9, U11). The R5a-2 request was
+  stopped by the Claude Code harness for system memory pressure before the
+  model produced anything (not a GLM failure); per the harness instruction
+  it was not restarted, and the lead agent wrote that file (4 groups,
+  11 tests) from the same brief — disclosed here and in the commit message.
+- The contract module is `tests/test_ask_contract_route.py` (renamed from
+  `…_route_contract.py`): the task's `verify_cmd` selects
+  `-k "trace or evidence or ask_contract"`, which matches module names only
+  as substrings.
+- Lead-agent corrections on the GLM output: R1 one SEARCH block with slice
+  spacing; R2 `import hashlib` moved to the stdlib block and
+  `estimate_tokens` imported at module level; R3 a `_text_or_none` helper so
+  `null` route fields survive the Evidence projection, and `view` annotated
+  for mypy strict; R5b the parity flag set on the client fixture's settings
+  object, and two route expectations corrected to what the graph does: with
+  fact verification off the grounding gate is fail-closed (`human` at score
+  90), and a single-document answer with `NONE` claims is a knowledge gap
+  (`_is_knowledge_gap`: fewer than two graded docs or factuality below 50),
+  so the fixture contract pins `human` and the reasons; no `auto` case.
+- Design reading of the spec: the three strategy notions (configured,
+  selected, effective) and the query fingerprint are a separate
+  `retrieval_route` trace step logged before each `retrieve`, not new legacy
+  state keys — the §5 e2e equality for `retrieval_paths` keeps its 4-key
+  shape; the hybrid lane's path is lifted into `retrieval_paths` from the
+  pending route; `view["retrieval_route"]` exists only when the step exists
+  (old traces replay unchanged); `confidence` is always `null` (no calibrated
+  classifier, G9); `generation_context_tokens` uses the provider estimator.
+  `RAG_RERANK_BATCH` is validated at settings construction (unset or a
+  positive integer), read once when the retriever is built, and reported on
+  every path as `rerank_batch_effective`.
+- Windows: ruff clean on the repo; mypy strict on the three kernel files;
+  focused set 236 passed; slice tests 52 passed (contract 16, units 15,
+  nodes 11, observability 10); docs gate 23 passed.
+- Mac fast gate, attempt 1: RED on two counts. (1) `focused`:
+  `tests/test_graph_error_handling.py` — a `MagicMock` retriever answers the
+  new `get_relevant_documents_with_path` attribute, so the retrieve node
+  unpacked a mock, fell into its error branch and went on with no documents.
+  Fixed in `agent/graph.py` by `_relevant_documents_with_lane_path`: the lane
+  API counts only when the call returns a real `(docs, path)` pair, anything
+  else takes the legacy call; pinned by a node test (the file now holds 12).
+  (2) `task:T-59`: the registered `verify_cmd` was a keyword sweep
+  (`-k "trace or evidence or ask_contract"`) that also selected the
+  Postgres-only integration fixtures (`DATABASE_URL` required, 4 errors);
+  narrowed with `task-edit T-59 --verify-cmd` to the slice's eight test
+  files (the note is on the task).
+  Status docs: `CURRENT_STATE.md` (line 10 and the Q row, 150 lines),
+  `ROADMAP.md` (two Q mentions), `EVIDENCE_INDEX.md` row after the Astra row.
+- Mac fast gate, attempt 2: GREEN (tree `231b28f626`). MyFlow review pass 1:
+  three verified findings, all applied by the lead agent in repair pass 1
+  (disclosed in the commit message, each with a confirming test):
+  F-T-59-1 (sev 8) — `TraceService.log_step` redacted the serialised JSON,
+  so the card-number pattern ate the digits of a float rerank score
+  (`0.8999999761581421`) and the step became unreadable; now the state is
+  JSON-normalised first and only string leaves are redacted (node test +
+  an HTTP contract case with a real reranker score). F-T-59-2 (sev 6) —
+  the retriever factories took `rerank_batch` from the Settings singleton,
+  so a runtime `RAG_RERANK_BATCH` change never reached a rebuilt retriever;
+  both factories now read the variable at build time
+  (`_effective_rerank_batch`, env validated, else the Settings value); the
+  cached retriever keeps its batch until `reset_retriever_cache` (unit test
+  covers cached / rebuilt / invalid / unset). F-T-59-3 (sev 6) — a
+  successful `predict()` returning only NaN/Inf was reported as
+  `fallback:reranker_error`; `_rerank_scored_with_status` now returns the
+  reranker outcome beside the pairs and `_score_table` names the fallback
+  only on the exception path, all-NaN is `partial` (two unit tests).
+  Slice tests after the repair: contract 17, units 18, nodes 13,
+  observability 10 (+ `tests/test_trace_service.py` 3,
+  `tests/test_graph_error_handling.py`): 69 passed on Windows.
+- Review pass 2 (Codex, first voice): F-T-59-1 and F-T-59-3 refuted as
+  fixed; F-T-59-2 raised again (a process started with `RAG_RERANK_BATCH`
+  set and then unset at runtime keeps the Settings snapshot on rebuild) →
+  disputed → second voice (`review-run --second`, fallback directive: Fable
+  subagent on the live tree `607e103434`): refuted, severity 2, confidence
+  0.2 — spec row 2.2 asks for read-at-build and a runtime change applied
+  after rebuild, both hold; the Settings fallback keeps programmatic
+  overrides (`_apply_settings_overrides`); the residual is documented in
+  the `_effective_rerank_batch` docstring. The subagent's JSON lacked the
+  `confirms`/`verdict` fields, so the controller filed it as the advisory
+  F-T-59-7; rejected with a note carrying the verdict (a canonical
+  re-record is refused in COMMIT_PENDING). F-T-59-2 stays closed as
+  refuted; no code change.
+- Mac full gate, attempt 1: RED on three unit tests (3802 passed).
+  (1) `tests/test_factcard_store.py::test_retrieve_node_factcard_uses_cards`
+  monkeypatches `graph._select_retrieval_strategy`, which the retrieve node
+  no longer called (it used `_select_retrieval_strategy_with_reason`).
+  Fixed in `agent/graph.py`: the decision lives in
+  `_select_retrieval_strategy` again (HEAD body), the reason is
+  `_selection_reason(selected, configured)` — the exact inverse of the rule
+  table — and `_with_reason` goes through the module-level selector, so a
+  replaced selector stays the single source of truth; unit test added
+  (units file now 19). (2)+(3) `tests/test_pgvector_spike_artifact.py` and
+  `tests/test_pgvector_rerank_artifact.py` compared the recorded
+  `source_sha256` of `vectordb/_base_manager.py` with the live tree; T-59
+  is the first change to that file since the D.1 (`fa0146c`) and D.3
+  (`1e64ee3`) measurements. Both tests now verify the digests against the
+  blobs at the commit the artifact names (`git show <code_base>:<path>`,
+  the pattern of the newer D.4/D.5 artifact tests; the D.1 spike scripts
+  did not exist at its code_base and are verified at the publishing commit
+  `06da9c6`); the artifacts are untouched, the two `EVIDENCE_INDEX.md`
+  rows say which code they describe and that the numbers were not
+  re-measured. Windows: the three tests + slice + docs gate, 99 passed.
+  Path back per MyFlow rule 8: `repair --no-findings` → `done` →
+  `review-run` → `gate --full`; the gate results are in the commit message
+  and the MyFlow journal.

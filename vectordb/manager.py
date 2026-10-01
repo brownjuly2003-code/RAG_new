@@ -994,12 +994,25 @@ def get_retriever(
         chunks = _restore_chunks_from_store(vector_store, tenant)
 
     if getattr(settings, "graph_retrieval", "off") == "on" and chunks:
-        from ingestion.entity_graph_loading import load_matching_entity_graph
+        from ingestion.entity_graph_loading import load_matching_entity_graph_with_status
         from ingestion.structure_graph import build_structural_graph
-        from ingestion.structure_graph_projection import project_structure_graph
+        from ingestion.structure_graph_projection import (
+            project_structure_graph,
+            structure_graph_digest,
+        )
 
         structural = build_structural_graph(chunks, tenant_id=tenant)
-        projection = project_structure_graph(load_matching_entity_graph(structural))
+        graph_to_project, entity_graph_status = load_matching_entity_graph_with_status(structural)
+        projection = project_structure_graph(graph_to_project)
+        # Provenance the retrieval path reports: which graph answers and why
+        # the entity lane is or is not present (audit 2026-09-30, F4).
+        projection.graph["entity_graph_status"] = entity_graph_status
+        try:
+            projection.graph["digest"] = structure_graph_digest(graph_to_project)
+        except Exception as exc:  # noqa: BLE001 - provenance must not break retrieval
+            logger.warning("[get_retriever] structural graph digest failed: %s", exc)
+            projection.graph["digest"] = None
+            projection.graph["entity_graph_status"] = "invalid"
         retriever = _base_manager.get_retriever(
             vector_store, chunks=chunks, k=k, graph_projection=projection,
         )

@@ -109,11 +109,22 @@ class GraphState(TypedDict, total=False):
         "single_hop", "multi_hop", "aggregation", "global", "unknown"
     ]
     entities: list[str]
+    # Query-derived categories for the graph lane's soft prefilter. No producer
+    # fills them yet; the retrieve node forwards them when present so the
+    # plumbing is testable without dataset tags (audit 2026-09-30, F3).
+    categories: list[str]
     needs_multi_hop: bool
     reason_code: str
     retrieval_strategy: Literal["vector", "hybrid", "graph", "factcard"]
+    # Set only when the graph lane was requested: what was asked for, what ran,
+    # and the bounded reason when they differ.
+    retrieval_strategy_requested: str
     retrieval_strategy_effective: str
+    retrieval_fallback_reason: str
     retrieval_path: dict[str, Any]
+    # Tokens of the context actually sent to the generator (after grading),
+    # counted with the provider budget estimator; slice 2.1 (A8).
+    generation_context_tokens: int
     route: Optional[
         Literal[
             "auto",

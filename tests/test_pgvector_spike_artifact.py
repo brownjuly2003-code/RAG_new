@@ -2,6 +2,7 @@
 import gzip
 import hashlib
 import json
+import subprocess
 from pathlib import Path
 
 import numpy as np
@@ -10,6 +11,9 @@ import pytest
 from scripts.pgvector_spike import score_rows
 
 ROOT = Path(__file__).resolve().parents[1]
+# The spike scripts were published with the report in this commit; they did not
+# exist at the report's code_base, so their digests are verified here.
+REPORT_COMMIT = "06da9c6"
 
 
 def test_d1_provenance_and_all_repetitions_replay():
@@ -25,10 +29,16 @@ def test_d1_provenance_and_all_repetitions_replay():
         cases.extend({"case_id": r["case_id"], "query": r["query"], "kws": r["expected"]["answer_contains"]}
                      for r in map(json.loads, raw.decode().splitlines()))
         buckets[Path(filename).stem] = (start, len(cases))
+    # Provenance, not staleness: each recorded source digest is the blob at the
+    # commit it describes (product sources at code_base, scripts at REPORT_COMMIT).
+    # The live tree moves on (T-59 changed vectordb/_base_manager.py); the
+    # published numbers keep their code SHA.
     for filename, expected in report["source_sha256"].items():
         directory = "scripts" if filename.startswith("pgvector_spike") else (
             "evaluation" if filename == "ragas_eval.py" else "vectordb")
-        assert hashlib.sha256((ROOT / directory / filename).read_bytes()).hexdigest() == expected
+        commit = REPORT_COMMIT if directory == "scripts" else report["code_base"]
+        blob = subprocess.check_output(["git", "show", f"{commit}:{directory}/{filename}"], cwd=ROOT)
+        assert hashlib.sha256(blob).hexdigest() == expected
     assert report["config"]["cases"] == 115
     assert report["config"]["chunks"] == len(texts) == 5589
     assert report["config"]["reranker"] is False

@@ -333,25 +333,94 @@
     evidencePane.textContent = "";
     var journeys = view && Array.isArray(view.journeys) ? view.journeys : [];
     var retrievalPaths = view && Array.isArray(view.retrieval_paths) ? view.retrieval_paths : [];
-    exportEvidenceButton.disabled = journeys.length === 0 && retrievalPaths.length === 0;
+    exportEvidenceButton.disabled = journeys.length === 0 && retrievalPaths.length === 0 &&
+      !(view && view.retrieval_route && typeof view.retrieval_route === "object");
 
     if (!view) {
       evidencePane.appendChild(el("p", "empty", "Evidence could not be loaded for this trace."));
       return;
     }
+    var route = view && view.retrieval_route;
+    if (route && typeof route === "object") {
+      evidencePane.appendChild(el("h3", null, "Retrieval route"));
+      evidencePane.appendChild(definitionList([
+        ["configured strategy", route.configured],
+        ["selected strategy", route.selected],
+        ["selection reason", route.selected_reason],
+        ["effective strategy", route.effective],
+        ["fallback reason", route.fallback_reason],
+        ["question class", route.question_class],
+        ["complexity", route.complexity],
+        ["classifier reason code", route.classifier_reason_code],
+        ["classifier confidence", route.confidence === null || route.confidence === undefined
+          ? "not calibrated"
+          : String(route.confidence)],
+        ["entities", Array.isArray(route.entities) ? route.entities.join(", ") || "none" : null],
+        ["query original", route.query_original],
+        ["query effective", route.query_effective],
+        ["query transform", route.query_transform],
+        ["query transform hash", route.query_transform_hash],
+        ["graph retrieval", route.graph_retrieval],
+        ["documents retrieved", route.num_docs],
+        ["context tokens sent to generator", route.generation_context_tokens]
+      ]));
+    }
     retrievalPaths.forEach(function (retrieval) {
       var path = retrieval.path || {};
-      evidencePane.appendChild(el("h3", null, "Structural retrieval path"));
+      var candidates = path.candidates || {};
+      var timings = path.timings_ms || {};
+      var dropped = Array.isArray(path.dropped) ? path.dropped : [];
+      evidencePane.appendChild(
+        el("h3", null, path.kind === "hybrid" ? "Hybrid retrieval path" : "Structural retrieval path")
+      );
       evidencePane.appendChild(definitionList([
+        ["requested strategy", retrieval.requested],
         ["strategy", retrieval.strategy],
+        ["fallback reason", retrieval.fallback_reason],
         ["kind", path.kind],
-        ["category prefilter", path.prefilter_applied ? "applied" : "not applied"],
-        ["sections", (path.sections || []).join(", ") || "none"],
+        ["graph version", path.graph_version],
+        ["entity graph", path.entity_graph_status],
+        ["categories", Array.isArray(path.categories) ? path.categories.join(", ") || "none" : null],
+        ["category prefilter", retrieval.path ? (path.prefilter_applied ? "applied" : "not applied") : null],
+        ["sections", retrieval.path ? (path.sections || []).join(", ") || "none" : null],
         ["entities", Array.isArray(path.entities) ? path.entities.join(", ") || "none" : null],
         ["entity hops", path.hops],
+        ["candidates", path.candidates
+          ? [["vector", candidates.vector], ["bm25", candidates.bm25],
+             ["entity", candidates.entity], ["merged", candidates.merged]]
+              .filter(function (pair) {
+                return pair[1] !== undefined;
+              })
+              .map(function (pair) {
+                return pair[0] + " " + pair[1];
+              }).join(" / ")
+          : null],
         ["retrieved contexts", path.retrieved_contexts],
         ["retained contexts", path.retained_contexts],
-        ["expanded contexts", path.expanded_contexts]
+        ["expanded contexts", path.expanded_contexts],
+        ["rerank", path.rerank_status],
+        ["rerank batch", path.rerank_batch_effective],
+        ["rerank scores", Array.isArray(path.rerank_scores)
+          ? path.rerank_scores.map(function (score) {
+              return score === null || score === undefined ? "—" : Number(score).toFixed(4);
+            }).join(", ") || "none"
+          : null],
+        ["dropped", path.dropped
+          ? dropped.map(function (drop) {
+              return "#" + drop.rank + " " + (drop.source || "?") + ":" + drop.chunk_index +
+                " (" + drop.reason + ")";
+            }).join("; ") || "none"
+          : null],
+        ["timings ms", path.timings_ms
+          ? [["pools", timings.pools], ["rerank", timings.rerank],
+             ["coherence_expand", timings.coherence_expand], ["total", timings.total]]
+              .filter(function (pair) {
+                return pair[1] !== undefined;
+              })
+              .map(function (pair) {
+                return pair[0] + " " + pair[1];
+              }).join(" / ")
+          : null]
       ]));
     });
     if (!journeys.length) {
