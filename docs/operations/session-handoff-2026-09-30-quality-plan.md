@@ -681,5 +681,33 @@ every Sol/GLM proposal (i)–(xvi) resolved per Astra §5; nothing weakened.
     truncation accounting; GR3 'Score: 1.0' stays invalid);
   - T-65 (2.5 baseline on the Mac, needs T-61 + T-62).
   - T-57 stays parked (Julia's D2 grades).
-- The notes live in `.tmp/notes/`, which is untracked; the next session must
-  read them from this machine.
+- Saved off the laptop at Julia's request («то, что нужно сохранить -
+  сохрани, пометь в доке»): branch `wip/T-61-writer` on origin, commit
+  `e0f54c0` on top of `e722364`. It is a backup, not a slice commit: never
+  merge, rebase onto or check out the branch.
+  - Contents: 50 files, each checked blob-for-blob against the tree; the
+    restore command below was tested into a scratch directory.
+    - the T-61 writer output (11 edits and 3 new files);
+    - all of `.tmp/notes/`: the notes for T-60, T-61 and T-62, the
+      T-58/T-63/T-64 notes and the helper scripts, including
+      `clear_stale_companion_job.py`;
+    - the MyFlow files that resume the slice: `.myflow/state.json`,
+      `tasks.json`, `config.json`, `spec.md`, `checkpoint.md`,
+      `journal.jsonl`, `writer_run.json` and `.myflow/writer/T-61*`.
+  - The originals stay in place on this machine (`.tmp/` and `.myflow/` are
+    git-ignored). Do not stash, check out, reset or clean the tree before
+    `done T-61`.
+  - Restore only if the tree is lost. The command writes the working tree
+    and leaves the index alone; drop the `.myflow/` paths unless `.myflow/`
+    itself is gone:
+
+    ```sh
+    git diff --name-only wip/T-61-writer~1 wip/T-61-writer |
+      xargs git restore --source=wip/T-61-writer --worktree --
+    ```
+
+  - Delete the branch, locally and on origin, once T-61 lands on master.
+- `done T-61` will warn «HEAD moved during this slice (93b2c42 -> …)». The
+  slice started on `93b2c42`, and the only commits since are the lead
+  agent's handoff commits. It is a warning, not a block: the scope check
+  reads the working tree against HEAD.
