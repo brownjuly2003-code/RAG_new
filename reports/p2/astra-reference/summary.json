@@ -1,0 +1,31 @@
+{
+  "boundary": "Model reference only; not human grades or the registered P2 verdict.",
+  "codex_cli_version": "0.159.2",
+  "companion_arguments": [
+    "--model",
+    "gpt-6-astra",
+    "--effort",
+    "xhigh"
+  ],
+  "complete": true,
+  "effort": "xhigh",
+  "generated_utc": "2026-09-30T23:45:36.892923+00:00",
+  "grade_distribution": {
+    "0": 2,
+    "1": 18,
+    "2": 18,
+    "3": 12
+  },
+  "graded_cases": 10,
+  "graded_documents": 50,
+  "instruction_sha256": "7877c3845a742013e3c189e260ef506ba07dc65749fa3df8455a181a4dcedc33",
+  "judge": "astra-xhigh",
+  "model": "gpt-6-astra",
+  "ratings_order": "grades use original top-five order; presented_grades use blind D1-D5 order",
+  "reply_store_sha256": "6411f772c57629cb04118ba3e9892d1956b8c31db448229628fdf874458e5164",
+  "reported_cost_usd": null,
+  "route": "Codex companion task, ChatGPT work profile, direct runtime, read-only sandbox, empty temporary cwd",
+  "sample_cases": 10,
+  "schema_version": "p2-astra-reference/v1",
+  "total_tokens": 193421
+}

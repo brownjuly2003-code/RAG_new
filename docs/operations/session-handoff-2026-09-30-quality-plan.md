@@ -409,3 +409,26 @@ every Sol/GLM proposal (i)–(xvi) resolved per Astra §5; nothing weakened.
   `writer`), disclosed in the commit message; the collector run itself, the
   SHA pins and the capsule stay with the lead agent.
 
+## Step 16 — T-56 closed: Astra reference measured (30.09, late)
+
+- Writer `luna-high` (gpt-6-luna, Codex `cw`) via `writer --task T-56
+  --detach`, 680 s, three files; the lead agent ran `ruff format` and reduced
+  `rollout_file` to the file name in script and unit test. The executor
+  substitution (GLM 5.3 direct → Codex `cw` after the two failures in Step 15)
+  is disclosed in the commit message.
+- Run from the main session: `py -3.13 scripts/p2_astra_reference.py` →
+  10/10 graded, 0 missing, 0 reused, exit 0. Threads
+  `01a0f4ae-ab23-7a23-99b0-99cb960b1243` … `01a0f4b5-0cd1-7341-9041-12a9ab242100`
+  (rollout stamps 19:38:07–19:45:06, summary 2026-09-30T23:45:36 UTC);
+  193,421 tokens, reasoning 112–509 per case, 37–55 s per request; every
+  reply passed the rollout check (`gpt-6-astra`, `xhigh`, read-only sandbox,
+  empty temp cwd). No cost reported (subscription route).
+- Result: grades 2/18/18/12, 30/50 relevant, 9/10 cases with a 3; κ 0.8930
+  Sonnet 5, 0.8824 GLM 5.3, 0.9727 Opus 5.5 (48/50 exact; both differences are
+  one grade). Capsule `docs/evidence/p2-astra-reference-sample.md`,
+  `EVIDENCE_INDEX.md` row, `CURRENT_STATE.md` P2 line; `STORE_SHA256` pinned
+  `6411f772…5164`. Windows: ruff clean, 23 passed (Astra unit + artifact,
+  Opus artifact). Slice rule (c): published κ with pool SHA, collector blob
+  and companion arguments. Model reference only — 1.1 (D2) still waits on
+  Julia's grades; T-57 stays parked.
+

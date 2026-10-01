@@ -22,7 +22,7 @@ selections reproduce P1; expanded control and `top_k_3+exp` equal Q1's expanded 
 cut that keeps every fact at 0.6505 (not deployable). Both are H-relative exploratory on
 100 agent-authored `agent_labelled` cases (0 approved), offline with no product change.
 **P2 measured:** [GLM + Sonnet blinded judgment](docs/evidence/p2-blinded-relevance-judgment.md), 115/115 cases each; H α 0.8566, primary τ_b 0.1561 (CI95 [0.0197, 0.2880]): `RULER_DOES_NOT_TRACK`.
-Julia's blind grades are pending; Mistral returned `zero_limit`. No gate or default changed.
+Model references on the blind ten-case sample: [Opus 5.5 max](docs/evidence/p2-opus-reference-sample.md) and [Astra xhigh](docs/evidence/p2-astra-reference-sample.md) (κ 0.9727 to each other, 0.88–0.91 to GLM/Sonnet). Julia's blind grades are pending; Mistral returned `zero_limit`. No gate or default changed.
 
 ### GR-3 measured — NO-SHIP-to-default
 
