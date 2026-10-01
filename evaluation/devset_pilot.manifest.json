@@ -1,0 +1,399 @@
+{
+  "seed": 6413030,
+  "sampling": {
+    "algorithm": "Python random.Random(seed).sample without replacement over specificity-filtered heading bodies across all 201 manifest documents, sorted by (source_id, char_start)",
+    "section_parser": "markdown-heading-bodies-v1",
+    "candidate_count": 982,
+    "drawn_sections": [
+      {
+        "source_id": "01_hr_pol_relocation.md",
+        "section_path": [
+          "Политика релокации сотрудников",
+          "Порядок действий",
+          "1. Решение о релокации"
+        ],
+        "char_start": 1685,
+        "char_end": 2076
+      },
+      {
+        "source_id": "02_hr_tmp_job_description_lawyer.md",
+        "section_path": [
+          "Должностная инструкция — юрист",
+          "Порядок действий",
+          "5. Требования к квалификации"
+        ],
+        "char_start": 3854,
+        "char_end": 4256
+      },
+      {
+        "source_id": "01_hr_pol_talent_pool.md",
+        "section_path": [
+          "Положение о кадровом резерве",
+          "Назначение"
+        ],
+        "char_start": 502,
+        "char_end": 812
+      },
+      {
+        "source_id": "06_comp_policy_nda_employee.md",
+        "section_path": [
+          "Соглашение о неразглашении (NDA) для сотрудников",
+          "Назначение"
+        ],
+        "char_start": 562,
+        "char_end": 893
+      },
+      {
+        "source_id": "03_legal_contract_insurance_civil_liability.md",
+        "section_path": [
+          "Договор страхования гражданской ответственности перевозчика",
+          "Термины"
+        ],
+        "char_start": 1781,
+        "char_end": 2549
+      },
+      {
+        "source_id": "01_hr_pol_injury.md",
+        "section_path": [
+          "Порядок действий при несчастном случае",
+          "Порядок действий",
+          "6. Выплаты и льготы"
+        ],
+        "char_start": 4370,
+        "char_end": 4730
+      },
+      {
+        "source_id": "02_hr_tmp_job_description_logistics.md",
+        "section_path": [
+          "Должностная инструкция — логист",
+          "Порядок действий",
+          "5. Требования к квалификации"
+        ],
+        "char_start": 3993,
+        "char_end": 4387
+      },
+      {
+        "source_id": "02_hr_tmp_add_agreement.md",
+        "section_path": [
+          "Дополнительное соглашение к трудовому договору (шаблон)",
+          "Область применения"
+        ],
+        "char_start": 898,
+        "char_end": 1195
+      },
+      {
+        "source_id": "06_comp_policy_data_retention.md",
+        "section_path": [
+          "Политика сроков хранения данных",
+          "Порядок действий",
+          "2. Обязательные поля"
+        ],
+        "char_start": 2446,
+        "char_end": 3135
+      },
+      {
+        "source_id": "02_hr_tmp_employment_order.md",
+        "section_path": [
+          "Приказ о приеме на работу (шаблон)",
+          "Область применения"
+        ],
+        "char_start": 891,
+        "char_end": 1160
+      },
+      {
+        "source_id": "04_legal_claim_cargo_loss.md",
+        "section_path": [
+          "Претензия авиаперевозчику об утрате или недостаче груза",
+          "Контрольный список"
+        ],
+        "char_start": 12907,
+        "char_end": 13512
+      },
+      {
+        "source_id": "01_hr_pol_performance_review.md",
+        "section_path": [
+          "Регламент performance review",
+          "Порядок действий",
+          "1. Планирование целей (Goal Setting)"
+        ],
+        "char_start": 2065,
+        "char_end": 2476
+      },
+      {
+        "source_id": "06_comp_policy_cookies.md",
+        "section_path": [
+          "Политика использования cookies и веб-аналитики",
+          "Назначение"
+        ],
+        "char_start": 585,
+        "char_end": 952
+      },
+      {
+        "source_id": "01_hr_pol_dress_code.md",
+        "section_path": [
+          "Правила делового этикета и дресс-кода",
+          "Порядок действий",
+          "2. Запрещенная одежда"
+        ],
+        "char_start": 1788,
+        "char_end": 2032
+      },
+      {
+        "source_id": "07_faq_claims_procedure.md",
+        "section_path": [
+          "FAQ по претензионной работе",
+          "Правила ответа RAG-ассистента"
+        ],
+        "char_start": 6195,
+        "char_end": 6833
+      },
+      {
+        "source_id": "02_hr_tmp_probation_report.md",
+        "section_path": [
+          "Отчет об испытательном сроке (шаблон)",
+          "Назначение"
+        ],
+        "char_start": 504,
+        "char_end": 822
+      },
+      {
+        "source_id": "02_hr_tmp_probation_report.md",
+        "section_path": [
+          "Отчет об испытательном сроке (шаблон)",
+          "Область применения"
+        ],
+        "char_start": 844,
+        "char_end": 1058
+      },
+      {
+        "source_id": "01_hr_pol_internal_comm.md",
+        "section_path": [
+          "Правила внутренней коммуникации",
+          "Область применения"
+        ],
+        "char_start": 899,
+        "char_end": 1242
+      },
+      {
+        "source_id": "01_hr_pol_leave.md",
+        "section_path": [
+          "Положение об отпусках",
+          "Термины"
+        ],
+        "char_start": 1308,
+        "char_end": 1791
+      },
+      {
+        "source_id": "04_legal_claim_customs_delay.md",
+        "section_path": [
+          "Претензия по таможенной задержке авиагруза",
+          "Ответственные роли"
+        ],
+        "char_start": 10555,
+        "char_end": 11327
+      },
+      {
+        "source_id": "04_legal_letter_arbitration_notice.md",
+        "section_path": [
+          "Уведомление об арбитраже по авиагрузовому спору",
+          "Критерии качества ответа"
+        ],
+        "char_start": 12226,
+        "char_end": 12701
+      },
+      {
+        "source_id": "01_hr_pol_leave.md",
+        "section_path": [
+          "Положение об отпусках",
+          "Порядок действий",
+          "3. Согласование и приказ"
+        ],
+        "char_start": 2516,
+        "char_end": 2774
+      },
+      {
+        "source_id": "02_hr_tmp_job_description_hr.md",
+        "section_path": [
+          "Должностная инструкция — HR-менеджер",
+          "Порядок действий",
+          "4. Взаимодействие"
+        ],
+        "char_start": 3070,
+        "char_end": 3563
+      },
+      {
+        "source_id": "02_hr_tmp_position_change_order.md",
+        "section_path": [
+          "Приказ о смене должности (шаблон)",
+          "Порядок действий",
+          "3. Отличие от перевода"
+        ],
+        "char_start": 3074,
+        "char_end": 3425
+      },
+      {
+        "source_id": "05_tlog_regulation_waybill.md",
+        "section_path": [
+          "Порядок оформления путевых листов для airport first/last mile",
+          "Глоссарий — AWB, ULD, GHA, cutoff",
+          "ULD (Unit Load Device)"
+        ],
+        "char_start": 18488,
+        "char_end": 19186
+      },
+      {
+        "source_id": "06_comp_policy_incident_response.md",
+        "section_path": [
+          "План реагирования на инциденты ИБ и утечки",
+          "Назначение"
+        ],
+        "char_start": 598,
+        "char_end": 950
+      },
+      {
+        "source_id": "04_legal_reply_cargo_damage.md",
+        "section_path": [
+          "Ответ на претензию о повреждении авиагруза",
+          "Назначение"
+        ],
+        "char_start": 591,
+        "char_end": 1176
+      },
+      {
+        "source_id": "02_hr_tmp_dismissal_order.md",
+        "section_path": [
+          "Приказ об увольнении (шаблон)",
+          "Термины"
+        ],
+        "char_start": 1140,
+        "char_end": 1601
+      },
+      {
+        "source_id": "06_comp_policy_pdp.md",
+        "section_path": [
+          "Политика обработки персональных данных",
+          "Практический сценарий"
+        ],
+        "char_start": 8102,
+        "char_end": 8873
+      },
+      {
+        "source_id": "07_faq_employee_material_liability.md",
+        "section_path": [
+          "FAQ по материальной ответственности работника",
+          "Назначение"
+        ],
+        "char_start": 613,
+        "char_end": 939
+      }
+    ],
+    "frame": "All heading-body sections of the 201 manifest documents; original development-family restriction was vacuous under the old map.",
+    "eligibility_rule": {
+      "version": "document-specific-heading-bodies-v2",
+      "minimum_stripped_characters": 180,
+      "excluded_last_headings": [
+        "История изменений",
+        "Связанные документы",
+        "Порядок пересмотра и актуализации"
+      ],
+      "normalization": "whitespace collapsed, lower-case",
+      "minimum_line_characters": 8,
+      "repeated_line_document_threshold": 3,
+      "maximum_repeated_line_fraction": "1/3",
+      "maximum_span_documents": 2,
+      "minimum_fact_characters": 12,
+      "maximum_fact_documents": 3,
+      "fact_specificity_field": "source_quote"
+    },
+    "discarded_draw": "The first draw over the unfiltered 4007-section frame was discarded before review because 16 of 24 answerable cases rested on template text."
+  },
+  "corpus_sha256": "c8562a64f88f72172f29e30865091be79f08d00ce65fbf675f34de64dcebe343",
+  "schema_version": "devset-pilot-v2",
+  "jsonl_sha256": "c8688f470271ec49c4d1f2c5415396c067431e9a7f715297d53abc9a18ef5bdb",
+  "families_sha256": "54bdb736180e00325bff20f49e2b9d985dd62278fe9f9cdb6161a0da719e3584",
+  "generator": "gpt-6.1-sol",
+  "question_styles": {
+    "agent_style_A": "formal operator question",
+    "agent_style_B": "colloquial support-ticket phrasing"
+  },
+  "style_counts": {
+    "agent_style_A": 15,
+    "agent_style_B": 15
+  },
+  "quotas": {
+    "single-doc": 10,
+    "multi-doc": 10,
+    "aggregation": 4,
+    "needs-refusal/clarification": 6
+  },
+  "case_count": 30,
+  "adversarial_unanswerable_count": 10,
+  "trap_counts": {
+    "false_premise": 3,
+    "outdated_rule": 2,
+    "conflicting_documents": 1,
+    "dangerous_goods": 1,
+    "out_of_corpus": 1
+  },
+  "case_family_component_count": 19,
+  "family_count": 84,
+  "excluded_from_judges": [],
+  "approval_status": "agent_labelled; unapproved",
+  "holdout_reserve_status": "draft reserve; owner decides representativeness in 1.3b/1.3e; no holdout created",
+  "ru_to_en_rule": {
+    "version": "cyrillic-query-missing-latin-fact-token-v1",
+    "question_contains": "Cyrillic letter",
+    "fact_scope": "required_facts.text",
+    "latin_token_pattern": "[A-Za-z]{3,}",
+    "token_absence": "case-insensitive substring absent from question"
+  },
+  "ru_to_en_count": 10,
+  "fact_label_rule": {
+    "version": "pilot-claim-quote-v2",
+    "matcher": "evaluation.semantic_ruler.fact_coverage",
+    "claim_normalization": "casefold plus whitespace collapse; punctuation retained",
+    "claim": "atomic: no newline, list marker or table pipe; at most 160 characters",
+    "grounding": "text claim is quote substring or generic governing cue + space/colon-space + quote substring",
+    "source_quote": "contiguous verbatim excerpt of an own gold span; at most 300 characters",
+    "presence": "context presence (2.5) matches source_quote in the sent context; answer presence matches text in the answer",
+    "specificity_change": "The fact clause moved from text to source_quote: claims are answer wording (e.g. department names); specificity belongs to evidence.",
+    "numeric_span_coverage": "1.0 or explicit needs_blind_judgment; derived claims excluded",
+    "reference_answer": "Russian minimal answer to exactly the question; at most 700 characters; all claims covered or explicit needs_blind_judgment",
+    "derived": "numeric aggregation result absent from source spans",
+    "governing_cues": {
+      "forbidden": [
+        "запрещается",
+        "запрещено",
+        "запрещает",
+        "не допускается",
+        "недопустимо",
+        "нельзя",
+        "не вправе",
+        "не может",
+        "не применяется"
+      ],
+      "required": [
+        "обязан",
+        "обязана",
+        "обязаны",
+        "обязательно",
+        "должен",
+        "должна",
+        "должны",
+        "должно",
+        "должно быть",
+        "необходимо",
+        "требуется",
+        "не позднее"
+      ],
+      "only_if": [
+        "только при",
+        "только если",
+        "только после",
+        "при условии",
+        "если",
+        "в случае"
+      ]
+    }
+  }
+}

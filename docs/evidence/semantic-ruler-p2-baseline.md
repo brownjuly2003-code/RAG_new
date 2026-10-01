@@ -50,8 +50,13 @@ the registered blind human acceptance check.
 
 ## Clustering and intervals
 
-The family register does not exist yet. Cluster unit is
-**provisional, replaced by the 1.3a family register**. H uses the first two `tags` as one
+At publication the family register did not exist. T-64 now supplies a
+[draft source-family register](../../evaluation/document_families.json): 84 topic families,
+57 singletons, with H/Hm using 42 families and a pilot adding 7. The reserve is 35 families /
+36 documents, skewed toward HR/legal templates with no claims, customs or dangerous goods.
+Owner confirmation is pending; these archived intervals have not been recomputed with it.
+Their cluster unit remains **provisional, replaced by the 1.3a family register** once the owner
+confirms it. H uses the first two `tags` as one
 topic identity: **45 groups** over 100 cases; extra tags are not families.
 Hm uses `source_documents`: **3 connected components** over 15 cases.
 The full case mapping and components are in the artifact. Multiple families
