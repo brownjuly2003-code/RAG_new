@@ -5,7 +5,7 @@ Audits: [Astra](docs/audits/audit_asta_30_09_26.md), [GLM](docs/audits/audit_glm
 
 ## Start here
 
-### Quality thread — adopted and ratified by delegation 2026-09-30, nothing implemented yet
+### Quality thread — adopted and ratified by delegation 2026-09-30
 
 [`plan_final_30_09_26.md`](docs/specs/plan_final_30_09_26.md) is the thread after phase E. Its first executor slice, 2.1/2.2 route observability, is **implemented** (T-59, 2026-10-01; executor GLM 5.3 direct in five one-file requests over the draft patch): `/api/ask` logs a `retrieval_route` trace step (configured/selected/effective strategy with a bounded reason, classifier fields, query transform fingerprint, documents, generation context tokens), the hybrid lane reports its path, and the Evidence endpoint and tab show both — rule (a) by `tests/test_ask_contract_route.py` (HTTP ask → trace → Evidence, 16 cases on a fixture model). Development ruler pre-registered in [`semantic-precision-metrics.md`](docs/specs/semantic-precision-metrics.md); the official 0.63 gate is untouched. Waiting on Julia: D2 (10 blind P2 grades), D3 (dev-set batch approval). `RAG_GRAPH_RETRIEVAL` stays `off`.
 
@@ -128,7 +128,7 @@ T-03: (a). B.1: (b) since the 2026-09-25 approval, real labelled 0 → 100 (T-54
 | GR-3 A/B | [Comparison](docs/evidence/gr3-graph-lane-ab.md), `32de532`: precision 0.5067 → 0.5487; bucket recall 0.5 → 0.4, FULL 4 → 1; p95 +8765.2 ms; generation `not_evidence`, 297/300 valid | **measured** (c), NO-SHIP-to-default; off |
 | P1 | [Adaptive-k](docs/evidence/p1-adaptive-k.md), `2edf19a`: H-relative exploratory held-out precision 0.5372 vs control 0.5067, 86/6/8; label-using oracle 0.6505; offline only | **measured** (c), NO_SHIP |
 | P1b | [Expanded cut](docs/evidence/p1b-expanded-cut.md), `c5f1d31`: H-relative exploratory `rel_0.2+exp` 0.5975 vs expanded control 0.5768, 96/2/2 vs 97/2/1, one fact loss; offline only | **measured** (c), NO_SHIP |
-| Q | Quality thread ([plan](docs/specs/plan_final_30_09_26.md)): 2.1/2.2 route observability **implemented** 2026-10-01 (T-59, rule (a): `tests/test_ask_contract_route.py`); 1.2 [development ruler](docs/specs/semantic-precision-metrics.md) pre-registered (preparation); 1.1/1.3 Julia's 10 blind P2 grades and dev-set pilot approval **waiting on Julia** (D2/D3) | adopted and ratified by delegation 2026-09-30 |
+| Q | Quality thread ([plan](docs/specs/plan_final_30_09_26.md)): 2.1/2.2 route observability **implemented** 2026-10-01 (T-59, rule (a): `tests/test_ask_contract_route.py`); 1.4 [P2 development baseline](docs/evidence/semantic-ruler-p2-baseline.md) published (T-58, rule (c)), H/Hm precision 0.6080/0.8400, `provisional_ruler`, unexpanded contexts, provisional clusters; 1.1/1.3 human grades and dev-set approval **waiting on Julia** (D2/D3) | adopted and ratified by delegation 2026-09-30 |
 
 ## Open questions for Julia
 

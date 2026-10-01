@@ -1,0 +1,1314 @@
+{
+  "schema_version": "semantic-ruler-p2/v1",
+  "evidence_class": "development-baseline",
+  "provisional_ruler": true,
+  "population": "Phase-C unexpanded top-5 reranked seeds, P2 top_k_5; sent context is the same five documents. NOT the production-expansion path (slice 2.5).",
+  "grade_source": "P2 lower-median consensus GLM 5.3 + Sonnet 5; human grades absent",
+  "config": {
+    "resamples": 10000,
+    "seed": 20261001,
+    "interval": "percentile CI95, linear quantiles",
+    "weights": "equal case weights",
+    "gain": "grade",
+    "relevant_grade_min": 2,
+    "top_k": 5,
+    "context_chars": 6000,
+    "production_expansion": false,
+    "RAG_RERANK_BATCH": {
+      "H": 8,
+      "Hm": 8
+    },
+    "official_context_precision_gate": 0.63,
+    "fact_matcher_version": "semantic-ruler/claim-window-v3"
+  },
+  "provenance": {
+    "code_commit": "629f903f938b823e6caceab1885957890df5dc95",
+    "tree_clean": false,
+    "code_files": {
+      "evaluation/semantic_ruler.py": "4212bc9f56e9b4aa277fdbfda4bd7dbf4fda02d00a4f578177282167f3ea641c",
+      "evaluation/blinded_judge.py": "73650a061fdfc4639282a833d13fc496b9c3949de5964eabd85b2d787a0bfe6e",
+      "evaluation/blinded_judge_clients.py": "3922706f6401a613708801f42dd1537045f61587dc75b93fb317ef8a12ef807a"
+    },
+    "cli_file": "evaluation/semantic_ruler.py",
+    "p2_report": "reports/p2/p2-blinded-judge-glm+sonnet.json",
+    "p2_report_sha256": "4c1e60cdad361799a291fa88d0d0c3a35675ad772630a0147615ab30d3a31e7d",
+    "pools": {
+      "H": {
+        "pool_sha256": "91ce1745e13ce24cc1b69d0655412385700f5028b4e6b4ed4bf056cb6188ff10",
+        "archive_path": "evaluation/c1a-c06bdf5-phase-c-C-candidates.json.gz",
+        "archive_sha256": "c28d676ac79450d54904cc83c697ddb709dfe95e6bbe86d305c3505db50338c3",
+        "scores_path": "evaluation/p1-511f3f9-H-rerank-scores.json",
+        "scores_sha256": "3ced6d0259fdee8da1d4cbf7dcb1cea55fed7e4379003d23f327a25e331bb50b",
+        "scores_code_commit": "511f3f90d9bef29d8f1b393b94ba12324eef9937",
+        "reranker": {
+          "model": "BAAI/bge-reranker-v2-m3",
+          "model_commit": "953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e",
+          "num_labels": 1,
+          "default_activation": "Sigmoid",
+          "max_length": null,
+          "device": "mps",
+          "host": "iMac-Julia.local",
+          "platform": "macOS-13.7.8-x86_64-i386-64bit",
+          "python": "3.11.15",
+          "torch": "2.2.2",
+          "transformers": "4.44.2",
+          "sentence_transformers": "2.7.0",
+          "hf_hub_offline": "1",
+          "transformers_offline": "1"
+        },
+        "batch_size": 8,
+        "parity": {
+          "order_matches": 100,
+          "top_k_matches": 100,
+          "mismatched_case_ids": []
+        },
+        "dataset": "evaluation/curated_cases_aircargo.jsonl",
+        "dataset_sha256": "3737d694362d1867ca3d5983e3765d02c01110d2409145ba7e0f05c021d9c720",
+        "label_sidecar": "evaluation/curated_cases_question_class.jsonl",
+        "label_sidecar_sha256": "cc6356b9faa46d4b952a955e1d47e9a8b15003284c42f48e7e5236471f8ff17c",
+        "label_manifest": "evaluation/curated_cases_question_class.manifest.json",
+        "label_manifest_sha256": "e2010fc94ee283c29308e6fa53e522c70b57d767aacf00113628858a061f7b10"
+      },
+      "Hm": {
+        "pool_sha256": "3a3020799e8310fcaf3532783cae9d83f8f03b3b0a741488b425ac7edec0aeee",
+        "archive_path": "evaluation/gr3-32de532-bucket-Hm-candidates.json.gz",
+        "archive_sha256": "feda99c5fdd8169729c5fe56d00a0d03f263fdb7a1c2b618c7937a5ec16823f0",
+        "scores_path": "evaluation/p1-511f3f9-Hm-rerank-scores.json",
+        "scores_sha256": "6789200b8a112d076ef7e7999cf8c261747131cab609dbd334abfc51dc06c03d",
+        "scores_code_commit": "511f3f90d9bef29d8f1b393b94ba12324eef9937",
+        "reranker": {
+          "model": "BAAI/bge-reranker-v2-m3",
+          "model_commit": "953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e",
+          "num_labels": 1,
+          "default_activation": "Sigmoid",
+          "max_length": null,
+          "device": "mps",
+          "host": "iMac-Julia.local",
+          "platform": "macOS-13.7.8-x86_64-i386-64bit",
+          "python": "3.11.15",
+          "torch": "2.2.2",
+          "transformers": "4.44.2",
+          "sentence_transformers": "2.7.0",
+          "hf_hub_offline": "1",
+          "transformers_offline": "1"
+        },
+        "batch_size": 8,
+        "parity": {
+          "order_matches": 15,
+          "top_k_matches": 15,
+          "mismatched_case_ids": []
+        },
+        "dataset": "evaluation/curated_cases_aircargo_gr_multihop.jsonl",
+        "dataset_sha256": "0949d7563983b96500074e61f10274b28cb9341612206e02733a59b5c7968f5f",
+        "label_sidecar": "evaluation/curated_cases_aircargo_gr_multihop_question_class.jsonl",
+        "label_sidecar_sha256": "a4bf3433bf3b73a7d20741516d911b70aec7ad7488838cff34bc32928079c719",
+        "label_manifest": "evaluation/curated_cases_aircargo_gr_multihop_question_class.manifest.json",
+        "label_manifest_sha256": "4f5417e7da1ef3dee4a106b36d1fb43e4d9fa7c298068029f6b3fd9dd911db77"
+      }
+    },
+    "reply_files": {
+      "glm": {
+        "path": "reports/p2/replies/glm.jsonl",
+        "sha256": "aac5c00993737194b0b5beaa9ee0cebc28d0434b647997056ffc1f69606f3da9"
+      },
+      "sonnet": {
+        "path": "reports/p2/replies/sonnet.jsonl",
+        "sha256": "c66101caa83c11e3b6cfee1e3fe10743c5cc684211265daf241da8654037f4ee"
+      }
+    },
+    "instruction_sha256": "7877c3845a742013e3c189e260ef506ba07dc65749fa3df8455a181a4dcedc33"
+  },
+  "pools": {
+    "H": {
+      "case_count": 100,
+      "cluster_unit": {
+        "status": "provisional, replaced by the 1.3a family register",
+        "basis": "tags pair (topic)",
+        "mapping": {
+          "aircargo-probation-data": [
+            "[\"hr\", \"probation\"]"
+          ],
+          "aircargo-probation-extend": [
+            "[\"hr\", \"probation\"]"
+          ],
+          "aircargo-probation-dismissal": [
+            "[\"hr\", \"probation\"]"
+          ],
+          "aircargo-dismissal-check": [
+            "[\"hr\", \"dismissal\"]"
+          ],
+          "aircargo-dismissal-lawyer": [
+            "[\"hr\", \"dismissal\"]"
+          ],
+          "aircargo-dismissal-order": [
+            "[\"hr\", \"dismissal\"]"
+          ],
+          "aircargo-leave-sources": [
+            "[\"hr\", \"leave\"]"
+          ],
+          "aircargo-leave-compensation": [
+            "[\"hr\", \"leave\"]"
+          ],
+          "aircargo-leave-risk": [
+            "[\"hr\", \"leave\"]"
+          ],
+          "aircargo-matliab-check": [
+            "[\"hr\", \"material_liability\"]"
+          ],
+          "aircargo-matliab-disputed": [
+            "[\"hr\", \"material_liability\"]"
+          ],
+          "aircargo-templates-choose": [
+            "[\"legal\", \"contract_templates\"]"
+          ],
+          "aircargo-templates-checklist": [
+            "[\"legal\", \"contract_templates\"]"
+          ],
+          "aircargo-templates-insufficient": [
+            "[\"legal\", \"contract_templates\"]"
+          ],
+          "aircargo-secret-check": [
+            "[\"legal\", \"commercial_secret\"]"
+          ],
+          "aircargo-secret-not-auto": [
+            "[\"legal\", \"commercial_secret\"]"
+          ],
+          "aircargo-secret-disclosure": [
+            "[\"legal\", \"commercial_secret\"]"
+          ],
+          "aircargo-pdp-scope": [
+            "[\"compliance\", \"pdp\"]"
+          ],
+          "aircargo-pdp-data": [
+            "[\"compliance\", \"pdp\"]"
+          ],
+          "aircargo-pdp-uncertain": [
+            "[\"compliance\", \"pdp\"]"
+          ],
+          "aircargo-claims-delay": [
+            "[\"logistics\", \"claims\"]"
+          ],
+          "aircargo-claims-damage": [
+            "[\"logistics\", \"claims\"]"
+          ],
+          "aircargo-claims-lawyer": [
+            "[\"logistics\", \"claims\"]"
+          ],
+          "aircargo-claims-forbidden": [
+            "[\"logistics\", \"claims\"]"
+          ],
+          "aircargo-expedition-vs-carrier": [
+            "[\"logistics\", \"expedition\"]"
+          ],
+          "aircargo-expedition-mawb-hawb": [
+            "[\"logistics\", \"expedition\"]"
+          ],
+          "aircargo-expedition-risks": [
+            "[\"logistics\", \"expedition\"]"
+          ],
+          "aircargo-road-cutoff": [
+            "[\"logistics\", \"transport_road\"]"
+          ],
+          "aircargo-road-penalty": [
+            "[\"logistics\", \"transport_road\"]"
+          ],
+          "aircargo-road-seal": [
+            "[\"logistics\", \"transport_road\"]"
+          ],
+          "aircargo-road-driver-pdn": [
+            "[\"logistics\", \"transport_road\"]"
+          ],
+          "aircargo-business-trip-advance-report": [
+            "[\"hr\", \"business_trip\"]"
+          ],
+          "aircargo-business-trip-foreign-approval": [
+            "[\"hr\", \"business_trip\"]"
+          ],
+          "aircargo-remote-work-monitoring-limits": [
+            "[\"hr\", \"remote_work\"]"
+          ],
+          "aircargo-remote-work-equipment-compensation": [
+            "[\"hr\", \"remote_work\"]"
+          ],
+          "aircargo-maternity-duration-normal": [
+            "[\"hr\", \"maternity\"]"
+          ],
+          "aircargo-maternity-dismissal-ban": [
+            "[\"hr\", \"maternity\"]"
+          ],
+          "aircargo-internal-transfer-consent": [
+            "[\"hr\", \"internal_transfer\"]"
+          ],
+          "aircargo-internal-transfer-documents": [
+            "[\"hr\", \"internal_transfer\"]"
+          ],
+          "aircargo-contract-termination-open-awb": [
+            "[\"legal\", \"contract_termination\"]"
+          ],
+          "aircargo-contract-termination-fields": [
+            "[\"legal\", \"contract_termination\"]"
+          ],
+          "aircargo-road-contract-aircargo-fields": [
+            "[\"legal\", \"transport_road\"]"
+          ],
+          "aircargo-dangerous-goods-fields": [
+            "[\"logistics\", \"dangerous_goods\"]"
+          ],
+          "aircargo-dangerous-goods-clearance": [
+            "[\"logistics\", \"dangerous_goods\"]"
+          ],
+          "aircargo-customs-clearance-fields": [
+            "[\"logistics\", \"customs\"]"
+          ],
+          "aircargo-customs-special-cargo-manual-check": [
+            "[\"logistics\", \"customs\"]"
+          ],
+          "aircargo-waybill-first-mile-fields": [
+            "[\"logistics\", \"waybill\"]"
+          ],
+          "aircargo-waybill-escalation-events": [
+            "[\"logistics\", \"waybill\"]"
+          ],
+          "aircargo-trade-compliance-hold": [
+            "[\"compliance\", \"trade_compliance\"]"
+          ],
+          "aircargo-trade-compliance-screening": [
+            "[\"compliance\", \"trade_compliance\"]"
+          ],
+          "aircargo-incident-response-bridge": [
+            "[\"compliance\", \"incident_response\"]"
+          ],
+          "aircargo-incident-response-required-fields": [
+            "[\"compliance\", \"incident_response\"]"
+          ],
+          "aircargo-access-control-need-to-know": [
+            "[\"compliance\", \"access_control\"]"
+          ],
+          "aircargo-access-control-review": [
+            "[\"compliance\", \"access_control\"]"
+          ],
+          "aircargo-employment-contract-essential-terms": [
+            "[\"hr\", \"employment_contract\"]"
+          ],
+          "aircargo-employment-contract-special-form": [
+            "[\"hr\", \"employment_contract\"]"
+          ],
+          "aircargo-driver-job-documents": [
+            "[\"hr\", \"driver_job_description\"]"
+          ],
+          "aircargo-driver-dangerous-goods-refusal": [
+            "[\"hr\", \"driver_job_description\"]"
+          ],
+          "aircargo-sick-leave-required-fields": [
+            "[\"hr\", \"sick_leave\"]"
+          ],
+          "aircargo-sick-leave-lawyer-escalation": [
+            "[\"hr\", \"sick_leave\"]"
+          ],
+          "aircargo-cargo-loss-evidence-bundle": [
+            "[\"legal\", \"cargo_loss_claim\"]"
+          ],
+          "aircargo-cargo-loss-required-fields": [
+            "[\"legal\", \"cargo_loss_claim\"]"
+          ],
+          "aircargo-late-delivery-reply-evidence": [
+            "[\"legal\", \"late_delivery_reply\"]"
+          ],
+          "aircargo-late-delivery-reply-no-admission": [
+            "[\"legal\", \"late_delivery_reply\"]"
+          ],
+          "aircargo-driver-hours-required-fields": [
+            "[\"logistics\", \"driver_hours\"]"
+          ],
+          "aircargo-driver-hours-terminal-discrepancy": [
+            "[\"logistics\", \"driver_hours\"]"
+          ],
+          "aircargo-warehouse-3pl-required-fields": [
+            "[\"logistics\", \"warehouse_3pl\"]"
+          ],
+          "aircargo-warehouse-3pl-escalation": [
+            "[\"logistics\", \"warehouse_3pl\"]"
+          ],
+          "aircargo-perishable-temperature-controls": [
+            "[\"logistics\", \"perishable\"]"
+          ],
+          "aircargo-perishable-special-cargo-evidence": [
+            "[\"logistics\", \"perishable\"]"
+          ],
+          "aircargo-oversized-permit-route": [
+            "[\"logistics\", \"oversized\"]"
+          ],
+          "aircargo-oversized-manual-check": [
+            "[\"logistics\", \"oversized\"]"
+          ],
+          "aircargo-data-retention-legal-hold": [
+            "[\"compliance\", \"data_retention\"]"
+          ],
+          "aircargo-data-retention-required-fields": [
+            "[\"compliance\", \"data_retention\"]"
+          ],
+          "aircargo-subject-rights-third-party-masking": [
+            "[\"compliance\", \"subject_rights\"]"
+          ],
+          "aircargo-subject-rights-required-fields": [
+            "[\"compliance\", \"subject_rights\"]"
+          ],
+          "aircargo-customs-broker-evidence": [
+            "[\"legal\", \"customs_broker\"]"
+          ],
+          "aircargo-customs-broker-escalation": [
+            "[\"legal\", \"customs_broker\"]"
+          ],
+          "aircargo-salary-payment-dates": [
+            "[\"hr\", \"salary\"]"
+          ],
+          "aircargo-salary-bonus-conditions": [
+            "[\"hr\", \"salary\"]"
+          ],
+          "aircargo-overtime-limits": [
+            "[\"hr\", \"overtime\"]"
+          ],
+          "aircargo-overtime-protected-categories": [
+            "[\"hr\", \"overtime\"]"
+          ],
+          "aircargo-harassment-complaint-data": [
+            "[\"hr\", \"harassment\"]"
+          ],
+          "aircargo-harassment-investigation-timeline": [
+            "[\"hr\", \"harassment\"]"
+          ],
+          "aircargo-conflict-interest-disclosure": [
+            "[\"hr\", \"conflict_interest\"]"
+          ],
+          "aircargo-conflict-interest-sanctions": [
+            "[\"hr\", \"conflict_interest\"]"
+          ],
+          "aircargo-cargo-insurance-evidence": [
+            "[\"legal\", \"cargo_insurance\"]"
+          ],
+          "aircargo-cargo-insurance-operational-limits": [
+            "[\"legal\", \"cargo_insurance\"]"
+          ],
+          "aircargo-fuel-supply-evidence": [
+            "[\"legal\", \"fuel_supply\"]"
+          ],
+          "aircargo-fuel-supply-required-fields": [
+            "[\"legal\", \"fuel_supply\"]"
+          ],
+          "aircargo-gps-monitoring-required-fields": [
+            "[\"logistics\", \"gps_tracking\"]"
+          ],
+          "aircargo-gps-monitoring-scope": [
+            "[\"logistics\", \"gps_tracking\"]"
+          ],
+          "aircargo-weight-control-required-fields": [
+            "[\"logistics\", \"weight_control\"]"
+          ],
+          "aircargo-weight-control-discrepancy": [
+            "[\"logistics\", \"weight_control\"]"
+          ],
+          "aircargo-cross-border-required-fields": [
+            "[\"logistics\", \"cross_border\"]"
+          ],
+          "aircargo-cross-border-special-cargo": [
+            "[\"logistics\", \"cross_border\"]"
+          ],
+          "aircargo-breach-notification-required-fields": [
+            "[\"compliance\", \"breach_notification\"]"
+          ],
+          "aircargo-breach-notification-participants": [
+            "[\"compliance\", \"breach_notification\"]"
+          ],
+          "aircargo-cross-border-pdn-required-fields": [
+            "[\"compliance\", \"cross_border_transfer\"]"
+          ],
+          "aircargo-cross-border-pdn-no-transfer": [
+            "[\"compliance\", \"cross_border_transfer\"]"
+          ]
+        },
+        "components": [
+          [
+            "aircargo-access-control-need-to-know",
+            "aircargo-access-control-review"
+          ],
+          [
+            "aircargo-breach-notification-participants",
+            "aircargo-breach-notification-required-fields"
+          ],
+          [
+            "aircargo-business-trip-advance-report",
+            "aircargo-business-trip-foreign-approval"
+          ],
+          [
+            "aircargo-cargo-insurance-evidence",
+            "aircargo-cargo-insurance-operational-limits"
+          ],
+          [
+            "aircargo-cargo-loss-evidence-bundle",
+            "aircargo-cargo-loss-required-fields"
+          ],
+          [
+            "aircargo-claims-damage",
+            "aircargo-claims-delay",
+            "aircargo-claims-forbidden",
+            "aircargo-claims-lawyer"
+          ],
+          [
+            "aircargo-conflict-interest-disclosure",
+            "aircargo-conflict-interest-sanctions"
+          ],
+          [
+            "aircargo-contract-termination-fields",
+            "aircargo-contract-termination-open-awb"
+          ],
+          [
+            "aircargo-cross-border-pdn-no-transfer",
+            "aircargo-cross-border-pdn-required-fields"
+          ],
+          [
+            "aircargo-cross-border-required-fields",
+            "aircargo-cross-border-special-cargo"
+          ],
+          [
+            "aircargo-customs-broker-escalation",
+            "aircargo-customs-broker-evidence"
+          ],
+          [
+            "aircargo-customs-clearance-fields",
+            "aircargo-customs-special-cargo-manual-check"
+          ],
+          [
+            "aircargo-dangerous-goods-clearance",
+            "aircargo-dangerous-goods-fields"
+          ],
+          [
+            "aircargo-data-retention-legal-hold",
+            "aircargo-data-retention-required-fields"
+          ],
+          [
+            "aircargo-dismissal-check",
+            "aircargo-dismissal-lawyer",
+            "aircargo-dismissal-order"
+          ],
+          [
+            "aircargo-driver-dangerous-goods-refusal",
+            "aircargo-driver-job-documents"
+          ],
+          [
+            "aircargo-driver-hours-required-fields",
+            "aircargo-driver-hours-terminal-discrepancy"
+          ],
+          [
+            "aircargo-employment-contract-essential-terms",
+            "aircargo-employment-contract-special-form"
+          ],
+          [
+            "aircargo-expedition-mawb-hawb",
+            "aircargo-expedition-risks",
+            "aircargo-expedition-vs-carrier"
+          ],
+          [
+            "aircargo-fuel-supply-evidence",
+            "aircargo-fuel-supply-required-fields"
+          ],
+          [
+            "aircargo-gps-monitoring-required-fields",
+            "aircargo-gps-monitoring-scope"
+          ],
+          [
+            "aircargo-harassment-complaint-data",
+            "aircargo-harassment-investigation-timeline"
+          ],
+          [
+            "aircargo-incident-response-bridge",
+            "aircargo-incident-response-required-fields"
+          ],
+          [
+            "aircargo-internal-transfer-consent",
+            "aircargo-internal-transfer-documents"
+          ],
+          [
+            "aircargo-late-delivery-reply-evidence",
+            "aircargo-late-delivery-reply-no-admission"
+          ],
+          [
+            "aircargo-leave-compensation",
+            "aircargo-leave-risk",
+            "aircargo-leave-sources"
+          ],
+          [
+            "aircargo-maternity-dismissal-ban",
+            "aircargo-maternity-duration-normal"
+          ],
+          [
+            "aircargo-matliab-check",
+            "aircargo-matliab-disputed"
+          ],
+          [
+            "aircargo-oversized-manual-check",
+            "aircargo-oversized-permit-route"
+          ],
+          [
+            "aircargo-overtime-limits",
+            "aircargo-overtime-protected-categories"
+          ],
+          [
+            "aircargo-pdp-data",
+            "aircargo-pdp-scope",
+            "aircargo-pdp-uncertain"
+          ],
+          [
+            "aircargo-perishable-special-cargo-evidence",
+            "aircargo-perishable-temperature-controls"
+          ],
+          [
+            "aircargo-probation-data",
+            "aircargo-probation-dismissal",
+            "aircargo-probation-extend"
+          ],
+          [
+            "aircargo-remote-work-equipment-compensation",
+            "aircargo-remote-work-monitoring-limits"
+          ],
+          [
+            "aircargo-road-contract-aircargo-fields"
+          ],
+          [
+            "aircargo-road-cutoff",
+            "aircargo-road-driver-pdn",
+            "aircargo-road-penalty",
+            "aircargo-road-seal"
+          ],
+          [
+            "aircargo-salary-bonus-conditions",
+            "aircargo-salary-payment-dates"
+          ],
+          [
+            "aircargo-secret-check",
+            "aircargo-secret-disclosure",
+            "aircargo-secret-not-auto"
+          ],
+          [
+            "aircargo-sick-leave-lawyer-escalation",
+            "aircargo-sick-leave-required-fields"
+          ],
+          [
+            "aircargo-subject-rights-required-fields",
+            "aircargo-subject-rights-third-party-masking"
+          ],
+          [
+            "aircargo-templates-checklist",
+            "aircargo-templates-choose",
+            "aircargo-templates-insufficient"
+          ],
+          [
+            "aircargo-trade-compliance-hold",
+            "aircargo-trade-compliance-screening"
+          ],
+          [
+            "aircargo-warehouse-3pl-escalation",
+            "aircargo-warehouse-3pl-required-fields"
+          ],
+          [
+            "aircargo-waybill-escalation-events",
+            "aircargo-waybill-first-mile-fields"
+          ],
+          [
+            "aircargo-weight-control-discrepancy",
+            "aircargo-weight-control-required-fields"
+          ]
+        ],
+        "count": 45
+      },
+      "per_case": {
+        "precision_at_5": {
+          "aircargo-probation-data": 0.8,
+          "aircargo-probation-extend": 0.8,
+          "aircargo-probation-dismissal": 0.8,
+          "aircargo-dismissal-check": 1.0,
+          "aircargo-dismissal-lawyer": 1.0,
+          "aircargo-dismissal-order": 0.6,
+          "aircargo-leave-sources": 1.0,
+          "aircargo-leave-compensation": 0.4,
+          "aircargo-leave-risk": 0.4,
+          "aircargo-matliab-check": 0.6,
+          "aircargo-matliab-disputed": 0.2,
+          "aircargo-templates-choose": 0.2,
+          "aircargo-templates-checklist": 1.0,
+          "aircargo-templates-insufficient": 0.4,
+          "aircargo-secret-check": 0.4,
+          "aircargo-secret-not-auto": 0.4,
+          "aircargo-secret-disclosure": 0.2,
+          "aircargo-pdp-scope": 0.2,
+          "aircargo-pdp-data": 0.8,
+          "aircargo-pdp-uncertain": 0.8,
+          "aircargo-claims-delay": 1.0,
+          "aircargo-claims-damage": 1.0,
+          "aircargo-claims-lawyer": 0.6,
+          "aircargo-claims-forbidden": 0.6,
+          "aircargo-expedition-vs-carrier": 0.2,
+          "aircargo-expedition-mawb-hawb": 0.4,
+          "aircargo-expedition-risks": 1.0,
+          "aircargo-road-cutoff": 1.0,
+          "aircargo-road-penalty": 0.6,
+          "aircargo-road-seal": 1.0,
+          "aircargo-road-driver-pdn": 0.6,
+          "aircargo-business-trip-advance-report": 0.4,
+          "aircargo-business-trip-foreign-approval": 0.4,
+          "aircargo-remote-work-monitoring-limits": 0.4,
+          "aircargo-remote-work-equipment-compensation": 0.4,
+          "aircargo-maternity-duration-normal": 0.4,
+          "aircargo-maternity-dismissal-ban": 0.4,
+          "aircargo-internal-transfer-consent": 0.4,
+          "aircargo-internal-transfer-documents": 0.8,
+          "aircargo-contract-termination-open-awb": 1.0,
+          "aircargo-contract-termination-fields": 0.4,
+          "aircargo-road-contract-aircargo-fields": 0.4,
+          "aircargo-dangerous-goods-fields": 0.6,
+          "aircargo-dangerous-goods-clearance": 0.2,
+          "aircargo-customs-clearance-fields": 0.8,
+          "aircargo-customs-special-cargo-manual-check": 1.0,
+          "aircargo-waybill-first-mile-fields": 0.6,
+          "aircargo-waybill-escalation-events": 0.0,
+          "aircargo-trade-compliance-hold": 0.8,
+          "aircargo-trade-compliance-screening": 0.4,
+          "aircargo-incident-response-bridge": 1.0,
+          "aircargo-incident-response-required-fields": 0.6,
+          "aircargo-access-control-need-to-know": 0.8,
+          "aircargo-access-control-review": 0.2,
+          "aircargo-employment-contract-essential-terms": 0.4,
+          "aircargo-employment-contract-special-form": 0.6,
+          "aircargo-driver-job-documents": 0.4,
+          "aircargo-driver-dangerous-goods-refusal": 0.2,
+          "aircargo-sick-leave-required-fields": 0.4,
+          "aircargo-sick-leave-lawyer-escalation": 0.4,
+          "aircargo-cargo-loss-evidence-bundle": 1.0,
+          "aircargo-cargo-loss-required-fields": 0.8,
+          "aircargo-late-delivery-reply-evidence": 0.8,
+          "aircargo-late-delivery-reply-no-admission": 1.0,
+          "aircargo-driver-hours-required-fields": 0.4,
+          "aircargo-driver-hours-terminal-discrepancy": 1.0,
+          "aircargo-warehouse-3pl-required-fields": 0.8,
+          "aircargo-warehouse-3pl-escalation": 1.0,
+          "aircargo-perishable-temperature-controls": 0.8,
+          "aircargo-perishable-special-cargo-evidence": 0.8,
+          "aircargo-oversized-permit-route": 1.0,
+          "aircargo-oversized-manual-check": 0.6,
+          "aircargo-data-retention-legal-hold": 1.0,
+          "aircargo-data-retention-required-fields": 0.4,
+          "aircargo-subject-rights-third-party-masking": 0.8,
+          "aircargo-subject-rights-required-fields": 0.4,
+          "aircargo-customs-broker-evidence": 1.0,
+          "aircargo-customs-broker-escalation": 0.4,
+          "aircargo-salary-payment-dates": 0.2,
+          "aircargo-salary-bonus-conditions": 0.4,
+          "aircargo-overtime-limits": 0.4,
+          "aircargo-overtime-protected-categories": 0.2,
+          "aircargo-harassment-complaint-data": 0.2,
+          "aircargo-harassment-investigation-timeline": 0.2,
+          "aircargo-conflict-interest-disclosure": 0.4,
+          "aircargo-conflict-interest-sanctions": 0.2,
+          "aircargo-cargo-insurance-evidence": 1.0,
+          "aircargo-cargo-insurance-operational-limits": 0.8,
+          "aircargo-fuel-supply-evidence": 0.8,
+          "aircargo-fuel-supply-required-fields": 0.6,
+          "aircargo-gps-monitoring-required-fields": 0.6,
+          "aircargo-gps-monitoring-scope": 1.0,
+          "aircargo-weight-control-required-fields": 0.8,
+          "aircargo-weight-control-discrepancy": 1.0,
+          "aircargo-cross-border-required-fields": 0.8,
+          "aircargo-cross-border-special-cargo": 1.0,
+          "aircargo-breach-notification-required-fields": 0.2,
+          "aircargo-breach-notification-participants": 0.4,
+          "aircargo-cross-border-pdn-required-fields": 0.4,
+          "aircargo-cross-border-pdn-no-transfer": 0.4
+        },
+        "sent_precision": {
+          "aircargo-probation-data": 0.8,
+          "aircargo-probation-extend": 0.8,
+          "aircargo-probation-dismissal": 0.8,
+          "aircargo-dismissal-check": 1.0,
+          "aircargo-dismissal-lawyer": 1.0,
+          "aircargo-dismissal-order": 0.6,
+          "aircargo-leave-sources": 1.0,
+          "aircargo-leave-compensation": 0.4,
+          "aircargo-leave-risk": 0.4,
+          "aircargo-matliab-check": 0.6,
+          "aircargo-matliab-disputed": 0.2,
+          "aircargo-templates-choose": 0.2,
+          "aircargo-templates-checklist": 1.0,
+          "aircargo-templates-insufficient": 0.4,
+          "aircargo-secret-check": 0.4,
+          "aircargo-secret-not-auto": 0.4,
+          "aircargo-secret-disclosure": 0.2,
+          "aircargo-pdp-scope": 0.2,
+          "aircargo-pdp-data": 0.8,
+          "aircargo-pdp-uncertain": 0.8,
+          "aircargo-claims-delay": 1.0,
+          "aircargo-claims-damage": 1.0,
+          "aircargo-claims-lawyer": 0.6,
+          "aircargo-claims-forbidden": 0.6,
+          "aircargo-expedition-vs-carrier": 0.2,
+          "aircargo-expedition-mawb-hawb": 0.4,
+          "aircargo-expedition-risks": 1.0,
+          "aircargo-road-cutoff": 1.0,
+          "aircargo-road-penalty": 0.6,
+          "aircargo-road-seal": 1.0,
+          "aircargo-road-driver-pdn": 0.6,
+          "aircargo-business-trip-advance-report": 0.4,
+          "aircargo-business-trip-foreign-approval": 0.4,
+          "aircargo-remote-work-monitoring-limits": 0.4,
+          "aircargo-remote-work-equipment-compensation": 0.4,
+          "aircargo-maternity-duration-normal": 0.4,
+          "aircargo-maternity-dismissal-ban": 0.4,
+          "aircargo-internal-transfer-consent": 0.4,
+          "aircargo-internal-transfer-documents": 0.8,
+          "aircargo-contract-termination-open-awb": 1.0,
+          "aircargo-contract-termination-fields": 0.4,
+          "aircargo-road-contract-aircargo-fields": 0.4,
+          "aircargo-dangerous-goods-fields": 0.6,
+          "aircargo-dangerous-goods-clearance": 0.2,
+          "aircargo-customs-clearance-fields": 0.8,
+          "aircargo-customs-special-cargo-manual-check": 1.0,
+          "aircargo-waybill-first-mile-fields": 0.6,
+          "aircargo-waybill-escalation-events": 0.0,
+          "aircargo-trade-compliance-hold": 0.8,
+          "aircargo-trade-compliance-screening": 0.4,
+          "aircargo-incident-response-bridge": 1.0,
+          "aircargo-incident-response-required-fields": 0.6,
+          "aircargo-access-control-need-to-know": 0.8,
+          "aircargo-access-control-review": 0.2,
+          "aircargo-employment-contract-essential-terms": 0.4,
+          "aircargo-employment-contract-special-form": 0.6,
+          "aircargo-driver-job-documents": 0.4,
+          "aircargo-driver-dangerous-goods-refusal": 0.2,
+          "aircargo-sick-leave-required-fields": 0.4,
+          "aircargo-sick-leave-lawyer-escalation": 0.4,
+          "aircargo-cargo-loss-evidence-bundle": 1.0,
+          "aircargo-cargo-loss-required-fields": 0.8,
+          "aircargo-late-delivery-reply-evidence": 0.8,
+          "aircargo-late-delivery-reply-no-admission": 1.0,
+          "aircargo-driver-hours-required-fields": 0.4,
+          "aircargo-driver-hours-terminal-discrepancy": 1.0,
+          "aircargo-warehouse-3pl-required-fields": 0.8,
+          "aircargo-warehouse-3pl-escalation": 1.0,
+          "aircargo-perishable-temperature-controls": 0.8,
+          "aircargo-perishable-special-cargo-evidence": 0.8,
+          "aircargo-oversized-permit-route": 1.0,
+          "aircargo-oversized-manual-check": 0.6,
+          "aircargo-data-retention-legal-hold": 1.0,
+          "aircargo-data-retention-required-fields": 0.4,
+          "aircargo-subject-rights-third-party-masking": 0.8,
+          "aircargo-subject-rights-required-fields": 0.4,
+          "aircargo-customs-broker-evidence": 1.0,
+          "aircargo-customs-broker-escalation": 0.4,
+          "aircargo-salary-payment-dates": 0.2,
+          "aircargo-salary-bonus-conditions": 0.4,
+          "aircargo-overtime-limits": 0.4,
+          "aircargo-overtime-protected-categories": 0.2,
+          "aircargo-harassment-complaint-data": 0.2,
+          "aircargo-harassment-investigation-timeline": 0.2,
+          "aircargo-conflict-interest-disclosure": 0.4,
+          "aircargo-conflict-interest-sanctions": 0.2,
+          "aircargo-cargo-insurance-evidence": 1.0,
+          "aircargo-cargo-insurance-operational-limits": 0.8,
+          "aircargo-fuel-supply-evidence": 0.8,
+          "aircargo-fuel-supply-required-fields": 0.6,
+          "aircargo-gps-monitoring-required-fields": 0.6,
+          "aircargo-gps-monitoring-scope": 1.0,
+          "aircargo-weight-control-required-fields": 0.8,
+          "aircargo-weight-control-discrepancy": 1.0,
+          "aircargo-cross-border-required-fields": 0.8,
+          "aircargo-cross-border-special-cargo": 1.0,
+          "aircargo-breach-notification-required-fields": 0.2,
+          "aircargo-breach-notification-participants": 0.4,
+          "aircargo-cross-border-pdn-required-fields": 0.4,
+          "aircargo-cross-border-pdn-no-transfer": 0.4
+        },
+        "ndcg_at_5": {
+          "aircargo-probation-data": 0.9932683086972719,
+          "aircargo-probation-extend": 0.9942646540427001,
+          "aircargo-probation-dismissal": 0.982619653523767,
+          "aircargo-dismissal-check": 1.0,
+          "aircargo-dismissal-lawyer": 1.0,
+          "aircargo-dismissal-order": 0.9804882955835037,
+          "aircargo-leave-sources": 1.0,
+          "aircargo-leave-compensation": 1.0,
+          "aircargo-leave-risk": 1.0,
+          "aircargo-matliab-check": 1.0,
+          "aircargo-matliab-disputed": 1.0,
+          "aircargo-templates-choose": 1.0,
+          "aircargo-templates-checklist": 0.9750551834421466,
+          "aircargo-templates-insufficient": 0.9765333163605167,
+          "aircargo-secret-check": 0.9641083996695681,
+          "aircargo-secret-not-auto": 0.9641083996695681,
+          "aircargo-secret-disclosure": 1.0,
+          "aircargo-pdp-scope": 1.0,
+          "aircargo-pdp-data": 0.982619653523767,
+          "aircargo-pdp-uncertain": 0.9202781411154769,
+          "aircargo-claims-delay": 1.0,
+          "aircargo-claims-damage": 1.0,
+          "aircargo-claims-lawyer": 1.0,
+          "aircargo-claims-forbidden": 0.9751764383484243,
+          "aircargo-expedition-vs-carrier": 1.0,
+          "aircargo-expedition-mawb-hawb": 0.9765333163605167,
+          "aircargo-expedition-risks": 1.0,
+          "aircargo-road-cutoff": 1.0,
+          "aircargo-road-penalty": 0.9598517299258538,
+          "aircargo-road-seal": 1.0,
+          "aircargo-road-driver-pdn": 1.0,
+          "aircargo-business-trip-advance-report": 0.9578347709816888,
+          "aircargo-business-trip-foreign-approval": 0.9312043027499909,
+          "aircargo-remote-work-monitoring-limits": 1.0,
+          "aircargo-remote-work-equipment-compensation": 1.0,
+          "aircargo-maternity-duration-normal": 1.0,
+          "aircargo-maternity-dismissal-ban": 1.0,
+          "aircargo-internal-transfer-consent": 1.0,
+          "aircargo-internal-transfer-documents": 1.0,
+          "aircargo-contract-termination-open-awb": 0.946487658153176,
+          "aircargo-contract-termination-fields": 1.0,
+          "aircargo-road-contract-aircargo-fields": 0.8025392158797567,
+          "aircargo-dangerous-goods-fields": 0.9392915547644913,
+          "aircargo-dangerous-goods-clearance": 0.7979168917078058,
+          "aircargo-customs-clearance-fields": 0.9932683086972719,
+          "aircargo-customs-special-cargo-manual-check": 0.9174524878648389,
+          "aircargo-waybill-first-mile-fields": 0.917754891076999,
+          "aircargo-waybill-escalation-events": 1.0,
+          "aircargo-trade-compliance-hold": 0.9942646540427001,
+          "aircargo-trade-compliance-screening": 0.9396440613358614,
+          "aircargo-incident-response-bridge": 1.0,
+          "aircargo-incident-response-required-fields": 1.0,
+          "aircargo-access-control-need-to-know": 0.9630431932626015,
+          "aircargo-access-control-review": 0.850834274847108,
+          "aircargo-employment-contract-essential-terms": 0.9355095261428396,
+          "aircargo-employment-contract-special-form": 0.9392915547644913,
+          "aircargo-driver-job-documents": 1.0,
+          "aircargo-driver-dangerous-goods-refusal": 1.0,
+          "aircargo-sick-leave-required-fields": 0.7770227215242603,
+          "aircargo-sick-leave-lawyer-escalation": 1.0,
+          "aircargo-cargo-loss-evidence-bundle": 0.946487658153176,
+          "aircargo-cargo-loss-required-fields": 0.9433077516090613,
+          "aircargo-late-delivery-reply-evidence": 0.9365760603063332,
+          "aircargo-late-delivery-reply-no-admission": 0.9826072798331944,
+          "aircargo-driver-hours-required-fields": 0.9467009784197933,
+          "aircargo-driver-hours-terminal-discrepancy": 1.0,
+          "aircargo-warehouse-3pl-required-fields": 1.0,
+          "aircargo-warehouse-3pl-escalation": 1.0,
+          "aircargo-perishable-temperature-controls": 0.982619653523767,
+          "aircargo-perishable-special-cargo-evidence": 0.9794567409319881,
+          "aircargo-oversized-permit-route": 0.9826072798331944,
+          "aircargo-oversized-manual-check": 0.8527411367856936,
+          "aircargo-data-retention-legal-hold": 0.9913646294746147,
+          "aircargo-data-retention-required-fields": 0.8318106678334211,
+          "aircargo-subject-rights-third-party-masking": 0.8290113663764177,
+          "aircargo-subject-rights-required-fields": 0.9782096472043001,
+          "aircargo-customs-broker-evidence": 0.9859056632751824,
+          "aircargo-customs-broker-escalation": 0.9338511340819264,
+          "aircargo-salary-payment-dates": 1.0,
+          "aircargo-salary-bonus-conditions": 1.0,
+          "aircargo-overtime-limits": 0.9765333163605167,
+          "aircargo-overtime-protected-categories": 1.0,
+          "aircargo-harassment-complaint-data": 1.0,
+          "aircargo-harassment-investigation-timeline": 1.0,
+          "aircargo-conflict-interest-disclosure": 1.0,
+          "aircargo-conflict-interest-sanctions": 1.0,
+          "aircargo-cargo-insurance-evidence": 0.929081437199427,
+          "aircargo-cargo-insurance-operational-limits": 1.0,
+          "aircargo-fuel-supply-evidence": 0.8099390765414378,
+          "aircargo-fuel-supply-required-fields": 0.8949488349483146,
+          "aircargo-gps-monitoring-required-fields": 0.9206799483778375,
+          "aircargo-gps-monitoring-scope": 1.0,
+          "aircargo-weight-control-required-fields": 0.9920466006454153,
+          "aircargo-weight-control-discrepancy": 1.0,
+          "aircargo-cross-border-required-fields": 0.9932683086972719,
+          "aircargo-cross-border-special-cargo": 1.0,
+          "aircargo-breach-notification-required-fields": 0.7579237460681981,
+          "aircargo-breach-notification-participants": 1.0,
+          "aircargo-cross-border-pdn-required-fields": 0.9641083996695681,
+          "aircargo-cross-border-pdn-no-transfer": 1.0
+        },
+        "context_precision": {
+          "aircargo-probation-data": 0.6285,
+          "aircargo-probation-extend": 0.6058,
+          "aircargo-probation-dismissal": 0.5645,
+          "aircargo-dismissal-check": 0.7318,
+          "aircargo-dismissal-lawyer": 0.5392,
+          "aircargo-dismissal-order": 0.6423,
+          "aircargo-leave-sources": 0.6131,
+          "aircargo-leave-compensation": 0.513,
+          "aircargo-leave-risk": 0.4067,
+          "aircargo-matliab-check": 0.806,
+          "aircargo-matliab-disputed": 0.5912,
+          "aircargo-templates-choose": 0.5203,
+          "aircargo-templates-checklist": 0.1615,
+          "aircargo-templates-insufficient": 0.414,
+          "aircargo-secret-check": 0.6632,
+          "aircargo-secret-not-auto": 0.6634,
+          "aircargo-secret-disclosure": 0.6122,
+          "aircargo-pdp-scope": 0.7258,
+          "aircargo-pdp-data": 0.6168,
+          "aircargo-pdp-uncertain": 0.7161,
+          "aircargo-claims-delay": 0.6783,
+          "aircargo-claims-damage": 0.6618,
+          "aircargo-claims-lawyer": 0.4307,
+          "aircargo-claims-forbidden": 0.541,
+          "aircargo-expedition-vs-carrier": 0.719,
+          "aircargo-expedition-mawb-hawb": 0.7007,
+          "aircargo-expedition-risks": 0.6038,
+          "aircargo-road-cutoff": 0.6661,
+          "aircargo-road-penalty": 0.5706,
+          "aircargo-road-seal": 0.719,
+          "aircargo-road-driver-pdn": 0.6411,
+          "aircargo-business-trip-advance-report": 0.3674,
+          "aircargo-business-trip-foreign-approval": 0.3983,
+          "aircargo-remote-work-monitoring-limits": 0.1564,
+          "aircargo-remote-work-equipment-compensation": 0.2522,
+          "aircargo-maternity-duration-normal": 0.4482,
+          "aircargo-maternity-dismissal-ban": 0.3458,
+          "aircargo-internal-transfer-consent": 0.346,
+          "aircargo-internal-transfer-documents": 0.4964,
+          "aircargo-contract-termination-open-awb": 0.5194,
+          "aircargo-contract-termination-fields": 0.5456,
+          "aircargo-road-contract-aircargo-fields": 0.3723,
+          "aircargo-dangerous-goods-fields": 0.4501,
+          "aircargo-dangerous-goods-clearance": 0.2146,
+          "aircargo-customs-clearance-fields": 0.4469,
+          "aircargo-customs-special-cargo-manual-check": 0.1014,
+          "aircargo-waybill-first-mile-fields": 0.3928,
+          "aircargo-waybill-escalation-events": 0.3,
+          "aircargo-trade-compliance-hold": 0.4712,
+          "aircargo-trade-compliance-screening": 0.5204,
+          "aircargo-incident-response-bridge": 0.5505,
+          "aircargo-incident-response-required-fields": 0.5328,
+          "aircargo-access-control-need-to-know": 0.5418,
+          "aircargo-access-control-review": 0.3942,
+          "aircargo-employment-contract-essential-terms": 0.2952,
+          "aircargo-employment-contract-special-form": 0.3303,
+          "aircargo-driver-job-documents": 0.4023,
+          "aircargo-driver-dangerous-goods-refusal": 0.4534,
+          "aircargo-sick-leave-required-fields": 0.6022,
+          "aircargo-sick-leave-lawyer-escalation": 0.2284,
+          "aircargo-cargo-loss-evidence-bundle": 0.6781,
+          "aircargo-cargo-loss-required-fields": 0.4388,
+          "aircargo-late-delivery-reply-evidence": 0.6255,
+          "aircargo-late-delivery-reply-no-admission": 0.6387,
+          "aircargo-driver-hours-required-fields": 0.5444,
+          "aircargo-driver-hours-terminal-discrepancy": 0.8182,
+          "aircargo-warehouse-3pl-required-fields": 0.5854,
+          "aircargo-warehouse-3pl-escalation": 0.4423,
+          "aircargo-perishable-temperature-controls": 0.6115,
+          "aircargo-perishable-special-cargo-evidence": 0.3998,
+          "aircargo-oversized-permit-route": 0.5547,
+          "aircargo-oversized-manual-check": 0.4982,
+          "aircargo-data-retention-legal-hold": 0.4607,
+          "aircargo-data-retention-required-fields": 0.508,
+          "aircargo-subject-rights-third-party-masking": 0.5401,
+          "aircargo-subject-rights-required-fields": 0.6609,
+          "aircargo-customs-broker-evidence": 0.5207,
+          "aircargo-customs-broker-escalation": 0.2292,
+          "aircargo-salary-payment-dates": 0.5139,
+          "aircargo-salary-bonus-conditions": 0.4827,
+          "aircargo-overtime-limits": 0.5162,
+          "aircargo-overtime-protected-categories": 0.635,
+          "aircargo-harassment-complaint-data": 0.4939,
+          "aircargo-harassment-investigation-timeline": 0.2506,
+          "aircargo-conflict-interest-disclosure": 0.4898,
+          "aircargo-conflict-interest-sanctions": 0.3622,
+          "aircargo-cargo-insurance-evidence": 0.6095,
+          "aircargo-cargo-insurance-operational-limits": 0.3455,
+          "aircargo-fuel-supply-evidence": 0.5388,
+          "aircargo-fuel-supply-required-fields": 0.5533,
+          "aircargo-gps-monitoring-required-fields": 0.6317,
+          "aircargo-gps-monitoring-scope": 0.7,
+          "aircargo-weight-control-required-fields": 0.6095,
+          "aircargo-weight-control-discrepancy": 0.7034,
+          "aircargo-cross-border-required-fields": 0.1598,
+          "aircargo-cross-border-special-cargo": 0.4035,
+          "aircargo-breach-notification-required-fields": 0.2084,
+          "aircargo-breach-notification-participants": 0.5345,
+          "aircargo-cross-border-pdn-required-fields": 0.455,
+          "aircargo-cross-border-pdn-no-transfer": 0.5693
+        }
+      },
+      "metrics": {
+        "precision_at_5": {
+          "point": 0.6080000000000001,
+          "ci95": [
+            0.5443274187153054,
+            0.669813610551383
+          ],
+          "n": 100,
+          "clusters": 45,
+          "excluded": 0
+        },
+        "sent_precision": {
+          "point": 0.6080000000000001,
+          "ci95": [
+            0.5443274187153054,
+            0.669813610551383
+          ],
+          "n": 100,
+          "clusters": 45,
+          "excluded": 0
+        },
+        "ndcg_at_5": {
+          "point": 0.9659005287420901,
+          "ci95": [
+            0.9535006488064899,
+            0.9765939267686063
+          ],
+          "n": 100,
+          "clusters": 45,
+          "excluded": 0
+        },
+        "context_precision": {
+          "point": 0.506657,
+          "ci95": [
+            0.46696662371134023,
+            0.5430235902149321
+          ],
+          "n": 100,
+          "clusters": 45,
+          "excluded": 0
+        },
+        "evidence_recall_pool": {
+          "point": "N/A",
+          "reason": "P2 has no approved gold spans, required evidence groups or atomic facts",
+          "n": 0
+        },
+        "all_evidence_coverage": {
+          "point": "N/A",
+          "reason": "P2 has no approved gold spans, required evidence groups or atomic facts",
+          "n": 0
+        },
+        "fact_coverage": {
+          "point": "N/A",
+          "reason": "P2 has no approved gold spans, required evidence groups or atomic facts",
+          "n": 0
+        }
+      }
+    },
+    "Hm": {
+      "case_count": 15,
+      "cluster_unit": {
+        "status": "provisional, replaced by the 1.3a family register",
+        "basis": "source_documents connected components",
+        "mapping": {
+          "aircargo-gr-loss-liability-boundary": [
+            "04_legal_claim_cargo_loss.md",
+            "05_tlog_contract_carrier_liability.md"
+          ],
+          "aircargo-gr-damage-insurance-proof": [
+            "04_legal_claim_cargo_damage.md",
+            "05_tlog_contract_cargo_insurance.md"
+          ],
+          "aircargo-gr-customs-delay-release": [
+            "04_legal_claim_customs_delay.md",
+            "05_tlog_regulation_customs_clearance.md"
+          ],
+          "aircargo-gr-offload-road-handover": [
+            "04_legal_claim_late_delivery.md",
+            "05_tlog_regulation_cmr.md"
+          ],
+          "aircargo-gr-expedition-export-causation": [
+            "04_legal_claim_expedition_breach.md",
+            "03_legal_contract_expedition_international.md"
+          ],
+          "aircargo-gr-loss-awb-conditions": [
+            "04_legal_claim_cargo_loss.md",
+            "05_tlog_contract_carrier_liability.md"
+          ],
+          "aircargo-gr-damage-carrier-evidence": [
+            "04_legal_claim_cargo_damage.md",
+            "05_tlog_contract_carrier_liability.md"
+          ],
+          "aircargo-gr-customs-export-readiness": [
+            "05_tlog_regulation_customs_clearance.md",
+            "03_legal_contract_expedition_international.md"
+          ],
+          "aircargo-gr-road-air-handover": [
+            "05_tlog_contract_transport_road.md",
+            "05_tlog_contract_transport_air.md"
+          ],
+          "aircargo-gr-sea-air-handover": [
+            "05_tlog_contract_transport_sea.md",
+            "05_tlog_contract_transport_air.md"
+          ],
+          "aircargo-gr-compare-loss-damage-evidence": [
+            "04_legal_claim_cargo_loss.md",
+            "04_legal_claim_cargo_damage.md"
+          ],
+          "aircargo-gr-claims-minimum-pack": [
+            "04_legal_claim_cargo_loss.md",
+            "04_legal_claim_cargo_damage.md",
+            "04_legal_claim_customs_delay.md"
+          ],
+          "aircargo-gr-compare-road-sea-handover": [
+            "05_tlog_contract_transport_road.md",
+            "05_tlog_contract_transport_sea.md"
+          ],
+          "aircargo-gr-multimodal-control-pack": [
+            "05_tlog_contract_transport_road.md",
+            "05_tlog_contract_transport_air.md",
+            "05_tlog_contract_transport_sea.md"
+          ],
+          "aircargo-gr-compare-liability-insurance": [
+            "05_tlog_contract_carrier_liability.md",
+            "05_tlog_contract_cargo_insurance.md"
+          ]
+        },
+        "components": [
+          [
+            "aircargo-gr-claims-minimum-pack",
+            "aircargo-gr-compare-liability-insurance",
+            "aircargo-gr-compare-loss-damage-evidence",
+            "aircargo-gr-customs-delay-release",
+            "aircargo-gr-customs-export-readiness",
+            "aircargo-gr-damage-carrier-evidence",
+            "aircargo-gr-damage-insurance-proof",
+            "aircargo-gr-expedition-export-causation",
+            "aircargo-gr-loss-awb-conditions",
+            "aircargo-gr-loss-liability-boundary"
+          ],
+          [
+            "aircargo-gr-compare-road-sea-handover",
+            "aircargo-gr-multimodal-control-pack",
+            "aircargo-gr-road-air-handover",
+            "aircargo-gr-sea-air-handover"
+          ],
+          [
+            "aircargo-gr-offload-road-handover"
+          ]
+        ],
+        "count": 3
+      },
+      "per_case": {
+        "precision_at_5": {
+          "aircargo-gr-loss-liability-boundary": 0.8,
+          "aircargo-gr-damage-insurance-proof": 1.0,
+          "aircargo-gr-customs-delay-release": 1.0,
+          "aircargo-gr-offload-road-handover": 1.0,
+          "aircargo-gr-expedition-export-causation": 1.0,
+          "aircargo-gr-loss-awb-conditions": 0.4,
+          "aircargo-gr-damage-carrier-evidence": 1.0,
+          "aircargo-gr-customs-export-readiness": 1.0,
+          "aircargo-gr-road-air-handover": 1.0,
+          "aircargo-gr-sea-air-handover": 0.2,
+          "aircargo-gr-compare-loss-damage-evidence": 1.0,
+          "aircargo-gr-claims-minimum-pack": 1.0,
+          "aircargo-gr-compare-road-sea-handover": 1.0,
+          "aircargo-gr-multimodal-control-pack": 0.8,
+          "aircargo-gr-compare-liability-insurance": 0.4
+        },
+        "sent_precision": {
+          "aircargo-gr-loss-liability-boundary": 0.8,
+          "aircargo-gr-damage-insurance-proof": 1.0,
+          "aircargo-gr-customs-delay-release": 1.0,
+          "aircargo-gr-offload-road-handover": 1.0,
+          "aircargo-gr-expedition-export-causation": 1.0,
+          "aircargo-gr-loss-awb-conditions": 0.4,
+          "aircargo-gr-damage-carrier-evidence": 1.0,
+          "aircargo-gr-customs-export-readiness": 1.0,
+          "aircargo-gr-road-air-handover": 1.0,
+          "aircargo-gr-sea-air-handover": 0.2,
+          "aircargo-gr-compare-loss-damage-evidence": 1.0,
+          "aircargo-gr-claims-minimum-pack": 1.0,
+          "aircargo-gr-compare-road-sea-handover": 1.0,
+          "aircargo-gr-multimodal-control-pack": 0.8,
+          "aircargo-gr-compare-liability-insurance": 0.4
+        },
+        "ndcg_at_5": {
+          "aircargo-gr-loss-liability-boundary": 0.8990838186473642,
+          "aircargo-gr-damage-insurance-proof": 1.0,
+          "aircargo-gr-customs-delay-release": 0.946487658153176,
+          "aircargo-gr-offload-road-handover": 1.0,
+          "aircargo-gr-expedition-export-causation": 1.0,
+          "aircargo-gr-loss-awb-conditions": 0.9562707599036264,
+          "aircargo-gr-damage-carrier-evidence": 1.0,
+          "aircargo-gr-customs-export-readiness": 1.0,
+          "aircargo-gr-road-air-handover": 0.9275038527696858,
+          "aircargo-gr-sea-air-handover": 0.8558112355261801,
+          "aircargo-gr-compare-loss-damage-evidence": 1.0,
+          "aircargo-gr-claims-minimum-pack": 1.0,
+          "aircargo-gr-compare-road-sea-handover": 1.0,
+          "aircargo-gr-multimodal-control-pack": 0.8491232615591537,
+          "aircargo-gr-compare-liability-insurance": 1.0
+        },
+        "context_precision": {
+          "aircargo-gr-loss-liability-boundary": 0.1624,
+          "aircargo-gr-damage-insurance-proof": 0.0944,
+          "aircargo-gr-customs-delay-release": 0.3233,
+          "aircargo-gr-offload-road-handover": 0.4394,
+          "aircargo-gr-expedition-export-causation": 0.1111,
+          "aircargo-gr-loss-awb-conditions": 0.1953,
+          "aircargo-gr-damage-carrier-evidence": 0.3216,
+          "aircargo-gr-customs-export-readiness": 0.3278,
+          "aircargo-gr-road-air-handover": 0.2348,
+          "aircargo-gr-sea-air-handover": 0.326,
+          "aircargo-gr-compare-loss-damage-evidence": 0.296,
+          "aircargo-gr-claims-minimum-pack": 0.2392,
+          "aircargo-gr-compare-road-sea-handover": 0.2362,
+          "aircargo-gr-multimodal-control-pack": 0.2399,
+          "aircargo-gr-compare-liability-insurance": 0.2435
+        }
+      },
+      "metrics": {
+        "precision_at_5": {
+          "point": 0.84,
+          "ci95": [
+            0.75,
+            1.0
+          ],
+          "n": 15,
+          "clusters": 3,
+          "excluded": 0
+        },
+        "sent_precision": {
+          "point": 0.84,
+          "ci95": [
+            0.75,
+            1.0
+          ],
+          "n": 15,
+          "clusters": 3,
+          "excluded": 0
+        },
+        "ndcg_at_5": {
+          "point": 0.9622853724372791,
+          "ci95": [
+            0.9081095874637549,
+            1.0
+          ],
+          "n": 15,
+          "clusters": 3,
+          "excluded": 0
+        },
+        "context_precision": {
+          "point": 0.25272666666666666,
+          "ci95": [
+            0.23145999999999997,
+            0.4394
+          ],
+          "n": 15,
+          "clusters": 3,
+          "excluded": 0
+        },
+        "evidence_recall_pool": {
+          "point": "N/A",
+          "reason": "P2 has no approved gold spans, required evidence groups or atomic facts",
+          "n": 0
+        },
+        "all_evidence_coverage": {
+          "point": "N/A",
+          "reason": "P2 has no approved gold spans, required evidence groups or atomic facts",
+          "n": 0
+        },
+        "fact_coverage": {
+          "point": "N/A",
+          "reason": "P2 has no approved gold spans, required evidence groups or atomic facts",
+          "n": 0
+        }
+      }
+    }
+  }
+}
