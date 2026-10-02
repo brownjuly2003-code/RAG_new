@@ -33,8 +33,9 @@ conditions, read [`ROADMAP.md`](ROADMAP.md). The active delivery plan is
   Tracks 0–2 are registered in MyFlow as T-55…T-65 (T-57 parked until Julia
   grades the 10 blind P2 cases); the executor follows the plan's §5 slice specs.
   T-65's retrieval-only replay and resumable pinned embedding preparation are
-  prepared; a Mac embedding run is active (check the [handoff](docs/operations/t65-baseline-handoff.md)
-  before launching anything). The real baseline and 30-case Chroma/exact comparison remain open.
+  prepared; all 5589 pinned embeddings and a separate Chroma index are now
+  complete and verified after reopening (see the [handoff](docs/operations/t65-baseline-handoff.md)).
+  Reuse them; the real baseline and 30-case Chroma/exact comparison remain open.
 - Re-ingest any Chroma collection built before `534612e`: it keeps its
   unpersisted write-ahead-log tail until it is rebuilt
   ([rerun after the fix](docs/evidence/chroma-restart-stability-after-fix.md)).

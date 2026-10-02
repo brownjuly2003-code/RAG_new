@@ -66,16 +66,12 @@ Fresh verification:
 - Corpus archive: `evaluation/gr1b-4436d61-graph-chunks.json.gz`, SHA-256
   `2a9da515a4c69b46453a59ed6d0bb772b0aad6fed23c87ee465851b43dbdef12`.
 
-The full embedding calculation **started** at `2026-10-02T12:42:17Z`, Mac PID
-`74090`, batch size 8, resuming the two verified rows. It has a 24-hour timeout
-and remains attached to one SSH invocation (Windows tool session `24421`).
-Check the snapshot's `.tmp/t65-embedding-full-state.json` for its terminal
-status and `.tmp/t65-embedding-full.log` for the result; the cumulative cache
-is `.tmp/t65-verified-embeddings.npz`. Do not launch a duplicate. Completion
-has not yet been verified. The launcher is `.tmp/t65_embedding_full.py` on
-Windows; it refuses a second active embedding process or an existing run-state
-file. If interrupted, retain the checkpoint and resume explicitly after checking
-the recorded process has ended.
+The full embedding calculation **completed** at `2026-10-02T14:01:16Z`, exit 0,
+after starting at `12:42:17Z` (Mac PID `74090`, batch size 8). All **5589 × 1024**
+vectors are complete and validated. Do not re-encode this corpus. The snapshot's
+`.tmp/t65-embedding-full-state.json` and `.tmp/t65-embedding-full.log` retain the
+terminal result; checkpoint `.tmp/t65-verified-embeddings.npz` has SHA-256
+`3903187e56dd4d8accf642f612910c6ca2082d1e7e55b7d67cd072ce0978fb5a`.
 
 Executor: Codex fallback after GLM's initial request and one narrowed retry both
 ended `incomplete/max_output_tokens`. No partial GLM response was applied.
@@ -100,16 +96,29 @@ Chroma setting at `<output>/chroma`. No production setting has been changed.
 - Snapshot `/Users/julia/RAG_new_t65_index_a09cd1522d8b`, archive SHA-256
   `a09cd1522d8b3c641ec33eee296d1bd03710e378a53d4a7bd433a93da12cc563`:
   `6498d83` plus the new builder and tests. This is preparation, not a measurement.
-- At `2026-10-02T14:00:12Z`, the running calculation had **5482/5589** valid
-  vectors. Corpus/text hashes and the pinned manifest matched the real smoke.
-  Local inspection: `.tmp/t65-checkpoint-inspection.json`; no duplicate launched.
 - Executor: continued Codex fallback from the two incomplete GLM requests above.
+
+### Real index verified
+
+Built with `72fbd72`, ChromaDB 1.5.9; directory on Mac:
+`/Users/julia/RAG_new_t65_embeddings_2851e3811508/.tmp/t65-index-72fbd72`.
+`index-receipt.json` pins corpus, checkpoint, text order, embedder, code and build
+configuration. A separate process verified all 5589 vectors **exactly**, all
+texts and metadata against the inputs, and `check_collection_manifest` returned
+`match` / `eligible`. Log sequence = persisted vector sequence = **5589** (tail 0).
+Report: `reopen-verification.json` beside the receipt; local copy:
+`.tmp/t65-index-reopen-verification.json`. This verifies storage, not quality.
+
+Runtime for builder/verification: `/Users/julia/RAG_new_gr4_venv/bin/python`
+with `PYTHONPATH=/Users/julia/RAG_new_mf_gate_site` (also used for the tests).
+The first launcher lacked `psutil`; native macOS `kqueue` replaced it. The first
+builder invocation omitted this package path and refused at the Chroma import,
+before creating output. Using the verified test environment resolved it.
 
 ## Remaining T-65 work
 
-1. Verify the full embedding checkpoint, then build a separate index from it
-   with the same verified manifest. Pin index, model digests and runtime config.
-   No eligible baseline index has been established yet.
+1. Checkpoint and isolated index are verified; pin the remaining model digests
+   and retrieval runtime config before the measurement. Use the existing index.
 2. Run the bounded real Chroma/exact comparison on 30 H cases and publish any
    divergence (T-62 acceptance boundary).
 3. Collect H 100 + Hm 15 through the retrieval-only path, retain trace timings
