@@ -711,3 +711,94 @@ every Sol/GLM proposal (i)–(xvi) resolved per Astra §5; nothing weakened.
   slice started on `93b2c42`, and the only commits since are the lead
   agent's handoff commits. It is a warning, not a block: the scope check
   reads the working tree against HEAD.
+
+## Step 23 — T-61 repair pass 1 done, fast gate GREEN; stop point before review pass 2 (02.10)
+
+- Julia, 2026-10-02: the same terms as Step 18 (sol executor, all decisions,
+  commits and pushes delegated, Mac for heavy runs, grok unavailable). Then:
+  «поставь точку, где логично».
+- After Step 22, still on 01.10:
+  - `done T-61` gave fast GREEN.
+  - Review pass 1 (codex astra) raised four actionable findings:
+    - F-T-61-1: an attribute set on a pydantic `VectorStoreRetriever`;
+    - F-T-61-2: the legacy build stamps a collection that already holds
+      records;
+    - F-T-61-3: KB publish writes without a manifest check;
+    - F-T-61-4: an unresolved revision counts as proven identity.
+  - Repair decisions: `.tmp/notes/T-61-repair-1-note.md`.
+  - The repair writer lost the network at 18:29 local and died at 18:42,
+    after landing F-1, F-4 and part of F-2/F-3. Its companion job
+    `task-muq2ztgf-6eg5xa` stayed `running` with pid 7420 gone, the Step 20
+    hazard. On 02.10 it was cleared under the blanket delegation:
+    `.tmp/notes/clear_stale_companion_job_t61.py`, backups
+    `*.json.bak-stale-fix-t61`.
+- Repair pass 1 on 02.10, sol-high (gpt-6.1-sol, effort medium per the
+  v2.4.16 role policy), three runs:
+  1. Resume with `.tmp/notes/T-61-repair-1-resume-note.md`.
+     - Cause: the staged build had the literal
+       `collection_configuration={"hnsw": {"sync_threshold": 1}}` twice. The
+       mutation tests in the read-only
+       `tests/test_chroma_restart_stability_source_pin.py` rewrite the first
+       occurrence, so 3 of them failed.
+     - Fix: the creation call takes the module constant `_PERSIST_EVERY_ADD`,
+       and the pinned `from_documents` call stays byte-identical to HEAD.
+     - A new guard test checks the creation call, on a fake and on real
+       chromadb.
+     - A creation failure keeps the staging error contract.
+     - A mismatch on a pre-existing collection raises unwrapped and deletes
+       nothing.
+  2. Fixes from a pre-`done` Mac unit run (`.tmp/notes/T-61-repair-1-fix2-note.md`).
+     That run found three problems the fast gate would not have seen:
+     - `build_factcard_store` had lost delete-then-rebuild.
+       - My repair decision had wrongly listed it under "check before write".
+       - It broke the existing `test_factcard_store` and
+         `test_tenant_index_lock`.
+       - Restored: delete, then create stamped, then write.
+     - T-59's `test_route_trace_nodes` pins the retrieve node's steps. It now
+       expects `index_manifest` first (plan 2.3). This is the only edit to an
+       existing test in the slice; the commit must name it.
+     - The new real-chromadb tests leaked 220 file descriptors.
+       - The Mac ssh shell runs with `ulimit -n 256`, so the suite cascaded
+         into 55 failed and 139 errors (EMFILE) in unrelated files.
+       - Fixed: stop the Chroma systems after each test. Descriptors per file
+         went 4 → 6 → 8.
+       - Mac unit under the gate limit afterwards: 4038 passed, 0 failed.
+  3. `done` attempt 1 was RED on `mypy-api-fast` (`manifest.backend` on
+     `Any | None`). The writer switched to `configured["backend"]`.
+     Attempt 2: GATE GREEN (fast) on tree `c3b53a1674`; focused 177 passed,
+     task 159 passed.
+- Contour defect recorded (`defect --area gate`): the fast gate's focus
+  misses existing tests of modified production modules.
+- Stop point: phase REVIEWING; review pass 2 is not started. The tree holds
+  the whole T-61 change, uncommitted.
+- Backup:
+  - `wip/T-61-writer` was force-updated (with lease) to `5fd53e5`, parent
+    `d99f1c7`. It replaces `e0f54c0`.
+  - 74 files, each checked against the tree through git's own filters.
+    The restore into a scratch tree gave 0 content differences.
+  - Contents: the T-61 change, all of `.tmp/notes/`, `.tmp/mf-mac/*.py` and
+    `steps.json`, and the MyFlow resume files plus `review_run.json`,
+    `writer/T-61*` and `reviews/T-61*`.
+  - The restore command and the rules of Step 22 are unchanged.
+- Resume:
+  1. `$MF continue`; the phase should be REVIEWING with the fast gate GREEN.
+  2. `done` printed an advisory SPEC DRIFT, and there is no capability spec
+     for the manifest. Decision:
+     - write `docs/specs/embedder-manifest.md` (`$MF specs new
+       embedder-manifest`) from plan §2.3, G25 and the repair-1 decisions,
+       not from the code;
+     - its scenarios: match/eligible; mismatch → 503 with trace; unstamped
+       → NOT_EVIDENCE; unverified revision → NOT_EVIDENCE; stamp only on an
+       empty collection; publish into a mismatched index → 409; fact cards
+       rebuild with a fresh stamp;
+     - add it to T-61 `spec_refs` (`task-edit`), then run `done T-61
+       --detach` again.
+  3. `$MF review-run T-61 --detach`. Pass 2 judges F-T-61-1..4 first.
+  4. Repairs if needed. Before `done`, run a Mac unit pass
+     (`sync.py` + `remote.py --site pytest tests/ …`), because of the
+     focus gap.
+  5. `gate --full --detach`.
+  6. Scoped commit of the 16 slice paths, not `demo/phase-e-raw.webm`. The
+     message discloses sol-high, the test edit and the lead agent's notes.
+  7. Push. Delete `wip/T-61-writer` locally and on origin.
+  8. Then T-62, T-60 and T-65 as in Step 22.
