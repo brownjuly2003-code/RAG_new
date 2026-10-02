@@ -121,3 +121,54 @@ the page exports only when they grade exactly the sampled units with integers fr
 - **GIVEN** the H pool and the official ruler
 - **WHEN** the sample is drawn twice
 - **THEN** both draws name the same 10 cases, two from each ruler quintile
+
+## Requirement: v2 requests bind blind grades to exact addressed chunks
+
+The v2 contract in `evaluation/judge_contract.py` SHALL accept 1–10 documents and
+retain the v1 0–3 rubric. The v1 builder and parser remain available for the pinned
+P2 artifacts. A v2 request SHALL record `request_version: 2`, `rubric_version` and
+the caller's `judge_version` (model id and route parameters).
+
+Each document SHALL carry its exact text, its UTF-8 `text_sha256` and an address:
+`source_id`, `source_revision`, `chunker_version`, and either `section_path` or
+`char_start`/`char_end`. Addresses, hashes and retrieval metadata SHALL stay outside
+the prompt. Empty sets, more than ten documents, duplicate text hashes and a
+supplied hash that differs from the exact text SHALL be refused. The builder SHALL
+sort by text hash, then shuffle with `random.Random(f"20260925:v2:{case_id}")`,
+and label the presented documents D1 through Dn.
+
+`question_hash` SHALL hash the exact UTF-8 question. `request_key` SHALL hash the
+canonical JSON (sorted keys, compact separators, UTF-8) of `request_version`,
+`question_hash`, the ordered `text_sha256` list, `rubric_version` and
+`judge_version`. `request_sha256` SHALL separately hash the exact prompt bytes.
+Stored grades SHALL be reused only for an identical `request_key`.
+
+The v2 parser SHALL accept the first balanced JSON object, including one inside
+prose or a code fence, only when each presented label occurs exactly once with an
+integer 0–3. Its outcome SHALL be `valid`, `invalid` or `absent`. Invalid reason
+codes SHALL be `no_json`, `missing_label`, `duplicate_label`, `extra_label`,
+`out_of_range` or `non_integer`; an empty or missing reply SHALL be `absent`.
+Neither invalid nor absent outcomes SHALL produce grade records.
+
+The JSON-lines grade store SHALL validate every record on write and read. Each
+record SHALL contain `case_id`, `question_hash`, `address`, `text_sha256`, `grade`,
+`rubric_version`, `judge_version`, `request_key` and `request_sha256`. Missing
+fields, malformed SHA-256 hashes, invalid addresses and grades outside the
+integer 0–3 range SHALL be refused.
+
+### Scenario: retrieval order and metadata stay hidden
+- **GIVEN** the same addressed text set in two different retrieval orders
+- **WHEN** both v2 requests are built for the same case and versions
+- **THEN** their prompt bytes and request keys are identical
+- **AND** neither prompt contains metadata-only addresses, hashes, ranks or keywords
+
+### Scenario: the cache binds exact text and versions
+- **GIVEN** stored grades for a v2 request
+- **WHEN** one text, the question, the rubric version or the judge version changes
+- **THEN** the request key changes and the previous grades are not reused
+
+### Scenario: a fenced valid reply differs from a missing grade
+- **GIVEN** a fenced JSON object grading all presented labels once with integers 0–3
+- **WHEN** it is parsed
+- **THEN** the outcome is valid and its addressed grades can be stored
+- **AND** a reply missing a label is invalid, while no reply is absent; neither is graded

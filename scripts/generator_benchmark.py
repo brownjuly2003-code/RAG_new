@@ -22,7 +22,7 @@ import time
 from collections.abc import Callable, Mapping, Sequence
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any, TypeGuard
+from typing import Any, Literal, TypedDict, TypeGuard
 
 import httpx
 
@@ -354,14 +354,63 @@ def parse_unit_interval_score(raw: str) -> float:
     return value
 
 
+class JudgeScore(TypedDict):
+    status: Literal["valid", "invalid", "absent"]
+    score: float | None
+    reason: str
+    raw_text: str | None
+    request_sha256: str
+    truncated: dict[str, bool]
+    original_lengths: dict[str, int]
+    kappa_eligible: bool
+
+
+class JudgeScores(TypedDict):
+    faithfulness: float | None
+    answer_relevancy: float | None
+    context_precision: float
+    context_recall: float
+    judge_requests: dict[str, JudgeScore]
+
+
+def parse_judge_score(
+    raw: str | None,
+    *,
+    request_text: str,
+    context_length: int = 0,
+    answer_length: int = 0,
+) -> JudgeScore:
+    truncated = {"context": context_length > 3000, "answer": answer_length > 2000}
+    status: Literal["valid", "invalid", "absent"] = "absent"
+    score = None
+    reason = "empty_reply"
+    if raw is not None and raw.strip():
+        try:
+            score = parse_unit_interval_score(raw)
+        except BenchmarkInputError:
+            status, reason = "invalid", "parse_failure"
+        else:
+            status, reason = "valid", ""
+    return {
+        "status": status,
+        "score": score,
+        "reason": reason,
+        "raw_text": raw,
+        "request_sha256": hashlib.sha256(request_text.encode("utf-8")).hexdigest(),
+        "truncated": truncated,
+        "original_lengths": {"context": context_length, "answer": answer_length},
+        "kappa_eligible": status == "valid" and not any(truncated.values()),
+    }
+
+
 def _judge_scores(
-    llm: OllamaLLM,
+    llm: OllamaLLM | None,
     *,
     question: str,
     answer: str,
     contexts: Sequence[str],
     expected_keywords: Sequence[str],
-) -> dict[str, float]:
+) -> JudgeScores:
     context_text = "\n".join(contexts)
     faithfulness_prompt = (
         "You are an evaluation expert. Given a context and an answer, determine "
@@ -380,15 +429,37 @@ def _judge_scores(
         "Respond with ONLY a decimal number between 0.0 and 1.0 "
         "(1.0 = perfectly relevant, 0.0 = completely irrelevant).\nScore:"
     )
+    requests: dict[str, JudgeScore] = {}
+    for metric, prompt in (
+        ("faithfulness", faithfulness_prompt),
+        ("answer_relevancy", relevancy_prompt),
+    ):
+        raw = None
+        error = "not_requested" if llm is None else ""
+        if llm is not None:
+            try:
+                raw = llm.invoke(prompt)
+            except Exception as exc:
+                error = f"request_failed:{type(exc).__name__}"
+        outcome = parse_judge_score(
+            raw,
+            request_text=prompt,
+            answer_length=len(answer),
+            context_length=len(context_text) if metric == "faithfulness" else 0,
+        )
+        if error:
+            outcome["reason"] = error
+        requests[metric] = outcome
     docs = [{"page_content": item} for item in contexts]
     return {
-        "faithfulness": parse_unit_interval_score(llm.invoke(faithfulness_prompt)),
-        "answer_relevancy": parse_unit_interval_score(llm.invoke(relevancy_prompt)),
+        "faithfulness": requests["faithfulness"]["score"],
+        "answer_relevancy": requests["answer_relevancy"]["score"],
         "context_precision": round(
             context_precision(question, docs, list(expected_keywords)),
             4,
         ),
         "context_recall": round(context_recall(docs, list(expected_keywords)), 4),
+        "judge_requests": requests,
     }
 
 
@@ -564,6 +635,8 @@ def build_final_report(
             )
         if int(run.get("failed_cases") or 0) != 0:
             reasons.append(f"run {run_index} failed_cases={run.get('failed_cases')}")
+        if run.get("answer_metrics_evidence") == "NOT_EVIDENCE":
+            reasons.append(f"run {run_index} invalid judge answers exceed 10%")
         case_ids = [str(item) for item in run.get("case_ids", [])]
         if len(case_ids) != len(set(case_ids)):
             reasons.append(f"run {run_index} has duplicate case ids")
@@ -608,11 +681,12 @@ def build_final_report(
 
 def _aggregate_run(run: dict[str, Any]) -> None:
     rows = run.get("cases", [])
+    modern = any("judge_requests" in row for row in rows)
     totals: dict[str, list[float]] = {metric: [] for metric in QUALITY_METRICS}
     latencies: list[float] = []
     failed = 0
     for row in rows:
-        valid = bool(row.get("generation_valid")) and bool(row.get("llm_judge_valid"))
+        valid = bool(row.get("generation_valid")) and (modern or bool(row.get("llm_judge_valid")))
         valid = valid and bool(row.get("nli_valid"))
         if not valid:
             failed += 1
@@ -627,15 +701,60 @@ def _aggregate_run(run: dict[str, Any]) -> None:
             "nli_supported_claim_rate": nli.get("supported_claim_rate"),
         }
         for metric, value in metric_values.items():
+            if modern and metric in ("llm_faithfulness", "answer_relevancy"):
+                name = "faithfulness" if metric == "llm_faithfulness" else metric
+                request = (row.get("judge_requests") or {}).get(name)
+                judged = request.get("status") == "valid" if request else row.get("llm_judge_valid")
+                if judged and _finite_number(value):
+                    totals[metric].append(float(value))
+                continue
             totals[metric].append(float(value) if _finite_number(value) else 0.0)
         latencies.append(float(row.get("latency_ms") or 0.0))
     run["num_cases"] = len(rows)
     run["failed_cases"] = failed
     run["case_ids"] = [str(row.get("case_id") or "") for row in rows]
     run["aggregate"] = {
-        metric: statistics.fmean(values) if values else 0.0 for metric, values in totals.items()
+        metric: statistics.fmean(values)
+        if values
+        else (None if modern and metric in ("llm_faithfulness", "answer_relevancy") else 0.0)
+        for metric, values in totals.items()
     }
     run["aggregate"]["mean_latency_ms"] = statistics.fmean(latencies) if latencies else 0.0
+    if modern:
+        summary: dict[str, Any] = {}
+        for metric in ("faithfulness", "answer_relevancy"):
+            counts: dict[str, Any] = {
+                "valid": 0,
+                "invalid": 0,
+                "absent": 0,
+                "truncated": 0,
+                "invalid_cases": [],
+                "absent_cases": [],
+                "truncated_cases": [],
+            }
+            for row in rows:
+                outcome = (row.get("judge_requests") or {}).get(metric)
+                if outcome:
+                    status = outcome["status"]
+                elif row.get("llm_judge_valid"):
+                    status = "valid"
+                else:
+                    status = (
+                        "invalid" if "BenchmarkInputError" in row.get("error", "") else "absent"
+                    )
+                counts[status] += 1
+                if status != "valid":
+                    counts[f"{status}_cases"].append(row["case_id"])
+                if outcome and any(outcome.get("truncated", {}).values()):
+                    counts["truncated"] += 1
+                    counts["truncated_cases"].append(row["case_id"])
+            summary[metric] = counts
+        invalid = sum(counts["invalid"] for counts in summary.values())
+        run["judge_summary"] = summary
+        run["judge_invalid_fraction"] = invalid / (2 * len(rows)) if rows else 0.0
+        run["answer_metrics_evidence"] = (
+            "NOT_EVIDENCE" if run["judge_invalid_fraction"] > 0.1 else "measured"
+        )
 
 
 def _atomic_write_json(path: Path, value: Mapping[str, Any]) -> None:
@@ -741,6 +860,25 @@ def _render_markdown(report: Mapping[str, Any]) -> str:
     if report.get("evidence_reasons"):
         lines.extend(["", "## Evidence blockers", ""])
         lines.extend(f"- {reason}" for reason in report["evidence_reasons"])
+    judged_runs = [run for run in report.get("runs", []) if run.get("judge_summary")]
+    if judged_runs:
+        lines.extend(
+            [
+                "",
+                "## Judge requests",
+                "",
+                "Invalid and absent replies are excluded per metric; truncated requests are outside deciding kappa.",
+                "",
+                "| Run | Metric | Valid | Invalid | Absent | Truncated |",
+                "|---|---|---:|---:|---:|---:|",
+            ]
+        )
+        for run in judged_runs:
+            for metric, counts in run["judge_summary"].items():
+                lines.append(
+                    f"| {run['run_index']} | {metric} | {counts['valid']} | {counts['invalid']} | "
+                    f"{counts['absent']} | {counts['truncated']} |"
+                )
     return "\n".join(lines).rstrip() + "\n"
 
 
@@ -916,47 +1054,21 @@ def main(argv: Sequence[str] | None = None) -> int:
                 answer = ""
                 error = f"generation: {type(exc).__name__}: {exc}"
 
-            failed_before_judge = llm.failed_calls
-            calls_before_judge = llm.calls
-            if generation_valid:
-                try:
-                    scores = _judge_scores(
-                        llm,
-                        question=case["query"],
-                        answer=answer,
-                        contexts=case["contexts"],
-                        expected_keywords=case["expected_keywords"],
-                    )
-                    llm_judge_valid = (
-                        llm.failed_calls == failed_before_judge
-                        and llm.calls - calls_before_judge == 2
-                    )
-                except Exception as exc:
-                    docs = [{"page_content": item} for item in case["contexts"]]
-                    scores = {
-                        "faithfulness": 0.0,
-                        "answer_relevancy": 0.0,
-                        "context_precision": round(
-                            context_precision(
-                                case["query"],
-                                docs,
-                                case["expected_keywords"],
-                            ),
-                            4,
-                        ),
-                        "context_recall": round(
-                            context_recall(docs, case["expected_keywords"]),
-                            4,
-                        ),
-                    }
-                    error = (error + "; " if error else "") + f"judge: {type(exc).__name__}: {exc}"
-            else:
-                scores = {
-                    "faithfulness": 0.0,
-                    "answer_relevancy": 0.0,
-                    "context_precision": 0.0,
-                    "context_recall": 0.0,
-                }
+            judged = _judge_scores(
+                llm if generation_valid else None,
+                question=case["query"],
+                answer=answer,
+                contexts=case["contexts"],
+                expected_keywords=case["expected_keywords"],
+            )
+            judge_requests = judged["judge_requests"]
+            scores = {key: value for key, value in judged.items() if key != "judge_requests"}
+            llm_judge_valid = all(
+                outcome["status"] == "valid" for outcome in judge_requests.values()
+            )
+            for metric, outcome in judge_requests.items():
+                if outcome["status"] != "valid":
+                    error = (error + "; " if error else "") + f"judge {metric}: {outcome['reason']}"
             latency_ms = int((time.perf_counter() - started) * 1000)
             run["cases"].append(
                 {
@@ -969,6 +1081,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                     "nli_valid": False,
                     "error": error,
                     "scores": scores,
+                    "judge_requests": judge_requests,
                     "context_count": len(case["contexts"]),
                 }
             )
