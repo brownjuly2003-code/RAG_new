@@ -27,7 +27,16 @@ Arms:
 
 All arms run the post-4844094 header path (body never truncated, header clamped 200).
 
-Stages (run order: pools A -> pools C -> rerank A -> rerank C -> report):
+Production runs use --stage production (the default): a fresh production
+ConversationSession per case, including query transformation, retrieval,
+grading and generation. Settings and the existing tenant index are shared
+with /api/ask; this stage does not rebuild the index.
+
+Archived phase-C, GR-1/GR-2/GR-3 and P1/P1b measurements use the legacy
+two-process harness below. Reproduction requires --legacy-harness; these
+paths do not establish production parity (notably parent expansion/grading).
+
+Legacy stages (pools A -> pools C -> rerank A -> rerank C -> report):
   pools   load corpus, chunk per arm, apply headers, embed (project embedder),
           mirror HybridRetriever steps 1-3 (dense top-k + BM25 top-k -> RRF),
           dump the full candidate pool per case.
@@ -39,16 +48,16 @@ Stages (run order: pools A -> pools C -> rerank A -> rerank C -> report):
           rerank-recoverable verification; writes a markdown summary.
 
 Usage:
-  python scripts/ab_remote_contextual.py --stage pools  --arm A
-  python scripts/ab_remote_contextual.py --stage pools  --arm C
-  python scripts/ab_remote_contextual.py --stage rerank --arm A
-  python scripts/ab_remote_contextual.py --stage rerank --arm C
-  python scripts/ab_remote_contextual.py --stage pools  --arm G1
-  python scripts/ab_remote_contextual.py --stage rerank --arm G1
-  python scripts/ab_remote_contextual.py --stage pools  --arm G2 \\
+  python scripts/ab_remote_contextual.py --legacy-harness --stage pools  --arm A
+  python scripts/ab_remote_contextual.py --legacy-harness --stage pools  --arm C
+  python scripts/ab_remote_contextual.py --legacy-harness --stage rerank --arm A
+  python scripts/ab_remote_contextual.py --legacy-harness --stage rerank --arm C
+  python scripts/ab_remote_contextual.py --legacy-harness --stage pools  --arm G1
+  python scripts/ab_remote_contextual.py --legacy-harness --stage rerank --arm G1
+  python scripts/ab_remote_contextual.py --legacy-harness --stage pools  --arm G2 \\
       --entities-cache DIR --classifications DIR
-  python scripts/ab_remote_contextual.py --stage rerank --arm G2
-  python scripts/ab_remote_contextual.py --stage report
+  python scripts/ab_remote_contextual.py --legacy-harness --stage rerank --arm G2
+  python scripts/ab_remote_contextual.py --legacy-harness --stage report
 """
 
 from __future__ import annotations
@@ -1114,9 +1123,62 @@ def stage_expand(src: Path, corpus: Path, window: int, max_chars: int, label: st
     return 0
 
 
+def production_case(case: dict[str, Any], session: Any, **ask_kwargs: Any) -> dict[str, Any]:
+    """Run the same session entry point as /api/ask, then export its sent context."""
+    from agent.doc_grade import resolve_generation_context_docs
+    from agent.graph import _docs_to_plain_dicts, _query_transform_fingerprint
+
+    state = session.ask(case["query"], **ask_kwargs)
+    docs = _docs_to_plain_dicts(resolve_generation_context_docs(state))
+    texts = [str(doc.get("page_content") or "") for doc in docs]
+    transform, transform_hash = _query_transform_fingerprint(state)
+    return {
+        "case_id": case["case_id"],
+        "query": case["query"],
+        "query_effective": state.get("hyde_query") or state.get("search_query") or case["query"],
+        "query_transform": transform,
+        "query_transform_hash": transform_hash,
+        "cands": texts,
+        "cand_metadata": [doc.get("metadata") or {} for doc in docs],
+        "sent_context_sha256": _sha256_bytes("\n\n".join(texts).encode("utf-8")),
+        "state": state,
+    }
+
+
+def stage_production(cases_path: Path, out_dir: Path) -> int:
+    """Single-turn production replay; quality measurement is a separate stage."""
+    from agent.graph import ConversationSession
+    from config.settings import get_settings
+    from vectordb.manager import get_retriever
+
+    output = out_dir / "production_contexts.json"
+    if output.exists():
+        print(f"[production] output already exists: {output}", flush=True)
+        return 2
+    rows = []
+    settings = get_settings()
+    for case in _load_cases(cases_path):
+        tenant = str(case.get("tenant_id") or "aircargo")
+        session = ConversationSession(
+            get_retriever(tenant_id=tenant),
+            max_iterations=max(0, int(getattr(settings, "self_rag_max_iterations", 2) or 0)),
+        )
+        rows.append(production_case(case, session, tenant_id=tenant))
+    _atomic_write_text(output, json.dumps(rows, ensure_ascii=False))
+    print(f"[production] saved {len(rows)} session results -> {output}", flush=True)
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--stage", required=True, choices=("pools", "rerank", "report", "expand"))
+    parser.add_argument(
+        "--stage",
+        default="production",
+        choices=("production", "pools", "rerank", "report", "expand"),
+    )
+    parser.add_argument(
+        "--legacy-harness", action="store_true", help="reproduce archived offline measurements"
+    )
     parser.add_argument("--arm", default="", choices=("", "A", "C", "E", "F", "G1", "G2"))
     parser.add_argument("--corpus", default=str(PROJECT_ROOT / "data" / "uploads" / "aircargo"))
     parser.add_argument(
@@ -1156,6 +1218,12 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     out_dir = Path(args.out_dir)
+    if args.stage == "production":
+        if args.legacy_harness or args.arm:
+            parser.error("production uses runtime settings, not --legacy-harness or --arm")
+        return stage_production(Path(args.cases), out_dir)
+    if args.stage in ("pools", "rerank", "expand") and not args.legacy_harness:
+        parser.error("archived stages require --legacy-harness; use --stage production for parity")
     if args.stage == "pools":
         if args.arm not in ("A", "C", "E", "G1", "G2"):
             parser.error("--stage pools requires --arm A|C|E|G1|G2")

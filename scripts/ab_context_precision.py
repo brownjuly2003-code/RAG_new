@@ -550,7 +550,7 @@ def build_pool(out_dir: Path, arm: str = "C") -> Path:
     """Run the existing two-process embed+rerank stages (models never co-resident)."""
     script = str(PROJECT_ROOT / "scripts" / "ab_remote_contextual.py")
     for stage in ("pools", "rerank"):
-        cmd = [sys.executable, script, "--stage", stage, "--arm", arm, "--out-dir", str(out_dir)]
+        cmd = [sys.executable, script, "--legacy-harness", "--stage", stage, "--arm", arm, "--out-dir", str(out_dir)]
         print(f"[build-pool] $ {' '.join(cmd)}", flush=True)
         rc = subprocess.run(cmd, check=False).returncode
         if rc != 0:

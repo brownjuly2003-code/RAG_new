@@ -679,6 +679,7 @@ def test_cli_dispatches_g2_pools_and_rerank(monkeypatch: Any, tmp_path: Path) ->
     assert (
         remote.main(
             [
+                "--legacy-harness",
                 "--stage",
                 "pools",
                 "--arm",
@@ -693,7 +694,12 @@ def test_cli_dispatches_g2_pools_and_rerank(monkeypatch: Any, tmp_path: Path) ->
         )
         == 0
     )
-    assert remote.main(["--stage", "rerank", "--arm", "G2", "--out-dir", str(tmp_path)]) == 0
+    assert (
+        remote.main(
+            ["--legacy-harness", "--stage", "rerank", "--arm", "G2", "--out-dir", str(tmp_path)]
+        )
+        == 0
+    )
     assert calls[0][0] == "pools" and calls[0][1] == "G2"
     assert calls[0][2]["entities_cache"] == entities
     assert calls[0][2]["classifications"] == classifications
@@ -703,9 +709,9 @@ def test_cli_dispatches_g2_pools_and_rerank(monkeypatch: Any, tmp_path: Path) ->
 @pytest.mark.parametrize(
     "argv",
     [
-        ["--stage", "pools", "--arm", "G2"],
-        ["--stage", "pools", "--arm", "G2", "--entities-cache", "e"],
-        ["--stage", "pools", "--arm", "G2", "--classifications", "c"],
+        ["--legacy-harness", "--stage", "pools", "--arm", "G2"],
+        ["--legacy-harness", "--stage", "pools", "--arm", "G2", "--entities-cache", "e"],
+        ["--legacy-harness", "--stage", "pools", "--arm", "G2", "--classifications", "c"],
     ],
 )
 def test_g2_pools_without_both_caches_is_usage_error(argv: list[str]) -> None:
@@ -1065,6 +1071,7 @@ def test_embeddings_cache_non_npz_is_usage_error(tmp_path: Path, name: str) -> N
     with pytest.raises(SystemExit) as excinfo:
         remote.main(
             [
+                "--legacy-harness",
                 "--stage",
                 "pools",
                 "--arm",

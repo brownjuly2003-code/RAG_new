@@ -72,8 +72,18 @@ def test_cli_dispatches_g1_for_pool_and_rerank_stages(monkeypatch: Any, tmp_path
     monkeypatch.setattr(remote, "stage_pools", _pools)
     monkeypatch.setattr(remote, "stage_rerank", _rerank)
 
-    assert remote.main(["--stage", "pools", "--arm", "G1", "--out-dir", str(tmp_path)]) == 0
-    assert remote.main(["--stage", "rerank", "--arm", "G1", "--out-dir", str(tmp_path)]) == 0
+    assert (
+        remote.main(
+            ["--legacy-harness", "--stage", "pools", "--arm", "G1", "--out-dir", str(tmp_path)]
+        )
+        == 0
+    )
+    assert (
+        remote.main(
+            ["--legacy-harness", "--stage", "rerank", "--arm", "G1", "--out-dir", str(tmp_path)]
+        )
+        == 0
+    )
     assert calls == [("pools", "G1"), ("rerank", "G1")]
 
 
