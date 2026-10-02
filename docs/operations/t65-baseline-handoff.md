@@ -80,6 +80,31 @@ the recorded process has ended.
 Executor: Codex fallback after GLM's initial request and one narrowed retry both
 ended `incomplete/max_output_tokens`. No partial GLM response was applied.
 
+## Isolated index builder — 2026-10-02
+
+`python -m scripts.production_index --help` now exposes the next preparation
+step. It requires the corpus archive, a complete checkpoint, an independently
+pinned embedder manifest JSON and the source code SHA. It validates archive and
+ordered-text hashes, manifest equality, vector count/dimension/normalization
+before creating a new output directory. Existing output is refused. It builds
+`<output>/chroma` with persisted HNSW adds and writes `index-receipt.json` only
+after the expected count is present. No model is loaded or existing index changed.
+The default collection is `rag_docs_aircargo`; point the isolated baseline's
+Chroma setting at `<output>/chroma`. No production setting has been changed.
+
+- Red: 12 tests failed on the absent builder module.
+- Mac: `pytest tests/test_production_index.py tests/test_production_embeddings.py
+  -q -p no:schemathesis --tb=short` — **28 passed**; scoped Ruff and CLI help passed.
+  A fresh process reopened real Chroma and checked vectors, text, metadata,
+  manifest and a vector query. Embeddings in this test are fixtures.
+- Snapshot `/Users/julia/RAG_new_t65_index_a09cd1522d8b`, archive SHA-256
+  `a09cd1522d8b3c641ec33eee296d1bd03710e378a53d4a7bd433a93da12cc563`:
+  `6498d83` plus the new builder and tests. This is preparation, not a measurement.
+- At `2026-10-02T14:00:12Z`, the running calculation had **5482/5589** valid
+  vectors. Corpus/text hashes and the pinned manifest matched the real smoke.
+  Local inspection: `.tmp/t65-checkpoint-inspection.json`; no duplicate launched.
+- Executor: continued Codex fallback from the two incomplete GLM requests above.
+
 ## Remaining T-65 work
 
 1. Verify the full embedding checkpoint, then build a separate index from it
