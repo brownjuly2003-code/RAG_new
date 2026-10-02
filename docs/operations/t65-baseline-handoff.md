@@ -26,10 +26,8 @@ existing output is not overwritten. Context is the post-grading generation input
 
 ## Pinned embedding preparation — 2026-10-02
 
-The inspected Mac production collections have no embedder manifest. The retained
-`RAG_new_gr2m_results_9ca8630/chunks.npz` has 5589 × 1024 vectors but no HF
-revision. Neither can establish the new baseline's embedding identity; do not
-retroactively stamp them.
+Older Mac indexes and `RAG_new_gr2m_results_9ca8630/chunks.npz` have no pinned
+embedder identity; do not reuse or retroactively stamp them for this baseline.
 
 `scripts/production_embeddings.py` saves a cumulative NPZ checkpoint atomically,
 binding corpus/text hashes and the embedder manifest. Explicit `--resume` refuses
@@ -41,12 +39,9 @@ Fresh verification:
 - Mac: `pytest tests/test_production_embeddings.py
   tests/test_production_retrieval_only.py tests/test_harness_api_parity.py
   -q -p no:schemathesis --tb=short` — **275 passed**; scoped Ruff passed.
-- Snapshot: `/Users/julia/RAG_new_t65_embeddings_2851e3811508`, archive SHA-256
-  `2851e38115082f2612ea5cfdd72cf5d8bdb2b6e6bc33d0ec96de1da9621d8092`
-  (`07d9569` plus the new script and tests).
+- Embedding snapshot: `/Users/julia/RAG_new_t65_embeddings_2851e3811508`.
 - BGE-M3 revision `5617a9f61b028005a4858fdac845db406aefb181`, 1024 dimensions,
-  normalized, `hf_snapshot`. Resume smoke preserved the first vector exactly;
-  report: `.tmp/t65-embedding-smoke.json` in the snapshot and Windows workspace.
+  normalized, `hf_snapshot`; resume preserved the first vector exactly.
 - Corpus archive: `evaluation/gr1b-4436d61-graph-chunks.json.gz`, SHA-256
   `2a9da515a4c69b46453a59ed6d0bb772b0aad6fed23c87ee465851b43dbdef12`.
 
@@ -113,16 +108,22 @@ records passed integrity checks and are reused. Run: snapshot's `.tmp/parity-c3d
 Supervisor state: `.tmp/parity-full-state.json`; logs: `.tmp/parity-full-*.log`.
 Windows launcher `.tmp/t65_parity_full_resume.py` (PID `17156`) keeps one SSH
 connection attached. Local output: `.tmp/t65-parity-full-launch.log` / `.err`.
-Observed after the bounded wait: running `transform`; full result still pending.
+At `15:38Z`: transform/embed 30/30, retrieve 25/30; model process active.
 Do not launch another writer while it is active. It stops on a failed stage or
 timeout, records the terminal status, and emits `DONE`; no automatic retry.
 
-Report preparation: `python -m scripts.production_parity_report --run <run>
---output <new.json>` checks all 30 grade/verify records, context hashes, replay
-fields and the final summary; counts order, membership and context differences.
-It retains manifest/input hashes and refuses overwrites. Run from a separate
-checkout: do not change the active snapshot's source fingerprint. Red: 11 failed;
-Windows and Mac: **11 passed**, Ruff clean. No new measurement published.
+Report: `python -m scripts.production_parity_report --run <run> --output <new.json>`
+checks 30 grade/verify records, context hashes, replay fields and summary; counts
+order/membership/context differences, pins inputs, refuses overwrites. Use a
+separate checkout; preserve the active snapshot. Red: 11 failed; Windows/Mac:
+**11 passed**, Ruff clean. No new measurement published.
+
+Automatic collector `.tmp/t65_collect_completed_parity.py` (Windows PID `19888`)
+waits on launcher `17156` once using a native process handle (8-hour bound).
+Verified waiting; syntax check passed. State: `.tmp/t65-parity-collector-state.json`;
+logs: `.tmp/t65-parity-collector.log` / `.err`. On confirmed remote success only,
+copies records to `.tmp/t65-parity-completed-c3d2909/`, verifies their hashes and
+builds `report.json`. No model calls, retries or automatic publication/commit.
 
 ## Remaining T-65 work
 
