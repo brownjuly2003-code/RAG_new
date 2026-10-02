@@ -103,14 +103,16 @@ Fresh inspection: `aircargo-matliab-check` differs in vector/pool order between
 Chroma and exact; ranked order and post-grading context hash match (five documents).
 Both arms replayed through ConversationSession. This is one case, not the full result.
 
-Full 30-case comparison resumed with `--resume` on 2026-10-02; existing smoke
-records passed integrity checks and are reused. Run: snapshot's `.tmp/parity-c3d2909`.
-Supervisor state: `.tmp/parity-full-state.json`; logs: `.tmp/parity-full-*.log`.
-Windows launcher `.tmp/t65_parity_full_resume.py` (PID `17156`) keeps one SSH
-connection attached. Local output: `.tmp/t65-parity-full-launch.log` / `.err`.
-At `15:38Z`: transform/embed 30/30, retrieve 25/30; model process active.
-Do not launch another writer while it is active. It stops on a failed stage or
-timeout, records the terminal status, and emits `DONE`; no automatic retry.
+The full 30-case run at c3d2909 (resumed from the smoke records, snapshot's
+`.tmp/parity-c3d2909`) stopped in `grade`:
+`Model/cache calls failed: ['llm/64aa36e2…']`. Launcher `17156` printed `DONE 1`;
+collector `19888` recorded `failed` and copied nothing. Both processes have exited.
+The run is NOT_EVIDENCE; its records stay in the snapshot for diagnosis only.
+
+Cause: Qwen answered the batch grading schema request with the bare word `YES`.
+`OllamaProvider.generate_with_schema` raised `StructuredOutputValidationError`.
+Production catches it and falls back to the text grade, but the runner counted
+that completed reply as a failed model call and refused the stage.
 
 Report: `python -m scripts.production_parity_report --run <run> --output <new.json>`
 checks 30 grade/verify records, context hashes, replay fields and summary; counts
@@ -118,19 +120,27 @@ order/membership/context differences, pins inputs, refuses overwrites. Use a
 separate checkout; preserve the active snapshot. Red: 11 failed; Windows/Mac:
 **11 passed**, Ruff clean. No new measurement published.
 
-Automatic collector `.tmp/t65_collect_completed_parity.py` (Windows PID `19888`)
-waits on launcher `17156` once using a native process handle (8-hour bound).
-Verified waiting; syntax check passed. State: `.tmp/t65-parity-collector-state.json`;
-logs: `.tmp/t65-parity-collector.log` / `.err`. On confirmed remote success only,
-copies records to `.tmp/t65-parity-completed-c3d2909/`, verifies their hashes and
-builds `report.json`. No model calls, retries or automatic publication/commit.
+## Parity runner fix — T-66
+
+Spec: [`production-parity`](../specs/production-parity.md).
+- A completed reply that fails schema validation is a recorded outcome. The record
+  holds the error type, the message and the raw reply under the same integrity check.
+- The runner raises the same error in live and replay. Production's fallback
+  therefore runs identically in both arms and in the session replay, and the
+  outcome is not a failure.
+- These remain failures and are never cached: a timeout, a connection error, a
+  digest mismatch, a cache miss, a corrupt record and an unknown recorded outcome.
+  `require_clean` refuses with the first of them as `__cause__`.
+- Tests: `tests/test_production_parity_outcomes.py`.
+- The source identity changed, so the c3d2909 cache cannot be reused. The 30-case
+  comparison restarts from `prepare` at the T-66 commit.
 
 ## Remaining T-65 work
 
 1. Checkpoint and isolated index are verified; pin the remaining model digests
    and retrieval runtime config before the measurement. Use the existing index.
-2. Run the bounded real Chroma/exact comparison on 30 H cases and publish any
-   divergence (T-62 acceptance boundary).
+2. Run the bounded real Chroma/exact comparison on 30 H cases from `prepare` at
+   the T-66 commit and publish any divergence (T-62 acceptance boundary).
 3. Collect H 100 + Hm 15 through the retrieval-only path, retain trace timings
    and exclude failed/ineligible runs. Record corpus SHA, code SHA and config.
 4. Judge the new contexts, compute lexical/development metrics and the loss map,

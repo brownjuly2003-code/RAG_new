@@ -82,8 +82,9 @@ class ReplayCache:
         self.root = root
         self.identity = identity
         self.failures: list[str] = []
+        self.exceptions: list[Exception] = []
 
-    def call(self, kind: str, request: Any, compute: Any = None) -> Any:
+    def call(self, kind: str, request: Any, compute: Any = None, decode: Any = None) -> Any:
         key = digest({"run": self.identity, "request": request})
         path = self.root / f"{kind}-{key}.json"
         try:
@@ -91,20 +92,23 @@ class ReplayCache:
                 record = read(path)
                 if record["key"] != key or record["value_sha256"] != digest(record["value"]):
                     raise ValueError("Cache integrity mismatch")
-                return record["value"]
-            if compute is None:
+                value = record["value"]
+            elif compute is None:
                 raise RuntimeError(f"Replay cache miss: {kind}/{key}")
-            value = compute()
-            write_new(path, {"key": key, "request": request, "value": value,
-                             "value_sha256": digest(value)})
-            return value
-        except Exception:
+            else:
+                value = compute()
+                write_new(path, {"key": key, "request": request, "value": value,
+                                 "value_sha256": digest(value)})
+            return decode(value) if decode is not None else value
+        except Exception as exc:
             self.failures.append(f"{kind}/{key}")
+            self.exceptions.append(exc)
             raise
 
     def require_clean(self) -> None:
         if self.failures:
-            raise RuntimeError(f"Model/cache calls failed: {self.failures}")
+            failure = RuntimeError(f"Model/cache calls failed: {self.failures}")
+            raise failure from self.exceptions[0]
 
 
 def validate_vector(vector: list[float], dimension: int) -> None:
@@ -181,7 +185,7 @@ def configure(manifest: dict) -> Any:
 
 
 def make_llm(cache: ReplayCache, live: bool, manifest: dict) -> Any:
-    from llm.providers.base import LLMResponse, ProviderBackedLLM
+    from llm.providers.base import LLMResponse, ProviderBackedLLM, StructuredOutputValidationError
     from llm.providers.ollama import OllamaProvider
     from llm.providers.pinned_ollama import resolve_ollama_digest
 
@@ -190,6 +194,25 @@ def make_llm(cache: ReplayCache, live: bool, manifest: dict) -> Any:
         model_name=identity["model"], base_url=BASE_URL, timeout_sec=600,
         input_price_per_1m_tokens=0, output_price_per_1m_tokens=0,
     ) if live else None
+    replies: list[Any] = []
+    if live:
+        # generate_with_schema calls self.generate; the instance wrapper captures that reply.
+        bound_generate = delegate.generate
+
+        def recording_generate(messages, *args, **kwargs):
+            reply = bound_generate(messages, *args, **kwargs)
+            replies.append(reply)
+            return reply
+
+        delegate.generate = recording_generate
+
+    def decode(value):
+        outcome = value.get("outcome") if isinstance(value, dict) else None
+        if outcome == "response":
+            return LLMResponse(**value["response"])
+        if outcome == "structured_output_invalid":
+            return StructuredOutputValidationError(value["error"]["message"])
+        raise ValueError("Unknown cached llm outcome")
 
     class RecordedProvider:
         provider_id = "ollama"
@@ -202,13 +225,27 @@ def make_llm(cache: ReplayCache, live: bool, manifest: dict) -> Any:
             def compute():
                 if resolve_ollama_digest(BASE_URL, self.model_name) != identity["digest"]:
                     raise ValueError("LLM digest mismatch before request")
+                start = len(replies)
                 fn = getattr(delegate, method)
-                response = fn(messages, schema, **kwargs) if schema else fn(messages, **kwargs)
+                try:
+                    response = fn(messages, schema, **kwargs) if schema else fn(messages, **kwargs)
+                except StructuredOutputValidationError as exc:
+                    if resolve_ollama_digest(BASE_URL, self.model_name) != identity["digest"]:
+                        raise ValueError("LLM digest mismatch after request") from exc
+                    if len(replies) - start == 1:
+                        return {"outcome": "structured_output_invalid",
+                                "error": {"type": "StructuredOutputValidationError",
+                                          "message": str(exc)},
+                                "raw_response": asdict(replies[start])}
+                    raise
                 if resolve_ollama_digest(BASE_URL, self.model_name) != identity["digest"]:
                     raise ValueError("LLM digest mismatch after request")
-                return asdict(response)
+                return {"outcome": "response", "response": asdict(response)}
 
-            return LLMResponse(**cache.call("llm", request, compute if live else None))
+            result = cache.call("llm", request, compute if live else None, decode)
+            if isinstance(result, StructuredOutputValidationError):
+                raise result
+            return result
 
         def generate(self, messages, **kwargs):
             return self.call("generate", messages, None, kwargs)
