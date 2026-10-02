@@ -29,9 +29,6 @@ exported context is the post-grading input to generation; no answer was sent.
   -p no:schemathesis --tb=short` — **285 passed**.
 - Mac: the main strict mypy command from `.github/workflows/ci.yml` —
   **145 source files, no issues**. Ruff passed on the three changed Python files.
-- Mac snapshot: `/Users/julia/RAG_new_t65_check_e876d3adaa54`; archive SHA-256
-  `e876d3adaa5495c7523e3de8a177e606005dffea97c2854993c41c77b4235a5f`.
-  Built from `1dc43a2` plus the three changed Python files, outside shared checkouts.
 - Models were fixtures in these tests. This proves control flow, not model quality.
 
 ## Pinned embedding preparation — 2026-10-02
@@ -78,24 +75,15 @@ ended `incomplete/max_output_tokens`. No partial GLM response was applied.
 
 ## Isolated index builder — 2026-10-02
 
-`python -m scripts.production_index --help` now exposes the next preparation
-step. It requires the corpus archive, a complete checkpoint, an independently
-pinned embedder manifest JSON and the source code SHA. It validates archive and
-ordered-text hashes, manifest equality, vector count/dimension/normalization
-before creating a new output directory. Existing output is refused. It builds
-`<output>/chroma` with persisted HNSW adds and writes `index-receipt.json` only
-after the expected count is present. No model is loaded or existing index changed.
-The default collection is `rag_docs_aircargo`; point the isolated baseline's
-Chroma setting at `<output>/chroma`. No production setting has been changed.
+`python -m scripts.production_index --help`: requires a complete checkpoint,
+independent manifest and code SHA; checks corpus/text hashes, manifest, count,
+dimension and normalization. Creates a new index only, persists HNSW adds, writes
+`index-receipt.json`. Collection: `rag_docs_aircargo`. Production defaults unchanged.
 
 - Red: 12 tests failed on the absent builder module.
 - Mac: `pytest tests/test_production_index.py tests/test_production_embeddings.py
   -q -p no:schemathesis --tb=short` — **28 passed**; scoped Ruff and CLI help passed.
-  A fresh process reopened real Chroma and checked vectors, text, metadata,
-  manifest and a vector query. Embeddings in this test are fixtures.
-- Snapshot `/Users/julia/RAG_new_t65_index_a09cd1522d8b`, archive SHA-256
-  `a09cd1522d8b3c641ec33eee296d1bd03710e378a53d4a7bd433a93da12cc563`:
-  `6498d83` plus the new builder and tests. This is preparation, not a measurement.
+  Fresh-process reopen verified fixture vectors, text, metadata and manifest.
 - Executor: continued Codex fallback from the two incomplete GLM requests above.
 
 ### Real index verified
@@ -111,9 +99,27 @@ Report: `reopen-verification.json` beside the receipt; local copy:
 
 Runtime for builder/verification: `/Users/julia/RAG_new_gr4_venv/bin/python`
 with `PYTHONPATH=/Users/julia/RAG_new_mf_gate_site` (also used for the tests).
-The first launcher lacked `psutil`; native macOS `kqueue` replaced it. The first
-builder invocation omitted this package path and refused at the Chroma import,
-before creating output. Using the verified test environment resolved it.
+
+## Staged parity runner — c3d2909
+
+`scripts/production_parity.py`: prepare → transform → embed → retrieve → grade
+→ verify. Registers 30 H cases by ascending SHA-256(case_id), data/code/runtime
+identities, model revisions and config before results. Uses production provider,
+graph nodes and HybridRetriever; replays saved real calls through ConversationSession.
+Compares vector/pool/ranked order, effective query and post-grading context hash.
+Cache misses, corrupt records, model errors and replay mismatches refuse evidence.
+Resume is explicit; `--limit 1` bounds the initial smoke. Replay is not API latency.
+
+Mac: **17 passed** (`test_production_parity`, `test_production_retrieval_only`),
+scoped Ruff clean. Real Chroma / fixture models; includes rejected-document,
+missing-cache and replay-mismatch cases. Snapshot:
+`/Users/julia/RAG_new_t65_parity_9216fc576828` (archive SHA starts `9216fc576828`).
+All model stages use `/Users/julia/RAG_Support_Assistant/.venv/bin/python` with
+the package path above; tests append the lightweight venv's site-packages for pytest.
+Codex fallback continues. Real one-case smoke: transform, embed and both retrieval
+arms finished; grading started. Run: snapshot's `.tmp/parity-c3d2909`; supervisor
+state: `.tmp/parity-smoke-state.json`, per-stage logs: `.tmp/parity-smoke-*.log`.
+Do not launch another writer while this supervisor is active. Full 30-case result pending.
 
 ## Remaining T-65 work
 
