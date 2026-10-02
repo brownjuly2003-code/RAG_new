@@ -172,3 +172,49 @@ integer 0–3 range SHALL be refused.
 - **WHEN** it is parsed
 - **THEN** the outcome is valid and its addressed grades can be stored
 - **AND** a reply missing a label is invalid, while no reply is absent; neither is graded
+
+## Requirement: the v2 runner persists exact replies and resumes explicitly
+
+`python -m scripts.relevance_judge_v2 --judge glm --cases cases.jsonl --store replies.jsonl`
+SHALL consume JSONL cases with `case_id`, `question` and 1–10 `documents`. Each
+document contains `text` and `address` as specified above; an optional
+`text_sha256` must match. The entire input SHALL be validated before any request.
+`--judge` also accepts `sonnet` and `mistral`; Mistral requires
+`--mistral-key-file`. Credentials SHALL NOT enter the reply store.
+
+Each attempt SHALL append its status, reason, raw reply, request hashes and
+versions, plus validated `records` for a valid reply. Successful responses also
+retain the reported model, usage and elapsed time. The CLI's judge version SHALL
+bind the judge, route and parameters; Sonnet also binds the SHA-256 of the
+configured endpoint. Stored grade records SHALL be validated on read, and cached
+raw replies SHALL be parsed again before reuse. Reuse requires both the exact
+`request_key` and `request_sha256`. An unchanged text set with new addresses
+SHALL reuse the reply and append records bound to the current addresses.
+
+This explicit v2 runner SHALL make at most one request per uncached case per
+invocation; the archived v1 runner retains its registered retry procedure.
+Invalid/absent outcomes SHALL produce no grades and SHALL remain eligible for
+a later explicit invocation. Transport failures SHALL be recorded as absent.
+Quota, authentication and rate-limit failures SHALL be persisted and end the
+run without retries or waiting; a supplied reset time SHALL be retained.
+`--limit N` SHALL cap new requests, while cached cases can still be reused.
+The summary SHALL report valid, invalid, absent, reused and pending case counts;
+any invalid, absent or pending case SHALL cause exit status 1. These are runner
+counts, not quality metrics or an acceptance verdict.
+
+### Scenario: a resumed v2 run keeps failed attempts separate
+- **GIVEN** a store with valid, invalid and absent replies
+- **WHEN** the runner resumes with the same inputs and judge configuration
+- **THEN** only exact valid replies are reused, while failures receive new attempts
+- **AND** no invalid or absent reply becomes grade 0
+
+### Scenario: the judge endpoint changes
+- **GIVEN** a valid cached Sonnet reply
+- **WHEN** the runner uses a different `--gk-base` endpoint
+- **THEN** it sends a new request instead of reusing the previous endpoint's grade
+
+### Scenario: a run reaches a quota or rate limit
+- **GIVEN** a judge that returns an unavailable or rate-limit outcome
+- **WHEN** the runner receives it
+- **THEN** it stores an absent attempt and any reset time, leaves remaining cases
+  pending, and exits with status 1
