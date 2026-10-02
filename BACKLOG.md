@@ -32,8 +32,9 @@ conditions, read [`ROADMAP.md`](ROADMAP.md). The active delivery plan is
   dependency graph in its §1; adopted and ratified by delegation 2026-09-30).
   Tracks 0–2 are registered in MyFlow as T-55…T-65 (T-57 parked until Julia
   grades the 10 blind P2 cases); the executor follows the plan's §5 slice specs.
-  T-65's retrieval-only production replay is prepared; the real baseline and
-  30-case Chroma/exact comparison remain open ([handoff](docs/operations/t65-baseline-handoff.md)).
+  T-65's retrieval-only replay and resumable pinned embedding preparation are
+  prepared; a Mac embedding run is active (check the [handoff](docs/operations/t65-baseline-handoff.md)
+  before launching anything). The real baseline and 30-case Chroma/exact comparison remain open.
 - Re-ingest any Chroma collection built before `534612e`: it keeps its
   unpersisted write-ahead-log tail until it is rebuilt
   ([rerun after the fix](docs/evidence/chroma-restart-stability-after-fix.md)).

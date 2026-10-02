@@ -34,11 +34,57 @@ exported context is the post-grading input to generation; no answer was sent.
   Built from `1dc43a2` plus the three changed Python files, outside shared checkouts.
 - Models were fixtures in these tests. This proves control flow, not model quality.
 
+## Pinned embedding preparation — 2026-10-02
+
+The inspected Mac production collections have no embedder manifest. The retained
+`RAG_new_gr2m_results_9ca8630/chunks.npz` has 5589 × 1024 vectors but no HF
+revision. Neither can establish the new baseline's embedding identity; do not
+retroactively stamp them.
+
+`scripts/production_embeddings.py` now computes a separate, cumulative NPZ
+checkpoint. It binds the corpus archive SHA, ordered text SHA and the loaded
+embedder's complete manifest. Every valid batch is saved atomically. Resume is
+explicit; incompatible, unverified or invalid vectors are refused before encoding
+or replacing the checkpoint. This prepares vectors only; it publishes no index
+and changes no retrieval defaults. Use `python -m scripts.production_embeddings
+--help` for the Mac CLI; `--max-batches` bounds a run, `--resume` continues it.
+
+Fresh verification:
+
+- Red: 16 tests failed on the absent module. Windows green: **16 passed**.
+- Mac: `pytest tests/test_production_embeddings.py
+  tests/test_production_retrieval_only.py tests/test_harness_api_parity.py
+  -q -p no:schemathesis --tb=short` — **275 passed**; scoped Ruff passed.
+- Snapshot: `/Users/julia/RAG_new_t65_embeddings_2851e3811508`, archive SHA-256
+  `2851e38115082f2612ea5cfdd72cf5d8bdb2b6e6bc33d0ec96de1da9621d8092`
+  (`07d9569` plus the new script and tests).
+- Real Mac smoke: BGE-M3 revision `5617a9f61b028005a4858fdac845db406aefb181`,
+  1024 dimensions, normalized, `hf_snapshot`; first run saved 1/5589 rows,
+  resume saved 2/5589 and preserved the first row exactly. This is a model/cache
+  check, not a retrieval-quality measurement. Machine-readable report:
+  `.tmp/t65-embedding-smoke.json` in that snapshot and the Windows workspace.
+- Corpus archive: `evaluation/gr1b-4436d61-graph-chunks.json.gz`, SHA-256
+  `2a9da515a4c69b46453a59ed6d0bb772b0aad6fed23c87ee465851b43dbdef12`.
+
+The full embedding calculation **started** at `2026-10-02T12:42:17Z`, Mac PID
+`74090`, batch size 8, resuming the two verified rows. It has a 24-hour timeout
+and remains attached to one SSH invocation (Windows tool session `24421`).
+Check the snapshot's `.tmp/t65-embedding-full-state.json` for its terminal
+status and `.tmp/t65-embedding-full.log` for the result; the cumulative cache
+is `.tmp/t65-verified-embeddings.npz`. Do not launch a duplicate. Completion
+has not yet been verified. The launcher is `.tmp/t65_embedding_full.py` on
+Windows; it refuses a second active embedding process or an existing run-state
+file. If interrupted, retain the checkpoint and resume explicitly after checking
+the recorded process has ended.
+
+Executor: Codex fallback after GLM's initial request and one narrowed retry both
+ended `incomplete/max_output_tokens`. No partial GLM response was applied.
+
 ## Remaining T-65 work
 
-1. Pin the Mac corpus/index, verified embedder manifest, model digests and runtime
-   config. The Mac and local Ollama were reachable; no eligible baseline index
-   has been established by this turn's checks.
+1. Verify the full embedding checkpoint, then build a separate index from it
+   with the same verified manifest. Pin index, model digests and runtime config.
+   No eligible baseline index has been established yet.
 2. Run the bounded real Chroma/exact comparison on 30 H cases and publish any
    divergence (T-62 acceptance boundary).
 3. Collect H 100 + Hm 15 through the retrieval-only path, retain trace timings
