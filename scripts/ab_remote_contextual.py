@@ -31,6 +31,9 @@ Production runs use --stage production (the default): a fresh production
 ConversationSession per case, including query transformation, retrieval,
 grading and generation. Settings and the existing tenant index are shared
 with /api/ask; this stage does not rebuild the index.
+Use --retrieval-only for the T-65 baseline: the same graph stops before
+generation, after production retrieval and grading, with no answer evaluation.
+Its separate output is production_retrieval_contexts.json.
 
 Archived phase-C, GR-1/GR-2/GR-3 and P1/P1b measurements use the legacy
 two-process harness below. Reproduction requires --legacy-harness; these
@@ -1135,6 +1138,7 @@ def production_case(case: dict[str, Any], session: Any, **ask_kwargs: Any) -> di
     return {
         "case_id": case["case_id"],
         "query": case["query"],
+        "execution_mode": "retrieval_only" if ask_kwargs.get("retrieval_only") else "full",
         "query_effective": state.get("hyde_query") or state.get("search_query") or case["query"],
         "query_transform": transform,
         "query_transform_hash": transform_hash,
@@ -1145,13 +1149,15 @@ def production_case(case: dict[str, Any], session: Any, **ask_kwargs: Any) -> di
     }
 
 
-def stage_production(cases_path: Path, out_dir: Path) -> int:
+def stage_production(cases_path: Path, out_dir: Path, *, retrieval_only: bool = False) -> int:
     """Single-turn production replay; quality measurement is a separate stage."""
     from agent.graph import ConversationSession
     from config.settings import get_settings
     from vectordb.manager import get_retriever
 
-    output = out_dir / "production_contexts.json"
+    output = out_dir / (
+        "production_retrieval_contexts.json" if retrieval_only else "production_contexts.json"
+    )
     if output.exists():
         print(f"[production] output already exists: {output}", flush=True)
         return 2
@@ -1163,7 +1169,10 @@ def stage_production(cases_path: Path, out_dir: Path) -> int:
             get_retriever(tenant_id=tenant),
             max_iterations=max(0, int(getattr(settings, "self_rag_max_iterations", 2) or 0)),
         )
-        rows.append(production_case(case, session, tenant_id=tenant))
+        rows.append(production_case(
+            case, session, tenant_id=tenant,
+            **({"retrieval_only": True} if retrieval_only else {}),
+        ))
     _atomic_write_text(output, json.dumps(rows, ensure_ascii=False))
     print(f"[production] saved {len(rows)} session results -> {output}", flush=True)
     return 0
@@ -1178,6 +1187,10 @@ def main(argv: list[str] | None = None) -> int:
     )
     parser.add_argument(
         "--legacy-harness", action="store_true", help="reproduce archived offline measurements"
+    )
+    parser.add_argument(
+        "--retrieval-only", action="store_true",
+        help="production baseline: stop after retrieval/grading, before answer generation",
     )
     parser.add_argument("--arm", default="", choices=("", "A", "C", "E", "F", "G1", "G2"))
     parser.add_argument("--corpus", default=str(PROJECT_ROOT / "data" / "uploads" / "aircargo"))
@@ -1216,12 +1229,17 @@ def main(argv: list[str] | None = None) -> int:
         help="optional chunk embedding matrix .npz for --stage pools",
     )
     args = parser.parse_args(argv)
+    if args.retrieval_only and args.stage != "production":
+        parser.error("--retrieval-only requires --stage production")
 
     out_dir = Path(args.out_dir)
     if args.stage == "production":
         if args.legacy_harness or args.arm:
             parser.error("production uses runtime settings, not --legacy-harness or --arm")
-        return stage_production(Path(args.cases), out_dir)
+        return stage_production(
+            Path(args.cases), out_dir,
+            **({"retrieval_only": True} if args.retrieval_only else {}),
+        )
     if args.stage in ("pools", "rerank", "expand") and not args.legacy_harness:
         parser.error("archived stages require --legacy-harness; use --stage production for parity")
     if args.stage == "pools":

@@ -3339,6 +3339,8 @@ def run_qa_pipeline(
     tenant_id: str = "default",
     user_id: str = "anonymous",
     session_id: str | None = None,
+    *,
+    retrieval_only: bool = False,
 ) -> GraphState:
     """Обрабатывает один вопрос через граф.
 
@@ -3363,10 +3365,14 @@ def run_qa_pipeline(
         session_id=session_id,
     )
     try:
-        final_state = graph.invoke(initial_state)
+        if retrieval_only:
+            final_state = graph.invoke(initial_state, interrupt_before=["generate"])
+        else:
+            final_state = graph.invoke(initial_state)
         finish_trace(trace_id, final_state)
         if (
-            getattr(settings, "online_evaluators_enabled", False)
+            not retrieval_only
+            and getattr(settings, "online_evaluators_enabled", False)
             and run_online_evaluators is not None
             and persist_online_evaluations is not None
         ):
@@ -4262,6 +4268,8 @@ class ConversationSession:
         session_id: str | None = None,
         deadline_sec: float | None = None,
         expected_version: int | None = None,
+        *,
+        retrieval_only: bool = False,
     ) -> GraphState:
         """Задаёт вопрос с учётом истории диалога.
 
@@ -4277,6 +4285,10 @@ class ConversationSession:
 
         ``user_id`` / ``session_id`` are forwarded into the normal QA pipeline so
         sticky experiment assignment can hash the same identity as agentic paths.
+
+        ``retrieval_only`` is for offline baselines: interrupt the normal graph
+        before generation, preserving grading and request budgets. It neither
+        appends a conversation turn nor evaluates an answer; agentic mode is refused.
         """
         from config.settings import get_settings
         from llm.request_budget import (
@@ -4292,6 +4304,8 @@ class ConversationSession:
         )
 
         settings = get_settings()
+        if retrieval_only and getattr(settings, "agentic_mode", False):
+            raise ValueError("retrieval_only is unavailable in agentic mode")
         budget_sec = float(getattr(settings, "ask_budget_sec", 0.0) or 0.0)
         wall_sec = tighter_timeout_sec(budget_sec, deadline_sec)
 
@@ -4359,6 +4373,7 @@ class ConversationSession:
                             tenant_id=tenant_id,
                             user_id=user_id,
                             session_id=session_id,
+                            **({"retrieval_only": True} if retrieval_only else {}),
                         )
                     except RequestDeadlineExceeded:
                         logger.warning(
@@ -4394,6 +4409,9 @@ class ConversationSession:
                 )
             else:
                 result = _run()
+
+            if retrieval_only:
+                return self._stamp_session_version(result)
 
             answer = result.get("answer") or ""
             # Wall-budget path returns while the worker may still run: bump
