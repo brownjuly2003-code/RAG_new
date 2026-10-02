@@ -218,3 +218,35 @@ counts, not quality metrics or an acceptance verdict.
 - **WHEN** the runner receives it
 - **THEN** it stores an absent attempt and any reset time, leaves remaining cases
   pending, and exits with status 1
+
+## Requirement: the generation judge's deciding κ sample is explicit
+
+The deciding κ of the generation judge (`scripts/generator_benchmark.py`) SHALL
+use only pairs of records that share the exact judge request (`request_sha256`)
+and are both eligible: status `valid`, neither the context nor the answer
+truncated. Unit-interval scores SHALL be binned for quadratic κ as
+`min(3, floor(score × 4))`; a score outside [0, 1] SHALL be refused. Every
+excluded pair and every unmatched record SHALL be counted once, under
+`unpaired`, `absent`, `invalid` or `truncated` in that order of precedence. A
+run summary SHALL print, per metric, the κ-sample size and the exclusions. A
+request repeated within one source, or a stored `kappa_eligible` that
+contradicts the status and truncation, SHALL be refused.
+
+### Scenario: a truncated pair stays outside κ
+- **GIVEN** two sources that agree on a set of eligible pairs
+- **WHEN** a pair whose request was truncated is added to both
+- **THEN** κ and the pair count are unchanged and only `truncated` grows
+
+## Requirement: set labels live next to the set and bind to its cases
+
+Grade records of a labelled set SHALL be stored in `<set>.grades.jsonl` next to
+the set file, written and read only through the validating grade store. Each
+record SHALL bind to a case of the set: its `case_id` exists in the set and its
+`question_hash` equals the hash of that case's exact question. Otherwise a
+write SHALL store nothing and a read SHALL be refused. The chunk address need
+not point at a gold document: the judge also grades retrieved chunks.
+
+### Scenario: a record of a foreign case is refused
+- **GIVEN** a set and a record whose `case_id` is not in it
+- **WHEN** the records are written
+- **THEN** the write is refused and the grades file is not created

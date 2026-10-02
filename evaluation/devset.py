@@ -7,10 +7,13 @@ import json
 import math
 import re
 from collections import Counter
+from collections.abc import Mapping, Sequence
 from datetime import date
 from pathlib import Path
 from typing import Any
 
+from evaluation import judge_contract
+from evaluation.blinded_judge import _sha256_text
 from evaluation.devset_sources import (
     ROOT,
     SAMPLING_ALGORITHM,
@@ -551,6 +554,38 @@ def validate_metadata(
         ),
         "spans": sum(len(c["evidence_spans"]) for c in cases),
     }
+
+
+def grades_path(set_path: Path) -> Path:
+    """Keep validated grades next to the set: cases.jsonl -> cases.grades.jsonl."""
+    return set_path.with_suffix(".grades.jsonl")
+
+
+def _validate_grade_bindings(set_path: Path, records: Sequence[Mapping[str, Any]]) -> None:
+    cases = [
+        json.loads(line)
+        for line in set_path.read_text(encoding="utf-8").splitlines()
+        if line.strip()
+    ]
+    questions = {case["case_id"]: _sha256_text(case["question"]) for case in cases}
+    for record in records:
+        if record.get("case_id") not in questions:
+            raise ValueError("grade case_id does not exist in the set")
+        if record.get("question_hash") != questions[record["case_id"]]:
+            raise ValueError("grade question_hash does not match the exact case question")
+
+
+def write_devset_grades(set_path: Path, records: Sequence[Mapping[str, Any]]) -> None:
+    """Check every case/question binding before the validating store writes anything."""
+    _validate_grade_bindings(set_path, records)
+    judge_contract.write_grade_records(grades_path(set_path), records)
+
+
+def read_devset_grades(set_path: Path) -> list[dict[str, Any]]:
+    """Read validated, case-bound grades; retrieved chunks need not be gold chunks."""
+    records = judge_contract.read_grade_records(grades_path(set_path))
+    _validate_grade_bindings(set_path, records)
+    return records
 
 
 def load_artifacts() -> tuple[list[dict[str, Any]], dict[str, Any], dict[str, Any], dict[str, Any]]:

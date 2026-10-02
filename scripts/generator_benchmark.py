@@ -403,6 +403,79 @@ def parse_judge_score(
     }
 
 
+def generation_score_bin(score: float) -> int:
+    """Bin [0, 1] as [0, .25), [.25, .5), [.5, .75), [.75, 1] -> 0..3."""
+    if not _finite_number(score) or not 0.0 <= score <= 1.0:
+        raise ValueError(f"generation score is not a unit-interval number: {score!r}")
+    return min(3, math.floor(score * 4))
+
+
+def _kappa_exclusion(outcome: Mapping[str, Any] | None) -> str | None:
+    if outcome is None:
+        return "absent"
+    status = outcome["status"]
+    if status not in ("valid", "absent", "invalid"):
+        raise ValueError(f"unknown judge status: {status!r}")
+    truncated = any(outcome["truncated"].values())
+    eligible = status == "valid" and not truncated
+    if "kappa_eligible" in outcome and outcome["kappa_eligible"] != eligible:
+        raise ValueError("kappa_eligible contradicts status and truncated")
+    if status in ("absent", "invalid"):
+        return str(status)
+    return "truncated" if truncated else None
+
+
+def deciding_kappa_sample(
+    first: Sequence[Mapping[str, Any]], second: Sequence[Mapping[str, Any]]
+) -> dict[str, Any]:
+    """Pair sources by request_sha256 and compute quadratic kappa of eligible bins.
+
+    Each unmatched record counts once as unpaired; each excluded pair counts
+    once with precedence unpaired, absent, invalid, truncated. Eligibility is
+    valid status without truncation, independently of the stored flag. Duplicate
+    keys in either source and contradictory stored kappa_eligible raise ValueError,
+    including in records without a partner. Inputs are not modified.
+    """
+    from evaluation.blinded_judge import quadratic_kappa
+
+    sources = []
+    for records in (first, second):
+        indexed = {}
+        for outcome in records:
+            key = outcome["request_sha256"]
+            if key in indexed:
+                raise ValueError("duplicate request_sha256 in source")
+            indexed[key] = (outcome, _kappa_exclusion(outcome))
+        sources.append(indexed)
+    left, right = sources
+    exclusions = dict.fromkeys(("unpaired", "absent", "invalid", "truncated"), 0)
+    first_bins, second_bins = [], []
+    for key in sorted(left.keys() | right.keys()):
+        if key not in left or key not in right:
+            exclusions["unpaired"] += 1
+            continue
+        a, a_reason = left[key]
+        b, b_reason = right[key]
+        reason = next(
+            (
+                reason
+                for reason in ("absent", "invalid", "truncated")
+                if reason in (a_reason, b_reason)
+            ),
+            None,
+        )
+        if reason:
+            exclusions[reason] += 1
+        else:
+            first_bins.append(generation_score_bin(a["score"]))
+            second_bins.append(generation_score_bin(b["score"]))
+    return {
+        "kappa": quadratic_kappa(first_bins, second_bins),
+        "pair_count": len(first_bins),
+        "exclusions": exclusions,
+    }
+
+
 def _judge_scores(
     llm: OllamaLLM | None,
     *,
@@ -731,9 +804,16 @@ def _aggregate_run(run: dict[str, Any]) -> None:
                 "invalid_cases": [],
                 "absent_cases": [],
                 "truncated_cases": [],
+                "kappa_sample_size": 0,
+                "kappa_exclusions": {"absent": 0, "invalid": 0, "truncated": 0},
             }
             for row in rows:
                 outcome = (row.get("judge_requests") or {}).get(metric)
+                exclusion = _kappa_exclusion(outcome)
+                if exclusion is None:
+                    counts["kappa_sample_size"] += 1
+                else:
+                    counts["kappa_exclusions"][exclusion] += 1
                 if outcome:
                     status = outcome["status"]
                 elif row.get("llm_judge_valid"):
@@ -879,6 +959,26 @@ def _render_markdown(report: Mapping[str, Any]) -> str:
                     f"| {run['run_index']} | {metric} | {counts['valid']} | {counts['invalid']} | "
                     f"{counts['absent']} | {counts['truncated']} |"
                 )
+        sampled_runs = [
+            run
+            for run in judged_runs
+            if all("kappa_sample_size" in counts for counts in run["judge_summary"].values())
+        ]
+        if sampled_runs:
+            lines.extend(
+                [
+                    "",
+                    "| Run | Metric | Kappa sample | Excluded absent | Excluded invalid | Excluded truncated |",
+                    "|---|---|---:|---:|---:|---:|",
+                ]
+            )
+            for run in sampled_runs:
+                for metric, counts in run["judge_summary"].items():
+                    exclusions = counts["kappa_exclusions"]
+                    lines.append(
+                        f"| {run['run_index']} | {metric} | {counts['kappa_sample_size']} | "
+                        f"{exclusions['absent']} | {exclusions['invalid']} | {exclusions['truncated']} |"
+                    )
     return "\n".join(lines).rstrip() + "\n"
 
 
