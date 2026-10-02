@@ -10,14 +10,12 @@ before `generate`. Classification, query transformation, retrieval, expansion,
 reranking and the normal conditional grading path remain unchanged. Simple
 queries still bypass grading, as they do in production.
 
-The mode retains request budgets and tracing, refuses agentic mode, and writes
-neither an answer nor a conversation-history entry. Answer evaluation and
-auto-response verification do not run. Full production replay remains the CLI
-default. Archived stages cannot use `--retrieval-only`.
+The mode retains budgets and tracing, refuses agentic mode, and writes no answer
+or history. Answer evaluation is omitted. Full production replay remains the CLI
+default; archived stages cannot use `--retrieval-only`.
 
-Output: `production_retrieval_contexts.json`, with `execution_mode:
-retrieval_only` on every row. An existing output is not overwritten. The
-exported context is the post-grading input to generation; no answer was sent.
+Output: `production_retrieval_contexts.json`, every row marked `retrieval_only`;
+existing output is not overwritten. Context is the post-grading generation input.
 
 ## Fresh verification
 
@@ -55,11 +53,9 @@ Fresh verification:
 - Snapshot: `/Users/julia/RAG_new_t65_embeddings_2851e3811508`, archive SHA-256
   `2851e38115082f2612ea5cfdd72cf5d8bdb2b6e6bc33d0ec96de1da9621d8092`
   (`07d9569` plus the new script and tests).
-- Real Mac smoke: BGE-M3 revision `5617a9f61b028005a4858fdac845db406aefb181`,
-  1024 dimensions, normalized, `hf_snapshot`; first run saved 1/5589 rows,
-  resume saved 2/5589 and preserved the first row exactly. This is a model/cache
-  check, not a retrieval-quality measurement. Machine-readable report:
-  `.tmp/t65-embedding-smoke.json` in that snapshot and the Windows workspace.
+- BGE-M3 revision `5617a9f61b028005a4858fdac845db406aefb181`, 1024 dimensions,
+  normalized, `hf_snapshot`. Resume smoke preserved the first vector exactly;
+  report: `.tmp/t65-embedding-smoke.json` in the snapshot and Windows workspace.
 - Corpus archive: `evaluation/gr1b-4436d61-graph-chunks.json.gz`, SHA-256
   `2a9da515a4c69b46453a59ed6d0bb772b0aad6fed23c87ee465851b43dbdef12`.
 
@@ -116,10 +112,19 @@ missing-cache and replay-mismatch cases. Snapshot:
 `/Users/julia/RAG_new_t65_parity_9216fc576828` (archive SHA starts `9216fc576828`).
 All model stages use `/Users/julia/RAG_Support_Assistant/.venv/bin/python` with
 the package path above; tests append the lightweight venv's site-packages for pytest.
-Codex fallback continues. Real one-case smoke: transform, embed and both retrieval
-arms finished; grading started. Run: snapshot's `.tmp/parity-c3d2909`; supervisor
-state: `.tmp/parity-smoke-state.json`, per-stage logs: `.tmp/parity-smoke-*.log`.
-Do not launch another writer while this supervisor is active. Full 30-case result pending.
+Codex fallback continues. Real smoke completed at `2026-10-02T15:08:42Z`, exit 0.
+Fresh inspection: `aircargo-matliab-check` differs in vector/pool order between
+Chroma and exact; ranked order and post-grading context hash match (five documents).
+Both arms replayed through ConversationSession. This is one case, not the full result.
+
+Full 30-case comparison resumed with `--resume` on 2026-10-02; existing smoke
+records passed integrity checks and are reused. Run: snapshot's `.tmp/parity-c3d2909`.
+Supervisor state: `.tmp/parity-full-state.json`; logs: `.tmp/parity-full-*.log`.
+Windows launcher `.tmp/t65_parity_full_resume.py` (PID `17156`) keeps one SSH
+connection attached. Local output: `.tmp/t65-parity-full-launch.log` / `.err`.
+Observed after the bounded wait: running `transform`; full result still pending.
+Do not launch another writer while it is active. It stops on a failed stage or
+timeout, records the terminal status, and emits `DONE`; no automatic retry.
 
 ## Remaining T-65 work
 
