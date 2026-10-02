@@ -380,6 +380,7 @@ _shutting_down: bool = False
 _session_last_access: dict[str, float] = {}
 _db_cooldown = _TenantDbCooldown()
 _vector_store: Any = None
+_startup_manifest_refused = False
 _retriever: Any = None
 _chunks: list[Any] = []
 _llm: Any = None
@@ -1176,11 +1177,27 @@ async def _get_or_create_session(
     session_retriever = _retriever
     settings = get_settings()
     if _get_retriever is not None and (
-        _retriever is not None or _vector_store is not None
+        _retriever is not None or _vector_store is not None or _startup_manifest_refused
     ):
         try:
             session_retriever = _get_retriever(tenant_id=tenant_id)
         except Exception as exc:
+            from vectordb.embedder_manifest import EmbedderManifestMismatch
+
+            if isinstance(exc, EmbedderManifestMismatch):
+                from tracing.sqlite_trace import finish_trace, log_step, start_trace
+
+                trace_id = start_trace(tenant_id=tenant_id)
+                record = exc.trace_record()
+                log_step(trace_id, "index_manifest", record)
+                finish_trace(trace_id, record)
+                raise HTTPException(
+                    status_code=503,
+                    detail={
+                        "reason": "embedder_manifest_mismatch",
+                        "trace_id": trace_id,
+                    },
+                ) from exc
             logger.warning("Failed to resolve retriever for tenant %s: %s", tenant_id, exc)
             raise HTTPException(
                 status_code=503,
@@ -1279,7 +1296,7 @@ def _validate_vector_store_embedding_compatibility(vector_store: Any, embeddings
 
 
 def initialize_vector_store() -> None:
-    global _vector_store, _retriever, _chunks
+    global _vector_store, _retriever, _chunks, _startup_manifest_refused
 
     if _vector_store is not None and _retriever is not None:
         return
@@ -1311,8 +1328,18 @@ def initialize_vector_store() -> None:
                     collection_name=collection_name,
                 )
                 try:
+                    from vectordb.embedder_manifest import check_collection_manifest
+
+                    check_collection_manifest(vector_store, embeddings)
                     _validate_vector_store_embedding_compatibility(vector_store, embeddings)
                 except Exception as exc:
+                    from vectordb.embedder_manifest import EmbedderManifestMismatch
+
+                    _startup_manifest_refused = isinstance(exc, EmbedderManifestMismatch)
+                    if _startup_manifest_refused:
+                        from vectordb.manager import reset_retriever_cache
+
+                        reset_retriever_cache("default")
                     logger.error(
                         "Existing Chroma store at %s is incompatible with embedding model %s: %s. "
                         "Rebuild the vector store before running RAG.",
@@ -1332,6 +1359,7 @@ def initialize_vector_store() -> None:
                     _retriever = _vector_store.as_retriever(search_kwargs={"k": 5})
 
                 logger.info("Vector store loaded from %s", chroma_dir)
+                _startup_manifest_refused = False
                 return
             except Exception as exc:
                 logger.error("Failed to load existing Chroma: %s", exc, exc_info=True)
@@ -1344,7 +1372,7 @@ def _rebuild_vector_store_from_docs(
     tenant_id: str = "default",
 ) -> BuildVectorStoreResult | None:
     """One opt-in build; activate runtime store/chunks; return exact result or None."""
-    global _vector_store, _retriever, _chunks
+    global _vector_store, _retriever, _chunks, _startup_manifest_refused
 
     if _build_vector_store_with_publication is None:
         logger.warning("build_vector_store_with_publication not available")
@@ -1375,6 +1403,8 @@ def _rebuild_vector_store_from_docs(
                     session._retriever = _retriever
 
             logger.info("Vector store rebuilt: %d chunks", len(_chunks))
+            if tenant_id == "default":
+                _startup_manifest_refused = False
             return build_result
         except Exception as exc:
             logger.error("Failed to rebuild vector store: %s", exc, exc_info=True)

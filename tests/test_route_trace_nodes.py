@@ -99,7 +99,8 @@ def test_retrieve_node_logs_the_route_record_without_touching_the_legacy_state(m
         "context_docs": out["context_docs"],
         "retrieval_strategy": "hybrid",
     }
-    assert [node for _, node, _ in calls] == ["retrieval_route", "retrieve"]
+    # Plan 2.3 / T-61 logs the embedder manifest before the retrieval route.
+    assert [node for _, node, _ in calls] == ["index_manifest", "retrieval_route", "retrieve"]
     assert {trace_id for trace_id, _, _ in calls} == {"t-route"}
     record = _route_record(calls)
     assert record == _record(path=record["path"])

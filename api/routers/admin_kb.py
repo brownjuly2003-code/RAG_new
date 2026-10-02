@@ -388,6 +388,12 @@ async def admin_publish_kb_draft(
 ) -> JSONResponse:
     from db.models import KbDraft  # noqa: PLC0415
     from vectordb import manager as tenant_manager  # noqa: PLC0415
+    from vectordb.embedder_manifest import (
+        MANIFEST_METADATA_KEY,
+        EmbedderManifest,
+        EmbedderManifestMismatch,
+        stamp_collection,
+    )
     from vectordb.index_manifest import resolve_active_collection  # noqa: PLC0415
 
     _app = _app_module()
@@ -421,14 +427,34 @@ async def admin_publish_kb_draft(
         if tenant_manager.Chroma is not None:
             chroma_directory = _app.get_settings().vectordb_chroma_dir
             with tenant_manager.tenant_index_lock(draft.tenant_id):
+                embeddings = tenant_manager.get_embeddings()
+                manifest = getattr(embeddings, "manifest", None)
                 store = tenant_manager.Chroma(
                     persist_directory=str(chroma_directory),
-                    embedding_function=tenant_manager.get_embeddings(),
+                    embedding_function=embeddings,
                     collection_name=resolve_active_collection(
                         draft.tenant_id,
                         chroma_directory=chroma_directory,
                     ),
+                    collection_metadata=(
+                        {MANIFEST_METADATA_KEY: manifest.canonical_json}
+                        if isinstance(manifest, EmbedderManifest)
+                        else None
+                    ),
                 )
+                try:
+                    stamp_collection(store, embeddings, tenant_id=draft.tenant_id)
+                except EmbedderManifestMismatch as exc:
+                    from tracing.sqlite_trace import finish_trace, log_step, start_trace
+
+                    trace_id = start_trace(tenant_id=draft.tenant_id)
+                    record = exc.trace_record()
+                    log_step(trace_id, "index_manifest", record)
+                    finish_trace(trace_id, record)
+                    return JSONResponse(
+                        status_code=409,
+                        content={"reason": "embedder_manifest_mismatch", "trace_id": trace_id},
+                    )
                 if hasattr(store, "add_documents"):
                     store.add_documents([doc])
                     if hasattr(store, "persist"):

@@ -406,6 +406,9 @@ class Settings:
     embedding_model: str = field(
         default_factory=lambda: os.getenv("RAG_EMBEDDING_MODEL", "BAAI/bge-m3")
     )
+    embedding_model_revision: str | None = field(
+        default_factory=lambda: os.getenv("RAG_EMBEDDING_MODEL_REVISION") or None
+    )
 
     # --- Embedding backend ---
     # "local"  — SentenceTransformer(embedding_model) on rag_device (default).

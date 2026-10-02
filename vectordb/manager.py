@@ -17,6 +17,7 @@ from vectordb.chroma_retention import (
     execute_chroma_retention,
     execute_guarded_chroma_retention,
 )
+from vectordb.embedder_manifest import check_collection_manifest, open_chroma_for_write
 from vectordb.index_manifest import (
     IndexVersionManifest,
     publish_active_collection,
@@ -48,6 +49,7 @@ _retriever_cache: dict[str, Any] = {}
 _chunks_cache: dict[str, list[Document]] = {}
 _store_cache: dict[str, Any] = {}
 _index_cache_keys: dict[str, tuple[str, str, int]] = {}
+_index_manifest_status: dict[str, dict[str, Any] | None] = {}
 _cache_lock = Lock()
 
 
@@ -396,6 +398,7 @@ def _build_vector_store_result(
             _chunks_cache[tenant] = list(chunks)
             _store_cache[tenant] = store
             _retriever_cache.pop(tenant, None)
+            _index_manifest_status.pop(tenant, None)
             if index_cache_key is None:
                 _index_cache_keys.pop(tenant, None)
             else:
@@ -623,6 +626,14 @@ def build_factcard_store(
                 delete_collection()
         except Exception:
             pass
+
+        open_chroma_for_write(
+            chroma_cls,
+            embeddings,
+            tenant_id=tenant,
+            persist_directory=persist_directory,
+            collection_name=collection_name,
+        )
 
         store = chroma_cls.from_documents(
             documents=list(card_docs),
@@ -936,14 +947,16 @@ def get_retriever(
                 _chunks_cache.pop(tenant, None)
                 _store_cache.pop(tenant, None)
                 _index_cache_keys.pop(tenant, None)
+                _index_manifest_status.pop(tenant, None)
         elif tenant in _index_cache_keys:
             _retriever_cache.pop(tenant, None)
             _chunks_cache.pop(tenant, None)
             _store_cache.pop(tenant, None)
             _index_cache_keys.pop(tenant, None)
+            _index_manifest_status.pop(tenant, None)
 
         cached = _retriever_cache.get(tenant)
-        if cached is not None:
+        if cached is not None and embeddings is None and vector_store is None:
             return cached
         cached_store = _store_cache.get(tenant)
         cached_chunks = _chunks_cache.get(tenant)
@@ -970,8 +983,19 @@ def get_retriever(
         )
 
     # Chroma-only: reject incompatible active collections before restore/cache.
+    manifest_status = (
+        check_collection_manifest(
+            vector_store,
+            embeddings,
+            backend=backend,
+            tenant_id=tenant,
+        )
+        if backend == "qdrant"
+        else None
+    )
     if backend != "qdrant" and vector_store is not None:
         try:
+            manifest_status = check_collection_manifest(vector_store, embeddings, tenant_id=tenant)
             _assert_active_chroma_embedding_dimension_compatible(
                 vector_store,
                 embeddings,
@@ -984,7 +1008,13 @@ def get_retriever(
                 _chunks_cache.pop(tenant, None)
                 _store_cache.pop(tenant, None)
                 _index_cache_keys.pop(tenant, None)
+                _index_manifest_status.pop(tenant, None)
             raise
+
+    if cached is not None:
+        with _cache_lock:
+            _index_manifest_status[tenant] = manifest_status
+        return cached
 
     if chunks is None:
         with _cache_lock:
@@ -1026,12 +1056,18 @@ def get_retriever(
         if chunks is not None:
             _chunks_cache[tenant] = list(chunks)
         _retriever_cache[tenant] = retriever
+        _index_manifest_status[tenant] = manifest_status
         # Record the resolved index key only after all compatibility checks and
         # retriever construction succeeded (no premature cache-key population).
         if current_index_key is not None:
             _index_cache_keys[tenant] = current_index_key
 
     return retriever
+
+
+def get_index_manifest_status(tenant_id: str = "default") -> dict[str, Any] | None:
+    with _cache_lock:
+        return _index_manifest_status.get(tenant_id or "default")
 
 
 def reset_retriever_cache(tenant_id: str | None = None) -> None:
@@ -1041,9 +1077,11 @@ def reset_retriever_cache(tenant_id: str | None = None) -> None:
             _chunks_cache.clear()
             _store_cache.clear()
             _index_cache_keys.clear()
+            _index_manifest_status.clear()
         else:
             tenant = tenant_id or "default"
             _retriever_cache.pop(tenant, None)
             _chunks_cache.pop(tenant, None)
             _store_cache.pop(tenant, None)
             _index_cache_keys.pop(tenant, None)
+            _index_manifest_status.pop(tenant, None)

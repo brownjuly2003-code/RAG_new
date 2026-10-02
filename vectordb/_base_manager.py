@@ -189,6 +189,18 @@ class _RemoteEmbeddings:
         self._batch_size = max(1, int(batch_size))
         self._timeout_sec = float(timeout_sec)
         self.embedding_dimension = max(1, int(embedding_dimension))
+        from vectordb.embedder_manifest import EmbedderManifest
+
+        self.manifest = EmbedderManifest(
+            backend="remote",
+            model_id=model,
+            revision=None,
+            revision_source="remote_unversioned",
+            dimension=self.embedding_dimension,
+            query_prompt="",
+            document_prompt="",
+            normalize=True,
+        )
 
     @staticmethod
     def _normalize(vector: list[float]) -> list[float]:
@@ -285,12 +297,13 @@ def get_embeddings(model_name: str | None = None) -> Any:
     if _cached_embeddings is not None:
         return _cached_embeddings
 
+    from config.settings import get_settings
+
+    settings = get_settings()
+
     # Remote backend is selected only when the caller did not pin a local model
     # name explicitly (forcing a model name implies the local ST path).
     if model_name is None:
-        from config.settings import get_settings
-
-        settings = get_settings()
         if str(getattr(settings, "embedding_backend", "local") or "local").strip().lower() == "remote":
             remote = _build_remote_embeddings(settings)
             _cached_embeddings = remote
@@ -304,7 +317,7 @@ def get_embeddings(model_name: str | None = None) -> Any:
 
     class _STEmbeddings:
         """Минимальная LangChain-совместимая обёртка над SentenceTransformer."""
-        def __init__(self, st_model: SentenceTransformer):
+        def __init__(self, st_model: SentenceTransformer, model_id: str):
             self._model = st_model
             # Read-only declared width from the model metadata — never encode.
             self.embedding_dimension: int | None = None
@@ -321,6 +334,9 @@ def get_embeddings(model_name: str | None = None) -> Any:
                         dim = 0
                     if dim > 0:
                         self.embedding_dimension = dim
+            from vectordb.embedder_manifest import local_manifest
+
+            self.manifest = local_manifest(st_model, model_id, self.embedding_dimension)
 
         def embed_documents(self, texts: list[str]) -> list[list[float]]:
             return self._model.encode(texts, normalize_embeddings=True).tolist()
@@ -330,8 +346,11 @@ def get_embeddings(model_name: str | None = None) -> Any:
 
     device = _resolve_device()
     logger.info("Embedding device: %s", device)
-    model = SentenceTransformer(model_name, device=device)
-    embeddings = _STEmbeddings(model)
+    revision = getattr(settings, "embedding_model_revision", None)
+    model = SentenceTransformer(
+        model_name, device=device, **({"revision": revision} if revision else {})
+    )
+    embeddings = _STEmbeddings(model, model_name)
 
     elapsed = time.time() - start
     logger.info("Embedding model loaded in %.1fs", elapsed)
@@ -1632,6 +1651,11 @@ def _build_chroma(docs: Sequence[Document], embeddings: Any) -> Any:
     chroma_dir = _data_dir() / "chroma"
     chroma_dir.mkdir(parents=True, exist_ok=True)
     logger.info("Building Chroma in %s", chroma_dir)
+    from vectordb.embedder_manifest import open_chroma_for_write
+
+    open_chroma_for_write(
+        chroma_cls, embeddings, persist_directory=str(chroma_dir), collection_name="documents"
+    )
     store = chroma_cls.from_documents(
         documents=list(docs),
         embedding=embeddings,

@@ -317,6 +317,15 @@ def evidence_view(trace: Mapping[str, Any]) -> dict[str, Any]:
     for step in (_as_mapping(item) for item in _as_sequence(trace.get("steps"))):
         node = step.get("node")
         state = _as_mapping(step.get("state"))
+        if node == "index_manifest":
+            view["embedder_manifest"] = {
+                key: state.get(key)
+                for key in ("status", "stored", "configured", "mismatched_fields")
+            }
+            for key in ("evidence_status", "reason"):
+                if key in state:
+                    view["embedder_manifest"][key] = state[key]
+            continue
         if node == "retrieval_route":
             pending_route = state
             route_state = state

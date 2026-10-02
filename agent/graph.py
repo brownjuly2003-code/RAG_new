@@ -1768,6 +1768,20 @@ def make_retrieve_node(retriever: Any) -> Callable[[GraphState], GraphState]:
                 "path": retrieval_path if retrieval_path is not None else lane_path,
                 "num_docs": len(plain_docs),
             }
+            from vectordb.manager import get_index_manifest_status
+
+            log_step(
+                trace_id,
+                "index_manifest",
+                get_index_manifest_status(str(state.get("tenant_id") or "default"))
+                or {
+                    "status": "unidentified",
+                    "stored": None,
+                    "configured": None,
+                    "mismatched_fields": [],
+                    "evidence_status": "NOT_EVIDENCE",
+                },
+            )
             log_step(trace_id, "retrieval_route", route_record)
             log_step(trace_id, "retrieve", new_state)
             return new_state

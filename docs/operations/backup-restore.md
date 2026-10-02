@@ -23,6 +23,8 @@
 - Helm chart (`deploy/helm/`) **does** create/attach durable claims for production data when `persistence.*.enabled` (defaults on). See **Helm persistence & backup jobs** below. Local chart/runtime contracts are verified; live image/cluster/restore/RPO gates remain open.
 - Ollama-модели не резервируем: они derivable и повторно подтягиваются стандартным деплоем.
 
+Chroma-коллекции получают canonical JSON `embedder_manifest` только пока пусты: backend/model id, загруженный HF commit (или `null`), размерность, query/document prompts и нормализацию; SHA-256 вычисляется по JSON. Publish/rollback сохраняют stamp. Несовпадение при загрузке даёт HTTP 503 с `embedder_manifest_mismatch` и tenant-scoped trace; KB publish в несовместимый индекс даёт HTTP 409 с той же причиной и trace без записи документов или смены статуса draft; результат виден в `index_manifest` и Evidence. Legacy-индекс допускается как `unstamped`, но его замеры — `NOT_EVIDENCE`; равные манифесты без подтверждённой HF-ревизии допускаются как `unverified`, также `NOT_EVIDENCE`: пересоберите исходные документы через ingestion/upload с выбранным эмбеддером (HF commit можно закрепить `RAG_EMBEDDING_MODEL_REVISION`) и проверьте `match`. Legacy-индексы с записями задним числом не штампуются; Qdrant — `unsupported_backend`.
+
 ### Helm persistence & backup jobs (chart @ HEAD)
 
 Chart-managed defaults (when `existingClaim` is empty):

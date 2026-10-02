@@ -10,6 +10,7 @@ from typing import Any
 
 from config.settings import get_settings
 from utils.tenant_naming import physical_tenant_component
+from vectordb.embedder_manifest import EmbedderManifestMismatch, open_chroma_for_write
 from vectordb.index_lifecycle_faults import (
     CLEANUP,
     EMBEDDINGS,
@@ -26,6 +27,8 @@ _COLLECTION_NAME_RE = re.compile(
 )
 _DIMENSION_PROBE_TEXT = "staged collection dimension validation"
 _KNOWN_QUERY_MAX_CHARS = 512
+# Creation must persist every add: docs/specs/chroma-index-persistence.md.
+_PERSIST_EVERY_ADD = {"hnsw": {"sync_threshold": 1}}
 
 
 class IndexStagingError(RuntimeError):
@@ -311,6 +314,15 @@ def build_staged_collection(
     )
     store: Any | None = None
     try:
+        store = open_chroma_for_write(
+            chroma_cls,
+            embeddings,
+            tenant_id=tenant_id,
+            persist_directory=persist_directory,
+            collection_name=collection_name,
+            collection_configuration=_PERSIST_EVERY_ADD,
+        )
+        initial_count = int(store._collection.count()) if store is not None else 0
         # Persist the vector index at the end of every add call. Chroma's default threshold of 1000
         # left the last batch in the write-ahead log, and every new process re-inserted it
         # (docs/specs/chroma-index-persistence.md).
@@ -327,9 +339,11 @@ def build_staged_collection(
         chunk_count, embedding_dimension = _validate_candidate(
             store,
             embeddings,
-            expected_count=len(documents),
+            expected_count=initial_count + len(documents),
         )
     except BaseException as exc:
+        if isinstance(exc, EmbedderManifestMismatch):
+            raise
         try:
             _cleanup_candidate(
                 store=store,
