@@ -19,15 +19,10 @@ existing output is not overwritten. Context is the post-grading generation input
 
 ## Fresh verification
 
-- Red: new regression tests failed because the session keyword and CLI flag
-  did not exist (4 failed, 1 passed).
-- Mac: `pytest tests/test_production_retrieval_only.py
-  tests/test_harness_api_parity.py tests/test_ask_contract_route.py
-  tests/test_session_version.py tests/test_session_serialize.py -q
-  -p no:schemathesis --tb=short` — **285 passed**.
-- Mac: the main strict mypy command from `.github/workflows/ci.yml` —
-  **145 source files, no issues**. Ruff passed on the three changed Python files.
-- Models were fixtures in these tests. This proves control flow, not model quality.
+- Red: missing session keyword and CLI flag (4 failed, 1 passed).
+- Mac: retrieval-only, harness parity, route, session version/serialize tests:
+  **285 passed**; strict mypy **145 files**, scoped Ruff clean.
+- Fixture models prove control flow, not quality.
 
 ## Pinned embedding preparation — 2026-10-02
 
@@ -36,13 +31,9 @@ The inspected Mac production collections have no embedder manifest. The retained
 revision. Neither can establish the new baseline's embedding identity; do not
 retroactively stamp them.
 
-`scripts/production_embeddings.py` now computes a separate, cumulative NPZ
-checkpoint. It binds the corpus archive SHA, ordered text SHA and the loaded
-embedder's complete manifest. Every valid batch is saved atomically. Resume is
-explicit; incompatible, unverified or invalid vectors are refused before encoding
-or replacing the checkpoint. This prepares vectors only; it publishes no index
-and changes no retrieval defaults. Use `python -m scripts.production_embeddings
---help` for the Mac CLI; `--max-batches` bounds a run, `--resume` continues it.
+`scripts/production_embeddings.py` saves a cumulative NPZ checkpoint atomically,
+binding corpus/text hashes and the embedder manifest. Explicit `--resume` refuses
+incompatible or invalid vectors. `--max-batches` bounds a run. No defaults changed.
 
 Fresh verification:
 
@@ -66,8 +57,8 @@ vectors are complete and validated. Do not re-encode this corpus. The snapshot's
 terminal result; checkpoint `.tmp/t65-verified-embeddings.npz` has SHA-256
 `3903187e56dd4d8accf642f612910c6ca2082d1e7e55b7d67cd072ce0978fb5a`.
 
-Executor: Codex fallback after GLM's initial request and one narrowed retry both
-ended `incomplete/max_output_tokens`. No partial GLM response was applied.
+Executor: Codex fallback after two GLM `incomplete/max_output_tokens` responses;
+neither partial response was applied.
 
 ## Isolated index builder — 2026-10-02
 
@@ -125,6 +116,13 @@ connection attached. Local output: `.tmp/t65-parity-full-launch.log` / `.err`.
 Observed after the bounded wait: running `transform`; full result still pending.
 Do not launch another writer while it is active. It stops on a failed stage or
 timeout, records the terminal status, and emits `DONE`; no automatic retry.
+
+Report preparation: `python -m scripts.production_parity_report --run <run>
+--output <new.json>` checks all 30 grade/verify records, context hashes, replay
+fields and the final summary; counts order, membership and context differences.
+It retains manifest/input hashes and refuses overwrites. Run from a separate
+checkout: do not change the active snapshot's source fingerprint. Red: 11 failed;
+Windows and Mac: **11 passed**, Ruff clean. No new measurement published.
 
 ## Remaining T-65 work
 
