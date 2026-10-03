@@ -17,7 +17,12 @@ work without confirmation from `CURRENT_STATE.md` and `ROADMAP.md`.
 | `tasks/` | Completed Codex task specifications and verification reports |
 | `legacy-code/` | Removed compatibility code and its tests |
 | `process/` | Historical workflow diagnostics |
+| `process/grok-prompts/` | Phase C.1b run kit for the Mac (2026-09-01/02): Grok task prompts, run scripts, smoke results |
+| `local/` | Machine-local leftovers cleared out of the repository root; ignored by git, so absent from a fresh clone |
 
 Files were consolidated here on 2026-09-04. Their internal links and status
 claims may describe the repository as it existed on their original dates; they
 are preserved as evidence rather than continuously rewritten.
+
+`process/grok-prompts/` was the root folder `.grok-prompts/` until 2026-10-03;
+its files still name that path.

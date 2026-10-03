@@ -95,6 +95,7 @@ not tuned; the ten-case sample carries no contamination controls.
 | 3 | «От меня 1. Зафиксируй по тврей рекомендации 2. Убери, плиз 3. Удали, уже октябрь 4. Как лучше тут?» | (1) order: phase E first — a green CI on HEAD — then the 2.5 chain; (2) the research note I had added is removed, and the input's item П4 with it; (3) the "Actions unavailable until October" rule leaves `CLAUDE.md`; (4) I recommended how to spread her grading hours — commit `69e46c5` |
 | 4 | «запиши все в план. люди участвовать в процессе не будут» | decision D11, her answer to my recommendation under item 4 |
 | 5 | «запиши лог сессии» | this file |
+| 6 | «почисти корень, убери все ненужное в archive» | the root cleanup, Log item 7 |
 
 Her earlier words that support the reading of D11, from the 2026-09-30 session:
 «сделай работу за меня. и прими все решения за меня»; «про за мной - я просила
@@ -163,9 +164,9 @@ any decision before the first track-3 experiment.
 
 - **She confirms, or says nothing.** Go on with "Next actions".
 - **She meant only "no second person".** `git revert 3438351`, the third
-  commit: every file returns to the second publication. This log was corrected
-  once after that commit, so git reports it as a modify/delete conflict: keep
-  the file. Then put T-57 back to importing her grades (its old text is row 1.1
+  commit: every file returns to the second publication. This log was edited
+  after that commit, so git reports it as a modify/delete conflict: keep the
+  file. Then put T-57 back to importing her grades (its old text is row 1.1
   of the 2026-09-30 plan; a copy may survive in
   `.tmp/plan0310/t57_before_d11.txt`) and delete the memory
   `no-humans-in-quality-process`.
@@ -220,12 +221,21 @@ any decision before the first track-3 experiment.
    with a voice; what leaves the machine during draft verification; the status
    word, renamed from a draft that said "validated"; stale wording. Left open:
    the eight questions of G38.
+7. **Root cleanup, after the plan work.** Every tracked entry of the root was
+   checked for references from code, tests, CI and documents. Only
+   `.grok-prompts/`, the phase C.1b run kit, had none; it is now
+   `archive/process/grok-prompts/`. Untracked leftovers went to
+   `archive/local/root-cleanup-2026-10-03/`, which git ignores, so they exist
+   on this laptop only: 39 `phase-e-*.png` captures of the demo (12.7 MB), the
+   pytest temp tree `.pytest-tmp-t63/` and the kit's git bundle. Nothing was
+   deleted except an empty `New folder`; tool caches stayed where the tools
+   keep them.
 
 ## State at the end
 
 - **Git.** `master` equals `origin/master`. The session's commits: `028f874`,
-  `69e46c5`, `3438351` (the third publication; it adds this file) and one
-  correction of this file after it. Untracked and not mine:
+  `69e46c5`, `3438351` (the third publication; it adds this file), then one
+  correction of this file and the root cleanup. Untracked and not mine:
   `demo/phase-e-raw.webm`.
 - **CI: red, not repaired.** Observed on `70d272c` (run 37093493571) and
   `028f874` (run 37127142442): 7 of 11 jobs pass. `test-unit` on 3.11 and 3.13

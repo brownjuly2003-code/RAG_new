@@ -53,5 +53,6 @@ reports/ragas/*.md
 # pytest basetemp trees (local test-run artifacts, never evidence)
 .pytest_tmp*/
 
-# Phase C.1b run bundle (regenerated from git, not provenance)
-.grok-prompts/*.bundle
+# Machine-local leftovers cleared out of the root (per-session captures, test
+# temp trees, the phase C.1b run bundle): kept on disk, never committed
+archive/local/
