@@ -19,7 +19,10 @@ langchain-chroma>=0.1.0
 chromadb>=1.5.9
 
 # === Embeddings (Level 1: BGE-M3 multilingual) ===
-sentence-transformers>=2.5.0
+# sentence-transformers: floor at 5.6.0 clears PYSEC-2026-4164 (2026-10-03). Capped
+# below 6: the embedder and the reranker have not been evaluated on the 6.x line;
+# lift the cap in the slice that evaluates it, or when a fix ships only in 6.x.
+sentence-transformers>=5.6.0,<6
 # transformers: floor at 5.10.0 clears CVE-2026-9856 (2026-09-09); transitive
 # via sentence-transformers, pinned here so the lock is reproducible.
 transformers>=5.10.0
@@ -34,9 +37,10 @@ networkx>=3.5
 # (uses sentence-transformers, no extra package needed)
 
 # === Document Loaders ===
-# Floor at 6.13.3: clears GHSA-jm82-fx9c-mx94 (and earlier CVE-2026-48155/48156).
+# Floor at 6.19.0: clears PYSEC-2026-4153..4160 (2026-10-03); the earlier floor
+# 6.13.3 cleared GHSA-jm82-fx9c-mx94 and CVE-2026-48155/48156.
 # PDF parsing handles untrusted uploads.
-pypdf>=6.13.3
+pypdf>=6.19.0
 python-docx>=1.0.0
 langdetect>=1.0.9
 
@@ -76,15 +80,25 @@ httpx>=0.24.0
 requests>=2.32.0
 # idna: pinned >=3.15 to clear CVE-2026-45409 (transitive via requests/httpx).
 idna>=3.15
-# urllib3: pinned >=2.7.0 to clear PYSEC-2026-141 / PYSEC-2026-142 (transitive via requests/httpx).
-urllib3>=2.7.0
+# urllib3: floor at 2.8.0 clears PYSEC-2026-4175/4176/4177 (2026-10-03); the earlier
+# floor 2.7.0 cleared PYSEC-2026-141/142. Transitive via requests/kubernetes.
+urllib3>=2.8.0
+# anyio: floor at 4.14.2 clears PYSEC-2026-4024/4025 (2026-10-03). Transitive via
+# httpx/starlette/langsmith, pinned here so the lock is reproducible.
+anyio>=4.14.2
+# oauthlib: floor at 4.0.0 clears PYSEC-2026-4114 (2026-10-03). Transitive via
+# kubernetes -> requests-oauthlib (a chromadb dependency); the app never imports it.
+oauthlib>=4.0.0
 # aiohttp: floor at 3.14.1 clears CVE-2026-54273..54280 (was resolving to 3.14.0).
 aiohttp>=3.14.1
 # cryptography: floor at 48.0.1 clears GHSA-537c-gmf6-5ccf (lock may resolve newer).
 cryptography>=48.0.1
 # setuptools: floor at 83.0.0 clears PYSEC-2026-3447 (transitive build/runtime dep).
 setuptools>=83.0.0
-PyJWT>=2.8.0
+# PyJWT: floor at 2.15.0 clears PYSEC-2026-4140..4152 (2026-10-03): eleven are fixed
+# in 2.14.0 and PYSEC-2026-4141 in 2.15.0; PYSEC-2026-4146 names no fixed version,
+# its last affected release is 2.13.0.
+PyJWT>=2.15.0
 passlib[bcrypt]>=1.7.4
 authlib>=1.3.0
 langfuse>=2.0.0
