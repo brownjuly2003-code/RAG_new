@@ -176,7 +176,9 @@ or retrieval default changed. Alternative rerankers remain on the stop-list
 below until Julia decides otherwise.
 
 **Quality thread adopted 2026-09-30 by delegation and ratified the same night by delegation** (plan step 0.3 done; the owner may revisit any decision before the first track-3 experiment):
-[`docs/specs/plan_final_30_09_26.md`](docs/specs/plan_final_30_09_26.md), built on the
+[`docs/specs/plan_03_10_26.md`](docs/specs/plan_03_10_26.md) — the 2026-10-03 revision of
+[`plan_final_30_09_26.md`](docs/specs/plan_final_30_09_26.md), made on the owner's instruction, decisions D1–D10
+unchanged; the adoption and ratification are those of the 2026-09-30 text, the revision itself is unaudited — built on the
 [2026-09-30 audit](docs/audits/audit_asta_30_09_26.md). It runs after phase E as one
 thread: measurement (human P2 grades, a pre-registered
 [development ruler](docs/specs/semantic-precision-metrics.md), a diagnostic dev set),
@@ -186,6 +188,10 @@ graph lane that falls back becomes visible in the trace and Evidence with a boun
 reason; the retrieval path carries candidates per source, coherence drops, rerank
 scores, stage timings, graph digest and entity-graph status) is implemented (T-59,
 2026-10-01; rule (a) by `tests/test_ask_contract_route.py`); no default changes.
+The 2026-10-03 revision adds one frozen candidate and no mechanism: BM25 token
+normalisation is H11 (gap G36), outside the first campaign with H6–H10 and with a
+return condition in plan §4; the exploratory
+[lexical-lane note](docs/specs/research-lexical-lane.md) behind it is not evidence.
 
 Both inherited CI failures ([ADR 0008](docs/adr/0008-inherited-ci-red-disposition.md))
 are closed. On `6cc810d` (T-17, pushed) both workflows that run on
@@ -215,8 +221,8 @@ so this is two of five. The chromadb CVE ignores were reviewed on
 | **C** | Quality leverage: Qwen3 benchmark, NLI second judge, claim-level compilation | rule (c): faithfulness ≥ 0.90 and precision ≥ 0.63 over 3 runs with a CI, **or** a NO-SHIP report with a cause |
 | **GR** | Graph retrieval: structure graph (0 LLM calls) → entity graph → A/B → wired behind flags. Unfrozen 2026-09-06; **required** under the plan the owner adopted on 2026-09-10 — the only stream that can move the precision gate (0.5067 → ≥ 0.63), which is computed over cached contexts (plan §2); GR-1a's cheap arm gave 0.5216, no better than plain top-4's 0.5214 ([capsule](docs/evidence/gr1a-section-coherence.md)) | rule (c): published context precision / multi-hop coverage with provenance per step; rule (a): graph lane behind `RAG_GRAPH_RETRIEVAL` with an E2E test; GR-3 measured 2026-09-18/19 — NO-SHIP-to-default, default stays `off` ([capsule](docs/evidence/gr3-graph-lane-ab.md)) |
 | **D** | pgvector spike, ADR 0007 — D.1–D.5 measured; accepted 2026-09-25: retain the current retrieval backend (a vector-DB swap stays on the stop-list) | a table of numbers in the ADR; no migration without it |
-| **E** | Public artefact: README-first, 3-minute demo, `resolution-contracts` sub-package; Q4 confirmed 2026-09-30: publish current `RAG_new` as **RAG assistant**, Pages base `/RAG_new/`; E.4 site prepared locally at `236f7c1`, unpushed and unpublished | E.5: Mac full suite and final [history scan](docs/evidence/e5-secret-scan.md); E.4: push, green CI, public repo, Pages deploy, links from the old repo and proof-pack; numbers in README |
-| **Q** | Quality thread after E ([plan](docs/specs/plan_final_30_09_26.md), adopted and ratified by delegation 2026-09-30): human-calibrated ruler → observable route → ≤ 2 mechanisms chosen by the evidence-loss map (D8; default H1 in the graph lane, H5 as its budget) → locked-holdout acceptance. 2.1/2.2 implemented 2026-10-01 (T-59, rule (a)); 1.1/1.3 wait on Julia (D2/D3) | rule (c) per experiment with the [development ruler](docs/specs/semantic-precision-metrics.md): +0.05 in the mechanism's registered primary metric (sent-precision for selection, all-evidence coverage for coverage mechanisms) with CI95 lower bound > 0, non-inferiority −0.02 on the rest, no critical-fact loss on H/Hm, p95 delta ≤ 200 ms at equal budget; the lexical 0.63 gate stays on its own ruler; research acceptance on the Mac is not product acceptance (deployment target + SLO, D5); no default flip before both |
+| **E** | Public artefact: README-first, 3-minute demo, `resolution-contracts` sub-package; Q4 confirmed 2026-09-30: publish current `RAG_new` as **RAG assistant**, Pages base `/RAG_new/`; E.4 site prepared at `236f7c1`, pushed and unpublished; Actions execute jobs again and CI is red on `70d272c` (observed 2026-10-03, causes in [`CURRENT_STATE.md`](CURRENT_STATE.md)) | E.5: Mac full suite and final [history scan](docs/evidence/e5-secret-scan.md); E.4: push, green CI, public repo, Pages deploy, links from the old repo and proof-pack; numbers in README |
+| **Q** | Quality thread after E ([plan](docs/specs/plan_03_10_26.md), adopted and ratified by delegation 2026-09-30, revised 2026-10-03): human-calibrated ruler → observable route → ≤ 2 mechanisms chosen by the evidence-loss map (D8; default H1 in the graph lane, H5 as its budget) → locked-holdout acceptance. 2.1/2.2 implemented 2026-10-01 (T-59, rule (a)); 1.1/1.3 wait on Julia (D2/D3) | rule (c) per experiment with the [development ruler](docs/specs/semantic-precision-metrics.md): +0.05 in the mechanism's registered primary metric (sent-precision for selection, all-evidence coverage for coverage mechanisms) with CI95 lower bound > 0, non-inferiority −0.02 on the rest, no critical-fact loss on H/Hm, p95 delta ≤ 200 ms at equal budget; the lexical 0.63 gate stays on its own ruler; research acceptance on the Mac is not product acceptance (deployment target + SLO, D5); no default flip before both |
 
 Heavy runs (models, full suite, Docker) go to the Mac — never the Windows
 laptop. Do not install or launch WSL, Docker or VMs on Windows (owner direction,

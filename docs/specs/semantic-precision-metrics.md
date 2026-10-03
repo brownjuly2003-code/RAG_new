@@ -222,7 +222,22 @@ text hash — one population per metric (№6).
   hit its limit is `single_judge`, outside the consensus (G24). It ranks
   candidates and nothing else: it cannot pass a non-inferiority check, prove
   answer safety or produce a semantic gain, and families — not questions —
-  are its unit of independence.
+  are its unit of independence. Cross-reference, added 2026-10-03 with no new
+  criterion and no change to the measurement contract — see the requirements
+  this spec already states: candidate and token budgets are equal between
+  arms, and `sent_precision` is taken on the exact expanded documents the arm
+  sends (the closing paragraph of «Metrics per case, then averaged over
+  cases»); the registered control is hybrid retrieval with production
+  expansion (the first item of this list); each mechanism names its primary
+  metric before the run — `sent_precision` for selection mechanisms,
+  `all_evidence_coverage` for coverage mechanisms (the second item). Why the
+  pointer: a comparison on the reranked seeds and the same comparison on the
+  expanded context can diverge. In the exploratory lexical-lane study
+  ([`research-lexical-lane.md`](research-lexical-lane.md)) Snowball-stemmed
+  BM25 against the study's control had all answer keywords present in 92 vs
+  87 of 100 cases on the five reranked seeds and in 96 vs 97 after production
+  expansion; the difference between the two states was not tested. That is a
+  lexical proxy; it does not transfer to judged labels.
 - The thresholds +0.05 and −0.02 are chosen utility criteria, not measured
   properties; P1b's lexical deltas do not show they are reachable. The rule is
   read literally: point gain ≥ +0.05, CI95 lower bound > 0, non-inferiority

@@ -211,3 +211,22 @@ Julia, ~03:20 UTC: «поставь точку после текущего ша�
   5. After T-69 lands, delete `wip/T-69-prep`. Also delete the stale `wip/T-61-writer`; T-61
      landed in `67e7be1`.
   6. Then T-67 (parity publication), T-70 (loss map) and T-65 (the real baseline on the Mac).
+
+## Plan revision — 2026-10-03 (plan session, after the stop point)
+
+Nothing in the resume order above was executed. Three things changed around it:
+
+- **The quality plan is now [`plan_03_10_26.md`](../specs/plan_03_10_26.md).** It supersedes
+  `plan_final_30_09_26.md`; slice numbers, decisions D1–D10 and the 2.5 chain are unchanged.
+  Task details that cite the 30.09 plan by slice number stay valid. Expect MyFlow drift
+  advisories on tasks that reference the two edited specs: `semantic-precision-metrics.md` got
+  one cross-reference in «Screening tier» (no criterion changed), and the old plan got a
+  "superseded" banner.
+- **T-70's detail got an appendix** (`task-edit --detail-append`): the lexical-lane research
+  data are an input and a reconciliation for the full loss map, not evidence
+  ([note](../specs/research-lexical-lane.md), §3). That edit cleared T-70's MyFlow stale hint.
+  The re-read asked for in resume item 1 is still owed: T-70's detail was not checked against
+  the artefacts `scripts/production_baseline.py` writes. The detail now says so itself.
+- **Ask Julia before `$MF next` → T-69.** GitHub Actions execute jobs again and CI is red on
+  `70d272c` ([`CURRENT_STATE.md`](../../CURRENT_STATE.md)). By plan §1, track 1–2 slices yield
+  to phase E once its block is lifted, unless Julia decides otherwise. The order is her call.
