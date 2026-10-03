@@ -384,6 +384,32 @@ leaves the NLI judge `provisional_judge`, the deciding faithfulness check of
 and the phase-C ≥ 0.90 gate are printed with the `provisional_judge` caveat
 (№18).
 
+Sometimes the baseline collection cannot finish a case. This rule was added
+on 2026-10-02 for T-68.
+- **Model failure on one case.** Examples: a pipeline error, a grader
+  error, a reranker fallback.
+  - The case becomes a recorded exclusion and is never scored 0.
+  - The exclusion leaves the numerator and the denominator of every metric.
+  - The report lists it with its stage, reason and error type, and
+    publishes the denominators per subset.
+  - If more than 10 % of a subset's cases are excluded, that subset's
+    baseline numbers are `NOT_EVIDENCE`, as with invalid judge answers (№13).
+- **Integrity or environment failure.** Examples: a mismatch in an input
+  SHA, a model digest, the replay cache, index eligibility or the embedder
+  manifest; a failed vector query; an unreachable model service.
+  - The run stops; the failure never becomes an exclusion.
+  - Three consecutive exclusions with the same error type at one stage
+    count as an environment failure, and the run stops.
+  - The stop is recorded, including a failed check of the registered
+    inputs before the stage starts.
+  - A refusal to start is not a stop and leaves no record. There are three
+    refusals: the stage order is wrong, `--resume` is missing, or an
+    earlier stage's stop is still open.
+  - Later stages and the report refuse to run until the stopped stage is
+    resumed after a fix. On resume, the cases of the
+    three-exclusion streak run again; they are not kept as exclusions. The
+    report lists every resolved stop.
+
 **Product acceptance (4.2)** repeats the latency and behaviour checks on the
 deployment target against the absolute SLO the owner names (D5). Without a
 named target and SLO there is no product SHIP. The per-tenant flag (4.3)
