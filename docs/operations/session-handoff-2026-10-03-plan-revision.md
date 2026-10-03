@@ -3,8 +3,8 @@
 Written for the next session (autocompact is on) because Julia asked for it:
 «запиши лог сессии». It was a plan session: **no code changed, no model graded
 anything, no quality number was published.** Three commits rewrote the quality
-plan, [`plan_03_10_26.md`](../specs/plan_03_10_26.md); the third adds this file
-and takes every human task out of the plan. To confirm it is the pushed HEAD,
+plan, [`plan_03_10_26.md`](../specs/plan_03_10_26.md); the third, `3438351`,
+adds this file and takes every human task out of the plan. To confirm it is the pushed HEAD,
 run `git -C "D:/RAG_new" status -sb`: it must show `master...origin/master` with
 nothing ahead. The engineering resume order is in
 [`t65-baseline-handoff.md`](t65-baseline-handoff.md).
@@ -162,10 +162,12 @@ any decision before the first track-3 experiment.
 ## Once Julia decides
 
 - **She confirms, or says nothing.** Go on with "Next actions".
-- **She meant only "no second person".** `git revert` the third commit: every
-  file returns to the second publication. Then add this log back, put T-57 back
-  to importing her grades (its old text is row 1.1 of the 2026-09-30 plan; a
-  copy may survive in `.tmp/plan0310/t57_before_d11.txt`) and delete the memory
+- **She meant only "no second person".** `git revert 3438351`, the third
+  commit: every file returns to the second publication. This log was corrected
+  once after that commit, so git reports it as a modify/delete conflict: keep
+  the file. Then put T-57 back to importing her grades (its old text is row 1.1
+  of the 2026-09-30 plan; a copy may survive in
+  `.tmp/plan0310/t57_before_d11.txt`) and delete the memory
   `no-humans-in-quality-process`.
 - **She objects to one replacement** — a status word, "preparation", the pause
   rule, the reserve default, a default from point 11. Each is one row of the
@@ -196,7 +198,7 @@ any decision before the first track-3 experiment.
    note and П4 removed; the Actions rule removed from `CLAUDE.md`.
    `D:/Rag_research/HANDOFF.md`, outside this repository, now says the input is
    applied.
-5. **Third publication, the commit that adds this file.** D11 in the plan (§2
+5. **Third publication, `3438351`.** D11 in the plan (§2
    record with the replacement table; §1 rows, graph, status table and order; §3
    "Человеческие часы — 0"; §4 boundaries; §6 list; §7 statuses and the new
    G37); the fifth revision of
@@ -221,15 +223,17 @@ any decision before the first track-3 experiment.
 
 ## State at the end
 
-- **Git.** After the push `master` equals `origin/master` at the commit that
-  adds this file; before it `69e46c5`, `028f874`. Untracked and not mine:
+- **Git.** `master` equals `origin/master`. The session's commits: `028f874`,
+  `69e46c5`, `3438351` (the third publication; it adds this file) and one
+  correction of this file after it. Untracked and not mine:
   `demo/phase-e-raw.webm`.
 - **CI: red, not repaired.** Observed on `70d272c` (run 37093493571) and
   `028f874` (run 37127142442): 7 of 11 jobs pass. `test-unit` on 3.11 and 3.13
   fails 12 tests — 11 artifact tests call `git show <sha>:<path>` on a shallow
   checkout, 1 reads the gitignored `data/uploads`; `pre-commit` and `security`
   fail on new `pip-audit` advisories; the Pages workflow fails `npm audit`.
-  The later commits changed documents only and were not checked on CI.
+  `69e46c5` fails the same four jobs (run 37128451831). The run on the commit
+  that adds this file was not awaited; these commits change documents only.
 - **MyFlow** (`$MF status`). No open slice; 65 of 70 tasks passed, 4 open, T-57
   parked with the new text. T-69 is prepared and backed up on the branch
   `wip/T-69-prep` (`e5525fa`). There is no task for slice 1.3b yet. Editing the
@@ -389,5 +393,6 @@ Commands, from any directory:
 - **Cold read**: one fresh Claude session (Opus), as in Log item 6. Its findings
   are a model's output, not Julia's review; the fixes made after it were read by
   nobody but the author.
-- **Not done**: no second-voice audit (GLM or Astra — only on Julia's command),
-  no Mac gate, no CI run for the three documentation commits.
+- **Not done**: no second-voice audit (GLM or Astra — only on Julia's command)
+  and no Mac gate. CI ran on every push and stayed red for the causes above;
+  its run on the commit that adds this file was not awaited.
