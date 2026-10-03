@@ -7,18 +7,27 @@ the *wait*, not the worker thread.
 
 Workers mark themselves via ``threading.local`` so nested ``ask()`` wall-budget
 paths do not re-submit onto the same pool (deadlock risk when saturated).
+
+Every callable this pool runs is executed by the worker inside
+``contextvars.copy_context().run``, with the copy taken on the worker thread
+when the callable starts: a context var one request binds (deadline, LLM
+request budget) can never leak into a later request served by the same pooled
+thread, while the submitting thread's context is never copied in — handing a
+value over stays an explicit act of the caller.
 """
 from __future__ import annotations
 
+import contextvars
 import logging
 import threading
 from collections.abc import Callable
 from concurrent.futures import Future, ThreadPoolExecutor
 from concurrent.futures import TimeoutError as FuturesTimeout
-from typing import TypeVar
+from typing import ParamSpec, TypeVar
 
 logger = logging.getLogger(__name__)
 
+P = ParamSpec("P")
 T = TypeVar("T")
 
 _lock = threading.Lock()
@@ -57,6 +66,26 @@ def _resolve_max_workers(explicit: int | None = None) -> int:
     return _DEFAULT_MAX_WORKERS
 
 
+def _run_in_copied_context(fn: Callable[P, T], /, *args: P.args, **kwargs: P.kwargs) -> T:
+    """Run ``fn`` in a context copied from this (worker) thread at call time."""
+    return contextvars.copy_context().run(fn, *args, **kwargs)
+
+
+class _ContextIsolatedThreadPoolExecutor(ThreadPoolExecutor):
+    """Shared pool whose submitted callables each run in a context of their own.
+
+    ``submit`` routes every callable through a module-level wrapper that the
+    worker thread executes, so the callable starts inside
+    ``contextvars.copy_context().run``. The worker's own context is therefore
+    never modified: bindings made by one callable cannot be observed by a later
+    callable served by the same thread, and the submitting thread's context is
+    not copied in.
+    """
+
+    def submit(self, fn: Callable[P, T], /, *args: P.args, **kwargs: P.kwargs) -> Future[T]:
+        return super().submit(_run_in_copied_context, fn, *args, **kwargs)
+
+
 def get_request_executor(*, max_workers: int | None = None) -> ThreadPoolExecutor:
     """Return the process-wide request executor (lazy, thread-safe)."""
     global _executor, _max_workers
@@ -64,7 +93,7 @@ def get_request_executor(*, max_workers: int | None = None) -> ThreadPoolExecuto
     with _lock:
         if _executor is None:
             _max_workers = desired
-            _executor = ThreadPoolExecutor(
+            _executor = _ContextIsolatedThreadPoolExecutor(
                 max_workers=desired,
                 thread_name_prefix="rag-request",
                 initializer=_mark_request_worker,
