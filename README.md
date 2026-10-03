@@ -79,7 +79,8 @@ The full design, invariants, and decision register are in
 
 - Shipment-status is the only wired resolution journey, and its TMS is a fixture.
 - The 100 approved journey labels are on agent-written questions, with no
-  shipment-bound support requests. Human relevance grades are still pending.
+  shipment-bound support requests. The LLM relevance judges are checked against
+  model references only; no human relevance grades are planned.
 - Graph retrieval, contract-shaped answers, and clarification projection require
   explicit flags; the graph arm failed its default-on gate.
 - The local Compose setup runs one web replica. It is a development setup, not

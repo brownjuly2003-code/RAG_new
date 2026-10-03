@@ -144,9 +144,13 @@ Spec: [`production-parity`](../specs/production-parity.md).
 3. Collect H 100 + Hm 15 through the retrieval-only path, retain trace timings
    and exclude failed/ineligible runs. Record corpus SHA, code SHA and config.
 4. Judge the new contexts, compute lexical/development metrics and the loss map,
-   publish the capsule and evidence row. Keep `provisional_ruler` until D2 closes.
+   publish the capsule and evidence row. Keep `provisional_ruler` until slice 1.1 passes
+   (D2 as changed by D11: CI of κ entirely ≥ 0.7 to both model references) and, because these
+   contexts are expanded, until the reference sub-sample for expanded contexts is graded
+   (metrics spec, «Scope»; plan G38).
 
-Human D2/D3 inputs remain pending. No retrieval default or quality gate changed.
+No human D2/D3 inputs will arrive (decision D11, 2026-10-03; the plan-revision section below).
+No retrieval default or quality gate changed.
 
 ## Stop point — 2026-10-03 (after T-68)
 
@@ -217,11 +221,13 @@ Julia, ~03:20 UTC: «поставь точку после текущего ша�
 Nothing in the resume order above was executed. Three things changed around it:
 
 - **The quality plan is now [`plan_03_10_26.md`](../specs/plan_03_10_26.md).** It supersedes
-  `plan_final_30_09_26.md`; slice numbers, decisions D1–D10 and the 2.5 chain are unchanged.
+  `plan_final_30_09_26.md`; slice numbers and the 2.5 chain are unchanged. Decisions D1–D10 stand
+  except D2, D3 and D10, which D11 changed (last bullet).
   Task details that cite the 30.09 plan by slice number stay valid. Expect MyFlow drift
   advisories on tasks that reference the two edited specs: `semantic-precision-metrics.md` got
-  one cross-reference in «Screening tier» (no criterion changed), and the old plan got a
-  "superseded" banner.
+  one cross-reference in «Screening tier» (no criterion changed) and, with D11, its fifth
+  revision (who grades and verifies; thresholds, margins and metrics unchanged), and the old
+  plan got a "superseded" banner.
 - **T-70's detail got an appendix**: the lexical-lane research data are a reconciliation for
   the full loss map — not evidence and not an input of the calculation. The study's results stay
   outside the repository (Julia, 2026-10-03), so the appendix points to
@@ -235,3 +241,11 @@ Nothing in the resume order above was executed. Three things changed around it:
   the failure causes are listed under the status table in plan §1). The resume order above —
   `$MF next` → T-69, then T-67, T-70 and T-65 — starts after that; the `wip/T-69-prep` branch
   keeps the T-69 preparation meanwhile.
+- **Julia's decision D11, 2026-10-03: «люди участвовать в процессе не будут».** The plan holds no
+  human work any more. Slice 1.1 (T-57, rewritten) is κ of the P2 consensus to the Astra and
+  Opus references; slice 1.3b is verification of the pilot drafts by two models of other
+  vendors; the human checks of 2.8 and 4.1 became model checks. Both 1.1 and 1.3b queue after
+  the chain above, and nothing in the chain itself changes. What replaced what, and what the
+  plan no longer claims (`human-validated`, `real_labelled`): plan §2, record D11; eight open
+  design questions: plan G38. Session log:
+  [`session-handoff-2026-10-03-plan-revision.md`](session-handoff-2026-10-03-plan-revision.md).

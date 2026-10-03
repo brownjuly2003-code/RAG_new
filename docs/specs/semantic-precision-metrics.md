@@ -25,6 +25,23 @@ the final plan ([GLM](../audits/audit_glm_final_30_09_26.md),
 [Astra](../audits/audit_astra_final_30_09_26.md)): third verdict, corpus
 snapshot, interval validity, closed table of deciding metrics, scenario
 power, common pair mask, joint-grading cache, claim-level facts and citations.
+Fifth revision 2026-10-03 under [`plan_03_10_26.md`](plan_03_10_26.md),
+decision D11 — the owner's «люди участвовать в процессе не будут» (no person
+takes part in the process): wherever a person graded, approved or checked,
+reference and verifier models from a vendor other than the checked side's do
+it now. Changed: the source of grades, the D2 rule and its scope, the
+calibration protocol, the second-annotator item, the confirmation of critical
+facts, the case schema with the new «Label verification» paragraph, the
+family-map registration, the power fallback, the screening tier, two rows of
+the acceptance table, the blind answer check, and the `faithfulness` and
+`citation_correctness` definitions. Thresholds, margins, metrics and the three
+outcomes are unchanged. A model check is never reported as a human one: the
+ruler's status is `model-cross-checked`, a case's is `model_verified`.
+Amended the same day after a cold read of the revision: the order of the D2
+branches and the CI method, no holdout on a provisional ruler, the draft
+author and unavailable vendors in «Label verification», registration of the
+answer checkers before the holdout opens. Eight questions it left open are
+listed in plan gap G38.
 
 ## Why a second ruler
 
@@ -39,24 +56,54 @@ adding matching text or by dropping documents that carry required facts
 
 - Scale: P2's, unchanged — 3 fully answers, 2 partly answers, 1 on topic but
   unhelpful, 0 unrelated. A document is *relevant* at grade ≥ 2.
-- Source of grades, in this order of authority: (1) Julia's blind human
-  grades where they exist; (2) the registered P2 lower-median consensus of
-  GLM 5.3 and Sonnet 5, graded blind through `evaluation.blinded_judge`
-  `build_request`; (3) the Opus 5.5 reference grades as a control only.
-- Rule (decision D2, refined per GLM-1): when human grades arrive,
-  quadratic-weighted κ between them and the consensus is published with a
-  bootstrap CI95 clustered by case (documents of one case are dependent).
-  CI entirely ≥ 0.7: the ruler is human-validated. CI straddling 0.7: the
-  human sample grows to 30 cases before any semantic-gain claim and before
-  acceptance 4.1; engineering runs and screening may proceed, their capsules
-  carry `provisional_ruler` (Astra final-plan audit №7). CI entirely below
-  0.7: every development result that used consensus grades is recomputed
-  and none is reported as a semantic gain until then.
-- Scope of `human-validated` (A1): the P2 sample's question classes and
+- Source of grades: the registered P2 lower-median consensus of GLM 5.3 and
+  Sonnet 5, graded blind through `evaluation.blinded_judge` `build_request`.
+  No human grades of the blind sample exist and none are planned (plan
+  decision D11, 2026-10-03; until then Julia's blind grades headed this
+  list). Two model references check the consensus and never replace it as
+  the source: GPT-6-Astra (OpenAI — a vendor outside the consensus) and
+  Opus 5.5 (Anthropic, the vendor of the Sonnet judge — a control, not an
+  independent voice).
+- Rule (decision D2 as changed by D11, refined per GLM-1): quadratic-weighted
+  κ between the consensus and each of the two model references on the blind
+  ten-case sample is published with a bootstrap CI95 clustered by case
+  (documents of one case are dependent): 10 000 resamples of cases, a
+  percentile interval, seed 20260925 — `BOOTSTRAP_SAMPLES` and `SEED` of
+  `evaluation/blinded_judge.py`, fixed before this rule. Both references must
+  clear the threshold: only Astra is evidence from an outside vendor, but a
+  consensus that fails against Opus fails. The branches are read in this
+  order. (1) A CI entirely below 0.7 for either reference: the consensus is
+  not used as the ruler — every development result that used consensus grades
+  is recomputed on a re-registered judge set (there are no human grades to
+  recompute on), and none is reported as a semantic gain until then. The new
+  set is named before any of its grades is compared with a reference and is
+  checked by this rule once, on a fresh reference sample drawn by a
+  registered seed, with at least one reference from a vendor outside the set.
+  (2) Otherwise, a CI straddling 0.7 for either reference: the reference
+  sample grows to 30 cases — both references grade 20 more H cases drawn by a
+  registered seed over the same ruler quintiles — before any semantic-gain
+  claim and before acceptance 4.1; engineering runs and screening may
+  proceed, their capsules carry `provisional_ruler` (Astra final-plan audit
+  №7). The same branches are applied once to the 30-case κ. (3) Otherwise —
+  both CIs entirely ≥ 0.7: the ruler is `model-cross-checked` — agreement
+  between models of different vendors, which cannot detect an error the
+  models share; it is never reported as `human-validated`. The references'
+  grades and each judge's κ to them (0.88–0.91) were published before this
+  rule was written, so the check is not blind to its likely outcome; the 0.7
+  threshold is the one registered on 2026-09-30 for human grades and was not
+  adjusted. If human grades ever arrive, the 2026-09-30 wording applies to
+  them and `human-validated` becomes reachable again.
+- Scope of `model-cross-checked` (A1): the P2 sample's question classes and
   unexpanded top-5 contexts. New question classes and expanded contexts get a
-  human sub-sample of at least 10 cases per class before any semantic gain is
-  claimed. A second indeterminate κ after the 30-case sample leaves the ruler
-  `provisional_ruler`; the owner decides what follows.
+  reference sub-sample of at least 10 cases per class, graded by both
+  references, before any semantic gain is claimed; the plan budgets it but
+  has no slice row or outcome rule for it yet (plan G38). A second
+  indeterminate κ after the 30-case sample leaves the ruler
+  `provisional_ruler`: no semantic gain is claimed on it and the holdout is
+  not opened for acceptance 4.1 on it. The judge set is then re-registered
+  once, as in branch (1); if that set does not pass either, the campaign
+  closes without acceptance 4.1 and the owner decides what follows (until
+  2026-10-03 the owner decided right after the second indeterminate κ).
 - Unit of grading (A4, G16): a grade belongs to a text and carries two keys
   — the **chunk address** `{source_id, source_revision, section_path or
   char offsets, chunker_version}` (which source the text came from; the same
@@ -84,25 +131,27 @@ adding matching text or by dropping documents that carry required facts
   exhaustive relevance judgement of every chunk (Astra §5, Sol).
 - Calibration protocol (G8), registered here before plan step 1.1 and reused
   by 2.7 and any later external calibration: the same exact texts and the
-  0–3 rubric for human and judge; blind, shuffled lists with no judge output
-  visible; a sample drawn before any grade is seen; quadratic-weighted κ with
+  0–3 rubric for reference and judge; blind, shuffled lists with no judge
+  output visible to the reference; a sample drawn before any grade is seen; quadratic-weighted κ with
   a bootstrap CI clustered by case; binarisation ≥ 2 chosen in advance, ≥ 3
   as a sensitivity view, never a second gate; a small pre-selected set of
   contamination controls (no evidence / supporting span removed / swapped
-  evidence / plausible distractor) scored separately from the natural κ;
+  evidence / plausible distractor) scored separately from the natural κ — the
+  published ten-case grades of step 1.1 predate this protocol and carry none,
+  and where later collections add them is still open (plan G38);
   ambiguous and invalid answers counted with their reasons; the rubric is
   not adjusted after a holdout result is seen; κ is stated for its rubric,
   language and context type only. The branching after an indeterminate κ is
   the rule above (10 → 30 cases, then `provisional_ruler`); the sample is not
   grown open-endedly toward a wanted κ.
-- Second annotator (G15): a second trained person grades 50 relevance pairs
-  from the 1.1 sample and 50 assertions from the 2.8 sample, independently
-  and blind, before any discussion. Human–human κ with CI, the disagreement
-  matrix and the adjudication log are published. It is a reference for
-  agreement, not a mathematical ceiling: the judge's κ is not divided by it
-  and thresholds are not lowered by it. Without a second person every capsule
-  states that reference labels reflect one expert and that the retest
-  measures self-consistency only.
+- No human annotator (G15 as changed by D11): neither a first nor a second
+  person grades. The agreement between the reference models — on the
+  relevance pairs of the 1.1 sample and on the assertions of the 2.8 sample —
+  is published with its CI and the disagreement matrix. It is a reference
+  for agreement, not a mathematical ceiling: the judge's κ is not divided by
+  it and thresholds are not lowered by it. Every capsule states that the
+  reference labels are model labels, that inter-annotator reproducibility is
+  not established and that a retest measures one model's stability only.
 
 ## Metrics per case, then averaged over cases
 
@@ -129,7 +178,9 @@ lexicon (разрешено / запрещено / не более / не мен
 present only when number + unit match inside a window that also carries the
 subject and the same polarity marker: «150 кг разрешено» does not match «150 кг
 запрещено» (Astra final-plan audit №18). Critical facts are never resolved by
-the matcher alone: each is confirmed by the blind human check of 4.1.
+the matcher alone: each is confirmed by the blind answer check of 4.1 — two
+reference models, both must confirm (decision D11; until 2026-10-03 a blind
+human check).
 
 Gold evidence (A5): a gold span is `{source_id, corpus_version, char_start,
 char_end, normalized_text}`; it matches a chunk of the same corpus version by
@@ -144,7 +195,9 @@ each metric.
 Case schema (G6, G17, G18; slices 1.3a/1.3d): besides question, evidence
 spans and required / critical facts, every case carries `question_origin`
 (agent style A / agent style B / real ticket) and `label_origin`
-(`agent_labelled` / `real_labelled`), the seed-selected source section, the
+(`agent_labelled` / `real_labelled`), `label_check` (`none` /
+`model_verified`, with the verifier ids and the rubric version — see «Label
+verification»), the seed-selected source section, the
 primary class (single-doc / multi-doc / aggregation / needs refusal or
 clarification), overlapping flags (RU→EN, numeric facts, trap type among
 false premise / out of corpus / outdated rule / conflicting documents /
@@ -152,6 +205,51 @@ dangerous goods, safety-critical), `expected_action` (answer / correct the
 premise / clarify / refuse / escalate), `as_of`, the authority source of the
 rule and the severity of a wrong answer. Quotas live in the plan (1.3d); an
 unmet quota narrows the scope of the conclusion instead of being filled.
+
+Label verification (decision D11, added 2026-10-03; it replaces the human
+approval of decision D3): no person approves a case. Two verifier models from
+two vendors, neither of them the draft author's vendor, check every dev and
+holdout case independently, each blind to the other's verdict. The draft
+author is the registered generator of the case, recorded per case as
+`draft_author` with its model and vendor (the pilot: `gpt-6.1-sol`, OpenAI).
+The checks:
+
+1. every evidence span is present verbatim in the named source at the
+   registered corpus version — a deterministic check by the verify script,
+   not a model verdict;
+2. every required and critical fact follows from the spans alone, and the
+   minimal reference answer states nothing the spans do not;
+3. the question is answerable from the spans as written; for refusal,
+   clarification and trap cases, instead, the registered reason holds against
+   the pre-rerank pool the registered control retrieves for the question;
+4. the primary class, the flags and `expected_action` agree with the above.
+
+A case is confirmed only when check 1 passes and both verifiers confirm
+checks 2–4; it then carries `label_check: model_verified`. Anything else is a
+rejection: the draft author repairs the case once and both verifiers check it
+again; a second rejection drops the case, with the reason recorded. The
+verifier models, their versions, the prompt and the rubric version are
+registered before the first check. If fewer than two vendors other than the
+author's are available (a quota, an outage), verification waits: a second
+model of one vendor is not a second voice, and a case seen by one verifier
+keeps `label_check: none`. The verifiers receive the whole draft case —
+question, span texts, facts, reference answer, class and `expected_action`,
+plus the pool texts for check 3 — with the source named by a pseudonym, never
+by its file name (plan G31). The capsule publishes, per class, the share
+rejected at the first check, the disagreements between the verifiers and the
+dropped cases. `label_origin` stays `agent_labelled`: a model check is not a
+human approval, `real_labelled` is not assigned and the count of real
+labelled cases does not rise. The check bounds label errors, it does not
+prove their absence: models can share an error, and on refusal and trap cases
+a passage the control fails to retrieve can leave an answerable question
+registered as unanswerable (plan G37) — at acceptance an arm that finds that
+passage and answers is then charged a critical error, so the error counts
+against the arm, never for it. Not covered yet and open in plan G38: a wider
+pool for check 3, a check of `as_of`, authority, severity and the
+critical-fact set, and the replacement of dropped cases. Screening drafts
+(below) are checked once by one model of a vendor other than their author's;
+rejected drafts are dropped, and more than 10 % rejected means the generator
+is rewritten and the check repeated (G32).
 
 Candidate and token budgets are equal between arms. `precision_at_5` and
 `ndcg_at_5` are computed on the reranked seeds before expansion;
@@ -178,9 +276,14 @@ text hash — one population per metric (№6).
   weights. A **document family** (G22) is a registered group of source
   documents that share a source folder or topic or are linked by
   `cross_ref`; the family map of the corpus is built before 1.3a and
-  confirmed by the owner with the first approved batch; the split between
-  dev and holdout never separates documents of one family. Resampling cases does not remove judge bias — that is what plan
-  step 1.1 is for.
+  registered by the agent in plan step 1.3b once its verify script passes (no
+  owner confirmation since decision D11). The pilot found that the literal
+  closure of this definition joins all 201 documents into one family; the
+  map to be registered is by topic, and that deviation is written here in
+  step 1.3b before any use. The split between
+  dev and holdout never separates documents of one family. Resampling cases does not remove judge bias — plan
+  step 1.1 checks for it against model references; a bias the models share
+  stays undetected (plan G37).
 - **Primary metric per mechanism** (GLM-2): each experiment's
   pre-registration names one primary metric before the run —
   `sent_precision` for selection mechanisms (H5, H3, H4, H7),
@@ -197,9 +300,9 @@ text hash — one population per metric (№6).
   For every deciding metric the report publishes `n`, the number of
   clusters, the MDE at power 0.8, the CI and the achieved power, separately
   for the +0.05 check and for each −0.02 check. **The margin is not
-  widened**: if the size is unreachable the owner adds independent families
-  or accepts that the study detects only larger effects (MDE above MUE,
-  stated). Power does not transfer between tiers — screening, sent context
+  widened**: if the size is unreachable the study states that it detects only
+  larger effects (MDE above MUE); adding independent families needs new
+  source documents, which only the owner can supply (decision D11). Power does not transfer between tiers — screening, sent context
   and answer measure different quantities. Illustration, not a measurement:
   with independent pairs and paired-difference variance `v`, `MDE ≈ (1.96 +
   0.84)·sqrt(v/n)`; at n = 100 and v = 0.10–0.20 that is 0.089–0.125.
@@ -212,7 +315,8 @@ text hash — one population per metric (№6).
   the observed effect is printed as description, never as evidence of
   adequacy (Astra final-plan audit №12).
 - **Screening tier** (G13): 300–500 `agent_labelled` questions drawn from the
-  dev families only, kept apart from the human set, run retrieval-only with
+  dev families only, kept apart from the verified set (`model_verified`; until
+  2026-10-03 «the human set»), run retrieval-only with
   the consensus judge and the retrieval stages the mechanism needs. Judge
   grades are cached by the full request hash — `(question_hash, the ordered
   text_sha256 list of the presented set, rubric version, judge version)`:
@@ -294,7 +398,9 @@ text hash — one population per metric (№6).
 
 ## Acceptance contract (plan track 4)
 
-Two acceptances (A3, A12). **Research acceptance (4.1)** runs the locked
+Two acceptances (A3, A12). The holdout is opened only when the ruler is
+`model-cross-checked` («Relevance grades», the scope item).
+**Research acceptance (4.1)** runs the locked
 holdout through the real `/api/ask` on `deproject-mac` and passes only if all
 of the following hold; the verdict is `SHIP_RESEARCH`, `NO_SHIP` (a
 condition failed with its CI outside the bound, or a critical error) or
@@ -315,9 +421,9 @@ per plan G26/D9; GLM final-plan audit №10):
 | `evidence_recall_pool` | higher | cases with gold spans | NI −0.02 | cluster bootstrap |
 | `fact_coverage` | higher | cases with facts | NI −0.02 plus the critical-fact rule | cluster bootstrap |
 | `abstention_correct` | higher | registered unresolvable cases | NI −0.02 | cluster bootstrap |
-| `faithfulness` | higher | answered cases | NI −0.02; the blind human check decides while `provisional_judge` | cluster bootstrap |
+| `faithfulness` | higher | answered cases | NI −0.02; the blind answer check by two reference models decides while `provisional_judge` (D11) | cluster bootstrap |
 | `answer_fact_coverage` | higher | answered cases with facts | NI −0.02 | cluster bootstrap |
-| `citation_correctness` | higher | citations made; cases with none counted separately | NI −0.02, resolved by the blind human check (claim↔source) | cluster bootstrap |
+| `citation_correctness` | higher | citations made; cases with none counted separately | NI −0.02, resolved by the blind answer check by two reference models (claim↔source; D11) | cluster bootstrap |
 | `citation_presence` | higher | answered non-refusal cases | NI −0.02 | cluster bootstrap |
 | `action_correct` | higher | all cases; per action class reported | NI −0.02 over the set | cluster bootstrap |
 | `critical_errors` | fewer | all cases | any **new** critical error blocks SHIP — a rule, no interval | — |
@@ -351,9 +457,17 @@ per plan G26/D9; GLM final-plan audit №10):
   the same case, or when its type has not been observed in the project before
   (№12); **a new critical error blocks SHIP** regardless of the averages; a
   harm-weighted sum may be reported as description only;
-- human answer checks are blind to the arm: answers of both arms are
-  presented shuffled without an arm label, the label is revealed after the
-  scores are entered (G34);
+- answer checks are done by two reference models from two vendors, neither of
+  them the answer generator's, registered with their versions, prompt and
+  rubric before the holdout is opened; the checks are blind to the arm:
+  answers of both arms
+  are presented shuffled without an arm label, and the label is joined after
+  the verdicts are stored (G34). A critical fact, a faithfulness verdict and
+  a claim↔source link count only when both models confirm them; a split
+  verdict counts against the answer and is listed. No person checks answers
+  (decision D11), and the capsule says so. Who decides `action_correct`,
+  `abstention_correct` and a disputed critical error is not registered yet;
+  it must be before the holdout is opened (plan G38);
 - semantic invariants (G12) on the dev cases already checked in 2.5: the
   required fact, the citation and the action are present; no exact-string
   comparison of whole answers. The 10 fake-LLM contract cases of slice 2.1
@@ -374,9 +488,9 @@ Answer metrics, computed on the generated answer, not on the context:
 
 | Metric | Definition |
 |---|---|
-| `faithfulness` | the phase-C judge (LLM judge with the NLI second judge) on the answer against the sent context; the phase-C condition (≥ 0.90 target) is reported as its own gate. The NLI model and threshold used here are the ones registered by plan slice 2.8 (validation against human and LLM-judge verdicts); until 2.8 closes, the pinned `mDeBERTa-v3-base-mnli-xnli` at 0.5 is `provisional_judge` |
+| `faithfulness` | the phase-C judge (LLM judge with the NLI second judge) on the answer against the sent context; the phase-C condition (≥ 0.90 target) is reported as its own gate. The NLI model and threshold used here are the ones registered by plan slice 2.8 (validation against LLM-judge verdicts and a model reference — the majority label of three models from three vendors; no human labels since decision D11); until 2.8 closes, the pinned `mDeBERTa-v3-base-mnli-xnli` at 0.5 is `provisional_judge` |
 | `answer_fact_coverage` | required facts present in the answer divided by the case's facts |
-| `citation_correctness` | cited sources that are in the sent context and support the cited claim, divided by citations made; the API today emits one citation per sent document (`agent/graph.py` ~1943), not per claim, so until a claim-linked citation exists the metric is resolved by the blind human check — for each required fact in the answer, whether a listed source contains it (Astra final-plan audit №18) |
+| `citation_correctness` | cited sources that are in the sent context and support the cited claim, divided by citations made; the API today emits one citation per sent document (`agent/graph.py` ~1943), not per claim, so until a claim-linked citation exists the metric is resolved by the blind answer check of 4.1 (two reference models, both must confirm; decision D11) — for each required fact in the answer, whether a listed source contains it (Astra final-plan audit №18) |
 | `citation_presence` | answered non-refusal cases with at least one citation, divided by answered non-refusal cases (№17) |
 | `abstention_correct` | on unresolvable cases, as above |
 | `action_correct` | 1 if the answer performs the case's `expected_action` (answer / correct the premise / clarify / refuse / escalate), else 0; reported per action class |
@@ -396,7 +510,7 @@ with no citations is excluded from the `citation_correctness` denominator and
 counted separately (№13); `citation_presence` is a deciding metric so the
 exclusion cannot hide missing citations (№17). If slice 2.8
 leaves the NLI judge `provisional_judge`, the deciding faithfulness check of
-4.1 is the blind human answer check already in the contract; the NLI number
+4.1 is the blind answer check by two reference models already in the contract; the NLI number
 and the phase-C ≥ 0.90 gate are printed with the `provisional_judge` caveat
 (№18).
 

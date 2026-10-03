@@ -22,14 +22,14 @@ conditions, read [`ROADMAP.md`](ROADMAP.md). The active delivery plan is
 - P2: the [blinded judgment](docs/evidence/p2-blinded-relevance-judgment.md)
   has complete GLM and Sonnet runs (115/115 cases each). H α is 0.8566;
   primary τ_b is 0.1561, CI95 [0.0197, 0.2880], giving the registered
-  `RULER_DOES_NOT_TRACK` verdict. Julia's blind 10-case grades are pending;
+  `RULER_DOES_NOT_TRACK` verdict. No human grades will be collected (plan D11);
   Mistral returned `zero_limit` and needs a changed account limit before a new
   attempt. Keep the official gate and retrieval defaults unchanged.
   P1 and P1b are both `NO_SHIP` ([P1b capsule](docs/evidence/p1b-expanded-cut.md)):
   H-relative exploratory verdicts on 100 agent-authored `agent_labelled` cases
   (0 approved at the time); neither changed product behaviour.
 - Quality thread ([plan](docs/specs/plan_03_10_26.md), §1 order/dependencies and slice status, §5 slices), ratified 2026-09-30, revised 2026-10-03.
-  Tracks 0–2: MyFlow T-55…T-70; T-57 parked until Julia grades the 10 blind P2 cases. Next by the owner's order of 2026-10-03: a green CI on HEAD (phase E), then the 2.5 chain T-69 → T-67 → T-70 → T-65.
+  Tracks 0–2: MyFlow T-55…T-70; T-57 (1.1) is now κ of the consensus to the model references — no human grades (D11) — parked until the 2.5 chain lands. Next by the owner's order of 2026-10-03: a green CI on HEAD (phase E), then the 2.5 chain T-69 → T-67 → T-70 → T-65.
   T-65's retrieval-only replay and resumable preparation are ready; all 5589 pinned embeddings
   and the isolated Chroma index are verified after reopening and reusable ([handoff](docs/operations/t65-baseline-handoff.md)).
   The real baseline remains open; the 30-case Chroma/exact comparison ran on the Mac 2026-10-03, unpublished (T-67), NOT_EVIDENCE until then.
