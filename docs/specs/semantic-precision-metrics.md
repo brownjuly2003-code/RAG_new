@@ -232,8 +232,9 @@ text hash — one population per metric (№6).
   metric before the run — `sent_precision` for selection mechanisms,
   `all_evidence_coverage` for coverage mechanisms (the second item). Why the
   pointer: a comparison on the reranked seeds and the same comparison on the
-  expanded context can diverge. In the exploratory lexical-lane study
-  ([`research-lexical-lane.md`](research-lexical-lane.md)) Snowball-stemmed
+  expanded context can diverge. In the exploratory lexical-lane study (gap G36
+  of the [quality plan](plan_03_10_26.md); its files stay outside this
+  repository) Snowball-stemmed
   BM25 against the study's control had all answer keywords present in 92 vs
   87 of 100 cases on the five reranked seeds and in 96 vs 97 after production
   expansion; the difference between the two states was not tested. That is a

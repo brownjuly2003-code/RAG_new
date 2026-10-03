@@ -29,7 +29,7 @@ conditions, read [`ROADMAP.md`](ROADMAP.md). The active delivery plan is
   H-relative exploratory verdicts on 100 agent-authored `agent_labelled` cases
   (0 approved at the time); neither changed product behaviour.
 - Quality thread ([plan](docs/specs/plan_03_10_26.md), §1 order/dependencies and slice status, §5 slices), ratified 2026-09-30, revised 2026-10-03.
-  Tracks 0–2: MyFlow T-55…T-70; T-57 parked until Julia grades the 10 blind P2 cases.
+  Tracks 0–2: MyFlow T-55…T-70; T-57 parked until Julia grades the 10 blind P2 cases. Next by the owner's order of 2026-10-03: a green CI on HEAD (phase E), then the 2.5 chain T-69 → T-67 → T-70 → T-65.
   T-65's retrieval-only replay and resumable preparation are ready; all 5589 pinned embeddings
   and the isolated Chroma index are verified after reopening and reusable ([handoff](docs/operations/t65-baseline-handoff.md)).
   The real baseline remains open; the 30-case Chroma/exact comparison ran on the Mac 2026-10-03, unpublished (T-67), NOT_EVIDENCE until then.

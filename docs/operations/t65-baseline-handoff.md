@@ -222,11 +222,16 @@ Nothing in the resume order above was executed. Three things changed around it:
   advisories on tasks that reference the two edited specs: `semantic-precision-metrics.md` got
   one cross-reference in «Screening tier» (no criterion changed), and the old plan got a
   "superseded" banner.
-- **T-70's detail got an appendix** (`task-edit --detail-append`): the lexical-lane research
-  data are an input and a reconciliation for the full loss map, not evidence
-  ([note](../specs/research-lexical-lane.md), §3). That edit cleared T-70's MyFlow stale hint.
-  The re-read asked for in resume item 1 is still owed: T-70's detail was not checked against
-  the artefacts `scripts/production_baseline.py` writes. The detail now says so itself.
-- **Ask Julia before `$MF next` → T-69.** GitHub Actions execute jobs again and CI is red on
-  `70d272c` ([`CURRENT_STATE.md`](../../CURRENT_STATE.md)). By plan §1, track 1–2 slices yield
-  to phase E once its block is lifted, unless Julia decides otherwise. The order is her call.
+- **T-70's detail got an appendix**: the lexical-lane research data are a reconciliation for
+  the full loss map — not evidence and not an input of the calculation. The study's results stay
+  outside the repository (Julia, 2026-10-03), so the appendix points to
+  `D:/Rag_research/2026-10-03_PLAN_INPUT.md`, §4 item П2 and §3.4. The edits cleared T-70's
+  MyFlow stale hint and moved its `detail_at`. The re-read asked for in resume item 1 is still
+  owed: T-70's detail was not checked against the artefacts `scripts/production_baseline.py`
+  writes. The detail says so itself.
+- **Julia's order, 2026-10-03: phase E first.** GitHub Actions execute jobs again and CI is red
+  on HEAD ([`CURRENT_STATE.md`](../../CURRENT_STATE.md)); the "Actions unavailable until
+  October" rule is gone from `CLAUDE.md`. The next work is a green CI on HEAD (plan slice 0.1b;
+  the failure causes are listed under the status table in plan §1). The resume order above —
+  `$MF next` → T-69, then T-67, T-70 and T-65 — starts after that; the `wip/T-69-prep` branch
+  keeps the T-69 preparation meanwhile.
