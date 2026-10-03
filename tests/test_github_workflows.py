@@ -183,6 +183,20 @@ def test_unit_tests_enforce_the_coverage_gate_on_one_matrix_leg() -> None:
     assert len(pytest_steps) == len(job["strategy"]["matrix"]["python-version"])
 
 
+def test_unit_tests_check_out_full_history() -> None:
+    # 2026-10-03 (CI run 37137697604): eleven artifact tests read historical
+    # blobs by commit SHA (`git show <sha>:<path>`, `git ls-tree`). On the
+    # default shallow checkout git exits 128 and they fail on both matrix legs,
+    # so the unit job must fetch the full history.
+    job = _workflow("ci.yml")["jobs"]["test-unit"]
+    checkouts = [
+        step for step in job["steps"] if str(step.get("uses", "")).startswith("actions/checkout@")
+    ]
+
+    assert len(checkouts) == 1, "the unit job checks the repository out exactly once"
+    assert checkouts[0].get("with", {}).get("fetch-depth") == 0
+
+
 def test_coverage_gate_threshold_is_declared_in_pyproject() -> None:
     # 2026-07-19: raised 70 -> 72 against live CI coverage 73.30%
     # (run 29660377386). Keep a floor of 72 so the threshold cannot

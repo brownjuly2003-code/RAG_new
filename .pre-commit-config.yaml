@@ -8,7 +8,11 @@ repos:
     rev: v6.0.0
     hooks:
       - id: trailing-whitespace
-        exclude: ^(?:archive/|docs/audits/audit_opus_.*\.md$)
+        # reports/: tracked run artifacts are pinned byte for byte by their
+        # artifact tests (reports/p2/human-sample.html by SHA-256 in
+        # tests/test_p2_blinded_judge_artifact.py), so a formatter must not
+        # rewrite them. The end-of-file-fixer below skips them for the same reason.
+        exclude: ^(?:archive/|reports/|docs/audits/audit_opus_.*\.md$)
       - id: end-of-file-fixer
         exclude: ^(?:archive/|reports/|vectordb/__init__\.py$)
       - id: check-yaml

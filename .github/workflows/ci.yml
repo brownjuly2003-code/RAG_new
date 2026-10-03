@@ -144,7 +144,14 @@ jobs:
         python-version: ["3.11", "3.13"]
 
     steps:
+      # Full history: eleven artifact tests read historical blobs by commit SHA
+      # (`git show <sha>:<path>`, `git ls-tree`). On the default shallow checkout
+      # git exits 128 and they fail on both legs (run 37137697604, 2026-10-03).
+      # The whole pack is about 6 MiB, so the full fetch costs seconds. Pinned by
+      # tests/test_github_workflows.py::test_unit_tests_check_out_full_history.
       - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
 
       - uses: actions/setup-python@v6
         with:

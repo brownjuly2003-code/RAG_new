@@ -300,6 +300,9 @@ def test_precommit_repo_wide_hooks_skip_tracked_legacy_outputs() -> None:
         "trailing-whitespace": [
             "archive/legacy-code/rag_poc_architecture.md",
             "docs/audits/audit_opus_27_04_26.md",
+            # Pinned by SHA-256 in tests/test_p2_blinded_judge_artifact.py; the
+            # hook rewrote it in CI run 37137697604 (2026-10-03).
+            "reports/p2/human-sample.html",
         ],
         "end-of-file-fixer": [
             "archive/legacy-code/prompt_for_github.md",
@@ -315,6 +318,19 @@ def test_precommit_repo_wide_hooks_skip_tracked_legacy_outputs() -> None:
         exclude = hooks[hook_id]["exclude"]
         for path in paths:
             assert re.search(exclude, path)
+
+    # The excludes stay narrow: sources, tests and live documents are still fixed.
+    still_fixed = [
+        "api/app.py",
+        "tests/test_precommit_config.py",
+        "CURRENT_STATE.md",
+        "docs/specs/plan_03_10_26.md",
+        "docs/evidence/c4-generator-model-decision.md",
+    ]
+    for hook_id in ("trailing-whitespace", "end-of-file-fixer"):
+        exclude = hooks[hook_id]["exclude"]
+        for path in still_fixed:
+            assert not re.search(exclude, path), (hook_id, path)
 
 
 def test_ci_helm_render_uses_validation_placeholders() -> None:

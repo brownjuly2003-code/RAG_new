@@ -4,15 +4,17 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 from collections import Counter
 from pathlib import Path
+
+import pytest
 
 from evaluation.aircargo_labels import EvidenceClass, dataset_digest
 from evaluation.question_class_labels import load_classified_cases
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 EVALUATION = PROJECT_ROOT / "evaluation"
-CORPUS = PROJECT_ROOT / "data" / "uploads" / "aircargo"
 BASE_DATASET = EVALUATION / "curated_cases_aircargo.jsonl"
 DATASET = EVALUATION / "curated_cases_aircargo_gr_multihop.jsonl"
 DATASET_MANIFEST = EVALUATION / "curated_cases_aircargo_gr_multihop.manifest.json"
@@ -34,13 +36,21 @@ def _jsonl(path: Path) -> list[dict[str, object]]:
     ]
 
 
+def _corpus_dir() -> Path:
+    configured = os.environ.get("AIRCARGO_CORPUS_DIR")
+    if configured:
+        return Path(configured)
+    return PROJECT_ROOT / "data" / "uploads" / "aircargo"
+
+
 def test_phase_c_dataset_remains_byte_identical() -> None:
     assert hashlib.sha256(BASE_DATASET.read_bytes()).hexdigest() == (
         PUBLISHED_PHASE_C_DATASET_SHA256
     )
 
 
-def test_supplement_has_fifteen_multi_document_questions_with_source_proof() -> None:
+def test_supplement_has_fifteen_multi_document_questions() -> None:
+    """Prove the supplement has fifteen multi-document cases backed by manifest-listed sources."""
     rows = _jsonl(DATASET)
     base_ids = {str(row["case_id"]) for row in _jsonl(BASE_DATASET)}
     corpus_manifest = json.loads(CORPUS_MANIFEST.read_text(encoding="utf-8"))
@@ -76,15 +86,7 @@ def test_supplement_has_fifteen_multi_document_questions_with_source_proof() -> 
         for source in source_documents:
             assert source == Path(source).name
             assert source in corpus_files
-            source_path = CORPUS / source
-            raw = source_path.read_bytes()
-            assert len(raw) == corpus_files[source]["bytes"]
-            assert hashlib.sha256(raw).hexdigest() == corpus_files[source]["sha256"]
             used_sources.add(source)
-
-        for keyword, source in answer_sources.items():
-            source_text = (CORPUS / source).read_text(encoding="utf-8").casefold()
-            assert keyword.casefold() in source_text, (row["case_id"], keyword, source)
 
     manifest = json.loads(DATASET_MANIFEST.read_text(encoding="utf-8"))
     assert manifest == {
@@ -100,6 +102,27 @@ def test_supplement_has_fifteen_multi_document_questions_with_source_proof() -> 
             "evaluation/curated_cases_aircargo_gr_multihop_question_class.jsonl"
         ),
     }
+
+
+def test_supplement_sources_prove_every_answer_keyword() -> None:
+    """Prove corpus source files match the manifest and contain their answer keywords."""
+    corpus_dir = _corpus_dir()
+    if not corpus_dir.is_dir():
+        pytest.skip(f"AirCargo corpus absent at {corpus_dir}; set AIRCARGO_CORPUS_DIR")
+
+    corpus_manifest = json.loads(CORPUS_MANIFEST.read_text(encoding="utf-8"))
+    corpus_files = {str(row["name"]): row for row in corpus_manifest["files"]}
+
+    for row in _jsonl(DATASET):
+        for source in row["source_documents"]:
+            source_path = corpus_dir / source
+            raw = source_path.read_bytes()
+            assert len(raw) == corpus_files[source]["bytes"]
+            assert hashlib.sha256(raw).hexdigest() == corpus_files[source]["sha256"]
+
+        for keyword, source in row["answer_sources"].items():
+            source_text = (corpus_dir / source).read_text(encoding="utf-8").casefold()
+            assert keyword.casefold() in source_text, (row["case_id"], keyword, source)
 
 
 def test_supplement_question_classes_are_complete_agent_labels() -> None:
