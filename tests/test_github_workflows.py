@@ -84,6 +84,7 @@ def test_weekly_report_workflow_installs_locked_runtime_dependencies() -> None:
 
 
 def test_docs_site_workflow_audits_npm_dependencies_before_build() -> None:
+    """ADR 0009 requires an unsuppressed advisory-scoped audit before the build."""
     workflow = _workflow("docs-site.yml")
     steps = workflow["jobs"]["build"]["steps"]
     step_names = [step.get("name") for step in steps]
@@ -97,12 +98,12 @@ def test_docs_site_workflow_audits_npm_dependencies_before_build() -> None:
 
     assert install_index < audit_index < type_check_index < build_index
     assert audit_step["working-directory"] == "docs-site"
-    # Plan DEP-01 (2026-08-07): hard fail on high + dated exceptions for residual
-    # moderate/low via npm run audit:deps (no blanket `|| true`).
+    # ADR 0009: the gate applies dated exceptions per advisory; a raw high-level
+    # npm audit would reject the approved advisory with no fixed release.
     audit_run = audit_step["run"]
-    assert "npm audit --audit-level=high" in audit_run
-    assert "npm run audit:deps" in audit_run
+    assert audit_run == "npm run audit:deps"
     assert "|| true" not in audit_run
+    assert "continue-on-error" not in audit_step
     assert type_check_step["working-directory"] == "docs-site"
     assert type_check_step["run"] == "npm run check"
 

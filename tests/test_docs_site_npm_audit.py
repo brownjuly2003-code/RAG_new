@@ -1,11 +1,11 @@
-"""Plan DEP-01: docs-site npm audit posture and dated exceptions register.
+"""Plan DEP-01 / ADR 0009: advisory-scoped schema-2 exceptions and npm audit posture.
 
 **What this file owns:** the exception register's schema and staleness, the
 audit script and npm-script wiring, and the manifest shape the Astro 7 upgrade
 requires of packages that carry no advisory (`@astrojs/starlight`,
 `@astrojs/markdown-remark`), plus the presence of a committed lock.
 
-Version constraints on the five packages T-18 raised floors for — `astro`,
+Version constraints raised by T-18 and T-74 — `astro`, `dompurify`,
 `fast-uri`, `js-yaml`, `sharp`, `svgo` — live in
 `tests/test_npm_audit_floors.py` and only there, including their pin format.
 This file used to carry private copies (`astro` had to start with `^7.`,
@@ -18,7 +18,7 @@ from __future__ import annotations
 
 import json
 import re
-from datetime import date
+from datetime import date, timedelta
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -50,25 +50,34 @@ def _caret_version(spec: str) -> tuple[int, int, int]:
 
 
 def test_npm_audit_exceptions_register_is_valid() -> None:
+    """Schema 2 exceptions are unique by advisory and expire within 31 days."""
     raw = json.loads(EXCEPTIONS.read_text(encoding="utf-8"))
-    assert raw["schema_version"] == 1
+    assert raw["schema_version"] == 2
     assert raw.get("updated")
     assert isinstance(raw.get("notes"), str) and raw["notes"].strip()
     exceptions = raw["exceptions"]
     # Empty list is valid after a clean Astro 7 audit; structure still enforced.
     assert isinstance(exceptions, list)
 
-    today = date.today().isoformat()
-    packages: set[str] = set()
+    today = date.today()
+    advisories: set[str] = set()
     for entry in exceptions:
-        assert entry["package"]
-        assert entry["package"] not in packages
-        packages.add(entry["package"])
+        assert isinstance(entry["advisory"], str)
+        assert re.fullmatch(r"GHSA(-[0-9a-z]{4}){3}", entry["advisory"])
+        assert entry["advisory"] not in advisories
+        advisories.add(entry["advisory"])
+        for field in ("package", "vulnerable_range", "unfreeze", "owner"):
+            assert isinstance(entry.get(field), str) and entry[field].strip()
         assert entry["max_severity"] in {"low", "moderate", "high"}
-        assert entry["reason"] and len(entry["reason"]) >= 20
-        assert entry["expires"] >= today, f"expired exception for {entry['package']}"
-        assert entry.get("owner")
-        assert isinstance(entry.get("advisories"), list)
+        assert isinstance(entry["reason"], str) and len(entry["reason"].strip()) >= 20
+        for field in ("added", "expires"):
+            assert re.fullmatch(r"\d{4}-\d{2}-\d{2}", entry[field])
+        added = date.fromisoformat(entry["added"])
+        expires = date.fromisoformat(entry["expires"])
+        assert added <= expires
+        assert expires >= today, f"expired exception for {entry['package']}"
+        assert expires <= today + timedelta(days=31)
+        assert "advisories" not in entry
         assert entry["package"] not in ASTRO6_RESIDUAL_EXCEPTION_PACKAGES, (
             f"stale Astro-6 residual exception for {entry['package']}"
         )

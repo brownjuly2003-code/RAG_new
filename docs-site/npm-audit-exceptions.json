@@ -1,6 +1,18 @@
 {
-  "schema_version": 1,
-  "updated": "2026-08-11",
-  "notes": "Plan DEP-01: after Astro 7.2 / Starlight 0.41 lock refresh (2026-08-11), npm audit reports zero residual advisories. Empty exceptions list is intentional; re-audit forces new dated entries if any low/moderate returns.",
-  "exceptions": []
+  "schema_version": 2,
+  "updated": "2026-10-03",
+  "notes": "DEP-01 exception register for the docs-site npm audit (ADR 0009). One entry covers exactly one advisory (GHSA id) against one package, for the vulnerable range npm audit reports today. It stops applying when that range changes (a fixed release exists), when it expires, or when the advisory is critical. An entry lives at most 31 days; renewing it is a dated decision in the ADR's review log. Packages flagged only through other packages get no entries: they are covered by derivation. An entry whose advisory the audit no longer reports fails the gate until it is removed.",
+  "exceptions": [
+    {
+      "advisory": "GHSA-ch52-4w7c-c8xp",
+      "package": "http-cache-semantics",
+      "vulnerable_range": "<=4.2.0",
+      "max_severity": "high",
+      "reason": "No fixed release exists: 4.2.0 is the latest and the advisory has no patched version. The advisory is disclosure of another user's response from a shared HTTP cache through max-stale. The docs site is a static build: Astro imports the package in one build-time module (assets/build/remote.js) to cache remote images during the build; there is no server, no shared cache and no second user, and the built client bundles do not ship it.",
+      "unfreeze": "A release of http-cache-semantics outside the vulnerable range, or an Astro release that drops the dependency: upgrade and delete this entry. npm audit then reports a different range and this entry stops applying on its own.",
+      "owner": "repository owner; decision taken by delegation, ADR 0009",
+      "added": "2026-10-03",
+      "expires": "2026-11-03"
+    }
+  ]
 }

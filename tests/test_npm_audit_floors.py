@@ -1,4 +1,4 @@
-"""Guard: the docs-site npm floors raised by T-18 cannot drift back down.
+"""Guard: the docs-site npm floors raised by T-18 and T-74 cannot drift back down.
 
 Advisories against five packages published upstream between 2026-08-25 and
 2026-09-07 turned `Deploy docs site (Astro Starlight) to Pages` red without a
@@ -10,7 +10,7 @@ failure mode this file guards: the next lock
 refresh must not be free to resolve back under the fix, and the gate must not
 be quieted with an exception when a fixed release exists.
 
-**What this file owns:** every version constraint on the five advisory
+**What this file owns:** every version constraint on the six fixed-release
 packages in `FIXED_IN` — the declared floor, the pin *format* that keeps that
 floor from drifting, the versions the lock resolves, and the exception
 register's silence about them. `tests/test_docs_site_npm_audit.py` owns the
@@ -18,7 +18,8 @@ DEP-01 audit posture (the exception register's schema and staleness, the audit
 script wiring, the non-advisory manifest shape). No assertion is stated in both
 files; a constraint on a `FIXED_IN` package belongs here.
 
-The advisory ranges are transcribed from `npm audit` on run 34393111514.
+T-18 floors come from `npm audit` on run 34393111514; T-74 raises fast-uri
+to 3.1.8 and adds dompurify 3.4.16 for the 2026-10-03 advisories (ADR 0009).
 """
 
 from __future__ import annotations
@@ -34,10 +35,11 @@ from packaging.version import Version
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DOCS_SITE = PROJECT_ROOT / "docs-site"
 
-# package -> first release that clears every advisory against it.
+# package -> minimum fixed release for the advisories guarded by T-18 and T-74.
 FIXED_IN = {
     "astro": Version("7.2.8"),  # GHSA-26w7-cxv4-gfx2 (critical), GHSA-376h-93r7-7g6f
-    "fast-uri": Version("3.1.6"),  # GHSA-5jgf-p345-68v8 + three more
+    "dompurify": Version("3.4.16"),  # GHSA-p98j-92pf-mc4p
+    "fast-uri": Version("3.1.8"),  # T-18 advisories + GHSA-hrr3-gc8f-f4qj
     "js-yaml": Version("4.3.2"),  # GHSA-2883-xcg3-v3hh
     "sharp": Version("0.35.4"),  # GHSA-rgj7-g3m4-5g8c (libheif)
     "svgo": Version("4.1.0"),  # GHSA-w27v-7q3p-w38r, GHSA-4vpr-x523-8j87
@@ -182,8 +184,7 @@ def test_sharp_dependency_and_override_agree() -> None:
 
 
 def test_the_audit_gate_was_not_quieted_instead_of_fixed() -> None:
-    """Every one of the five advisories had a fixed release, so none earns an
-    exception. CLAUDE.md forbids fixing a gate by relaxing it."""
+    """Packages in FIXED_IN have fixed releases and cannot receive exceptions."""
     registry = json.loads((DOCS_SITE / "npm-audit-exceptions.json").read_text(encoding="utf-8"))
     excepted = {exception.get("package") for exception in registry["exceptions"]}
     quieted = sorted(excepted & set(FIXED_IN))

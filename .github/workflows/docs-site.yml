@@ -46,12 +46,14 @@ jobs:
 
       - name: Audit npm dependencies
         working-directory: docs-site
-        # Plan DEP-01 (2026-08-07): fail-closed on high/critical after lock refresh.
-        # Residual moderate/low require dated reachability exceptions in
-        # docs-site/npm-audit-exceptions.json (no blanket `|| true`).
-        run: |
-          npm audit --audit-level=high
-          npm run audit:deps
+        # Plan DEP-01, ADR 0009: one fail-closed gate. `npm run audit:deps` fails on
+        # every advisory above `info` that has no dated exception by advisory id in
+        # docs-site/npm-audit-exceptions.json, on an expired or stale exception and
+        # on a report it cannot explain. Raw `npm audit --audit-level=high` is not
+        # run beside it: it cannot except by id, so one advisory with no fixed
+        # release would hold this step red forever. No `|| true`, no
+        # `continue-on-error`.
+        run: npm run audit:deps
 
       - name: Type-check docs site
         working-directory: docs-site
@@ -77,9 +79,9 @@ jobs:
     # "Ensure GitHub Pages has been enabled" (run 32783283788). Q1 chose a
     # private repository deliberately, so the deploy is what has to give, not
     # the choice. The build job above still runs on every docs change and
-    # still gates on `npm audit --audit-level=high`, the dependency
-    # exceptions check, the type-check and the build itself — none of that is
-    # skipped, only the publish.
+    # still gates on `npm run audit:deps` (the npm advisory gate, ADR 0009),
+    # the type-check and the build itself — none of that is skipped, only the
+    # publish.
     #
     # A workflow that is permanently red teaches its readers to ignore red,
     # which is the same argument ADR 0008 makes about the pip-audit jobs. This
