@@ -213,6 +213,26 @@ run 34449244275 alone. The other three workflows (`live-provider-gate`,
 so this is two of five. The chromadb CVE ignores were reviewed on
 2026-09-24 (no fixed release); the next review is **2026-10-24**.
 
+Observed 2026-10-03: GitHub Actions execute jobs again, and CI was red from
+`70d272c` (run 37093493571) to `df1bf47` (run 37137697604; Pages run 37137697647):
+`test-unit` on 3.11 and 3.13, `pre-commit`, `security`, and the Pages step
+`Audit npm dependencies`. Four tasks fixed it. T-71 (`22bb68a`): a request's
+context stayed on a pooled worker thread and reached the next request — a
+product defect behind the flaky 3.13 failures. T-72 (`f197481`): full git
+history for the artifact tests, a skip for the proof whose corpus is
+gitignored, and whitespace hooks that leave byte-pinned reports alone. T-73
+(`ebc343b`): six Python floors and both locks. T-74 (`45a417a`): two npm floors
+and one dated exception for an advisory with no fixed release. CI is green on
+`45a417a` (run 37157492007, 11 of 11 jobs); the Pages build passed on the same
+commit (run 37157492017) and its deploy was skipped — the repository is
+private, nothing is published. The Pages audit step is now `npm run audit:deps`
+([ADR 0009](docs/adr/0009-npm-advisory-without-fix.md)) instead of
+`npm audit --audit-level=high`. The exception (GHSA-ch52-4w7c-c8xp in
+`http-cache-semantics`, high) expires 2026-11-03: from 2026-11-04 the Pages
+build and the unit suite are red until it is renewed or removed. Its review is
+**2026-10-24**, with the chromadb ignores. Not checked: `sentence-transformers`
+from the lock with real models — the Mac environment is not built from the lock.
+
 | Phase | What | Acceptance |
 |---|---|---|
 | **0** | Freeze, publish, truth about gates | root ≤ 8 md, remote exists, CI status known, pricing/README/eval-gate claims true |
@@ -221,7 +241,7 @@ so this is two of five. The chromadb CVE ignores were reviewed on
 | **C** | Quality leverage: Qwen3 benchmark, NLI second judge, claim-level compilation | rule (c): faithfulness ≥ 0.90 and precision ≥ 0.63 over 3 runs with a CI, **or** a NO-SHIP report with a cause |
 | **GR** | Graph retrieval: structure graph (0 LLM calls) → entity graph → A/B → wired behind flags. Unfrozen 2026-09-06; **required** under the plan the owner adopted on 2026-09-10 — the only stream that can move the precision gate (0.5067 → ≥ 0.63), which is computed over cached contexts (plan §2); GR-1a's cheap arm gave 0.5216, no better than plain top-4's 0.5214 ([capsule](docs/evidence/gr1a-section-coherence.md)) | rule (c): published context precision / multi-hop coverage with provenance per step; rule (a): graph lane behind `RAG_GRAPH_RETRIEVAL` with an E2E test; GR-3 measured 2026-09-18/19 — NO-SHIP-to-default, default stays `off` ([capsule](docs/evidence/gr3-graph-lane-ab.md)) |
 | **D** | pgvector spike, ADR 0007 — D.1–D.5 measured; accepted 2026-09-25: retain the current retrieval backend (a vector-DB swap stays on the stop-list) | a table of numbers in the ADR; no migration without it |
-| **E** | Public artefact: README-first, 3-minute demo, `resolution-contracts` sub-package; Q4 confirmed 2026-09-30: publish current `RAG_new` as **RAG assistant**, Pages base `/RAG_new/`; E.4 site prepared at `236f7c1`, pushed and unpublished; Actions execute jobs again and CI is red on `70d272c` (observed 2026-10-03, causes in [`CURRENT_STATE.md`](CURRENT_STATE.md)); owner's order 2026-10-03: a green CI on HEAD comes before the quality thread's 2.5 chain; making the repository public and deploying Pages are the owner's gate and do not hold that thread (plan D11) | E.5: Mac full suite and final [history scan](docs/evidence/e5-secret-scan.md); E.4: push, green CI, public repo, Pages deploy, links from the old repo and proof-pack; numbers in README |
+| **E** | Public artefact: README-first, 3-minute demo, `resolution-contracts` sub-package; Q4 confirmed 2026-09-30: publish current `RAG_new` as **RAG assistant**, Pages base `/RAG_new/`; E.4 site prepared at `236f7c1`, pushed and unpublished; CI is green on `45a417a` (2026-10-03, run 37157492007, 11 of 11 jobs) and the Pages build passed on it (run 37157492017; deploy skipped, the repository is private and nothing is published), so the owner's order of 2026-10-03 — a green CI on HEAD before the quality thread's 2.5 chain — is met and that chain is next; making the repository public and deploying Pages are the owner's gate and do not hold that thread (plan D11) | E.5: Mac full suite and final [history scan](docs/evidence/e5-secret-scan.md); E.4: push, green CI, public repo, Pages deploy, links from the old repo and proof-pack; numbers in README |
 | **Q** | Quality thread after E ([plan](docs/specs/plan_03_10_26.md), adopted and ratified by delegation 2026-09-30, revised 2026-10-03): ruler cross-checked by model references (no human grades, D11) → observable route → ≤ 2 mechanisms chosen by the evidence-loss map (D8; default H1 in the graph lane, H5 as its budget) → locked-holdout acceptance. 2.1/2.2 implemented 2026-10-01 (T-59, rule (a)); 1.1/1.3b are agent and model work since D11 (2026-10-03), queued after the 2.5 chain | rule (c) per experiment with the [development ruler](docs/specs/semantic-precision-metrics.md): +0.05 in the mechanism's registered primary metric (sent-precision for selection, all-evidence coverage for coverage mechanisms) with CI95 lower bound > 0, non-inferiority −0.02 on the rest, no critical-fact loss on H/Hm, p95 delta ≤ 200 ms at equal budget; the lexical 0.63 gate stays on its own ruler; research acceptance on the Mac is not product acceptance (deployment target + SLO, D5); no default flip before both |
 
 Heavy runs (models, full suite, Docker) go to the Mac — never the Windows

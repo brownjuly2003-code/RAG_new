@@ -22,6 +22,7 @@ root — that habit is what produced 29 of them and is now closed.
 
 ## Publication gate checks
 
+- CI on `45a417a` (2026-10-03), run 37157492007: 11 of 11 jobs passed. `test-unit` on 3.11 and on 3.13: **4650 passed, 41 skipped**, coverage on 3.13 **78.89%** (gate 72%); `test-integration` on both legs: **93 passed, 1 skipped**. Pages run 37157492017 on the same commit: the `build` job passed (its steps include `Audit npm dependencies`, `Type-check docs site` and `Build`); the `deploy` job was skipped because the repository is private, so nothing is published. This is publication preparation, not a quality number.
 - E.5 local checks, `c81de77`, rerun on `b0386e9` (2026-09-30 late: 3,722 unit + 36 e2e passed on the Mac, history scan 0 findings): [verification and secret-scan record](docs/evidence/e5-secret-scan.md).
   Mac unit suite: **3,763 passed, 16 skipped**, coverage **77.78%** (gate 72%);
   PostgreSQL integrations: **93 passed, 1 skipped**; admin browser regression:
@@ -33,7 +34,7 @@ root — that habit is what produced 29 of them and is now closed.
   hashes and commands are in the record. Docker follow-up on `536cd59` plus the
   pinned restore fixture correction: **11 Mac tests passed, 0 skipped**,
   including both previously unrun Docker scenarios. This is publication preparation.
-  CI and public/deploy verification remain open.
+  CI is the bullet above; public/deploy verification remains open.
 
 ## Slices
 
@@ -379,6 +380,20 @@ changed in this slice either.
 
 Not slices — these fix claims that were false, so they do not go in the table
 above.
+
+### 2026-10-03
+
+| Fix | Commit | Test |
+|---|---|---|
+| Eleven artifact tests read git history by commit SHA while the CI `test-unit` job fetched one commit: the job now checks out full history. The multi-hop corpus proof failed without the gitignored corpus: it now skips. The whitespace and end-of-file hooks rewrote a byte-pinned report: `reports/` is excluded from both (T-72) | `f197481` | `tests/test_github_workflows.py`, `tests/test_precommit_config.py`, `tests/test_gr_multihop_cases.py` |
+| Six Python packages carried advisories with fixed releases (`anyio`, `oauthlib`, `pyjwt`, `pypdf`, `sentence-transformers`, `urllib3`): floors raised, both locks rebuilt, `sentence-transformers` capped below 6 (T-73) | `ebc343b` | `tests/test_pip_audit_floors.py` |
+| Three npm advisories: floors raised for the two with a fix (`dompurify`, `fast-uri`); one dated exception by advisory id for GHSA-ch52-4w7c-c8xp in `http-cache-semantics`, which has no fixed release ([ADR 0009](docs/adr/0009-npm-advisory-without-fix.md)); the Pages audit step is now `npm run audit:deps` (T-74) | `45a417a` | `tests/test_docs_site_npm_audit_gate.py`, `tests/test_docs_site_npm_audit.py`, `tests/test_npm_audit_floors.py` |
+
+These repaired a red CI (runs 37093493571 on `70d272c` to 37137697604 on `df1bf47`); they are not
+slices. The fourth cause, the request-context leak, was a product defect and is a slice: T-71,
+in the table above. Green afterwards: run 37157492007 on `45a417a`. Not checked:
+`sentence-transformers` from the lock with real models — the Mac environment is not built from
+the lock.
 
 ### 2026-08-29
 
