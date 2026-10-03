@@ -147,3 +147,67 @@ Spec: [`production-parity`](../specs/production-parity.md).
    publish the capsule and evidence row. Keep `provisional_ruler` until D2 closes.
 
 Human D2/D3 inputs remain pending. No retrieval default or quality gate changed.
+
+## Stop point — 2026-10-03 (after T-68)
+
+Julia, ~03:20 UTC: «поставь точку после текущего шага», then «не закрывай сейчас T-69».
+
+- **T-68 landed** as `af93851` and is pushed.
+  - `scripts/production_baseline.py` collects H 100 + Hm 15 on the production Chroma arm with
+    recorded exclusions and stops. The exclusion rule is a requirement in
+    `semantic-precision-metrics.md`.
+  - Mac full gate GREEN on tree `0191c49cc9`: unit 4497 passed, 43 skipped; resolution E2E 36
+    passed; strict mypy clean.
+  - No quality number.
+- **The T-66 parity run finished on the Mac.**
+  - Location: snapshot `/Users/julia/RAG_new_t66_parity_b0e67e609e77`, run
+    `.tmp/parity-c729b23`.
+  - All six stages completed; verify exited 0 at about 03:00 UTC. Item 2 above has run.
+  - It is not yet collected or published; that is T-67 (`production_parity_report`, SHAs,
+    capsule, evidence row). Until then the comparison is NOT_EVIDENCE.
+- **Mac processes.** llama-server is no longer running: the parity runner stopped it after
+  grade, and the agent did not touch it. `ollama serve` (pid 12377) is running. The T-65
+  collection needs the model again.
+- **T-69 is prepared but not started.** MyFlow has no open slice: T-68 passed, 65 of 70 tasks.
+  - The lead's decisions are appended to the T-69 detail (`task-edit`, 2026-10-03):
+    - the v2 consensus follows the spec's plan rule, including the 5 % judge exclusion;
+    - a unit is (case, `text_sha256`), and `text_sha256` is the ruler's doc id;
+    - the split rule;
+    - the exact chunk text goes out, including its `[Контекст: …]` line;
+    - outbound volume is counted from the reply stores;
+    - endpoints come from `RAG_JUDGE_GK_BASE` / `RAG_JUDGE_GLM_SETTINGS`.
+  - GLM 5.3 direct (xhigh, end_turn) wrote two files:
+    - `.tmp/t69/judge_consensus.py`: the reviewed, ruff-formatted
+      `evaluation/judge_consensus.py`;
+    - `.tmp/t69/result-script-001.txt`: `scripts/baseline_judge.py`, raw and not reviewed.
+  - Not done:
+    - the tests, `tests/test_baseline_judge.py`, in two GLM requests;
+    - the lead's extraction of `judge_version(judge, client, endpoint)` from
+      `scripts/relevance_judge_v2.py` `main`. The prompt for the script assumes it.
+- **Backup** on origin: branch `wip/T-69-prep`, commit `e5525fa` on top of `af93851`, 127 files.
+  - Contents:
+    - `.tmp/t69/`, `.tmp/notes/`, `.tmp/glm-direct.py`, `.tmp/mf-mac/*.py` and `steps.json`;
+    - the MyFlow resume files: state, tasks, config, spec, checkpoint, journal, progress,
+      `summary-T-68.md`, `writer/T-69-preamble.md`.
+  - Every blob was checked against the tree with `hash-object`. A restore into a scratch tree
+    gave 0 content differences.
+  - Restore only if the working tree lost these files:
+
+        git diff --name-only wip/T-69-prep~1 wip/T-69-prep |
+          xargs git restore --source=wip/T-69-prep --worktree --
+
+- **Resume, in order:**
+  1. `$MF continue`, then `$MF next` → T-69. `attach-commit` warned that T-69 and T-70 name
+     the changed `production_baseline.py`. T-69's detail is current; re-read T-70's before its
+     `next`.
+  2. Extract `judge_version` in `scripts/relevance_judge_v2.py`. Copy
+     `.tmp/t69/judge_consensus.py` to `evaluation/`. Review and apply the script from
+     `result-script-001.txt`.
+  3. Tests by GLM direct in two requests, the FALSE-REJECT control included:
+     - consensus, store and ruler;
+     - plan, split, prompts, resume, outbound and the consensus CLI.
+  4. Close T-69: local venv tests, `done T-69 --detach`, review, Mac full gate, scoped commit,
+     push.
+  5. After T-69 lands, delete `wip/T-69-prep`. Also delete the stale `wip/T-61-writer`; T-61
+     landed in `67e7be1`.
+  6. Then T-67 (parity publication), T-70 (loss map) and T-65 (the real baseline on the Mac).
