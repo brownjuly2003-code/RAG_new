@@ -344,3 +344,45 @@ Nothing in the resume order above was executed. Three things changed around it:
   2. T-65 — the real baseline on the Mac; llama-server has to be started again, and the GLM
      judge needs its quota back (weekly cap `1310`, reset 2026-10-05 05:56 UTC+8).
   3. Then T-57 (`unpark`) and the task for slice 1.3b.
+
+## T-70 done — 2026-10-04
+
+- **The loss map can read a baseline run; the map itself does not exist yet.**
+  `python -m scripts.evidence_loss_map --baseline-run <run> --out <file>` reads a finished run
+  of `scripts/production_baseline.py` and gives, for every H and Hm case, the first stage at
+  which a gold term is no longer observed: index → initial pool → caps/dedup → rerank →
+  expansion → packing → grading. `--chunks` and `--sources` name the chunk archive and the
+  source directory when they are not where the run's manifest says. Requirement:
+  [`evidence-loss-map.md`](../specs/evidence-loss-map.md); fixture tests:
+  `tests/test_evidence_loss_map_baseline.py`. The archive mode and the preliminary map are
+  unchanged. This slice is preparation: T-65 builds the map from its own run.
+- **What the mode refuses.** A run without `report.json`; a run with an open abort; a missing
+  or damaged record of any case at any of the five collector stages; a chunk archive whose
+  SHA-256 is not the one in the index receipt; records that do not share one routing mode with
+  the graph off. It writes no partial map.
+- **How to read the output.**
+  - A term that reaches the graded context is `no_observed_loss`, whatever the earlier stages
+    show. `last_loss` stands beside `first_loss`: for a term that came back and left again, it
+    names the stage of the final loss.
+  - A term the index holds and neither `vector` nor `pool` holds is `index_to_pool_unknown`.
+    The collector records no BM25 candidate ids, so "no lane retrieved it" cannot be told from
+    "the caps removed it".
+  - An excluded case and a case without gold are `unknown` with the reason and are in no
+    denominator. The answer stage is `unknown` for every case: the run generates no answers.
+  - Gold of an Hm case is looked for only in the texts of its `answer_sources` document.
+  - The RU→EN rows come twice: under the registered rule (`ru_to_en`) and under the proxy of
+    the preliminary map. The two select slightly different H cases; only the proxy rows compare
+    with the preliminary map and with the reconciliation data named in T-70's detail.
+  - `index_stage_losses` lists every gold term the index does not hold, as `split_by_chunking`,
+    `absent_from_sources` or `unknown`. An entry there means a code fix with a test before the
+    baseline is published (plan 2.5).
+- **Executor.** GLM 5.3 is on its weekly cap (`1310`) until 2026-10-05 05:56 UTC+8, so by the
+  recovery policy GPT-6.1-Sol (profile `cw`) wrote the code, the tests and the one repair; the
+  lead wrote the requirement. GPT-6-Astra reviewed twice: the first pass found that the
+  integrity check covered only the retrieve and grade records, the second confirmed the fix.
+- **Resume, in order** (replaces the list in the T-67 section):
+  1. T-65 — the real baseline on the Mac. `ollama serve` is running there with no model
+     loaded; the collector's first request loads the model. The two-judge consensus needs the
+     GLM quota back (reset above): a run judged by one model is `single_judge` and stays
+     outside the consensus (plan G24).
+  2. Then T-57 (`unpark`) and the task for slice 1.3b.

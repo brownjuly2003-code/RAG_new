@@ -12,7 +12,11 @@ from collections import Counter
 from pathlib import Path
 from typing import Any
 
+from evaluation.devset import RU_TO_EN_RULE, ru_to_en
+from evaluation.devset_sources import read_sources
 from evaluation.ragas_eval import context_precision, context_recall
+from scripts import production_baseline as baseline
+from scripts import production_parity as parity
 from scripts.ab_remote_contextual import _kw_status
 from scripts.generator_benchmark import _truncate_contexts
 
@@ -47,6 +51,25 @@ LOSS_ORDER = (
 STRATUM = (
     "Cyrillic letter in query and ASCII Latin letter in at least one required term; "
     "case-level lexical RU-to-EN proxy, registered before counting"
+)
+BASELINE_STAGES = (
+    "index",
+    "initial_pool",
+    "caps_dedup",
+    "rerank",
+    "expansion",
+    "packing",
+    "grading",
+)
+BASELINE_LOSSES = (
+    "index",
+    "index_to_pool_unknown",
+    "caps_dedup",
+    "rerank",
+    "expansion",
+    "packing",
+    "grading",
+    "no_observed_loss",
 )
 
 
@@ -548,12 +571,386 @@ def render_capsule(report: dict[str, Any]) -> str:
     return "\n".join(lines)
 
 
+def _baseline_term(term: str, document: str | None, stages: dict[str, Any]) -> dict[str, Any]:
+    presence = {
+        stage: any(
+            _hits([term], [text])
+            for text, source in stages[stage]
+            if document is None or source == document
+        )
+        for stage in BASELINE_STAGES
+    }
+    if presence["grading"]:
+        first = last = "no_observed_loss"
+    else:
+        first = (
+            "index"
+            if not presence["index"]
+            else "index_to_pool_unknown"
+            if not presence["initial_pool"]
+            else next(stage for stage in BASELINE_STAGES if not presence[stage])
+        )
+        held = [i for i, stage in enumerate(BASELINE_STAGES) if presence[stage]]
+        last = (
+            "index"
+            if not held
+            else "index_to_pool_unknown"
+            if max(held) == 0
+            else BASELINE_STAGES[max(held) + 1]
+        )
+    return {
+        "term": term,
+        **({"document": document} if document is not None else {}),
+        "presence": presence,
+        "first_loss": first,
+        "last_loss": last,
+    }
+
+
+def _baseline_summary(rows: list[dict[str, Any]]) -> dict[str, Any]:
+    counted = [row for row in rows if row["first_loss"] != "unknown"]
+    terms = [term for row in counted for term in row["terms"]]
+    stages = {}
+    for i, stage in enumerate(BASELINE_STAGES):
+        previous = BASELINE_STAGES[i - 1] if i else None
+        stages[stage] = {
+            "case_denominator": len(counted),
+            "term_denominator": len(terms),
+            "terms_held": sum(t["presence"][stage] for t in terms),
+            "terms_not_held": sum(not t["presence"][stage] for t in terms),
+            "cases_all_held": sum(all(t["presence"][stage] for t in r["terms"]) for r in counted),
+            "previous_stage": previous,
+            "terms_lost": sum(t["presence"][previous] and not t["presence"][stage] for t in terms)
+            if previous
+            else None,
+            "terms_gained": sum(not t["presence"][previous] and t["presence"][stage] for t in terms)
+            if previous
+            else None,
+            "cases_with_lost_term": sum(
+                any(t["presence"][previous] and not t["presence"][stage] for t in r["terms"])
+                for r in counted
+            )
+            if previous
+            else None,
+        }
+    distributions = {}
+    for name, items in (("cases", counted), ("terms", terms)):
+        counts = Counter(item["first_loss"] for item in items)
+        distributions["first_loss_" + name] = {
+            loss: {"count": counts[loss], "share": counts[loss] / len(items) if items else None}
+            for loss in BASELINE_LOSSES
+        }
+    return {
+        "cases": {
+            "total": len(rows),
+            "counted": len(counted),
+            "unknown_by_reason": dict(
+                Counter(r["reason"] for r in rows if r["first_loss"] == "unknown")
+            ),
+        },
+        "case_denominator": len(counted),
+        "term_denominator": len(terms),
+        "stages": stages,
+        **distributions,
+    }
+
+
+def _baseline_case(
+    case: dict[str, Any],
+    retrieve: dict[str, Any],
+    grade: dict[str, Any],
+    chunks: list[dict[str, Any]],
+) -> dict[str, Any]:
+    gold: list[tuple[str, str | None]] = (
+        list(case.get("answer_sources", {}).items())
+        if case["subset"] == "Hm"
+        else [(term, None) for term in case.get("expected", {}).get("answer_contains", [])]
+    )
+    row = {
+        "case_id": case["case_id"],
+        "subset": case["subset"],
+        "query_effective": retrieve.get("query_effective", grade.get("query_effective")),
+        "query_transform": retrieve.get("query_transform", grade.get("query_transform")),
+        "ru_to_en": ru_to_en(
+            {"question": case["query"], "required_facts": [{"text": term} for term, _ in gold]}
+        ),
+        "archive_proxy": bool(re.search("[А-Яа-яЁё]", case["query"]))
+        and any(re.search("[A-Za-z]", term) for term, _ in gold),
+        "terms": [],
+    }
+    if grade["status"] == "excluded":
+        return {
+            **row,
+            "first_loss": "unknown",
+            "reason": "excluded",
+            "exclusion": grade["exclusion"],
+        }
+    if not gold:
+        return {**row, "first_loss": "unknown", "reason": "no_gold"}
+    indexed = [(chunk["page_content"], chunk["metadata"].get("source")) for chunk in chunks]
+    stages = {
+        "index": indexed,
+        "initial_pool": [indexed[i] for i in retrieve["vector"] + retrieve["pool"]],
+        "caps_dedup": [indexed[i] for i in retrieve["pool"]],
+    }
+    for stage, documents in (
+        ("rerank", retrieve["seed_documents"]),
+        ("expansion", retrieve["expanded_documents"]),
+        ("packing", retrieve["documents"]),
+        ("grading", grade["documents"]),
+    ):
+        stages[stage] = [(d["text"], d["metadata"].get("source")) for d in documents]
+    terms = [_baseline_term(term, document, stages) for term, document in gold]
+    row.update(
+        terms=terms, first_loss=min((t["first_loss"] for t in terms), key=BASELINE_LOSSES.index)
+    )
+    if case["subset"] == "Hm":
+        row["source_documents_present"] = {
+            stage: [
+                source
+                for source in case["source_documents"]
+                if any(name == source for _, name in texts)
+            ]
+            for stage, texts in stages.items()
+        }
+    return row
+
+
+def _baseline_g3(rows: list[dict[str, Any]]) -> dict[str, Any]:
+    counted = [r for r in rows if r["first_loss"] != "unknown"]
+    hits = {
+        stage: [
+            {
+                "case_id": r["case_id"],
+                "matched_keywords": [
+                    str(i) for i, t in enumerate(r["terms"]) if t["presence"][stage]
+                ],
+            }
+            for r in counted
+        ]
+        for stage in ("rerank", "expansion", "grading")
+    }
+    denominator = sum(len(r["terms"]) for r in counted)
+    expansion = _transition(hits["rerank"], hits["expansion"], denominator)
+    sent = _transition(hits["rerank"], hits["grading"], denominator)
+    by_id = {r["case_id"]: r["terms"] for r in counted}
+    for transition in (expansion, sent):
+        for change in transition["losses"] + transition["gains"]:
+            change["terms"] = sorted(
+                by_id[change["case_id"]][int(i)]["term"] for i in change["terms"]
+            )
+    return {
+        "rerank_to_expansion": expansion,
+        "rerank_to_grading": sent,
+        "expansion_gains": {
+            key: expansion[key]
+            for key in (
+                "case_denominator",
+                "term_denominator",
+                "gained_cases",
+                "gained_terms",
+                "gains",
+            )
+        },
+    }
+
+
+def _baseline_index_losses(
+    rows: list[dict[str, Any]],
+    manifest: dict[str, Any],
+    directory: Path,
+    files: dict[tuple[str, str], dict[str, str]],
+    run: Path,
+) -> list[dict[str, Any]]:
+    losses = [
+        {
+            "case_id": row["case_id"],
+            "subset": row["subset"],
+            "term": term["term"],
+            **({"document": term["document"]} if "document" in term else {}),
+        }
+        for row in rows
+        if row["first_loss"] != "unknown"
+        for term in row["terms"]
+        if not term["presence"]["index"]
+    ]
+    if not losses:
+        return losses
+    texts: dict[str, str] = {}
+    reason = None
+    try:
+        texts = read_sources(manifest["source_manifest"], directory)
+    except (OSError, ValueError, UnicodeError) as exc:
+        reason = f"{type(exc).__name__}: source texts unavailable or integrity check failed"
+    for entry in manifest["source_manifest"]["files"]:
+        path = directory / entry["name"]
+        try:
+            _baseline_pin(files, path, run, "sources", entry["name"])
+        except OSError:
+            pass
+    for loss in losses:
+        source_texts = (
+            ([texts[loss["document"]]] if loss.get("document") in texts else [])
+            if "document" in loss
+            else list(texts.values())
+        )
+        if reason or ("document" in loss and loss["document"] not in texts):
+            loss.update(kind="unknown", reason=reason or "gold document not in source manifest")
+        else:
+            loss["kind"] = (
+                "split_by_chunking"
+                if any(_hits([loss["term"]], [text]) for text in source_texts)
+                else "absent_from_sources"
+            )
+    return losses
+
+
+def _baseline_pin(
+    files: dict[tuple[str, str], dict[str, str]],
+    path: Path,
+    run: Path,
+    root: str = "run",
+    reference: str | None = None,
+) -> None:
+    if reference is None:
+        reference = path.resolve().relative_to(run.resolve()).as_posix()
+    files[(root, reference)] = {
+        "root": root,
+        "path": reference,
+        "sha256": parity.file_sha(path),
+    }
+
+
+def build_baseline_map(
+    run: Path,
+    chunks: Path | None = None,
+    sources: Path | None = None,
+) -> dict[str, Any]:
+    manifest = baseline.load_manifest(run)
+    identity = parity.digest(manifest)
+    baseline.require_no_aborts(run, baseline.STAGES)
+    parity.load_stage(run / "report.json", identity)
+    archive = chunks if chunks is not None else Path(manifest["corpus"])
+    if parity.file_sha(archive) != manifest["index_receipt"]["corpus_sha256"]:
+        raise baseline.IntegrityError("Chunk archive differs from indexed corpus SHA-256")
+    corpus = json.loads(gzip.decompress(archive.read_bytes()))["chunks"]
+    files: dict[tuple[str, str], dict[str, str]] = {}
+    for path in (run / "manifest.json", run / "registration.json", run / "report.json"):
+        _baseline_pin(files, path, run)
+    _baseline_pin(files, archive, run, "chunk_archive", archive.name)
+    rows = []
+    modes = set()
+    for case in manifest["cases"]:
+        records = {}
+        for stage in baseline.STAGES:
+            path = run / stage / (case["case_id"] + ".json")
+            record = baseline.load_case(path, identity, run)
+            _baseline_pin(files, path, run)
+            for call in record.get("model_calls", []):
+                _baseline_pin(files, run / call["cache_file"], run)
+            if stage != "prepare":
+                modes.add(record.get("routing_mode"))
+            records[stage] = record
+        rows.append(_baseline_case(case, records["retrieve"], records["grade"], corpus))
+    if len(modes) != 1:
+        raise baseline.IntegrityError("Expected one routing_mode in baseline records")
+    mode = next(iter(modes))
+    if not isinstance(mode, str) or "graph off" not in mode:
+        raise baseline.IntegrityError("Baseline routing_mode must contain graph off")
+    index_losses = _baseline_index_losses(
+        rows,
+        manifest,
+        sources if sources is not None else Path(manifest["source_directory"]),
+        files,
+        run,
+    )
+    return {
+        "schema_version": "evidence-loss-map-baseline/v1",
+        "manifest_sha256": identity,
+        "files": [files[name] for name in sorted(files)],
+        "chunk_archive": {
+            "name": archive.name,
+            "sha256": manifest["index_receipt"]["corpus_sha256"],
+        },
+        "routing_mode": mode,
+        "observability": {
+            "answer": {"status": "unknown", "reason": "no generation in this mode"},
+            "graph_caps": {"status": "not_observable", "reason": "graph off"},
+            "coherence": {"status": "not_observable", "reason": "graph off"},
+            "bm25_candidates": {
+                "status": "not_observable",
+                "reason": "BM25 candidate ids are not recorded",
+            },
+            "query_transform": {"status": "reference_only", "reason": "no loss attributed"},
+        },
+        "summary": {
+            subset: _baseline_summary(
+                rows if subset == "all" else [r for r in rows if r["subset"] == subset]
+            )
+            for subset in ("H", "Hm", "all")
+        },
+        "per_case": rows,
+        "g2": {
+            name: {
+                "rule": rule,
+                "label": label,
+                "subsets": {
+                    subset: {
+                        side: _baseline_summary(
+                            [
+                                r
+                                for r in rows
+                                if (subset == "all" or r["subset"] == subset) and r[field] == inside
+                            ]
+                        )
+                        for side, inside in (("inside", True), ("outside", False))
+                    }
+                    for subset in ("H", "Hm", "all")
+                },
+            }
+            for name, field, rule, label in (
+                ("registered", "ru_to_en", RU_TO_EN_RULE, "registered RU-to-EN stratum"),
+                (
+                    "archive_proxy",
+                    "archive_proxy",
+                    STRATUM,
+                    "archive proxy for preliminary-map comparison",
+                ),
+            )
+        },
+        "g3": {
+            subset: _baseline_g3([r for r in rows if r["subset"] == subset])
+            for subset in ("H", "Hm")
+        },
+        "index_stage_losses": index_losses,
+        "index_loss_policy": "An index loss needs a code fix before the baseline is published.",
+    }
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--out", type=Path, default=ROOT / ARTIFACT)
+    parser.add_argument("--out", type=Path)
     parser.add_argument("--capsule", type=Path)
     parser.add_argument("--ledger", type=Path)
+    parser.add_argument("--baseline-run", type=Path)
+    parser.add_argument("--chunks", type=Path)
+    parser.add_argument("--sources", type=Path)
     args = parser.parse_args()
+    if args.baseline_run is None and (args.chunks is not None or args.sources is not None):
+        parser.error("--chunks and --sources require --baseline-run")
+    if args.baseline_run is not None:
+        if args.out is None or args.capsule is not None or args.ledger is not None:
+            parser.error("--baseline-run requires --out and forbids --capsule and --ledger")
+        report = build_baseline_map(args.baseline_run, args.chunks, args.sources)
+        serialized = (
+            json.dumps(report, ensure_ascii=False, sort_keys=True, indent=2, allow_nan=False) + "\n"
+        )
+        args.out.write_text(serialized, encoding="utf-8", newline="\n")
+        print(json.dumps(report["summary"], sort_keys=True))
+        print(f"Index losses: {len(report['index_stage_losses'])}")
+        return 0
+    if args.out is None:
+        args.out = ROOT / ARTIFACT
     report = build_report()
     serialized = json.dumps(report, ensure_ascii=False, indent=2, allow_nan=False) + "\n"
     args.out.write_text(serialized, encoding="utf-8", newline="\n")
