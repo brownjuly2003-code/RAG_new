@@ -131,6 +131,14 @@ def run_judge_v2(
     return result
 
 
+def judge_version(judge: str, client: Any, endpoint: str | None = None) -> str:
+    """Name the judge, its route and parameters; an endpoint enters only as its hash."""
+    fields = {"judge": judge, "route": client.route, "parameters": client.parameters}
+    if endpoint is not None:
+        fields["endpoint_sha256"] = hashlib.sha256(endpoint.rstrip("/").encode("utf-8")).hexdigest()
+    return json.dumps(fields, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+
+
 def _client(args: argparse.Namespace) -> Any:
     if args.judge == "sonnet":
         return SonnetClient(args.gk_base)
@@ -155,17 +163,7 @@ def main(argv: list[str] | None = None) -> int:
     if not cases:
         parser.error("cases must be a nonempty JSONL file")
     client = _client(args)
-    version_fields = {"judge": args.judge, "route": client.route, "parameters": client.parameters}
-    if args.judge == "sonnet":
-        version_fields["endpoint_sha256"] = hashlib.sha256(
-            args.gk_base.rstrip("/").encode("utf-8")
-        ).hexdigest()
-    version = json.dumps(
-        version_fields,
-        ensure_ascii=False,
-        sort_keys=True,
-        separators=(",", ":"),
-    )
+    version = judge_version(args.judge, client, args.gk_base if args.judge == "sonnet" else None)
     result = run_judge_v2(client, cases, args.store, judge_version=version, limit=args.limit)
     print(json.dumps(result, ensure_ascii=False))
     return int(bool(result["invalid"] or result["absent"] or result["pending"]))

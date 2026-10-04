@@ -219,6 +219,77 @@ counts, not quality metrics or an acceptance verdict.
 - **THEN** it stores an absent attempt and any reset time, leaves remaining cases
   pending, and exits with status 1
 
+## Requirement: baseline contexts are regraded by a fixed plan
+
+`python -m scripts.baseline_judge plan --run <run> --out <dir>` SHALL read one
+finished production-baseline run: its manifest, its report and every grade row,
+each bound to the run's identity, with no open abort record. It SHALL write
+`plan.json` once; an equal plan already in the directory is accepted, a different
+one SHALL be refused. For each collected case the plan SHALL take the first five
+reranked seeds and the sent documents, deduplicated by `text_sha256`. A text
+without a chunk address SHALL NOT be sent; the plan records it as unaddressed with
+its address reason. Cases excluded in collection SHALL be listed and not judged.
+
+The addressed texts of a case SHALL be sorted by `text_sha256` and cut into
+`ceil(n / 10)` consecutive parts whose sizes differ by at most one, larger parts
+first. A single part keeps the case id; the parts of a split case are
+`<case_id>#<k>` with `k` from 1. The plan SHALL record each request's
+`request_sha256` and prompt length, and SHALL be refused on read when either no
+longer rebuilds from the stored question and documents.
+
+`judge --out <dir> --judge glm|sonnet` SHALL send the planned requests through the
+v2 runner into `<dir>/<judge>.jsonl`, under the judge version the runner's own CLI
+gives the same judge, route, parameters and endpoint. One store SHALL hold the
+attempts of one judge version: before any request `judge` SHALL refuse a store
+that holds an attempt of another version. The Sonnet endpoint SHALL come from
+`RAG_JUDGE_GK_BASE`; without it the command SHALL be refused before any request.
+Neither the endpoint nor a credential SHALL be printed. The summary SHALL report
+what left the machine as an upper bound: the calls, texts and prompt characters of
+every attempt that was not a reuse.
+
+`consensus --out <dir>` SHALL count a grade only when its request id and
+`request_sha256` are in the plan. It SHALL refuse a store whose attempts, whatever
+their outcome, carry more than one judge version, and a store that holds a sent
+attempt whose request id and `request_sha256` are not a planned pair. The unit is
+`(baseline case, text_sha256)` and its consensus follows the rule above. A unit
+without a grade of an included judge is unjudged with a reason, never grade 0. A
+case whose deciding population, the first five seeds and the sent documents, holds
+an unjudged or unaddressed text SHALL be left out of the ruler input and counted,
+never scored. A text sent more than once is one document of the ruler input, kept
+at its first position, and the repeats SHALL be counted; seeds are passed as
+ranked. With no consensus grade at all the status SHALL be `NOT_EVIDENCE`,
+`ruler-input.json` SHALL NOT be written and the exit status SHALL be 1; the counts
+of kept and excluded cases SHALL be reported for both statuses. The command
+computes no quality number.
+
+### Scenario: a case with more than ten texts is split
+- **GIVEN** a case whose seeds and sent documents hold 21 distinct addressed texts
+- **WHEN** the plan is built
+- **THEN** it holds three requests of 7 texts each in `text_sha256` order, named
+  `<case_id>#1` to `<case_id>#3`
+- **AND** the same texts in another retrieval order give the same requests
+
+### Scenario: an unaddressed text leaves its case out
+- **GIVEN** a sent document whose chunk address could not be resolved
+- **WHEN** the plan and the consensus are built
+- **THEN** the text is in no request
+- **AND** its case is left out of the ruler input with the address reason
+
+### Scenario: a judge directory is reused for another run
+- **GIVEN** a judge directory that holds the plan of one baseline run
+- **WHEN** `plan` is called there for a run that gives a different plan
+- **THEN** the command is refused and `plan.json` is unchanged
+
+### Scenario: the judge configuration changes in a used directory
+- **GIVEN** a store that holds attempts of one judge version
+- **WHEN** `judge` runs there with another endpoint or other judge parameters
+- **THEN** it is refused before any request and the store is unchanged
+
+### Scenario: one text is sent twice
+- **GIVEN** a sent context that holds one text under two addresses and one other text
+- **WHEN** the ruler input is built
+- **THEN** the case's sent documents are the two distinct texts and one repeat is counted
+
 ## Requirement: the generation judge's deciding κ sample is explicit
 
 The deciding κ of the generation judge (`scripts/generator_benchmark.py`) SHALL

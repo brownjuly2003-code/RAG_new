@@ -249,3 +249,66 @@ Nothing in the resume order above was executed. Three things changed around it:
   plan no longer claims (`human-validated`, `real_labelled`): plan §2, record D11; eight open
   design questions: plan G38. Session log:
   [`session-handoff-2026-10-03-plan-revision.md`](session-handoff-2026-10-03-plan-revision.md).
+
+## T-69 done — 2026-10-03 (after the green CI)
+
+- **CI is green**, so Julia's order of 2026-10-03 is met and the resume order of the stop point
+  applies again. Observed runs: `45a417a` — CI 37157492007, 11 of 11 jobs; `1fbbf65` — CI
+  37160903526, 11 of 11 jobs, Pages 37160903511 (`build` passed, `deploy` skipped: the
+  repository is private). What was red and what fixed it: [`CURRENT_STATE.md`](../../CURRENT_STATE.md).
+- **T-69 is done: the tooling that regrades baseline contexts with judge v2.** No judge was
+  called and there is no quality number; the real calls belong to T-65.
+  - `scripts/baseline_judge.py` has three commands over one judge directory:
+
+        python -m scripts.baseline_judge plan --run <baseline run> --out <judge dir>
+        python -m scripts.baseline_judge judge --out <judge dir> --judge glm
+        python -m scripts.baseline_judge judge --out <judge dir> --judge sonnet
+        python -m scripts.baseline_judge consensus --out <judge dir>
+
+    - `plan` reads a finished `scripts/production_baseline.py` run and refuses an unfinished
+      one: no `report.json`, an open abort, a grade row of another run.
+    - `judge` sends the planned requests through `run_judge_v2` and resumes by `request_key`.
+      Sonnet needs `RAG_JUDGE_GK_BASE`; GLM settings come from `RAG_JUDGE_GLM_SETTINGS` or the
+      client's default. Neither value is printed or stored; the store keeps the endpoint's hash.
+    - `consensus` writes `ruler-input.json`, the input of `evaluation/semantic_ruler.py`, or
+      says `NOT_EVIDENCE` when no judge graded a unit.
+  - `evaluation/judge_consensus.py` holds the v2 consensus (lower median, the 5 % judge
+    exclusion of the `blinded-relevance-judge` spec), the store reader and the ruler adapter.
+  - `scripts/relevance_judge_v2.py`: `judge_version` is one shared function, so both command
+    lines give a judge the same version string.
+  - Tests: `tests/test_baseline_judge.py`, 114 tests on fixture runs with fake judges.
+  - The requirement is "baseline contexts are regraded by a fixed plan" in
+    [`blinded-relevance-judge.md`](../specs/blinded-relevance-judge.md).
+- **What T-65 has to know about these commands.**
+  - One judge directory holds one plan and, per store, one judge version, counted over every
+    attempt, failed ones too. A changed endpoint or changed judge parameters need a new
+    directory: `judge` refuses the old one before any request, and `consensus` refuses a store
+    that mixes versions.
+  - A judge that misses more than 5 % of the units is left out, and the other judge alone
+    forms the consensus. The summary names it under `excluded_judges`; a capsule built on such
+    a run has to say that the consensus is one judge.
+  - A text without a chunk address is not sent. Its case leaves judged precision with the
+    reason, and `judged_precision_excluded` counts such cases; no grade is substituted.
+  - A text sent twice is one document for `sent_precision`; `repeated_sent_texts` counts the
+    repeats. Seeds stay as ranked: the ruler counts a repeated seed as a miss.
+  - `outbound` in each summary is the upper bound of what left the machine — calls, texts and
+    prompt characters — for the capsule (plan G31).
+- **Executor.** GLM 5.3 direct (xhigh) wrote the two new modules on 2026-10-02. GLM reached its
+  weekly cap (`1310`) on 2026-10-03, so by the recovery policy GPT-6.1-Sol (profile `cw`) wrote
+  the tests and the four fixes that the review by GPT-6-Astra asked for; the lead extracted
+  `judge_version`, added five tests, wrote the spec requirement and reviewed the modules
+  against the collector's artifact format.
+- **The backup branches are no longer needed.** `wip/T-69-prep` (`e5525fa`) and the stale
+  `wip/T-61-writer` (`5fd53e5`; T-61 landed in `67e7be1`) are deleted from origin once this
+  commit is pushed. `plan_03_10_26.md` §1 still names the first one, as of its fourth
+  publication.
+- **Resume, in order** (replaces the list in the stop-point section):
+  1. T-67 — publish the parity run: `manifest.json`, `comparison.json` and `report.json` from
+     the Mac run named in the stop-point section, a capsule, an artifact test, an evidence row.
+  2. T-70 — the full loss map. Its detail was not yet checked against the fields
+     `scripts/production_baseline.py` writes; do that before `next`. Known so far: the
+     retrieve and grade rows carry `vector`, `pool` and `ranked` chunk indices, `seed_documents`,
+     `expanded_documents` and `documents`; the baseline runs the hybrid lane with the graph
+     off, so the graph lane's caps and coherence stages have no artifact of their own.
+  3. T-65 — the real baseline on the Mac; llama-server has to be started again.
+  4. Then T-57 (`unpark`) and the task for slice 1.3b.
