@@ -1,0 +1,14 @@
+{
+  "cache_records": 324,
+  "integrity_mismatches": 0,
+  "llm_outcomes": {
+    "response": 243,
+    "structured_output_invalid": 13
+  },
+  "manifest_sha256": "5f12656d4fd38f398a65dae013f2bf944ebe063379f52cfe2a622f7993c3ec55",
+  "records_by_kind": {
+    "embedding": 30,
+    "llm": 256,
+    "rerank": 38
+  }
+}

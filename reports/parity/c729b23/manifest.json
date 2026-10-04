@@ -1,0 +1,964 @@
+{
+  "schema_version": 1,
+  "code_sha": "c729b2360e1074ac4e6c1ca641a8d20c6b826d8f",
+  "source_sha256": "7bdc95b5406110216af31b4434cae5e906bdc59b348f01bb2ad9dab8ea7a78c4",
+  "dataset_sha256": "3737d694362d1867ca3d5983e3765d02c01110d2409145ba7e0f05c021d9c720",
+  "runtime": {
+    "python": "3.11.15",
+    "platform": "macOS-13.7.8-x86_64-i386-64bit",
+    "packages": {
+      "numpy": "1.26.4",
+      "torch": "2.2.2",
+      "sentence-transformers": "2.7.0",
+      "transformers": "4.44.2",
+      "chromadb": "1.5.9",
+      "langchain-ollama": "1.1.0",
+      "langgraph": "1.2.2",
+      "rank-bm25": "0.2.2"
+    }
+  },
+  "selection": "first 30 ascending sha256(case_id)",
+  "cases": [
+    {
+      "case_id": "aircargo-matliab-check",
+      "tenant_id": "aircargo",
+      "query": "Что проверить по материальной ответственности работника?",
+      "expected": {
+        "answer_contains": [
+          "ущерб",
+          "объяснени"
+        ],
+        "min_quality": 0.5
+      },
+      "tags": [
+        "hr",
+        "material_liability"
+      ],
+      "label": {
+        "journey": "out_of_scope",
+        "expected_terminal": "verified",
+        "root_cause": "no_contract_for_intent",
+        "binds_shipment": false,
+        "confidence": "high",
+        "labelled_by": "agent:claude-opus-5",
+        "labelled_at": "2026-08-25",
+        "batch": 1,
+        "approved_by": null,
+        "evidence_class": "agent_labelled",
+        "note": ""
+      }
+    },
+    {
+      "case_id": "aircargo-access-control-review",
+      "tenant_id": "aircargo",
+      "query": "Какие поля нужны для пересмотра матрицы доступа?",
+      "expected": {
+        "answer_contains": [
+          "role_matrix",
+          "review_frequency"
+        ],
+        "min_quality": 0.5
+      },
+      "tags": [
+        "compliance",
+        "access_control"
+      ],
+      "label": {
+        "journey": "out_of_scope",
+        "expected_terminal": "verified",
+        "root_cause": "no_contract_for_intent",
+        "binds_shipment": false,
+        "confidence": "high",
+        "labelled_by": "agent:claude-opus-5",
+        "labelled_at": "2026-08-25",
+        "batch": 3,
+        "approved_by": null,
+        "evidence_class": "agent_labelled",
+        "note": ""
+      }
+    },
+    {
+      "case_id": "aircargo-subject-rights-required-fields",
+      "tenant_id": "aircargo",
+      "query": "Какие поля нужны для ответа на запрос субъекта ПДн по AWB или booking?",
+      "expected": {
+        "answer_contains": [
+          "request_type",
+          "awb_booking_reference"
+        ],
+        "min_quality": 0.5
+      },
+      "tags": [
+        "compliance",
+        "subject_rights",
+        "pdp"
+      ],
+      "label": {
+        "journey": "out_of_scope",
+        "expected_terminal": "verified",
+        "root_cause": "no_contract_for_intent",
+        "binds_shipment": false,
+        "confidence": "medium",
+        "labelled_by": "agent:claude-opus-5",
+        "labelled_at": "2026-08-25",
+        "batch": 4,
+        "approved_by": null,
+        "evidence_class": "agent_labelled",
+        "note": "Touches AWB and booking data, but the resolving process is privacy, not a shipment journey."
+      }
+    },
+    {
+      "case_id": "aircargo-gps-monitoring-scope",
+      "tenant_id": "aircargo",
+      "query": "До какого этапа логист сверяет GPS и документы наземного плеча?",
+      "expected": {
+        "answer_contains": [
+          "first/last mile",
+          "cargo release"
+        ],
+        "min_quality": 0.5
+      },
+      "tags": [
+        "logistics",
+        "gps_tracking"
+      ],
+      "label": {
+        "journey": "shipment_status",
+        "expected_terminal": "verified",
+        "root_cause": "no_shipment_binding",
+        "binds_shipment": false,
+        "confidence": "high",
+        "labelled_by": "agent:claude-opus-5",
+        "labelled_at": "2026-08-25",
+        "batch": 5,
+        "approved_by": null,
+        "evidence_class": "agent_labelled",
+        "note": ""
+      }
+    },
+    {
+      "case_id": "aircargo-secret-not-auto",
+      "tenant_id": "aircargo",
+      "query": "Когда сведения не стоит автоматически считать коммерческой тайной?",
+      "expected": {
+        "answer_contains": [
+          "режим",
+          "доступ"
+        ],
+        "min_quality": 0.5
+      },
+      "tags": [
+        "legal",
+        "commercial_secret"
+      ],
+      "label": {
+        "journey": "out_of_scope",
+        "expected_terminal": "verified",
+        "root_cause": "no_contract_for_intent",
+        "binds_shipment": false,
+        "confidence": "high",
+        "labelled_by": "agent:claude-opus-5",
+        "labelled_at": "2026-08-25",
+        "batch": 1,
+        "approved_by": null,
+        "evidence_class": "agent_labelled",
+        "note": ""
+      }
+    },
+    {
+      "case_id": "aircargo-gps-monitoring-required-fields",
+      "tenant_id": "aircargo",
+      "query": "Какие поля нужны для GPS-мониторинга наземного плеча авиагруза?",
+      "expected": {
+        "answer_contains": [
+          "gps_device_id",
+          "data_retention_period"
+        ],
+        "min_quality": 0.5
+      },
+      "tags": [
+        "logistics",
+        "gps_tracking"
+      ],
+      "label": {
+        "journey": "shipment_status",
+        "expected_terminal": "verified",
+        "root_cause": "no_shipment_binding",
+        "binds_shipment": false,
+        "confidence": "high",
+        "labelled_by": "agent:claude-opus-5",
+        "labelled_at": "2026-08-25",
+        "batch": 5,
+        "approved_by": null,
+        "evidence_class": "agent_labelled",
+        "note": ""
+      }
+    },
+    {
+      "case_id": "aircargo-expedition-vs-carrier",
+      "tenant_id": "aircargo",
+      "query": "Чем экспедитор в авиагрузе отличается от авиаперевозчика?",
+      "expected": {
+        "answer_contains": [
+          "экспедитор",
+          "AWB"
+        ],
+        "min_quality": 0.5
+      },
+      "tags": [
+        "logistics",
+        "expedition"
+      ],
+      "label": {
+        "journey": "out_of_scope",
+        "expected_terminal": "verified",
+        "root_cause": "no_contract_for_intent",
+        "binds_shipment": false,
+        "confidence": "medium",
+        "labelled_by": "agent:claude-opus-5",
+        "labelled_at": "2026-08-25",
+        "batch": 2,
+        "approved_by": null,
+        "evidence_class": "agent_labelled",
+        "note": "Air-cargo domain knowledge; no journey resolves a definition."
+      }
+    },
+    {
+      "case_id": "aircargo-harassment-investigation-timeline",
+      "tenant_id": "aircargo",
+      "query": "В какие сроки назначается и проводится расследование по жалобе о домогательствах?",
+      "expected": {
+        "answer_contains": [
+          "2 рабочих дней",
+          "10 рабочих дней"
+        ],
+        "min_quality": 0.5
+      },
+      "tags": [
+        "hr",
+        "harassment"
+      ],
+      "label": {
+        "journey": "out_of_scope",
+        "expected_terminal": "verified",
+        "root_cause": "no_contract_for_intent",
+        "binds_shipment": false,
+        "confidence": "high",
+        "labelled_by": "agent:claude-opus-5",
+        "labelled_at": "2026-08-25",
+        "batch": 5,
+        "approved_by": null,
+        "evidence_class": "agent_labelled",
+        "note": ""
+      }
+    },
+    {
+      "case_id": "aircargo-customs-clearance-fields",
+      "tenant_id": "aircargo",
+      "query": "Какие данные нужны для таможенного оформления авиагруза?",
+      "expected": {
+        "answer_contains": [
+          "declaration_number",
+          "customs_code"
+        ],
+        "min_quality": 0.5
+      },
+      "tags": [
+        "logistics",
+        "customs"
+      ],
+      "label": {
+        "journey": "customs_docs",
+        "expected_terminal": "verified",
+        "root_cause": "no_shipment_binding",
+        "binds_shipment": false,
+        "confidence": "high",
+        "labelled_by": "agent:claude-opus-5",
+        "labelled_at": "2026-08-25",
+        "batch": 3,
+        "approved_by": null,
+        "evidence_class": "agent_labelled",
+        "note": ""
+      }
+    },
+    {
+      "case_id": "aircargo-harassment-complaint-data",
+      "tenant_id": "aircargo",
+      "query": "Что должна содержать жалоба по политике противодействия домогательствам?",
+      "expected": {
+        "answer_contains": [
+          "дату",
+          "свидетелей"
+        ],
+        "min_quality": 0.5
+      },
+      "tags": [
+        "hr",
+        "harassment"
+      ],
+      "label": {
+        "journey": "out_of_scope",
+        "expected_terminal": "verified",
+        "root_cause": "no_contract_for_intent",
+        "binds_shipment": false,
+        "confidence": "high",
+        "labelled_by": "agent:claude-opus-5",
+        "labelled_at": "2026-08-25",
+        "batch": 5,
+        "approved_by": null,
+        "evidence_class": "agent_labelled",
+        "note": ""
+      }
+    },
+    {
+      "case_id": "aircargo-matliab-disputed",
+      "tenant_id": "aircargo",
+      "query": "Когда полная материальная ответственность работника спорна?",
+      "expected": {
+        "answer_contains": [
+          "основани",
+          "договор"
+        ],
+        "min_quality": 0.5
+      },
+      "tags": [
+        "hr",
+        "material_liability"
+      ],
+      "label": {
+        "journey": "out_of_scope",
+        "expected_terminal": "verified",
+        "root_cause": "no_contract_for_intent",
+        "binds_shipment": false,
+        "confidence": "high",
+        "labelled_by": "agent:claude-opus-5",
+        "labelled_at": "2026-08-25",
+        "batch": 1,
+        "approved_by": null,
+        "evidence_class": "agent_labelled",
+        "note": ""
+      }
+    },
+    {
+      "case_id": "aircargo-breach-notification-required-fields",
+      "tenant_id": "aircargo",
+      "query": "Какие поля нужны для уведомления о нарушении ПДн в авиагрузовом процессе?",
+      "expected": {
+        "answer_contains": [
+          "breach_type",
+          "affected_systems"
+        ],
+        "min_quality": 0.5
+      },
+      "tags": [
+        "compliance",
+        "breach_notification",
+        "pdp"
+      ],
+      "label": {
+        "journey": "out_of_scope",
+        "expected_terminal": "verified",
+        "root_cause": "no_contract_for_intent",
+        "binds_shipment": false,
+        "confidence": "high",
+        "labelled_by": "agent:claude-opus-5",
+        "labelled_at": "2026-08-25",
+        "batch": 5,
+        "approved_by": null,
+        "evidence_class": "agent_labelled",
+        "note": ""
+      }
+    },
+    {
+      "case_id": "aircargo-oversized-permit-route",
+      "tenant_id": "aircargo",
+      "query": "Какие параметры нужны для oversized cargo воздушным транспортом?",
+      "expected": {
+        "answer_contains": [
+          "permit_number",
+          "escort_vehicle_count"
+        ],
+        "min_quality": 0.5
+      },
+      "tags": [
+        "logistics",
+        "oversized"
+      ],
+      "label": {
+        "journey": "customs_docs",
+        "expected_terminal": "verified",
+        "root_cause": "no_shipment_binding",
+        "binds_shipment": false,
+        "confidence": "high",
+        "labelled_by": "agent:claude-opus-5",
+        "labelled_at": "2026-08-25",
+        "batch": 4,
+        "approved_by": null,
+        "evidence_class": "agent_labelled",
+        "note": ""
+      }
+    },
+    {
+      "case_id": "aircargo-access-control-need-to-know",
+      "tenant_id": "aircargo",
+      "query": "На каком принципе строится доступ к AWB и customer data?",
+      "expected": {
+        "answer_contains": [
+          "need-to-know",
+          "журнала действий"
+        ],
+        "min_quality": 0.5
+      },
+      "tags": [
+        "compliance",
+        "access_control"
+      ],
+      "label": {
+        "journey": "out_of_scope",
+        "expected_terminal": "verified",
+        "root_cause": "no_contract_for_intent",
+        "binds_shipment": false,
+        "confidence": "high",
+        "labelled_by": "agent:claude-opus-5",
+        "labelled_at": "2026-08-25",
+        "batch": 3,
+        "approved_by": null,
+        "evidence_class": "agent_labelled",
+        "note": ""
+      }
+    },
+    {
+      "case_id": "aircargo-weight-control-discrepancy",
+      "tenant_id": "aircargo",
+      "query": "Что делать при расхождении по маршруту, грузу, весу или пломбам?",
+      "expected": {
+        "answer_contains": [
+          "фиксируются актом",
+          "следующему участнику"
+        ],
+        "min_quality": 0.5
+      },
+      "tags": [
+        "logistics",
+        "weight_control"
+      ],
+      "label": {
+        "journey": "exception_escalation",
+        "expected_terminal": "verified",
+        "root_cause": "no_shipment_binding",
+        "binds_shipment": false,
+        "confidence": "high",
+        "labelled_by": "agent:claude-opus-5",
+        "labelled_at": "2026-08-25",
+        "batch": 5,
+        "approved_by": null,
+        "evidence_class": "agent_labelled",
+        "note": ""
+      }
+    },
+    {
+      "case_id": "aircargo-cargo-loss-evidence-bundle",
+      "tenant_id": "aircargo",
+      "query": "Какие доказательства нужны по претензии об утрате или недостаче груза?",
+      "expected": {
+        "answer_contains": [
+          "shortage report",
+          "seal photos"
+        ],
+        "min_quality": 0.5
+      },
+      "tags": [
+        "legal",
+        "cargo_loss_claim"
+      ],
+      "label": {
+        "journey": "exception_escalation",
+        "expected_terminal": "verified",
+        "root_cause": "no_shipment_binding",
+        "binds_shipment": false,
+        "confidence": "high",
+        "labelled_by": "agent:claude-opus-5",
+        "labelled_at": "2026-08-25",
+        "batch": 4,
+        "approved_by": null,
+        "evidence_class": "agent_labelled",
+        "note": ""
+      }
+    },
+    {
+      "case_id": "aircargo-pdp-uncertain",
+      "tenant_id": "aircargo",
+      "query": "Когда по персональным данным нельзя давать уверенный ответ?",
+      "expected": {
+        "answer_contains": [
+          "основани",
+          "утечк"
+        ],
+        "min_quality": 0.5
+      },
+      "tags": [
+        "compliance",
+        "pdp"
+      ],
+      "label": {
+        "journey": "out_of_scope",
+        "expected_terminal": "verified",
+        "root_cause": "no_contract_for_intent",
+        "binds_shipment": false,
+        "confidence": "high",
+        "labelled_by": "agent:claude-opus-5",
+        "labelled_at": "2026-08-25",
+        "batch": 1,
+        "approved_by": null,
+        "evidence_class": "agent_labelled",
+        "note": ""
+      }
+    },
+    {
+      "case_id": "aircargo-trade-compliance-screening",
+      "tenant_id": "aircargo",
+      "query": "Что фиксирует Compliance Officer при санкционном скрининге маршрута?",
+      "expected": {
+        "answer_contains": [
+          "санкционные списки",
+          "код ТН ВЭД"
+        ],
+        "min_quality": 0.5
+      },
+      "tags": [
+        "compliance",
+        "trade_compliance"
+      ],
+      "label": {
+        "journey": "customs_docs",
+        "expected_terminal": "verified",
+        "root_cause": "no_shipment_binding",
+        "binds_shipment": false,
+        "confidence": "medium",
+        "labelled_by": "agent:claude-opus-5",
+        "labelled_at": "2026-08-25",
+        "batch": 3,
+        "approved_by": null,
+        "evidence_class": "agent_labelled",
+        "note": "Sanctions screening is a completeness-and-policy record on the route, not an exception."
+      }
+    },
+    {
+      "case_id": "aircargo-internal-transfer-documents",
+      "tenant_id": "aircargo",
+      "query": "Какие документы HR готовит при переводе сотрудника?",
+      "expected": {
+        "answer_contains": [
+          "дополнительное соглашение",
+          "приказ"
+        ],
+        "min_quality": 0.5
+      },
+      "tags": [
+        "hr",
+        "internal_transfer"
+      ],
+      "label": {
+        "journey": "out_of_scope",
+        "expected_terminal": "verified",
+        "root_cause": "no_contract_for_intent",
+        "binds_shipment": false,
+        "confidence": "high",
+        "labelled_by": "agent:claude-opus-5",
+        "labelled_at": "2026-08-25",
+        "batch": 2,
+        "approved_by": null,
+        "evidence_class": "agent_labelled",
+        "note": ""
+      }
+    },
+    {
+      "case_id": "aircargo-waybill-escalation-events",
+      "tenant_id": "aircargo",
+      "query": "Какие события по путевому листу требуют эскалации в юридический отдел?",
+      "expected": {
+        "answer_contains": [
+          "missed cutoff",
+          "insurance regress"
+        ],
+        "min_quality": 0.5
+      },
+      "tags": [
+        "logistics",
+        "waybill"
+      ],
+      "label": {
+        "journey": "exception_escalation",
+        "expected_terminal": "verified",
+        "root_cause": "no_shipment_binding",
+        "binds_shipment": false,
+        "confidence": "high",
+        "labelled_by": "agent:claude-opus-5",
+        "labelled_at": "2026-08-25",
+        "batch": 3,
+        "approved_by": null,
+        "evidence_class": "agent_labelled",
+        "note": ""
+      }
+    },
+    {
+      "case_id": "aircargo-road-driver-pdn",
+      "tenant_id": "aircargo",
+      "query": "Клиент просит паспорт водителя и телефон для пропуска — что безопасно ответить?",
+      "expected": {
+        "answer_contains": [
+          "раскрывать",
+          "основание"
+        ],
+        "min_quality": 0.5
+      },
+      "tags": [
+        "logistics",
+        "transport_road",
+        "pdp"
+      ],
+      "label": {
+        "journey": "shipment_status",
+        "expected_terminal": "verified",
+        "root_cause": "no_shipment_binding",
+        "binds_shipment": false,
+        "confidence": "medium",
+        "labelled_by": "agent:claude-opus-5",
+        "labelled_at": "2026-08-25",
+        "batch": 2,
+        "approved_by": null,
+        "evidence_class": "agent_labelled",
+        "note": "A disclosure request about a shipment's ground leg; journey 1 owns the policy check."
+      }
+    },
+    {
+      "case_id": "aircargo-data-retention-required-fields",
+      "tenant_id": "aircargo",
+      "query": "Какие поля нужны для политики сроков хранения данных?",
+      "expected": {
+        "answer_contains": [
+          "retention_period",
+          "system_of_record"
+        ],
+        "min_quality": 0.5
+      },
+      "tags": [
+        "compliance",
+        "data_retention"
+      ],
+      "label": {
+        "journey": "out_of_scope",
+        "expected_terminal": "verified",
+        "root_cause": "no_contract_for_intent",
+        "binds_shipment": false,
+        "confidence": "high",
+        "labelled_by": "agent:claude-opus-5",
+        "labelled_at": "2026-08-25",
+        "batch": 4,
+        "approved_by": null,
+        "evidence_class": "agent_labelled",
+        "note": ""
+      }
+    },
+    {
+      "case_id": "aircargo-breach-notification-participants",
+      "tenant_id": "aircargo",
+      "query": "Кто определяет уведомления и блокировки операций при утечке AWB или booking data?",
+      "expected": {
+        "answer_contains": [
+          "DPO",
+          "владелец авиационного процесса"
+        ],
+        "min_quality": 0.5
+      },
+      "tags": [
+        "compliance",
+        "breach_notification",
+        "pdp"
+      ],
+      "label": {
+        "journey": "out_of_scope",
+        "expected_terminal": "verified",
+        "root_cause": "no_contract_for_intent",
+        "binds_shipment": false,
+        "confidence": "high",
+        "labelled_by": "agent:claude-opus-5",
+        "labelled_at": "2026-08-25",
+        "batch": 5,
+        "approved_by": null,
+        "evidence_class": "agent_labelled",
+        "note": ""
+      }
+    },
+    {
+      "case_id": "aircargo-claims-lawyer",
+      "tenant_id": "aircargo",
+      "query": "Когда по претензии нужно подключать юриста или compliance?",
+      "expected": {
+        "answer_contains": [
+          "суд",
+          "срок"
+        ],
+        "min_quality": 0.5
+      },
+      "tags": [
+        "logistics",
+        "claims"
+      ],
+      "label": {
+        "journey": "exception_escalation",
+        "expected_terminal": "verified",
+        "root_cause": "no_shipment_binding",
+        "binds_shipment": false,
+        "confidence": "high",
+        "labelled_by": "agent:claude-opus-5",
+        "labelled_at": "2026-08-25",
+        "batch": 2,
+        "approved_by": null,
+        "evidence_class": "agent_labelled",
+        "note": ""
+      }
+    },
+    {
+      "case_id": "aircargo-salary-payment-dates",
+      "tenant_id": "aircargo",
+      "query": "Когда выплачиваются аванс и окончательный расчет по положению об оплате труда?",
+      "expected": {
+        "answer_contains": [
+          "20-го числа",
+          "5-го числа"
+        ],
+        "min_quality": 0.5
+      },
+      "tags": [
+        "hr",
+        "salary"
+      ],
+      "label": {
+        "journey": "out_of_scope",
+        "expected_terminal": "verified",
+        "root_cause": "no_contract_for_intent",
+        "binds_shipment": false,
+        "confidence": "high",
+        "labelled_by": "agent:claude-opus-5",
+        "labelled_at": "2026-08-25",
+        "batch": 4,
+        "approved_by": null,
+        "evidence_class": "agent_labelled",
+        "note": ""
+      }
+    },
+    {
+      "case_id": "aircargo-cross-border-pdn-required-fields",
+      "tenant_id": "aircargo",
+      "query": "Какие поля нужны для трансграничной передачи ПДн?",
+      "expected": {
+        "answer_contains": [
+          "recipient_country",
+          "sanctions_route_check"
+        ],
+        "min_quality": 0.5
+      },
+      "tags": [
+        "compliance",
+        "cross_border_transfer",
+        "pdp"
+      ],
+      "label": {
+        "journey": "out_of_scope",
+        "expected_terminal": "verified",
+        "root_cause": "no_contract_for_intent",
+        "binds_shipment": false,
+        "confidence": "high",
+        "labelled_by": "agent:claude-opus-5",
+        "labelled_at": "2026-08-25",
+        "batch": 5,
+        "approved_by": null,
+        "evidence_class": "agent_labelled",
+        "note": ""
+      }
+    },
+    {
+      "case_id": "aircargo-driver-dangerous-goods-refusal",
+      "tenant_id": "aircargo",
+      "query": "Может ли водитель отказаться от опасного груза без обучения и допуска?",
+      "expected": {
+        "answer_contains": [
+          "опасных грузов",
+          "допуска"
+        ],
+        "min_quality": 0.5
+      },
+      "tags": [
+        "hr",
+        "driver_job_description",
+        "dangerous_goods"
+      ],
+      "label": {
+        "journey": "out_of_scope",
+        "expected_terminal": "verified",
+        "root_cause": "no_contract_for_intent",
+        "binds_shipment": false,
+        "confidence": "medium",
+        "labelled_by": "agent:claude-opus-5",
+        "labelled_at": "2026-08-25",
+        "batch": 3,
+        "approved_by": null,
+        "evidence_class": "agent_labelled",
+        "note": "A labour-law question about the driver, not about accepting the shipment."
+      }
+    },
+    {
+      "case_id": "aircargo-secret-check",
+      "tenant_id": "aircargo",
+      "query": "Что проверять по режиму коммерческой тайны?",
+      "expected": {
+        "answer_contains": [
+          "NDA",
+          "доступ"
+        ],
+        "min_quality": 0.5
+      },
+      "tags": [
+        "legal",
+        "commercial_secret"
+      ],
+      "label": {
+        "journey": "out_of_scope",
+        "expected_terminal": "verified",
+        "root_cause": "no_contract_for_intent",
+        "binds_shipment": false,
+        "confidence": "high",
+        "labelled_by": "agent:claude-opus-5",
+        "labelled_at": "2026-08-25",
+        "batch": 1,
+        "approved_by": null,
+        "evidence_class": "agent_labelled",
+        "note": ""
+      }
+    },
+    {
+      "case_id": "aircargo-business-trip-advance-report",
+      "tenant_id": "aircargo",
+      "query": "Какие документы сотрудник должен сдать после командировки?",
+      "expected": {
+        "answer_contains": [
+          "авансовый отчет",
+          "билеты"
+        ],
+        "min_quality": 0.5
+      },
+      "tags": [
+        "hr",
+        "business_trip"
+      ],
+      "label": {
+        "journey": "out_of_scope",
+        "expected_terminal": "verified",
+        "root_cause": "no_contract_for_intent",
+        "binds_shipment": false,
+        "confidence": "high",
+        "labelled_by": "agent:claude-opus-5",
+        "labelled_at": "2026-08-25",
+        "batch": 2,
+        "approved_by": null,
+        "evidence_class": "agent_labelled",
+        "note": ""
+      }
+    },
+    {
+      "case_id": "aircargo-salary-bonus-conditions",
+      "tenant_id": "aircargo",
+      "query": "При каких условиях выплачивается годовой бонус?",
+      "expected": {
+        "answer_contains": [
+          "6 месяцев",
+          "дисциплинарных взысканий"
+        ],
+        "min_quality": 0.5
+      },
+      "tags": [
+        "hr",
+        "salary"
+      ],
+      "label": {
+        "journey": "out_of_scope",
+        "expected_terminal": "verified",
+        "root_cause": "no_contract_for_intent",
+        "binds_shipment": false,
+        "confidence": "high",
+        "labelled_by": "agent:claude-opus-5",
+        "labelled_at": "2026-08-25",
+        "batch": 4,
+        "approved_by": null,
+        "evidence_class": "agent_labelled",
+        "note": ""
+      }
+    }
+  ],
+  "config": {
+    "retrieval_strategy": "hybrid",
+    "model_routing_enabled": false,
+    "graph_retrieval": "off",
+    "hyde": false,
+    "agentic_mode": false,
+    "retrieval_top_k": 20,
+    "rerank_top_k": 5,
+    "rrf_k": 60,
+    "rrf_doc_key_chars": 200,
+    "rerank_batch": 8,
+    "parent_expansion": true,
+    "parent_expansion_window": 2,
+    "parent_expansion_max_chars": 3600,
+    "ask_budget_sec": 0,
+    "llm_role_params_json": "",
+    "llm_max_calls_per_request": 24,
+    "llm_max_input_tokens_per_request": 48000,
+    "llm_max_output_tokens_per_request": 8000,
+    "llm_max_total_tokens_per_request": 50000,
+    "rag_device": "cpu",
+    "embedding_backend": "local"
+  },
+  "index": "/Users/julia/RAG_new_t65_embeddings_2851e3811508/.tmp/t65-index-72fbd72",
+  "checkpoint": "/Users/julia/RAG_new_t65_embeddings_2851e3811508/.tmp/t65-verified-embeddings.npz",
+  "corpus": "/Users/julia/RAG_new_t66_parity_b0e67e609e77/evaluation/gr1b-4436d61-graph-chunks.json.gz",
+  "index_receipt": {
+    "checkpoint_sha256": "3903187e56dd4d8accf642f612910c6ca2082d1e7e55b7d67cd072ce0978fb5a",
+    "chromadb_version": "1.5.9",
+    "chunk_count": 5589,
+    "code_sha": "72fbd722c62722aede7c870b6cf0dfa71227a4d2",
+    "collection_name": "rag_docs_aircargo",
+    "configuration": {
+      "hnsw": {
+        "sync_threshold": 1
+      }
+    },
+    "corpus_sha256": "2a9da515a4c69b46453a59ed6d0bb772b0aad6fed23c87ee465851b43dbdef12",
+    "embedder_manifest": {
+      "backend": "local",
+      "dimension": 1024,
+      "document_prompt": "",
+      "model_id": "BAAI/bge-m3",
+      "normalize": true,
+      "query_prompt": "",
+      "revision": "5617a9f61b028005a4858fdac845db406aefb181",
+      "revision_source": "hf_snapshot",
+      "schema_version": 1
+    },
+    "evidence_status": "preparation",
+    "schema_version": 1,
+    "texts_sha256": "cedd1e073310b529b06f8aa4a565929a67313e35399337633549a1d282221302"
+  },
+  "index_receipt_sha256": "52f733a08d84fe238cbbc1f9ea6080db58c4f8d758a31a257c350278d47fa51c",
+  "llm": {
+    "model": "qwen2.5:7b",
+    "digest": "845dbda0ea48ed749caafd9e6037047aa19acfcfd82e704d7ca97d631a0b697e",
+    "provider": "OllamaProvider",
+    "options": "production provider defaults plus graph role kwargs"
+  },
+  "reranker": {
+    "model": "BAAI/bge-reranker-v2-m3",
+    "revision": "953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e"
+  },
+  "limits": "staged deterministic replay; no live API latency or generated answers"
+}

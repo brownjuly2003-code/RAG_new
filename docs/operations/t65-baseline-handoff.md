@@ -139,8 +139,9 @@ Spec: [`production-parity`](../specs/production-parity.md).
 
 1. Checkpoint and isolated index are verified; pin the remaining model digests
    and retrieval runtime config before the measurement. Use the existing index.
-2. Run the bounded real Chroma/exact comparison on 30 H cases from `prepare` at
-   the T-66 commit and publish any divergence (T-62 acceptance boundary).
+2. Done (T-67, 2026-10-03): the bounded real Chroma/exact comparison on 30 H cases ran from
+   `prepare` at the T-66 commit and is published with its divergences
+   ([capsule](../evidence/production-parity-30-cases.md); T-62 acceptance boundary).
 3. Collect H 100 + Hm 15 through the retrieval-only path, retain trace timings
    and exclude failed/ineligible runs. Record corpus SHA, code SHA and config.
 4. Judge the new contexts, compute lexical/development metrics and the loss map,
@@ -298,10 +299,14 @@ Nothing in the resume order above was executed. Three things changed around it:
   the tests and the four fixes that the review by GPT-6-Astra asked for; the lead extracted
   `judge_version`, added five tests, wrote the spec requirement and reviewed the modules
   against the collector's artifact format.
-- **The backup branches are no longer needed.** `wip/T-69-prep` (`e5525fa`) and the stale
-  `wip/T-61-writer` (`5fd53e5`; T-61 landed in `67e7be1`) are deleted from origin once this
-  commit is pushed. `plan_03_10_26.md` §1 still names the first one, as of its fourth
-  publication.
+- **The backup branches stay on origin.** `wip/T-69-prep` (`e5525fa`) and the stale
+  `wip/T-61-writer` (`5fd53e5`) hold no unlanded slice work any more: T-69 landed in `3551cb9`,
+  T-61 in `67e7be1`. `wip/T-69-prep` is still the only copy outside the laptop of the
+  git-ignored `.myflow/` state and the `.tmp/mf-mac/` gate scripts, as of the 2026-10-03 stop
+  point. Removing the branches is Julia's decision: the delegation of commits and pushes does
+  not cover it, and nothing waits on it. `plan_03_10_26.md` §1 still names the first one, as of
+  its fourth publication. (Until T-67 this item said the branches would be deleted after the
+  push; they were not.)
 - **Resume, in order** (replaces the list in the stop-point section):
   1. T-67 — publish the parity run: `manifest.json`, `comparison.json` and `report.json` from
      the Mac run named in the stop-point section, a capsule, an artifact test, an evidence row.
@@ -312,3 +317,30 @@ Nothing in the resume order above was executed. Three things changed around it:
      off, so the graph lane's caps and coherence stages have no artifact of their own.
   3. T-65 — the real baseline on the Mac; llama-server has to be started again.
   4. Then T-57 (`unpark`) and the task for slice 1.3b.
+
+## T-67 done — 2026-10-03
+
+- **The 30-case parity run is published**:
+  [capsule](../evidence/production-parity-30-cases.md), artifacts in `reports/parity/c729b23/`,
+  test `tests/test_production_parity_artifact.py`.
+  - Both arms of all 30 cases replayed through the session (`session_replay_matches` 60).
+  - Chroma and exact cosine gave different vector candidates and pools in 8 cases. In one of
+    them, `aircargo-road-driver-pdn`, the reranked list and the sent context differ as well;
+    the other 29 sent contexts are identical.
+  - 13 of the 256 recorded model calls are `structured_output_invalid` outcomes. The count
+    comes from `cache-outcomes.json`, produced on the Mac by the script published next to it;
+    the cache itself stays on the Mac.
+  - No latency, no answers, no quality verdict.
+- **For the baseline (T-65)**: the collector runs the production Chroma arm, so its procedure
+  does not change. This closes item 2 of "Remaining T-65 work".
+- **For the loss map (T-70)**: `report.json` shows two degenerate query rewrites among the 30
+  cases: `aircargo-claims-lawyer` (the rewrite ends in Chinese filler text) and
+  `aircargo-secret-check` (a 772-character repetition). Both arms received the same rewrite, so
+  the comparison is unaffected, but retrieval ran on those strings. The stage list of T-70 has
+  no query-transform stage; decide there whether the map reports the transform per case.
+- **Resume, in order** (replaces the list in the T-69 section):
+  1. T-70 — the full loss map; first check its detail against the fields
+     `scripts/production_baseline.py` writes (the T-69 section lists what is known).
+  2. T-65 — the real baseline on the Mac; llama-server has to be started again, and the GLM
+     judge needs its quota back (weekly cap `1310`, reset 2026-10-05 05:56 UTC+8).
+  3. Then T-57 (`unpark`) and the task for slice 1.3b.
