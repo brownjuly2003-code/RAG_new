@@ -1,0 +1,459 @@
+{
+  "bootstrap": {
+    "method": "cases resampled with replacement, each with its five documents; percentile 95%, linear quantiles; a new generator per comparison",
+    "samples": 10000,
+    "seed": 20260925
+  },
+  "boundary": "Model check of the ruler; not human validation.",
+  "consensus": {
+    "excluded": [],
+    "grades": {
+      "aircargo-breach-notification-required-fields": [
+        1,
+        1,
+        3,
+        0,
+        0
+      ],
+      "aircargo-contract-termination-fields": [
+        2,
+        2,
+        1,
+        1,
+        0
+      ],
+      "aircargo-dismissal-lawyer": [
+        3,
+        2,
+        2,
+        2,
+        2
+      ],
+      "aircargo-driver-job-documents": [
+        2,
+        2,
+        1,
+        1,
+        1
+      ],
+      "aircargo-employment-contract-essential-terms": [
+        3,
+        1,
+        1,
+        3,
+        1
+      ],
+      "aircargo-matliab-check": [
+        3,
+        2,
+        2,
+        1,
+        1
+      ],
+      "aircargo-overtime-protected-categories": [
+        3,
+        1,
+        1,
+        1,
+        1
+      ],
+      "aircargo-road-seal": [
+        3,
+        2,
+        2,
+        2,
+        2
+      ],
+      "aircargo-sick-leave-required-fields": [
+        1,
+        1,
+        3,
+        1,
+        2
+      ],
+      "aircargo-trade-compliance-hold": [
+        3,
+        3,
+        3,
+        1,
+        2
+      ]
+    },
+    "judges": [
+      "glm",
+      "sonnet"
+    ],
+    "method": "lower median per document"
+  },
+  "evidence_class": "measured",
+  "orientation": {
+    "astra+opus": {
+      "agreement_at_grade_ge_2": 48,
+      "agreement_at_grade_ge_3": 50,
+      "cases": 10,
+      "ci95": [
+        0.9256505576208178,
+        1.0
+      ],
+      "cross_table": {
+        "0": {
+          "0": 2,
+          "1": 0,
+          "2": 0,
+          "3": 0
+        },
+        "1": {
+          "0": 0,
+          "1": 18,
+          "2": 0,
+          "3": 0
+        },
+        "2": {
+          "0": 0,
+          "1": 2,
+          "2": 16,
+          "3": 0
+        },
+        "3": {
+          "0": 0,
+          "1": 0,
+          "2": 0,
+          "3": 12
+        }
+      },
+      "exact_agreement": 48,
+      "quadratic_kappa": 0.9726775956284153,
+      "resamples_undefined": 0,
+      "resamples_used": 10000,
+      "units": 50
+    },
+    "enters_rule": false,
+    "judges": {
+      "glm": {
+        "astra": {
+          "agreement_at_grade_ge_2": 46,
+          "agreement_at_grade_ge_3": 48,
+          "cases": 10,
+          "ci95": [
+            0.8075751236384945,
+            0.9433106575963719
+          ],
+          "cross_table": {
+            "0": {
+              "0": 0,
+              "1": 0,
+              "2": 0,
+              "3": 0
+            },
+            "1": {
+              "0": 2,
+              "1": 17,
+              "2": 3,
+              "3": 0
+            },
+            "2": {
+              "0": 0,
+              "1": 1,
+              "2": 14,
+              "3": 1
+            },
+            "3": {
+              "0": 0,
+              "1": 0,
+              "2": 1,
+              "3": 11
+            }
+          },
+          "exact_agreement": 42,
+          "quadratic_kappa": 0.8823529411764706,
+          "resamples_undefined": 0,
+          "resamples_used": 10000,
+          "units": 50
+        },
+        "opus": {
+          "agreement_at_grade_ge_2": 48,
+          "agreement_at_grade_ge_3": 48,
+          "cases": 10,
+          "ci95": [
+            0.8580419235732721,
+            0.967236207459625
+          ],
+          "cross_table": {
+            "0": {
+              "0": 0,
+              "1": 0,
+              "2": 0,
+              "3": 0
+            },
+            "1": {
+              "0": 2,
+              "1": 19,
+              "2": 1,
+              "3": 0
+            },
+            "2": {
+              "0": 0,
+              "1": 1,
+              "2": 14,
+              "3": 1
+            },
+            "3": {
+              "0": 0,
+              "1": 0,
+              "2": 1,
+              "3": 11
+            }
+          },
+          "exact_agreement": 44,
+          "quadratic_kappa": 0.9132947976878613,
+          "resamples_undefined": 0,
+          "resamples_used": 10000,
+          "units": 50
+        }
+      },
+      "sonnet": {
+        "astra": {
+          "agreement_at_grade_ge_2": 44,
+          "agreement_at_grade_ge_3": 49,
+          "cases": 10,
+          "ci95": [
+            0.7967479674796748,
+            0.9637884434698177
+          ],
+          "cross_table": {
+            "0": {
+              "0": 2,
+              "1": 1,
+              "2": 0,
+              "3": 0
+            },
+            "1": {
+              "0": 0,
+              "1": 13,
+              "2": 2,
+              "3": 0
+            },
+            "2": {
+              "0": 0,
+              "1": 4,
+              "2": 15,
+              "3": 0
+            },
+            "3": {
+              "0": 0,
+              "1": 0,
+              "2": 1,
+              "3": 12
+            }
+          },
+          "exact_agreement": 42,
+          "quadratic_kappa": 0.893048128342246,
+          "resamples_undefined": 0,
+          "resamples_used": 10000,
+          "units": 50
+        },
+        "opus": {
+          "agreement_at_grade_ge_2": 44,
+          "agreement_at_grade_ge_3": 49,
+          "cases": 10,
+          "ci95": [
+            0.8267322833417556,
+            0.9484549353944811
+          ],
+          "cross_table": {
+            "0": {
+              "0": 2,
+              "1": 1,
+              "2": 0,
+              "3": 0
+            },
+            "1": {
+              "0": 0,
+              "1": 14,
+              "2": 1,
+              "3": 0
+            },
+            "2": {
+              "0": 0,
+              "1": 5,
+              "2": 14,
+              "3": 0
+            },
+            "3": {
+              "0": 0,
+              "1": 0,
+              "2": 1,
+              "3": 12
+            }
+          },
+          "exact_agreement": 42,
+          "quadratic_kappa": 0.8949579831932774,
+          "resamples_undefined": 0,
+          "resamples_used": 10000,
+          "units": 50
+        }
+      }
+    }
+  },
+  "provenance": {
+    "code_sha256": {
+      "evaluation/blinded_judge.py": "73650a061fdfc4639282a833d13fc496b9c3949de5964eabd85b2d787a0bfe6e",
+      "scripts/p2_reference_kappa.py": "3f68a2853c9bddffc3ee98929eecd22defe9ef1aefad96c69cad63b7cf5ed6a4"
+    },
+    "h_pool_sha256": "91ce1745e13ce24cc1b69d0655412385700f5028b4e6b4ed4bf056cb6188ff10",
+    "inputs_sha256": {
+      "reports/p2/astra-reference/replies.jsonl": "6411f772c57629cb04118ba3e9892d1956b8c31db448229628fdf874458e5164",
+      "reports/p2/astra-reference/summary.json": "95f6351ab27f84a89465ef2192ab00a29a55f0c12d4cbe004c192270fef4364d",
+      "reports/p2/opus-reference/replies.jsonl": "f17b1b973249365ba51a5e0c476024e7933de698ffeb2cf29b32ea1ff1aa3a8f",
+      "reports/p2/opus-reference/summary.json": "d785df2672b7cb24398b15a3be6695f9d498003ed773ce22b564544d606ac04d",
+      "reports/p2/p2-blinded-judge-glm+sonnet.json": "4c1e60cdad361799a291fa88d0d0c3a35675ad772630a0147615ab30d3a31e7d",
+      "reports/p2/replies/glm.jsonl": "aac5c00993737194b0b5beaa9ee0cebc28d0434b647997056ffc1f69606f3da9",
+      "reports/p2/replies/sonnet.jsonl": "c66101caa83c11e3b6cfee1e3fe10743c5cc684211265daf241da8654037f4ee"
+    },
+    "instruction_sha256": "7877c3845a742013e3c189e260ef506ba07dc65749fa3df8455a181a4dcedc33",
+    "model_requests": 0
+  },
+  "published_kappa_replayed": {
+    "astra+opus": 0.9727,
+    "glm+astra": 0.8824,
+    "glm+opus": 0.9133,
+    "sonnet+astra": 0.893,
+    "sonnet+opus": 0.895
+  },
+  "references": {
+    "astra": {
+      "agreement_at_grade_ge_2": 47,
+      "agreement_at_grade_ge_3": 49,
+      "cases": 10,
+      "ci95": [
+        0.8510985177643707,
+        0.9859170728239318
+      ],
+      "cross_table": {
+        "0": {
+          "0": 2,
+          "1": 1,
+          "2": 0,
+          "3": 0
+        },
+        "1": {
+          "0": 0,
+          "1": 17,
+          "2": 3,
+          "3": 0
+        },
+        "2": {
+          "0": 0,
+          "1": 0,
+          "2": 15,
+          "3": 1
+        },
+        "3": {
+          "0": 0,
+          "1": 0,
+          "2": 0,
+          "3": 11
+        }
+      },
+      "exact_agreement": 45,
+      "model": "gpt-6-astra",
+      "quadratic_kappa": 0.9333333333333333,
+      "resamples_undefined": 0,
+      "resamples_used": 10000,
+      "role": "vendor outside the judge set",
+      "rule_branch": "clears",
+      "units": 50,
+      "vendor": "OpenAI"
+    },
+    "opus": {
+      "agreement_at_grade_ge_2": 49,
+      "agreement_at_grade_ge_3": 49,
+      "cases": 10,
+      "ci95": [
+        0.9086924762600438,
+        1.0
+      ],
+      "cross_table": {
+        "0": {
+          "0": 2,
+          "1": 1,
+          "2": 0,
+          "3": 0
+        },
+        "1": {
+          "0": 0,
+          "1": 19,
+          "2": 1,
+          "3": 0
+        },
+        "2": {
+          "0": 0,
+          "1": 0,
+          "2": 15,
+          "3": 1
+        },
+        "3": {
+          "0": 0,
+          "1": 0,
+          "2": 0,
+          "3": 11
+        }
+      },
+      "exact_agreement": 47,
+      "model": "claude-opus-5-5",
+      "quadratic_kappa": 0.9604221635883905,
+      "resamples_undefined": 0,
+      "resamples_used": 10000,
+      "role": "control: the vendor of the Sonnet judge, not an independent voice",
+      "rule_branch": "clears",
+      "units": 50,
+      "vendor": "Anthropic"
+    }
+  },
+  "rule": {
+    "branches": {
+      "1": "CI95 entirely below the threshold for either reference: consensus not used",
+      "2": "otherwise CI95 straddles the threshold for either reference: slice 1.1b",
+      "3": "otherwise CI95 entirely at or above the threshold for both references"
+    },
+    "threshold": 0.7
+  },
+  "sample": {
+    "case_ids": [
+      "aircargo-employment-contract-essential-terms",
+      "aircargo-breach-notification-required-fields",
+      "aircargo-trade-compliance-hold",
+      "aircargo-driver-job-documents",
+      "aircargo-dismissal-lawyer",
+      "aircargo-contract-termination-fields",
+      "aircargo-overtime-protected-categories",
+      "aircargo-sick-leave-required-fields",
+      "aircargo-matliab-check",
+      "aircargo-road-seal"
+    ],
+    "cases": 10,
+    "documents": 50,
+    "pool": "H",
+    "request_sha256": {
+      "aircargo-breach-notification-required-fields": "90a3624590708fbbc787f686553f910c1aef89c5381568b366eab2c6bec4ae20",
+      "aircargo-contract-termination-fields": "0fb541d2d68ccb129e6ed01e281737b1055856c22a7443ed8fb3bf4850474cad",
+      "aircargo-dismissal-lawyer": "e8de1cc1e30642ebf9870f44df8e7f560122baa25ef2725b179cf625aad2ca5c",
+      "aircargo-driver-job-documents": "6e03b4b378ec1a6fee7adb4ccd7746916eb060a43dfcebcebde72279c8a6b978",
+      "aircargo-employment-contract-essential-terms": "d494bbcc985c58f9868f7a96bc2b977f171c058e3f8117d88457bf36efbedc43",
+      "aircargo-matliab-check": "e681f25fc9f9f0c4dd3d03721b6a72396e44ce74132d46659e8f4706b22cd1fe",
+      "aircargo-overtime-protected-categories": "b48d06d35336e7ed5e841764e875ff4d1aa847d4beff1354c04b067aa4ba8cd3",
+      "aircargo-road-seal": "a4c65ce323b96afb10684a6f68dde9c3bc1173c6d0d35443dd34176bd57935b0",
+      "aircargo-sick-leave-required-fields": "a34f7a70e8594b355429d4af49d56a917b2601615917f34857d77e9c9503574f",
+      "aircargo-trade-compliance-hold": "5a793c03506ba3dacbaba404f34921cdd0d021f96d4023e13d4a19db5fa76380"
+    }
+  },
+  "schema_version": "p2-model-reference-kappa/v1",
+  "verdict": {
+    "branch": 3,
+    "per_reference": {
+      "astra": "clears",
+      "opus": "clears"
+    },
+    "ruler_status": "model-cross-checked"
+  }
+}

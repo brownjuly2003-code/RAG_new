@@ -22,14 +22,14 @@ conditions, read [`ROADMAP.md`](ROADMAP.md). The active delivery plan is
 - P2: the [blinded judgment](docs/evidence/p2-blinded-relevance-judgment.md)
   has complete GLM and Sonnet runs (115/115 cases each). H α is 0.8566;
   primary τ_b is 0.1561, CI95 [0.0197, 0.2880], giving the registered
-  `RULER_DOES_NOT_TRACK` verdict. No human grades will be collected (plan D11);
+  `RULER_DOES_NOT_TRACK` verdict. No human grades will be collected (plan D11): the consensus is `model-cross-checked` against the Astra and Opus references ([slice 1.1](docs/evidence/p2-model-reference-kappa.md): κ 0.9333 / 0.9604, both CI95 above 0.7; the sample's question classes and unexpanded top-5 contexts only);
   Mistral returned `zero_limit` and needs a changed account limit before a new
   attempt. Keep the official gate and retrieval defaults unchanged.
   P1 and P1b are both `NO_SHIP` ([P1b capsule](docs/evidence/p1b-expanded-cut.md)):
   H-relative exploratory verdicts on 100 agent-authored `agent_labelled` cases
   (0 approved at the time); neither changed product behaviour.
 - Quality thread ([plan](docs/specs/plan_03_10_26.md), §1 order/dependencies and slice status, §5 slices), ratified 2026-09-30, revised 2026-10-03.
-  Tracks 0–2: MyFlow T-55…T-70; T-57 (1.1) is now κ of the consensus to the model references — no human grades (D11) — parked until the 2.5 chain lands. The owner's order of 2026-10-03 — a green CI on HEAD first — is met on `45a417a` (run 37157492007); the 2.5 chain is under way: T-69, T-67 and T-70 are done, next T-65.
+  Tracks 0–2: MyFlow T-55…T-70; T-57 (1.1), κ of the consensus to the model references with no human grades (D11), is done 2026-10-04 (P2 item above). The owner's order of 2026-10-03 — a green CI on HEAD first — is met on `45a417a` (run 37157492007); the 2.5 chain is under way: T-69, T-67 and T-70 are done, next T-65.
   T-65's retrieval-only replay and resumable preparation are ready; all 5589 pinned embeddings
   and the isolated Chroma index are verified after reopening and reusable ([handoff](docs/operations/t65-baseline-handoff.md)).
   The real baseline remains open; the 30-case Chroma/exact comparison is published ([capsule](docs/evidence/production-parity-30-cases.md)): 29 of 30 sent contexts identical, no quality number.

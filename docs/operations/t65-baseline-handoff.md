@@ -145,10 +145,10 @@ Spec: [`production-parity`](../specs/production-parity.md).
 3. Collect H 100 + Hm 15 through the retrieval-only path, retain trace timings
    and exclude failed/ineligible runs. Record corpus SHA, code SHA and config.
 4. Judge the new contexts, compute lexical/development metrics and the loss map,
-   publish the capsule and evidence row. Keep `provisional_ruler` until slice 1.1 passes
-   (D2 as changed by D11: CI of κ entirely ≥ 0.7 to both model references) and, because these
-   contexts are expanded, until the reference sub-sample for expanded contexts is graded
-   (metrics spec, «Scope»; plan G38).
+   publish the capsule and evidence row. Slice 1.1 passed on 2026-10-04 (D2 as changed by D11:
+   CI of κ entirely ≥ 0.7 to both model references; section «T-57 done» below). Keep
+   `provisional_ruler` all the same: these contexts are expanded, and it stays until the
+   reference sub-sample for expanded contexts is graded (metrics spec, «Scope»; plan G38).
 
 No human D2/D3 inputs will arrive (decision D11, 2026-10-03; the plan-revision section below).
 No retrieval default or quality gate changed.
@@ -386,3 +386,70 @@ Nothing in the resume order above was executed. Three things changed around it:
      GLM quota back (reset above): a run judged by one model is `single_judge` and stays
      outside the consensus (plan G24).
   2. Then T-57 (`unpark`) and the task for slice 1.3b.
+
+## T-57 done — 2026-10-04
+
+- **The ruler check without people is done, and the consensus passed it.** Slice 1.1 compared
+  the registered GLM + Sonnet consensus with the Astra and Opus references on the blind
+  ten-case sample: κ 0.9333 to Astra (CI95 [0.8511, 0.9859]) and 0.9604 to Opus
+  (CI95 [0.9087, 1.0000]), bootstrap clustered by case. Both intervals lie entirely above 0.7.
+  That is branch 3 of the registered rule: the development ruler is `model-cross-checked`, and
+  slice 1.1b is not needed. Capsule with the rule, the caveats and the provenance:
+  [`p2-model-reference-kappa.md`](../evidence/p2-model-reference-kappa.md).
+- **What the status is not.** It is a check by models, never `human-validated`: an error the
+  models share stays undetected. It covers the question classes of the sample and the
+  unexpanded top-5 contexts of P2, nothing wider.
+- **What it means for T-65.** The run does not change. The baseline capsule stays
+  `provisional_ruler` whatever this verdict: its contexts are expanded, and the reference
+  sub-sample for expanded contexts (at least 10 cases per class) has no slice row yet
+  (plan G38, г).
+- **How it was done.** `python -m scripts.p2_reference_kappa` reads the published reply stores
+  and calls no model; the slice ran in the window of the T-65 collection and used neither the
+  Mac nor a quota. Executor: Opus through the MyFlow writer, by Julia's order of 2026-10-04
+  (GLM 5.3 on its weekly cap `1310`).
+- **Resume.** Item 2 of the list in the T-70 section becomes: the task for slice 1.3b.
+
+## T-65 collection running — 2026-10-04
+
+The collection outlives a session: it runs on the Mac for about seventeen hours, and the next
+session has to find it, watch it and, before a full gate, pause it. Nothing of it is published
+yet; until the capsule exists the run is NOT_EVIDENCE.
+
+- **What runs.** `scripts/production_baseline.py` over H 100 + Hm 15 from commit `68c5f8d`,
+  started 2026-10-04 10:11 UTC on `deproject-mac`. Snapshot of the code:
+  `/Users/julia/RAG_new_t65_baseline_7d2535f8876f`; run directory `.tmp/baseline-68c5f8d` inside
+  it. Prepare, transform (1422 s) and embed (124 s) are complete, retrieve is under way; grade
+  takes about 500 s a case, so the end is expected on 2026-10-05 around 04:30 UTC, later by
+  every pause.
+- **A supervisor runs the five stages, one process each, and restarts nothing on a failure.**
+  A model failure excludes a case; an integrity or environment failure stops the stage with an
+  abort marker, and the supervisor then stops with status `failed` and the marker's reason.
+  Read the reason before any `--resume`.
+  - State: `.tmp/baseline-state.json` in the snapshot — `status` (`running`, `paused`,
+    `complete`, `failed`), `stage`, `completed`, `stage_seconds`, `pauses`, `host_peaks`.
+  - Host samples every 30 s: `.tmp/host-monitor.jsonl` — RSS of the collector and of Ollama,
+    used memory, swap, load, and every other process above 25 % CPU. This is the capsule's
+    source for the peak host memory, which the collector's own report cannot measure.
+  - Stage logs: `.tmp/baseline-<stage>.log`.
+- **Pause it before a full gate.** The collector with the model and the whole test suite do
+  not fit in 8 GB together. The pause is a flag file the supervisor watches:
+
+      python .tmp/t65/pause_baseline.py boundary   # stop after the case in flight, unload the model
+      python .tmp/t65/pause_baseline.py resume     # remove the flag; the stage restarts with --resume
+      python .tmp/t65/pause_baseline.py status
+      python .tmp/t65/watch_baseline.py            # one line per change; ends on complete or failed
+
+  `boundary` cuts no case: the supervisor waits for the next case line. Each pause is recorded
+  in the state and goes into the capsule. A fast gate needs no pause — it is seconds of mypy on
+  the Mac, and the overlap shows in the host samples.
+- **The scripts are not in git.** `.tmp/t65/` on the laptop holds `launch_baseline.py`,
+  `baseline_supervisor.py` (a copy runs from the snapshot's `.tmp/`), `watch_baseline.py`,
+  `pause_baseline.py` and `selftest_remote.py`; `.tmp/` is ignored. A stop point backs them up
+  with the other resume files.
+- **Another project's load was seen on the Mac.** A Playwright end-to-end run of `sqlplus_e2e`
+  overlapped transform and the start of retrieve (load average up to 42 on four cores). It
+  slows the run and changes no result; the host samples list it. The collector's report already
+  says its timings are one run on one host and not speed evidence.
+- **When the state says `complete`:** copy the state file and the host samples next to the run,
+  then T-65 continues as in item 1 of the T-70 section — judges, consensus, rulers, loss map,
+  choice of mechanisms, capsule.
