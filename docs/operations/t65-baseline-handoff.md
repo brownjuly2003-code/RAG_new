@@ -453,3 +453,136 @@ yet; until the capsule exists the run is NOT_EVIDENCE.
 - **When the state says `complete`:** copy the state file and the host samples next to the run,
   then T-65 continues as in item 1 of the T-70 section — judges, consensus, rulers, loss map,
   choice of mechanisms, capsule.
+
+## T-76 done — 2026-10-04
+
+- **Slice 1.3b has its rule and its first tool; no draft is verified yet.** Slice 1.3b is the
+  check of the 30 pilot drafts (`evaluation/devset_pilot.jsonl`, T64-01…30) by two models from
+  vendors other than the draft author's; plan D11 puts no person in that loop. The slice is
+  split into three tasks so that each writer and review pass stays small: T-76 (the rule and the
+  wide scan, commit `13adfad`), T-77 (the verification tool), T-78 (the run and its
+  capsule).
+- **The rule is registered in the development ruler** —
+  [`semantic-precision-metrics.md`](../specs/semantic-precision-metrics.md), section «Label
+  verification», sixth revision; the requirement for the tool is
+  [`label-verification.md`](../specs/label-verification.md). What a reader needs before opening
+  them:
+  - rubric `label-verification/v1`; verifiers GLM 5.3 and Claude Opus 5.5 for drafts written by
+    an OpenAI model; one request is one case, with no state and no tools;
+  - five checks: the deterministic per-case rules, facts against the cited spans,
+    answerability and the reference answer, class and flags, and four safety fields (currency,
+    authority, severity, critical facts);
+  - a draft is `confirmed` only when both models confirm it under the registered decision rule;
+    no valid reply from both models is no outcome, not a pass;
+  - one repair by the draft author, and **a repair changes the label, never the question**; a
+    second rejection drops the case, and so does the author's declaration that only a document
+    of the holdout reserve could repair it; the slice closes only when every draft is confirmed
+    or dropped;
+  - the packet names sources by pseudonyms, masks the file names that corpus text itself quotes,
+    and does not send the `scope` field (plan G31/D10).
+- **Two open questions of plan G38 are closed by the text.** (а) is the wide scan below. (б) is
+  the `gold_error` outcome of the 4.1 contract: it removes only the penalties derived from the
+  label; faithfulness, citation and independent critical errors stay scored.
+- **The family map and the holdout reserve are registered by a paragraph, not by a file edit.**
+  `evaluation/document_families.json` is pinned at its SHA-256 by the pilot manifest, so its
+  `status` strings still say draft; the spec paragraph names the SHA and is the registration.
+  Reserve: 35 families, 36 documents.
+- **The wide scan, and why a verifier needs it.** A refusal, clarification or trap label claims
+  that the corpus does not hold the answer. The cited sections cannot show that; only a wide
+  sample of the index can. `scripts/devset_wide_scan.py` takes, per case, the union of the 20
+  best chunks by the production BM25 scorer and the 20 nearest by exact cosine over the baseline
+  index of 5589 chunks — no transform, fusion, cap, rerank or expansion. Twenty is a budget, not
+  a measured recall: a passage outside both lanes stays unseen, and the spec says so.
+- **The rule was audited before any code.** GPT-6-Astra read the lead's first draft through
+  `$MF consult` and returned 22 findings, 13 of them blocking; all are applied, three in a
+  stricter form. Record:
+  [`audit_astra_04_10_26_label_verification.md`](../audits/audit_astra_04_10_26_label_verification.md).
+- **What it is not.** Preparation: none of (a), (b), (c) holds. No behaviour, no labelled case
+  and no published number changed.
+- **How it was done.** Executor: Opus through the MyFlow writer (script and tests, 855 s), by
+  Julia's order of 2026-10-04; the rule, the requirement and the audit record are the lead's
+  text. Review by GPT-6-Astra: one finding — the requirement gave no route to `dropped` for a
+  case that only a reserve document could repair; the declared drop above is the fix, and the
+  follow-up pass found nothing more. Mac full gate GREEN on tree `5e0a3f827c`: unit 4778
+  passed, 110 skipped; resolution E2E 36 passed; strict mypy clean.
+
+## Stop point — 2026-10-04 (after T-76)
+
+Julia, about 12:10 UTC: «поставь точку, где логично». The logical point is the T-76 commit: the
+slice was written and its fast gate green when she asked. T-77 was not started.
+
+- **T-76 landed** as `13adfad` and is pushed. CI run 37202450760 on it is green, and so is the
+  Pages deploy.
+- **The wide scan of the 30 pilot cases has run** — on the Mac, from a clean `git archive` of
+  `13adfad`, inside the same pause as the full gate.
+  - Result on the laptop: `.tmp/t76/wide-scan.json`, 271 850 bytes, SHA-256
+    `8faf58d4ef3091875b0b263aa05e99cab30b8c0c7948ab06a0fca33436d8466b`. 30 cases, both lanes
+    full, 24 to 40 chunks a case (median 35), 879 distinct chunks of the 5589; the run took
+    95 s. Its archive, cases and script SHAs match the repository at `13adfad`. Mac snapshot:
+    `/Users/julia/RAG_new_t76_scan_1cab905ef3bd`.
+  - It is not in git. T-78 commits it as `reports/devset/label-verification/wide-scan.json`;
+    until then it is NOT_EVIDENCE. The question text is frozen by the rule, so this one scan
+    serves both verification rounds.
+  - To repeat it: `python .tmp/t76/run_scan_remote.py <full commit sha>`. It refuses unless the
+    collection is paused or complete, Ollama holds no model and no test run is active.
+- **The T-65 collection is still running.** Grade stage: 3 of 115 cases were done at the
+  pause, about 540 s a case, so the end is expected on 2026-10-05 around 05:30 UTC, later by
+  every pause.
+  - Pauses so far: 1 — retrieve, after case 70, 11:15:02–11:32:01 UTC (T-57 full gate);
+    2 — grade, after case 3 (`aircargo-probation-dismissal`), 12:25:10–12:34:17 UTC (T-76 full
+    gate and the wide scan). The state file on the Mac holds both records.
+  - Nothing else changed in the section «T-65 collection running» above; it stays the guide.
+- **T-77 is prepared, not started.** MyFlow has no open slice. The task exists with its detail
+  (the same text is `.tmp/t76/detail-T-77.md`): the logic module
+  `evaluation/label_verification.py`, the CLI `scripts/devset_label_verify.py` with `plan`,
+  `verify`, `decide`, `apply`, `check`, the two verifier clients, one English prompt, tests.
+  - Before the writer starts, the lead adds one line to the spec after the sentence that ends
+    «…and a changed prompt is a new rubric version.»: `Prompt SHA-256 (rubric
+    label-verification/v1):` followed by 64 zeros in backticks. The writer replaces the zeros
+    with the SHA of the prompt it wrote; the tool refuses a prompt whose SHA is not registered.
+  - GLM 5.3 was on its weekly cap `1310` all session; the named reset is 2026-10-04 21:56 UTC.
+    T-77 calls no model. T-78 needs GLM as a verifier.
+- **T-78 is not yet a task.** Add it after T-77 lands: `plan` round 1 → `verify` with both
+  models → `decide` → repairs by the draft author (`writer --use sol-high`) → round 2 →
+  `apply`, `check` → capsule, evidence row, artifact test. It commits the scan file, the round
+  directories, the verified set and its register.
+- **A review that did not happen was recorded as clean, and it was caught.** The first
+  `review-run` of T-76 ended in 50 s with `REVIEW CLEAN`. The reviewer had read no file: the
+  task detail told the writer, in Russian, to stop and report on a contradiction, and Julia's
+  global Codex rules treat that word in the last message as a hard stop. The controller counts
+  a valid reply with zero findings as a pass.
+  - What was done: the sentence was reworded in the details of T-76 and T-77; the whole slice
+    was reviewed through `$MF consult` on a copy of the review packet (230 s, the finding
+    above); its answer entered the controller with `repair --findings`.
+  - What it leaves: two contour defects recorded with `$MF defect` (the false clean verdict; no
+    route to repeat a review on an unchanged tree), exported with the session's friction report
+    to `D:/Runbook/issues/issues37.md`. After every `REVIEW CLEAN`, read the lines under «it
+    says what it checked»: the count of files read must be above zero.
+- **Backup** on origin: branch `wip/T-77-prep`, commit `e564acb` on top of `13adfad`,
+  36 files.
+  - Contents: `.tmp/t76/` (details of T-76 and T-77, the scan result with its launcher and
+    log, the audit prompt, the copy of the review packet), `.tmp/t65/*.py` (launcher,
+    supervisor, watcher, pause), `.tmp/mf-mac/*.py` and `steps.json`, and the MyFlow resume
+    files: state, tasks, config, spec, checkpoint, journal, progress, `summary-T-76.md`.
+  - Every blob was checked against the tree with `hash-object`: 36 files, no difference.
+    The script that built it is in the branch, `.tmp/t76/make_wip_backup.sh`.
+  - Restore only if the working tree lost these files:
+
+        git diff --name-only wip/T-77-prep~1 wip/T-77-prep |
+          xargs git restore --source=wip/T-77-prep --worktree --
+
+- **Resume, in order:**
+  1. `python .tmp/t65/pause_baseline.py status`. `running` — arm
+     `python .tmp/t65/watch_baseline.py`. `failed` — read the reason in the state file, the
+     stage log and the abort marker before any `--resume`. `complete` — copy the state file and
+     the host samples next to the run, then item 4.
+  2. `$MF continue`, then `$MF next --task T-77`; add the prompt-SHA line; start the writer.
+     T-77's detail was re-read against `13adfad` and its stale hint is cleared; T-65's hint
+     stays until item 4. A fast gate may overlap the collection; a full gate needs a pause at
+     a case boundary (a grade case takes about 540 s).
+  3. T-78 after T-77, once GLM answers again.
+  4. T-65 after the collection: `task-edit T-65` first (executor, the collection facts, the
+     pause list — it also clears the stale hint `plan-validate` prints), then judges,
+     consensus, rulers, loss map, at most two mechanisms, capsule.
+  5. After T-77 lands, delete `wip/T-77-prep`. The stale `wip/T-61-writer` and `wip/T-69-prep`
+     are still on origin; deleting remote branches is Julia's decision.
