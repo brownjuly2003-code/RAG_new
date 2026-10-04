@@ -29,7 +29,7 @@ conditions, read [`ROADMAP.md`](ROADMAP.md). The active delivery plan is
   H-relative exploratory verdicts on 100 agent-authored `agent_labelled` cases
   (0 approved at the time); neither changed product behaviour.
 - Quality thread ([plan](docs/specs/plan_03_10_26.md), §1 order/dependencies and slice status, §5 slices), ratified 2026-09-30, revised 2026-10-03.
-  Tracks 0–2: MyFlow T-55…T-70; T-57 (1.1), κ of the consensus to the model references with no human grades (D11), is done 2026-10-04 (P2 item above). The owner's order of 2026-10-03 — a green CI on HEAD first — is met on `45a417a` (run 37157492007); the 2.5 chain is under way: T-69, T-67 and T-70 are done, next T-65.
+  Tracks 0–2: MyFlow T-55…T-78; T-57 (1.1), κ of the consensus to the model references with no human grades (D11), is done 2026-10-04 (P2 item above). The owner's order of 2026-10-03 — a green CI on HEAD first — is met on `45a417a` (run 37157492007); the 2.5 chain is under way: T-69, T-67 and T-70 are done, T-65's collection runs on the Mac. 1.3b (two models verify the 30 pilot drafts): rule registered and wide scan written (T-76); next the verification tool (T-77), then the run (T-78).
   T-65's retrieval-only replay and resumable preparation are ready; all 5589 pinned embeddings
   and the isolated Chroma index are verified after reopening and reusable ([handoff](docs/operations/t65-baseline-handoff.md)).
   The real baseline remains open; the 30-case Chroma/exact comparison is published ([capsule](docs/evidence/production-parity-30-cases.md)): 29 of 30 sent contexts identical, no quality number.

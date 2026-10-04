@@ -42,6 +42,17 @@ branches and the CI method, no holdout on a provisional ruler, the draft
 author and unavailable vendors in «Label verification», registration of the
 answer checkers before the holdout opens. Eight questions it left open are
 listed in plan gap G38.
+Sixth revision 2026-10-04 in plan step 1.3b, before the first label check:
+questions а and б of G38 are closed. «Label verification» gets the rubric
+`label-verification/v1` — the two verifiers, a fifth check (currency,
+authority, severity, critical facts), the decision rule, the limits of a
+repair, and a wide scan of the whole index in place of the control's pool;
+the acceptance contract gets the `gold_error` outcome; the family map and the
+holdout reserve are registered. The draft of this revision was audited by
+GPT-6-Astra before any code was written from it
+([audit](../audits/audit_astra_04_10_26_label_verification.md), 22 findings,
+all applied). What the tool that runs the protocol must do:
+[label-verification.md](label-verification.md).
 
 ## Why a second ruler
 
@@ -206,50 +217,181 @@ premise / clarify / refuse / escalate), `as_of`, the authority source of the
 rule and the severity of a wrong answer. Quotas live in the plan (1.3d); an
 unmet quota narrows the scope of the conclusion instead of being filled.
 
-Label verification (decision D11, added 2026-10-03; it replaces the human
-approval of decision D3): no person approves a case. Two verifier models from
-two vendors, neither of them the draft author's vendor, check every dev and
-holdout case independently, each blind to the other's verdict. The draft
-author is the registered generator of the case, recorded per case as
-`draft_author` with its model and vendor (the pilot: `gpt-6.1-sol`, OpenAI).
+Label verification (decision D11, added 2026-10-03; rubric
+`label-verification/v1`, registered 2026-10-04 in plan step 1.3b before the
+first check; it replaces the human approval of decision D3): no person
+approves a case. Two verifier models from two vendors, neither of them the
+draft author's vendor, check every dev and holdout case independently, each
+blind to the other's verdict. The draft author is the registered generator of
+the case, recorded per case as `draft_author` with its model and vendor (the
+pilot: `gpt-6.1-sol`, OpenAI).
+
+Registered verifiers for drafts by an OpenAI model:
+
+| Verifier | Vendor | Route | Settings |
+|---|---|---|---|
+| `glm-5.3` | Z.ai | direct `api.z.ai` messages API, streamed | effort `xhigh` |
+| `claude-opus-5-5` | Anthropic | Claude Code CLI, first-party provider | effort `max`, no tools |
+
+One request holds one case for one verifier, in a new session with no
+conversation state and no tools. A reply counts only when the route reports
+the registered model id. The request names neither the draft author nor the
+other verifier and carries nothing of an earlier round. The exact prompt is
+registered with the rubric: plan step 1.3b records its SHA-256 here in the
+commit that adds the verification tool, before any request is sent; a reply
+counts only when the prompt SHA-256 stored with it is the recorded one, and
+a changed prompt is a new rubric version.
+
 The checks:
 
 1. every evidence span is present verbatim in the named source at the
    registered corpus version — a deterministic check by the verify script,
    not a model verdict;
 2. every required and critical fact follows from the spans alone, and the
-   minimal reference answer states nothing the spans do not;
-3. the question is answerable from the spans as written; for refusal,
-   clarification and trap cases, instead, the registered reason holds against
-   the pre-rerank pool the registered control retrieves for the question;
-4. the primary class, the flags and `expected_action` agree with the above.
+   minimal reference answer states nothing the spans do not. A case without
+   spans has no facts: its reference answer states only the action and its
+   reason, and the reason rests on the supplied sections and scan;
+3. the question is answerable from the spans as written, and the reference
+   answer answers it: an answer that states the required facts and nothing
+   else is correct and leaves out nothing the question asks for. For
+   refusal, clarification and trap cases — `expected_action` other than
+   `answer`, or a trap type set — instead, the registered reason holds
+   against the wide scan of the corpus (below). On a case registered as
+   unresolvable (`expected_action` refuse, clarify or escalate) no passage
+   of the scan that applies to the question — its subject, the people or
+   cargo it concerns, its conditions and `as_of` — answers the question as
+   written. On a trap case with spans the spans correct the premise as
+   registered and no applicable passage of the scan makes the premise true.
+   Where passages conflict or one is outdated, the verifier judges by the
+   passage that applies on `as_of` and names it;
+4. the primary class, the flags, the trap type and `expected_action` agree
+   with the above;
+5. (plan G38, question б) authority and weight of the case. Checks 5a and 5b
+   concern the organisation's own documents as supplied: whether an external
+   norm a document cites says the same is not checked, and a citation of an
+   external norm does not take authority from the internal document.
+   - 5a, currency: every authority document of the case is in force on
+     `as_of` — its card gives an effective date not later than `as_of`, and
+     nothing supplied says the rule is replaced or expired;
+   - 5b, authority: the card and the supplied text show the named document
+     to be the organisation's controlled source of the rule the case relies
+     on — on a case without spans, of the rule that justifies the action;
+   - 5c, severity: the verifier names the severity of the most harmful wrong
+     answer the question invites, on the registered scale `low` < `moderate`
+     < `high` < `critical`, taking the highest level that applies.
+     `critical`: harm to people, a breach of an occupational-safety,
+     aviation-security or dangerous-goods rule, or disclosure or
+     unauthorised transfer of credentials or personal data. `high`: a
+     material financial loss, a breach of another legal or regulatory duty,
+     a wrongly decided personnel case. `moderate`: rework, delay or a wrong
+     internal step the process corrects. `low`: no operational consequence;
+   - 5d, critical facts: a fact is critical when an answer that omits or
+     misstates it would lead the user to an unsafe, unlawful or materially
+     costly action — a prohibition, a mandatory safety, security,
+     dangerous-goods, legal or financial-control step, a limit or a deadline
+     whose breach is a violation. Every listed critical fact meets this, and
+     no fact that a correct answer needs and that meets it is absent from
+     the critical facts. A case without spans has no facts, and 5d is
+     confirmed.
 
-A case is confirmed only when check 1 passes and both verifiers confirm
-checks 2–4; it then carries `label_check: model_verified`. Anything else is a
-rejection: the draft author repairs the case once and both verifiers check it
-again; a second rejection drops the case, with the reason recorded. The
-verifier models, their versions, the prompt and the rubric version are
-registered before the first check. If fewer than two vendors other than the
-author's are available (a quota, an outage), verification waits: a second
-model of one vendor is not a second voice, and a case seen by one verifier
-keeps `label_check: none`. The verifiers receive the whole draft case —
-question, span texts, facts, reference answer, class and `expected_action`,
-plus the pool texts for check 3 — with the source named by a pseudonym, never
-by its file name (plan G31). The capsule publishes, per class, the share
-rejected at the first check, the disagreements between the verifiers and the
-dropped cases. `label_origin` stays `agent_labelled`: a model check is not a
-human approval, `real_labelled` is not assigned and the count of real
+A verifier answers `confirm` or `reject` on checks 2, 3, 4 and 5d, with a
+one-sentence reason and, on a rejection, the element concerned (a fact, a
+span, a passage of the scan). On 5a and 5b it answers `confirm`, `reject` or
+`unverifiable`: `reject` needs positive evidence in the supplied material —
+an effective date later than `as_of`, a text saying the rule is replaced or
+expired, a card or text showing that the document is not the organisation's
+controlled source of the rule; `unverifiable` means the supplied material
+lacks what the check needs — no effective date or version, no owner or source
+type. On 5c it names a level. A statement inside the case that an owner must
+confirm something is the draft author's note from before decision D11, not
+evidence for 5a or 5b. A reply that does not follow this form is requested
+again, three attempts in all.
+
+A case without a valid reply from both verifiers has no outcome in that round
+and keeps `label_check: none`. With two valid replies the case is confirmed
+when check 1 passes, both verifiers confirm checks 2, 3, 4 and 5d, neither
+rejects 5a or 5b, and on 5c neither verifier's level is two or more steps
+from the registered one or on the other side of the `critical` boundary;
+otherwise it is rejected. A confirmed case carries `label_check:
+model_verified` with the verifier ids, the rubric version and the round. If
+either verifier answers `unverifiable` on 5a or 5b, the confirmed case
+carries `authority_unverified: true`: it stays in the set and does not count
+toward the safety-critical quota; counts of safety-critical cases are
+reported with and without such cases. A one-step severity difference that
+does not cross the `critical` boundary is published as a disagreement, not a
+rejection.
+
+A rejected case is repaired once by the draft author, who sees the reasons of
+both verifiers. A repair changes the label, never the question: the case id,
+the question text, the draft author, the corpus version, `as_of`, the
+seed-selected section and the question style stay as drafted; spans, partner
+sections, facts, the reference answer, the class, the flags, the trap type,
+`expected_action`, its reason, the authority documents and the severity may
+change. A repair cites no document of the holdout reserve. A case that could
+be repaired only with one is dropped without a second round: the draft author
+declares it and names the reserve document, and that declaration is recorded
+as the reason of the drop. The families of a repaired case are recomputed and
+published. A new question is a replacement of the
+case, which belongs to question в of plan G38, not a repair. The repaired
+case passes the per-case rules of the verify script and its source checks;
+the rules of the draft set as a whole — quotas, the split of styles, the
+SHA-256 of the file — bind the unchanged drafts only. Both verifiers then
+check the repaired case in full, in the same form and with no trace of the
+first round. A second rejection drops the case, with the rejecting checks
+recorded. A relabelled class or action changes the class counts: rejection
+shares are reported by the drafted class, the verified set by the class
+after repair, with the transitions listed, and the quota rule above applies.
+If fewer than two vendors other than the author's are available (a quota, an
+outage), verification waits: a second model of one vendor is not a second
+voice. The same holds for the repair when the author model is unavailable.
+Step 1.3b is closed only when every draft is confirmed or dropped.
+
+The verifiers receive the whole draft case — question, span texts, facts with
+their quotes, reference answer, class, flags, trap type, `expected_action`,
+the registered reason, `as_of`, the authority documents and the severity —
+with every source named by a pseudonym, never by its file name (plan G31); a
+file name inside a corpus text is replaced by the pseudonym of that document.
+The `scope` text of the pilot's `authority_source` is a template of the draft
+phase and is not sent. For check 5 they receive the document card of each
+authority document: the front-matter fields `title`, `document_type`,
+`source_type`, `version`, `effective_date`, `owner_role` and
+`related_normative_sources` of the source file at the registered corpus
+version, and nothing else of the front matter. For refusal, clarification and
+trap cases they also receive the text of the seed-selected and partner
+sections and the texts of the wide scan.
+
+Wide scan (plan G38, question а; it replaces the control's pre-rerank pool in
+check 3): for the question as written, the union of the 20 best chunks by the
+production lexical scorer — BM25 with the production tokenizer over every
+chunk of the index; a chunk with a score of zero or below is not taken, so
+the lane may hold fewer — and the 20 nearest chunks by exact cosine
+similarity between the production embedder's query vector and every chunk
+vector of the index's embedding checkpoint. No query transform, fusion, cap,
+rerank or expansion; ties are broken by position in the chunk archive; a
+chunk found by both lanes is kept once with both ranks; the texts are passed
+in archive order. The scan is stored for every case before the first check,
+with chunk addresses, `text_sha256`, lanes and ranks, the SHA-256 of the
+chunk archive and of the checkpoint, and the code SHA. It runs on the index
+of the slice 2.5 baseline. The lane size of 20 is a budget chosen in advance,
+not a measured recall: at most 40 of the 5589 chunks of that index reach a
+verifier, and the chance that the scan misses an answering passage has not
+been estimated.
+
+The capsule publishes, per class, the share rejected at the first check, the
+disagreements between the verifiers, the cases flagged `authority_unverified`
+and the dropped cases. `label_origin` stays `agent_labelled`: a model check is
+not a human approval, `real_labelled` is not assigned and the count of real
 labelled cases does not rise. The check bounds label errors, it does not
-prove their absence: models can share an error, and on refusal and trap cases
-a passage the control fails to retrieve can leave an answerable question
-registered as unanswerable (plan G37) — at acceptance an arm that finds that
-passage and answers is then charged a critical error, so the error counts
-against the arm, never for it. Not covered yet and open in plan G38: a wider
-pool for check 3, a check of `as_of`, authority, severity and the
-critical-fact set, and the replacement of dropped cases. Screening drafts
-(below) are checked once by one model of a vendor other than their author's;
-rejected drafts are dropped, and more than 10 % rejected means the generator
-is rewritten and the check repeated (G32).
+prove their absence: models can share an error, and on refusal, clarification
+and trap cases a passage outside the wide scan can leave an answerable
+question registered as unanswerable (plan G37). At acceptance such a case is
+resolved by the `gold_error` rule of the contract below. The severity scale
+was written after the pilot drafts were labelled; a severity the scale does
+not support is a rejection like any other. Still open in plan G38: the
+replacement of dropped cases (question в, before step 1.3c registers n).
+Screening drafts (below) are checked once by one model of a vendor other than
+their author's; rejected drafts are dropped, and more than 10 % rejected
+means the generator is rewritten and the check repeated (G32).
 
 Candidate and token budgets are equal between arms. `precision_at_5` and
 `ndcg_at_5` are computed on the reranked seeds before expansion;
@@ -273,17 +415,37 @@ text hash — one population per metric (№6).
   resamples, percentile CI, seed recorded. Cluster unit: connected components
   of the case–family graph (a multi-hop case joins every family it touches),
   registered before results together with the number of clusters; equal case
-  weights. A **document family** (G22) is a registered group of source
-  documents that share a source folder or topic or are linked by
-  `cross_ref`; the family map of the corpus is built before 1.3a and
-  registered by the agent in plan step 1.3b once its verify script passes (no
-  owner confirmation since decision D11). The pilot found that the literal
-  closure of this definition joins all 201 documents into one family; the
-  map to be registered is by topic, and that deviation is written here in
-  step 1.3b before any use. The split between
-  dev and holdout never separates documents of one family. Resampling cases does not remove judge bias — plan
-  step 1.1 checks for it against model references; a bias the models share
-  stays undetected (plan G37).
+  weights. The split between dev and holdout never separates documents of
+  one family. Resampling cases does not remove judge bias — plan step 1.1
+  checks for it against model references; a bias the models share stays
+  undetected (plan G37).
+
+  A **document family** (G22) is a registered group of source documents. The
+  registered map is `evaluation/document_families.json` at SHA-256
+  `54bdb736180e00325bff20f49e2b9d985dd62278fe9f9cdb6161a0da719e3584`,
+  registered by this paragraph in plan step 1.3b on 2026-10-04; since decision
+  D11 no owner confirmation is awaited. The file is pinned by the pilot
+  manifest and is not rewritten, so its own `status` fields keep the draft
+  wording of step 1.3a. The map groups documents by topic: 84 families over the
+  201 documents, 57 of them with one document. This departs from the earlier
+  definition — documents that share a source folder or topic or are linked by
+  `cross_ref` — because its literal closure joins all 201 documents into one
+  family, and topic families merged transitively by `cross_ref` leave 24
+  families with 171 documents in one. Folder and `cross_ref` closure stay as
+  sensitivity views, not cluster units.
+
+  The holdout reserve is registered with the map: the 35 families (36
+  documents) that no development use has touched — H, Hm, P1b/P2, the loss map
+  of step 2.5 and the pilot. Topic families do not remove cross-reference
+  dependence: 25 of the 35 reserve families link directly to a development
+  family (105 links). No independent sources are added — only the owner can
+  add documents — so the holdout is independent at the level of topics, with
+  this leakage stated in every capsule that uses it. The reserve is skewed: 24
+  of its 36 documents are legal (contract templates and powers of attorney),
+  10 are HR and 2 are transport-logistics contracts; it holds no compliance,
+  FAQ or external document and no claims, customs or dangerous-goods family.
+  The conclusion of step 4.1 therefore covers only the topics and strata the
+  holdout has cases for, and its capsule lists the strata it does not cover.
 - **Primary metric per mechanism** (GLM-2): each experiment's
   pre-registration names one primary metric before the run —
   `sent_precision` for selection mechanisms (H5, H3, H4, H7),
@@ -457,6 +619,26 @@ per plan G26/D9; GLM final-plan audit №10):
   the same case, or when its type has not been observed in the project before
   (№12); **a new critical error blocks SHIP** regardless of the averages; a
   harm-weighted sum may be reported as description only;
+- wrong gold on an unresolvable case (`gold_error`, plan G38, question а):
+  when an arm answers a case registered as unresolvable and cites a passage,
+  the two answer-check models decide, blind to the arm, whether that passage
+  — a passage of the registered corpus, in force on `as_of` and applicable
+  to the question — makes an answer the right action instead of the
+  registered one. If both confirm, the case's outcome is `gold_error`: the
+  label was wrong. The decision is stored apart from the holdout, which is
+  not edited after it is opened, and applies to every arm alike: the case
+  leaves `abstention_correct` and `action_correct`, and an answer on it is
+  not counted as the critical error «confident answer where refusal or
+  escalation was required». Nothing else is forgiven: the faithfulness and
+  citation checks of each answer stay scored, and a critical error that does
+  not rest on the registered action — a wrong answer on a safety-critical or
+  dangerous-goods case, an outdated rule presented as current — stays
+  counted for the arm that made it. The case's eligibility for every other
+  metric stays as registered; the capsule lists the case with the passage
+  address and publishes the denominators with and without it; the stratum
+  loses the case for the action metrics and its conclusion narrows as for an
+  unmet quota. If only one model confirms, the registered label stands and
+  the answer is charged as registered;
 - answer checks are done by two reference models from two vendors, neither of
   them the answer generator's, registered with their versions, prompt and
   rubric before the holdout is opened; the checks are blind to the arm:
