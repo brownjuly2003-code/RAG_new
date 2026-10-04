@@ -571,7 +571,7 @@ slice was written and its fast gate green when she asked. T-77 was not started.
         git diff --name-only wip/T-77-prep~1 wip/T-77-prep |
           xargs git restore --source=wip/T-77-prep --worktree --
 
-- **Resume, in order:**
+- **Resume, in order** (items 2, 3 and 5 are replaced by the list under «T-77 done» below):
   1. `python .tmp/t65/pause_baseline.py status`. `running` — arm
      `python .tmp/t65/watch_baseline.py`. `failed` — read the reason in the state file, the
      stage log and the abort marker before any `--resume`. `complete` — copy the state file and
@@ -586,3 +586,97 @@ slice was written and its fast gate green when she asked. T-77 was not started.
      consensus, rulers, loss map, at most two mechanisms, capsule.
   5. After T-77 lands, delete `wip/T-77-prep`. The stale `wip/T-61-writer` and `wip/T-69-prep`
      are still on origin; deleting remote branches is Julia's decision.
+
+## T-77 done — 2026-10-04
+
+- **What it answers.** Slice 1.3b asks whether the labels of the 30 pilot drafts are right, with
+  no person in the loop (plan D11). T-76 registered the rule, T-77 is the tool that applies it,
+  T-78 is the run. **No model was called and no draft is verified yet**: preparation, none of
+  (a), (b), (c).
+- **How the tool works.** `scripts/devset_label_verify.py` over
+  `evaluation/label_verification.py`: five commands and, per round, one directory
+  (`reports/devset/label-verification/round-1`, `round-2`; neither exists yet).
+  - `plan` checks every input and writes `plan.json`: per case one row with the SHA-256 of its
+    request, the pseudonym map, the counts, and what the row copies from the case — its SHA,
+    severity, class, safety flag, documents and families. The request text is written nowhere.
+  - `verify --verifier <id>` builds the requests again, refuses inputs that no longer give the
+    plan, sends them and appends every reply to the store `<verifier>.jsonl`. One row is one
+    attempt: `valid`, `invalid` (the reply breaks the form) or `unavailable` (quota, transport,
+    another model answered). A request gets three attempts; an unavailable verifier stops the
+    run; a rerun resumes by request.
+  - `decide` recomputes each case from the stores — `confirmed`, `rejected` or `none` — and
+    prints, for a rejected case, the reasons of both verifiers: the input of the repair.
+  - Round 2 is planned on a repairs file (the repaired cases, JSON lines) and a file of declared
+    drops; `decide --round 2`, `apply` and `check` need the same `--repairs`.
+  - `apply` writes the verified set `evaluation/devset_pilot_verified.jsonl` and its register
+    `evaluation/devset_pilot_label_checks.json`; `check` recomputes both and refuses a set that
+    differs. The drafts, their manifest and the family register are never written.
+- **Glossary.** *Revision* — the content of a case at one moment: the draft or its repair.
+  *Store* — the replies of one verifier in one round. *Rebuild* — the plan built again from the
+  corpus, the scan and the inputs of the round; nothing else ties a plan row to the text that
+  was sent. *Declared drop* — the author's statement that only a reserve document could repair
+  the case. *Pseudonym* — `D1`, `D2`…: the name of a source inside one request.
+- **What the tool takes on nobody's word.** A plan row is held against the revision it names —
+  the draft in round 1, the repairs file in round 2 — by `decide`, `apply` and `check` alike. A
+  store may hold only the attempts `verify` writes: a verdict on a fourth attempt, or a second
+  verdict, is refused. Of a route's usage five numeric counters are kept and nothing else.
+  - One gap is left: without `--rebuild`, `check` trusts the plan's pairing of a case SHA with
+    a request SHA. **T-78 runs `check --rebuild` before it publishes.**
+- **What a request may still carry.** Masked: a corpus file name, any `.md` name, any path, the
+  value of a `doc_id` or `source_id` label. Left as written: a file name of another extension
+  with no path, and a URL (the corpus has five; none is in the 30 requests). A case that names
+  a registered model id — in its own text or in a span it cites — is refused. A vendor's name,
+  the word «round» or a retelling of the first check in the free text of a repair no script
+  can tell: **T-78 tells the repair author to say nothing of the check, the verifiers or
+  round 1, and reads every repair before `plan --round 2`.**
+- **Unproven until a model answers — try one request first (`verify --limit 1`).**
+  - The Claude route starts `claude -p` in the temp directory with its own system prompt and no
+    tools, yet the CLI still loads the user-level `CLAUDE.md`.
+  - On Windows the CLI may be a `.cmd` shim, and the empty `--tools ""` argument through one
+    is untested.
+  - GLM at `xhigh` with a 48 000-token output window may spend it on reasoning for a request of
+    30–40 thousand characters. That shows as `invalid` or `unavailable`, never as a verdict.
+- **A repair returned unchanged is accepted by `plan --round 2`.** The rule says a repair
+  changes the label; the requirement lists no refusal for an unchanged one, so the tool has
+  none, and the same request would be judged a second time. Decide it before round 2 of T-78:
+  a refusal in the requirement and the tool, or such a case stays `repair_pending`.
+- **How it was done.** Executor: Opus 5.5 in the lead's session instead of GLM 5.3 — GLM was on
+  its weekly cap `1310`, and Julia chose the session over MyFlow on 2026-10-04 («Без MyFlow, в
+  этой сессии»). One independent review, by GPT-6-Astra through the Codex companion: seven
+  findings.
+  - Applied: a severity rewritten in the plan turned a rejection into a confirmation; paths,
+    paths with spaces and labelled identifiers passed the masking; any usage field reached the
+    store; a verdict on a fourth attempt counted.
+  - Applied in part: the store is now opened before the first request and every row is synced
+    to disk, but no mark of a started attempt is kept — a lost reply costs one repeated
+    stateless request; model ids are refused, other words are not.
+  - The seventh finding was about a stale copy of the tests.
+  - The fixes were not reviewed again. Julia, 2026-10-04: «не нужно использовать другие
+    модели».
+- **Checks.** `tests/test_label_verification.py`: 168 tests on fixtures built in `tmp_path` with
+  fake verifiers; the one that builds the 30 real requests is skipped without the corpus. The
+  whole pipeline also ran on the 30 real drafts with fake verifiers, outside git: 29 verified,
+  1 dropped, `check` and `check --rebuild` agree. The masking added after the review leaves the
+  SHA-256 of all 30 real requests unchanged.
+- **Lessons.**
+  - «продолжи доработку» is not an order to work through MyFlow. The session began there, and
+    Julia stopped it: ask once, or work in the session.
+  - A session that MyFlow has marked as its orchestrator cannot edit a test file, even one it
+    wrote itself. Choose the mode before the first line of code.
+  - The reviewer read the live tree, not the frozen copy it was given, so one finding came on
+    a version already replaced. Ask a reviewer to print the SHA prefix of every file it read.
+- **Left for Julia.** The commit is local: the push waits for her word, and so does the
+  deletion of `wip/T-77-prep`. MyFlow has no open slice; T-77 is still an open task in its
+  registry, and T-78 is not a task yet.
+- **Resume, in order:**
+  1. `python .tmp/t65/pause_baseline.py status` — item 1 of the stop point above.
+  2. T-78, once GLM answers again (the named reset of the weekly cap was 2026-10-04 21:56 UTC).
+     Commit `.tmp/t76/wide-scan.json` as `reports/devset/label-verification/wide-scan.json`.
+     Then `plan --round 1`; `verify --round 1 --verifier <id> --limit 1` for each of `glm-5.3`
+     and `claude-opus-5-5`, then without the limit; `decide --round 1`. The draft author
+     (`gpt-6.1-sol`) repairs the rejected cases or declares drops. Then
+     `plan --round 2 --repairs <jsonl> --drops <json>`, `verify` twice,
+     `decide --round 2 --repairs <jsonl>`, `apply --repairs <jsonl>`,
+     `check --repairs <jsonl> --rebuild --drops <json>`. Then the capsule, the evidence row and
+     the artifact test.
+  3. T-65 after the collection — item 4 of the stop point above.

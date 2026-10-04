@@ -242,6 +242,8 @@ commit that adds the verification tool, before any request is sent; a reply
 counts only when the prompt SHA-256 stored with it is the recorded one, and
 a changed prompt is a new rubric version.
 
+Prompt SHA-256 (rubric label-verification/v1): `93511368316d5439be394e7eba77c0f0d2f7fe357f0fbb98c37efc8fb930c6c7`
+
 The checks:
 
 1. every evidence span is present verbatim in the named source at the

@@ -10,7 +10,7 @@ from collections import Counter
 from collections.abc import Mapping, Sequence
 from datetime import date
 from pathlib import Path
-from typing import Any
+from typing import Any, NamedTuple
 
 from evaluation import judge_contract
 from evaluation.blinded_judge import _sha256_text
@@ -223,6 +223,192 @@ def _section(section: dict[str, Any], revisions: dict[str, str]) -> None:
     )
 
 
+def document_families(register: dict[str, Any]) -> dict[str, str]:
+    """Map every registered document to its topic family."""
+    return {
+        member["source_id"]: family["family_id"]
+        for family in register["families"]
+        for member in family["members"]
+    }
+
+
+def validate_case(
+    case: dict[str, Any],
+    selected: dict[str, Any],
+    revisions: dict[str, str],
+    corpus_version: str,
+    family_map: dict[str, str],
+) -> list[str]:
+    """Apply the per-case rules to one draft or repaired case; return its families.
+
+    The rules of the draft set as a whole (30 cases, quotas, styles, traps, the case graph)
+    stay in validate_metadata and bind the unchanged drafts only.
+    """
+    polarities = {p for markers in POLARITY_LEXICON.values() for p in markers} | set(GOVERNING_CUES)
+    require(CASE_FIELDS <= case.keys(), "required case fields")
+    require(isinstance(case["question"], str) and case["question"].strip(), "question")
+    answer = case["reference_answer"]
+    require(
+        isinstance(answer, str)
+        and answer.strip()
+        and len(answer) <= 700
+        and re.search(r"[А-Яа-яЁё]", answer),
+        "reference answer",
+    )
+    require(not ANSWER_LANGUAGE_REQUEST.search(case["question"]), "answer-language request")
+    require(
+        case["primary_class"] in QUOTAS and case["expected_action"] in ACTIONS,
+        "class/action enum",
+    )
+    require(case["question_origin"] in STYLES, "question origin")
+    require(
+        all(case[key] == "agent_labelled" for key in ("label_origin", "evidence_class", "status"))
+        and case["approved_by"] is None,
+        "unapproved agent draft",
+    )
+    require(case["complexity"] in {"simple", "not_simple"}, "complexity enum")
+    require(
+        case["wrong_answer_severity"] in {"low", "moderate", "high", "critical"},
+        "severity enum",
+    )
+    date.fromisoformat(case["as_of"])
+    require(case["trap_type"] is None or case["trap_type"] in TRAPS, "trap enum")
+    require(
+        set(case["flags"]) == FLAGS and all(type(v) is bool for v in case["flags"].values()),
+        "boolean subset flags",
+    )
+    require(case["seed_selected_source_section"] == selected, "seed-selected source")
+    chosen = [selected] + case["partner_sections"]
+    for section in chosen:
+        _section(section, revisions)
+    for section in case["partner_sections"]:
+        require(
+            isinstance(section["selection_reason"], str) and section["selection_reason"].strip(),
+            "partner selection reason",
+        )
+    documents = {s["source_id"] for s in chosen}
+    require(case["documents"] == sorted(documents), "case document list")
+    families = sorted({family_map[n] for n in documents})
+    authority = case["authority_source"]
+    require({a["source_id"] for a in authority} == documents, "rule authority sources")
+    require(
+        all(a["source_revision"] == revisions[a["source_id"]] and a["scope"] for a in authority),
+        "rule authority revisions/scope",
+    )
+    for raw in case["required_facts"] + case["critical_facts"]:
+        require(
+            FACT_FIELDS <= raw.keys() <= FACT_FIELDS | {"derived", "source_quote"},
+            "Fact field names",
+        )
+        parsed = parse_fact(raw)
+        validate_claim(raw)
+        if "derived" in raw:
+            require(
+                raw["derived"] is True
+                and case["primary_class"] == "aggregation"
+                and parsed.value == case["aggregation"]["value"],
+                "derived aggregation claim",
+            )
+        require(
+            parsed.subject and parsed.text and parsed.polarity in polarities,
+            "Fact text/subject/polarity",
+        )
+        require(
+            type(parsed.tolerance) in (int, float)
+            and math.isfinite(parsed.tolerance)
+            and parsed.tolerance >= 0,
+            "fact tolerance",
+        )
+        if parsed.value is not None:
+            require(
+                type(parsed.value) in (int, float)
+                and math.isfinite(parsed.value)
+                and parsed.unit
+                and isinstance(parsed.condition, str),
+                "numeric claim",
+            )
+    require(
+        all(f in case["required_facts"] for f in case["critical_facts"]), "critical fact subset"
+    )
+    validate_fact_coverage(
+        case["required_facts"] + case["critical_facts"],
+        answer,
+        "reference-answer coverage: " + case["case_id"],
+    )
+    require(
+        case["flags"]["numeric"] == any(f["value"] is not None for f in case["required_facts"]),
+        "numeric subset flag",
+    )
+    require(case["flags"]["ru_to_en"] == ru_to_en(case), "derived RU→EN flag")
+    unresolvable = case["primary_class"] == "needs-refusal/clarification"
+    require(
+        case["flags"]["adversarial_unanswerable"] == bool(case["trap_type"] or unresolvable),
+        "adversarial/unanswerable flag",
+    )
+    if unresolvable:
+        require(
+            case["expected_action"] in {"clarify", "refuse", "escalate"}
+            and isinstance(case["action_reason"], str)
+            and case["action_reason"].strip(),
+            "missing-answer action/reason",
+        )
+        require(
+            not case["evidence_spans"]
+            and not case["required_evidence_groups"]
+            and not case["required_facts"]
+            and not case["critical_facts"],
+            "missing-answer gold",
+        )
+    else:
+        require(
+            case["evidence_spans"] and case["required_evidence_groups"] and case["required_facts"],
+            "answerable gold",
+        )
+        require(
+            len(documents) == 1 if case["primary_class"] == "single-doc" else len(documents) >= 2,
+            "primary class document count",
+        )
+        span_ids = set()
+        for span in case["evidence_spans"]:
+            _section(span, revisions)
+            require(span["span_id"] not in span_ids, "unique span id")
+            span_ids.add(span["span_id"])
+            require(
+                span["source_id"] in documents
+                and span["source_revision"] == revisions[span["source_id"]]
+                and span["corpus_version"] == corpus_version,
+                "span source address",
+            )
+            require(_sha(span["text_sha256"]) and span["normalized_text"], "span text identity")
+        groups = case["required_evidence_groups"]
+        require(len({g["group_id"] for g in groups}) == len(groups), "unique evidence group")
+        require(
+            all(g["alternatives"] and set(g["alternatives"]) <= span_ids for g in groups),
+            "explicit evidence alternatives",
+        )
+        require(
+            {s for g in groups for s in g["alternatives"]} == span_ids,
+            "gold span group coverage",
+        )
+    if case["primary_class"] == "aggregation":
+        agg = case["aggregation"]
+        require(agg and agg["scope"] and agg["operands"], "aggregation scope/operands")
+        if agg["operation"] == "count":
+            value = len(agg["operands"])
+        elif agg["operation"] == "count_distinct":
+            value = len(set(agg["operands"]))
+        else:
+            require(agg["operation"] == "intersection_count", "aggregation operation")
+            value = len(set.intersection(*(set(v) for v in agg["operands"])))
+        require(
+            agg["value"] == value and any(f["value"] == value for f in case["required_facts"]),
+            "aggregation result",
+        )
+    else:
+        require(case["aggregation"] is None, "non-aggregation case")
+    return families
+
+
 def validate_metadata(
     cases: list[dict[str, Any]],
     manifest: dict[str, Any],
@@ -331,179 +517,10 @@ def validate_metadata(
     require(len(cases) == len(drawn) == 30, "30 drafts and draws")
     require(len({c["case_id"] for c in cases}) == 30, "unique case ids")
     mapping = {}
-    polarities = {p for markers in POLARITY_LEXICON.values() for p in markers} | set(GOVERNING_CUES)
     for case, selected in zip(cases, drawn, strict=True):
-        require(CASE_FIELDS <= case.keys(), "required case fields")
-        require(isinstance(case["question"], str) and case["question"].strip(), "question")
-        answer = case["reference_answer"]
-        require(
-            isinstance(answer, str)
-            and answer.strip()
-            and len(answer) <= 700
-            and re.search(r"[А-Яа-яЁё]", answer),
-            "reference answer",
+        mapping[case["case_id"]] = validate_case(
+            case, selected, revisions, corpus["corpus_sha256"], family_map
         )
-        require(not ANSWER_LANGUAGE_REQUEST.search(case["question"]), "answer-language request")
-        require(
-            case["primary_class"] in QUOTAS and case["expected_action"] in ACTIONS,
-            "class/action enum",
-        )
-        require(case["question_origin"] in STYLES, "question origin")
-        require(
-            all(
-                case[key] == "agent_labelled"
-                for key in ("label_origin", "evidence_class", "status")
-            )
-            and case["approved_by"] is None,
-            "unapproved agent draft",
-        )
-        require(case["complexity"] in {"simple", "not_simple"}, "complexity enum")
-        require(
-            case["wrong_answer_severity"] in {"low", "moderate", "high", "critical"},
-            "severity enum",
-        )
-        date.fromisoformat(case["as_of"])
-        require(case["trap_type"] is None or case["trap_type"] in TRAPS, "trap enum")
-        require(
-            set(case["flags"]) == FLAGS and all(type(v) is bool for v in case["flags"].values()),
-            "boolean subset flags",
-        )
-        require(case["seed_selected_source_section"] == selected, "seed-selected source")
-        chosen = [selected] + case["partner_sections"]
-        for section in chosen:
-            _section(section, revisions)
-        for section in case["partner_sections"]:
-            require(
-                isinstance(section["selection_reason"], str)
-                and section["selection_reason"].strip(),
-                "partner selection reason",
-            )
-        documents = {s["source_id"] for s in chosen}
-        require(case["documents"] == sorted(documents), "case document list")
-        mapping[case["case_id"]] = sorted({family_map[n] for n in documents})
-        authority = case["authority_source"]
-        require({a["source_id"] for a in authority} == documents, "rule authority sources")
-        require(
-            all(
-                a["source_revision"] == revisions[a["source_id"]] and a["scope"] for a in authority
-            ),
-            "rule authority revisions/scope",
-        )
-        for raw in case["required_facts"] + case["critical_facts"]:
-            require(
-                FACT_FIELDS <= raw.keys() <= FACT_FIELDS | {"derived", "source_quote"},
-                "Fact field names",
-            )
-            parsed = parse_fact(raw)
-            validate_claim(raw)
-            if "derived" in raw:
-                require(
-                    raw["derived"] is True
-                    and case["primary_class"] == "aggregation"
-                    and parsed.value == case["aggregation"]["value"],
-                    "derived aggregation claim",
-                )
-            require(
-                parsed.subject and parsed.text and parsed.polarity in polarities,
-                "Fact text/subject/polarity",
-            )
-            require(
-                type(parsed.tolerance) in (int, float)
-                and math.isfinite(parsed.tolerance)
-                and parsed.tolerance >= 0,
-                "fact tolerance",
-            )
-            if parsed.value is not None:
-                require(
-                    type(parsed.value) in (int, float)
-                    and math.isfinite(parsed.value)
-                    and parsed.unit
-                    and isinstance(parsed.condition, str),
-                    "numeric claim",
-                )
-        require(
-            all(f in case["required_facts"] for f in case["critical_facts"]), "critical fact subset"
-        )
-        validate_fact_coverage(
-            case["required_facts"] + case["critical_facts"],
-            answer,
-            "reference-answer coverage: " + case["case_id"],
-        )
-        require(
-            case["flags"]["numeric"] == any(f["value"] is not None for f in case["required_facts"]),
-            "numeric subset flag",
-        )
-        require(case["flags"]["ru_to_en"] == ru_to_en(case), "derived RU→EN flag")
-        unresolvable = case["primary_class"] == "needs-refusal/clarification"
-        require(
-            case["flags"]["adversarial_unanswerable"] == bool(case["trap_type"] or unresolvable),
-            "adversarial/unanswerable flag",
-        )
-        if unresolvable:
-            require(
-                case["expected_action"] in {"clarify", "refuse", "escalate"}
-                and isinstance(case["action_reason"], str)
-                and case["action_reason"].strip(),
-                "missing-answer action/reason",
-            )
-            require(
-                not case["evidence_spans"]
-                and not case["required_evidence_groups"]
-                and not case["required_facts"]
-                and not case["critical_facts"],
-                "missing-answer gold",
-            )
-        else:
-            require(
-                case["evidence_spans"]
-                and case["required_evidence_groups"]
-                and case["required_facts"],
-                "answerable gold",
-            )
-            require(
-                len(documents) == 1
-                if case["primary_class"] == "single-doc"
-                else len(documents) >= 2,
-                "primary class document count",
-            )
-            span_ids = set()
-            for span in case["evidence_spans"]:
-                _section(span, revisions)
-                require(span["span_id"] not in span_ids, "unique span id")
-                span_ids.add(span["span_id"])
-                require(
-                    span["source_id"] in documents
-                    and span["source_revision"] == revisions[span["source_id"]]
-                    and span["corpus_version"] == corpus["corpus_sha256"],
-                    "span source address",
-                )
-                require(_sha(span["text_sha256"]) and span["normalized_text"], "span text identity")
-            groups = case["required_evidence_groups"]
-            require(len({g["group_id"] for g in groups}) == len(groups), "unique evidence group")
-            require(
-                all(g["alternatives"] and set(g["alternatives"]) <= span_ids for g in groups),
-                "explicit evidence alternatives",
-            )
-            require(
-                {s for g in groups for s in g["alternatives"]} == span_ids,
-                "gold span group coverage",
-            )
-        if case["primary_class"] == "aggregation":
-            agg = case["aggregation"]
-            require(agg and agg["scope"] and agg["operands"], "aggregation scope/operands")
-            if agg["operation"] == "count":
-                value = len(agg["operands"])
-            elif agg["operation"] == "count_distinct":
-                value = len(set(agg["operands"]))
-            else:
-                require(agg["operation"] == "intersection_count", "aggregation operation")
-                value = len(set.intersection(*(set(v) for v in agg["operands"])))
-            require(
-                agg["value"] == value and any(f["value"] == value for f in case["required_facts"]),
-                "aggregation result",
-            )
-        else:
-            require(case["aggregation"] is None, "non-aggregation case")
     counts = dict(Counter(c["primary_class"] for c in cases))
     styles = dict(Counter(c["question_origin"] for c in cases))
     traps = dict(Counter(c["trap_type"] for c in cases if c["trap_type"]))
@@ -636,63 +653,81 @@ def verify(*, metadata_only: bool = False, directory: Path | None = None) -> dic
     return summary
 
 
-def validate_source_labels(cases: list[dict[str, Any]], texts: dict[str, str]) -> None:
-    all_sections = {name: sections(name, text) for name, text in texts.items()}
-    eligible = eligible_sections(texts)
-    normalized_documents = [normalized(text) for text in texts.values()]
-    for case in cases:
-        for section in [case["seed_selected_source_section"]] + case["partner_sections"]:
-            address = {
-                k: section[k] for k in ("source_id", "section_path", "char_start", "char_end")
-            }
-            require(address in all_sections[section["source_id"]], "source section address/offsets")
-            require(address in eligible, "section not in eligible frame")
-        for span in case["evidence_spans"]:
-            require(
-                any(
-                    section["section_path"] == span["section_path"]
-                    and section["char_start"]
-                    <= span["char_start"]
-                    < span["char_end"]
-                    <= section["char_end"]
-                    for section in all_sections[span["source_id"]]
-                ),
-                "source section address/offsets",
-            )
-            text = texts[span["source_id"]][span["char_start"] : span["char_end"]]
-            require(sha256(text.encode("utf-8")) == span["text_sha256"], "span text SHA mismatch")
-            require(normalized(text) == span["normalized_text"], "normalized span text")
-            require(
-                sum(span["normalized_text"] in doc for doc in normalized_documents)
-                <= SPECIFICITY_RULE["maximum_span_documents"],
-                "template-anchored evidence span",
-            )
-        span_texts = [
-            texts[s["source_id"]][s["char_start"] : s["char_end"]] for s in case["evidence_spans"]
-        ]
-        context = "\n".join(span_texts)
-        validate_fact_coverage(
-            [
-                f
-                for f in case["required_facts"] + case["critical_facts"]
-                if f.get("value") is not None and not f.get("derived")
-            ],
-            context,
-            "numeric span self-coverage",
+class SourceFrame(NamedTuple):
+    """What the source checks of one case need from the whole corpus."""
+
+    sections: dict[str, list[dict[str, Any]]]
+    eligible: list[dict[str, Any]]
+    normalized_documents: list[str]
+
+
+def source_frame(texts: dict[str, str]) -> SourceFrame:
+    return SourceFrame(
+        {name: sections(name, text) for name, text in texts.items()},
+        eligible_sections(texts),
+        [normalized(text) for text in texts.values()],
+    )
+
+
+def validate_case_sources(case: dict[str, Any], texts: dict[str, str], frame: SourceFrame) -> None:
+    """Check the sections, spans and fact quotes of one draft or repaired case."""
+    all_sections, eligible, normalized_documents = frame
+    for section in [case["seed_selected_source_section"]] + case["partner_sections"]:
+        address = {k: section[k] for k in ("source_id", "section_path", "char_start", "char_end")}
+        require(address in all_sections[section["source_id"]], "source section address/offsets")
+        require(address in eligible, "section not in eligible frame")
+    for span in case["evidence_spans"]:
+        require(
+            any(
+                section["section_path"] == span["section_path"]
+                and section["char_start"]
+                <= span["char_start"]
+                < span["char_end"]
+                <= section["char_end"]
+                for section in all_sections[span["source_id"]]
+            ),
+            "source section address/offsets",
         )
-        for fact in case["required_facts"] + case["critical_facts"]:
-            validate_claim(fact)
-            if fact.get("derived"):
-                continue
-            quote = fact["source_quote"]
-            require(any(quote in text for text in span_texts), "fact supporting quote")
-            text = normalized(quote)
-            if len(text) >= SPECIFICITY_RULE["minimum_fact_characters"]:
-                require(
-                    sum(text in doc for doc in normalized_documents)
-                    <= SPECIFICITY_RULE["maximum_fact_documents"],
-                    "template-anchored fact",
-                )
+        text = texts[span["source_id"]][span["char_start"] : span["char_end"]]
+        require(sha256(text.encode("utf-8")) == span["text_sha256"], "span text SHA mismatch")
+        require(normalized(text) == span["normalized_text"], "normalized span text")
+        require(
+            sum(span["normalized_text"] in doc for doc in normalized_documents)
+            <= SPECIFICITY_RULE["maximum_span_documents"],
+            "template-anchored evidence span",
+        )
+    span_texts = [
+        texts[s["source_id"]][s["char_start"] : s["char_end"]] for s in case["evidence_spans"]
+    ]
+    context = "\n".join(span_texts)
+    validate_fact_coverage(
+        [
+            f
+            for f in case["required_facts"] + case["critical_facts"]
+            if f.get("value") is not None and not f.get("derived")
+        ],
+        context,
+        "numeric span self-coverage",
+    )
+    for fact in case["required_facts"] + case["critical_facts"]:
+        validate_claim(fact)
+        if fact.get("derived"):
+            continue
+        quote = fact["source_quote"]
+        require(any(quote in text for text in span_texts), "fact supporting quote")
+        text = normalized(quote)
+        if len(text) >= SPECIFICITY_RULE["minimum_fact_characters"]:
+            require(
+                sum(text in doc for doc in normalized_documents)
+                <= SPECIFICITY_RULE["maximum_fact_documents"],
+                "template-anchored fact",
+            )
+
+
+def validate_source_labels(cases: list[dict[str, Any]], texts: dict[str, str]) -> None:
+    frame = source_frame(texts)
+    for case in cases:
+        validate_case_sources(case, texts, frame)
 
 
 def main() -> None:
