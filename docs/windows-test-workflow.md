@@ -8,6 +8,10 @@ Windows runs **focused checks only**. The full suite, models, Docker and
 browser checks run on the Mac (`deproject-mac`), never on this laptop
 (`CLAUDE.md`, `ROADMAP.md`). Do not install or launch WSL, Docker or VMs here.
 
+Since 2026-10-05 the owner sends focused test runs to the Mac as well
+(`CLAUDE.md`; her words: «Тесты также прогоняй на маке»). Ruff, mypy and light
+scripts stay local; the pytest commands below are kept for the day that changes.
+
 ## Interpreter
 
 `python` on PATH may resolve to an Anaconda interpreter without `fastapi`.

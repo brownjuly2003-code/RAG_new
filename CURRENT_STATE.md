@@ -85,7 +85,7 @@ browser checks run on Mac.
   `c81de77`, rerun 2026-09-30 (late) on `b0386e9`: 3,722 unit + 36 e2e passed on the Mac, history
   scan 0 findings; the MyFlow full gate repeats it on the commit. CI is green on `45a417a` (run 37157492007, above). What is left of E.4 is the public/deploy checks; they are the owner's gate and do not hold the quality thread (plan D11).
 - **Executor:** since the owner's D12 (2026-10-04) the session's model, Claude Opus 5.5, with no model of another vendor in any role (plan §2, record D12).
-  The `CLAUDE.md` line «Executor: GLM 5.3», its [runbook](docs/operations/direct-glm-5.3.md) and the Codex fallback predate D12 and are not in force; the file is the owner's, and the line waits for her word.
+  `CLAUDE.md` says so since 2026-10-05, when the owner asked to optimize the file; the GLM 5.3 [runbook](docs/operations/direct-glm-5.3.md) and its Codex fallback predate D12 and are not in force.
 
 ## Accepted open risks
 
