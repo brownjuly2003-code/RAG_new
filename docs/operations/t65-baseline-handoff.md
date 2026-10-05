@@ -266,6 +266,10 @@ Nothing in the resume order above was executed. Three things changed around it:
         python -m scripts.baseline_judge judge --out <judge dir> --judge sonnet
         python -m scripts.baseline_judge consensus --out <judge dir>
 
+    Since plan decision D12 (2026-10-04) the tool takes one judge, `--judge opus`, and has a
+    fourth command, `retest`; the commands in force are in «T-65 judging part done —
+    2026-10-05» at the end of this file.
+
     - `plan` reads a finished `scripts/production_baseline.py` run and refuses an unfinished
       one: no `report.json`, an open abort, a grade row of another run.
     - `judge` sends the planned requests through `run_judge_v2` and resumes by `request_key`.
@@ -410,6 +414,9 @@ Nothing in the resume order above was executed. Three things changed around it:
 - **Resume.** Item 2 of the list in the T-70 section becomes: the task for slice 1.3b.
 
 ## T-65 collection running — 2026-10-04
+
+**Ended 2026-10-05 05:16 UTC with status `complete`; what follows it is in «T-65 judging part
+done — 2026-10-05» at the end of this file.** The entry below is kept as written.
 
 The collection outlives a session: it runs on the Mac for about seventeen hours, and the next
 session has to find it, watch it and, before a full gate, pause it. Nothing of it is published
@@ -737,3 +744,124 @@ slice was written and its fast gate green when she asked. T-77 was not started.
 - **Next.** 1.3c — sizes, MDE and power from the pilot. It must first say what the cluster
   collapse of the baseline (H: 4 clusters, Hm: 1) leaves of a paired comparison. T-65 goes on
   when the collection ends: «T-65 collection running» above, with the judge now Opus 5.5 alone.
+
+## T-65 judging part done — 2026-10-05
+
+- **Where T-65 stands.** The collection is complete; the judging by the one judge is part done
+  and was stopped at a stop point Julia asked for. Nothing is published: until the capsule
+  exists the run is NOT_EVIDENCE. The session worked without MyFlow and with no model of
+  another vendor (plan D12); what one model may claim, and how to read the retest, is in
+  [`session-handoff-2026-10-05-one-model-and-sizes.md`](session-handoff-2026-10-05-one-model-and-sizes.md).
+- **The collection, for the capsule.** H 100 + Hm 15 from commit `68c5f8d`, 2026-10-04 10:11
+  UTC → 2026-10-05 05:16 UTC on `deproject-mac` (i5-7500, 8 GiB), two pauses, supervisor
+  status `complete`. 115 cases, none excluded. The collector's report counts one document
+  without a chunk address; the judge plan sends no text without an address and lists it as
+  unjudged with that reason. Stage medians a case: transform 8.3 s, retrieve with rerank
+  30.6 s, grade 507 s (p95 881.9 s). That is one run on one host, with another project's load
+  on it at the start: `latency_evidence` is false. The plan budgeted half a night for it.
+- **Where the files are.**
+  - On the Mac: snapshot `/Users/julia/RAG_new_t65_baseline_7d2535f8876f`, run directory
+    `.tmp/baseline-68c5f8d` in it. The Mac runs nothing of T-65 any more.
+  - On the laptop, untracked: `reports/baseline/68c5f8d/` — the export written by
+    `baseline_report export` (`collector-report.json`, `contexts.json.gz`, `manifest.json`,
+    `registration.json`; run SHA-256 `6b30fbbc…`) and `judge/` with `plan.json` (115 requests,
+    3.5 MB), the store `opus.jsonl` and the log of passes `runs.jsonl`.
+  - On the laptop, outside git: `.tmp/t65/run/baseline-state.json`, the supervisor's state
+    (stage seconds, pauses, host peaks), and `.tmp/t65/run/host-monitor.jsonl`, 2 275 host
+    samples. The samples name other processes of the Mac, so the capsule gives their SHA-256
+    and the peaks, and the file is not committed.
+- **The judging.** Store `reports/baseline/68c5f8d/judge/opus.jsonl`, one row an attempt, each
+  valid row with the record of its session. **48 of 115 requests hold a valid reply; 67 are
+  still to be asked.** No judge process is running.
+  - Passes: 06:55–07:05 UTC, a trial of two requests; 08:16–09:06 UTC, 21 more, ended by a
+    request that timed out; a third, 09:14–10:19 UTC, 25 more, stopped by the session at the
+    stop point between two replies. A pass stopped from outside writes no row to
+    `runs.jsonl`: the capsule takes the third pass from the store rows.
+  - A reply takes a median of 60 s; one in ten takes more than four minutes, the longest so
+    far 15.6 minutes. The limit is 1200 s (`CLI_TIMEOUT_S`): a request past it is stored as
+    `absent`, the pass ends with `unavailable: cli_timeout` and exit code 1, and the next pass
+    sends that request again — a request that got no reply is no attempt. This happened once
+    (`aircargo-claims-forbidden`), and the second sending was answered. A valid reply is
+    reused by its request key and never asked twice. A usage limit of the subscription ends a
+    pass the same way: the judge's requests and the session share one subscription.
+- **The chain from here.** No step needs the Mac. Each command runs from the repository root
+  with `PYTHONPATH=D:/RAG_new` and the interpreter
+  `C:/Users/uedom/.venvs/rag_new-focused/Scripts/python.exe` in place of `python`:
+
+      python -m scripts.baseline_judge judge --out D:/RAG_new/reports/baseline/68c5f8d/judge --judge opus
+      python -m scripts.baseline_judge judge --out D:/RAG_new/reports/baseline/68c5f8d/judge --judge opus --retest
+      python -m scripts.baseline_judge consensus --out D:/RAG_new/reports/baseline/68c5f8d/judge
+      python -m scripts.baseline_judge retest --out D:/RAG_new/reports/baseline/68c5f8d/judge --judge opus
+      python -m scripts.baseline_report pack --judge-dir D:/RAG_new/reports/baseline/68c5f8d/judge
+      python -m scripts.baseline_report build --inputs D:/RAG_new/reports/baseline/68c5f8d --judge-dir D:/RAG_new/reports/baseline/68c5f8d/judge --out <report.json> --judge opus --state D:/RAG_new/.tmp/t65/run/baseline-state.json --host-samples D:/RAG_new/.tmp/t65/run/host-monitor.jsonl
+
+  Before a pass, see that none is alive — the first command must print nothing; the brackets
+  keep it from finding itself — and count the valid replies (the script is outside git):
+
+      powershell -NoProfile -Command 'Get-CimInstance Win32_Process | Where-Object { $_.CommandLine -match "baseline_[j]udge" } | Select-Object ProcessId, CreationDate'
+      python D:/RAG_new/.tmp/t65/store_state.py
+
+  1. `judge`, in the background and waited for once, until it exits with code 0 — no request
+     `pending`, `absent` or `invalid`. At the mean of the 48 replies, about two minutes each,
+     the 67 left are a little over two hours of requests.
+  2. `judge --retest` sends the stability sub-sample — 10 cases of H and 10 of Hm, fixed by
+     the plan — a second time, into `opus-retest.jsonl`.
+  3. `consensus` writes `ruler-input.json`; with one judge the grade is that judge's and the
+     summary says `single_judge`. `retest` writes `opus-retest.json`: κ of the two passes and
+     its interval. The three outcomes and what each means are a table in the session handoff.
+  4. `pack` writes `plan.json.gz`, which the repository keeps in place of `plan.json`. `build`
+     records whether the tracked tree was clean and the blobs of its code files, so run it
+     with nothing uncommitted. Then the loss map in its baseline mode
+     ([requirement](../specs/evidence-loss-map.md)), the choice of at most two mechanisms, the
+     capsule, the row in `EVIDENCE_INDEX.md` and the artifact test.
+- **What the capsule must say.**
+  - The retest κ, and that the κ 0.9604 of the P2 sample describes the model on the earlier
+    route, not on the clean one.
+  - No model of another vendor and no person checked a grade of the run.
+  - Under the family map H is 4 clusters — of 94, 2, 2 and 2 cases — and Hm is 1. The
+    intervals follow the registered rule (spec, «Baseline of plan slice 2.5»): the points are
+    read as points, and no decision rests on an interval of this run.
+  - No contamination control: H and Hm carry no gold spans to cut or swap.
+  - The document without an address; the absolute paths of the collection host that
+    `manifest.json` keeps; the host samples by SHA-256 only; the request that timed out and
+    was sent again; the third pass without a row in `runs.jsonl`.
+- **Launching the variance pilot of plan step 1.3c** (session handoff, next action 1). The Mac
+  is free for it, and it reuses the machinery of the collection; its launcher is not written.
+  - *What runs.* Three arms, one after another — the host holds one model at a time — each the
+    five stages `prepare → transform → embed → retrieve → grade` of
+    `scripts/production_baseline.py`, from one commit (`323ce00` or later) on the index of
+    T-65. The arguments that name the pilot go to `prepare` only, the same for every arm:
+    `--cases evaluation/devset_pilot_gold_questions.jsonl --subset pilot-gold --task "1.3c
+    variance pilot"`; `pool30` adds `--set retrieval_top_k=30`, `sent3` adds
+    `--set rerank_top_k=3`, `control` adds nothing. `measure` refuses a run registered under
+    another task name. About 3.7 hours an arm at the medians of T-65, eleven for the three.
+  - *How the code reaches the Mac.* Not by a push. `python D:/RAG_new/.tmp/t65/launch_baseline.py
+    <full sha>` sends `git archive <sha>` by scp to `/Users/julia/RAG_new_t65_baseline_<first
+    12 hex of the archive's SHA-256>` — hence `…_7d2535f8876f` for the collection of `68c5f8d`
+    — checks the corpus files against the commit's source manifest and starts the supervisor
+    detached under `caffeinate`. It refuses while a model writer, pytest or mypy runs on the
+    Mac, while Ollama (`127.0.0.1:11434`, model `qwen2.5:7b`) holds a loaded model, or when
+    the index `/Users/julia/RAG_new_t65_embeddings_2851e3811508/.tmp/t65-index-72fbd72` or the
+    checkpoint `.tmp/t65-verified-embeddings.npz` beside it is missing. The stages run under
+    `/Users/julia/RAG_Support_Assistant/.venv/bin/python` with
+    `PYTHONPATH=/Users/julia/RAG_new_mf_gate_site`, offline, on the CPU.
+  - *What to adapt, in `.tmp/t65/` (outside git).* `baseline_supervisor.py` knows one run
+    directory, `<snapshot>/.tmp/baseline-<sha7>`, and passes `prepare` the index, the
+    checkpoint and the code SHA only. The pilot needs a run directory an arm, the arguments
+    above on `prepare` (again on a `--resume` of it: the registration is compared), and the
+    three arms in sequence under one supervisor, so that one pause flag and one file of host
+    samples cover the pilot. `pause_baseline.py` and `watch_baseline.py` find the snapshot by
+    the `REMOTE` line of `.tmp/t65/launch.log`, which a new launch overwrites: keep a copy of
+    the old log. Try the adapted supervisor on the first two lines of the question file, under
+    another task name, before the long run.
+  - *Tests on the Mac meanwhile.* A focused gate needs no pause; its overlap shows in the host
+    samples. The full suite does not fit in 8 GiB beside the model: `pause_baseline.py
+    boundary` first, `resume` after. Every pause and every foreign load goes into the capsule,
+    because the pilot's hours are the first timing the campaign budget is recomputed from.
+  - *After the three arms.* On the Mac, `python -m scripts.variance_pilot export --run <arm's
+    run directory> --out <directory>` for each arm; fetch the three directories; then on the
+    laptop `python -m scripts.variance_pilot measure --arm control=<dir> --arm pool30=<dir>
+    --arm sent3=<dir> --out <file>`, with the interpreter and `PYTHONPATH` of «The chain from
+    here». The second condition of a usable pilot was checked before any arm: 37 of the 38
+    gold spans of the 24 cases are held whole by a chunk of the index's archive, `T64-16-E2`
+    by none (`.tmp/pilot/handoff_numbers.py`, outside git).
