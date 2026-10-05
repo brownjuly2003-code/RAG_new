@@ -9,8 +9,8 @@ from typing import ClassVar
 
 import pytest
 
+from evaluation import isolated_request as isolated
 from evaluation.blinded_judge import read_store
-from evaluation.blinded_judge_clients import Reply
 from evaluation.ragas_eval import context_precision
 from evaluation.semantic_ruler import family_clusters
 from scripts import baseline_judge as judge_tool
@@ -21,6 +21,15 @@ from scripts import production_parity as parity
 ROOT = Path(__file__).resolve().parent.parent
 SPEC = ROOT / "docs/specs/semantic-precision-metrics.md"
 GRADES = {"zebra": 3, "okapi": 2, "gnu": 1}
+# The record of a session that loaded nothing: what the clean route keeps beside a reply.
+SESSION = {
+    "cli_version": "9.9.9",
+    "model": "fixture-reported-model",
+    "loaded": {kind: [] for kind in isolated.LOADED},
+    "builtin": {"plugins": [], "agents": []},
+    "turns": 1,
+    "context_tokens": 40,
+}
 
 
 class TokenJudge:
@@ -42,7 +51,9 @@ class TokenJudge:
             }
             for position, block in enumerate(blocks, 1)
         ]
-        return Reply(json.dumps({"grades": grades}), "fixture-reported-model", {"tokens": 1}, 0.5)
+        return isolated.IsolatedReply(
+            json.dumps({"grades": grades}), "fixture-reported-model", {"tokens": 1}, 0.5, SESSION
+        )
 
     def describe(self):
         return {"cli_version": self.version} if self.version else {}
@@ -406,6 +417,12 @@ def test_provenance_names_the_stores_the_judge_and_the_inputs(evidence):
     assert replies["first_pass"]["sha256"] == parity.file_sha(judges / "opus.jsonl")
     assert replies["retest_pass"]["sha256"] == parity.file_sha(judges / "opus-retest.jsonl")
     assert (replies["first_pass"]["attempts"], replies["first_pass"]["valid"]) == (3, 3)
+    assert replies["first_pass"]["sessions"] == {
+        "records": 3,
+        "loaded": "nothing: no tool, MCP server, slash command, skill, memory, plugin or hook",
+        "cli_versions": ["9.9.9"],
+        "context_tokens": {"n": 3, "min": 40, "mean": 40.0, "max": 40},
+    }
     assert replies["first_pass"]["elapsed_s"] == 1.5
     assert provenance["judge_model"] == ["fixture-reported-model"]
     assert provenance["rubric_version"] == ["p2-0-3-v1"]

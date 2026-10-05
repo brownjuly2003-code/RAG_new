@@ -39,10 +39,17 @@ def run_judge_v2(
     judge_version: str,
     rubric_version: str = "p2-0-3-v1",
     limit: int | None = None,
+    attempts: int | None = None,
 ) -> dict[str, Any]:
-    """Persist each attempt, reuse exact valid replies, and never retry implicitly."""
+    """Persist each attempt, reuse exact valid replies, and never retry implicitly.
+
+    With `attempts` set, a request that already holds that many replies of a wrong form is
+    not sent again and is counted as `exhausted`; a request that got no reply is no attempt.
+    """
     if limit is not None and limit < 0:
         raise ValueError("limit must be non-negative")
+    if attempts is not None and attempts < 1:
+        raise ValueError("attempts must be positive")
     requests = [
         build_request_v2(
             case_id=case["case_id"],
@@ -56,6 +63,7 @@ def run_judge_v2(
     if len({request.case_id for request in requests}) != len(requests):
         raise ValueError("case ids must be unique")
     cache: dict[str, dict[str, Any]] = {}
+    malformed: dict[str, int] = {}
     for row in read_store(store_path):
         if row.get("request_version") != 2:
             continue
@@ -63,7 +71,11 @@ def run_judge_v2(
             validate_grade_record(grade)
         if row.get("status") == "valid":
             cache[row["request_key"]] = row
+        elif row.get("status") == "invalid":
+            malformed[row["request_key"]] = malformed.get(row["request_key"], 0) + 1
     result: dict[str, Any] = dict(valid=0, invalid=0, absent=0, reused=0, pending=0)
+    if attempts is not None:
+        result["exhausted"] = 0
     started = 0
     for position, request in enumerate(requests):
         labels = [f"D{i}" for i in range(1, len(request.documents) + 1)]
@@ -83,6 +95,9 @@ def run_judge_v2(
                     cache[request.request_key] = rebound
                 result["reused"] += 1
                 continue
+        if attempts is not None and malformed.get(request.request_key, 0) >= attempts:
+            result["exhausted"] += 1
+            continue
         if limit is not None and started >= limit:
             result["pending"] += 1
             continue
@@ -112,6 +127,10 @@ def run_judge_v2(
             record.update(
                 raw_text=reply.text, model=reply.model, usage=reply.usage, elapsed_s=reply.elapsed_s
             )
+            # A route that describes its session has the description kept beside the reply.
+            session = getattr(reply, "session", None)
+            if session is not None:
+                record["session"] = session
         outcome = parse_grades_v2(record["raw_text"], labels)
         record.update(
             status=outcome.status,
@@ -124,6 +143,8 @@ def run_judge_v2(
         result[outcome.status] += 1
         if outcome.status == "valid":
             cache[request.request_key] = record
+        elif outcome.status == "invalid":
+            malformed[request.request_key] = malformed.get(request.request_key, 0) + 1
         if unavailable:
             result["unavailable"] = unavailable
             result["pending"] += len(requests) - position - 1

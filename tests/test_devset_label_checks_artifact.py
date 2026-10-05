@@ -349,6 +349,9 @@ def test_capsule_states_the_register_the_hashes_and_the_limits(
         "a budget, not a measured recall",
         "were written after the drafts were labelled",
         "does not unblock B.2/B.3/B.5",
+        "the sessions were new, not empty",
+        "whether it moved a verdict was not measured",
+        "covers the prompt, not that text",
     ):
         assert phrase in flat, phrase
 

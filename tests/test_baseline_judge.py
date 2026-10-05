@@ -12,11 +12,13 @@ import json
 import math
 import random
 import re
+import shutil
 from pathlib import Path
 from typing import ClassVar
 
 import pytest
 
+from evaluation import isolated_request as isolated
 from evaluation.blinded_judge import quadratic_kappa, read_store
 from evaluation.blinded_judge_clients import JudgeUnavailable, Reply
 from evaluation.judge_consensus import consensus_v2, retest_stability, ruler_cases, store_grades
@@ -30,6 +32,15 @@ from scripts import relevance_judge_v2 as v2
 
 REGISTERED = runner.JUDGES
 VOICES = ("alpha", "beta")
+# The record of a session that loaded nothing: what the clean route keeps beside a reply.
+SESSION = {
+    "cli_version": "9.9.9",
+    "model": "fixture-reported-model",
+    "loaded": {kind: [] for kind in isolated.LOADED},
+    "builtin": {"plugins": [], "agents": []},
+    "turns": 1,
+    "context_tokens": 100,
+}
 
 
 @pytest.fixture(autouse=True)
@@ -55,7 +66,9 @@ class FakeJudge:
         self.prompts.append(prompt)
         count = len(re.findall(r"^D\d+$", prompt, re.MULTILINE))
         text = next(self.replies, _reply(count, self.default_grade))
-        return Reply(text, "fixture-reported-model", {"tokens": 10}, 0.125)
+        return isolated.IsolatedReply(
+            text, "fixture-reported-model", {"tokens": 10}, 0.125, SESSION
+        )
 
 
 def _reply(count, grade=3):
@@ -141,6 +154,7 @@ def _valid_row(case_id="case-1", *, version="fixture:v1", grade=3):
         "request_sha256": request.request_sha256,
         "judge_version": version,
         "records": make_grade_records(request, parse_grades_v2(raw, ["D1"])),
+        "session": SESSION,
     }
 
 
@@ -584,6 +598,32 @@ def test_outbound_counts_invalid_then_valid_attempt_and_resume_adds_nothing(fini
     assert resumed["outbound"] == retried["outbound"]
 
 
+def test_a_request_is_not_sent_again_after_three_replies_of_a_wrong_form(finished_run):
+    _, out, _ = finished_run()
+    for _ in range(runner.FORM_ATTEMPTS):
+        failed = runner.judge(out, "alpha", client=FakeJudge("invalid reply"))
+        assert failed["invalid"] == 1 and failed["exhausted"] == 0
+    silent = FakeJudge()
+    stopped = runner.judge(out, "alpha", client=silent)
+    assert silent.prompts == []
+    assert stopped["exhausted"] == 1 and stopped["valid"] == stopped["pending"] == 0
+    assert len(read_store(out / "alpha.jsonl")) == runner.FORM_ATTEMPTS
+
+
+def test_a_request_without_a_reply_is_not_an_attempt(finished_run):
+    _, out, _ = finished_run()
+
+    class Down(FakeJudge):
+        def grade(self, prompt):
+            self.prompts.append(prompt)
+            raise JudgeUnavailable("cli_exit", "Claude CLI exited with 1")
+
+    for _ in range(runner.FORM_ATTEMPTS + 1):
+        assert runner.judge(out, "alpha", client=Down())["absent"] == 1
+    answered = runner.judge(out, "alpha", client=FakeJudge())
+    assert answered["valid"] == 1 and answered["exhausted"] == 0
+
+
 def test_outbound_rebind_row_is_not_an_external_call(finished_run):
     _, out, plan = finished_run()
     first = runner.judge(out, "alpha", client=FakeJudge())
@@ -614,6 +654,7 @@ def test_judge_persists_raw_reply_hashes_outcomes_and_resumes_by_request_key(fin
         "absent": 0,
         "reused": 0,
         "pending": 0,
+        "exhausted": 0,
         "outbound": {"calls": 1, "texts": 3, "characters": len(client.prompts[0])},
     }
     store = out / "alpha.jsonl"
@@ -936,8 +977,8 @@ class TextJudge(FakeJudge):
         self.prompts.append(prompt)
         blocks = re.split(r"^D\d+$", prompt, flags=re.MULTILINE)[1:]
         grades = [{"doc": f"D{i}", "grade": self.rule(block)} for i, block in enumerate(blocks, 1)]
-        return Reply(
-            json.dumps({"grades": grades}), "fixture-reported-model", {"tokens": 10}, 0.125
+        return isolated.IsolatedReply(
+            json.dumps({"grades": grades}), "fixture-reported-model", {"tokens": 10}, 0.125, SESSION
         )
 
 
@@ -958,26 +999,40 @@ def _retest_order(case_ids):
     )
 
 
-def test_registered_judge_is_opus_alone_with_the_arguments_of_the_p2_reference(one_judge):
+def test_registered_judge_is_opus_alone_on_the_clean_route_with_the_prompt_of_the_p2_reference(
+    one_judge,
+):
     assert runner.JUDGES == ("opus",)
     client = runner.make_client("opus")
     assert isinstance(client, runner.OpusCliClient)
-    assert client.arguments == reference.CLI_ARGS
+    assert client.arguments == isolated.arguments(reference.SYSTEM_PROMPT)
+    assert client.arguments[1] == "--safe-mode"
     assert client.arguments[client.arguments.index("--model") + 1] == "claude-opus-5-5"
     assert client.arguments[client.arguments.index("--effort") + 1] == "max"
     assert client.arguments[client.arguments.index("--tools") + 1] == ""
     assert "--no-session-persistence" in client.arguments
     prompt_sha = hashlib.sha256(reference.SYSTEM_PROMPT.encode("utf-8")).hexdigest()
-    assert v2.judge_version("opus", client) == (
-        '{"judge":"opus","parameters":{"effort":"max","model":"claude-opus-5-5",'
-        f'"system_prompt_sha256":"{prompt_sha}","tools":"none"}},'
-        '"route":"Claude Code CLI, first-party provider"}'
+    assert json.loads(v2.judge_version("opus", client)) == {
+        "judge": "opus",
+        "parameters": {
+            "effort": "max",
+            "model": "claude-opus-5-5",
+            "session": isolated.SESSION,
+            "system_prompt_sha256": prompt_sha,
+            "tools": "none",
+        },
+        "route": "Claude Code CLI in safe mode, first-party provider",
+    }
+    # The judge is not the collection it took its prompt from: that one went by another route.
+    assert client.arguments != reference.CLI_ARGS and "--safe-mode" not in reference.CLI_ARGS
+    spec = " ".join(
+        (Path(__file__).resolve().parents[1] / "docs/specs/semantic-precision-metrics.md")
+        .read_text(encoding="utf-8")
+        .split()
     )
-    spec = (
-        Path(__file__).resolve().parents[1] / "docs/specs/semantic-precision-metrics.md"
-    ).read_text(encoding="utf-8")
     assert prompt_sha in spec
-    assert runner.RETEST_RULE.split(";")[0].replace("'", "`") in " ".join(spec.split())
+    assert isolated.ROUTE in spec and isolated.SESSION in spec
+    assert runner.RETEST_RULE.split(";")[0].replace("'", "`") in spec
 
 
 @pytest.mark.parametrize("name", ["glm", "sonnet", "mistral", "alpha", "claude-sonnet-5", ""])
@@ -1008,53 +1063,100 @@ def test_make_client_takes_the_cli_path_from_the_environment(one_judge, monkeypa
     assert runner.make_client("opus").executable is None
 
 
-def _envelope(**changes):
-    envelope = {
-        "is_error": False,
-        "terminal_reason": "completed",
-        "result": _reply(1),
-        "modelUsage": {
-            "claude-opus-5-5": {"canonicalModel": "claude-opus-5-5", "provider": "firstParty"}
+def _stream(described=None, **changes):
+    """The event stream of one clean request, as the CLI prints it: one JSON event a line."""
+    events = [
+        {
+            "type": "system",
+            "subtype": "init",
+            "cwd": "HIDDEN_DIRECTORY",
+            "tools": [],
+            "mcp_servers": [],
+            "slash_commands": [],
+            "skills": [],
+            "plugins": [],
+            "agents": [],
+            "model": "claude-opus-5-5",
+            "claude_code_version": "9.9.9",
+            **(described or {}),
         },
-        "usage": {
-            "input_tokens": 3,
-            "output_tokens": 7,
-            "service_tier": "HIDDEN_TIER",
-            "iterations": [],
+        {
+            "type": "assistant",
+            "parent_tool_use_id": None,
+            "message": {
+                "id": "msg_1",
+                "model": "claude-opus-5-5",
+                "content": [{"type": "text", "text": _reply(1)}],
+            },
         },
-        "total_cost_usd": 0.25,
-        "session_id": "HIDDEN_SESSION",
-    }
-    envelope.update(changes)
-    return json.dumps(envelope)
+        {
+            "type": "result",
+            "is_error": False,
+            "terminal_reason": "completed",
+            "stop_reason": "end_turn",
+            "num_turns": 1,
+            "result": _reply(1),
+            "modelUsage": {
+                "claude-opus-5-5": {"canonicalModel": "claude-opus-5-5", "provider": "firstParty"}
+            },
+            "usage": {
+                "input_tokens": 3,
+                "output_tokens": 7,
+                "output_tokens_details": {"thinking_tokens": 5},
+                "service_tier": "HIDDEN_TIER",
+                "iterations": [],
+            },
+            "total_cost_usd": 0.25,
+            "session_id": "HIDDEN_SESSION",
+            **changes,
+        },
+    ]
+    return "\n".join(json.dumps(event) for event in events) + "\n"
 
 
-def test_opus_client_sends_the_prompt_on_stdin_and_keeps_only_the_registered_counters(monkeypatch):
+@pytest.fixture
+def request_directory(tmp_path, monkeypatch):
+    monkeypatch.setattr(isolated.tempfile, "gettempdir", lambda: str(tmp_path))
+    return tmp_path / isolated.DIRECTORY
+
+
+def test_opus_client_sends_the_prompt_on_stdin_and_keeps_only_the_registered_counters(
+    monkeypatch, request_directory
+):
     calls = []
 
     def run(command, **options):
         calls.append((command, options))
-        return runner.subprocess.CompletedProcess(command, 0, _envelope(), "")
+        return runner.subprocess.CompletedProcess(command, 0, _stream(), "")
 
     monkeypatch.setattr(runner.subprocess, "run", run)
     reply = runner.OpusCliClient("HIDDEN_CLI", timeout_s=5).grade("the prompt")
     assert reply.text == _reply(1) and reply.model == "claude-opus-5-5"
     assert reply.usage == {"input_tokens": 3, "output_tokens": 7, "total_cost_usd": 0.25}
+    assert reply.session["cli_version"] == "9.9.9" and reply.session["context_tokens"] == 3
+    isolated.check_record(reply.session)
+    assert "HIDDEN" not in json.dumps(reply.session)
     ((command, options),) = calls
-    assert command == ["HIDDEN_CLI", *reference.CLI_ARGS]
+    assert command == ["HIDDEN_CLI", *isolated.arguments(reference.SYSTEM_PROMPT)]
     assert options["input"] == "the prompt" and options["timeout"] == 5
-    assert options["cwd"] == runner.tempfile.gettempdir()
+    assert options["cwd"] == request_directory and not any(request_directory.iterdir())
 
 
 @pytest.mark.parametrize(
     "stdout,code,reason",
     [
         ("not json", 0, "cli_response"),
-        (_envelope(is_error=True), 0, "cli_response"),
-        (_envelope(terminal_reason="max_turns"), 0, "cli_response"),
-        (_envelope(result=" "), 0, "cli_response"),
+        (json.dumps({"is_error": False, "result": _reply(1)}), 0, "cli_response"),
+        (_stream(is_error=True), 0, "cli_response"),
+        (_stream(terminal_reason="max_turns"), 0, "cli_response"),
+        (_stream(stop_reason="max_tokens"), 0, "cli_response"),
+        (_stream(num_turns=2), 0, "cli_response"),
+        (_stream(result=" "), 0, "cli_response"),
+        (_stream({"skills": ["HIDDEN_SKILL"]}), 0, "cli_response"),
+        (_stream({"memory_paths": {"auto": "C:/HIDDEN/memory"}}), 0, "cli_response"),
+        (_stream({"tools": ["Read"]}), 0, "cli_response"),
         (
-            _envelope(
+            _stream(
                 modelUsage={
                     "claude-sonnet-5": {
                         "canonicalModel": "claude-sonnet-5",
@@ -1066,7 +1168,7 @@ def test_opus_client_sends_the_prompt_on_stdin_and_keeps_only_the_registered_cou
             "cli_response",
         ),
         (
-            _envelope(
+            _stream(
                 modelUsage={
                     "claude-opus-5-5": {
                         "canonicalModel": "claude-opus-5-5",
@@ -1082,7 +1184,7 @@ def test_opus_client_sends_the_prompt_on_stdin_and_keeps_only_the_registered_cou
             "cli_response",
         ),
         (
-            _envelope(
+            _stream(
                 modelUsage={
                     "claude-opus-5-5": {"canonicalModel": "claude-opus-5-5", "provider": "bedrock"}
                 }
@@ -1090,11 +1192,11 @@ def test_opus_client_sends_the_prompt_on_stdin_and_keeps_only_the_registered_cou
             0,
             "cli_response",
         ),
-        (_envelope(), 3, "cli_exit"),
+        (_stream(), 3, "cli_exit"),
     ],
 )
 def test_opus_client_refuses_a_reply_it_cannot_attribute_to_the_judge(
-    monkeypatch, stdout, code, reason
+    monkeypatch, request_directory, stdout, code, reason
 ):
     monkeypatch.setattr(
         runner.subprocess,
@@ -1107,7 +1209,48 @@ def test_opus_client_refuses_a_reply_it_cannot_attribute_to_the_judge(
     assert "HIDDEN" not in str(error.value)
 
 
-def test_opus_client_reports_a_timeout_and_a_missing_cli(monkeypatch):
+def test_a_graded_reply_without_the_record_of_a_clean_session_is_not_read(finished_run, one_judge):
+    class Bare(FakeJudge):
+        def grade(self, prompt):
+            reply = super().grade(prompt)
+            return Reply(reply.text, reply.model, reply.usage, reply.elapsed_s)
+
+    class Loaded(FakeJudge):
+        def grade(self, prompt):
+            reply = super().grade(prompt)
+            loaded = {**SESSION["loaded"], "skills": ["one"]}
+            return isolated.IsolatedReply(
+                reply.text, reply.model, reply.usage, reply.elapsed_s, {**SESSION, "loaded": loaded}
+            )
+
+    _, planned, _ = _retest_run(finished_run, h=2, hm=0)
+    for number, client in enumerate((Bare(), Loaded())):
+        out = planned.with_name(f"judges-{number}")
+        shutil.copytree(planned, out)
+        runner.judge(out, "opus", client=client)
+        assert all("session" in row for row in read_store(out / "opus.jsonl")) == bool(number)
+        with pytest.raises(ValueError, match="graded reply the route does not vouch for"):
+            runner.consensus(out)
+        assert not (out / "ruler-input.json").exists()
+        runner.judge(out, "opus", client=client, retest=True)
+        with pytest.raises(ValueError, match="graded reply the route does not vouch for"):
+            runner.retest(out, "opus")
+        assert not (out / "opus-retest.json").exists()
+
+
+def test_a_reply_the_judge_did_not_grade_needs_no_session_record(finished_run, one_judge):
+    _, out, _ = _retest_run(finished_run, h=2, hm=0)
+
+    class Down(FakeJudge):
+        def grade(self, prompt):
+            raise JudgeUnavailable("cli_response", "the session loaded more than the request")
+
+    runner.judge(out, "opus", client=Down())
+    assert [row["status"] for row in read_store(out / "opus.jsonl")] == ["absent"]
+    assert runner.consensus(out)["status"] == "NOT_EVIDENCE"
+
+
+def test_opus_client_reports_a_timeout_and_a_missing_cli(monkeypatch, request_directory):
     def timeout(command, **options):
         raise runner.subprocess.TimeoutExpired(command, 1)
 
@@ -1115,7 +1258,7 @@ def test_opus_client_reports_a_timeout_and_a_missing_cli(monkeypatch):
     with pytest.raises(JudgeUnavailable) as error:
         runner.OpusCliClient("HIDDEN_CLI").grade("the prompt")
     assert error.value.code == "cli_timeout"
-    monkeypatch.setattr(runner.shutil, "which", lambda name: None)
+    monkeypatch.setattr(isolated.shutil, "which", lambda name: None)
     with pytest.raises(JudgeUnavailable) as error:
         runner.OpusCliClient().grade("the prompt")
     assert error.value.code == "cli_missing"
@@ -1441,5 +1584,5 @@ def test_opus_client_describes_a_missing_or_silent_cli(monkeypatch):
     assert runner.OpusCliClient("HIDDEN_CLI").describe() == {
         "cli_version": "N/A: Claude CLI did not report a version"
     }
-    monkeypatch.setattr(runner.shutil, "which", lambda name: None)
+    monkeypatch.setattr(isolated.shutil, "which", lambda name: None)
     assert runner.OpusCliClient().describe() == {"cli_version": "N/A: Claude CLI is not installed"}

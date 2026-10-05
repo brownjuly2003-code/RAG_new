@@ -59,3 +59,14 @@ across ruler strata, not the full 100-case H pool. The raw reply store retains
 the response text, reported model id and usage; it does not retain the full
 outer CLI envelope. The collector verified that envelope before accepting each
 reply, but its provider field cannot be independently replayed from the store.
+
+**Correction, 2026-10-05: a fresh session is not an empty one.** The events of
+the ten sessions were not kept. A probe of the same arguments under a later
+CLI version (2.1.289) shows a request carrying, beside the registered prompt,
+the owner's instruction file for coding sessions and the output of session
+hooks; what was attached on the day of this collection is not recorded. In
+the probe none of that text was about a case or a grade; whether it moved a
+grade was not measured. The grades stay as published. Later requests to this model go by a
+route that loads none of it
+([spec](../specs/semantic-precision-metrics.md), «Checks by one model in
+slices 2.8 and 4.1»).

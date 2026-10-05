@@ -309,9 +309,11 @@ def load_judged(judge_dir: Path, judge: str, inputs: Mapping[str, Any]) -> dict[
         "ruler_input_sha256": parity.file_sha(judge_dir / "ruler-input.json"),
         "retest": retest,
         "retest_sha256": parity.file_sha(retest_path) if retest is not None else None,
-        "first": read_store(first_path),
+        "first": judge_tool.vouched(read_store(first_path), judge),
         "first_sha256": first_sha256,
-        "second": read_store(second_path) if second_path.is_file() else [],
+        "second": judge_tool.vouched(read_store(second_path), judge)
+        if second_path.is_file()
+        else [],
         "second_sha256": parity.file_sha(second_path) if second_path.is_file() else None,
         "runs": read_store(runs_path) if runs_path.is_file() else [],
     }
@@ -411,12 +413,30 @@ def subset_report(
     }
 
 
+def _sessions(valid: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    """What the session records of the graded replies say: every one of them loaded nothing."""
+    records = [row["session"] for row in valid if isinstance(row.get("session"), dict)]
+    return {
+        "records": len(records),
+        "loaded": "nothing: no tool, MCP server, slash command, skill, memory, plugin or hook",
+        "cli_versions": sorted({str(record.get("cli_version")) for record in records}),
+        "context_tokens": _spread(
+            [
+                record["context_tokens"]
+                for record in records
+                if type(record.get("context_tokens")) is int
+            ]
+        ),
+    }
+
+
 def _store_summary(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
     attempts = [row for row in rows if row.get("request_version") == 2 and not row.get("reused")]
     valid = [row for row in attempts if row.get("status") == "valid"]
     return {
         "attempts": len(attempts),
         "valid": len(valid),
+        "sessions": _sessions(valid),
         "models": sorted({str(row["model"]) for row in valid if row.get("model")}),
         "rubric_versions": sorted({str(row.get("rubric_version")) for row in attempts}),
         "judge_versions": sorted({str(row.get("judge_version")) for row in attempts}),

@@ -18,11 +18,13 @@ case are <case_id>#<k> with k from 1".
 
 judge sends the planned requests through run_judge_v2 with the store
 <judge dir>/<judge>.jsonl. The registered judge of new texts is one model,
-claude-opus-5-5 through the Claude Code CLI, with the arguments of the P2 Opus
-reference collection (metrics spec, «Judge of new texts»; plan decision D12);
-the tool holds no route to any other model. The CLI may be named in
-RAG_JUDGE_CLAUDE_CLI; it is not printed or stored. Only the prompt leaves the
-machine.
+claude-opus-5-5, asked in stateless requests by the clean route of
+evaluation.isolated_request with the system prompt of the P2 Opus reference
+collection (metrics spec, «Judge of new texts»; plan decision D12); the tool
+holds no route to any other model. Each reply is stored with the record of its
+session, and consensus and retest read no graded reply without the record of a
+session that loaded nothing. The CLI may be named in RAG_JUDGE_CLAUDE_CLI; it
+is not printed or stored. Only the prompt leaves the machine.
 
 judge --retest sends the stability sub-sample a second time, into
 <judge dir>/<judge>-retest.jsonl. The sub-sample, stated exactly as
@@ -46,15 +48,15 @@ import argparse
 import hashlib
 import json
 import os
-import shutil
 import subprocess
 import tempfile
-import time
 from collections.abc import Iterable, Mapping, Sequence
+from dataclasses import replace
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, ClassVar
 
+from evaluation import isolated_request as isolated
 from evaluation.blinded_judge import BOOTSTRAP_SAMPLES, SEED, read_store
 from evaluation.blinded_judge_clients import JudgeUnavailable, Reply
 from evaluation.judge_consensus import (
@@ -88,6 +90,8 @@ RETEST_RULE = (
     f"sent again as <request id>{RETEST_SUFFIX} into a store of its own"
 )
 CLI_TIMEOUT_S = 1200.0
+# Replies of a wrong form a request may get before its texts stay unjudged (spec 1.2).
+FORM_ATTEMPTS = 3
 RUN_LOG = "runs.jsonl"
 USAGE_FIELDS = (
     "input_tokens",
@@ -273,63 +277,38 @@ def outbound(rows: Iterable[Mapping[str, Any]], plan: Mapping[str, Any]) -> dict
 
 
 class OpusCliClient:
-    """The judge of new texts: one `claude -p` process per request, no tools, no stored session.
+    """The judge of new texts: one stateless request per call, sent by the registered route.
 
-    The arguments are those of the P2 Opus reference collection, so the judge is the grader
-    whose agreement with the registered consensus was measured on the P2 sample.
+    The system prompt is that of the P2 Opus reference collection. The route is not: that
+    collection went out before the route was cleaned, and a probe of its arguments shows a
+    request carrying the owner's instruction file and the output of session hooks beside the
+    prompt. Every reply comes back with the record of its session, and only a session that
+    loaded nothing gives a reply.
     """
 
-    model = reference.MODEL
-    route = "Claude Code CLI, first-party provider"
-    arguments = reference.CLI_ARGS
-    parameters: ClassVar[dict[str, Any]] = {
-        "model": reference.MODEL,
-        "effort": "max",
-        "tools": "none",
-        "system_prompt_sha256": hashlib.sha256(reference.SYSTEM_PROMPT.encode("utf-8")).hexdigest(),
-    }
+    model = isolated.MODEL
+    route = isolated.ROUTE
+    system_prompt = reference.SYSTEM_PROMPT
+    arguments = isolated.arguments(reference.SYSTEM_PROMPT)
+    parameters: ClassVar[dict[str, Any]] = isolated.settings(reference.SYSTEM_PROMPT)
 
     def __init__(self, executable: str | None = None, timeout_s: float = CLI_TIMEOUT_S) -> None:
         self.executable = executable
         self.timeout_s = timeout_s
 
     def grade(self, request_text: str) -> Reply:
-        executable = self.executable or shutil.which("claude.cmd") or shutil.which("claude")
+        executable = self.executable or isolated.find_cli()
         if executable is None:
             raise JudgeUnavailable("cli_missing", "Claude CLI is not installed")
-        start = time.monotonic()
-        try:
-            process = subprocess.run(
-                [executable, *self.arguments],
-                input=request_text,
-                capture_output=True,
-                text=True,
-                encoding="utf-8",
-                errors="replace",
-                cwd=tempfile.gettempdir(),
-                timeout=self.timeout_s,
-                check=False,
-            )
-        except subprocess.TimeoutExpired:
-            raise JudgeUnavailable("cli_timeout", "Claude CLI request timed out") from None
-        except OSError:
-            raise JudgeUnavailable("cli_missing", "Claude CLI did not start") from None
-        if process.returncode != 0:
-            raise JudgeUnavailable("cli_exit", f"Claude CLI exited with {process.returncode}")
-        try:
-            envelope = reference.parse_cli_envelope(process.stdout)
-        except ValueError as exc:
-            raise JudgeUnavailable("cli_response", str(exc)) from None
-        usage = {
-            field: envelope["usage"][field]
-            for field in USAGE_FIELDS
-            if type(envelope["usage"].get(field)) in (int, float)
-        }
-        return Reply(envelope["result"], envelope["model"], usage, time.monotonic() - start)
+        reply = isolated.send(
+            executable, self.system_prompt, request_text, timeout_s=self.timeout_s
+        )
+        usage = {field: reply.usage[field] for field in USAGE_FIELDS if field in reply.usage}
+        return replace(reply, usage=usage)
 
     def describe(self) -> dict[str, str]:
         """Name the CLI build that serves the requests; the path of the executable stays out."""
-        executable = self.executable or shutil.which("claude.cmd") or shutil.which("claude")
+        executable = self.executable or isolated.find_cli()
         if executable is None:
             return {"cli_version": "N/A: Claude CLI is not installed"}
         try:
@@ -356,6 +335,24 @@ def make_client(judge: str) -> Any:
     if judge == "opus" and judge in JUDGES:
         return OpusCliClient(os.environ.get("RAG_JUDGE_CLAUDE_CLI", "").strip() or None)
     raise ValueError(f"no route is registered for the judge {judge}")
+
+
+def vouched(rows: list[dict[str, Any]], name: str) -> list[dict[str, Any]]:
+    """Refuse a store in which a graded reply lacks the record of a clean session.
+
+    A grade counts only when the session that gave it loaded nothing beside the request: a
+    store written by another route, or by hand, has no such record and is not read.
+    """
+    for row in rows:
+        if row.get("request_version") != 2 or row.get("status") != "valid":
+            continue
+        try:
+            isolated.check_record(row.get("session"))
+        except ValueError as exc:
+            raise ValueError(
+                f"the store of {name} holds a graded reply the route does not vouch for: {exc}"
+            ) from None
+    return rows
 
 
 def retest_cases(plan: Mapping[str, Any]) -> list[str]:
@@ -426,7 +423,9 @@ def judge(
     describe = getattr(client, "describe", None)
     environment = describe() if callable(describe) else {}
     started = datetime.now(UTC).isoformat(timespec="seconds")
-    result = run_judge_v2(client, requests, store, judge_version=version, limit=limit)
+    result = run_judge_v2(
+        client, requests, store, judge_version=version, limit=limit, attempts=FORM_ATTEMPTS
+    )
     with (out / RUN_LOG).open("a", encoding="utf-8", newline="\n") as handle:
         row = {
             "judge": name,
@@ -455,7 +454,8 @@ def retest(out: Path, name: str) -> dict:
     subsets = {case["case_id"]: case["subset"] for case in plan["cases"]}
     second_requests = retest_requests(plan)
     first_path, second_path = out / f"{name}.jsonl", out / f"{name}-retest.jsonl"
-    first_rows, second_rows = read_store(first_path), read_store(second_path)
+    first_rows = vouched(read_store(first_path), name)
+    second_rows = vouched(read_store(second_path), name)
     first, first_version = store_grades(
         first_rows, {request["case_id"]: request["request_sha256"] for request in plan["requests"]}
     )
@@ -539,7 +539,7 @@ def consensus(out: Path, judges: Sequence[str] | None = None) -> dict:
     outbound_totals: dict[str, dict[str, int]] = {}
     for name in judges:
         store_path = out / f"{name}.jsonl"
-        rows = read_store(store_path)
+        rows = vouched(read_store(store_path), name)
         grades, version = store_grades(rows, planned)
         mapped: dict[tuple[str, str], int] = {}
         for key, grade in grades.items():

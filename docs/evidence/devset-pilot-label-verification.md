@@ -32,6 +32,22 @@ round the plan, the raw replies and the decisions
   the new session is what keeps the agent's own knowledge out of the verdict.
   Prompt SHA-256
   `3f7c114428028f6518aca3f21a03f5352d0497d99d0356f2c804b9389df756ad`.
+- **Correction, 2026-10-05: the sessions were new, not empty.** The stores
+  keep each reply, not the events of its session. A probe of the same
+  arguments, on the same machine and CLI version, shows what a request of
+  this route carries beside the registered prompt and the case: the owner's
+  instruction file for coding sessions (about 9 500 characters), the output
+  of two session hooks (a pointer to installed skills, about 1 300
+  characters, and a list of skill names picked by the words of the request,
+  about 750), and short descriptions of the account, the environment and
+  the date. In the probe request none of it named a case, a label or a
+  verdict. What the second hook picked for each of the 35 requests is not
+  known, and whether it moved a verdict was not measured. The verdicts
+  below stay as published. Every later request goes by a route that loads
+  none of this
+  ([spec](../specs/semantic-precision-metrics.md), «Checks by one model in
+  slices 2.8 and 4.1»), and the 30 cases are checked again under it in plan
+  step 1.3d, with both sets of verdicts side by side.
 - **Repair author:** the agent of the session, the same `claude-opus-5-5`.
 - **Why one model.** Plan decision D12 (owner, 2026-10-04) leaves the quality
   thread one model. Under this rubric no model of another vendor was called,
@@ -228,6 +244,9 @@ to the register. What the tool must do is in its
   pass unseen — in reading a rule, in judging a severity — and there is no
   second verifier whose disagreement would point at them. The check bounds
   label errors; it does not prove their absence.
+- **The requests carried more than the registered prompt.** By the
+  correction above, text of the owner's configuration went with each
+  request. The registered prompt SHA-256 covers the prompt, not that text.
 - **The repaired cases have one author and one checker.** On the 25
   unrepaired cases the label and its check come from models of two vendors.
   On the 5 repaired cases the repaired fields were written and checked by the
