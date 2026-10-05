@@ -1,0 +1,6647 @@
+{
+ "frame_sections": {
+  "eligible": 982,
+  "used_by_pilot": 40
+ },
+ "inputs": {
+  "corpus_manifest_sha256": "2b2e9232e69b4f52a55237f3ee620f34c91d1900383877c2310ba616c6590444",
+  "corpus_sha256": "c8562a64f88f72172f29e30865091be79f08d00ce65fbf675f34de64dcebe343",
+  "families_sha256": "54bdb736180e00325bff20f49e2b9d985dd62278fe9f9cdb6161a0da719e3584",
+  "pilot_verified_sha256": "05ebf00743e2ae3b6a8117f735a3d9a34b451f8bf066a4dd1dfcaadf8e708df4"
+ },
+ "rules": {
+  "blocks": "a topic family of two or more documents is a block; families of one document are paired within the split in descending similarity of their eligible-section text, ties by document name; a family left over is a block of its own",
+  "cap": "holdout: a section is passed over when its block holds four positions; development: none",
+  "frame": "sections of devset_sources.eligible_sections that no pilot case used as its seed or partner section",
+  "order": "blocks by the number of pilot cases they hold, then by SHA-256 of '<seed>:<split>:block:<block_id>'; sections of a block by SHA-256 of '<seed>:<split>:section:<source_id>:<char_start>'; round r takes the r-th section of every block that has one",
+  "partner": "the frame section of the other documents of the block most similar to the seed section, ties by document name and offset",
+  "quota": "development: 18 single-doc, 20 multi-doc, 10 aggregation and 12 needs-refusal/clarification of 60, less the classes of the 30 pilot cases; holdout: single-doc 24, multi-doc 40, aggregation 16 and needs-refusal/clarification 20 per cent of the positions the cap leaves room for — the sum over the blocks of the smaller of four and the frame sections of the block — by largest remainder, ties in the order of the sequence",
+  "replacement": "the order and the tests are applied to the state the first verification of the split left: a section that was the seed of any draft of the split, dropped drafts and earlier replacements included, is not taken; a pair of a section and its partner that any draft or earlier replacement used is the pair of an earlier position; the cap counts the confirmed drafts of a block and the replacements seated in it, not its dropped drafts; the partner is found by the partner rule among all frame sections of the other documents of the block",
+  "sequence": "position p takes the class with the largest quota * p - placed * total, ties in the order multi-doc, single-doc, aggregation, needs-refusal/clarification",
+  "similarity": "cosine of TF-IDF vectors, rounded to 9 decimals: tokens are runs of three or more letters, case-folded; idf = ln(documents / documents with the token) over the eligible-section text of every corpus document",
+  "tests": "single-doc and needs-refusal/clarification: every section; multi-doc: the block has another document with a frame section, and the pair of the section and its partner is the pair of no earlier position; aggregation: the multi-doc test, and the section holds three or more list items or table rows"
+ },
+ "seed": 20260925,
+ "splits": {
+  "development": {
+   "blocks": [
+    {
+     "basis": "family",
+     "block_id": "block-063b5c637033",
+     "documents": [
+      "01_hr_pol_it_access.md",
+      "06_comp_policy_access_control.md"
+     ],
+     "families": [
+      "family-cd1023d7cccf"
+     ],
+     "frame_sections": 12,
+     "pilot_cases": 0
+    },
+    {
+     "basis": "family",
+     "block_id": "block-10ecde179a74",
+     "documents": [
+      "03_legal_contract_cargo_transport_road.md",
+      "05_tlog_checklist_driver_pre_trip.md",
+      "05_tlog_checklist_vehicle_inspection.md",
+      "05_tlog_contract_driver_services.md",
+      "05_tlog_contract_transport_road.md",
+      "05_tlog_instruction_dispatcher.md",
+      "05_tlog_instruction_driver_duty.md",
+      "05_tlog_regulation_cmr.md",
+      "05_tlog_regulation_dispatch.md",
+      "05_tlog_regulation_gps_tracking.md",
+      "05_tlog_regulation_waybill.md",
+      "07_faq_transport_road.md"
+     ],
+     "families": [
+      "family-48888b3f1285"
+     ],
+     "frame_sections": 38,
+     "pilot_cases": 1
+    },
+    {
+     "basis": "pair",
+     "block_id": "block-1246041c68b5",
+     "documents": [
+      "02_hr_tmp_job_description_driver.md",
+      "02_hr_tmp_job_description_logistics.md"
+     ],
+     "families": [
+      "family-607595028116",
+      "family-a2c2a7b06201"
+     ],
+     "frame_sections": 14,
+     "pilot_cases": 2,
+     "similarity": 0.192239523
+    },
+    {
+     "basis": "pair",
+     "block_id": "block-155da75c39e0",
+     "documents": [
+      "01_hr_pol_injury.md",
+      "01_hr_pol_safety.md"
+     ],
+     "families": [
+      "family-0287c6d94d73",
+      "family-7bddb9f0076c"
+     ],
+     "frame_sections": 27,
+     "pilot_cases": 2,
+     "similarity": 0.088661176
+    },
+    {
+     "basis": "single",
+     "block_id": "block-1c63299131d6",
+     "documents": [
+      "01_hr_pol_harassment.md"
+     ],
+     "families": [
+      "family-1c63299131d6"
+     ],
+     "frame_sections": 8,
+     "pilot_cases": 0
+    },
+    {
+     "basis": "pair",
+     "block_id": "block-28c80f1c51c2",
+     "documents": [
+      "05_tlog_checklist_cargo_acceptance.md",
+      "05_tlog_policy_transport_safety.md"
+     ],
+     "families": [
+      "family-6782c6e62e54",
+      "family-f67551ff4f0c"
+     ],
+     "frame_sections": 8,
+     "pilot_cases": 0,
+     "similarity": 0.462725562
+    },
+    {
+     "basis": "family",
+     "block_id": "block-2c7c746cc931",
+     "documents": [
+      "01_hr_pol_adaptation.md",
+      "01_hr_pol_training.md"
+     ],
+     "families": [
+      "family-6b06cb53d408"
+     ],
+     "frame_sections": 15,
+     "pilot_cases": 0
+    },
+    {
+     "basis": "family",
+     "block_id": "block-2cb0909d00c7",
+     "documents": [
+      "01_hr_pol_childcare.md",
+      "01_hr_pol_leave.md",
+      "01_hr_pol_maternity.md",
+      "02_hr_tmp_leave_order.md",
+      "02_hr_tmp_leave_request.md",
+      "02_hr_tmp_sick_leave_procedure.md",
+      "07_faq_leave.md"
+     ],
+     "families": [
+      "family-aa4b8e9bebee"
+     ],
+     "frame_sections": 40,
+     "pilot_cases": 2
+    },
+    {
+     "basis": "pair",
+     "block_id": "block-2f12118fb6e7",
+     "documents": [
+      "05_tlog_instruction_logistics_manager.md",
+      "05_tlog_regulation_oversized.md"
+     ],
+     "families": [
+      "family-47cf2c0bcf20",
+      "family-77e2eb5fbfa1"
+     ],
+     "frame_sections": 4,
+     "pilot_cases": 0,
+     "similarity": 0.183142713
+    },
+    {
+     "basis": "pair",
+     "block_id": "block-32057dd0085a",
+     "documents": [
+      "05_tlog_contract_transport_air.md",
+      "05_tlog_regulation_weight_control.md"
+     ],
+     "families": [
+      "family-3d92691f589e",
+      "family-b1ae4a782c5a"
+     ],
+     "frame_sections": 4,
+     "pilot_cases": 0,
+     "similarity": 0.314879118
+    },
+    {
+     "basis": "family",
+     "block_id": "block-32dbeba2cb06",
+     "documents": [
+      "01_hr_pol_conflict_interest.md",
+      "01_hr_pol_corruption.md",
+      "01_hr_pol_gifts.md",
+      "02_hr_tmp_nepotism_disclosure.md",
+      "06_comp_policy_anticorruption_local.md",
+      "06_comp_policy_whistleblower.md"
+     ],
+     "families": [
+      "family-e45bda8a8f9e"
+     ],
+     "frame_sections": 37,
+     "pilot_cases": 0
+    },
+    {
+     "basis": "family",
+     "block_id": "block-4bba676a927c",
+     "documents": [
+      "03_legal_contract_expedition_general.md",
+      "03_legal_contract_expedition_international.md",
+      "05_tlog_contract_expedition_domestic.md",
+      "05_tlog_contract_expedition_multimodal.md",
+      "05_tlog_contract_forwarder.md",
+      "07_faq_expedition.md"
+     ],
+     "families": [
+      "family-0f1303ae2fdd"
+     ],
+     "frame_sections": 29,
+     "pilot_cases": 0
+    },
+    {
+     "basis": "family",
+     "block_id": "block-4fa8d3a34a99",
+     "documents": [
+      "01_hr_pol_references.md",
+      "02_hr_tmp_reference_letter_template.md"
+     ],
+     "families": [
+      "family-6e362b3c4857"
+     ],
+     "frame_sections": 7,
+     "pilot_cases": 0
+    },
+    {
+     "basis": "family",
+     "block_id": "block-51c9b9c3885d",
+     "documents": [
+      "01_hr_pol_bonus.md",
+      "01_hr_pol_compensation.md",
+      "01_hr_pol_salary.md",
+      "01_hr_pol_social_package.md",
+      "02_hr_tmp_salary_change_order.md"
+     ],
+     "families": [
+      "family-4e4393d338cc"
+     ],
+     "frame_sections": 42,
+     "pilot_cases": 0
+    },
+    {
+     "basis": "family",
+     "block_id": "block-5502576abc78",
+     "documents": [
+      "01_hr_pol_hiring.md",
+      "02_hr_tmp_employment_contract.md",
+      "02_hr_tmp_employment_order.md",
+      "02_hr_tmp_internship_agreement.md",
+      "external_tk_rf_chapter_11.md"
+     ],
+     "families": [
+      "family-77f4371dbcc9"
+     ],
+     "frame_sections": 38,
+     "pilot_cases": 1
+    },
+    {
+     "basis": "pair",
+     "block_id": "block-58587be13be7",
+     "documents": [
+      "03_legal_contract_cargo_transport_general.md",
+      "03_legal_contract_insurance_civil_liability.md"
+     ],
+     "families": [
+      "family-1335dc50d706",
+      "family-27548839ebc4"
+     ],
+     "frame_sections": 8,
+     "pilot_cases": 1,
+     "similarity": 0.188443891
+    },
+    {
+     "basis": "family",
+     "block_id": "block-64cfbce65305",
+     "documents": [
+      "01_hr_probation_procedure.md",
+      "02_hr_tmp_probation_report.md",
+      "07_faq_probation.md"
+     ],
+     "families": [
+      "family-322a2b65afeb"
+     ],
+     "frame_sections": 13,
+     "pilot_cases": 3
+    },
+    {
+     "basis": "family",
+     "block_id": "block-6a90b82a6913",
+     "documents": [
+      "03_legal_contract_cargo_transport_rail.md",
+      "05_tlog_contract_transport_rail.md"
+     ],
+     "families": [
+      "family-65f7655321a4"
+     ],
+     "frame_sections": 5,
+     "pilot_cases": 0
+    },
+    {
+     "basis": "family",
+     "block_id": "block-6cd91678207f",
+     "documents": [
+      "03_legal_contract_insurance_cargo.md",
+      "05_tlog_contract_cargo_insurance.md",
+      "05_tlog_contract_carrier_liability.md"
+     ],
+     "families": [
+      "family-495e9c22eb03"
+     ],
+     "frame_sections": 8,
+     "pilot_cases": 0
+    },
+    {
+     "basis": "family",
+     "block_id": "block-71b1f8060c9e",
+     "documents": [
+      "02_hr_tmp_add_agreement.md",
+      "03_legal_contract_amendment_procedure.md",
+      "03_legal_contract_framework.md",
+      "03_legal_contract_supplement_general.md",
+      "03_legal_contract_termination_checklist.md",
+      "06_comp_checklist_contract_compliance.md",
+      "06_comp_regulation_contract_approval.md",
+      "07_faq_contract_templates.md"
+     ],
+     "families": [
+      "family-2b2b0aee7e47"
+     ],
+     "frame_sections": 37,
+     "pilot_cases": 1
+    },
+    {
+     "basis": "family",
+     "block_id": "block-7569f5e075b5",
+     "documents": [
+      "01_hr_pol_attendance.md",
+      "01_hr_pol_night_shift.md",
+      "01_hr_pol_overtime.md",
+      "01_hr_pol_part_time.md",
+      "01_hr_pol_shift_schedule.md",
+      "02_hr_tmp_timesheet.md",
+      "05_tlog_policy_driver_hours.md"
+     ],
+     "families": [
+      "family-02d5c5c55b8c"
+     ],
+     "frame_sections": 40,
+     "pilot_cases": 0
+    },
+    {
+     "basis": "pair",
+     "block_id": "block-76098e4d4e29",
+     "documents": [
+      "03_legal_contract_services_general.md",
+      "06_comp_policy_incident_response.md"
+     ],
+     "families": [
+      "family-9808803a9d5a",
+      "family-afd9bbdb1fb1"
+     ],
+     "frame_sections": 9,
+     "pilot_cases": 1,
+     "similarity": 0.029924461
+    },
+    {
+     "basis": "family",
+     "block_id": "block-76644742a721",
+     "documents": [
+      "01_hr_pol_remote_work.md",
+      "02_hr_tmp_remote_work_agreement.md"
+     ],
+     "families": [
+      "family-8c0e4923864e"
+     ],
+     "frame_sections": 11,
+     "pilot_cases": 1
+    },
+    {
+     "basis": "family",
+     "block_id": "block-7f2a93815f6e",
+     "documents": [
+      "03_legal_contract_customs_broker.md",
+      "05_tlog_contract_customs_representative.md",
+      "05_tlog_regulation_cross_border.md",
+      "05_tlog_regulation_customs_clearance.md",
+      "06_comp_policy_trade_compliance.md"
+     ],
+     "families": [
+      "family-d1ebb08820fc"
+     ],
+     "frame_sections": 19,
+     "pilot_cases": 0
+    },
+    {
+     "basis": "family",
+     "block_id": "block-80338f3d7b48",
+     "documents": [
+      "03_legal_contract_supply_fuel.md",
+      "05_tlog_contract_fuel_supply.md"
+     ],
+     "families": [
+      "family-5e47ddca3b06"
+     ],
+     "frame_sections": 2,
+     "pilot_cases": 0
+    },
+    {
+     "basis": "pair",
+     "block_id": "block-82a1a339198e",
+     "documents": [
+      "05_tlog_contract_transport_sea.md",
+      "05_tlog_policy_eco_norms.md"
+     ],
+     "families": [
+      "family-4b8078da9540",
+      "family-ed002f7eec3a"
+     ],
+     "frame_sections": 5,
+     "pilot_cases": 0,
+     "similarity": 0.349055692
+    },
+    {
+     "basis": "pair",
+     "block_id": "block-8de8a1f500b6",
+     "documents": [
+      "02_hr_tmp_job_description_hr.md",
+      "02_hr_tmp_job_description_lawyer.md"
+     ],
+     "families": [
+      "family-a9b6c262b16d",
+      "family-d4fc5aee069f"
+     ],
+     "frame_sections": 14,
+     "pilot_cases": 2,
+     "similarity": 0.214009123
+    },
+    {
+     "basis": "pair",
+     "block_id": "block-9041a312ebe0",
+     "documents": [
+      "01_hr_pol_dress_code.md",
+      "01_hr_pol_internal_comm.md"
+     ],
+     "families": [
+      "family-0a592eb457f7",
+      "family-15428e19d874"
+     ],
+     "frame_sections": 13,
+     "pilot_cases": 2,
+     "similarity": 0.044563711
+    },
+    {
+     "basis": "pair",
+     "block_id": "block-a9ce84c9392e",
+     "documents": [
+      "05_tlog_regulation_dangerous_goods.md",
+      "05_tlog_regulation_perishable.md"
+     ],
+     "families": [
+      "family-4acab4a08858",
+      "family-b291e2d09f2f"
+     ],
+     "frame_sections": 6,
+     "pilot_cases": 0,
+     "similarity": 0.675137948
+    },
+    {
+     "basis": "family",
+     "block_id": "block-b005c8d4fe67",
+     "documents": [
+      "01_hr_dismissal_procedure.md",
+      "01_hr_pol_exit_interview.md",
+      "02_hr_tmp_dismissal_order.md",
+      "02_hr_tmp_resignation_letter.md",
+      "07_faq_dismissal.md"
+     ],
+     "families": [
+      "family-679a7415df67"
+     ],
+     "frame_sections": 26,
+     "pilot_cases": 1
+    },
+    {
+     "basis": "family",
+     "block_id": "block-be6c3fa62e68",
+     "documents": [
+      "01_hr_pol_confidentiality_emp.md",
+      "02_hr_tmp_confidentiality_ack.md",
+      "03_legal_contract_ndc.md",
+      "06_comp_policy_commercial_secret.md",
+      "06_comp_policy_nda_contractor.md",
+      "06_comp_policy_nda_employee.md",
+      "07_faq_commercial_secret.md"
+     ],
+     "families": [
+      "family-c3346b4cbd17"
+     ],
+     "frame_sections": 29,
+     "pilot_cases": 1
+    },
+    {
+     "basis": "family",
+     "block_id": "block-d5c9fe6cc449",
+     "documents": [
+      "02_hr_tmp_material_liability_agreement.md",
+      "07_faq_employee_material_liability.md"
+     ],
+     "families": [
+      "family-f97265fc4a1d"
+     ],
+     "frame_sections": 3,
+     "pilot_cases": 1
+    },
+    {
+     "basis": "family",
+     "block_id": "block-d5fc84d12da2",
+     "documents": [
+      "01_hr_pol_business_trip.md",
+      "01_hr_pol_relocation.md",
+      "02_hr_tmp_business_trip_order.md"
+     ],
+     "families": [
+      "family-8fb33acb875d"
+     ],
+     "frame_sections": 23,
+     "pilot_cases": 1
+    },
+    {
+     "basis": "family",
+     "block_id": "block-de49077e275e",
+     "documents": [
+      "06_comp_checklist_pdp_audit.md",
+      "06_comp_policy_breach_notification.md",
+      "06_comp_policy_consent_form.md",
+      "06_comp_policy_cookies.md",
+      "06_comp_policy_cross_border_transfer.md",
+      "06_comp_policy_data_destruction.md",
+      "06_comp_policy_data_retention.md",
+      "06_comp_policy_pdp.md",
+      "06_comp_policy_subject_rights.md",
+      "06_comp_policy_video_surveillance.md",
+      "07_faq_pdp.md"
+     ],
+     "families": [
+      "family-74d57abc1479"
+     ],
+     "frame_sections": 73,
+     "pilot_cases": 3
+    },
+    {
+     "basis": "family",
+     "block_id": "block-dfb03b356e6b",
+     "documents": [
+      "01_hr_pol_kpi.md",
+      "01_hr_pol_performance_review.md",
+      "01_hr_pol_talent_pool.md"
+     ],
+     "families": [
+      "family-a8c6914bae42"
+     ],
+     "frame_sections": 25,
+     "pilot_cases": 2
+    },
+    {
+     "basis": "family",
+     "block_id": "block-e24337dd8243",
+     "documents": [
+      "03_legal_contract_rent_warehouse.md",
+      "03_legal_contract_warehouse_services.md",
+      "03_legal_contract_warehouse_storage.md",
+      "05_tlog_contract_warehouse_3pl.md"
+     ],
+     "families": [
+      "family-5fcfe62ffeb0"
+     ],
+     "frame_sections": 6,
+     "pilot_cases": 0
+    },
+    {
+     "basis": "family",
+     "block_id": "block-eca24f600182",
+     "documents": [
+      "03_legal_contract_settlement.md",
+      "04_legal_claim_cargo_damage.md",
+      "04_legal_claim_cargo_loss.md",
+      "04_legal_claim_customs_delay.md",
+      "04_legal_claim_defective_goods.md",
+      "04_legal_claim_expedition_breach.md",
+      "04_legal_claim_ip_infringement.md",
+      "04_legal_claim_late_delivery.md",
+      "04_legal_claim_lease_breach.md",
+      "04_legal_claim_non_payment.md",
+      "04_legal_claim_service_fail.md",
+      "04_legal_letter_arbitration_notice.md",
+      "04_legal_letter_debt_collection.md",
+      "04_legal_letter_demand.md",
+      "04_legal_letter_notary_demand.md",
+      "04_legal_letter_settlement_proposal.md",
+      "04_legal_memo_contract_breach.md",
+      "04_legal_memo_dispute_risk.md",
+      "04_legal_reply_cargo_damage.md",
+      "04_legal_reply_defective_goods.md",
+      "04_legal_reply_late_delivery.md",
+      "04_legal_reply_non_payment.md",
+      "04_legal_reply_service_fail.md",
+      "05_tlog_checklist_claims_road.md",
+      "07_faq_claims_procedure.md"
+     ],
+     "families": [
+      "family-0802124c14e4"
+     ],
+     "frame_sections": 94,
+     "pilot_cases": 5
+    },
+    {
+     "basis": "family",
+     "block_id": "block-fc77599603d6",
+     "documents": [
+      "01_hr_internal_transfer.md",
+      "02_hr_tmp_position_change_order.md",
+      "02_hr_tmp_transfer_order.md"
+     ],
+     "families": [
+      "family-9cf46d1e5c4e"
+     ],
+     "frame_sections": 22,
+     "pilot_cases": 1
+    }
+   ],
+   "cases": 60,
+   "cluster_sizes": [
+    5,
+    4,
+    3,
+    3,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+   ],
+   "clusters": 37,
+   "documents": 165,
+   "empty_positions": [],
+   "families": 49,
+   "frame_sections": 814,
+   "order": [
+    [
+     "05_tlog_regulation_dangerous_goods.md",
+     7082
+    ],
+    [
+     "01_hr_pol_training.md",
+     2401
+    ],
+    [
+     "01_hr_pol_harassment.md",
+     1668
+    ],
+    [
+     "05_tlog_instruction_logistics_manager.md",
+     1038
+    ],
+    [
+     "03_legal_contract_supply_fuel.md",
+     1629
+    ],
+    [
+     "01_hr_pol_references.md",
+     587
+    ],
+    [
+     "05_tlog_checklist_cargo_acceptance.md",
+     8596
+    ],
+    [
+     "03_legal_contract_customs_broker.md",
+     9132
+    ],
+    [
+     "01_hr_pol_attendance.md",
+     2924
+    ],
+    [
+     "05_tlog_contract_transport_air.md",
+     551
+    ],
+    [
+     "03_legal_contract_expedition_international.md",
+     1742
+    ],
+    [
+     "03_legal_contract_cargo_transport_rail.md",
+     14658
+    ],
+    [
+     "06_comp_policy_access_control.md",
+     919
+    ],
+    [
+     "01_hr_pol_bonus.md",
+     823
+    ],
+    [
+     "06_comp_policy_whistleblower.md",
+     2583
+    ],
+    [
+     "03_legal_contract_rent_warehouse.md",
+     1660
+    ],
+    [
+     "05_tlog_contract_cargo_insurance.md",
+     935
+    ],
+    [
+     "05_tlog_contract_transport_sea.md",
+     1156
+    ],
+    [
+     "05_tlog_regulation_gps_tracking.md",
+     6556
+    ],
+    [
+     "03_legal_contract_insurance_civil_liability.md",
+     14155
+    ],
+    [
+     "01_hr_internal_transfer.md",
+     3484
+    ],
+    [
+     "02_hr_tmp_employment_order.md",
+     3373
+    ],
+    [
+     "01_hr_pol_business_trip.md",
+     1066
+    ],
+    [
+     "02_hr_tmp_material_liability_agreement.md",
+     1881
+    ],
+    [
+     "01_hr_dismissal_procedure.md",
+     848
+    ],
+    [
+     "06_comp_policy_commercial_secret.md",
+     7670
+    ],
+    [
+     "06_comp_policy_incident_response.md",
+     2555
+    ],
+    [
+     "06_comp_checklist_contract_compliance.md",
+     12854
+    ],
+    [
+     "01_hr_pol_remote_work.md",
+     527
+    ],
+    [
+     "02_hr_tmp_job_description_logistics.md",
+     2927
+    ],
+    [
+     "02_hr_tmp_job_description_lawyer.md",
+     1752
+    ],
+    [
+     "02_hr_tmp_leave_order.md",
+     3815
+    ],
+    [
+     "01_hr_pol_kpi.md",
+     2104
+    ],
+    [
+     "01_hr_pol_safety.md",
+     8847
+    ],
+    [
+     "01_hr_pol_internal_comm.md",
+     2872
+    ],
+    [
+     "07_faq_probation.md",
+     535
+    ],
+    [
+     "06_comp_policy_data_retention.md",
+     987
+    ],
+    [
+     "04_legal_claim_lease_breach.md",
+     10717
+    ],
+    [
+     "05_tlog_regulation_perishable.md",
+     620
+    ],
+    [
+     "01_hr_pol_training.md",
+     846
+    ],
+    [
+     "01_hr_pol_harassment.md",
+     865
+    ],
+    [
+     "05_tlog_instruction_logistics_manager.md",
+     618
+    ],
+    [
+     "05_tlog_contract_fuel_supply.md",
+     582
+    ],
+    [
+     "01_hr_pol_references.md",
+     1473
+    ],
+    [
+     "05_tlog_policy_transport_safety.md",
+     7586
+    ],
+    [
+     "06_comp_policy_trade_compliance.md",
+     6205
+    ],
+    [
+     "01_hr_pol_part_time.md",
+     1145
+    ],
+    [
+     "05_tlog_contract_transport_air.md",
+     9515
+    ],
+    [
+     "03_legal_contract_expedition_international.md",
+     14937
+    ],
+    [
+     "03_legal_contract_cargo_transport_rail.md",
+     1714
+    ],
+    [
+     "01_hr_pol_it_access.md",
+     1185
+    ],
+    [
+     "01_hr_pol_salary.md",
+     608
+    ],
+    [
+     "01_hr_pol_gifts.md",
+     512
+    ],
+    [
+     "03_legal_contract_warehouse_services.md",
+     1660
+    ],
+    [
+     "03_legal_contract_insurance_cargo.md",
+     9195
+    ],
+    [
+     "05_tlog_policy_eco_norms.md",
+     620
+    ],
+    [
+     "05_tlog_regulation_cmr.md",
+     1133
+    ],
+    [
+     "03_legal_contract_insurance_civil_liability.md",
+     9361
+    ],
+    [
+     "01_hr_internal_transfer.md",
+     3215
+    ],
+    [
+     "02_hr_tmp_employment_contract.md",
+     6227
+    ],
+    [
+     "02_hr_tmp_business_trip_order.md",
+     783
+    ],
+    [
+     "02_hr_tmp_material_liability_agreement.md",
+     2714
+    ],
+    [
+     "01_hr_dismissal_procedure.md",
+     604
+    ],
+    [
+     "06_comp_policy_commercial_secret.md",
+     5411
+    ],
+    [
+     "06_comp_policy_incident_response.md",
+     5834
+    ],
+    [
+     "02_hr_tmp_add_agreement.md",
+     2161
+    ],
+    [
+     "02_hr_tmp_remote_work_agreement.md",
+     2449
+    ],
+    [
+     "02_hr_tmp_job_description_driver.md",
+     1779
+    ],
+    [
+     "02_hr_tmp_job_description_lawyer.md",
+     856
+    ],
+    [
+     "01_hr_pol_maternity.md",
+     3524
+    ],
+    [
+     "01_hr_pol_performance_review.md",
+     1268
+    ],
+    [
+     "01_hr_pol_safety.md",
+     5269
+    ],
+    [
+     "01_hr_pol_internal_comm.md",
+     515
+    ],
+    [
+     "02_hr_tmp_probation_report.md",
+     3559
+    ],
+    [
+     "06_comp_policy_subject_rights.md",
+     7705
+    ],
+    [
+     "04_legal_letter_debt_collection.md",
+     615
+    ],
+    [
+     "05_tlog_regulation_perishable.md",
+     1066
+    ],
+    [
+     "01_hr_pol_adaptation.md",
+     2491
+    ],
+    [
+     "01_hr_pol_harassment.md",
+     3070
+    ],
+    [
+     "05_tlog_regulation_oversized.md",
+     995
+    ],
+    [
+     "01_hr_pol_references.md",
+     1812
+    ],
+    [
+     "05_tlog_policy_transport_safety.md",
+     580
+    ],
+    [
+     "05_tlog_contract_customs_representative.md",
+     604
+    ],
+    [
+     "01_hr_pol_part_time.md",
+     2615
+    ],
+    [
+     "05_tlog_regulation_weight_control.md",
+     6607
+    ],
+    [
+     "05_tlog_contract_expedition_domestic.md",
+     585
+    ],
+    [
+     "05_tlog_contract_transport_rail.md",
+     619
+    ],
+    [
+     "01_hr_pol_it_access.md",
+     819
+    ],
+    [
+     "01_hr_pol_compensation.md",
+     556
+    ],
+    [
+     "06_comp_policy_whistleblower.md",
+     5652
+    ],
+    [
+     "03_legal_contract_warehouse_storage.md",
+     1658
+    ],
+    [
+     "05_tlog_contract_cargo_insurance.md",
+     540
+    ],
+    [
+     "05_tlog_policy_eco_norms.md",
+     1046
+    ],
+    [
+     "07_faq_transport_road.md",
+     2207
+    ],
+    [
+     "03_legal_contract_cargo_transport_general.md",
+     1184
+    ],
+    [
+     "02_hr_tmp_transfer_order.md",
+     1482
+    ],
+    [
+     "external_tk_rf_chapter_11.md",
+     2714
+    ],
+    [
+     "01_hr_pol_business_trip.md",
+     3255
+    ],
+    [
+     "02_hr_tmp_material_liability_agreement.md",
+     629
+    ],
+    [
+     "01_hr_pol_exit_interview.md",
+     517
+    ],
+    [
+     "06_comp_policy_nda_employee.md",
+     5730
+    ],
+    [
+     "06_comp_policy_incident_response.md",
+     8770
+    ],
+    [
+     "03_legal_contract_termination_checklist.md",
+     2909
+    ],
+    [
+     "01_hr_pol_remote_work.md",
+     1070
+    ],
+    [
+     "02_hr_tmp_job_description_driver.md",
+     882
+    ],
+    [
+     "02_hr_tmp_job_description_hr.md",
+     2412
+    ],
+    [
+     "02_hr_tmp_leave_order.md",
+     2825
+    ],
+    [
+     "01_hr_pol_kpi.md",
+     3630
+    ],
+    [
+     "01_hr_pol_safety.md",
+     15157
+    ],
+    [
+     "01_hr_pol_dress_code.md",
+     796
+    ],
+    [
+     "02_hr_tmp_probation_report.md",
+     3814
+    ],
+    [
+     "06_comp_policy_breach_notification.md",
+     568
+    ],
+    [
+     "04_legal_reply_defective_goods.md",
+     616
+    ],
+    [
+     "05_tlog_regulation_perishable.md",
+     6935
+    ],
+    [
+     "01_hr_pol_training.md",
+     1647
+    ],
+    [
+     "01_hr_pol_harassment.md",
+     1925
+    ],
+    [
+     "05_tlog_regulation_oversized.md",
+     599
+    ],
+    [
+     "01_hr_pol_references.md",
+     933
+    ],
+    [
+     "05_tlog_checklist_cargo_acceptance.md",
+     592
+    ],
+    [
+     "06_comp_policy_trade_compliance.md",
+     2705
+    ],
+    [
+     "01_hr_pol_night_shift.md",
+     754
+    ],
+    [
+     "05_tlog_regulation_weight_control.md",
+     626
+    ],
+    [
+     "07_faq_expedition.md",
+     13517
+    ],
+    [
+     "03_legal_contract_cargo_transport_rail.md",
+     9277
+    ],
+    [
+     "01_hr_pol_it_access.md",
+     1683
+    ],
+    [
+     "02_hr_tmp_salary_change_order.md",
+     511
+    ],
+    [
+     "06_comp_policy_anticorruption_local.md",
+     8596
+    ],
+    [
+     "05_tlog_contract_warehouse_3pl.md",
+     550
+    ],
+    [
+     "05_tlog_contract_carrier_liability.md",
+     656
+    ],
+    [
+     "05_tlog_policy_eco_norms.md",
+     7506
+    ],
+    [
+     "07_faq_transport_road.md",
+     572
+    ],
+    [
+     "03_legal_contract_insurance_civil_liability.md",
+     597
+    ],
+    [
+     "01_hr_internal_transfer.md",
+     2344
+    ],
+    [
+     "02_hr_tmp_employment_order.md",
+     560
+    ],
+    [
+     "01_hr_pol_business_trip.md",
+     1876
+    ],
+    [
+     "01_hr_pol_exit_interview.md",
+     1673
+    ],
+    [
+     "06_comp_policy_commercial_secret.md",
+     557
+    ],
+    [
+     "06_comp_policy_incident_response.md",
+     12708
+    ],
+    [
+     "03_legal_contract_supplement_general.md",
+     3061
+    ],
+    [
+     "01_hr_pol_remote_work.md",
+     3339
+    ],
+    [
+     "02_hr_tmp_job_description_logistics.md",
+     1069
+    ],
+    [
+     "02_hr_tmp_job_description_hr.md",
+     2777
+    ],
+    [
+     "01_hr_pol_maternity.md",
+     659
+    ],
+    [
+     "01_hr_pol_talent_pool.md",
+     834
+    ],
+    [
+     "01_hr_pol_injury.md",
+     4016
+    ],
+    [
+     "01_hr_pol_internal_comm.md",
+     1253
+    ],
+    [
+     "02_hr_tmp_probation_report.md",
+     1531
+    ],
+    [
+     "06_comp_policy_data_destruction.md",
+     969
+    ],
+    [
+     "04_legal_claim_cargo_damage.md",
+     600
+    ],
+    [
+     "05_tlog_regulation_dangerous_goods.md",
+     602
+    ],
+    [
+     "01_hr_pol_adaptation.md",
+     2924
+    ],
+    [
+     "01_hr_pol_harassment.md",
+     2632
+    ],
+    [
+     "02_hr_tmp_reference_letter_template.md",
+     1552
+    ],
+    [
+     "05_tlog_policy_transport_safety.md",
+     6577
+    ],
+    [
+     "05_tlog_contract_customs_representative.md",
+     998
+    ],
+    [
+     "01_hr_pol_overtime.md",
+     2008
+    ],
+    [
+     "07_faq_expedition.md",
+     15262
+    ],
+    [
+     "03_legal_contract_cargo_transport_rail.md",
+     1232
+    ],
+    [
+     "01_hr_pol_it_access.md",
+     1910
+    ],
+    [
+     "01_hr_pol_social_package.md",
+     1122
+    ],
+    [
+     "01_hr_pol_corruption.md",
+     2145
+    ],
+    [
+     "03_legal_contract_rent_warehouse.md",
+     14696
+    ],
+    [
+     "05_tlog_contract_carrier_liability.md",
+     1089
+    ],
+    [
+     "05_tlog_contract_transport_sea.md",
+     647
+    ],
+    [
+     "07_faq_transport_road.md",
+     5442
+    ],
+    [
+     "03_legal_contract_cargo_transport_general.md",
+     1656
+    ],
+    [
+     "02_hr_tmp_position_change_order.md",
+     1236
+    ],
+    [
+     "01_hr_pol_hiring.md",
+     3491
+    ],
+    [
+     "01_hr_pol_relocation.md",
+     3289
+    ],
+    [
+     "02_hr_tmp_dismissal_order.md",
+     2035
+    ],
+    [
+     "06_comp_policy_nda_employee.md",
+     7761
+    ],
+    [
+     "03_legal_contract_services_general.md",
+     14397
+    ],
+    [
+     "02_hr_tmp_add_agreement.md",
+     605
+    ],
+    [
+     "01_hr_pol_remote_work.md",
+     803
+    ],
+    [
+     "02_hr_tmp_job_description_logistics.md",
+     1766
+    ],
+    [
+     "02_hr_tmp_job_description_hr.md",
+     516
+    ],
+    [
+     "02_hr_tmp_sick_leave_procedure.md",
+     561
+    ],
+    [
+     "01_hr_pol_performance_review.md",
+     568
+    ],
+    [
+     "01_hr_pol_safety.md",
+     13221
+    ],
+    [
+     "01_hr_pol_internal_comm.md",
+     3403
+    ],
+    [
+     "01_hr_probation_procedure.md",
+     1294
+    ],
+    [
+     "06_comp_policy_data_retention.md",
+     601
+    ],
+    [
+     "04_legal_letter_arbitration_notice.md",
+     12723
+    ],
+    [
+     "05_tlog_regulation_dangerous_goods.md",
+     1203
+    ],
+    [
+     "01_hr_pol_training.md",
+     547
+    ],
+    [
+     "01_hr_pol_harassment.md",
+     2261
+    ],
+    [
+     "02_hr_tmp_reference_letter_template.md",
+     492
+    ],
+    [
+     "05_tlog_checklist_cargo_acceptance.md",
+     10109
+    ],
+    [
+     "05_tlog_regulation_cross_border.md",
+     1164
+    ],
+    [
+     "01_hr_pol_shift_schedule.md",
+     877
+    ],
+    [
+     "07_faq_expedition.md",
+     14758
+    ],
+    [
+     "06_comp_policy_access_control.md",
+     7590
+    ],
+    [
+     "01_hr_pol_compensation.md",
+     854
+    ],
+    [
+     "02_hr_tmp_nepotism_disclosure.md",
+     1633
+    ],
+    [
+     "03_legal_contract_warehouse_storage.md",
+     14589
+    ],
+    [
+     "05_tlog_contract_carrier_liability.md",
+     7230
+    ],
+    [
+     "05_tlog_regulation_gps_tracking.md",
+     554
+    ],
+    [
+     "03_legal_contract_cargo_transport_general.md",
+     9227
+    ],
+    [
+     "02_hr_tmp_transfer_order.md",
+     459
+    ],
+    [
+     "external_tk_rf_chapter_11.md",
+     9147
+    ],
+    [
+     "01_hr_pol_relocation.md",
+     850
+    ],
+    [
+     "02_hr_tmp_dismissal_order.md",
+     831
+    ],
+    [
+     "02_hr_tmp_confidentiality_ack.md",
+     511
+    ],
+    [
+     "03_legal_contract_services_general.md",
+     1702
+    ],
+    [
+     "06_comp_regulation_contract_approval.md",
+     8268
+    ],
+    [
+     "01_hr_pol_remote_work.md",
+     1535
+    ],
+    [
+     "02_hr_tmp_job_description_logistics.md",
+     519
+    ],
+    [
+     "02_hr_tmp_job_description_lawyer.md",
+     2972
+    ],
+    [
+     "01_hr_pol_childcare.md",
+     3717
+    ],
+    [
+     "01_hr_pol_talent_pool.md",
+     3780
+    ],
+    [
+     "01_hr_pol_safety.md",
+     11200
+    ],
+    [
+     "01_hr_pol_dress_code.md",
+     1040
+    ],
+    [
+     "07_faq_probation.md",
+     890
+    ],
+    [
+     "06_comp_policy_cookies.md",
+     2518
+    ],
+    [
+     "04_legal_claim_ip_infringement.md",
+     13186
+    ],
+    [
+     "01_hr_pol_training.md",
+     2021
+    ],
+    [
+     "01_hr_pol_harassment.md",
+     605
+    ],
+    [
+     "01_hr_pol_references.md",
+     2073
+    ],
+    [
+     "05_tlog_policy_transport_safety.md",
+     1100
+    ],
+    [
+     "06_comp_policy_trade_compliance.md",
+     657
+    ],
+    [
+     "01_hr_pol_attendance.md",
+     1297
+    ],
+    [
+     "03_legal_contract_expedition_general.md",
+     1258
+    ],
+    [
+     "06_comp_policy_access_control.md",
+     5529
+    ],
+    [
+     "01_hr_pol_bonus.md",
+     2655
+    ],
+    [
+     "01_hr_pol_conflict_interest.md",
+     1692
+    ],
+    [
+     "03_legal_contract_insurance_cargo.md",
+     13852
+    ],
+    [
+     "05_tlog_checklist_driver_pre_trip.md",
+     615
+    ],
+    [
+     "03_legal_contract_cargo_transport_general.md",
+     13953
+    ],
+    [
+     "01_hr_internal_transfer.md",
+     2039
+    ],
+    [
+     "02_hr_tmp_internship_agreement.md",
+     474
+    ],
+    [
+     "01_hr_pol_relocation.md",
+     503
+    ],
+    [
+     "01_hr_dismissal_procedure.md",
+     3812
+    ],
+    [
+     "01_hr_pol_confidentiality_emp.md",
+     1637
+    ],
+    [
+     "06_comp_policy_incident_response.md",
+     972
+    ],
+    [
+     "06_comp_regulation_contract_approval.md",
+     2526
+    ],
+    [
+     "01_hr_pol_remote_work.md",
+     1917
+    ],
+    [
+     "02_hr_tmp_job_description_logistics.md",
+     784
+    ],
+    [
+     "02_hr_tmp_job_description_hr.md",
+     999
+    ],
+    [
+     "01_hr_pol_childcare.md",
+     600
+    ],
+    [
+     "01_hr_pol_performance_review.md",
+     3186
+    ],
+    [
+     "01_hr_pol_safety.md",
+     1658
+    ],
+    [
+     "01_hr_pol_internal_comm.md",
+     4176
+    ],
+    [
+     "01_hr_probation_procedure.md",
+     861
+    ],
+    [
+     "06_comp_policy_cross_border_transfer.md",
+     7694
+    ],
+    [
+     "04_legal_claim_customs_delay.md",
+     597
+    ],
+    [
+     "01_hr_pol_adaptation.md",
+     1203
+    ],
+    [
+     "01_hr_pol_harassment.md",
+     1124
+    ],
+    [
+     "05_tlog_checklist_cargo_acceptance.md",
+     6811
+    ],
+    [
+     "05_tlog_regulation_cross_border.md",
+     649
+    ],
+    [
+     "01_hr_pol_overtime.md",
+     2974
+    ],
+    [
+     "07_faq_expedition.md",
+     6903
+    ],
+    [
+     "06_comp_policy_access_control.md",
+     576
+    ],
+    [
+     "01_hr_pol_bonus.md",
+     1578
+    ],
+    [
+     "01_hr_pol_conflict_interest.md",
+     2306
+    ],
+    [
+     "03_legal_contract_insurance_cargo.md",
+     1645
+    ],
+    [
+     "05_tlog_checklist_vehicle_inspection.md",
+     7975
+    ],
+    [
+     "03_legal_contract_insurance_civil_liability.md",
+     14766
+    ],
+    [
+     "02_hr_tmp_transfer_order.md",
+     1003
+    ],
+    [
+     "01_hr_pol_hiring.md",
+     871
+    ],
+    [
+     "02_hr_tmp_business_trip_order.md",
+     482
+    ],
+    [
+     "01_hr_dismissal_procedure.md",
+     1096
+    ],
+    [
+     "06_comp_policy_commercial_secret.md",
+     12310
+    ],
+    [
+     "06_comp_policy_incident_response.md",
+     8015
+    ],
+    [
+     "03_legal_contract_termination_checklist.md",
+     9131
+    ],
+    [
+     "01_hr_pol_remote_work.md",
+     3058
+    ],
+    [
+     "02_hr_tmp_job_description_driver.md",
+     3118
+    ],
+    [
+     "02_hr_tmp_job_description_hr.md",
+     3596
+    ],
+    [
+     "01_hr_pol_leave.md",
+     607
+    ],
+    [
+     "01_hr_pol_talent_pool.md",
+     3477
+    ],
+    [
+     "01_hr_pol_safety.md",
+     11885
+    ],
+    [
+     "01_hr_pol_internal_comm.md",
+     2354
+    ],
+    [
+     "02_hr_tmp_probation_report.md",
+     1069
+    ],
+    [
+     "06_comp_policy_video_surveillance.md",
+     578
+    ],
+    [
+     "04_legal_letter_debt_collection.md",
+     12220
+    ],
+    [
+     "01_hr_pol_training.md",
+     2661
+    ],
+    [
+     "03_legal_contract_customs_broker.md",
+     14405
+    ],
+    [
+     "01_hr_pol_part_time.md",
+     836
+    ],
+    [
+     "07_faq_expedition.md",
+     15826
+    ],
+    [
+     "06_comp_policy_access_control.md",
+     4947
+    ],
+    [
+     "02_hr_tmp_salary_change_order.md",
+     1536
+    ],
+    [
+     "01_hr_pol_corruption.md",
+     584
+    ],
+    [
+     "03_legal_contract_cargo_transport_road.md",
+     14478
+    ],
+    [
+     "01_hr_internal_transfer.md",
+     534
+    ],
+    [
+     "external_tk_rf_chapter_11.md",
+     6028
+    ],
+    [
+     "01_hr_pol_business_trip.md",
+     2877
+    ],
+    [
+     "01_hr_dismissal_procedure.md",
+     3067
+    ],
+    [
+     "03_legal_contract_ndc.md",
+     1676
+    ],
+    [
+     "06_comp_policy_incident_response.md",
+     5218
+    ],
+    [
+     "03_legal_contract_supplement_general.md",
+     598
+    ],
+    [
+     "01_hr_pol_remote_work.md",
+     2768
+    ],
+    [
+     "02_hr_tmp_job_description_driver.md",
+     2631
+    ],
+    [
+     "02_hr_tmp_job_description_lawyer.md",
+     1115
+    ],
+    [
+     "01_hr_pol_childcare.md",
+     1749
+    ],
+    [
+     "01_hr_pol_performance_review.md",
+     4064
+    ],
+    [
+     "01_hr_pol_safety.md",
+     6443
+    ],
+    [
+     "01_hr_pol_internal_comm.md",
+     3815
+    ],
+    [
+     "01_hr_probation_procedure.md",
+     2352
+    ],
+    [
+     "06_comp_policy_data_destruction.md",
+     8282
+    ],
+    [
+     "04_legal_letter_arbitration_notice.md",
+     10432
+    ],
+    [
+     "01_hr_pol_adaptation.md",
+     594
+    ],
+    [
+     "06_comp_policy_trade_compliance.md",
+     8541
+    ],
+    [
+     "01_hr_pol_night_shift.md",
+     969
+    ],
+    [
+     "07_faq_expedition.md",
+     11375
+    ],
+    [
+     "06_comp_policy_access_control.md",
+     2437
+    ],
+    [
+     "01_hr_pol_bonus.md",
+     2375
+    ],
+    [
+     "06_comp_policy_whistleblower.md",
+     12556
+    ],
+    [
+     "05_tlog_instruction_dispatcher.md",
+     1090
+    ],
+    [
+     "01_hr_internal_transfer.md",
+     1163
+    ],
+    [
+     "01_hr_pol_hiring.md",
+     2793
+    ],
+    [
+     "01_hr_pol_business_trip.md",
+     814
+    ],
+    [
+     "01_hr_pol_exit_interview.md",
+     1155
+    ],
+    [
+     "06_comp_policy_nda_contractor.md",
+     925
+    ],
+    [
+     "06_comp_checklist_contract_compliance.md",
+     5976
+    ],
+    [
+     "02_hr_tmp_remote_work_agreement.md",
+     522
+    ],
+    [
+     "02_hr_tmp_job_description_driver.md",
+     589
+    ],
+    [
+     "02_hr_tmp_job_description_hr.md",
+     794
+    ],
+    [
+     "01_hr_pol_leave.md",
+     993
+    ],
+    [
+     "01_hr_pol_talent_pool.md",
+     2893
+    ],
+    [
+     "01_hr_pol_injury.md",
+     1375
+    ],
+    [
+     "01_hr_pol_dress_code.md",
+     519
+    ],
+    [
+     "07_faq_probation.md",
+     2644
+    ],
+    [
+     "06_comp_policy_cross_border_transfer.md",
+     2533
+    ],
+    [
+     "04_legal_claim_cargo_loss.md",
+     12406
+    ],
+    [
+     "01_hr_pol_training.md",
+     1057
+    ],
+    [
+     "05_tlog_regulation_cross_border.md",
+     7742
+    ],
+    [
+     "01_hr_pol_night_shift.md",
+     1282
+    ],
+    [
+     "07_faq_expedition.md",
+     3762
+    ],
+    [
+     "06_comp_policy_access_control.md",
+     8283
+    ],
+    [
+     "01_hr_pol_salary.md",
+     2834
+    ],
+    [
+     "06_comp_policy_anticorruption_local.md",
+     7804
+    ],
+    [
+     "03_legal_contract_cargo_transport_road.md",
+     1704
+    ],
+    [
+     "02_hr_tmp_position_change_order.md",
+     1956
+    ],
+    [
+     "02_hr_tmp_employment_order.md",
+     1171
+    ],
+    [
+     "01_hr_pol_relocation.md",
+     3557
+    ],
+    [
+     "01_hr_pol_exit_interview.md",
+     3046
+    ],
+    [
+     "03_legal_contract_ndc.md",
+     9136
+    ],
+    [
+     "06_comp_regulation_contract_approval.md",
+     595
+    ],
+    [
+     "02_hr_tmp_remote_work_agreement.md",
+     1567
+    ],
+    [
+     "02_hr_tmp_job_description_driver.md",
+     4022
+    ],
+    [
+     "02_hr_tmp_job_description_lawyer.md",
+     528
+    ],
+    [
+     "02_hr_tmp_leave_order.md",
+     1840
+    ],
+    [
+     "01_hr_pol_kpi.md",
+     2801
+    ],
+    [
+     "01_hr_pol_injury.md",
+     2626
+    ],
+    [
+     "01_hr_pol_internal_comm.md",
+     1821
+    ],
+    [
+     "02_hr_tmp_probation_report.md",
+     1795
+    ],
+    [
+     "06_comp_policy_data_destruction.md",
+     7584
+    ],
+    [
+     "04_legal_memo_contract_breach.md",
+     643
+    ],
+    [
+     "01_hr_pol_adaptation.md",
+     930
+    ],
+    [
+     "06_comp_policy_trade_compliance.md",
+     13461
+    ],
+    [
+     "01_hr_pol_attendance.md",
+     2084
+    ],
+    [
+     "03_legal_contract_expedition_international.md",
+     1270
+    ],
+    [
+     "06_comp_policy_access_control.md",
+     12122
+    ],
+    [
+     "01_hr_pol_bonus.md",
+     3031
+    ],
+    [
+     "06_comp_policy_anticorruption_local.md",
+     971
+    ],
+    [
+     "05_tlog_checklist_driver_pre_trip.md",
+     7975
+    ],
+    [
+     "02_hr_tmp_transfer_order.md",
+     3467
+    ],
+    [
+     "01_hr_pol_hiring.md",
+     2131
+    ],
+    [
+     "02_hr_tmp_business_trip_order.md",
+     2938
+    ],
+    [
+     "02_hr_tmp_resignation_letter.md",
+     491
+    ],
+    [
+     "06_comp_policy_nda_contractor.md",
+     12449
+    ],
+    [
+     "02_hr_tmp_add_agreement.md",
+     1206
+    ],
+    [
+     "02_hr_tmp_job_description_logistics.md",
+     2476
+    ],
+    [
+     "02_hr_tmp_job_description_lawyer.md",
+     2503
+    ],
+    [
+     "01_hr_pol_leave.md",
+     2799
+    ],
+    [
+     "01_hr_pol_performance_review.md",
+     3743
+    ],
+    [
+     "01_hr_pol_injury.md",
+     1988
+    ],
+    [
+     "01_hr_pol_dress_code.md",
+     1373
+    ],
+    [
+     "01_hr_probation_procedure.md",
+     550
+    ],
+    [
+     "06_comp_policy_cookies.md",
+     974
+    ],
+    [
+     "04_legal_claim_late_delivery.md",
+     12976
+    ],
+    [
+     "01_hr_pol_adaptation.md",
+     2158
+    ],
+    [
+     "06_comp_policy_trade_compliance.md",
+     9366
+    ],
+    [
+     "01_hr_pol_night_shift.md",
+     1723
+    ],
+    [
+     "07_faq_expedition.md",
+     5459
+    ],
+    [
+     "01_hr_pol_social_package.md",
+     3930
+    ],
+    [
+     "01_hr_pol_corruption.md",
+     3393
+    ],
+    [
+     "05_tlog_checklist_vehicle_inspection.md",
+     590
+    ],
+    [
+     "02_hr_tmp_position_change_order.md",
+     1730
+    ],
+    [
+     "external_tk_rf_chapter_11.md",
+     4076
+    ],
+    [
+     "01_hr_pol_business_trip.md",
+     1656
+    ],
+    [
+     "01_hr_dismissal_procedure.md",
+     1594
+    ],
+    [
+     "06_comp_policy_commercial_secret.md",
+     8445
+    ],
+    [
+     "02_hr_tmp_add_agreement.md",
+     4134
+    ],
+    [
+     "02_hr_tmp_job_description_driver.md",
+     1128
+    ],
+    [
+     "02_hr_tmp_job_description_hr.md",
+     1562
+    ],
+    [
+     "02_hr_tmp_leave_order.md",
+     1521
+    ],
+    [
+     "01_hr_pol_kpi.md",
+     596
+    ],
+    [
+     "01_hr_pol_injury.md",
+     999
+    ],
+    [
+     "01_hr_pol_dress_code.md",
+     2208
+    ],
+    [
+     "01_hr_probation_procedure.md",
+     1840
+    ],
+    [
+     "06_comp_policy_data_retention.md",
+     8233
+    ],
+    [
+     "04_legal_claim_service_fail.md",
+     652
+    ],
+    [
+     "01_hr_pol_training.md",
+     2923
+    ],
+    [
+     "06_comp_policy_trade_compliance.md",
+     1063
+    ],
+    [
+     "02_hr_tmp_timesheet.md",
+     472
+    ],
+    [
+     "07_faq_expedition.md",
+     910
+    ],
+    [
+     "01_hr_pol_bonus.md",
+     2081
+    ],
+    [
+     "02_hr_tmp_nepotism_disclosure.md",
+     541
+    ],
+    [
+     "07_faq_transport_road.md",
+     6862
+    ],
+    [
+     "02_hr_tmp_transfer_order.md",
+     1745
+    ],
+    [
+     "02_hr_tmp_employment_contract.md",
+     1981
+    ],
+    [
+     "02_hr_tmp_business_trip_order.md",
+     1079
+    ],
+    [
+     "02_hr_tmp_dismissal_order.md",
+     519
+    ],
+    [
+     "01_hr_pol_confidentiality_emp.md",
+     859
+    ],
+    [
+     "03_legal_contract_supplement_general.md",
+     9397
+    ],
+    [
+     "02_hr_tmp_job_description_driver.md",
+     3517
+    ],
+    [
+     "02_hr_tmp_job_description_lawyer.md",
+     3293
+    ],
+    [
+     "02_hr_tmp_leave_request.md",
+     2315
+    ],
+    [
+     "01_hr_pol_performance_review.md",
+     2884
+    ],
+    [
+     "01_hr_pol_safety.md",
+     10379
+    ],
+    [
+     "06_comp_policy_data_destruction.md",
+     4886
+    ],
+    [
+     "04_legal_reply_late_delivery.md",
+     602
+    ],
+    [
+     "01_hr_pol_adaptation.md",
+     1798
+    ],
+    [
+     "03_legal_contract_customs_broker.md",
+     1693
+    ],
+    [
+     "01_hr_pol_overtime.md",
+     2723
+    ],
+    [
+     "07_faq_expedition.md",
+     511
+    ],
+    [
+     "01_hr_pol_compensation.md",
+     1578
+    ],
+    [
+     "01_hr_pol_corruption.md",
+     3877
+    ],
+    [
+     "05_tlog_regulation_dispatch.md",
+     573
+    ],
+    [
+     "02_hr_tmp_position_change_order.md",
+     787
+    ],
+    [
+     "02_hr_tmp_employment_contract.md",
+     6502
+    ],
+    [
+     "02_hr_tmp_business_trip_order.md",
+     1621
+    ],
+    [
+     "02_hr_tmp_dismissal_order.md",
+     3886
+    ],
+    [
+     "06_comp_policy_nda_contractor.md",
+     5214
+    ],
+    [
+     "07_faq_contract_templates.md",
+     541
+    ],
+    [
+     "01_hr_pol_childcare.md",
+     2352
+    ],
+    [
+     "01_hr_pol_kpi.md",
+     3367
+    ],
+    [
+     "01_hr_pol_safety.md",
+     2688
+    ],
+    [
+     "06_comp_policy_cookies.md",
+     7544
+    ],
+    [
+     "04_legal_claim_cargo_loss.md",
+     10571
+    ],
+    [
+     "05_tlog_regulation_customs_clearance.md",
+     968
+    ],
+    [
+     "01_hr_pol_overtime.md",
+     859
+    ],
+    [
+     "05_tlog_contract_expedition_domestic.md",
+     7026
+    ],
+    [
+     "02_hr_tmp_salary_change_order.md",
+     1051
+    ],
+    [
+     "01_hr_pol_gifts.md",
+     1757
+    ],
+    [
+     "03_legal_contract_cargo_transport_road.md",
+     9237
+    ],
+    [
+     "02_hr_tmp_position_change_order.md",
+     488
+    ],
+    [
+     "01_hr_pol_hiring.md",
+     2470
+    ],
+    [
+     "01_hr_pol_relocation.md",
+     2103
+    ],
+    [
+     "01_hr_pol_exit_interview.md",
+     3691
+    ],
+    [
+     "07_faq_commercial_secret.md",
+     562
+    ],
+    [
+     "06_comp_regulation_contract_approval.md",
+     9104
+    ],
+    [
+     "01_hr_pol_childcare.md",
+     1195
+    ],
+    [
+     "01_hr_pol_performance_review.md",
+     4591
+    ],
+    [
+     "01_hr_pol_injury.md",
+     3097
+    ],
+    [
+     "06_comp_policy_cross_border_transfer.md",
+     984
+    ],
+    [
+     "04_legal_reply_cargo_damage.md",
+     12338
+    ],
+    [
+     "05_tlog_regulation_customs_clearance.md",
+     6648
+    ],
+    [
+     "01_hr_pol_attendance.md",
+     1024
+    ],
+    [
+     "05_tlog_contract_expedition_multimodal.md",
+     996
+    ],
+    [
+     "01_hr_pol_salary.md",
+     3568
+    ],
+    [
+     "06_comp_policy_whistleblower.md",
+     600
+    ],
+    [
+     "05_tlog_regulation_waybill.md",
+     19218
+    ],
+    [
+     "02_hr_tmp_transfer_order.md",
+     714
+    ],
+    [
+     "01_hr_pol_hiring.md",
+     3795
+    ],
+    [
+     "02_hr_tmp_business_trip_order.md",
+     3512
+    ],
+    [
+     "07_faq_dismissal.md",
+     617
+    ],
+    [
+     "06_comp_policy_nda_employee.md",
+     5108
+    ],
+    [
+     "03_legal_contract_amendment_procedure.md",
+     1664
+    ],
+    [
+     "01_hr_pol_leave.md",
+     3462
+    ],
+    [
+     "01_hr_pol_performance_review.md",
+     2515
+    ],
+    [
+     "01_hr_pol_safety.md",
+     4604
+    ],
+    [
+     "06_comp_policy_pdp.md",
+     8906
+    ],
+    [
+     "04_legal_claim_late_delivery.md",
+     607
+    ],
+    [
+     "05_tlog_regulation_customs_clearance.md",
+     569
+    ],
+    [
+     "01_hr_pol_attendance.md",
+     654
+    ],
+    [
+     "07_faq_expedition.md",
+     6217
+    ],
+    [
+     "01_hr_pol_social_package.md",
+     3456
+    ],
+    [
+     "01_hr_pol_corruption.md",
+     1423
+    ],
+    [
+     "05_tlog_regulation_cmr.md",
+     606
+    ],
+    [
+     "02_hr_tmp_transfer_order.md",
+     2913
+    ],
+    [
+     "external_tk_rf_chapter_11.md",
+     5394
+    ],
+    [
+     "02_hr_tmp_business_trip_order.md",
+     1920
+    ],
+    [
+     "01_hr_pol_exit_interview.md",
+     3360
+    ],
+    [
+     "06_comp_policy_nda_contractor.md",
+     567
+    ],
+    [
+     "06_comp_checklist_contract_compliance.md",
+     8978
+    ],
+    [
+     "01_hr_pol_childcare.md",
+     4014
+    ],
+    [
+     "01_hr_pol_kpi.md",
+     1806
+    ],
+    [
+     "01_hr_pol_injury.md",
+     4761
+    ],
+    [
+     "06_comp_policy_data_destruction.md",
+     590
+    ],
+    [
+     "04_legal_memo_contract_breach.md",
+     12090
+    ],
+    [
+     "06_comp_policy_trade_compliance.md",
+     5608
+    ],
+    [
+     "01_hr_pol_part_time.md",
+     523
+    ],
+    [
+     "07_faq_expedition.md",
+     2178
+    ],
+    [
+     "01_hr_pol_salary.md",
+     3219
+    ],
+    [
+     "01_hr_pol_corruption.md",
+     2683
+    ],
+    [
+     "05_tlog_checklist_driver_pre_trip.md",
+     1005
+    ],
+    [
+     "01_hr_internal_transfer.md",
+     801
+    ],
+    [
+     "01_hr_pol_hiring.md",
+     1159
+    ],
+    [
+     "01_hr_pol_business_trip.md",
+     2530
+    ],
+    [
+     "01_hr_dismissal_procedure.md",
+     3456
+    ],
+    [
+     "06_comp_policy_nda_contractor.md",
+     5806
+    ],
+    [
+     "06_comp_checklist_contract_compliance.md",
+     2571
+    ],
+    [
+     "01_hr_pol_maternity.md",
+     1825
+    ],
+    [
+     "01_hr_pol_performance_review.md",
+     927
+    ],
+    [
+     "01_hr_pol_safety.md",
+     14327
+    ],
+    [
+     "06_comp_policy_data_retention.md",
+     7519
+    ],
+    [
+     "04_legal_letter_debt_collection.md",
+     10405
+    ],
+    [
+     "01_hr_pol_part_time.md",
+     4054
+    ],
+    [
+     "07_faq_expedition.md",
+     7524
+    ],
+    [
+     "01_hr_pol_social_package.md",
+     1646
+    ],
+    [
+     "06_comp_policy_whistleblower.md",
+     5063
+    ],
+    [
+     "05_tlog_instruction_dispatcher.md",
+     581
+    ],
+    [
+     "02_hr_tmp_position_change_order.md",
+     3443
+    ],
+    [
+     "external_tk_rf_chapter_11.md",
+     3659
+    ],
+    [
+     "01_hr_pol_business_trip.md",
+     2164
+    ],
+    [
+     "01_hr_pol_exit_interview.md",
+     834
+    ],
+    [
+     "07_faq_commercial_secret.md",
+     904
+    ],
+    [
+     "06_comp_checklist_contract_compliance.md",
+     4099
+    ],
+    [
+     "02_hr_tmp_leave_order.md",
+     3537
+    ],
+    [
+     "01_hr_pol_kpi.md",
+     3934
+    ],
+    [
+     "01_hr_pol_safety.md",
+     4001
+    ],
+    [
+     "06_comp_policy_data_retention.md",
+     12208
+    ],
+    [
+     "04_legal_claim_service_fail.md",
+     13171
+    ],
+    [
+     "01_hr_pol_overtime.md",
+     1602
+    ],
+    [
+     "03_legal_contract_expedition_general.md",
+     9268
+    ],
+    [
+     "01_hr_pol_social_package.md",
+     819
+    ],
+    [
+     "06_comp_policy_anticorruption_local.md",
+     2566
+    ],
+    [
+     "05_tlog_regulation_waybill.md",
+     1058
+    ],
+    [
+     "01_hr_internal_transfer.md",
+     2664
+    ],
+    [
+     "external_tk_rf_chapter_11.md",
+     9650
+    ],
+    [
+     "01_hr_pol_relocation.md",
+     2860
+    ],
+    [
+     "02_hr_tmp_dismissal_order.md",
+     3042
+    ],
+    [
+     "06_comp_policy_nda_employee.md",
+     915
+    ],
+    [
+     "06_comp_regulation_contract_approval.md",
+     993
+    ],
+    [
+     "02_hr_tmp_leave_order.md",
+     978
+    ],
+    [
+     "01_hr_pol_kpi.md",
+     1155
+    ],
+    [
+     "01_hr_pol_injury.md",
+     627
+    ],
+    [
+     "06_comp_checklist_pdp_audit.md",
+     878
+    ],
+    [
+     "03_legal_contract_settlement.md",
+     1633
+    ],
+    [
+     "01_hr_pol_night_shift.md",
+     544
+    ],
+    [
+     "03_legal_contract_expedition_international.md",
+     9465
+    ],
+    [
+     "01_hr_pol_bonus.md",
+     1100
+    ],
+    [
+     "01_hr_pol_corruption.md",
+     4557
+    ],
+    [
+     "07_faq_transport_road.md",
+     935
+    ],
+    [
+     "01_hr_internal_transfer.md",
+     1657
+    ],
+    [
+     "external_tk_rf_chapter_11.md",
+     2180
+    ],
+    [
+     "01_hr_pol_relocation.md",
+     1182
+    ],
+    [
+     "02_hr_tmp_resignation_letter.md",
+     1527
+    ],
+    [
+     "06_comp_policy_commercial_secret.md",
+     938
+    ],
+    [
+     "07_faq_contract_templates.md",
+     887
+    ],
+    [
+     "01_hr_pol_maternity.md",
+     3954
+    ],
+    [
+     "01_hr_pol_talent_pool.md",
+     1214
+    ],
+    [
+     "01_hr_pol_safety.md",
+     566
+    ],
+    [
+     "06_comp_policy_subject_rights.md",
+     12382
+    ],
+    [
+     "04_legal_claim_lease_breach.md",
+     654
+    ],
+    [
+     "01_hr_pol_shift_schedule.md",
+     1403
+    ],
+    [
+     "07_faq_expedition.md",
+     3195
+    ],
+    [
+     "01_hr_pol_social_package.md",
+     2934
+    ],
+    [
+     "01_hr_pol_corruption.md",
+     1012
+    ],
+    [
+     "07_faq_transport_road.md",
+     7457
+    ],
+    [
+     "02_hr_tmp_employment_contract.md",
+     1255
+    ],
+    [
+     "01_hr_pol_business_trip.md",
+     579
+    ],
+    [
+     "01_hr_dismissal_procedure.md",
+     2701
+    ],
+    [
+     "06_comp_policy_nda_contractor.md",
+     7876
+    ],
+    [
+     "03_legal_contract_supplement_general.md",
+     14808
+    ],
+    [
+     "01_hr_pol_childcare.md",
+     884
+    ],
+    [
+     "01_hr_pol_talent_pool.md",
+     2036
+    ],
+    [
+     "01_hr_pol_safety.md",
+     7740
+    ],
+    [
+     "06_comp_policy_breach_notification.md",
+     8144
+    ],
+    [
+     "04_legal_claim_defective_goods.md",
+     10579
+    ],
+    [
+     "02_hr_tmp_timesheet.md",
+     1519
+    ],
+    [
+     "05_tlog_contract_forwarder.md",
+     567
+    ],
+    [
+     "01_hr_pol_salary.md",
+     2166
+    ],
+    [
+     "06_comp_policy_whistleblower.md",
+     983
+    ],
+    [
+     "05_tlog_contract_driver_services.md",
+     631
+    ],
+    [
+     "02_hr_tmp_employment_order.md",
+     1717
+    ],
+    [
+     "01_hr_dismissal_procedure.md",
+     1897
+    ],
+    [
+     "06_comp_policy_nda_contractor.md",
+     8601
+    ],
+    [
+     "03_legal_contract_amendment_procedure.md",
+     2889
+    ],
+    [
+     "01_hr_pol_childcare.md",
+     3328
+    ],
+    [
+     "01_hr_pol_performance_review.md",
+     4916
+    ],
+    [
+     "01_hr_pol_injury.md",
+     3556
+    ],
+    [
+     "06_comp_policy_pdp.md",
+     2574
+    ],
+    [
+     "04_legal_claim_expedition_breach.md",
+     12581
+    ],
+    [
+     "01_hr_pol_part_time.md",
+     3557
+    ],
+    [
+     "07_faq_expedition.md",
+     14144
+    ],
+    [
+     "01_hr_pol_salary.md",
+     1837
+    ],
+    [
+     "02_hr_tmp_nepotism_disclosure.md",
+     2448
+    ],
+    [
+     "05_tlog_regulation_dispatch.md",
+     1000
+    ],
+    [
+     "external_tk_rf_chapter_11.md",
+     5792
+    ],
+    [
+     "02_hr_tmp_dismissal_order.md",
+     1648
+    ],
+    [
+     "02_hr_tmp_confidentiality_ack.md",
+     1706
+    ],
+    [
+     "02_hr_tmp_add_agreement.md",
+     4399
+    ],
+    [
+     "01_hr_pol_leave.md",
+     3104
+    ],
+    [
+     "01_hr_pol_kpi.md",
+     873
+    ],
+    [
+     "01_hr_pol_safety.md",
+     9589
+    ],
+    [
+     "06_comp_policy_consent_form.md",
+     567
+    ],
+    [
+     "04_legal_claim_cargo_loss.md",
+     618
+    ],
+    [
+     "02_hr_tmp_timesheet.md",
+     778
+    ],
+    [
+     "07_faq_expedition.md",
+     12957
+    ],
+    [
+     "01_hr_pol_compensation.md",
+     1963
+    ],
+    [
+     "01_hr_pol_corruption.md",
+     4251
+    ],
+    [
+     "05_tlog_contract_transport_road.md",
+     1153
+    ],
+    [
+     "02_hr_tmp_employment_contract.md",
+     558
+    ],
+    [
+     "02_hr_tmp_dismissal_order.md",
+     4150
+    ],
+    [
+     "06_comp_policy_nda_employee.md",
+     12268
+    ],
+    [
+     "03_legal_contract_amendment_procedure.md",
+     9000
+    ],
+    [
+     "01_hr_pol_maternity.md",
+     4294
+    ],
+    [
+     "01_hr_pol_safety.md",
+     3034
+    ],
+    [
+     "06_comp_checklist_pdp_audit.md",
+     11596
+    ],
+    [
+     "04_legal_reply_service_fail.md",
+     639
+    ],
+    [
+     "01_hr_pol_overtime.md",
+     2498
+    ],
+    [
+     "05_tlog_contract_expedition_multimodal.md",
+     651
+    ],
+    [
+     "01_hr_pol_salary.md",
+     3825
+    ],
+    [
+     "06_comp_policy_whistleblower.md",
+     7822
+    ],
+    [
+     "05_tlog_instruction_driver_duty.md",
+     679
+    ],
+    [
+     "external_tk_rf_chapter_11.md",
+     8115
+    ],
+    [
+     "06_comp_policy_nda_employee.md",
+     8486
+    ],
+    [
+     "03_legal_contract_framework.md",
+     1691
+    ],
+    [
+     "02_hr_tmp_leave_request.md",
+     449
+    ],
+    [
+     "01_hr_pol_safety.md",
+     4852
+    ],
+    [
+     "06_comp_policy_consent_form.md",
+     5583
+    ],
+    [
+     "04_legal_letter_arbitration_notice.md",
+     588
+    ],
+    [
+     "01_hr_pol_part_time.md",
+     1734
+    ],
+    [
+     "03_legal_contract_expedition_general.md",
+     14678
+    ],
+    [
+     "01_hr_pol_compensation.md",
+     2343
+    ],
+    [
+     "06_comp_policy_anticorruption_local.md",
+     626
+    ],
+    [
+     "05_tlog_regulation_gps_tracking.md",
+     1079
+    ],
+    [
+     "02_hr_tmp_employment_order.md",
+     1982
+    ],
+    [
+     "01_hr_pol_confidentiality_emp.md",
+     1256
+    ],
+    [
+     "06_comp_regulation_contract_approval.md",
+     12946
+    ],
+    [
+     "02_hr_tmp_sick_leave_procedure.md",
+     1626
+    ],
+    [
+     "06_comp_policy_video_surveillance.md",
+     7503
+    ],
+    [
+     "04_legal_claim_cargo_damage.md",
+     12755
+    ],
+    [
+     "05_tlog_policy_driver_hours.md",
+     580
+    ],
+    [
+     "03_legal_contract_expedition_general.md",
+     1727
+    ],
+    [
+     "01_hr_pol_salary.md",
+     2498
+    ],
+    [
+     "01_hr_pol_conflict_interest.md",
+     1313
+    ],
+    [
+     "05_tlog_regulation_waybill.md",
+     6942
+    ],
+    [
+     "02_hr_tmp_internship_agreement.md",
+     1710
+    ],
+    [
+     "01_hr_pol_confidentiality_emp.md",
+     1885
+    ],
+    [
+     "03_legal_contract_termination_checklist.md",
+     1644
+    ],
+    [
+     "02_hr_tmp_leave_order.md",
+     487
+    ],
+    [
+     "06_comp_policy_consent_form.md",
+     12361
+    ],
+    [
+     "04_legal_memo_dispute_risk.md",
+     10377
+    ],
+    [
+     "05_tlog_policy_driver_hours.md",
+     1109
+    ],
+    [
+     "01_hr_pol_salary.md",
+     945
+    ],
+    [
+     "01_hr_pol_gifts.md",
+     1211
+    ],
+    [
+     "07_faq_transport_road.md",
+     6181
+    ],
+    [
+     "01_hr_pol_hiring.md",
+     3262
+    ],
+    [
+     "02_hr_tmp_add_agreement.md",
+     3465
+    ],
+    [
+     "01_hr_pol_leave.md",
+     2185
+    ],
+    [
+     "06_comp_policy_consent_form.md",
+     2526
+    ],
+    [
+     "04_legal_claim_late_delivery.md",
+     10588
+    ],
+    [
+     "01_hr_pol_overtime.md",
+     569
+    ],
+    [
+     "01_hr_pol_social_package.md",
+     487
+    ],
+    [
+     "01_hr_pol_conflict_interest.md",
+     2021
+    ],
+    [
+     "05_tlog_regulation_waybill.md",
+     19687
+    ],
+    [
+     "02_hr_tmp_employment_order.md",
+     3083
+    ],
+    [
+     "06_comp_checklist_contract_compliance.md",
+     1000
+    ],
+    [
+     "01_hr_pol_maternity.md",
+     1010
+    ],
+    [
+     "06_comp_checklist_pdp_audit.md",
+     5080
+    ],
+    [
+     "04_legal_reply_non_payment.md",
+     10448
+    ],
+    [
+     "01_hr_pol_shift_schedule.md",
+     510
+    ],
+    [
+     "01_hr_pol_bonus.md",
+     536
+    ],
+    [
+     "01_hr_pol_gifts.md",
+     1476
+    ],
+    [
+     "05_tlog_checklist_driver_pre_trip.md",
+     9415
+    ],
+    [
+     "external_tk_rf_chapter_11.md",
+     5050
+    ],
+    [
+     "03_legal_contract_framework.md",
+     14442
+    ],
+    [
+     "02_hr_tmp_leave_request.md",
+     775
+    ],
+    [
+     "06_comp_policy_consent_form.md",
+     8520
+    ],
+    [
+     "04_legal_letter_notary_demand.md",
+     12903
+    ],
+    [
+     "01_hr_pol_overtime.md",
+     3304
+    ],
+    [
+     "01_hr_pol_social_package.md",
+     2596
+    ],
+    [
+     "06_comp_policy_whistleblower.md",
+     8595
+    ],
+    [
+     "05_tlog_regulation_waybill.md",
+     631
+    ],
+    [
+     "external_tk_rf_chapter_11.md",
+     1178
+    ],
+    [
+     "06_comp_checklist_contract_compliance.md",
+     8155
+    ],
+    [
+     "01_hr_pol_maternity.md",
+     2343
+    ],
+    [
+     "06_comp_policy_breach_notification.md",
+     8930
+    ],
+    [
+     "04_legal_letter_settlement_proposal.md",
+     12270
+    ],
+    [
+     "01_hr_pol_attendance.md",
+     3210
+    ],
+    [
+     "01_hr_pol_salary.md",
+     1216
+    ],
+    [
+     "01_hr_pol_conflict_interest.md",
+     932
+    ],
+    [
+     "05_tlog_contract_transport_road.md",
+     668
+    ],
+    [
+     "02_hr_tmp_employment_contract.md",
+     905
+    ],
+    [
+     "02_hr_tmp_add_agreement.md",
+     1824
+    ],
+    [
+     "01_hr_pol_childcare.md",
+     2819
+    ],
+    [
+     "06_comp_policy_data_destruction.md",
+     12164
+    ],
+    [
+     "04_legal_reply_cargo_damage.md",
+     10527
+    ],
+    [
+     "01_hr_pol_attendance.md",
+     3480
+    ],
+    [
+     "01_hr_pol_bonus.md",
+     3385
+    ],
+    [
+     "06_comp_policy_anticorruption_local.md",
+     5658
+    ],
+    [
+     "05_tlog_regulation_waybill.md",
+     7970
+    ],
+    [
+     "external_tk_rf_chapter_11.md",
+     1602
+    ],
+    [
+     "03_legal_contract_supplement_general.md",
+     1776
+    ],
+    [
+     "02_hr_tmp_leave_order.md",
+     750
+    ],
+    [
+     "06_comp_policy_subject_rights.md",
+     5555
+    ],
+    [
+     "04_legal_letter_notary_demand.md",
+     10519
+    ],
+    [
+     "01_hr_pol_attendance.md",
+     1744
+    ],
+    [
+     "01_hr_pol_compensation.md",
+     1064
+    ],
+    [
+     "06_comp_policy_anticorruption_local.md",
+     12465
+    ],
+    [
+     "05_tlog_regulation_waybill.md",
+     17977
+    ],
+    [
+     "01_hr_pol_hiring.md",
+     1711
+    ],
+    [
+     "06_comp_regulation_contract_approval.md",
+     6090
+    ],
+    [
+     "01_hr_pol_maternity.md",
+     1278
+    ],
+    [
+     "06_comp_policy_video_surveillance.md",
+     5468
+    ],
+    [
+     "04_legal_claim_customs_delay.md",
+     12381
+    ],
+    [
+     "01_hr_pol_attendance.md",
+     2524
+    ],
+    [
+     "02_hr_tmp_salary_change_order.md",
+     1927
+    ],
+    [
+     "01_hr_pol_gifts.md",
+     897
+    ],
+    [
+     "05_tlog_instruction_driver_duty.md",
+     1097
+    ],
+    [
+     "01_hr_pol_hiring.md",
+     564
+    ],
+    [
+     "06_comp_checklist_contract_compliance.md",
+     632
+    ],
+    [
+     "07_faq_leave.md",
+     659
+    ],
+    [
+     "06_comp_policy_cookies.md",
+     5361
+    ],
+    [
+     "04_legal_letter_demand.md",
+     10418
+    ],
+    [
+     "01_hr_pol_overtime.md",
+     1181
+    ],
+    [
+     "01_hr_pol_compensation.md",
+     2607
+    ],
+    [
+     "05_tlog_regulation_waybill.md",
+     20152
+    ],
+    [
+     "external_tk_rf_chapter_11.md",
+     4488
+    ],
+    [
+     "07_faq_leave.md",
+     7231
+    ],
+    [
+     "06_comp_policy_video_surveillance.md",
+     12024
+    ],
+    [
+     "04_legal_claim_non_payment.md",
+     12410
+    ],
+    [
+     "01_hr_pol_part_time.md",
+     3166
+    ],
+    [
+     "01_hr_pol_compensation.md",
+     3035
+    ],
+    [
+     "01_hr_pol_maternity.md",
+     2924
+    ],
+    [
+     "06_comp_checklist_pdp_audit.md",
+     544
+    ],
+    [
+     "04_legal_claim_service_fail.md",
+     12640
+    ],
+    [
+     "01_hr_pol_shift_schedule.md",
+     1161
+    ],
+    [
+     "02_hr_tmp_salary_change_order.md",
+     3462
+    ],
+    [
+     "01_hr_pol_leave.md",
+     1835
+    ],
+    [
+     "06_comp_checklist_pdp_audit.md",
+     7098
+    ],
+    [
+     "04_legal_reply_defective_goods.md",
+     10540
+    ],
+    [
+     "02_hr_tmp_salary_change_order.md",
+     3143
+    ],
+    [
+     "06_comp_policy_subject_rights.md",
+     8476
+    ],
+    [
+     "04_legal_reply_defective_goods.md",
+     12912
+    ],
+    [
+     "02_hr_tmp_salary_change_order.md",
+     802
+    ],
+    [
+     "06_comp_policy_cross_border_transfer.md",
+     8440
+    ],
+    [
+     "04_legal_memo_contract_breach.md",
+     4151
+    ],
+    [
+     "06_comp_policy_pdp.md",
+     627
+    ],
+    [
+     "04_legal_reply_cargo_damage.md",
+     1693
+    ],
+    [
+     "06_comp_policy_consent_form.md",
+     965
+    ],
+    [
+     "04_legal_reply_non_payment.md",
+     12731
+    ],
+    [
+     "06_comp_policy_pdp.md",
+     5809
+    ],
+    [
+     "04_legal_reply_late_delivery.md",
+     10549
+    ],
+    [
+     "06_comp_policy_consent_form.md",
+     7782
+    ],
+    [
+     "04_legal_memo_dispute_risk.md",
+     12747
+    ],
+    [
+     "06_comp_policy_subject_rights.md",
+     583
+    ],
+    [
+     "04_legal_claim_non_payment.md",
+     637
+    ],
+    [
+     "06_comp_policy_subject_rights.md",
+     985
+    ],
+    [
+     "04_legal_claim_ip_infringement.md",
+     632
+    ],
+    [
+     "06_comp_policy_video_surveillance.md",
+     4889
+    ],
+    [
+     "04_legal_memo_contract_breach.md",
+     10253
+    ],
+    [
+     "06_comp_policy_video_surveillance.md",
+     2413
+    ],
+    [
+     "04_legal_claim_late_delivery.md",
+     12445
+    ],
+    [
+     "06_comp_policy_cross_border_transfer.md",
+     12412
+    ],
+    [
+     "04_legal_claim_non_payment.md",
+     10559
+    ],
+    [
+     "06_comp_policy_pdp.md",
+     1041
+    ],
+    [
+     "04_legal_letter_demand.md",
+     12740
+    ],
+    [
+     "06_comp_policy_breach_notification.md",
+     5382
+    ],
+    [
+     "04_legal_reply_defective_goods.md",
+     12392
+    ],
+    [
+     "06_comp_policy_data_retention.md",
+     5387
+    ],
+    [
+     "04_legal_claim_customs_delay.md",
+     12889
+    ],
+    [
+     "06_comp_checklist_pdp_audit.md",
+     2344
+    ],
+    [
+     "04_legal_claim_lease_breach.md",
+     13151
+    ],
+    [
+     "06_comp_policy_data_destruction.md",
+     2439
+    ],
+    [
+     "03_legal_contract_settlement.md",
+     14306
+    ],
+    [
+     "07_faq_pdp.md",
+     528
+    ],
+    [
+     "04_legal_memo_contract_breach.md",
+     12589
+    ],
+    [
+     "06_comp_policy_breach_notification.md",
+     2474
+    ],
+    [
+     "04_legal_reply_cargo_damage.md",
+     12837
+    ],
+    [
+     "06_comp_policy_breach_notification.md",
+     929
+    ],
+    [
+     "05_tlog_checklist_claims_road.md",
+     9288
+    ],
+    [
+     "06_comp_policy_cookies.md",
+     8287
+    ],
+    [
+     "04_legal_claim_lease_breach.md",
+     12623
+    ],
+    [
+     "06_comp_policy_cross_border_transfer.md",
+     612
+    ],
+    [
+     "04_legal_letter_debt_collection.md",
+     12711
+    ],
+    [
+     "06_comp_policy_pdp.md",
+     12900
+    ],
+    [
+     "04_legal_letter_settlement_proposal.md",
+     10449
+    ],
+    [
+     "06_comp_policy_video_surveillance.md",
+     8194
+    ],
+    [
+     "04_legal_letter_settlement_proposal.md",
+     12757
+    ],
+    [
+     "06_comp_policy_breach_notification.md",
+     5992
+    ],
+    [
+     "04_legal_claim_expedition_breach.md",
+     10701
+    ],
+    [
+     "06_comp_policy_cookies.md",
+     12113
+    ],
+    [
+     "04_legal_reply_service_fail.md",
+     13131
+    ],
+    [
+     "06_comp_policy_subject_rights.md",
+     2499
+    ],
+    [
+     "07_faq_claims_procedure.md",
+     7450
+    ],
+    [
+     "06_comp_policy_video_surveillance.md",
+     921
+    ],
+    [
+     "07_faq_claims_procedure.md",
+     571
+    ],
+    [
+     "06_comp_checklist_pdp_audit.md",
+     3493
+    ],
+    [
+     "04_legal_claim_service_fail.md",
+     10713
+    ],
+    [
+     "06_comp_policy_data_retention.md",
+     4792
+    ],
+    [
+     "04_legal_claim_defective_goods.md",
+     12974
+    ],
+    [
+     "06_comp_policy_data_destruction.md",
+     5499
+    ],
+    [
+     "04_legal_claim_ip_infringement.md",
+     12647
+    ],
+    [
+     "06_comp_policy_breach_notification.md",
+     12804
+    ],
+    [
+     "04_legal_reply_non_payment.md",
+     12246
+    ],
+    [
+     "06_comp_checklist_pdp_audit.md",
+     7794
+    ],
+    [
+     "04_legal_letter_settlement_proposal.md",
+     611
+    ],
+    [
+     "06_comp_policy_cross_border_transfer.md",
+     5606
+    ],
+    [
+     "04_legal_reply_late_delivery.md",
+     12378
+    ],
+    [
+     "04_legal_reply_late_delivery.md",
+     12884
+    ],
+    [
+     "05_tlog_checklist_claims_road.md",
+     7960
+    ],
+    [
+     "04_legal_reply_service_fail.md",
+     12593
+    ],
+    [
+     "05_tlog_checklist_claims_road.md",
+     615
+    ],
+    [
+     "04_legal_claim_ip_infringement.md",
+     10748
+    ],
+    [
+     "04_legal_reply_non_payment.md",
+     604
+    ],
+    [
+     "04_legal_letter_notary_demand.md",
+     12381
+    ],
+    [
+     "04_legal_reply_service_fail.md",
+     10689
+    ],
+    [
+     "04_legal_memo_dispute_risk.md",
+     12235
+    ],
+    [
+     "04_legal_claim_non_payment.md",
+     12912
+    ],
+    [
+     "04_legal_memo_dispute_risk.md",
+     4179
+    ],
+    [
+     "04_legal_claim_expedition_breach.md",
+     13111
+    ],
+    [
+     "04_legal_claim_defective_goods.md",
+     601
+    ],
+    [
+     "04_legal_letter_demand.md",
+     12229
+    ],
+    [
+     "04_legal_letter_demand.md",
+     568
+    ],
+    [
+     "04_legal_letter_notary_demand.md",
+     1238
+    ],
+    [
+     "07_faq_claims_procedure.md",
+     961
+    ],
+    [
+     "07_faq_claims_procedure.md",
+     5449
+    ],
+    [
+     "07_faq_claims_procedure.md",
+     2202
+    ],
+    [
+     "04_legal_claim_defective_goods.md",
+     12440
+    ],
+    [
+     "04_legal_memo_dispute_risk.md",
+     630
+    ]
+   ],
+   "positions": [
+    {
+     "block_id": "block-a9ce84c9392e",
+     "partner": {
+      "char_end": 7512,
+      "char_start": 6935,
+      "section_path": [
+       "Порядок air cargo перевозки perishables и pharma/cold chain",
+       "Порядок действий",
+       "5. Согласование"
+      ],
+      "source_id": "05_tlog_regulation_perishable.md"
+     },
+     "position": 1,
+     "primary_class": "multi-doc",
+     "seed": {
+      "char_end": 7639,
+      "char_start": 7082,
+      "section_path": [
+       "Инструкция по air cargo dangerous goods",
+       "Порядок действий",
+       "5. Согласование"
+      ],
+      "source_id": "05_tlog_regulation_dangerous_goods.md"
+     }
+    },
+    {
+     "block_id": "block-2c7c746cc931",
+     "partner": null,
+     "position": 2,
+     "primary_class": "single-doc",
+     "seed": {
+      "char_end": 2633,
+      "char_start": 2401,
+      "section_path": [
+       "Положение об обучении и развитии",
+       "Порядок действий",
+       "3. Согласование и договор"
+      ],
+      "source_id": "01_hr_pol_training.md"
+     }
+    },
+    {
+     "block_id": "block-80338f3d7b48",
+     "partner": {
+      "char_end": 974,
+      "char_start": 582,
+      "section_path": [
+       "Договор поставки ГСМ для транспорта airport first/last mile",
+       "Назначение"
+      ],
+      "source_id": "05_tlog_contract_fuel_supply.md"
+     },
+     "position": 3,
+     "primary_class": "aggregation",
+     "seed": {
+      "char_end": 2350,
+      "char_start": 1629,
+      "section_path": [
+       "Договор поставки топлива",
+       "Термины"
+      ],
+      "source_id": "03_legal_contract_supply_fuel.md"
+     }
+    },
+    {
+     "block_id": "block-1c63299131d6",
+     "partner": null,
+     "position": 4,
+     "primary_class": "needs-refusal/clarification",
+     "seed": {
+      "char_end": 1904,
+      "char_start": 1668,
+      "section_path": [
+       "Политика противодействия домогательствам",
+       "Порядок действий",
+       "1. Предотвращение"
+      ],
+      "source_id": "01_hr_pol_harassment.md"
+     }
+    },
+    {
+     "block_id": "block-2f12118fb6e7",
+     "partner": {
+      "char_end": 1479,
+      "char_start": 995,
+      "section_path": [
+       "Порядок перевозки oversized cargo воздушным транспортом",
+       "Область применения"
+      ],
+      "source_id": "05_tlog_regulation_oversized.md"
+     },
+     "position": 5,
+     "primary_class": "multi-doc",
+     "seed": {
+      "char_end": 1440,
+      "char_start": 1038,
+      "section_path": [
+       "Должностная инструкция руководителя авиагрузовой логистики",
+       "Область применения"
+      ],
+      "source_id": "05_tlog_instruction_logistics_manager.md"
+     }
+    },
+    {
+     "block_id": "block-4fa8d3a34a99",
+     "partner": null,
+     "position": 6,
+     "primary_class": "single-doc",
+     "seed": {
+      "char_end": 782,
+      "char_start": 587,
+      "section_path": [
+       "Регламент выдачи справок и характеристик",
+       "Назначение"
+      ],
+      "source_id": "01_hr_pol_references.md"
+     }
+    },
+    {
+     "block_id": "block-28c80f1c51c2",
+     "partner": {
+      "char_end": 1486,
+      "char_start": 1100,
+      "section_path": [
+       "Политика авиационной грузовой безопасности",
+       "Область применения"
+      ],
+      "source_id": "05_tlog_policy_transport_safety.md"
+     },
+     "position": 7,
+     "primary_class": "aggregation",
+     "seed": {
+      "char_end": 9286,
+      "char_start": 8596,
+      "section_path": [
+       "Чеклист приемки авиагруза к перевозке",
+       "Stop/go критерии"
+      ],
+      "source_id": "05_tlog_checklist_cargo_acceptance.md"
+     }
+    },
+    {
+     "block_id": "block-7f2a93815f6e",
+     "partner": {
+      "char_end": 9333,
+      "char_start": 8541,
+      "section_path": [
+       "Политика торгового compliance (санкции, эксп.контроль)",
+       "Практический сценарий"
+      ],
+      "source_id": "06_comp_policy_trade_compliance.md"
+     },
+     "position": 8,
+     "primary_class": "multi-doc",
+     "seed": {
+      "char_end": 9871,
+      "char_start": 9132,
+      "section_path": [
+       "Договор с таможенным брокером",
+       "Практический сценарий"
+      ],
+      "source_id": "03_legal_contract_customs_broker.md"
+     }
+    },
+    {
+     "block_id": "block-7569f5e075b5",
+     "partner": null,
+     "position": 9,
+     "primary_class": "needs-refusal/clarification",
+     "seed": {
+      "char_end": 3184,
+      "char_start": 2924,
+      "section_path": [
+       "Положение об учете рабочего времени",
+       "Порядок действий",
+       "4. Ночные смены"
+      ],
+      "source_id": "01_hr_pol_attendance.md"
+     }
+    },
+    {
+     "block_id": "block-32057dd0085a",
+     "partner": null,
+     "position": 10,
+     "primary_class": "single-doc",
+     "seed": {
+      "char_end": 842,
+      "char_start": 551,
+      "section_path": [
+       "Договор авиаперевозки",
+       "Назначение"
+      ],
+      "source_id": "05_tlog_contract_transport_air.md"
+     }
+    },
+    {
+     "block_id": "block-4bba676a927c",
+     "partner": {
+      "char_end": 2457,
+      "char_start": 1727,
+      "section_path": [
+       "Договор транспортной экспедиции (общий шаблон)",
+       "Термины"
+      ],
+      "source_id": "03_legal_contract_expedition_general.md"
+     },
+     "position": 11,
+     "primary_class": "multi-doc",
+     "seed": {
+      "char_end": 2522,
+      "char_start": 1742,
+      "section_path": [
+       "Договор международной экспедиции",
+       "Термины"
+      ],
+      "source_id": "03_legal_contract_expedition_international.md"
+     }
+    },
+    {
+     "block_id": "block-6a90b82a6913",
+     "partner": {
+      "char_end": 1187,
+      "char_start": 619,
+      "section_path": [
+       "Договор фидерного плеча авиагруза до/из аэропорта",
+       "Назначение"
+      ],
+      "source_id": "05_tlog_contract_transport_rail.md"
+     },
+     "position": 12,
+     "primary_class": "aggregation",
+     "seed": {
+      "char_end": 15312,
+      "char_start": 14658,
+      "section_path": [
+       "Договор железнодорожного фидерного плеча авиагруза",
+       "Контрольный список"
+      ],
+      "source_id": "03_legal_contract_cargo_transport_rail.md"
+     }
+    },
+    {
+     "block_id": "block-063b5c637033",
+     "partner": null,
+     "position": 13,
+     "primary_class": "needs-refusal/clarification",
+     "seed": {
+      "char_end": 1215,
+      "char_start": 919,
+      "section_path": [
+       "Политика разграничения доступа к данным",
+       "Область применения"
+      ],
+      "source_id": "06_comp_policy_access_control.md"
+     }
+    },
+    {
+     "block_id": "block-51c9b9c3885d",
+     "partner": null,
+     "position": 14,
+     "primary_class": "single-doc",
+     "seed": {
+      "char_end": 1089,
+      "char_start": 823,
+      "section_path": [
+       "Положение о премировании",
+       "Область применения"
+      ],
+      "source_id": "01_hr_pol_bonus.md"
+     }
+    },
+    {
+     "block_id": "block-32dbeba2cb06",
+     "partner": {
+      "char_end": 3364,
+      "char_start": 2566,
+      "section_path": [
+       "Локальный акт по противодействию коррупции",
+       "Порядок действий",
+       "2. Обязательные поля"
+      ],
+      "source_id": "06_comp_policy_anticorruption_local.md"
+     },
+     "position": 15,
+     "primary_class": "multi-doc",
+     "seed": {
+      "char_end": 3337,
+      "char_start": 2583,
+      "section_path": [
+       "Политика сообщений о нарушениях (whistleblowing)",
+       "Порядок действий",
+       "2. Обязательные поля"
+      ],
+      "source_id": "06_comp_policy_whistleblower.md"
+     }
+    },
+    {
+     "block_id": "block-e24337dd8243",
+     "partner": {
+      "char_end": 2408,
+      "char_start": 1660,
+      "section_path": [
+       "Договор на складские услуги",
+       "Термины"
+      ],
+      "source_id": "03_legal_contract_warehouse_services.md"
+     },
+     "position": 16,
+     "primary_class": "multi-doc",
+     "seed": {
+      "char_end": 2419,
+      "char_start": 1660,
+      "section_path": [
+       "Договор аренды складских помещений",
+       "Термины"
+      ],
+      "source_id": "03_legal_contract_rent_warehouse.md"
+     }
+    },
+    {
+     "block_id": "block-6cd91678207f",
+     "partner": null,
+     "position": 17,
+     "primary_class": "single-doc",
+     "seed": {
+      "char_end": 1393,
+      "char_start": 935,
+      "section_path": [
+       "Договор страхования авиагруза",
+       "Область применения"
+      ],
+      "source_id": "05_tlog_contract_cargo_insurance.md"
+     }
+    },
+    {
+     "block_id": "block-58587be13be7",
+     "partner": {
+      "char_end": 14494,
+      "char_start": 13953,
+      "section_path": [
+       "Договор перевозки груза (общий шаблон)",
+       "Критерии качества ответа"
+      ],
+      "source_id": "03_legal_contract_cargo_transport_general.md"
+     },
+     "position": 18,
+     "primary_class": "aggregation",
+     "seed": {
+      "char_end": 14744,
+      "char_start": 14155,
+      "section_path": [
+       "Договор страхования гражданской ответственности перевозчика",
+       "Критерии качества ответа"
+      ],
+      "source_id": "03_legal_contract_insurance_civil_liability.md"
+     }
+    },
+    {
+     "block_id": "block-82a1a339198e",
+     "partner": null,
+     "position": 19,
+     "primary_class": "needs-refusal/clarification",
+     "seed": {
+      "char_end": 1669,
+      "char_start": 1156,
+      "section_path": [
+       "Договор резервного фидерного плеча авиагруза",
+       "Область применения"
+      ],
+      "source_id": "05_tlog_contract_transport_sea.md"
+     }
+    },
+    {
+     "block_id": "block-10ecde179a74",
+     "partner": {
+      "char_end": 7521,
+      "char_start": 6942,
+      "section_path": [
+       "Порядок оформления путевых листов для airport first/last mile",
+       "Порядок действий",
+       "5. Согласование"
+      ],
+      "source_id": "05_tlog_regulation_waybill.md"
+     },
+     "position": 20,
+     "primary_class": "multi-doc",
+     "seed": {
+      "char_end": 7124,
+      "char_start": 6556,
+      "section_path": [
+       "Политика GPS-мониторинга наземного плеча авиагруза",
+       "Порядок действий",
+       "5. Согласование"
+      ],
+      "source_id": "05_tlog_regulation_gps_tracking.md"
+     }
+    },
+    {
+     "block_id": "block-fc77599603d6",
+     "partner": null,
+     "position": 21,
+     "primary_class": "single-doc",
+     "seed": {
+      "char_end": 3729,
+      "char_start": 3484,
+      "section_path": [
+       "Регламент внутреннего перевода",
+       "Порядок действий",
+       "7. Временный перевод"
+      ],
+      "source_id": "01_hr_internal_transfer.md"
+     }
+    },
+    {
+     "block_id": "block-5502576abc78",
+     "partner": {
+      "char_end": 2104,
+      "char_start": 1711,
+      "section_path": [
+       "Политика подбора персонала",
+       "Порядок действий",
+       "1. Формирование заявки на подбор"
+      ],
+      "source_id": "01_hr_pol_hiring.md"
+     },
+     "position": 22,
+     "primary_class": "aggregation",
+     "seed": {
+      "char_end": 3660,
+      "char_start": 3373,
+      "section_path": [
+       "Приказ о приеме на работу (шаблон)",
+       "Порядок действий",
+       "4. Действия после подписания"
+      ],
+      "source_id": "02_hr_tmp_employment_order.md"
+     }
+    },
+    {
+     "block_id": "block-d5fc84d12da2",
+     "partner": {
+      "char_end": 1570,
+      "char_start": 1079,
+      "section_path": [
+       "Приказ о командировке (шаблон)",
+       "Термины"
+      ],
+      "source_id": "02_hr_tmp_business_trip_order.md"
+     },
+     "position": 23,
+     "primary_class": "multi-doc",
+     "seed": {
+      "char_end": 1605,
+      "char_start": 1066,
+      "section_path": [
+       "Положение о командировках",
+       "Термины"
+      ],
+      "source_id": "01_hr_pol_business_trip.md"
+     }
+    },
+    {
+     "block_id": "block-d5c9fe6cc449",
+     "partner": null,
+     "position": 24,
+     "primary_class": "needs-refusal/clarification",
+     "seed": {
+      "char_end": 2247,
+      "char_start": 1881,
+      "section_path": [
+       "Договор о полной материальной ответственности (шаблон)",
+       "Порядок действий",
+       "1. Инициирование"
+      ],
+      "source_id": "02_hr_tmp_material_liability_agreement.md"
+     }
+    },
+    {
+     "block_id": "block-b005c8d4fe67",
+     "partner": null,
+     "position": 25,
+     "primary_class": "single-doc",
+     "seed": {
+      "char_end": 1085,
+      "char_start": 848,
+      "section_path": [
+       "Регламент увольнения сотрудников",
+       "Область применения"
+      ],
+      "source_id": "01_hr_dismissal_procedure.md"
+     }
+    },
+    {
+     "block_id": "block-be6c3fa62e68",
+     "partner": {
+      "char_end": 8568,
+      "char_start": 7876,
+      "section_path": [
+       "Соглашение о неразглашении (NDA) для контрагентов",
+       "Практический сценарий"
+      ],
+      "source_id": "06_comp_policy_nda_contractor.md"
+     },
+     "position": 26,
+     "primary_class": "multi-doc",
+     "seed": {
+      "char_end": 8412,
+      "char_start": 7670,
+      "section_path": [
+       "Положение о коммерческой тайне",
+       "Практический сценарий"
+      ],
+      "source_id": "06_comp_policy_commercial_secret.md"
+     }
+    },
+    {
+     "block_id": "block-76098e4d4e29",
+     "partner": {
+      "char_end": 15029,
+      "char_start": 14397,
+      "section_path": [
+       "Договор оказания услуг (общий шаблон)",
+       "Контрольный список"
+      ],
+      "source_id": "03_legal_contract_services_general.md"
+     },
+     "position": 27,
+     "primary_class": "aggregation",
+     "seed": {
+      "char_end": 3450,
+      "char_start": 2555,
+      "section_path": [
+       "План реагирования на инциденты ИБ и утечки",
+       "Порядок действий",
+       "2. Обязательные поля"
+      ],
+      "source_id": "06_comp_policy_incident_response.md"
+     }
+    },
+    {
+     "block_id": "block-71b1f8060c9e",
+     "partner": null,
+     "position": 28,
+     "primary_class": "needs-refusal/clarification",
+     "seed": {
+      "char_end": 13679,
+      "char_start": 12854,
+      "section_path": [
+       "Чеклист проверки договора на compliance",
+       "Критерии качества ответа"
+      ],
+      "source_id": "06_comp_checklist_contract_compliance.md"
+     }
+    },
+    {
+     "block_id": "block-76644742a721",
+     "partner": null,
+     "position": 29,
+     "primary_class": "single-doc",
+     "seed": {
+      "char_end": 781,
+      "char_start": 527,
+      "section_path": [
+       "Положение об удаленной работе",
+       "Назначение"
+      ],
+      "source_id": "01_hr_pol_remote_work.md"
+     }
+    },
+    {
+     "block_id": "block-1246041c68b5",
+     "partner": {
+      "char_end": 3495,
+      "char_start": 3118,
+      "section_path": [
+       "Должностная инструкция — водитель-экспедитор",
+       "Порядок действий",
+       "3. Ответственность"
+      ],
+      "source_id": "02_hr_tmp_job_description_driver.md"
+     },
+     "position": 30,
+     "primary_class": "multi-doc",
+     "seed": {
+      "char_end": 3427,
+      "char_start": 2927,
+      "section_path": [
+       "Должностная инструкция — логист",
+       "Порядок действий",
+       "3. Ответственность"
+      ],
+      "source_id": "02_hr_tmp_job_description_logistics.md"
+     }
+    }
+   ],
+   "quotas": {
+    "aggregation": 6,
+    "multi-doc": 10,
+    "needs-refusal/clarification": 6,
+    "single-doc": 8
+   },
+   "seated": {
+    "aggregation": 6,
+    "multi-doc": 10,
+    "needs-refusal/clarification": 6,
+    "single-doc": 8
+   }
+  },
+  "holdout": {
+   "blocks": [
+    {
+     "basis": "pair",
+     "block_id": "block-113c2c8e735d",
+     "documents": [
+      "03_legal_contract_franchise.md",
+      "05_tlog_contract_tire_service.md"
+     ],
+     "families": [
+      "family-796b49339c8b",
+      "family-d6c6b1195af0"
+     ],
+     "frame_sections": 5,
+     "pilot_cases": 0,
+     "similarity": 0.029967238
+    },
+    {
+     "basis": "pair",
+     "block_id": "block-25b5610451d2",
+     "documents": [
+      "03_legal_contract_joint_activity.md",
+      "03_legal_contract_subcontract.md"
+     ],
+     "families": [
+      "family-2022ff872658",
+      "family-4b3ed7b1d5a5"
+     ],
+     "frame_sections": 2,
+     "pilot_cases": 0,
+     "similarity": 0.172881399
+    },
+    {
+     "basis": "pair",
+     "block_id": "block-3816cae01de8",
+     "documents": [
+      "01_hr_pol_alcohol.md",
+      "01_hr_pol_smoking.md"
+     ],
+     "families": [
+      "family-b28ab8d39f59",
+      "family-b5866965615c"
+     ],
+     "frame_sections": 9,
+     "pilot_cases": 0,
+     "similarity": 0.037405629
+    },
+    {
+     "basis": "pair",
+     "block_id": "block-38d70a7e8430",
+     "documents": [
+      "03_legal_contract_services_marketing.md",
+      "03_legal_contract_tender_rules.md"
+     ],
+     "families": [
+      "family-5891d2a4c4e9",
+      "family-6c616ea5de97"
+     ],
+     "frame_sections": 8,
+     "pilot_cases": 0,
+     "similarity": 0.135719704
+    },
+    {
+     "basis": "pair",
+     "block_id": "block-5ca01fed3f03",
+     "documents": [
+      "03_legal_contract_guarantee.md",
+      "03_legal_contract_loan.md"
+     ],
+     "families": [
+      "family-4526b9c94130",
+      "family-759f96f36f6e"
+     ],
+     "frame_sections": 2,
+     "pilot_cases": 0,
+     "similarity": 0.149979302
+    },
+    {
+     "basis": "pair",
+     "block_id": "block-65738f3e9ddc",
+     "documents": [
+      "03_legal_contract_agency.md",
+      "03_legal_contract_commission.md"
+     ],
+     "families": [
+      "family-60558bd5252c",
+      "family-9f876667a65d"
+     ],
+     "frame_sections": 3,
+     "pilot_cases": 0,
+     "similarity": 0.148705991
+    },
+    {
+     "basis": "pair",
+     "block_id": "block-6bd33e081226",
+     "documents": [
+      "03_legal_contract_services_accounting.md",
+      "04_legal_power_of_attorney_bank.md"
+     ],
+     "families": [
+      "family-1ab6956c0864",
+      "family-3aa942c0c670"
+     ],
+     "frame_sections": 7,
+     "pilot_cases": 0,
+     "similarity": 0.095555119
+    },
+    {
+     "basis": "pair",
+     "block_id": "block-72c1fd2bc9d4",
+     "documents": [
+      "04_legal_power_of_attorney_contracts.md",
+      "04_legal_power_of_attorney_court.md"
+     ],
+     "families": [
+      "family-67311784e409",
+      "family-972443d41e88"
+     ],
+     "frame_sections": 8,
+     "pilot_cases": 0,
+     "similarity": 0.325739539
+    },
+    {
+     "basis": "pair",
+     "block_id": "block-76269410b23b",
+     "documents": [
+      "01_hr_pol_diversity.md",
+      "01_hr_pol_mental_health.md"
+     ],
+     "families": [
+      "family-c51170307aa8",
+      "family-e5ca50122400"
+     ],
+     "frame_sections": 17,
+     "pilot_cases": 0,
+     "similarity": 0.071575573
+    },
+    {
+     "basis": "pair",
+     "block_id": "block-8d19da7e33e5",
+     "documents": [
+      "03_legal_contract_services_it.md",
+      "03_legal_contract_software_license.md"
+     ],
+     "families": [
+      "family-0fab9e95139d",
+      "family-df3b87d06453"
+     ],
+     "frame_sections": 5,
+     "pilot_cases": 0,
+     "similarity": 0.28054319
+    },
+    {
+     "basis": "pair",
+     "block_id": "block-a892905565a6",
+     "documents": [
+      "03_legal_contract_assignment.md",
+      "03_legal_contract_factoring.md"
+     ],
+     "families": [
+      "family-54935d6121af",
+      "family-c45d399bf562"
+     ],
+     "frame_sections": 3,
+     "pilot_cases": 0,
+     "similarity": 0.377760076
+    },
+    {
+     "basis": "pair",
+     "block_id": "block-ade1247f0888",
+     "documents": [
+      "03_legal_contract_penalty_clause.md",
+      "03_legal_contract_services_consulting.md"
+     ],
+     "families": [
+      "family-6f8931567e31",
+      "family-e8555864e9f3"
+     ],
+     "frame_sections": 5,
+     "pilot_cases": 0,
+     "similarity": 0.14247912
+    },
+    {
+     "basis": "pair",
+     "block_id": "block-c4354baa5ef5",
+     "documents": [
+      "01_hr_pol_electrical_safety.md",
+      "01_hr_pol_grievance.md"
+     ],
+     "families": [
+      "family-343a13e9d9f1",
+      "family-cef2df4ddf74"
+     ],
+     "frame_sections": 9,
+     "pilot_cases": 0,
+     "similarity": 0.000360442
+    },
+    {
+     "basis": "pair",
+     "block_id": "block-c9a717d6c714",
+     "documents": [
+      "01_hr_pol_medical_check.md",
+      "01_hr_pol_second_job.md"
+     ],
+     "families": [
+      "family-373712b722da",
+      "family-f8971146c660"
+     ],
+     "frame_sections": 21,
+     "pilot_cases": 0,
+     "similarity": 0.059778686
+    },
+    {
+     "basis": "family",
+     "block_id": "block-e405471d536a",
+     "documents": [
+      "03_legal_contract_leasing_vehicle.md",
+      "05_tlog_contract_leasing_truck.md"
+     ],
+     "families": [
+      "family-910fcbb578cc"
+     ],
+     "frame_sections": 3,
+     "pilot_cases": 0
+    },
+    {
+     "basis": "pair",
+     "block_id": "block-eef05d50486a",
+     "documents": [
+      "01_hr_pol_fire_safety.md",
+      "02_hr_tmp_job_description_accountant.md"
+     ],
+     "families": [
+      "family-0d52ce3cbc6a",
+      "family-40d68279e773"
+     ],
+     "frame_sections": 14,
+     "pilot_cases": 0,
+     "similarity": 0.036121238
+    },
+    {
+     "basis": "pair",
+     "block_id": "block-f8b61dc46322",
+     "documents": [
+      "03_legal_contract_rent_office.md",
+      "03_legal_contract_supply_equipment.md"
+     ],
+     "families": [
+      "family-3e0120bafe09",
+      "family-c13f19c7fced"
+     ],
+     "frame_sections": 4,
+     "pilot_cases": 0,
+     "similarity": 0.132838465
+    },
+    {
+     "basis": "pair",
+     "block_id": "block-f930af3ef676",
+     "documents": [
+      "03_legal_contract_supply_auto_parts.md",
+      "03_legal_contract_supply_goods.md"
+     ],
+     "families": [
+      "family-6bced4ae5a0e",
+      "family-7a0562fc02af"
+     ],
+     "frame_sections": 3,
+     "pilot_cases": 0,
+     "similarity": 0.249871869
+    }
+   ],
+   "cases": 64,
+   "cluster_sizes": [
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    3,
+    3,
+    3,
+    3,
+    2,
+    2
+   ],
+   "clusters": 18,
+   "documents": 36,
+   "empty_positions": [],
+   "families": 35,
+   "frame_sections": 128,
+   "order": [
+    [
+     "02_hr_tmp_job_description_accountant.md",
+     2879
+    ],
+    [
+     "03_legal_contract_leasing_vehicle.md",
+     14819
+    ],
+    [
+     "04_legal_power_of_attorney_bank.md",
+     617
+    ],
+    [
+     "03_legal_contract_subcontract.md",
+     1624
+    ],
+    [
+     "01_hr_pol_second_job.md",
+     2398
+    ],
+    [
+     "01_hr_pol_electrical_safety.md",
+     1703
+    ],
+    [
+     "03_legal_contract_supply_equipment.md",
+     14575
+    ],
+    [
+     "03_legal_contract_supply_goods.md",
+     1706
+    ],
+    [
+     "05_tlog_contract_tire_service.md",
+     6994
+    ],
+    [
+     "04_legal_power_of_attorney_contracts.md",
+     10383
+    ],
+    [
+     "03_legal_contract_services_it.md",
+     14154
+    ],
+    [
+     "03_legal_contract_services_marketing.md",
+     14133
+    ],
+    [
+     "01_hr_pol_smoking.md",
+     1455
+    ],
+    [
+     "03_legal_contract_guarantee.md",
+     1618
+    ],
+    [
+     "03_legal_contract_factoring.md",
+     1630
+    ],
+    [
+     "03_legal_contract_penalty_clause.md",
+     13947
+    ],
+    [
+     "01_hr_pol_diversity.md",
+     3832
+    ],
+    [
+     "03_legal_contract_agency.md",
+     1583
+    ],
+    [
+     "02_hr_tmp_job_description_accountant.md",
+     839
+    ],
+    [
+     "03_legal_contract_leasing_vehicle.md",
+     1696
+    ],
+    [
+     "04_legal_power_of_attorney_bank.md",
+     12270
+    ],
+    [
+     "03_legal_contract_joint_activity.md",
+     1704
+    ],
+    [
+     "01_hr_pol_second_job.md",
+     1828
+    ],
+    [
+     "01_hr_pol_grievance.md",
+     592
+    ],
+    [
+     "03_legal_contract_rent_office.md",
+     14662
+    ],
+    [
+     "03_legal_contract_supply_auto_parts.md",
+     1614
+    ],
+    [
+     "05_tlog_contract_tire_service.md",
+     1050
+    ],
+    [
+     "04_legal_power_of_attorney_contracts.md",
+     12702
+    ],
+    [
+     "03_legal_contract_software_license.md",
+     14469
+    ],
+    [
+     "03_legal_contract_services_marketing.md",
+     8855
+    ],
+    [
+     "01_hr_pol_smoking.md",
+     487
+    ],
+    [
+     "03_legal_contract_loan.md",
+     1616
+    ],
+    [
+     "03_legal_contract_assignment.md",
+     1705
+    ],
+    [
+     "03_legal_contract_penalty_clause.md",
+     1678
+    ],
+    [
+     "01_hr_pol_mental_health.md",
+     856
+    ],
+    [
+     "03_legal_contract_agency.md",
+     502
+    ],
+    [
+     "02_hr_tmp_job_description_accountant.md",
+     3319
+    ],
+    [
+     "05_tlog_contract_leasing_truck.md",
+     599
+    ],
+    [
+     "04_legal_power_of_attorney_bank.md",
+     12781
+    ],
+    [
+     "01_hr_pol_second_job.md",
+     1204
+    ],
+    [
+     "01_hr_pol_grievance.md",
+     1437
+    ],
+    [
+     "03_legal_contract_rent_office.md",
+     1657
+    ],
+    [
+     "03_legal_contract_supply_goods.md",
+     14697
+    ],
+    [
+     "03_legal_contract_franchise.md",
+     14267
+    ],
+    [
+     "04_legal_power_of_attorney_court.md",
+     10263
+    ],
+    [
+     "03_legal_contract_software_license.md",
+     1659
+    ],
+    [
+     "03_legal_contract_tender_rules.md",
+     9122
+    ],
+    [
+     "01_hr_pol_alcohol.md",
+     1003
+    ],
+    [
+     "03_legal_contract_assignment.md",
+     574
+    ],
+    [
+     "03_legal_contract_services_consulting.md",
+     1715
+    ],
+    [
+     "01_hr_pol_mental_health.md",
+     3253
+    ],
+    [
+     "03_legal_contract_commission.md",
+     1583
+    ],
+    [
+     "02_hr_tmp_job_description_accountant.md",
+     3849
+    ],
+    [
+     "03_legal_contract_services_accounting.md",
+     1665
+    ],
+    [
+     "01_hr_pol_second_job.md",
+     894
+    ],
+    [
+     "01_hr_pol_grievance.md",
+     837
+    ],
+    [
+     "03_legal_contract_supply_equipment.md",
+     1661
+    ],
+    [
+     "03_legal_contract_franchise.md",
+     1682
+    ],
+    [
+     "04_legal_power_of_attorney_court.md",
+     12068
+    ],
+    [
+     "03_legal_contract_services_it.md",
+     1681
+    ],
+    [
+     "03_legal_contract_services_marketing.md",
+     2933
+    ],
+    [
+     "01_hr_pol_alcohol.md",
+     1664
+    ],
+    [
+     "03_legal_contract_services_consulting.md",
+     14298
+    ],
+    [
+     "01_hr_pol_diversity.md",
+     580
+    ],
+    [
+     "01_hr_pol_fire_safety.md",
+     1744
+    ],
+    [
+     "03_legal_contract_services_accounting.md",
+     13590
+    ],
+    [
+     "01_hr_pol_second_job.md",
+     2747
+    ],
+    [
+     "01_hr_pol_grievance.md",
+     1675
+    ],
+    [
+     "05_tlog_contract_tire_service.md",
+     548
+    ],
+    [
+     "04_legal_power_of_attorney_court.md",
+     608
+    ],
+    [
+     "03_legal_contract_services_it.md",
+     8889
+    ],
+    [
+     "03_legal_contract_tender_rules.md",
+     1718
+    ],
+    [
+     "01_hr_pol_alcohol.md",
+     2056
+    ],
+    [
+     "03_legal_contract_penalty_clause.md",
+     8772
+    ],
+    [
+     "01_hr_pol_diversity.md",
+     2719
+    ],
+    [
+     "02_hr_tmp_job_description_accountant.md",
+     526
+    ],
+    [
+     "04_legal_power_of_attorney_bank.md",
+     10418
+    ],
+    [
+     "01_hr_pol_medical_check.md",
+     2251
+    ],
+    [
+     "01_hr_pol_electrical_safety.md",
+     1223
+    ],
+    [
+     "04_legal_power_of_attorney_contracts.md",
+     608
+    ],
+    [
+     "03_legal_contract_tender_rules.md",
+     14571
+    ],
+    [
+     "01_hr_pol_smoking.md",
+     1063
+    ],
+    [
+     "01_hr_pol_diversity.md",
+     3411
+    ],
+    [
+     "02_hr_tmp_job_description_accountant.md",
+     2520
+    ],
+    [
+     "03_legal_contract_services_accounting.md",
+     8944
+    ],
+    [
+     "01_hr_pol_medical_check.md",
+     4135
+    ],
+    [
+     "01_hr_pol_grievance.md",
+     1097
+    ],
+    [
+     "04_legal_power_of_attorney_contracts.md",
+     12207
+    ],
+    [
+     "03_legal_contract_tender_rules.md",
+     2998
+    ],
+    [
+     "01_hr_pol_alcohol.md",
+     2382
+    ],
+    [
+     "01_hr_pol_diversity.md",
+     2191
+    ],
+    [
+     "01_hr_pol_fire_safety.md",
+     892
+    ],
+    [
+     "01_hr_pol_medical_check.md",
+     972
+    ],
+    [
+     "01_hr_pol_grievance.md",
+     2088
+    ],
+    [
+     "04_legal_power_of_attorney_court.md",
+     12556
+    ],
+    [
+     "03_legal_contract_services_marketing.md",
+     1679
+    ],
+    [
+     "01_hr_pol_alcohol.md",
+     613
+    ],
+    [
+     "01_hr_pol_diversity.md",
+     3059
+    ],
+    [
+     "01_hr_pol_fire_safety.md",
+     1451
+    ],
+    [
+     "01_hr_pol_medical_check.md",
+     3408
+    ],
+    [
+     "01_hr_pol_electrical_safety.md",
+     904
+    ],
+    [
+     "01_hr_pol_alcohol.md",
+     1392
+    ],
+    [
+     "01_hr_pol_mental_health.md",
+     1122
+    ],
+    [
+     "02_hr_tmp_job_description_accountant.md",
+     1089
+    ],
+    [
+     "01_hr_pol_medical_check.md",
+     4426
+    ],
+    [
+     "01_hr_pol_diversity.md",
+     1357
+    ],
+    [
+     "01_hr_pol_fire_safety.md",
+     581
+    ],
+    [
+     "01_hr_pol_medical_check.md",
+     3885
+    ],
+    [
+     "01_hr_pol_mental_health.md",
+     2508
+    ],
+    [
+     "01_hr_pol_fire_safety.md",
+     2110
+    ],
+    [
+     "01_hr_pol_second_job.md",
+     3882
+    ],
+    [
+     "01_hr_pol_diversity.md",
+     4164
+    ],
+    [
+     "02_hr_tmp_job_description_accountant.md",
+     1728
+    ],
+    [
+     "01_hr_pol_second_job.md",
+     3628
+    ],
+    [
+     "01_hr_pol_mental_health.md",
+     2921
+    ],
+    [
+     "01_hr_pol_fire_safety.md",
+     1178
+    ],
+    [
+     "01_hr_pol_second_job.md",
+     3106
+    ],
+    [
+     "01_hr_pol_mental_health.md",
+     3623
+    ],
+    [
+     "01_hr_pol_second_job.md",
+     552
+    ],
+    [
+     "01_hr_pol_mental_health.md",
+     510
+    ],
+    [
+     "01_hr_pol_medical_check.md",
+     1478
+    ],
+    [
+     "01_hr_pol_diversity.md",
+     1064
+    ],
+    [
+     "01_hr_pol_medical_check.md",
+     2576
+    ],
+    [
+     "01_hr_pol_mental_health.md",
+     1896
+    ],
+    [
+     "01_hr_pol_medical_check.md",
+     3040
+    ],
+    [
+     "01_hr_pol_second_job.md",
+     4207
+    ],
+    [
+     "01_hr_pol_medical_check.md",
+     580
+    ],
+    [
+     "01_hr_pol_second_job.md",
+     2103
+    ]
+   ],
+   "positions": [
+    {
+     "block_id": "block-eef05d50486a",
+     "partner": {
+      "char_end": 783,
+      "char_start": 581,
+      "section_path": [
+       "Инструкция по пожарной безопасности",
+       "Назначение"
+      ],
+      "source_id": "01_hr_pol_fire_safety.md"
+     },
+     "position": 1,
+     "primary_class": "multi-doc",
+     "seed": {
+      "char_end": 3297,
+      "char_start": 2879,
+      "section_path": [
+       "Должностная инструкция — бухгалтер",
+       "Порядок действий",
+       "3. Ответственность"
+      ],
+      "source_id": "02_hr_tmp_job_description_accountant.md"
+     }
+    },
+    {
+     "block_id": "block-e405471d536a",
+     "partner": null,
+     "position": 2,
+     "primary_class": "single-doc",
+     "seed": {
+      "char_end": 15470,
+      "char_start": 14819,
+      "section_path": [
+       "Договор лизинга транспортных средств",
+       "Контрольный список"
+      ],
+      "source_id": "03_legal_contract_leasing_vehicle.md"
+     }
+    },
+    {
+     "block_id": "block-6bd33e081226",
+     "partner": null,
+     "position": 3,
+     "primary_class": "needs-refusal/clarification",
+     "seed": {
+      "char_end": 1219,
+      "char_start": 617,
+      "section_path": [
+       "Доверенность на банковские и страховые действия по air cargo claim",
+       "Назначение"
+      ],
+      "source_id": "04_legal_power_of_attorney_bank.md"
+     }
+    },
+    {
+     "block_id": "block-25b5610451d2",
+     "partner": {
+      "char_end": 2429,
+      "char_start": 1704,
+      "section_path": [
+       "Договор о совместной деятельности",
+       "Термины"
+      ],
+      "source_id": "03_legal_contract_joint_activity.md"
+     },
+     "position": 4,
+     "primary_class": "multi-doc",
+     "seed": {
+      "char_end": 2366,
+      "char_start": 1624,
+      "section_path": [
+       "Договор субподряда",
+       "Термины"
+      ],
+      "source_id": "03_legal_contract_subcontract.md"
+     }
+    },
+    {
+     "block_id": "block-c4354baa5ef5",
+     "partner": {
+      "char_end": 1640,
+      "char_start": 1437,
+      "section_path": [
+       "Порядок рассмотрения трудовых споров",
+       "Порядок действий",
+       "1. Досудебное урегулирование"
+      ],
+      "source_id": "01_hr_pol_grievance.md"
+     },
+     "position": 5,
+     "primary_class": "aggregation",
+     "seed": {
+      "char_end": 1913,
+      "char_start": 1703,
+      "section_path": [
+       "Инструкция по электробезопасности",
+       "Порядок действий",
+       "3. Первая помощь при поражении током"
+      ],
+      "source_id": "01_hr_pol_electrical_safety.md"
+     }
+    },
+    {
+     "block_id": "block-c9a717d6c714",
+     "partner": {
+      "char_end": 2174,
+      "char_start": 1478,
+      "section_path": [
+       "Порядок прохождения медосмотров",
+       "Термины"
+      ],
+      "source_id": "01_hr_pol_medical_check.md"
+     },
+     "position": 6,
+     "primary_class": "multi-doc",
+     "seed": {
+      "char_end": 2681,
+      "char_start": 2398,
+      "section_path": [
+       "Порядок совместительства",
+       "Порядок действий",
+       "1. Внутреннее совместительство",
+       "1.3. График и продолжительность"
+      ],
+      "source_id": "01_hr_pol_second_job.md"
+     }
+    },
+    {
+     "block_id": "block-f8b61dc46322",
+     "partner": null,
+     "position": 7,
+     "primary_class": "single-doc",
+     "seed": {
+      "char_end": 15213,
+      "char_start": 14575,
+      "section_path": [
+       "Договор поставки оборудования",
+       "Контрольный список"
+      ],
+      "source_id": "03_legal_contract_supply_equipment.md"
+     }
+    },
+    {
+     "block_id": "block-f930af3ef676",
+     "partner": null,
+     "position": 8,
+     "primary_class": "needs-refusal/clarification",
+     "seed": {
+      "char_end": 2452,
+      "char_start": 1706,
+      "section_path": [
+       "Договор поставки товаров (общий шаблон)",
+       "Термины"
+      ],
+      "source_id": "03_legal_contract_supply_goods.md"
+     }
+    },
+    {
+     "block_id": "block-113c2c8e735d",
+     "partner": {
+      "char_end": 14893,
+      "char_start": 14267,
+      "section_path": [
+       "Договор франшизы (коммерческой концессии)",
+       "Контрольный список"
+      ],
+      "source_id": "03_legal_contract_franchise.md"
+     },
+     "position": 9,
+     "primary_class": "multi-doc",
+     "seed": {
+      "char_end": 7561,
+      "char_start": 6994,
+      "section_path": [
+       "Договор ТО транспорта для airport first/last mile",
+       "Порядок действий",
+       "5. Согласование"
+      ],
+      "source_id": "05_tlog_contract_tire_service.md"
+     }
+    },
+    {
+     "block_id": "block-72c1fd2bc9d4",
+     "partner": {
+      "char_end": 11056,
+      "char_start": 10263,
+      "section_path": [
+       "Доверенность на представительство в суде по air cargo dispute",
+       "Ответственные роли"
+      ],
+      "source_id": "04_legal_power_of_attorney_court.md"
+     },
+     "position": 10,
+     "primary_class": "aggregation",
+     "seed": {
+      "char_end": 11190,
+      "char_start": 10383,
+      "section_path": [
+       "Доверенность на подписание air cargo документов и претензий",
+       "Ответственные роли"
+      ],
+      "source_id": "04_legal_power_of_attorney_contracts.md"
+     }
+    },
+    {
+     "block_id": "block-8d19da7e33e5",
+     "partner": null,
+     "position": 11,
+     "primary_class": "single-doc",
+     "seed": {
+      "char_end": 14789,
+      "char_start": 14154,
+      "section_path": [
+       "Договор на ИТ-услуги и поддержку",
+       "Контрольный список"
+      ],
+      "source_id": "03_legal_contract_services_it.md"
+     }
+    },
+    {
+     "block_id": "block-38d70a7e8430",
+     "partner": {
+      "char_end": 15234,
+      "char_start": 14571,
+      "section_path": [
+       "Правила проведения закупочных процедур",
+       "Контрольный список"
+      ],
+      "source_id": "03_legal_contract_tender_rules.md"
+     },
+     "position": 12,
+     "primary_class": "multi-doc",
+     "seed": {
+      "char_end": 14770,
+      "char_start": 14133,
+      "section_path": [
+       "Договор на маркетинговые услуги",
+       "Контрольный список"
+      ],
+      "source_id": "03_legal_contract_services_marketing.md"
+     }
+    },
+    {
+     "block_id": "block-3816cae01de8",
+     "partner": null,
+     "position": 13,
+     "primary_class": "needs-refusal/clarification",
+     "seed": {
+      "char_end": 1669,
+      "char_start": 1455,
+      "section_path": [
+       "Правила курения на территории",
+       "Порядок действий",
+       "3. Ответственность"
+      ],
+      "source_id": "01_hr_pol_smoking.md"
+     }
+    },
+    {
+     "block_id": "block-5ca01fed3f03",
+     "partner": {
+      "char_end": 2335,
+      "char_start": 1616,
+      "section_path": [
+       "Договор займа (между юрлицами)",
+       "Термины"
+      ],
+      "source_id": "03_legal_contract_loan.md"
+     },
+     "position": 14,
+     "primary_class": "multi-doc",
+     "seed": {
+      "char_end": 2357,
+      "char_start": 1618,
+      "section_path": [
+       "Договор поручительства",
+       "Термины"
+      ],
+      "source_id": "03_legal_contract_guarantee.md"
+     }
+    },
+    {
+     "block_id": "block-a892905565a6",
+     "partner": null,
+     "position": 15,
+     "primary_class": "single-doc",
+     "seed": {
+      "char_end": 2349,
+      "char_start": 1630,
+      "section_path": [
+       "Договор факторинга",
+       "Термины"
+      ],
+      "source_id": "03_legal_contract_factoring.md"
+     }
+    },
+    {
+     "block_id": "block-ade1247f0888",
+     "partner": {
+      "char_end": 14935,
+      "char_start": 14298,
+      "section_path": [
+       "Договор на юридическое консультирование",
+       "Контрольный список"
+      ],
+      "source_id": "03_legal_contract_services_consulting.md"
+     },
+     "position": 16,
+     "primary_class": "multi-doc",
+     "seed": {
+      "char_end": 14563,
+      "char_start": 13947,
+      "section_path": [
+       "Регламент применения неустоек и штрафов",
+       "Контрольный список"
+      ],
+      "source_id": "03_legal_contract_penalty_clause.md"
+     }
+    },
+    {
+     "block_id": "block-65738f3e9ddc",
+     "partner": {
+      "char_end": 2300,
+      "char_start": 1583,
+      "section_path": [
+       "Договор комиссии",
+       "Термины"
+      ],
+      "source_id": "03_legal_contract_commission.md"
+     },
+     "position": 17,
+     "primary_class": "aggregation",
+     "seed": {
+      "char_end": 2244,
+      "char_start": 1583,
+      "section_path": [
+       "Агентский договор",
+       "Термины"
+      ],
+      "source_id": "03_legal_contract_agency.md"
+     }
+    },
+    {
+     "block_id": "block-76269410b23b",
+     "partner": null,
+     "position": 18,
+     "primary_class": "needs-refusal/clarification",
+     "seed": {
+      "char_end": 4131,
+      "char_start": 3832,
+      "section_path": [
+       "Политика инклюзии и разнообразия",
+       "Порядок действий",
+       "5. Обучение и культура"
+      ],
+      "source_id": "01_hr_pol_diversity.md"
+     }
+    },
+    {
+     "block_id": "block-eef05d50486a",
+     "partner": {
+      "char_end": 2075,
+      "char_start": 1744,
+      "section_path": [
+       "Инструкция по пожарной безопасности",
+       "Порядок действий",
+       "3. Эвакуация"
+      ],
+      "source_id": "01_hr_pol_fire_safety.md"
+     },
+     "position": 19,
+     "primary_class": "multi-doc",
+     "seed": {
+      "char_end": 1078,
+      "char_start": 839,
+      "section_path": [
+       "Должностная инструкция — бухгалтер",
+       "Область применения"
+      ],
+      "source_id": "02_hr_tmp_job_description_accountant.md"
+     }
+    },
+    {
+     "block_id": "block-e405471d536a",
+     "partner": null,
+     "position": 20,
+     "primary_class": "single-doc",
+     "seed": {
+      "char_end": 2448,
+      "char_start": 1696,
+      "section_path": [
+       "Договор лизинга транспортных средств",
+       "Термины"
+      ],
+      "source_id": "03_legal_contract_leasing_vehicle.md"
+     }
+    },
+    {
+     "block_id": "block-6bd33e081226",
+     "partner": {
+      "char_end": 9688,
+      "char_start": 8944,
+      "section_path": [
+       "Договор на бухгалтерское обслуживание",
+       "Практический сценарий"
+      ],
+      "source_id": "03_legal_contract_services_accounting.md"
+     },
+     "position": 21,
+     "primary_class": "multi-doc",
+     "seed": {
+      "char_end": 12759,
+      "char_start": 12270,
+      "section_path": [
+       "Доверенность на банковские и страховые действия по air cargo claim",
+       "Критерии качества ответа"
+      ],
+      "source_id": "04_legal_power_of_attorney_bank.md"
+     }
+    },
+    {
+     "block_id": "block-25b5610451d2",
+     "partner": null,
+     "position": 22,
+     "primary_class": "needs-refusal/clarification",
+     "seed": {
+      "char_end": 2429,
+      "char_start": 1704,
+      "section_path": [
+       "Договор о совместной деятельности",
+       "Термины"
+      ],
+      "source_id": "03_legal_contract_joint_activity.md"
+     }
+    },
+    {
+     "block_id": "block-c9a717d6c714",
+     "partner": {
+      "char_end": 3353,
+      "char_start": 3040,
+      "section_path": [
+       "Порядок прохождения медосмотров",
+       "Порядок действий",
+       "1. Предварительный медосмотр",
+       "1.3. Заключение"
+      ],
+      "source_id": "01_hr_pol_medical_check.md"
+     },
+     "position": 23,
+     "primary_class": "aggregation",
+     "seed": {
+      "char_end": 2082,
+      "char_start": 1828,
+      "section_path": [
+       "Порядок совместительства",
+       "Порядок действий",
+       "1. Внутреннее совместительство",
+       "1.1. Условия"
+      ],
+      "source_id": "01_hr_pol_second_job.md"
+     }
+    },
+    {
+     "block_id": "block-c4354baa5ef5",
+     "partner": {
+      "char_end": 1178,
+      "char_start": 904,
+      "section_path": [
+       "Инструкция по электробезопасности",
+       "Термины"
+      ],
+      "source_id": "01_hr_pol_electrical_safety.md"
+     },
+     "position": 24,
+     "primary_class": "multi-doc",
+     "seed": {
+      "char_end": 815,
+      "char_start": 592,
+      "section_path": [
+       "Порядок рассмотрения трудовых споров",
+       "Назначение"
+      ],
+      "source_id": "01_hr_pol_grievance.md"
+     }
+    },
+    {
+     "block_id": "block-f8b61dc46322",
+     "partner": null,
+     "position": 25,
+     "primary_class": "single-doc",
+     "seed": {
+      "char_end": 15292,
+      "char_start": 14662,
+      "section_path": [
+       "Договор аренды офисных помещений",
+       "Контрольный список"
+      ],
+      "source_id": "03_legal_contract_rent_office.md"
+     }
+    },
+    {
+     "block_id": "block-f930af3ef676",
+     "partner": {
+      "char_end": 2452,
+      "char_start": 1706,
+      "section_path": [
+       "Договор поставки товаров (общий шаблон)",
+       "Термины"
+      ],
+      "source_id": "03_legal_contract_supply_goods.md"
+     },
+     "position": 26,
+     "primary_class": "multi-doc",
+     "seed": {
+      "char_end": 2348,
+      "char_start": 1614,
+      "section_path": [
+       "Договор поставки автозапчастей",
+       "Термины"
+      ],
+      "source_id": "03_legal_contract_supply_auto_parts.md"
+     }
+    },
+    {
+     "block_id": "block-113c2c8e735d",
+     "partner": null,
+     "position": 27,
+     "primary_class": "needs-refusal/clarification",
+     "seed": {
+      "char_end": 1568,
+      "char_start": 1050,
+      "section_path": [
+       "Договор ТО транспорта для airport first/last mile",
+       "Область применения"
+      ],
+      "source_id": "05_tlog_contract_tire_service.md"
+     }
+    },
+    {
+     "block_id": "block-72c1fd2bc9d4",
+     "partner": null,
+     "position": 28,
+     "primary_class": "single-doc",
+     "seed": {
+      "char_end": 13303,
+      "char_start": 12702,
+      "section_path": [
+       "Доверенность на подписание air cargo документов и претензий",
+       "Контрольный список"
+      ],
+      "source_id": "04_legal_power_of_attorney_contracts.md"
+     }
+    },
+    {
+     "block_id": "block-8d19da7e33e5",
+     "partner": {
+      "char_end": 14789,
+      "char_start": 14154,
+      "section_path": [
+       "Договор на ИТ-услуги и поддержку",
+       "Контрольный список"
+      ],
+      "source_id": "03_legal_contract_services_it.md"
+     },
+     "position": 29,
+     "primary_class": "multi-doc",
+     "seed": {
+      "char_end": 15088,
+      "char_start": 14469,
+      "section_path": [
+       "Лицензионный договор на ПО",
+       "Контрольный список"
+      ],
+      "source_id": "03_legal_contract_software_license.md"
+     }
+    },
+    {
+     "block_id": "block-38d70a7e8430",
+     "partner": {
+      "char_end": 9905,
+      "char_start": 9122,
+      "section_path": [
+       "Правила проведения закупочных процедур",
+       "Практический сценарий"
+      ],
+      "source_id": "03_legal_contract_tender_rules.md"
+     },
+     "position": 30,
+     "primary_class": "aggregation",
+     "seed": {
+      "char_end": 9598,
+      "char_start": 8855,
+      "section_path": [
+       "Договор на маркетинговые услуги",
+       "Практический сценарий"
+      ],
+      "source_id": "03_legal_contract_services_marketing.md"
+     }
+    },
+    {
+     "block_id": "block-3816cae01de8",
+     "partner": {
+      "char_end": 820,
+      "char_start": 613,
+      "section_path": [
+       "Политика нулевой терпимости к алкоголю",
+       "Назначение"
+      ],
+      "source_id": "01_hr_pol_alcohol.md"
+     },
+     "position": 31,
+     "primary_class": "multi-doc",
+     "seed": {
+      "char_end": 697,
+      "char_start": 487,
+      "section_path": [
+       "Правила курения на территории",
+       "Назначение"
+      ],
+      "source_id": "01_hr_pol_smoking.md"
+     }
+    },
+    {
+     "block_id": "block-5ca01fed3f03",
+     "partner": null,
+     "position": 32,
+     "primary_class": "single-doc",
+     "seed": {
+      "char_end": 2335,
+      "char_start": 1616,
+      "section_path": [
+       "Договор займа (между юрлицами)",
+       "Термины"
+      ],
+      "source_id": "03_legal_contract_loan.md"
+     }
+    },
+    {
+     "block_id": "block-a892905565a6",
+     "partner": null,
+     "position": 33,
+     "primary_class": "needs-refusal/clarification",
+     "seed": {
+      "char_end": 2413,
+      "char_start": 1705,
+      "section_path": [
+       "Договор цессии (уступки права требования)",
+       "Термины"
+      ],
+      "source_id": "03_legal_contract_assignment.md"
+     }
+    },
+    {
+     "block_id": "block-ade1247f0888",
+     "partner": {
+      "char_end": 2459,
+      "char_start": 1715,
+      "section_path": [
+       "Договор на юридическое консультирование",
+       "Термины"
+      ],
+      "source_id": "03_legal_contract_services_consulting.md"
+     },
+     "position": 34,
+     "primary_class": "multi-doc",
+     "seed": {
+      "char_end": 2387,
+      "char_start": 1678,
+      "section_path": [
+       "Регламент применения неустоек и штрафов",
+       "Термины"
+      ],
+      "source_id": "03_legal_contract_penalty_clause.md"
+     }
+    },
+    {
+     "block_id": "block-eef05d50486a",
+     "partner": {
+      "char_end": 1727,
+      "char_start": 1451,
+      "section_path": [
+       "Инструкция по пожарной безопасности",
+       "Порядок действий",
+       "2. При обнаружении пожара"
+      ],
+      "source_id": "01_hr_pol_fire_safety.md"
+     },
+     "position": 35,
+     "primary_class": "aggregation",
+     "seed": {
+      "char_end": 3816,
+      "char_start": 3319,
+      "section_path": [
+       "Должностная инструкция — бухгалтер",
+       "Порядок действий",
+       "4. Взаимодействие"
+      ],
+      "source_id": "02_hr_tmp_job_description_accountant.md"
+     }
+    },
+    {
+     "block_id": "block-76269410b23b",
+     "partner": {
+      "char_end": 1346,
+      "char_start": 1064,
+      "section_path": [
+       "Политика инклюзии и разнообразия",
+       "Область применения"
+      ],
+      "source_id": "01_hr_pol_diversity.md"
+     },
+     "position": 36,
+     "primary_class": "multi-doc",
+     "seed": {
+      "char_end": 1111,
+      "char_start": 856,
+      "section_path": [
+       "Политика психологической поддержки",
+       "Область применения"
+      ],
+      "source_id": "01_hr_pol_mental_health.md"
+     }
+    },
+    {
+     "block_id": "block-65738f3e9ddc",
+     "partner": null,
+     "position": 37,
+     "primary_class": "single-doc",
+     "seed": {
+      "char_end": 1069,
+      "char_start": 502,
+      "section_path": [
+       "Агентский договор",
+       "Назначение"
+      ],
+      "source_id": "03_legal_contract_agency.md"
+     }
+    },
+    {
+     "block_id": "block-e405471d536a",
+     "partner": null,
+     "position": 38,
+     "primary_class": "needs-refusal/clarification",
+     "seed": {
+      "char_end": 1073,
+      "char_start": 599,
+      "section_path": [
+       "Договор лизинга транспорта для airport first/last mile",
+       "Назначение"
+      ],
+      "source_id": "05_tlog_contract_leasing_truck.md"
+     }
+    },
+    {
+     "block_id": "block-6bd33e081226",
+     "partner": {
+      "char_end": 9688,
+      "char_start": 8944,
+      "section_path": [
+       "Договор на бухгалтерское обслуживание",
+       "Практический сценарий"
+      ],
+      "source_id": "03_legal_contract_services_accounting.md"
+     },
+     "position": 39,
+     "primary_class": "multi-doc",
+     "seed": {
+      "char_end": 13407,
+      "char_start": 12781,
+      "section_path": [
+       "Доверенность на банковские и страховые действия по air cargo claim",
+       "Контрольный список"
+      ],
+      "source_id": "04_legal_power_of_attorney_bank.md"
+     }
+    },
+    {
+     "block_id": "block-c9a717d6c714",
+     "partner": null,
+     "position": 40,
+     "primary_class": "single-doc",
+     "seed": {
+      "char_end": 1753,
+      "char_start": 1204,
+      "section_path": [
+       "Порядок совместительства",
+       "Термины"
+      ],
+      "source_id": "01_hr_pol_second_job.md"
+     }
+    },
+    {
+     "block_id": "block-f8b61dc46322",
+     "partner": {
+      "char_end": 2405,
+      "char_start": 1661,
+      "section_path": [
+       "Договор поставки оборудования",
+       "Термины"
+      ],
+      "source_id": "03_legal_contract_supply_equipment.md"
+     },
+     "position": 41,
+     "primary_class": "multi-doc",
+     "seed": {
+      "char_end": 2393,
+      "char_start": 1657,
+      "section_path": [
+       "Договор аренды офисных помещений",
+       "Термины"
+      ],
+      "source_id": "03_legal_contract_rent_office.md"
+     }
+    },
+    {
+     "block_id": "block-f930af3ef676",
+     "partner": {
+      "char_end": 2348,
+      "char_start": 1614,
+      "section_path": [
+       "Договор поставки автозапчастей",
+       "Термины"
+      ],
+      "source_id": "03_legal_contract_supply_auto_parts.md"
+     },
+     "position": 42,
+     "primary_class": "aggregation",
+     "seed": {
+      "char_end": 15346,
+      "char_start": 14697,
+      "section_path": [
+       "Договор поставки товаров (общий шаблон)",
+       "Контрольный список"
+      ],
+      "source_id": "03_legal_contract_supply_goods.md"
+     }
+    },
+    {
+     "block_id": "block-c4354baa5ef5",
+     "partner": null,
+     "position": 43,
+     "primary_class": "needs-refusal/clarification",
+     "seed": {
+      "char_end": 1640,
+      "char_start": 1437,
+      "section_path": [
+       "Порядок рассмотрения трудовых споров",
+       "Порядок действий",
+       "1. Досудебное урегулирование"
+      ],
+      "source_id": "01_hr_pol_grievance.md"
+     }
+    },
+    {
+     "block_id": "block-8d19da7e33e5",
+     "partner": {
+      "char_end": 2411,
+      "char_start": 1681,
+      "section_path": [
+       "Договор на ИТ-услуги и поддержку",
+       "Термины"
+      ],
+      "source_id": "03_legal_contract_services_it.md"
+     },
+     "position": 44,
+     "primary_class": "multi-doc",
+     "seed": {
+      "char_end": 2387,
+      "char_start": 1659,
+      "section_path": [
+       "Лицензионный договор на ПО",
+       "Термины"
+      ],
+      "source_id": "03_legal_contract_software_license.md"
+     }
+    },
+    {
+     "block_id": "block-113c2c8e735d",
+     "partner": null,
+     "position": 45,
+     "primary_class": "single-doc",
+     "seed": {
+      "char_end": 14893,
+      "char_start": 14267,
+      "section_path": [
+       "Договор франшизы (коммерческой концессии)",
+       "Контрольный список"
+      ],
+      "source_id": "03_legal_contract_franchise.md"
+     }
+    },
+    {
+     "block_id": "block-3816cae01de8",
+     "partner": {
+      "char_end": 697,
+      "char_start": 487,
+      "section_path": [
+       "Правила курения на территории",
+       "Назначение"
+      ],
+      "source_id": "01_hr_pol_smoking.md"
+     },
+     "position": 46,
+     "primary_class": "multi-doc",
+     "seed": {
+      "char_end": 1357,
+      "char_start": 1003,
+      "section_path": [
+       "Политика нулевой терпимости к алкоголю",
+       "Термины"
+      ],
+      "source_id": "01_hr_pol_alcohol.md"
+     }
+    },
+    {
+     "block_id": "block-72c1fd2bc9d4",
+     "partner": null,
+     "position": 47,
+     "primary_class": "needs-refusal/clarification",
+     "seed": {
+      "char_end": 11056,
+      "char_start": 10263,
+      "section_path": [
+       "Доверенность на представительство в суде по air cargo dispute",
+       "Ответственные роли"
+      ],
+      "source_id": "04_legal_power_of_attorney_court.md"
+     }
+    },
+    {
+     "block_id": "block-a892905565a6",
+     "partner": {
+      "char_end": 2349,
+      "char_start": 1630,
+      "section_path": [
+       "Договор факторинга",
+       "Термины"
+      ],
+      "source_id": "03_legal_contract_factoring.md"
+     },
+     "position": 48,
+     "primary_class": "multi-doc",
+     "seed": {
+      "char_end": 1189,
+      "char_start": 574,
+      "section_path": [
+       "Договор цессии (уступки права требования)",
+       "Назначение"
+      ],
+      "source_id": "03_legal_contract_assignment.md"
+     }
+    },
+    {
+     "block_id": "block-76269410b23b",
+     "partner": {
+      "char_end": 4131,
+      "char_start": 3832,
+      "section_path": [
+       "Политика инклюзии и разнообразия",
+       "Порядок действий",
+       "5. Обучение и культура"
+      ],
+      "source_id": "01_hr_pol_diversity.md"
+     },
+     "position": 49,
+     "primary_class": "aggregation",
+     "seed": {
+      "char_end": 3581,
+      "char_start": 3253,
+      "section_path": [
+       "Политика психологической поддержки",
+       "Порядок действий",
+       "4. Обучение руководителей"
+      ],
+      "source_id": "01_hr_pol_mental_health.md"
+     }
+    },
+    {
+     "block_id": "block-38d70a7e8430",
+     "partner": null,
+     "position": 50,
+     "primary_class": "single-doc",
+     "seed": {
+      "char_end": 9905,
+      "char_start": 9122,
+      "section_path": [
+       "Правила проведения закупочных процедур",
+       "Практический сценарий"
+      ],
+      "source_id": "03_legal_contract_tender_rules.md"
+     }
+    },
+    {
+     "block_id": "block-eef05d50486a",
+     "partner": {
+      "char_end": 2075,
+      "char_start": 1744,
+      "section_path": [
+       "Инструкция по пожарной безопасности",
+       "Порядок действий",
+       "3. Эвакуация"
+      ],
+      "source_id": "01_hr_pol_fire_safety.md"
+     },
+     "position": 51,
+     "primary_class": "multi-doc",
+     "seed": {
+      "char_end": 4207,
+      "char_start": 3849,
+      "section_path": [
+       "Должностная инструкция — бухгалтер",
+       "Порядок действий",
+       "5. Требования к квалификации"
+      ],
+      "source_id": "02_hr_tmp_job_description_accountant.md"
+     }
+    },
+    {
+     "block_id": "block-ade1247f0888",
+     "partner": null,
+     "position": 52,
+     "primary_class": "needs-refusal/clarification",
+     "seed": {
+      "char_end": 2459,
+      "char_start": 1715,
+      "section_path": [
+       "Договор на юридическое консультирование",
+       "Термины"
+      ],
+      "source_id": "03_legal_contract_services_consulting.md"
+     }
+    },
+    {
+     "block_id": "block-6bd33e081226",
+     "partner": {
+      "char_end": 1219,
+      "char_start": 617,
+      "section_path": [
+       "Доверенность на банковские и страховые действия по air cargo claim",
+       "Назначение"
+      ],
+      "source_id": "04_legal_power_of_attorney_bank.md"
+     },
+     "position": 53,
+     "primary_class": "multi-doc",
+     "seed": {
+      "char_end": 2382,
+      "char_start": 1665,
+      "section_path": [
+       "Договор на бухгалтерское обслуживание",
+       "Термины"
+      ],
+      "source_id": "03_legal_contract_services_accounting.md"
+     }
+    },
+    {
+     "block_id": "block-65738f3e9ddc",
+     "partner": null,
+     "position": 54,
+     "primary_class": "single-doc",
+     "seed": {
+      "char_end": 2300,
+      "char_start": 1583,
+      "section_path": [
+       "Договор комиссии",
+       "Термины"
+      ],
+      "source_id": "03_legal_contract_commission.md"
+     }
+    },
+    {
+     "block_id": "block-113c2c8e735d",
+     "partner": {
+      "char_end": 7561,
+      "char_start": 6994,
+      "section_path": [
+       "Договор ТО транспорта для airport first/last mile",
+       "Порядок действий",
+       "5. Согласование"
+      ],
+      "source_id": "05_tlog_contract_tire_service.md"
+     },
+     "position": 55,
+     "primary_class": "aggregation",
+     "seed": {
+      "char_end": 2412,
+      "char_start": 1682,
+      "section_path": [
+       "Договор франшизы (коммерческой концессии)",
+       "Термины"
+      ],
+      "source_id": "03_legal_contract_franchise.md"
+     }
+    },
+    {
+     "block_id": "block-c9a717d6c714",
+     "partner": {
+      "char_end": 950,
+      "char_start": 580,
+      "section_path": [
+       "Порядок прохождения медосмотров",
+       "Назначение"
+      ],
+      "source_id": "01_hr_pol_medical_check.md"
+     },
+     "position": 56,
+     "primary_class": "multi-doc",
+     "seed": {
+      "char_end": 1193,
+      "char_start": 894,
+      "section_path": [
+       "Порядок совместительства",
+       "Область применения"
+      ],
+      "source_id": "01_hr_pol_second_job.md"
+     }
+    },
+    {
+     "block_id": "block-c4354baa5ef5",
+     "partner": null,
+     "position": 57,
+     "primary_class": "needs-refusal/clarification",
+     "seed": {
+      "char_end": 1086,
+      "char_start": 837,
+      "section_path": [
+       "Порядок рассмотрения трудовых споров",
+       "Область применения"
+      ],
+      "source_id": "01_hr_pol_grievance.md"
+     }
+    },
+    {
+     "block_id": "block-f8b61dc46322",
+     "partner": null,
+     "position": 58,
+     "primary_class": "single-doc",
+     "seed": {
+      "char_end": 2405,
+      "char_start": 1661,
+      "section_path": [
+       "Договор поставки оборудования",
+       "Термины"
+      ],
+      "source_id": "03_legal_contract_supply_equipment.md"
+     }
+    },
+    {
+     "block_id": "block-72c1fd2bc9d4",
+     "partner": {
+      "char_end": 12680,
+      "char_start": 12207,
+      "section_path": [
+       "Доверенность на подписание air cargo документов и претензий",
+       "Критерии качества ответа"
+      ],
+      "source_id": "04_legal_power_of_attorney_contracts.md"
+     },
+     "position": 59,
+     "primary_class": "multi-doc",
+     "seed": {
+      "char_end": 12534,
+      "char_start": 12068,
+      "section_path": [
+       "Доверенность на представительство в суде по air cargo dispute",
+       "Критерии качества ответа"
+      ],
+      "source_id": "04_legal_power_of_attorney_court.md"
+     }
+    },
+    {
+     "block_id": "block-38d70a7e8430",
+     "partner": {
+      "char_end": 3884,
+      "char_start": 2998,
+      "section_path": [
+       "Правила проведения закупочных процедур",
+       "Порядок действий",
+       "2. Обязательные поля"
+      ],
+      "source_id": "03_legal_contract_tender_rules.md"
+     },
+     "position": 60,
+     "primary_class": "multi-doc",
+     "seed": {
+      "char_end": 3744,
+      "char_start": 2933,
+      "section_path": [
+       "Договор на маркетинговые услуги",
+       "Порядок действий",
+       "2. Обязательные поля"
+      ],
+      "source_id": "03_legal_contract_services_marketing.md"
+     }
+    },
+    {
+     "block_id": "block-3816cae01de8",
+     "partner": {
+      "char_end": 1669,
+      "char_start": 1455,
+      "section_path": [
+       "Правила курения на территории",
+       "Порядок действий",
+       "3. Ответственность"
+      ],
+      "source_id": "01_hr_pol_smoking.md"
+     },
+     "position": 61,
+     "primary_class": "aggregation",
+     "seed": {
+      "char_end": 2037,
+      "char_start": 1664,
+      "section_path": [
+       "Политика нулевой терпимости к алкоголю",
+       "Порядок действий",
+       "2. Алкотестирование"
+      ],
+      "source_id": "01_hr_pol_alcohol.md"
+     }
+    },
+    {
+     "block_id": "block-8d19da7e33e5",
+     "partner": null,
+     "position": 62,
+     "primary_class": "needs-refusal/clarification",
+     "seed": {
+      "char_end": 2411,
+      "char_start": 1681,
+      "section_path": [
+       "Договор на ИТ-услуги и поддержку",
+       "Термины"
+      ],
+      "source_id": "03_legal_contract_services_it.md"
+     }
+    },
+    {
+     "block_id": "block-ade1247f0888",
+     "partner": null,
+     "position": 63,
+     "primary_class": "single-doc",
+     "seed": {
+      "char_end": 14935,
+      "char_start": 14298,
+      "section_path": [
+       "Договор на юридическое консультирование",
+       "Контрольный список"
+      ],
+      "source_id": "03_legal_contract_services_consulting.md"
+     }
+    },
+    {
+     "block_id": "block-76269410b23b",
+     "partner": {
+      "char_end": 834,
+      "char_start": 510,
+      "section_path": [
+       "Политика психологической поддержки",
+       "Назначение"
+      ],
+      "source_id": "01_hr_pol_mental_health.md"
+     },
+     "position": 64,
+     "primary_class": "multi-doc",
+     "seed": {
+      "char_end": 1042,
+      "char_start": 580,
+      "section_path": [
+       "Политика инклюзии и разнообразия",
+       "Назначение"
+      ],
+      "source_id": "01_hr_pol_diversity.md"
+     }
+    }
+   ],
+   "quotas": {
+    "aggregation": 10,
+    "multi-doc": 26,
+    "needs-refusal/clarification": 13,
+    "single-doc": 15
+   },
+   "seated": {
+    "aggregation": 10,
+    "multi-doc": 26,
+    "needs-refusal/clarification": 13,
+    "single-doc": 15
+   }
+  }
+ },
+ "version": "devset-split-v1"
+}

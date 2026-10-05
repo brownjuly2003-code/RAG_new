@@ -6,8 +6,10 @@ such an interval can show: it takes the interval as ``mean ± critical × standa
 the standard error comes from the per-case variance of paired differences, the number of cases
 and a design effect for cases that share a cluster. With fewer than ten clusters the Student
 quantile with ``clusters - 1`` degrees of freedom takes the place of the normal one, as the
-interval-validity rule does. The powers are normal approximations: they describe the rule, they
-do not replace the cluster bootstrap that decides a comparison.
+interval-validity rule does; a row may ask for the Student quantile at any number of clusters,
+which is the reading for clusters that move as one case each. The powers are normal
+approximations: they describe the rule, they do not replace the cluster bootstrap that decides
+a comparison.
 
 Nothing here reads a result of a mechanism. The inputs are a variance, cluster sizes and an
 intra-cluster correlation; ``pair_variance`` measures the first and the last on a pilot.
@@ -69,6 +71,7 @@ def pair_variance(
         "effective_variance": effective,
         "design_effect": effective / variance if effective is not None and variance else None,
         "intraclass_correlation": intraclass_correlation(differences, groups),
+        "intraclass_correlation_unclamped": intraclass_estimate(differences, groups),
         "differing_pairs": differing,
         "differing_share": differing / n,
         "nonzero_clusters": sum(
@@ -81,6 +84,18 @@ def intraclass_correlation(
     values: Mapping[str, float], groups: Sequence[Sequence[str]]
 ) -> float | None:
     """One-way analysis-of-variance estimate, kept inside [0, 1]; None when it has no basis.
+
+    A negative estimate reads as 0 here, which is the optimistic end; ``intraclass_estimate``
+    gives the value as estimated.
+    """
+    estimate = intraclass_estimate(values, groups)
+    return None if estimate is None else min(1.0, max(0.0, estimate))
+
+
+def intraclass_estimate(
+    values: Mapping[str, float], groups: Sequence[Sequence[str]]
+) -> float | None:
+    """One-way analysis-of-variance estimate as it comes out; None when it has no basis.
 
     It needs a cluster with two cases and two clusters. On a pilot of a few multi-case clusters
     the estimate is rough; the published tables bracket it with 0 and 1.
@@ -101,7 +116,7 @@ def intraclass_correlation(
     denominator = between + (typical - 1) * within
     if denominator <= 0:
         return None
-    return min(1.0, max(0.0, (between - within) / denominator))
+    return (between - within) / denominator
 
 
 def design_effect(cluster_sizes: Sequence[int], icc: float) -> float:
@@ -114,11 +129,17 @@ def design_effect(cluster_sizes: Sequence[int], icc: float) -> float:
     return 1 + (math.fsum(size * size for size in cluster_sizes) / n - 1) * icc
 
 
-def critical(clusters: int) -> float:
-    """Two-sided 95 % quantile: normal from ten clusters on, Student below, as the rule reads."""
+def critical(clusters: int, *, student: bool = False) -> float:
+    """Two-sided 95 % quantile: normal from ten clusters on, Student below, as the rule reads.
+
+    ``student`` takes the Student quantile at any number of clusters: when the cases of a
+    cluster move as one, the sample is the clusters and the normal quantile is too narrow.
+    """
     if clusters < 2:
         raise ValueError("an interval needs at least two clusters")
-    return _Z_TWO_SIDED if clusters >= MIN_NONZERO_CLUSTERS else student_t_critical(clusters - 1)
+    if student or clusters < MIN_NONZERO_CLUSTERS:
+        return student_t_critical(clusters - 1)
+    return _Z_TWO_SIDED
 
 
 def standard_error(variance: float, cluster_sizes: Sequence[int], icc: float) -> float:
@@ -127,21 +148,25 @@ def standard_error(variance: float, cluster_sizes: Sequence[int], icc: float) ->
     return math.sqrt(variance * design_effect(cluster_sizes, icc) / sum(cluster_sizes))
 
 
-def mde(se: float, clusters: int, power: float = POWER) -> float:
+def mde(se: float, clusters: int, power: float = POWER, *, student: bool = False) -> float:
     """Smallest true effect whose interval lies above zero with this power."""
-    return (critical(clusters) + _NORMAL.inv_cdf(power)) * se
+    return (critical(clusters, student=student) + _NORMAL.inv_cdf(power)) * se
 
 
-def power_lower_bound(se: float, clusters: int, effect: float, bound: float) -> float:
+def power_lower_bound(
+    se: float, clusters: int, effect: float, bound: float, *, student: bool = False
+) -> float:
     """P(lower end of the interval ≥ bound) at a true effect: the gain and the NI checks."""
     if se == 0:
         return float(effect >= bound)
-    return _NORMAL.cdf((effect - bound) / se - critical(clusters))
+    return _NORMAL.cdf((effect - bound) / se - critical(clusters, student=student))
 
 
-def power_primary_rule(se: float, clusters: int, effect: float, minimum: float = MUE) -> float:
+def power_primary_rule(
+    se: float, clusters: int, effect: float, minimum: float = MUE, *, student: bool = False
+) -> float:
     """P(point ≥ the minimally useful effect and the lower end > 0) at a true effect."""
-    threshold = max(minimum, critical(clusters) * se)
+    threshold = max(minimum, critical(clusters, student=student) * se)
     if se == 0:
         return float(effect >= threshold)
     return 1 - _NORMAL.cdf((threshold - effect) / se)
@@ -153,7 +178,7 @@ def validity_probability(cluster_sizes: Sequence[int], differing_share: float) -
     The rule asks for ten clusters with a non-zero difference and for 5 % of pairs to differ.
     A cluster counts here as soon as one of its pairs differs, so differences that cancel
     inside a cluster make the true probability lower, as does a mechanism that changes cases of
-    the same clusters together.
+    the same clusters together: the value is an upper bound, and the rows publish it as one.
     """
     if not 0 <= differing_share <= 1:
         raise ValueError("a share lies in [0, 1]")
@@ -189,11 +214,12 @@ def scenario(
     icc: float,
     *,
     differing_share: float | None = None,
+    student: bool = False,
 ) -> dict[str, Any]:
     """One published row: what a design of these clusters shows for a metric of this variance."""
     clusters = len(cluster_sizes)
     se = standard_error(variance, cluster_sizes, icc)
-    detectable = mde(se, clusters)
+    detectable = mde(se, clusters, student=student)
     row: dict[str, Any] = {
         "n": sum(cluster_sizes),
         "clusters": clusters,
@@ -201,16 +227,18 @@ def scenario(
         "intraclass_correlation": icc,
         "design_effect": design_effect(cluster_sizes, icc),
         "standard_error": se,
-        "critical": critical(clusters),
+        "critical": critical(clusters, student=student),
         "mde": detectable,
-        "power_gain_at_mue": power_lower_bound(se, clusters, MUE, 0.0),
-        "power_gain_at_mde": power_lower_bound(se, clusters, detectable, 0.0),
-        "power_rule_at_mue": power_primary_rule(se, clusters, MUE),
-        "power_rule_at_mde": power_primary_rule(se, clusters, detectable),
-        "power_noninferiority_at_zero": power_lower_bound(se, clusters, 0.0, MARGIN),
+        "power_gain_at_mue": power_lower_bound(se, clusters, MUE, 0.0, student=student),
+        "power_gain_at_mde": power_lower_bound(se, clusters, detectable, 0.0, student=student),
+        "power_rule_at_mue": power_primary_rule(se, clusters, MUE, student=student),
+        "power_rule_at_mde": power_primary_rule(se, clusters, detectable, student=student),
+        "power_noninferiority_at_zero": power_lower_bound(
+            se, clusters, 0.0, MARGIN, student=student
+        ),
         "effect_for_noninferiority": detectable + MARGIN,
     }
     if differing_share is not None:
         row["differing_share"] = differing_share
-        row["interval_validity_probability"] = validity_probability(cluster_sizes, differing_share)
+        row["interval_validity_upper_bound"] = validity_probability(cluster_sizes, differing_share)
     return row

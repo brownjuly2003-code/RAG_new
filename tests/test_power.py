@@ -146,5 +146,34 @@ def test_scenario_row_carries_the_checks_of_the_rule() -> None:
     assert row["power_gain_at_mde"] == pytest.approx(0.8)
     assert row["effect_for_noninferiority"] == pytest.approx(row["mde"] - 0.02)
     assert 0 < row["power_noninferiority_at_zero"] < row["power_gain_at_mue"] < 0.8
-    assert 0 < row["interval_validity_probability"] < 1
+    assert 0 < row["interval_validity_upper_bound"] < 1
     assert "differing_share" not in power.scenario(0.1, [4] * 25, 0.5)
+
+
+def test_a_row_may_take_the_student_quantile_at_any_number_of_clusters() -> None:
+    # Clusters that move as one case each: the sample is the clusters, not the cases.
+    assert power.critical(18) == pytest.approx(1.959963984540054)
+    assert power.critical(18, student=True) == pytest.approx(2.1098, abs=1e-4)
+    assert power.critical(8, student=True) == power.critical(8)
+    normal = power.scenario(0.1, [4] * 18, 1.0)
+    student = power.scenario(0.1, [4] * 18, 1.0, student=True)
+    assert student["standard_error"] == normal["standard_error"]
+    assert student["critical"] == power.critical(18, student=True)
+    assert student["mde"] == pytest.approx(
+        (student["critical"] + 0.8416212335729143) * student["standard_error"]
+    )
+    assert student["mde"] > normal["mde"]
+    assert student["power_gain_at_mde"] == pytest.approx(0.8)
+    assert student["power_noninferiority_at_zero"] < normal["power_noninferiority_at_zero"]
+    assert student["power_rule_at_mue"] < normal["power_rule_at_mue"]
+
+
+def test_the_correlation_estimate_is_published_as_it_comes_out_too() -> None:
+    # Cases of a cluster differ more than cases of different clusters: a negative estimate.
+    families = {key: [key[0]] for key in ("a1", "a2", "b1", "b2", "c1", "c2")}
+    differences = {"a1": 1.0, "a2": 0.0, "b1": 1.0, "b2": 0.0, "c1": 0.0, "c2": 1.0}
+    measured = power.pair_variance(differences, families)
+    assert measured["intraclass_correlation"] == 0.0
+    assert measured["intraclass_correlation_unclamped"] == pytest.approx(-1.0)
+    alone = power.pair_variance({"a1": 0.5}, families)
+    assert alone["intraclass_correlation_unclamped"] is None

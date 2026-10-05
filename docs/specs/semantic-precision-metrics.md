@@ -119,6 +119,21 @@ runs — and named 12 places where a repair contradicted another rule or
 could be read two ways, one of them a blocker: which cases a missing
 verdict leaves without a result. These 15 were applied as well. Nothing has
 read the text since; its next reader is the code written from it.
+Amended 2026-10-05 for plan step 1.3c, before an arm of its pilot ran: the
+new section «Variance pilot and sizes of plan step 1.3c» registers the
+split of the corpus into blocks with the draw order of each split, the
+sizes — 60 development cases in 37 clusters, 64 holdout cases in 18 — the
+three arms of the pilot, the rule by which a gold span is found in a text,
+and the MDE the campaign registers for each deciding metric. The rule that
+locates a gold span for a contamination control now reads offsets only in
+a document that was not widened. One cold read of the new section by an
+isolated session of the same model gave 12 findings — 2 blockers, 9
+majors, 1 minor — and all were applied before the commit: among them, the
+registered MDE is one number, taken at correlation 1, that a pilot can
+raise and cannot lower; the wider-pool arm moves the candidate count to
+30, because 40 is the budget of H5; the state a replacement is drawn in
+is registered; and the first clause of «Power» on the development-set
+size is superseded. Nothing has read the section since.
 
 ## Why a second ruler
 
@@ -329,11 +344,20 @@ adding matching text or by dropping documents that carry required facts
   planned cases in which a document of the control arm's sent context holds
   a gold span of the case, sorted by the SHA-256 of
   `20260925:control:<case_id>`, the first 10 (all of them when there are
-  fewer). A span is located in a document by character offsets where the
-  address of the document has them — the overlap of the two ranges, so a
-  span that lies partly in the document is cut in part and counted as
-  partial — and otherwise by its normalised text, case and whitespace
-  ignored (the normalisation of gold evidence), whole spans only. A gold
+  fewer). A span is located only in a document that comes from the span's
+  own source document and corpus version: by character offsets where the
+  document is one chunk that was not widened and its address has offsets —
+  the overlap of the two ranges, so a span that lies partly in the
+  document is cut in part and counted as partial — and otherwise by its
+  normalised text, case and whitespace ignored (the normalisation of gold
+  evidence), whole spans only. (Amended 2026-10-05, before any control was
+  built: a document widened by parent expansion carries the address of its
+  seed chunk, and its text is that chunk joined with neighbouring
+  sections, so the offsets of the address do not describe the text; in
+  such a document a span is located by its text. A span of which only a
+  part lies in a widened document is not located there, and that part
+  stays in the control's text; the capsule of the run states this limit
+  of the control, which only offsets of the widened text could remove.) A gold
   span of a drawn case that is located in no document of its request is
   listed. Each drawn case gives two requests, sent in new sessions into a
   store of their own; both start from the first request of the control arm's
@@ -892,7 +916,12 @@ text hash — one population per metric (№6).
 - **Power** (GLM-3, revised per G13 / decision D9): the development-set size
   comes from the pilot's variance of paired differences (plan 1.3c) so that a
   true +0.05 is detected and a neutral mechanism passes non-inferiority, each
-  with power 0.8; the pilot gives a scenario range, the chosen mechanism's
+  with power 0.8 (superseded 2026-10-05, before the pilot ran, by «Variance
+  pilot and sizes of plan step 1.3c»: on this corpus that size cannot be
+  reached — about 314 independent cases for the first aim, about 980 for
+  the second — so the sizes are the plan's 60 and the 64 the reserve seats,
+  and the pilot gives the MDE by the clause on an unreachable size below);
+  the pilot gives a scenario range, the chosen mechanism's
   paired variance is refined on dev before the holdout opens, and holdout
   size, maximum budget and deciding criteria are fixed before its results.
   For every deciding metric the report publishes `n`, the number of
@@ -998,6 +1027,246 @@ text hash — one population per metric (№6).
   do not enter it. If the snapshot must change after 1.3e, dependent labels
   become `needs_review` and the measurement contract restarts as a new
   campaign with a new holdout; results across snapshots are not compared.
+
+## Variance pilot and sizes of plan step 1.3c
+
+Registered 2026-10-05, before an arm of the pilot ran and before a draft of
+step 1.3d exists. The pilot's numbers go into its capsule; nothing below is
+changed by them. One cold read of this section by an isolated session of the
+same model gave 12 findings — 2 blockers, 9 majors, 1 minor; all were
+applied before the commit, and nothing has read the text since.
+
+**The split.** [`evaluation/devset_split.json`](../../evaluation/devset_split.json),
+SHA-256 `20d69e9bb30043f7012823e3b39ca2692badc58bf9e04a737691abbcab2c44a8`,
+is written by [`evaluation/devset_split.py`](../../evaluation/devset_split.py)
+from the corpus (`c8562a64f88f72172f29e30865091be79f08d00ce65fbf675f34de64dcebe343`),
+the family map (`54bdb736180e00325bff20f49e2b9d985dd62278fe9f9cdb6161a0da719e3584`)
+and the verified pilot cases
+(`05ebf00743e2ae3b6a8117f735a3d9a34b451f8bf066a4dd1dfcaadf8e708df4`). No
+model took part; its rules are the `rules` of the file and a test rebuilds
+it byte for byte. A *block* is what a new case may draw its documents from:
+a topic family of two or more documents, two one-document families paired
+by the similarity of their texts, or a one-document family left unpaired.
+The unit of independence stays the family: a pair block is one cluster once
+a case draws on both of its families, and two clusters until then. The draw
+order of a split goes round its blocks, one section a round; each position
+has its primary class from a fixed sequence and takes the first section
+that passes the test of that class. This is the seeded order and the
+eligibility test that «Replacement of a dropped case» refers to. For a
+replacement they are applied to the state the first verification left: a
+section that was the seed of any draft of the split, dropped drafts and
+earlier replacements included, is not taken; a pair of a section and its
+partner that any draft or earlier replacement used stays barred; the cap of
+the holdout counts the confirmed drafts of a block and the replacements
+seated in it, not its dropped drafts; a block whose frame sections were all
+seeds gives no replacement. The rule stands in the `rules` of the file as
+`replacement`; the function that applies it is written with the drafting
+tool of step 1.3d and tested before the first draft of that step is
+verified.
+
+- Development: 49 families, 165 documents, 38 blocks — 26 families of
+  several documents, 11 pairs and one family left unpaired. The 30 verified
+  pilot cases stay, and 30 new positions are seated — 8 single-doc, 10
+  multi-doc, 6 aggregation, 6 refusal or clarification — so that the 60
+  cases meet the plan's shares (18 / 20 / 10 / 12). They form 37 clusters:
+  one of 5, one of 4, two of 3, twelve of 2 and twenty-one of 1.
+- Holdout: the reserve — 35 families, 36 documents, 18 blocks: 17 pairs and
+  one family of two documents. A block holds at most four positions, which
+  leaves room for 64, and the classes take the plan's holdout shares of
+  them (24 / 40 / 16 / 20 %, plan step 1.3d) by largest remainder: 15
+  single-doc, 26 multi-doc, 10 aggregation, 13 refusal or clarification.
+  These counts are the quota of the holdout. The 64 cases form 18 clusters
+  — twelve of 4, four of 3, two of 2 — because every pair block seats a
+  case that draws on both of its families.
+
+No position of either split was left without a section. The sizes are
+targets for the verified set, as «Replacement of a dropped case» says; the
+clusters are recomputed on the verified set, where a pair block that lost
+its only case of several documents counts as two.
+
+**Why these sizes.** Neither size is derived from the pilot. A true +0.05
+at a paired-difference variance of 0.10 needs about 314 independent cases,
+and a non-inferiority check at a true zero needs about 980 at variance
+0.05; the corpus has 49 development families and 35 reserve families. The
+clause of «Power» for a size that cannot be reached therefore applies from
+the start: development keeps the plan's 60, the holdout is what the cap of
+four seats, and the pilot gives the MDE, not the size. Why 64 and not the
+100 of the plan's reference point: the reserve has 35 families in 18
+blocks, and no size adds a family. Lifting the cap to eight would seat at
+most 98 cases in the same 18 blocks, every added one in the eleven blocks
+of five sections or more. The standard error of a mean would then fall by
+19 % if the cases of a cluster were independent and rise by 7 % if they
+moved together, and every case costs a draft, a verification and about ten
+minutes of the host an arm. Seating one-document cases only would give up
+to 35 clusters and no case of several documents outside one block. More
+independent families need new source documents, which only the owner can
+supply (decision D11).
+
+**Populations.** A deciding metric is read on the cases it applies to.
+Three populations cover the rows of the closed table that are read on a
+cluster-bootstrap interval over the verified sets: all cases — 60 in 37
+clusters in development, 64 in 18 in the holdout; cases with gold evidence
+(the classes single-doc, multi-doc and aggregation) — 48 in 32 and 51 in
+18; unresolvable cases (the class refusal or clarification) — 12 in 11 and
+13 in 12. Clusters are the components of the whole split, as the decision
+rule counts them; a population keeps of each cluster the cases of its
+classes. Each row is registered at the largest population its denominator
+can have: `precision_at_5`, `action_correct`, `faithfulness` and
+`citation_presence` on all cases — an unresolvable case may be answered in
+both arms; `sent_precision`, `all_evidence_coverage`,
+`evidence_recall_pool`, `fact_coverage`, `answer_fact_coverage` and
+`citation_correctness` on the cases with gold evidence, the only ones that
+carry spans and facts; `abstention_correct` on the unresolvable cases. The
+registered MDE of a row is therefore a lower bound of what its real
+denominator gives. Step 1.3d recomputes it on the verified sets; for the
+rows over answered cases it is recomputed on the cases the control run
+answers, before an arm of the comparison is read, and the report then gives
+the pairs each check had. The row of lexical `context_precision` on H,
+retrieve p95 and the critical-error rule are outside this section.
+
+**The pilot.** Three arms of the production retrieval path, run by the
+collector of slice 2.5 with the same stages (transform, embed, retrieve,
+grade), with no generator and no judge: `control`, the registered control;
+`pool30`, with `retrieval_top_k` 30 in place of 20; `sent3`, with
+`rerank_top_k` 3 in place of 5. All three are required: the measuring tool
+refuses fewer. The two perturbations are not mechanism candidates: no
+verdict is given on them and nothing is chosen from them. Neither count is
+one a hypothesis registers — 40 candidates, the budget of H5, was left out
+for that reason. They are run because the interval of the decision rule is
+made of paired differences, and the spread of such differences can only be
+seen between two arms; one of them changes what the reranker receives, the
+other what is sent. All three run from one commit on one index, over the
+questions of the 24 verified pilot cases that carry gold evidence
+([`evaluation/devset_pilot_gold_questions.jsonl`](../../evaluation/devset_pilot_gold_questions.jsonl),
+SHA-256 `c5017d2f81f47b4751183a090d7ff505afded013335bb7f01bf3045c5edffccf`:
+ids and questions only, the labels stay out of the run). The six refusal or
+clarification cases carry no gold evidence, and without a generator nothing
+of them can be measured, so they are not run. The three runs are development
+runs and enter the ledger with their config hashes. The measuring tool reads
+the verified cases, the question file, the family map and the split at the
+SHA-256 named here and has no option to read others.
+
+**Gold metrics on the verified set** (rule
+`verified-gold/text-containment-v1`,
+[`evaluation/gold_metrics.py`](../../evaluation/gold_metrics.py)). A gold
+span is found in a text when the text comes from the span's document in the
+span's corpus version and contains the span's normalised text whole, case
+and white space ignored. The pool is the chunks the reranker received; the
+sent context is the documents left after grading. Offsets are not read,
+because these texts have none that describe them: a chunk of the index
+carries its document and its headings and no offsets, and a document
+widened by parent expansion carries the address of its seed chunk while its
+text is that chunk joined with neighbouring sections.
+`evidence_recall_pool`, `all_evidence_coverage` and `fact_coverage` then
+follow their definitions, the last by «Fact presence». The rule cannot tell
+the labelled place of a span from another place of the same document that
+holds the same text. The capsule therefore names every span that more than
+one chunk holds whole — neighbouring chunks that overlap, or a text that
+recurs — and every span that no chunk holds whole, which no pool can reach.
+Both are properties of the labels and the chunking, the same for every arm.
+
+**What is estimated.** For each perturbation and each gold metric, over the
+24 pairs: the paired differences arm − control, their mean and sample
+variance, the share of pairs that differ, the number of clusters with a
+non-zero sum, and the intra-cluster correlation by the one-way
+analysis-of-variance estimate over the clusters of the development split
+([`evaluation/power.py`](../../evaluation/power.py), `pair_variance`) — as
+it comes out, and kept inside [0, 1], where a negative estimate reads as 0.
+Beside them: the cases whose pool or sent context differs from the
+control's, and the critical facts that the control's context holds and the
+arm's does not. `sent3` cannot change the pool: the cases whose pool
+differs from the control's in that arm show the run-to-run noise of the
+stages before the reranker, and the capsule gives their number as that.
+
+**When the pilot gives no variance.** A perturbation's numbers are used
+only if all 24 pairs are measured, some chunk of the index holds a gold
+span whole and the pool of the control holds a gold span in at least one
+case. The collector does not rerun a case it excluded, and an arm is not
+run again for one. Otherwise the perturbation is published as description,
+the grid stands in its place, and the capsule says which condition failed —
+so a match that finds nothing is not read as a perturbation that moved
+nothing.
+
+**What is published** ([`scripts/variance_pilot.py`](../../scripts/variance_pilot.py)).
+For each split and population: n, the clusters, the design effect, the
+standard error, the MDE at power 0.8, the power of the gain check at a true
++0.05, the power of the whole primary rule at +0.05 and at the MDE, the
+power of a non-inferiority check at a true zero, the true effect at which
+that check passes with power 0.8, and an upper bound of the probability
+that the interval-validity rule holds — pairs taken as differing
+independently and never cancelling inside a cluster. The rows are
+scenarios. Variance: for the three gold metrics the pilot's, one row a
+usable perturbation; for every population the grid 0.05 / 0.10 / 0.20.
+Correlation: 0, the pilot's estimate, 1. A row at correlation 1 takes the
+Student quantile for clusters − 1 degrees of freedom in place of the normal
+one: there the sample is the clusters, 11 to 37 of them, and the normal
+quantile would understate the MDE by 2 to 10 %. The grid is the only
+reading for the metrics the pilot does not measure — the judged ones and
+those of the answer. Its values are shares: for a metric of two values at a
+zero mean difference the variance is the share of pairs that differ; 0.05
+is the smallest share the interval-validity rule accepts, and 0.10–0.20 is
+the range of the illustration in «Power». The powers are normal
+approximations of the rule; the cluster bootstrap decides a comparison.
+
+**The registered MDE** of a deciding metric — the published MDE of «Power»
+and of plan step 1.3c — is one number: the MDE at correlation 1 with the
+Student quantile, at the variance that is the larger of the grid value 0.10
+(the value of the plan's own illustration) and the variances the usable
+perturbations give that metric. The pilot can therefore raise an MDE and
+cannot lower it; where two perturbations give one variance the row names
+the one with the larger correlation, an absent estimate read as 1.
+Scenarios (a) and (c) of «Power» are computed at it. Beside it stand, as
+description and not as a claim of sensitivity, the MDE of independent cases
+and the MDE at the pilot's estimate of the correlation. At the grid value
+the registered MDE is, before the pilot:
+
+| Split | Population | n | Clusters | Registered MDE | MDE of independent cases |
+|---|---|---|---|---|---|
+| development | all cases | 60 | 37 | 0.171 | 0.114 |
+| development | cases with gold evidence | 48 | 32 | 0.184 | 0.128 |
+| development | unresolvable cases | 12 | 11 | 0.303 | 0.256 |
+| holdout | all cases | 64 | 18 | 0.224 | 0.111 |
+| holdout | cases with gold evidence | 51 | 18 | 0.229 | 0.124 |
+| holdout | unresolvable cases | 13 | 12 | 0.287 | 0.246 |
+
+Every one is above the minimally useful effect of +0.05: the campaign is
+registered as checking effects of at least the registered MDE and no
+smaller ones (plan step 1.3c), and on these rows the power of the whole
+primary rule at a true +0.05 is 0.04–0.12. The margin −0.02 is not widened
+(decision D9).
+
+**What the sizes cannot show.** At these sizes no interval non-inferiority
+check reaches power 0.8 at a true zero: that takes a standard error of at
+most 0.0071, about 980 independent cases at variance 0.05, and on the rows
+of the grid the power is 0.02–0.11. Such a check passes with power 0.8 only
+at a true gain of about the MDE less 0.02 — 0.15 to 0.28 on the registered
+rows — or where the metric is registered before the run as structurally
+invariant under the mechanism. A mechanism that is neutral on such a row is
+therefore expected to end `INCONCLUSIVE`, and the capsule says so check by
+check. The interval-validity rule adds a limit of its own: ten clusters
+must carry a non-zero difference. With pairs differing independently, on
+all cases and on the cases with gold evidence that holds with probability
+at most 0.04 when a tenth of the pairs differ, 0.27–0.68 at a fifth and
+0.80–0.98 at three tenths. On the unresolvable cases — 11 and 12 clusters
+— it holds with probability below 0.03 even when half of the pairs differ:
+`abstention_correct` is expected to have no valid interval at these sizes
+and to be `INCONCLUSIVE` unless it is registered as invariant. Counting
+losses instead does not help: zero losses bound a loss rate by 0.02 only
+from 149 cases on.
+
+**What the pilot does not show.** It has 24 cases in 15 clusters, five of
+them of two cases or more: its variances are rough and its correlations
+rougher, which is why the registered MDE is taken at correlation 1 and the
+tables bracket the correlation. A perturbation is not a mechanism: the
+paired variance of the chosen mechanism is refined on development data
+before the holdout opens, as «Power» says. No judged metric and no answer
+metric gets a variance here.
+
+**Cost.** The plan gave the pilot a quarter of a night for 30 cases in two
+arms. The grading stage alone took a median of 507 s a case in slice 2.5,
+so three arms over 24 cases are about eleven hours of the host; the capsule
+gives the hours spent and recomputes the budget of the campaign at the
+registered sizes.
 
 ## Acceptance contract (plan track 4)
 
