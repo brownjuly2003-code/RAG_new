@@ -1,0 +1,194 @@
+{
+  "plan_version": 1,
+  "rubric_version": "label-verification/v2",
+  "prompt_sha256": "3f7c114428028f6518aca3f21a03f5352d0497d99d0356f2c804b9389df756ad",
+  "round": 2,
+  "draft_author": {
+    "model": "gpt-6.1-sol",
+    "vendor": "OpenAI"
+  },
+  "verifiers": {
+    "claude-opus-5-5": {
+      "model": "claude-opus-5-5",
+      "vendor": "Anthropic",
+      "route": "Claude Code CLI, first-party provider",
+      "settings": {
+        "effort": "max",
+        "tools": "none",
+        "system_prompt_sha256": "4178fef002ad32d05e155ec7ee266177499d266d62371c5b68eba9ca9541a413"
+      }
+    }
+  },
+  "inputs": {
+    "drafts_sha256": "c8688f470271ec49c4d1f2c5415396c067431e9a7f715297d53abc9a18ef5bdb",
+    "families_sha256": "54bdb736180e00325bff20f49e2b9d985dd62278fe9f9cdb6161a0da719e3584",
+    "corpus_sha256": "c8562a64f88f72172f29e30865091be79f08d00ce65fbf675f34de64dcebe343",
+    "scan_sha256": "8faf58d4ef3091875b0b263aa05e99cab30b8c0c7948ab06a0fca33436d8466b",
+    "archive_sha256": "2a9da515a4c69b46453a59ed6d0bb772b0aad6fed23c87ee465851b43dbdef12",
+    "previous_plan_sha256": "3a820b90eb961d5f7e9f5bb396e40249d68381aa64bc6bb8786b0f63413e1d74",
+    "repairs_sha256": "e4413cf7260acc4785de0da4c17578882b4689c1995f5a106437bb762e75b3a5",
+    "drops_sha256": null
+  },
+  "requests": [
+    {
+      "case_id": "T64-04",
+      "round": 2,
+      "request_sha256": "8192aaa38de2f740adaf3db1cc9f607b8da62fd1d0a62ecae3a3f703a49cecc6",
+      "pseudonyms": {
+        "D1": "06_comp_policy_nda_employee.md",
+        "D2": "03_legal_contract_ndc.md",
+        "D3": "04_legal_letter_settlement_proposal.md",
+        "D4": "05_tlog_contract_cargo_insurance.md",
+        "D5": "06_comp_policy_commercial_secret.md",
+        "D6": "06_comp_policy_nda_contractor.md",
+        "D7": "06_comp_policy_whistleblower.md",
+        "D8": "06_comp_regulation_contract_approval.md"
+      },
+      "characters": 32959,
+      "corpus_texts": 36,
+      "corpus_text_counts": {
+        "spans": 1,
+        "cards": 1,
+        "sections": 1,
+        "scan": 33
+      },
+      "case_sha256": "e6961e6d5929ef3196e8cc6fed30fc4c62857a56c2967a4855dc47b0355d3a1d",
+      "registered_severity": "critical",
+      "primary_class": "single-doc",
+      "safety_critical": false,
+      "documents": [
+        "06_comp_policy_nda_employee.md"
+      ],
+      "families": [
+        "family-c3346b4cbd17"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "T64-05",
+      "round": 2,
+      "request_sha256": "dad761673cca5d9ea8e46cf98c63db0cc968f59604442335746fd1c35c4522a6",
+      "pseudonyms": {
+        "D1": "03_legal_contract_insurance_civil_liability.md"
+      },
+      "characters": 9746,
+      "corpus_texts": 2,
+      "corpus_text_counts": {
+        "spans": 1,
+        "cards": 1,
+        "sections": 0,
+        "scan": 0
+      },
+      "case_sha256": "b099a18c0441007e9ab13cbb87ad6fd35db58669e0726fefae249cbda2cbd887",
+      "registered_severity": "high",
+      "primary_class": "single-doc",
+      "safety_critical": false,
+      "documents": [
+        "03_legal_contract_insurance_civil_liability.md"
+      ],
+      "families": [
+        "family-1335dc50d706"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "T64-06",
+      "round": 2,
+      "request_sha256": "00018f465245708bf5a18ba887d513c10d4671ce535075d347f7f240ffc35639",
+      "pseudonyms": {
+        "D1": "01_hr_pol_injury.md",
+        "D2": "01_hr_pol_childcare.md",
+        "D3": "01_hr_pol_compensation.md",
+        "D4": "01_hr_pol_dress_code.md",
+        "D5": "01_hr_pol_internal_comm.md",
+        "D6": "01_hr_pol_leave.md",
+        "D7": "01_hr_pol_maternity.md",
+        "D8": "01_hr_pol_mental_health.md",
+        "D9": "01_hr_pol_references.md",
+        "D10": "01_hr_pol_remote_work.md",
+        "D11": "01_hr_pol_salary.md",
+        "D12": "01_hr_pol_social_package.md",
+        "D13": "02_hr_tmp_sick_leave_procedure.md",
+        "D14": "07_faq_claims_procedure.md",
+        "D15": "07_faq_dismissal.md",
+        "D16": "07_faq_leave.md"
+      },
+      "characters": 33398,
+      "corpus_texts": 39,
+      "corpus_text_counts": {
+        "spans": 1,
+        "cards": 1,
+        "sections": 1,
+        "scan": 36
+      },
+      "case_sha256": "f17e3438887e0db298902463460851855b42ff8f78d3f7f1418c206466bbaafd",
+      "registered_severity": "high",
+      "primary_class": "single-doc",
+      "safety_critical": false,
+      "documents": [
+        "01_hr_pol_injury.md"
+      ],
+      "families": [
+        "family-0287c6d94d73"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "T64-08",
+      "round": 2,
+      "request_sha256": "474104f5da3ef03ccc6263f0d214f78c32aef37b44e83c9e85296ea66b8c0f4a",
+      "pseudonyms": {
+        "D1": "02_hr_tmp_add_agreement.md"
+      },
+      "characters": 10427,
+      "corpus_texts": 2,
+      "corpus_text_counts": {
+        "spans": 1,
+        "cards": 1,
+        "sections": 0,
+        "scan": 0
+      },
+      "case_sha256": "f8d032795d12ab44a9b5398aa169a5475c71908373f585f636bfd84d0381e876",
+      "registered_severity": "high",
+      "primary_class": "single-doc",
+      "safety_critical": false,
+      "documents": [
+        "02_hr_tmp_add_agreement.md"
+      ],
+      "families": [
+        "family-2b2b0aee7e47"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "T64-13",
+      "round": 2,
+      "request_sha256": "14ff202b67c8cd92217726c78bf1837875141d946c116e306fbcf28f002b05a7",
+      "pseudonyms": {
+        "D1": "06_comp_policy_cookies.md",
+        "D2": "06_comp_policy_pdp.md"
+      },
+      "characters": 12141,
+      "corpus_texts": 4,
+      "corpus_text_counts": {
+        "spans": 2,
+        "cards": 2,
+        "sections": 0,
+        "scan": 0
+      },
+      "case_sha256": "352f6d3b09d9c923b474eda31fbb5ab6d37788ab39a1f45388fe46c14ec1fe92",
+      "registered_severity": "critical",
+      "primary_class": "multi-doc",
+      "safety_critical": false,
+      "documents": [
+        "06_comp_policy_cookies.md",
+        "06_comp_policy_pdp.md"
+      ],
+      "families": [
+        "family-74d57abc1479"
+      ],
+      "check_1": "passed"
+    }
+  ],
+  "declared_drops": []
+}

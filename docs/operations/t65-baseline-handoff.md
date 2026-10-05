@@ -680,3 +680,60 @@ slice was written and its fast gate green when she asked. T-77 was not started.
      `check --repairs <jsonl> --rebuild --drops <json>`. Then the capsule, the evidence row and
      the artifact test.
   3. T-65 after the collection — item 4 of the stop point above.
+
+## T-78 done — 2026-10-04
+
+- **What it answers.** Are the labels of the 30 pilot drafts right, with no person in the loop
+  (plan D11)? By the check of one model: yes, after five repairs — **30 verified, 0 dropped**
+  ([capsule](../evidence/devset-pilot-label-verification.md)). The criterion is the registered
+  one: checks 2, 3, 4 and 5d confirmed, 5a and 5b not rejected, the severity named on 5c within
+  one step of the registered one and on the same side of `critical`. Preparation: none of (a),
+  (b), (c); `label_origin` stays `agent_labelled`.
+- **What changed since the entries above: decision D12.** Julia, 2026-10-04: «ты должен все
+  делать сам». The session's model, Claude Opus 5.5, does every job and every check; no model
+  of another vendor is called in any role — executor, reviewer, verifier, judge, reference,
+  repair author (plan §2, record D12). Everything above that names GLM, Sonnet, Astra or the
+  draft author as a party to T-78 or T-65 is history, not an instruction.
+  - Rubric `label-verification/v2` (commit `907313d`): one verifier, `claude-opus-5-5`; a
+    confirmed case is `single_model_verified`, never `model_verified`; the repair author is the
+    session; an unchanged repair is refused; a second ground of a declared drop,
+    `repair_not_possible`; the three flags the script computes are not sent.
+  - Under v1 one request on T64-01 went to GLM 5.3 and to Opus 5.5 as a trial of the routes,
+    before D12. Both rejected check 4 on the wording of `ru_to_en`. Neither reply is counted;
+    both stay in `.tmp/t78/v1-trial/`, outside git.
+- **Result.** Round 1: 30 valid replies, 25 confirmed, 5 rejected — single-doc 4 of 10,
+  multi-doc 1 of 10 — every rejection on 5c (severity) or 5d (critical facts). The session
+  agreed with all five and repaired `wrong_answer_severity` and `critical_facts`, nothing else.
+  Round 2: 5 of 5 confirmed, by the model that wrote the repairs — a consistency check, counted
+  apart. 35 requests in 36 attempts, about 2 hours of request time.
+- **Glossary.** *Single-model check* — the author of a draft is a model of one vendor, its
+  verifier a model of another, and there is no second verifier. *Consistency check* — round 2
+  on a repaired case: the repair and its check come from one model. *Severity difference* — the
+  verifier named another level than the registered one; one step is published, two steps or a
+  step across `critical` reject the case.
+- **How to recompute.** `python -m scripts.devset_label_verify check --repairs
+  reports/devset/label-verification/repairs.jsonl --rebuild` from the repository root, or
+  `tests/test_devset_label_checks_artifact.py`. Both need nothing but committed files and, for
+  the rebuild, the corpus.
+- **The three things the T-77 entry called unproven.**
+  - The `.cmd` shim and the empty `--tools ""` argument: the route ran through the npm shim on
+    Windows, and an empty argument does pass a shim of that kind (tried with a shim that prints
+    its arguments, no model called). That a session had no tools is still not shown by a store.
+  - The user-level `CLAUDE.md`: the CLI may load it; all 35 replies kept the form and the
+    language of the prompt. Nothing more is known.
+  - GLM's output window: moot since D12.
+- **Lessons.**
+  - Every rejection came from two definitions — the severity scale and the critical fact —
+    written after the drafts were labelled. A first check then measures that gap, not the
+    author's reading of the sources. **For 1.3d: give the generator the scale and the
+    definition of a critical fact before it labels.**
+  - A usage limit in the middle of a run costs time only: `verify` stops, the attempt stays in
+    the store as `unavailable`, and the same command resumes by request after the reset.
+  - A store row holds the raw reply, not a verdict. Read outcomes through `load_round` or
+    `decide`, never from the rows.
+  - Run the tool as `python -m scripts.devset_label_verify` from the repository root.
+- **Left for Julia.** The commits are local; the push waits for her word. The line «Executor:
+  GLM 5.3» in the project `CLAUDE.md` contradicts D12; the file is hers.
+- **Next.** 1.3c — sizes, MDE and power from the pilot. It must first say what the cluster
+  collapse of the baseline (H: 4 clusters, Hm: 1) leaves of a paired comparison. T-65 goes on
+  when the collection ends: «T-65 collection running» above, with the judge now Opus 5.5 alone.
