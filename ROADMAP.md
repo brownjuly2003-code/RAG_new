@@ -182,7 +182,7 @@ stand except D2, D3 and D10, changed the same day by the owner's D11 («люди
 [2026-09-30 audit](docs/audits/audit_asta_30_09_26.md). It runs after phase E as one
 thread: measurement (the P2 judge consensus checked against model references, a pre-registered
 [development ruler](docs/specs/semantic-precision-metrics.md), a diagnostic dev set),
-route observability, then at most two mechanisms chosen by the evidence-loss map on the Mac (plan D8; H1 in the graph lane by default, H5 as its candidate budget, not a mechanism),
+route observability, then at most two mechanisms chosen by the evidence-loss map on the Mac (plan D8; H1 in the graph lane by default, H5 as its candidate budget, not a mechanism; the graph branch itself stands under the [enablement policy](docs/specs/graph-enablement-policy.md) registered 2026-10-05, before any graph experiment — selection rule, the branch's own gate, stages shadow → tenant → default with rollback; preparation, none of it is in the code),
 then a single locked-holdout acceptance. Its first executor slice (2.1/2.2: a requested
 graph lane that falls back becomes visible in the trace and Evidence with a bounded
 reason; the retrieval path carries candidates per source, coherence drops, rerank
