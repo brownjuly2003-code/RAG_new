@@ -30,6 +30,10 @@ RETEST_RULE: "per subset, the planned cases that have a request, sorted by the
 SHA-256 of '20260925:retest:<case_id>', the first 10; every request of a drawn
 case is sent again as <request id>~retest into a store of its own".
 
+Every judge invocation appends one line to <judge dir>/runs.jsonl: the store it
+wrote to, when it started and finished, its counts and the version the CLI
+reported.
+
 consensus applies evaluation.judge_consensus and writes ruler-input.json; with
 one judge the grade is that judge's and the summary says single_judge. retest
 compares the two passes of the sub-sample and writes <judge>-retest.json. No
@@ -47,6 +51,7 @@ import subprocess
 import tempfile
 import time
 from collections.abc import Iterable, Mapping, Sequence
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, ClassVar
 
@@ -83,6 +88,7 @@ RETEST_RULE = (
     f"sent again as <request id>{RETEST_SUFFIX} into a store of its own"
 )
 CLI_TIMEOUT_S = 1200.0
+RUN_LOG = "runs.jsonl"
 USAGE_FIELDS = (
     "input_tokens",
     "output_tokens",
@@ -321,6 +327,29 @@ class OpusCliClient:
         }
         return Reply(envelope["result"], envelope["model"], usage, time.monotonic() - start)
 
+    def describe(self) -> dict[str, str]:
+        """Name the CLI build that serves the requests; the path of the executable stays out."""
+        executable = self.executable or shutil.which("claude.cmd") or shutil.which("claude")
+        if executable is None:
+            return {"cli_version": "N/A: Claude CLI is not installed"}
+        try:
+            process = subprocess.run(
+                [executable, "--version"],
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+                cwd=tempfile.gettempdir(),
+                timeout=60,
+                check=False,
+            )
+        except (OSError, subprocess.TimeoutExpired):
+            return {"cli_version": "N/A: Claude CLI did not report a version"}
+        lines = process.stdout.strip().splitlines()
+        if process.returncode != 0 or not lines:
+            return {"cli_version": "N/A: Claude CLI did not report a version"}
+        return {"cli_version": lines[0].strip()}
+
 
 def make_client(judge: str) -> Any:
     """Build the client of a registered judge; a route exists for no other model."""
@@ -394,7 +423,20 @@ def judge(
             raise ValueError(
                 "the store holds attempts of another judge version; use a new judge directory"
             )
+    describe = getattr(client, "describe", None)
+    environment = describe() if callable(describe) else {}
+    started = datetime.now(UTC).isoformat(timespec="seconds")
     result = run_judge_v2(client, requests, store, judge_version=version, limit=limit)
+    with (out / RUN_LOG).open("a", encoding="utf-8", newline="\n") as handle:
+        row = {
+            "judge": name,
+            "store": store.name,
+            "started": started,
+            "finished": datetime.now(UTC).isoformat(timespec="seconds"),
+            "environment": environment,
+            **result,
+        }
+        handle.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n")
     summary = {
         "judge": name,
         **result,

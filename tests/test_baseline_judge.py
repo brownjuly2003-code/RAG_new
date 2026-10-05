@@ -1386,3 +1386,60 @@ def test_retest_stability_without_pairs_has_no_kappa():
 def test_retest_stability_refuses_anything_but_two_grades(pair):
     with pytest.raises(ValueError, match="grades must be integers 0-3"):
         retest_stability({"a": [pair]})
+
+
+class DescribedJudge(FakeJudge):
+    def describe(self):
+        return {"cli_version": "9.9.9 (fixture)"}
+
+
+def test_judge_logs_each_invocation_with_the_reported_cli_version(finished_run, one_judge):
+    _, out, _ = _retest_run(finished_run, h=2, hm=0)
+    runner.judge(out, "opus", client=DescribedJudge(), limit=1)
+    runner.judge(out, "opus", client=DescribedJudge())
+    runner.judge(out, "opus", client=FakeJudge(), retest=True)
+    first, second, third = read_store(out / runner.RUN_LOG)
+    assert (first["store"], first["valid"], first["pending"]) == ("opus.jsonl", 1, 1)
+    assert (second["valid"], second["reused"], second["pending"]) == (1, 1, 0)
+    assert first["environment"] == second["environment"] == {"cli_version": "9.9.9 (fixture)"}
+    assert (third["store"], third["environment"]) == ("opus-retest.jsonl", {})
+    for row in (first, second, third):
+        assert row["judge"] == "opus"
+        assert row["started"] <= row["finished"] and row["started"].endswith("+00:00")
+        assert "outbound" not in row
+
+
+@pytest.mark.parametrize(
+    "stdout,code,expected",
+    [
+        ("2.1.289 (Claude Code)\n", 0, "2.1.289 (Claude Code)"),
+        ("", 0, "N/A: Claude CLI did not report a version"),
+        ("2.1.289 (Claude Code)\n", 1, "N/A: Claude CLI did not report a version"),
+    ],
+)
+def test_opus_client_describes_the_cli_build_and_never_its_path(
+    monkeypatch, stdout, code, expected
+):
+    calls = []
+
+    def run(command, **options):
+        calls.append(command)
+        return runner.subprocess.CompletedProcess(command, code, stdout, "")
+
+    monkeypatch.setattr(runner.subprocess, "run", run)
+    described = runner.OpusCliClient("C:/HIDDEN/claude.cmd").describe()
+    assert described == {"cli_version": expected}
+    assert calls == [["C:/HIDDEN/claude.cmd", "--version"]]
+    assert "HIDDEN" not in json.dumps(described)
+
+
+def test_opus_client_describes_a_missing_or_silent_cli(monkeypatch):
+    def timeout(command, **options):
+        raise runner.subprocess.TimeoutExpired(command, 1)
+
+    monkeypatch.setattr(runner.subprocess, "run", timeout)
+    assert runner.OpusCliClient("HIDDEN_CLI").describe() == {
+        "cli_version": "N/A: Claude CLI did not report a version"
+    }
+    monkeypatch.setattr(runner.shutil, "which", lambda name: None)
+    assert runner.OpusCliClient().describe() == {"cli_version": "N/A: Claude CLI is not installed"}
