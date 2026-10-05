@@ -9,10 +9,11 @@ not started. Under the project's acceptance rule none counts yet, and no
 quality number was published:** 1.3b and 1.3c are preparation in the plan's own
 table — a model's check is not an approval, so the count of real labelled cases
 did not rise (rule (b)) — and 2.5 counts under rule (c) only once its capsule
-is published. Thirteen commits are local and not pushed: ten code commits of
-this session, one of the session before it (`693828c`) and two of documents.
+is published. Fourteen commits are local and not pushed: ten code commits of
+this session, one of the session before it (`693828c`) and three of documents;
+the last writes the external bases into the plan's slices (request 6).
 `git -C "D:/RAG_new" status -sb` must show
-`master...origin/master [ahead 13]`. The engineering detail of slice 2.5 is in
+`master...origin/master [ahead 14]`. The engineering detail of slice 2.5 is in
 [`t65-baseline-handoff.md`](t65-baseline-handoff.md), section «T-65 judging
 part done — 2026-10-05».
 
@@ -62,7 +63,7 @@ reply; a reply without the record is not read. A probe showed that the earlier
 route also carried Julia's global instruction file and the output of two
 hooks. The 35 requests of T-78 and the Opus reference sample of P2 went by that
 earlier route; their capsules say it, and the verdicts stay published. The 30
-pilot cases are checked again under rubric v3 in step 1.3d (next action 5),
+pilot cases are checked again under rubric v3 in step 1.3d (next action 6),
 the two sets of verdicts side by side; a case rejected there is repaired or
 dropped like any other. The variance pilot does not wait for that: its case
 file is fixed by SHA-256 in the spec, and it decides nothing about a case.
@@ -77,8 +78,8 @@ file is fixed by SHA-256 in the spec, and it decides nothing about a case.
 | 1.3c, sizes | **registered** at `323ce00`: the split, both sizes, the MDE of every deciding metric. The variance pilot has **not run** | a pilot may raise an MDE, never lower it; the sizes do not depend on it |
 | Plan gap G38 | all eight questions closed in the [spec](../specs/semantic-precision-metrics.md), the last five for one model | closed = each question has a registered rule; read cold by sessions of the same model only |
 
-**Change 3 — what the campaign can show.** This is the finding to carry to
-Julia. Development is to be 60 cases in 37 clusters — the 30 verified pilot
+**Change 3 — what the campaign can show.** Development is to be 60 cases in
+37 clusters — the 30 verified pilot
 cases and 30 that step 1.3d drafts; the holdout 64 in 18, all still to be
 drafted. A cluster is a group of cases that share a document family, and the
 interval of the decision rule resamples clusters, not cases. The acceptance
@@ -109,8 +110,7 @@ its run — and `evidence_recall_pool`, `fact_coverage`, `answer_fact_coverage`,
   development and 0.07 in the holdout for the primary metric, where only a
   true gain near 0.23 is detected four times out of five. At the favourable
   end of the grid — variance 0.05, every case independent — it is 0.34 and
-  0.36, and the MDE is still 0.09 (`evaluation/power.py`; the capsule of 1.3c
-  prints the whole grid).
+  0.36, and the MDE is still 0.09 (`evaluation/power.py`).
 - **A neutral mechanism is expected to end `INCONCLUSIVE`,** not `SHIP_RESEARCH`:
   a non-inferiority check at a true zero has power 0.02–0.11. It passes with
   power 0.8 only at a true gain of 0.15–0.28, or where the metric is registered
@@ -122,18 +122,19 @@ its run — and `evidence_recall_pool`, `fact_coverage`, `answer_fact_coverage`,
   are 37 and 18. A cluster needs a family of its own, and the corpus has 49
   development and 35 reserve families. Seeing +0.05 on our own corpus would
   take several hundred new documents on unrelated topics; the other way is
-  the external bases of decision D7 («Once Julia decides»).
+  the external bases, since request 6 in the plan's slices («Once Julia
+  decides», «The external bases»).
 - The margin −0.02 is not widened (decision D9).
 
-**And the plan's budget looks too low — a provisional reading.** The plan
-counts 350 retrieval passes a night of eight hours and 17–22 nights for the
-campaign. The collection of slice 2.5 took 19 hours for 115 cases, where the
-plan gave it half a night; the collector's `grade` stage alone — the local
-model reading each retrieved document, not the judge — has a median of 507 s a
-case, about 50 passes a night, a seventh of the plan's count. That is one run
-on one host, part of it under another project's load: not speed evidence. The
-variance pilot on an idle Mac gives the first clean timing, and the capsule of
-step 1.3c is to recompute the budget from it; this session did not.
+**And the plan's budget looks too low — a provisional reading.** Its 17–22
+nights assume 350 retrieval passes a night of eight hours. The collection of
+slice 2.5 took 19 hours for 115 cases against half a night planned; the
+collector's `grade` stage alone — the local model reading each retrieved
+document, not the judge — has a median of 507 s a case, about 50 passes a
+night. One run on one host, part of it under another project's load: not speed
+evidence. The capsule of step 1.3c is to recompute the budget from the pilot's
+clean timing. With the work on the external bases the plan's own estimate is
+27–35 nights (its §3).
 
 **How to read the next results, and what to tell Julia.**
 
@@ -145,7 +146,7 @@ step 1.3c is to recompute the budget from it; this session did not.
 | Contamination controls | none in slice 2.5: H and Hm carry no gold spans to cut or swap. They start with the first judged run on the verified set | say that no control stands behind the grades of 2.5 |
 | Baseline numbers | — | not comparable as a delta with the published consensus numbers of P2 (H 0.6080, Hm 0.8400): another judge, and contexts widened by the production's parent expansion |
 | Variance pilot above 0.10 on a gold metric (at or under it the table stands) | usable only if (1) all 24 cases are measured in the control arm and in the perturbed one, (2) some chunk of the index holds a gold span whole, (3) the control arm's pool holds a gold span in at least one case | that row's MDE rises; nothing else moves |
-| Variance pilot unusable | one of the three fails. (2) was checked before any arm and holds: 37 of 38 gold spans, `T64-16-E2` in no chunk (`.tmp/pilot/handoff_numbers.py`); (1) and (3) show only in the runs | published as description; the table stands; the capsule names the condition |
+| Variance pilot unusable | one of the three fails. (2) was checked before any arm and holds: 37 of 38 gold spans (`.tmp/pilot/handoff_numbers.py`); (1) and (3) show only in the runs | published as description; the table stands; the capsule names the condition |
 
 ## Julia's requests and decisions this session
 
@@ -155,7 +156,8 @@ step 1.3c is to recompute the budget from it; this session did not.
 | 2 | 2026-10-04: «А причем тут glm??? ты должен все делать сам!!!», then «зачем тебе нужен glm?» | decision D12 (plan §2): one request to GLM under rubric v1 had gone out and is not counted |
 | 3 | 2026-10-05: «продолжи» | the work went on under D12 |
 | 4 | 2026-10-05: «поставь точку, где логично и обнови доку» | the 1.3c registration committed, the pilot not started, this file |
-| 5 | 2026-10-05, on the closing message: «ты пишешь про еще документы. а почему нельзя использовать базы дополнительные. Мы же приняли решение - подключение для тестов трех дополнительных баз документов», then «так вопрос, а почему ранее не были подключены дополнительные базы???» | she is right: bullet «The external bases» of «Once Julia decides». Then «не нужно опять все прогонять», «я про доку»: this file got that bullet and the counts — no second cold read, no docs gate |
+| 5 | 2026-10-05, on the closing message: «ты пишешь про еще документы. а почему нельзя использовать базы дополнительные. Мы же приняли решение - подключение для тестов трех дополнительных баз документов», then «так вопрос, а почему ранее не были подключены дополнительные базы???» | she is right: bullet «The external bases» below. Then «не нужно опять все прогонять», «я про доку»: one record here — no second cold read, no docs gate |
+| 6 | 2026-10-05: «пропиши базы в плане, в конкретных слайсах» | the plan, second publication of 05.10: rows 1.5, 1.5c, 1.5d connect the bases, next on the Mac after the pilot; new rows 1.6 (parts, pilot, role) and 1.7 (baseline); acceptance 4.1 in two steps; gap G39. No code, no base connected, the spec untouched |
 
 The ten slices, in the plan's order of dependencies: 1.3b, 2.5 (T-65), 1.3c,
 1.3d, 1.3e, 3.0, the graph lifecycle of 2.3 (conditional), 2.8, 2.6
@@ -185,14 +187,15 @@ vendor audited any of it — under D12 none can.
    refusal to seat 98 cases — a cap of eight — in the same 18 blocks.
 6. **The pilot's design**: three arms — `control`, `pool30`
    (`retrieval_top_k` 30), `sent3` (`rerank_top_k` 3) — over the 24 verified
-   pilot cases with gold evidence. A pool of 40 is not an arm: 40 is the
-   budget that hypothesis H5 registers.
+   pilot cases with gold evidence.
 7. **The registered MDE** at correlation 1, Student quantile, grid variance
-   0.10: the cautious end, so that no later number makes the campaign look
-   more sensitive than registered.
+   0.10: the cautious end.
 8. **Review by the same model.** Each registered text was read cold by an
    isolated session of Opus 5.5. The 1.3c section got 12 findings, all
    applied; nothing has read it since.
+9. **The role of the external bases** (request 6): the parts, the two-step
+   acceptance and the locked part that decides the gain line are mine, read
+   by no one; the plan's D7 says where her words end.
 
 ## Once Julia decides
 
@@ -202,11 +205,10 @@ message of the next session.
 
 - **Push.** The project's standing delegation covers pushes
   (`CURRENT_STATE.md`, «Authorized push»). I held these commits back all the
-  same: «сам» grants no push (my reading of her words above), and the thirteen
+  same: «сам» grants no push (my reading of her words above), and the fourteen
   commits passed
   focused gates only, while a push runs the whole CI on `master`, which the
-  order she fixed on 2026-10-03 — my recommendation, her «Зафиксируй» — wants
-  green. The closing message of this session asks her. On her word: the full
+  order she fixed on 2026-10-03 wants green. On her word: the full
   suite on the Mac first, then
   `git -C "D:/RAG_new" -c credential.helper='!gh auth git-credential' push origin master`,
   then the CI run. No backup branch was pushed either: it would upload the
@@ -214,33 +216,32 @@ message of the next session.
 - **The line «Executor: GLM 5.3» in the project `CLAUDE.md`** contradicts D12.
   The file is hers; I did not edit it. If she agrees, the line becomes "the
   session's model does the work; no other vendor's model is called (plan D12)".
-- **The sensitivity of the campaign.** The plan budgets 17–22 nights of the Mac
-  — more at the measured speed — for a campaign that, as registered, detects
-  effects of 0.17–0.30 and no smaller ones. The closing message told her. Actions
-  1–4 hold under any answer of hers, bar «do not run the pilot» below. The
-  first draft of 1.3d (action 5) is the point of no cheap return: look for her
-  answer before it. No answer means the work goes on as registered — her
-  decisions are not awaited (plan D11). If she can add source documents, the
-  family map and the split are rebuilt and registered again. If she wants
-  another design — a larger margin, a development-only campaign, no holdout
-  acceptance — that changes decisions D6–D9 and is a plan revision.
-- **The external bases — request 5; their role is not decided.** The external
-  benchmark was her idea (2026-09-30), and D7 took in three public English
-  bases: ConditionalQA, WixQA, MultiHop-RAG. None is connected: the agent's
-  plan, under her delegation, put ingestion in stage IV and gave the first
-  two one job — a locked retrieval control run once, after acceptance 4.1;
-  SHIP is decided on our holdout, the third base is frozen. Nothing blocked
-  ingestion since step 2.4 closed. What our own sets can show was computed
-  only in step 1.3c, so nothing moved the bases forward: my planning error.
-  Deciding the gain, they would raise the sensitivity: the primary rule
-  passes four times in five at a true gain of 0.06–0.08, against 0.22–0.23 on
-  our holdout (`.tmp/pilot/external_bases_power.py`; variance 0.10 and
-  cluster counts assumed), on human gold. Limits: retrieval metrics only;
-  other domains, another language; a tuning part and a locked part are
-  needed; ConditionalQA through the grader is 15–19 nights at the measured
-  speed. My reply recommends ingestion and the external pilot before 1.3d —
-  D7 covers them — and asks her word on the deciding role (a revision of D7
-  and of the 4.1 contract).
+- **The sensitivity of the campaign.** As registered, our own sets detect
+  effects of 0.17–0.30 and no smaller ones. Request 6 moves the gain line to
+  the external bases (next bullet); the non-inferiority rows stay where they
+  are. Actions 1–5 hold under any answer of hers, bar «do not run the pilot»
+  below. The first draft of 1.3d (action 6) is the point of no cheap return:
+  look for her answer before it. No answer means the work goes on as written
+  — her decisions are not awaited (plan D11). New source documents from her
+  mean a new family map and split. Another design — a larger margin, no
+  holdout acceptance — changes decisions D6–D9: a plan revision.
+- **The external bases — requests 5 and 6: in the plan now; the deciding role
+  is my reading.** D7 took in ConditionalQA, WixQA and MultiHop-RAG, public
+  English bases, on her idea (2026-09-30); the agent's plan left ingestion
+  for stage IV, though nothing blocked it since step 2.4 — my planning
+  error. Now (plan D7, «Редакция 05.10»;
+  rows 1.5–1.7, 3.1, 4.1) they are connected next; the first two get a
+  tuning part and a locked part; mechanisms are compared on the tuning parts
+  too; the locked part of one base decides the gain line of acceptance
+  before our holdout opens. Computed, not measured: that rule passes four
+  times in five at a true gain of 0.06–0.08, against 0.22–0.23 on our
+  holdout. She asked for the bases in slices; the deciding role I read from
+  her question, and it takes force only with the spec's eleventh revision
+  (slice 1.6). If she wants them for tests only, D7 and row 4.1 go back to a
+  «transferability» line. Not solved (gap G39): non-inferiority stays
+  unprovable, so a gain shown outside can still end `INCONCLUSIVE`; the gain
+  is on an English base, not on our corpus; H1 needs a graph built there;
+  10–13 nights more.
 - **She brings back another vendor's voice.** The row of D12 in the plan says
   that is her decision. Rubric v1 (two verifiers) is registered and audited;
   the judge tool has not held the GLM and Sonnet routes since `d5c9ebb`, and
@@ -250,19 +251,19 @@ message of the next session.
 
 ## Log
 
-Thirteen commits, all local; `git -C "D:/RAG_new" log --oneline
+Fourteen commits, all local; `git -C "D:/RAG_new" log --oneline
 origin/master..HEAD` names them. `693828c` — T-77, the
 label-verification tool, from the session before this one. This session's
 code, in order: `907313d` rubric v2; `d5c9ebb` the one judge; `6fcf961`,
 `022d15e`, `f1cc525` the baseline report; `0d3fe2b` T-78; `4bdead8`
 `evaluation/power.py`; `d1fedd8` the collector's case file; `f3a350c` the
 clean route and the spec's tenth revision; `323ce00` step 1.3c (the split,
-the gold metrics, `scripts/variance_pilot.py`). `7cd70db` and the one after
+the gold metrics, `scripts/variance_pilot.py`). `7cd70db` and the two after
 it are documents. The judging began at 06:55 UTC on 2026-10-05.
 
 ## State at the end
 
-- **Git.** `master`, thirteen commits ahead of `origin/master`, tree clean but for
+- **Git.** `master`, fourteen commits ahead of `origin/master`, tree clean but for
   two untracked paths: `demo/phase-e-raw.webm` (not mine, never staged) and
   `reports/baseline/` (the T-65 export and the judge store, about 5 MB: data
   in progress, untracked until the run has its capsule).
@@ -274,28 +275,27 @@ it are documents. The judging began at 06:55 UTC on 2026-10-05.
   timed-out one among them. The command, the check for a live pass and the
   count of valid replies are in the T-65 handoff, «The chain from here».
 - **Mac.** Idle since the collection ended. The run stays in
-  `/Users/julia/RAG_new_t65_baseline_7d2535f8876f/.tmp/baseline-68c5f8d` (the
-  suffix is the SHA-256 prefix of the shipped archive, not the commit).
-- **Scratch, outside git** (`D:/RAG_new/.tmp/` is ignored): `t65/` — the
-  launcher, supervisor, watcher and pause scripts of the collection, its state
-  and host samples in `t65/run/`; `pilot/` — `handoff_numbers.py` and the cold
-  read of the 1.3c section. The pilot's launcher is not written.
+  `/Users/julia/RAG_new_t65_baseline_7d2535f8876f/.tmp/baseline-68c5f8d`.
+- **Scratch, outside git** (`D:/RAG_new/.tmp/`, ignored): `t65/` — the
+  collection's scripts, state and host samples; `pilot/` —
+  `handoff_numbers.py`, `external_bases_power.py`. The pilot's launcher is
+  not written.
 - **MyFlow.** No command was run. Whatever `.myflow/` says about T-65, T-77 and
   T-78 predates this session; the guard markers in `.myflow/guard/`, hers to
   remove, were not touched.
 - **Gate.** The tree of `323ce00` passed on `deproject-mac` before the commit:
   73 tests of the step's four modules, 424 of the baseline and
-  label-verification tools, `ruff check .`, mypy on 66 files. The first
-  commit of documentation passed the docs tests there (its message has the
-  line); the second did not go there (request 5). The full suite was run on
-  none of the thirteen commits.
+  label-verification tools, `ruff check .`, mypy on 66 files. The first and
+  the third commit of documentation passed the docs tests there (their
+  messages have the line); the second did not go there (request 5). The full
+  suite was run on none of the fourteen commits.
 
 ## Next actions, in order
 
 Standing rules: one model (Change 1); no MyFlow unless Julia names it — its
 stale state blocks no commit; pytest only on the Mac; no WSL, Docker or VM on
-the laptop; no push without her word. Actions 1–4 do not wait for her; action
-5 looks for her answer first («Once Julia decides»). Commands with hosts,
+the laptop; no push without her word. Actions 1–5 do not wait for her; action
+6 looks for her answer first («Once Julia decides»). Commands with hosts,
 paths and interpreters are in the T-65 handoff, section «T-65 judging part
 done — 2026-10-05».
 
@@ -311,14 +311,20 @@ done — 2026-10-05».
 3. **Close 1.3c**: `variance_pilot export` for each arm, `measure`, the capsule
    with sizes, MDE, powers, the index bound, the hours spent and the campaign
    budget recomputed; ledger rows for the three development runs.
-4. **Rubric v3 in code**: a registry of rubric versions, the verifier on the
+4. **Connect the external bases** (plan rows 1.5, 1.5c, 1.5d; request 6):
+   converters for the pinned dataset files, written while the pilot runs;
+   ingestion on the Mac into separate collections once it has ended, one
+   base at a time; a connection capsule each. Then row 1.6 — parts, external
+   pilot, sizes, the spec's eleventh revision — and row 1.7, the baseline.
+   Read plan gap G39 first.
+5. **Rubric v3 in code**: a registry of rubric versions, the verifier on the
    clean route, the self-check status, the repair as an isolated request.
-5. **1.3d** — the 30 new development cases and the 64 of the holdout, drafted
+6. **1.3d** — the 30 new development cases and the 64 of the holdout, drafted
    and checked, and the 30 pilot cases checked again under v3. First the
    replacement function that applies `rules.replacement` of the split, tested
    before the first draft is verified. Give the generator the severity scale
    and the definition of a critical fact before it labels.
-6. Then, by the plan's table of slices (§1): **1.3e** locks the holdout, which
+7. Then, by the plan's table of slices (§1): **1.3e** locks the holdout, which
    is opened once, in 4.1; **3.0** is the graph enablement policy, registered
    before any graph experiment; **2.3, second part** is the graph's life cycle
    through add, update and delete of a document, only if the map picks a graph
@@ -326,9 +332,8 @@ done — 2026-10-05».
    checks an answer's claims against its context — on 200 claims; **2.6**
    audits the routing verdicts, only if the map picks H4 (the question's
    category as a soft prior) or the policy of 3.0 leans on the class `simple`;
-   **3.1** is H1, coherence as a soft preference, the default mechanism. The
-   loss map picks at most two mechanisms (plan §1, row 2.5); H1 stands unless
-   it points elsewhere.
+   **3.1** is H1, coherence as a soft preference, the default mechanism
+   unless the loss map points elsewhere.
 
 ## Lessons
 
@@ -340,8 +345,6 @@ done — 2026-10-05».
   the spec's section «Power» is reachable on this corpus.
 - **Artifact tests pin sentences of the spec**: grep
   `tests/test_variance_pilot.py` before rewording the 1.3c section.
-- **Decide what stops before writing the state.** A process check that names
-  its own pattern finds itself: hence `baseline_[j]udge`.
 - **Before naming a way out, read what the plan already decided.** I told
   Julia that only new documents would help; D7's external bases were there.
 
@@ -376,8 +379,7 @@ done — 2026-10-05».
   class "refusal or clarification": the right action is to refuse or to ask.
 - **Family** — documents of one topic; the unit of independence. **Block** — what
   a new case may draw its documents from: a family of several documents, or two
-  one-document families paired by similarity. **Cluster** — cases linked through
-  shared families; what the bootstrap resamples. **Reserve** — the 35 families
+  one-document families paired by similarity. **Reserve** — the 35 families
   no development case touches; the holdout comes from them. **Cap** — at most
   four holdout cases a block.
 - **MUE** — the minimally useful effect, +0.05. **NI** — non-inferiority, a CI95
@@ -390,8 +392,6 @@ done — 2026-10-05».
   differences; not a mechanism candidate. **Pool** — the chunks the reranker
   receives. **Sent context** — the documents left after grading.
 - **Gold span** — a labelled piece of source text a case's answer rests on.
-- **Collector** — `scripts/production_baseline.py`: retrieval through the
-  production path, no generator.
 - **Stability retest** — a second grading of 10 cases a subset in another blind
   order.
 - **Index bound** — the gold spans that some chunk of the index holds whole:
@@ -414,7 +414,7 @@ table of this file is the one `tests/test_variance_pilot.py` rebuilds from
 `registered_mde`.
 
 This file was read cold once before the commit by a fresh session of the same
-model that opened this file alone (not by the clean route): 25 findings,
-all answered here or in the T-65 handoff. Still not done: the pilot's launcher is not written, and the check
-for a live judge pass is a command, not a guard in the tool. What request 5
-added has been read by no one.
+model that opened this file alone: 25 findings,
+all answered here or in the T-65 handoff. Still not done: the check
+for a live judge pass is a command, not a guard in the tool. What requests 5
+and 6 added, here and in the plan, has been read by no one.
