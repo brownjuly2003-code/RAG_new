@@ -1,9 +1,12 @@
 """Label verification of development-set drafts: packet, reply form, decision. No network.
 
 The protocol is the section «Label verification» of docs/specs/semantic-precision-metrics.md
-(rubric label-verification/v1); docs/specs/label-verification.md says what the tool must do.
+(rubric label-verification/v2); docs/specs/label-verification.md says what the tool must do.
 The commands are scripts/devset_label_verify.py. A model check is not a human approval:
 nothing here assigns real_labelled.
+
+The rubric registers one verifier (plan decision D12); the rules below hold for any number of
+them, and a check by one model is named single_model_verified, never model_verified.
 """
 
 from __future__ import annotations
@@ -18,7 +21,7 @@ from typing import Any, TypedDict
 
 import yaml  # type: ignore[import-untyped]
 
-RUBRIC_VERSION = "label-verification/v1"
+RUBRIC_VERSION = "label-verification/v2"
 SEVERITY_SCALE = ("low", "moderate", "high", "critical")
 CONFIRM_CHECKS = ("2", "3", "4", "5d")
 AUTHORITY_CHECKS = ("5a", "5b")
@@ -26,7 +29,11 @@ SEVERITY_CHECK = "5c"
 CHECKS = ("2", "3", "4", "5a", "5b", "5c", "5d")
 ATTEMPTS = 3
 STATES = ("verified", "repair_pending", "dropped", "unverified")
-DROP_GROUND = "repair_needs_reserve"
+# The grounds of a drop the repair author declares: only a document of the holdout reserve
+# could repair the case, or no change of the label within the bounds of a repair answers the
+# rejection.
+RESERVE_DROP = "repair_needs_reserve"
+NO_REPAIR_DROP = "repair_not_possible"
 SECOND_REJECTION = "rejected_in_round_2"
 # A repair changes the label, never the question. The draft author and the corpus version are
 # kept as well: repair_violations and the per-case rules of evaluation.devset check them.
@@ -65,10 +72,7 @@ The case is the JSON object after the line CASE.
   more documents) or needs-refusal/clarification (the documents do not answer the question as
   written); `trap_type` - null, false_premise, out_of_corpus, outdated_rule,
   conflicting_documents or dangerous_goods; `expected_action` - answer, correct_premise,
-  clarify, refuse or escalate; `flags` - `ru_to_en` (the question is in Russian and a required
-  fact holds a term in Latin script that the question does not), `numeric` (a required fact is
-  a number), `safety_critical` (a wrong answer is a safety risk), `adversarial_unanswerable`
-  (a trap type is set, or the class is needs-refusal/clarification).
+  clarify, refuse or escalate; `safety_critical` - true when a wrong answer is a safety risk.
 - `registered_reason` is the registered reason of the action, null when none is registered;
   `registered_severity` is the registered severity of a wrong answer; `as_of` is the date the
   question is asked on.
@@ -102,7 +106,8 @@ yours.
    makes the premise true. Where passages conflict or one is outdated, judge by the passage
    that applies on `as_of` and name it in the reason.
 
-4. The primary class, the flags, the trap type and `expected_action` agree with the above.
+4. The primary class, `safety_critical`, the trap type and `expected_action` agree with the
+   above.
 
 5. Authority and weight of the case. Checks 5a and 5b concern the organisation's own documents
    as supplied: whether an external norm that a document cites says the same is not checked,
@@ -161,9 +166,9 @@ CASE
 """
 # Registered in docs/specs/semantic-precision-metrics.md with the rubric: a changed prompt is a
 # new rubric version, and `plan` refuses a template whose SHA-256 is not this one.
-PROMPT_SHA256 = "93511368316d5439be394e7eba77c0f0d2f7fe357f0fbb98c37efc8fb930c6c7"
-# The Claude Code CLI takes a system prompt of its own; the request text is the same for both
-# verifiers. Its SHA-256 is a setting of the route and goes to the plan with the verifier.
+PROMPT_SHA256 = "3f7c114428028f6518aca3f21a03f5352d0497d99d0356f2c804b9389df756ad"
+# The Claude Code CLI takes a system prompt of its own; the request text is the same for every
+# verifier. Its SHA-256 is a setting of the route and goes to the plan with the verifier.
 CLI_SYSTEM_PROMPT = (
     "You verify one labelled case of an evaluation set. Use only the material in the message "
     "and reply with the one JSON object it asks for."
@@ -187,12 +192,6 @@ class Verifier(TypedDict):
 
 # The route is a name: no endpoint, key or settings path belongs in a plan, a store or a log.
 VERIFIERS: dict[str, Verifier] = {
-    "glm-5.3": {
-        "model": "glm-5.3",
-        "vendor": "Z.ai",
-        "route": "direct api.z.ai messages API, streamed",
-        "settings": {"effort": "xhigh"},
-    },
     "claude-opus-5-5": {
         "model": "claude-opus-5-5",
         "vendor": "Anthropic",
@@ -205,7 +204,10 @@ VERIFIERS: dict[str, Verifier] = {
     },
 }
 DRAFT_AUTHORS = {"gpt-6.1-sol": "OpenAI"}
-VERIFIERS_BY_AUTHOR_VENDOR = {"OpenAI": ("glm-5.3", "claude-opus-5-5")}
+VERIFIERS_BY_AUTHOR_VENDOR = {"OpenAI": ("claude-opus-5-5",)}
+# A rejected case is repaired by the agent of the session (plan decision D12): the model of
+# the verifier, so the check of a repaired case is not a check by another party.
+REPAIR_AUTHOR = {"model": "claude-opus-5-5", "vendor": "Anthropic"}
 
 
 def case_sha256(case: Mapping[str, Any]) -> str:
@@ -232,14 +234,19 @@ def registered_verifiers(author: Mapping[str, str]) -> dict[str, Verifier]:
 
 
 def check_vendors(author: Mapping[str, str], verifiers: Mapping[str, Verifier]) -> None:
-    """Two verifiers of two vendors, neither of them the draft author's."""
+    """At least one verifier, none of the draft author's vendor, no two of one vendor."""
     vendors = [verifier["vendor"].casefold() for verifier in verifiers.values()]
-    if len(vendors) != 2:
-        raise ValueError("label verification needs exactly two verifiers")
+    if not vendors:
+        raise ValueError("label verification needs a verifier")
     if author["vendor"].casefold() in vendors:
         raise ValueError("a verifier's vendor is the draft author's")
-    if vendors[0] == vendors[1]:
-        raise ValueError("the two verifiers share a vendor")
+    if len(set(vendors)) != len(vendors):
+        raise ValueError("two verifiers share a vendor")
+
+
+def verified_status(verifiers: Collection[str]) -> str:
+    """The word a confirmed case carries: a check by one model is not a cross-check."""
+    return "single_model_verified" if len(verifiers) == 1 else "model_verified"
 
 
 _FRONT_MATTER = re.compile(r"\A---[ \t]*\r?\n(.*?)\r?\n---[ \t]*(?:\r?\n|\Z)", re.DOTALL)
@@ -293,8 +300,16 @@ _ANY_PATH = re.compile(
 )
 _PSEUDONYM = re.compile(r"D\d+")
 _PLAIN_WORD = re.compile(r"[^\W\d_]+")
-# Named in no request: a case that names a model that drafts or verifies is refused.
-MODEL_IDS = tuple(sorted({*DRAFT_AUTHORS, *(verifier["model"] for verifier in VERIFIERS.values())}))
+# Named in no request: a case that names a model that drafts, repairs or verifies is refused.
+MODEL_IDS = tuple(
+    sorted(
+        {
+            *DRAFT_AUTHORS,
+            REPAIR_AUTHOR["model"],
+            *(verifier["model"] for verifier in VERIFIERS.values()),
+        }
+    )
+)
 
 
 def _replace(
@@ -404,7 +419,7 @@ class Masker:
 
 @dataclass(frozen=True)
 class Request:
-    """One request: the same text goes to both verifiers; the pseudonym map stays here."""
+    """One request: the same text goes to every verifier; the pseudonym map stays here."""
 
     text: str
     sha256: str
@@ -481,7 +496,9 @@ def build_request(
     """Build the request of one case: the whole label, every source under a pseudonym.
 
     Not sent: a file name, a source id, a doc_id or a path; the `scope` text of the authority
-    sources; the case id, the draft author, a verifier, the round or anything of another round.
+    sources; the flags the verify script computes from the label (`numeric`, `ru_to_en`,
+    `adversarial_unanswerable`); the case id, the draft author, a verifier, the round or
+    anything of another round.
     A case whose own text names a model that drafts or verifies is refused; what else a free
     text of the case says about its drafting or an earlier round no script can tell.
     """
@@ -543,7 +560,7 @@ def build_request(
         "question": out(case["question"]),
         "as_of": case["as_of"],
         "primary_class": case["primary_class"],
-        "flags": {name: case["flags"][name] for name in sorted(case["flags"])},
+        "safety_critical": case["flags"]["safety_critical"],
         "trap_type": case["trap_type"],
         "expected_action": case["expected_action"],
         "registered_reason": out(case["action_reason"]),
@@ -683,13 +700,13 @@ def decide(
 ) -> dict[str, Any]:
     """The outcome of one case in one round, in the order of the protocol.
 
-    `none`: a verifier gave no valid verdict. `confirmed`: check 1 passes, both verifiers
-    confirm checks 2, 3, 4 and 5d, neither rejects 5a or 5b, and neither names a severity two
-    or more steps from the registered one or across the `critical` boundary. `rejected`: any
-    other pair of valid verdicts; its rejecting checks carry the answers of both verifiers.
+    `none`: a verifier gave no valid verdict. `confirmed`: check 1 passes, every verifier
+    confirms checks 2, 3, 4 and 5d, none rejects 5a or 5b, and none names a severity two or
+    more steps from the registered one or across the `critical` boundary. `rejected`: any
+    other set of valid verdicts; its rejecting checks carry the answer of every verifier.
     """
-    if len(verdicts) != 2:
-        raise ValueError("a decision needs the verdicts of exactly two verifiers")
+    if not verdicts:
+        raise ValueError("a decision needs the verdict of at least one verifier")
     if registered_severity not in SEVERITY_SCALE:
         raise ValueError(f"the registered severity is not on the scale: {registered_severity}")
     decision: dict[str, Any] = {
@@ -788,24 +805,43 @@ def repair_violations(
     cited = sorted(cited_documents(repaired) & set(reserve))
     if cited:
         found.append("a repair cites the holdout reserve: " + ", ".join(cited))
+    if case_sha256(repaired) == case_sha256(draft):
+        # A second request on the label as drafted would be a second draw of the same check.
+        found.append("a repair leaves the label as drafted")
     return found
 
 
 def drop_violations(drop: Mapping[str, Any], reserve: Collection[str]) -> list[str]:
-    """What is wrong with a drop declared by the draft author; an empty list is a valid drop."""
-    found = []
-    if drop.get("ground") != DROP_GROUND:
-        found.append(f"a declared drop needs the ground {DROP_GROUND}")
+    """What is wrong with a drop declared by the repair author; an empty list is a valid drop.
+
+    `repair_needs_reserve` names the documents of the holdout reserve a repair would have to
+    cite; `repair_not_possible` gives the reason in one sentence.
+    """
+    ground = drop.get("ground")
+    if ground == NO_REPAIR_DROP:
+        reason = drop.get("reason")
+        if not isinstance(reason, str) or not reason.strip():
+            return ["a declared drop gives no reason"]
+        return []
+    if ground != RESERVE_DROP:
+        return [f"a declared drop needs the ground {RESERVE_DROP} or {NO_REPAIR_DROP}"]
     documents = drop.get("documents")
     if (
         not isinstance(documents, list)
         or not documents
         or not all(isinstance(name, str) and name for name in documents)
     ):
-        found.append("a declared drop names no document")
-    elif set(documents) - set(reserve):
-        found.append("a declared drop names a document outside the holdout reserve")
-    return found
+        return ["a declared drop names no document"]
+    if set(documents) - set(reserve):
+        return ["a declared drop names a document outside the holdout reserve"]
+    return []
+
+
+def drop_record(drop: Mapping[str, Any]) -> dict[str, Any]:
+    """What a plan and the register keep of a valid declared drop: its ground and support."""
+    if drop["ground"] == NO_REPAIR_DROP:
+        return {"ground": NO_REPAIR_DROP, "reason": drop["reason"]}
+    return {"ground": RESERVE_DROP, "documents": drop["documents"]}
 
 
 def summarise(entries: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
@@ -814,7 +850,8 @@ def summarise(entries: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
     An entry holds `case_id`, `state`, `drafted_class`, `class` (after a repair, when there was
     one), `repair` (None when round 2 held no repaired revision), `drop` (None when not dropped),
     `safety_critical`, `authority_unverified` and `rounds`: per round the outcome, the
-    disagreements between the verifiers and the severity differences.
+    disagreements between the verifiers and the severity differences. A case verified after a
+    repair was checked by the model that repaired it: such cases are listed apart.
     """
     first: dict[str, dict[str, int]] = {}
     for entry in entries:
@@ -846,6 +883,9 @@ def summarise(entries: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
             if entry["repair"] is not None
         ],
         "verified_by_class": dict(sorted(Counter(entry["class"] for entry in verified).items())),
+        "verified_after_repair": [
+            entry["case_id"] for entry in verified if entry["repair"] is not None
+        ],
         "verifier_disagreements": [
             {"case_id": entry["case_id"], "round": int(number), **disagreement}
             for entry in entries

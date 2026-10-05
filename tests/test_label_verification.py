@@ -2,6 +2,10 @@
 
 No model and no network: the verifiers are fakes that see only request texts. Every fixture
 is built in tmp_path; the one test on the real pilot is skipped without the corpus.
+
+The rubric registers one verifier (plan decision D12). The rules for several verifiers stay
+in the tool, so most tests here run them with a second voice that exists only in this file;
+the tests that take `one_voice` run the registry as it is registered.
 """
 
 from __future__ import annotations
@@ -23,7 +27,6 @@ import pytest
 from evaluation import devset
 from evaluation import label_verification as lv
 from evaluation.blinded_judge_clients import (
-    GlmClient,
     JudgeUnavailable,
     RateLimited,
     Reply,
@@ -39,7 +42,13 @@ ALPHA, BETA, GAMMA, DELTA = (
     "03_gamma_guide.md",
     "04_delta_reserve.md",
 )
-GLM, OPUS = "glm-5.3", "claude-opus-5-5"
+SECOND, OPUS = "second-voice", "claude-opus-5-5"
+REGISTERED = (lv.VERIFIERS, lv.VERIFIERS_BY_AUTHOR_VENDOR)
+TWO_VOICES: dict[str, lv.Verifier] = {
+    SECOND: {"model": SECOND, "vendor": "Second vendor", "route": "test double", "settings": {}},
+    OPUS: lv.VERIFIERS[OPUS],
+}
+REPAIRER = {"model": OPUS, "vendor": "Anthropic"}
 SCOPE = "Internal corpus document. Owner must confirm currency and applicability."
 BODIES = {
     ALPHA: (
@@ -410,6 +419,20 @@ def world_of(root: Path, cases: list[dict[str, Any]]) -> World:
     )
 
 
+@pytest.fixture(autouse=True)
+def two_voices(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Register the second voice beside the registered verifier."""
+    monkeypatch.setattr(lv, "VERIFIERS", TWO_VOICES)
+    monkeypatch.setattr(lv, "VERIFIERS_BY_AUTHOR_VENDOR", {"OpenAI": (SECOND, OPUS)})
+
+
+@pytest.fixture
+def one_voice(monkeypatch: pytest.MonkeyPatch) -> None:
+    """The registry as it is registered: one verifier."""
+    monkeypatch.setattr(lv, "VERIFIERS", REGISTERED[0])
+    monkeypatch.setattr(lv, "VERIFIERS_BY_AUTHOR_VENDOR", REGISTERED[1])
+
+
 @pytest.fixture
 def world(tmp_path: Path) -> World:
     return world_of(tmp_path, drafts_cases())
@@ -466,7 +489,7 @@ def run_round(
     inputs: v.RoundInputs,
     answers: Mapping[str, Mapping[str, Any]] | None = None,
 ) -> dict[str, Fake]:
-    """Plan one round and let both fake verifiers answer it.
+    """Plan one round and let a fake of every registered verifier answer it.
 
     `answers` gives, per case and verifier, one reply or the list of replies to successive
     attempts; a case that is not named is confirmed at its registered severity.
@@ -481,7 +504,7 @@ def run_round(
         for name, given in by_name.items()
     }
     clients = {}
-    for name in (GLM, OPUS):
+    for name in plan["verifiers"]:
 
         def answer(text: str, name: str = name) -> Any:
             case_id = case_of[text]
@@ -531,7 +554,10 @@ def repaired_m02() -> dict[str, Any]:
 def reject_m02(world: World, more: Mapping[str, Mapping[str, Any]] | None = None) -> None:
     """Round 1 in which M-02 is rejected on check 3 by one verifier; the rest is confirmed."""
     run_round(
-        world, world.round_1, world.inputs, {"M-02": {GLM: reply("high", REJECT_3)}, **(more or {})}
+        world,
+        world.round_1,
+        world.inputs,
+        {"M-02": {SECOND: reply("high", REJECT_3)}, **(more or {})},
     )
 
 
@@ -541,7 +567,7 @@ def reject_m02(world: World, more: Mapping[str, Mapping[str, Any]] | None = None
 def test_prompt_sha_is_the_one_registered_in_the_spec() -> None:
     spec = (ROOT / "docs/specs/semantic-precision-metrics.md").read_text(encoding="utf-8")
     recorded = re.findall(
-        r"Prompt SHA-256 \(rubric label-verification/v1\): `([0-9a-f]{64})`", spec
+        r"Prompt SHA-256 \(rubric label-verification/v2\): `([0-9a-f]{64})`", spec
     )
     assert recorded == [lv.PROMPT_SHA256]
     assert lv.prompt_sha256() == lv.PROMPT_SHA256
@@ -553,23 +579,31 @@ def test_prompt_names_no_author_no_verifier_and_no_round() -> None:
         assert word not in prompt
     assert "draft author's note" in prompt and "not evidence for check 5a or 5b" in prompt
     assert "low < moderate < high < critical" in prompt and "registered_severity" in prompt
+    # The flags the verify script computes from the label are neither described nor judged.
+    for word in ("ru_to_en", "numeric", "adversarial_unanswerable", "`flags`", "latin"):
+        assert word not in prompt
+    assert "the primary class, `safety_critical`, the trap type and `expected_action`" in prompt
     assert lv.PROMPT_TEMPLATE.endswith("\nCASE\n")
 
 
-def test_registered_verifiers_are_two_vendors_other_than_the_author() -> None:
+def test_the_registered_verifier_is_one_model_of_another_vendor(one_voice: None) -> None:
     author = lv.draft_author("gpt-6.1-sol")
     verifiers = lv.registered_verifiers(author)
     assert author == {"model": "gpt-6.1-sol", "vendor": "OpenAI"}
-    assert {name: entry["vendor"] for name, entry in verifiers.items()} == {
-        GLM: "Z.ai",
-        OPUS: "Anthropic",
-    }
-    assert verifiers[GLM]["settings"] == {"effort": "xhigh"}
+    assert {name: entry["vendor"] for name, entry in verifiers.items()} == {OPUS: "Anthropic"}
     assert verifiers[OPUS]["settings"]["effort"] == "max"
     assert verifiers[OPUS]["settings"]["tools"] == "none"
     lv.check_vendors(author, verifiers)
+    # No model of another vendor is registered in any role (plan decision D12).
+    assert set(lv.VERIFIERS) == {OPUS} and lv.REPAIR_AUTHOR == REPAIRER
+    # A check by one model is never given the word of a check by two vendors.
+    assert lv.verified_status(verifiers) == "single_model_verified"
+    assert lv.verified_status(TWO_VOICES) == "model_verified"
     with pytest.raises(ValueError, match="not registered"):
         lv.draft_author("another-model")
+    # Drafts by the verifier's own vendor have no registered verifier.
+    with pytest.raises(ValueError, match="no verifiers are registered for drafts by Anthropic"):
+        lv.registered_verifiers(REPAIRER)
 
 
 # --- the request ---------------------------------------------------------------------------
@@ -677,7 +711,12 @@ def test_request_carries_the_whole_case(world: World) -> None:
     assert packet["primary_class"] == "multi-doc" and packet["trap_type"] is None
     assert packet["expected_action"] == "answer" and packet["registered_reason"] is None
     assert packet["registered_severity"] == "critical"
-    assert packet["flags"] == dict(sorted(draft["flags"].items()))
+    assert packet["safety_critical"] is True and draft["flags"]["safety_critical"] is True
+    # The flags the verify script computes from the label are not sent.
+    for text in requests(world).values():
+        body = text[len(lv.PROMPT_TEMPLATE) :]
+        for word in ("flags", "ru_to_en", "numeric", "adversarial_unanswerable"):
+            assert word not in body
     assert [(item["id"], item["document"]) for item in packet["spans"]] == [
         ("S1", "D2"),
         ("S2", "D1"),
@@ -833,7 +872,7 @@ def test_a_path_or_a_labelled_identifier_in_a_case_text_does_not_go_out(world: W
         lv.build_request(draft, texts, Blind(texts), passages)
 
 
-@pytest.mark.parametrize("named", ["gpt-6.1-sol", "GLM-5.3", "claude-opus-5-5"])
+@pytest.mark.parametrize("named", ["gpt-6.1-sol", "Claude-Opus-5-5", "claude-opus-5-5"])
 def test_a_case_that_names_a_model_of_the_verification_is_refused(world: World, named: str) -> None:
     texts = read_sources(CORPUS, world.inputs.corpus_dir)
     draft = copy.deepcopy(world.drafts.cases[0])
@@ -841,7 +880,7 @@ def test_a_case_that_names_a_model_of_the_verification_is_refused(world: World, 
     message = "a model that drafts or verifies would be named in the request: "
     with pytest.raises(ValueError, match=message + re.escape(named.lower())):
         lv.build_request(draft, texts, lv.Masker(texts))
-    assert set(lv.MODEL_IDS) == {"gpt-6.1-sol", GLM, OPUS}
+    assert set(lv.MODEL_IDS) == {"gpt-6.1-sol", OPUS}
 
 
 # --- the plan ------------------------------------------------------------------------------
@@ -853,7 +892,7 @@ def test_plan_records_what_binds_a_request_and_no_request_text(world: World) -> 
     raw = (world.round_1 / "plan.json").read_text(encoding="utf-8")
     plan = json.loads(raw)
     assert summary["requests"] == 4 and summary["declared_drops"] == 0
-    assert plan["rubric_version"] == "label-verification/v1"
+    assert plan["rubric_version"] == "label-verification/v2"
     assert plan["prompt_sha256"] == lv.PROMPT_SHA256 and plan["round"] == 1
     assert plan["draft_author"] == {"model": "gpt-6.1-sol", "vendor": "OpenAI"}
     assert plan["verifiers"] == json.loads(
@@ -887,7 +926,7 @@ def test_plan_records_what_binds_a_request_and_no_request_text(world: World) -> 
 
 def test_both_verifiers_receive_the_same_text(world: World) -> None:
     clients = run_round(world, world.round_1, world.inputs)
-    assert clients[GLM].texts == clients[OPUS].texts == list(requests(world).values())
+    assert clients[SECOND].texts == clients[OPUS].texts == list(requests(world).values())
 
 
 def refuse_prompt(world: World, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -988,20 +1027,23 @@ def test_plan_refuses_and_writes_nothing(
     [
         (("OpenAI", "Anthropic"), "a verifier's vendor is the draft author's"),
         (("Z.ai", "openai"), "a verifier's vendor is the draft author's"),
-        (("Anthropic", "Anthropic"), "the two verifiers share a vendor"),
+        (("Anthropic", "Anthropic"), "two verifiers share a vendor"),
     ],
 )
-def test_plan_refuses_verifiers_that_are_not_two_other_vendors(
+def test_plan_refuses_verifiers_that_are_not_of_other_vendors(
     world: World, vendors: tuple[str, str], message: str
 ) -> None:
     verifiers: dict[str, lv.Verifier] = {
         name: {**lv.VERIFIERS[name], "vendor": vendor}
-        for name, vendor in zip((GLM, OPUS), vendors, strict=True)
+        for name, vendor in zip((SECOND, OPUS), vendors, strict=True)
     }
     with pytest.raises(ValueError, match=message):
         v.build_round(world.drafts, world.inputs, verifiers)
-    with pytest.raises(ValueError, match="exactly two verifiers"):
-        v.build_round(world.drafts, world.inputs, {GLM: lv.VERIFIERS[GLM]})
+    with pytest.raises(ValueError, match="label verification needs a verifier"):
+        v.build_round(world.drafts, world.inputs, {})
+    alone: dict[str, lv.Verifier] = {OPUS: {**lv.VERIFIERS[OPUS], "vendor": "OpenAI"}}
+    with pytest.raises(ValueError, match="a verifier's vendor is the draft author's"):
+        v.build_round(world.drafts, world.inputs, alone)
 
 
 # --- round 2: a repair or a declared drop --------------------------------------------------
@@ -1053,7 +1095,8 @@ def change_seed(fixed: dict[str, Any]) -> None:
 
 
 def change_author(fixed: dict[str, Any]) -> None:
-    fixed["draft_author"] = {"model": "glm-5.3", "vendor": "Z.ai"}
+    # The agent that repairs is not the author of the draft.
+    fixed["draft_author"] = dict(REPAIRER)
 
 
 def change_corpus_version(fixed: dict[str, Any]) -> None:
@@ -1123,6 +1166,23 @@ def test_round_2_refuses_a_repair_that_names_a_verifier(world: World) -> None:
     assert not world.round_2.exists()
 
 
+def test_round_2_refuses_a_repair_that_leaves_the_label_as_drafted(world: World) -> None:
+    """A second request on an unchanged label would be a second draw of the same check."""
+    reject_m02(world)
+    draft = world.drafts.cases[1]
+    returned = {
+        **draft,
+        "draft_author": {"model": "gpt-6.1-sol", "vendor": "OpenAI"},
+        "label_check": {"status": "none"},
+        "authority_unverified": False,
+    }
+    for same in (draft, returned):
+        inputs = replace(world.second, repairs=world.write("repairs.jsonl", [same]))
+        with pytest.raises(ValueError, match="a repair leaves the label as drafted: M-02"):
+            v.plan_round(world.round_2, world.drafts, inputs)
+    assert not world.round_2.exists()
+
+
 def test_round_2_refuses_a_case_round_1_did_not_reject_or_one_given_twice(world: World) -> None:
     reject_m02(world)
     confirmed = world.write("confirmed.jsonl", [world.drafts.cases[0]])
@@ -1151,13 +1211,19 @@ def test_round_2_refuses_a_case_round_1_did_not_reject_or_one_given_twice(world:
         ({"documents": []}, "a declared drop names no document: M-02"),
         ({"documents": [ALPHA]}, "names a document outside the holdout reserve: M-02"),
         ({"documents": [DELTA, BETA]}, "names a document outside the holdout reserve: M-02"),
-        ({"ground": "too_hard"}, "a declared drop needs the ground repair_needs_reserve: M-02"),
+        (
+            {"ground": "too_hard"},
+            "a declared drop needs the ground repair_needs_reserve or repair_not_possible: M-02",
+        ),
+        ({"ground": "repair_not_possible"}, "a declared drop gives no reason: M-02"),
+        ({"ground": "repair_not_possible", "reason": "  "}, "gives no reason: M-02"),
+        ({"ground": "repair_not_possible", "reason": ["none"]}, "gives no reason: M-02"),
     ],
 )
-def test_round_2_refuses_a_declared_drop_without_a_reserve_document(
+def test_round_2_refuses_a_declared_drop_without_its_support(
     world: World, drop: dict[str, Any], message: str
 ) -> None:
-    """Scenario: a declared drop that names no reserve document."""
+    """Scenarios: a declared drop that names no reserve document, or one without a reason."""
     reject_m02(world)
     declared = {"case_id": "M-02", "ground": "repair_needs_reserve", "documents": [DELTA], **drop}
     inputs = replace(world.second, drops=world.write("drops.json", [declared]))
@@ -1183,20 +1249,20 @@ def test_round_2_is_planned_on_the_inputs_of_round_1(world: World) -> None:
 def test_store_keeps_the_reply_as_given_and_no_secret(world: World) -> None:
     clients = run_round(world, world.round_1, world.inputs)
     plan = json.loads((world.round_1 / "plan.json").read_text(encoding="utf-8"))
-    raw = (world.round_1 / f"{GLM}.jsonl").read_text(encoding="utf-8")
-    rows = rows_of(world.round_1 / f"{GLM}.jsonl")
-    assert len(rows) == len(clients[GLM].texts) == 4
+    raw = (world.round_1 / f"{SECOND}.jsonl").read_text(encoding="utf-8")
+    rows = rows_of(world.round_1 / f"{SECOND}.jsonl")
+    assert len(rows) == len(clients[SECOND].texts) == 4
     for row, planned in zip(rows, plan["requests"], strict=True):
         assert row == {
             "case_id": planned["case_id"],
             "round": 1,
-            "verifier": GLM,
+            "verifier": SECOND,
             "attempt": 1,
             "request_sha256": planned["request_sha256"],
             "prompt_sha256": lv.PROMPT_SHA256,
-            "rubric_version": "label-verification/v1",
+            "rubric_version": "label-verification/v2",
             "status": "valid",
-            "model": GLM,
+            "model": SECOND,
             "raw_reply": reply(planned["registered_severity"]),
             "usage": {"output_tokens": 7},
             "elapsed_s": 0.25,
@@ -1228,8 +1294,8 @@ class Chatty(Fake):
 
 def test_a_store_keeps_only_the_registered_counters_of_usage(world: World) -> None:
     v.plan_round(world.round_1, world.drafts, world.inputs)
-    v.verify(world.round_1, GLM, world.drafts, world.inputs, client=Chatty(GLM))
-    path = world.round_1 / f"{GLM}.jsonl"
+    v.verify(world.round_1, SECOND, world.drafts, world.inputs, client=Chatty(SECOND))
+    path = world.round_1 / f"{SECOND}.jsonl"
     assert [row["usage"] for row in rows_of(path)] == [{"output_tokens": 7}] * 4
     raw = path.read_text(encoding="utf-8")
     for secret in ("example.invalid", "sk-test-123", "settings.json", "NaN", "server_tool_use"):
@@ -1264,24 +1330,24 @@ def test_a_store_holds_only_the_attempts_verify_writes(
 ) -> None:
     """A verdict on a fourth attempt, or a second verdict, is not one the rule counts."""
     run_round(world, world.round_1, world.inputs)
-    path = world.round_1 / f"{GLM}.jsonl"
+    path = world.round_1 / f"{SECOND}.jsonl"
     rows = rows_of(path)
     assert (rows[0]["case_id"], rows[0]["attempt"], rows[0]["status"]) == ("M-01", 1, "valid")
     written = [{**rows[0], "attempt": number, "status": status} for number, status in history]
     path.write_bytes(v.jsonl([*written, *rows[1:]]))
-    message = f"the store of {GLM} holds attempts that verify does not write: M-01"
+    message = f"the store of {SECOND} holds attempts that verify does not write: M-01"
     with pytest.raises(ValueError, match=message):
         v.decide(world.round_1, world.drafts)
-    client = Fake(GLM)
+    client = Fake(SECOND)
     with pytest.raises(ValueError, match=message):
-        v.verify(world.round_1, GLM, world.drafts, world.inputs, client=client)
+        v.verify(world.round_1, SECOND, world.drafts, world.inputs, client=client)
     assert client.texts == []
 
 
 def test_a_store_as_verify_writes_it_is_read(world: World) -> None:
     """An unavailable verifier takes no attempt: the next row carries the same number."""
     run_round(world, world.round_1, world.inputs)
-    path = world.round_1 / f"{GLM}.jsonl"
+    path = world.round_1 / f"{SECOND}.jsonl"
     rows = rows_of(path)
     history = [
         (1, "unavailable"),
@@ -1303,21 +1369,21 @@ def test_no_request_is_sent_when_its_reply_cannot_be_kept(
     opened = Path.open
 
     def locked(self: Path, *arguments: Any, **options: Any) -> Any:
-        if self.name == f"{GLM}.jsonl":
+        if self.name == f"{SECOND}.jsonl":
             raise PermissionError(13, "Permission denied", str(self))
         return opened(self, *arguments, **options)
 
     monkeypatch.setattr(Path, "open", locked)
-    client = Fake(GLM)
+    client = Fake(SECOND)
     with pytest.raises(PermissionError):
-        v.verify(world.round_1, GLM, world.drafts, world.inputs, client=client)
+        v.verify(world.round_1, SECOND, world.drafts, world.inputs, client=client)
     monkeypatch.setattr(v, "pilot_drafts", lambda: world.drafts)
     monkeypatch.setattr(v, "make_client", lambda name: client)
     capsys.readouterr()
-    assert v.main(world.arguments("verify", "--round=1", f"--verifier={GLM}")) == 2
+    assert v.main(world.arguments("verify", "--round=1", f"--verifier={SECOND}")) == 2
     printed = capsys.readouterr().out.strip()
-    assert printed == f"refused: a file cannot be read or written: {GLM}.jsonl"
-    assert client.texts == [] and not (world.round_1 / f"{GLM}.jsonl").exists()
+    assert printed == f"refused: a file cannot be read or written: {SECOND}.jsonl"
+    assert client.texts == [] and not (world.round_1 / f"{SECOND}.jsonl").exists()
 
 
 def thirty(root: Path) -> World:
@@ -1332,13 +1398,13 @@ def test_one_verifier_is_out_of_quota(
     world = thirty(tmp_path)
     monkeypatch.setattr(v, "pilot_drafts", lambda: world.drafts)
     assert v.main(world.arguments("plan", "--round=1")) == 0
-    first = Fake(GLM, failures={10: JudgeUnavailable("1308", "Judge rejected the request")})
+    first = Fake(SECOND, failures={10: JudgeUnavailable("1308", "Judge rejected the request")})
     monkeypatch.setattr(v, "make_client", lambda name: first)
-    arguments = world.arguments("verify", "--round=1", f"--verifier={GLM}")
+    arguments = world.arguments("verify", "--round=1", f"--verifier={SECOND}")
     assert v.main(arguments) == 1
     summary = json.loads(capsys.readouterr().out.strip().split("\n")[-1])
     assert summary == {
-        "verifier": GLM,
+        "verifier": SECOND,
         "round": 1,
         "requests": 30,
         "valid": 9,
@@ -1347,15 +1413,15 @@ def test_one_verifier_is_out_of_quota(
         "sent": 10,
         "unavailable": "1308",
     }
-    rows = rows_of(world.round_1 / f"{GLM}.jsonl")
+    rows = rows_of(world.round_1 / f"{SECOND}.jsonl")
     assert [row["status"] for row in rows] == ["valid"] * 9 + ["unavailable"]
     assert rows[9]["case_id"] == "Q-10" and rows[9]["error"] == "1308"
     assert rows[9]["raw_reply"] is None and len(first.texts) == 10
-    second = Fake(GLM)
+    second = Fake(SECOND)
     monkeypatch.setattr(v, "make_client", lambda name: second)
     assert v.main(arguments) == 0
     assert len(second.texts) == 21
-    rows = rows_of(world.round_1 / f"{GLM}.jsonl")
+    rows = rows_of(world.round_1 / f"{SECOND}.jsonl")
     assert [row["case_id"] for row in rows if row["status"] == "valid"] == [
         f"Q-{index:02d}" for index in range(1, 31)
     ]
@@ -1364,19 +1430,19 @@ def test_one_verifier_is_out_of_quota(
 def test_a_rejection_without_a_reason_is_stored_invalid_and_sent_again(world: World) -> None:
     """Scenario: a reply rejects check 2 and gives no reason."""
     bad = reply("moderate", NO_REASON)
-    clients = run_round(world, world.round_1, world.inputs, {"M-01": {GLM: [bad, reply()]}})
-    rows = [row for row in rows_of(world.round_1 / f"{GLM}.jsonl") if row["case_id"] == "M-01"]
+    clients = run_round(world, world.round_1, world.inputs, {"M-01": {SECOND: [bad, reply()]}})
+    rows = [row for row in rows_of(world.round_1 / f"{SECOND}.jsonl") if row["case_id"] == "M-01"]
     assert [(row["attempt"], row["status"]) for row in rows] == [(1, "invalid"), (2, "valid")]
     assert rows[0]["raw_reply"] == bad and rows[0]["error"] == "check 2: no reason"
-    assert len(clients[GLM].texts) == 5 and clients[GLM].texts[0] == clients[GLM].texts[1]
+    assert len(clients[SECOND].texts) == 5 and clients[SECOND].texts[0] == clients[SECOND].texts[1]
     with pytest.raises(lv.ReplyFormatError, match="check 2: no reason"):
         lv.parse_reply(bad)
 
 
 def test_a_request_is_sent_three_times_in_all(world: World) -> None:
     v.plan_round(world.round_1, world.drafts, world.inputs)
-    never = Fake(GLM, lambda text: "I cannot judge this case.")
-    result = v.verify(world.round_1, GLM, world.drafts, world.inputs, client=never, limit=1)
+    never = Fake(SECOND, lambda text: "I cannot judge this case.")
+    result = v.verify(world.round_1, SECOND, world.drafts, world.inputs, client=never, limit=1)
     assert result == {
         **result,
         "valid": 0,
@@ -1385,15 +1451,15 @@ def test_a_request_is_sent_three_times_in_all(world: World) -> None:
         "sent": 3,
         "unavailable": None,
     }
-    rows = rows_of(world.round_1 / f"{GLM}.jsonl")
+    rows = rows_of(world.round_1 / f"{SECOND}.jsonl")
     assert [(row["case_id"], row["attempt"], row["status"]) for row in rows] == [
         ("M-01", 1, "invalid"),
         ("M-01", 2, "invalid"),
         ("M-01", 3, "invalid"),
     ]
     # A rerun does not send the exhausted request a fourth time; it takes up the next ones.
-    again = Fake(GLM, lambda text: reply("high"))
-    result = v.verify(world.round_1, GLM, world.drafts, world.inputs, client=again)
+    again = Fake(SECOND, lambda text: reply("high"))
+    result = v.verify(world.round_1, SECOND, world.drafts, world.inputs, client=again)
     assert result == {**result, "valid": 3, "invalid": 1, "pending": 0, "sent": 3}
     assert len(again.texts) == 3 and requests(world)["M-01"] not in again.texts
 
@@ -1416,23 +1482,23 @@ def test_an_unavailable_verifier_stops_the_run_and_leaves_no_verdict(
     world: World, capsys: pytest.CaptureFixture[str], failure: Exception, code: str
 ) -> None:
     v.plan_round(world.round_1, world.drafts, world.inputs)
-    client = Fake(GLM, failures={2: failure})
-    result = v.verify(world.round_1, GLM, world.drafts, world.inputs, client=client)
+    client = Fake(SECOND, failures={2: failure})
+    result = v.verify(world.round_1, SECOND, world.drafts, world.inputs, client=client)
     assert result == {**result, "valid": 1, "pending": 3, "sent": 2, "unavailable": code}
-    rows = rows_of(world.round_1 / f"{GLM}.jsonl")
+    rows = rows_of(world.round_1 / f"{SECOND}.jsonl")
     assert [row["status"] for row in rows] == ["valid", "unavailable"]
     assert rows[1] == {**rows[1], "model": None, "raw_reply": None, "usage": {}, "error": code}
     assert len(client.texts) == 2
     # Only the code of a failure is kept: no address, key or settings path in a store or a log.
-    kept = (world.round_1 / f"{GLM}.jsonl").read_text(encoding="utf-8") + capsys.readouterr().out
+    kept = (world.round_1 / f"{SECOND}.jsonl").read_text(encoding="utf-8") + capsys.readouterr().out
     for secret in ("https", "example.invalid", "sk-test-123", "settings.json"):
         assert secret not in kept
 
 
 def test_a_reply_of_another_model_is_no_verdict(world: World) -> None:
     v.plan_round(world.round_1, world.drafts, world.inputs)
-    client = Fake("glm-5.2")
-    result = v.verify(world.round_1, GLM, world.drafts, world.inputs, client=client)
+    client = Fake("another-model")
+    result = v.verify(world.round_1, SECOND, world.drafts, world.inputs, client=client)
     assert result == {
         **result,
         "valid": 0,
@@ -1440,9 +1506,9 @@ def test_a_reply_of_another_model_is_no_verdict(world: World) -> None:
         "sent": 1,
         "unavailable": "model_mismatch",
     }
-    rows = rows_of(world.round_1 / f"{GLM}.jsonl")
+    rows = rows_of(world.round_1 / f"{SECOND}.jsonl")
     assert len(rows) == 1 and rows[0]["status"] == "unavailable"
-    assert rows[0]["model"] == "glm-5.2" and rows[0]["raw_reply"] is None
+    assert rows[0]["model"] == "another-model" and rows[0]["raw_reply"] is None
     decided = v.load_round(world.round_1, world.drafts)
     assert {decision["outcome"] for decision in decided.decisions.values()} == {"none"}
 
@@ -1459,7 +1525,7 @@ def test_limit_takes_up_that_many_requests(world: World) -> None:
 
 def test_verify_refuses_inputs_that_no_longer_give_the_plan(world: World) -> None:
     v.plan_round(world.round_1, world.drafts, world.inputs)
-    client = Fake(GLM)
+    client = Fake(SECOND)
     with pytest.raises(ValueError, match="not a verifier of this plan: sonnet"):
         v.verify(world.round_1, "sonnet", world.drafts, world.inputs, client=client)
     path = world.round_1 / "plan.json"
@@ -1467,8 +1533,8 @@ def test_verify_refuses_inputs_that_no_longer_give_the_plan(world: World) -> Non
     plan["requests"][0]["request_sha256"] = "0" * 64
     path.write_bytes(v.dump(plan))
     with pytest.raises(ValueError, match="the inputs no longer rebuild the plan of this round"):
-        v.verify(world.round_1, GLM, world.drafts, world.inputs, client=client)
-    assert client.texts == [] and not (world.round_1 / f"{GLM}.jsonl").exists()
+        v.verify(world.round_1, SECOND, world.drafts, world.inputs, client=client)
+    assert client.texts == [] and not (world.round_1 / f"{SECOND}.jsonl").exists()
 
 
 def envelope(**changes: Any) -> str:
@@ -1568,18 +1634,17 @@ def test_claude_route_failures_are_unavailability(monkeypatch: pytest.MonkeyPatc
     assert caught.value.code == "cli_missing"
 
 
-def test_clients_are_the_registered_routes(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+def test_the_only_route_is_the_registered_verifier(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str], one_voice: None
 ) -> None:
-    monkeypatch.setenv("RAG_JUDGE_GLM_SETTINGS", str(tmp_path / "glm.json"))
     monkeypatch.setenv("RAG_VERIFY_CLAUDE_CLI", "claude-test")
-    glm = v.make_client(GLM)
-    assert isinstance(glm, GlmClient) and glm.settings_path == tmp_path / "glm.json"
-    assert glm.parameters["model"] == GLM and glm.parameters["output_config"] == {"effort": "xhigh"}
     claude = v.make_client(OPUS)
     assert isinstance(claude, v.ClaudeCliClient) and claude.executable == "claude-test"
-    with pytest.raises(ValueError, match="no route is registered"):
-        v.make_client("sonnet")
+    # No model of another vendor can be called: none has a route (plan decision D12).
+    for name in ("glm-5.3", "gpt-6.1-sol", "sonnet", SECOND):
+        with pytest.raises(ValueError, match="no route is registered"):
+            v.make_client(name)
+    assert not hasattr(v, "GlmClient")
     assert capsys.readouterr().out == ""
 
 
@@ -1635,7 +1700,7 @@ def test_a_reply_in_another_form_is_invalid(text: str, message: str) -> None:
 
 
 def verdicts(first: str, second: str | None) -> dict[str, dict[str, dict[str, Any]] | None]:
-    return {GLM: lv.parse_reply(first), OPUS: lv.parse_reply(second) if second else None}
+    return {SECOND: lv.parse_reply(first), OPUS: lv.parse_reply(second) if second else None}
 
 
 def test_decision_follows_the_order_of_the_protocol() -> None:
@@ -1660,8 +1725,8 @@ def test_decision_follows_the_order_of_the_protocol() -> None:
         decision = lv.decide("moderate", verdicts(reply(), reply("moderate", change)))
         assert decision["outcome"] == "rejected" and not decision["authority_unverified"]
         assert [item["check"] for item in decision["rejecting_checks"]] == [check]
-    with pytest.raises(ValueError, match="exactly two verifiers"):
-        lv.decide("moderate", {GLM: lv.parse_reply(reply())})
+    with pytest.raises(ValueError, match="at least one verifier"):
+        lv.decide("moderate", {})
     with pytest.raises(ValueError, match="not on the scale"):
         lv.decide("severe", verdicts(reply(), reply()))
 
@@ -1671,7 +1736,7 @@ def test_the_verifiers_disagree() -> None:
     decision = lv.decide("moderate", verdicts(reply(), reply("moderate", REJECT_3)))
     assert decision["outcome"] == "rejected"
     assert decision["disagreements"] == [
-        {"check": "3", "answers": {OPUS: "reject", GLM: "confirm"}}
+        {"check": "3", "answers": {OPUS: "reject", SECOND: "confirm"}}
     ]
     assert decision["rejecting_checks"] == [
         {
@@ -1682,7 +1747,7 @@ def test_the_verifiers_disagree() -> None:
                     "reason": "The answer leaves out the deadline.",
                     "element": "F1",
                 },
-                GLM: {"verdict": "confirm", "reason": "Check 3 holds.", "element": None},
+                SECOND: {"verdict": "confirm", "reason": "Check 3 holds.", "element": None},
             },
         }
     ]
@@ -1694,7 +1759,7 @@ def test_currency_cannot_be_read_from_the_corpus() -> None:
     decision = lv.decide("moderate", verdicts(unverifiable, reply()))
     assert decision["outcome"] == "confirmed" and decision["authority_unverified"] is True
     assert decision["disagreements"] == [
-        {"check": "5a", "answers": {OPUS: "confirm", GLM: "unverifiable"}}
+        {"check": "5a", "answers": {OPUS: "confirm", SECOND: "unverifiable"}}
     ]
     for check in lv.AUTHORITY_CHECKS:
         both = reply("moderate", {check: {"verdict": "unverifiable"}})
@@ -1707,7 +1772,7 @@ def test_severity_differs_by_one_step() -> None:
     assert decision["outcome"] == "confirmed"
     assert decision["severity_differences"] == [
         {
-            "verifier": GLM,
+            "verifier": SECOND,
             "registered": "moderate",
             "named": "high",
             "steps": 1,
@@ -1715,7 +1780,7 @@ def test_severity_differs_by_one_step() -> None:
         }
     ]
     assert decision["disagreements"] == [
-        {"check": "5c", "answers": {OPUS: "moderate", GLM: "high"}}
+        {"check": "5c", "answers": {OPUS: "moderate", SECOND: "high"}}
     ]
 
 
@@ -1724,7 +1789,7 @@ def test_severity_crosses_the_critical_boundary() -> None:
     decision = lv.decide("high", verdicts(reply("critical"), reply("critical")))
     assert decision["outcome"] == "rejected"
     assert [item["check"] for item in decision["rejecting_checks"]] == ["5c"]
-    assert decision["rejecting_checks"][0]["verdicts"][GLM]["level"] == "critical"
+    assert decision["rejecting_checks"][0]["verdicts"][SECOND]["level"] == "critical"
     assert decision["disagreements"] == []
     assert all(item["crosses_critical"] for item in decision["severity_differences"])
 
@@ -1769,7 +1834,7 @@ def test_decide_recomputes_the_round_and_prints_the_reasons_of_both(
     assert v.main(world.arguments("decide", "--round=1")) == 0
     printed = capsys.readouterr().out
     assert "M-02: rejected\n  check 3\n" in printed
-    assert f"    {GLM}: reject [F1] - The answer leaves out the deadline." in printed
+    assert f"    {SECOND}: reject [F1] - The answer leaves out the deadline." in printed
     assert f"    {OPUS}: confirm - Check 3 holds." in printed
     assert json.loads(printed.strip().split("\n")[-1]) == {
         "round": 1,
@@ -1781,10 +1846,12 @@ def test_decide_recomputes_the_round_and_prints_the_reasons_of_both(
     stored = json.loads((world.round_1 / "decisions.json").read_text(encoding="utf-8"))
     by_case = {item["case_id"]: item for item in stored["cases"]}
     assert stored["plan_sha256"] == sha((world.round_1 / "plan.json").read_bytes())
-    assert stored["stores_sha256"][GLM] == sha((world.round_1 / f"{GLM}.jsonl").read_bytes())
+    assert stored["stores_sha256"][SECOND] == sha((world.round_1 / f"{SECOND}.jsonl").read_bytes())
     assert by_case["M-02"]["outcome"] == "rejected" and by_case["M-01"]["outcome"] == "confirmed"
     assert by_case["M-04"]["authority_unverified"] is True
-    assert by_case["M-02"]["verdicts"][GLM]["3"]["reason"] == "The answer leaves out the deadline."
+    assert (
+        by_case["M-02"]["verdicts"][SECOND]["3"]["reason"] == "The answer leaves out the deadline."
+    )
     # The decision is the rule over the raw replies: the same stores give the same bytes.
     before = (world.round_1 / "decisions.json").read_bytes()
     v.decide(world.round_1, world.drafts)
@@ -1795,7 +1862,7 @@ def test_decide_reports_a_round_that_is_not_decided(
     world: World, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
 ) -> None:
     v.plan_round(world.round_1, world.drafts, world.inputs)
-    v.verify(world.round_1, GLM, world.drafts, world.inputs, client=Fake(GLM))
+    v.verify(world.round_1, SECOND, world.drafts, world.inputs, client=Fake(SECOND))
     monkeypatch.setattr(v, "pilot_drafts", lambda: world.drafts)
     capsys.readouterr()
     assert v.main(world.arguments("decide", "--round=1")) == 1
@@ -1823,27 +1890,27 @@ def test_decide_refuses_a_store_of_another_request_prompt_or_rubric(
 ) -> None:
     run_round(world, world.round_1, world.inputs)
     monkeypatch.setattr(v, "pilot_drafts", lambda: world.drafts)
-    path = world.round_1 / f"{GLM}.jsonl"
+    path = world.round_1 / f"{SECOND}.jsonl"
     rows = rows_of(path)
     rows[1].update(change)
     path.write_bytes(v.jsonl(rows))
     with pytest.raises(ValueError, match="holds a row that is not of this plan"):
         v.decide(world.round_1, world.drafts)
     assert v.main(world.arguments("decide", "--round=1")) == 2
-    assert "refused: the store of glm-5.3" in capsys.readouterr().out
+    assert f"refused: the store of {SECOND}" in capsys.readouterr().out
     assert not (world.round_1 / "decisions.json").exists()
 
 
 def test_a_stored_verdict_counts_only_while_its_raw_reply_follows_the_form(world: World) -> None:
     run_round(world, world.round_1, world.inputs)
-    path = world.round_1 / f"{GLM}.jsonl"
+    path = world.round_1 / f"{SECOND}.jsonl"
     rows = rows_of(path)
     rows[0]["raw_reply"] = reply("moderate", NO_REASON)
     path.write_bytes(v.jsonl(rows))
     with pytest.raises(ValueError, match="a stored verdict does not follow the form: M-01"):
         v.decide(world.round_1, world.drafts)
     rows[0]["raw_reply"] = reply()
-    rows[0]["model"] = "glm-5.2"
+    rows[0]["model"] = "another-model"
     path.write_bytes(v.jsonl(rows))
     with pytest.raises(ValueError, match="a stored verdict is not of the registered model: M-01"):
         v.decide(world.round_1, world.drafts)
@@ -1892,7 +1959,7 @@ def two_rounds(world: World) -> Path:
         {
             "M-03": {OPUS: reply("moderate", REJECT_3)},
             "M-04": {
-                GLM: reply("critical", {"5a": {"verdict": "unverifiable", "reason": "No date."}})
+                SECOND: reply("critical", {"5a": {"verdict": "unverifiable", "reason": "No date."}})
             },
         },
     )
@@ -1911,7 +1978,7 @@ def test_verified_set_and_register_follow_from_the_decisions(world: World) -> No
     author = {"model": "gpt-6.1-sol", "vendor": "OpenAI"}
     label = {
         "status": "model_verified",
-        "verifiers": [OPUS, GLM],
+        "verifiers": [OPUS, SECOND],
         "rubric_version": lv.RUBRIC_VERSION,
     }
     assert [row["case_id"] for row in rows] == ["M-01", "M-02", "M-04"]
@@ -1925,7 +1992,8 @@ def test_verified_set_and_register_follow_from_the_decisions(world: World) -> No
     assert rows[1] == {
         **repaired_m02(),
         "draft_author": author,
-        "label_check": {**label, "round": 2},
+        # The verdicts of round 2 were given on a label the verifier's own model wrote.
+        "label_check": {**label, "round": 2, "repair_author": REPAIRER},
         "authority_unverified": False,
     }
     assert (
@@ -1935,6 +2003,7 @@ def test_verified_set_and_register_follow_from_the_decisions(world: World) -> No
     assert register["label_origin"] == "agent_labelled"
     assert register["rubric_version"] == lv.RUBRIC_VERSION
     assert register["prompt_sha256"] == lv.PROMPT_SHA256 and register["draft_author"] == author
+    assert register["repair_author"] == REPAIRER
     entries = {entry["case_id"]: entry for entry in register["cases"]}
     assert [entry["state"] for entry in register["cases"]] == [
         "verified",
@@ -1945,7 +2014,7 @@ def test_verified_set_and_register_follow_from_the_decisions(world: World) -> No
     repaired = entries["M-02"]
     assert repaired["rounds"]["1"]["outcome"] == "rejected"
     assert repaired["rounds"]["2"]["outcome"] == "confirmed"
-    assert repaired["rounds"]["1"]["verdicts"][GLM]["3"] == {
+    assert repaired["rounds"]["1"]["verdicts"][SECOND]["3"] == {
         "verdict": "reject",
         "reason": "The answer leaves out the deadline.",
         "element": "F1",
@@ -1976,11 +2045,12 @@ def test_verified_set_and_register_follow_from_the_decisions(world: World) -> No
         {"case_id": "M-02", "class_before": "multi-doc", "class_after": "single-doc"}
     ]
     assert summary["verified_by_class"] == {"multi-doc": 1, "single-doc": 2}
+    assert summary["verified_after_repair"] == ["M-02"]
     assert {
         "case_id": "M-02",
         "round": 1,
         "check": "3",
-        "answers": {OPUS: "confirm", GLM: "reject"},
+        "answers": {OPUS: "confirm", SECOND: "reject"},
     } in (summary["verifier_disagreements"])
     assert summary["severity_differences"] == [
         {
@@ -2008,7 +2078,7 @@ def test_verified_set_and_register_follow_from_the_decisions(world: World) -> No
     texts = sum(row["corpus_texts"] for plan in plans.values() for row in plan["requests"])
     assert register["sent"] == {
         name: {"requests": 5, "attempts": 5, "characters": characters, "corpus_texts": texts}
-        for name in (OPUS, GLM)
+        for name in (OPUS, SECOND)
     }
     shas = register["sha256"]
     assert shas["drafts"] == world.drafts.manifest["jsonl_sha256"]
@@ -2038,7 +2108,7 @@ def test_a_case_that_only_a_reserve_document_could_repair(world: World) -> None:
         "drops.json", [{"case_id": "M-02", "ground": "repair_needs_reserve", "documents": [DELTA]}]
     )
     clients = run_round(world, world.round_2, replace(world.second, drops=drops))
-    assert clients[GLM].texts == [] and clients[OPUS].texts == []
+    assert clients[SECOND].texts == [] and clients[OPUS].texts == []
     assert v.decide(world.round_2, world.drafts)[0] == {
         "round": 2,
         "confirmed": 0,
@@ -2060,7 +2130,10 @@ def test_a_second_rejection_drops_the_case_with_its_rejecting_checks(world: Worl
     repairs = world.write("repairs.jsonl", [repaired_m02()])
     inputs = replace(world.second, repairs=repairs)
     run_round(
-        world, world.round_2, inputs, {"M-02": {GLM: reply("low"), OPUS: reply("high", REJECT_3)}}
+        world,
+        world.round_2,
+        inputs,
+        {"M-02": {SECOND: reply("low"), OPUS: reply("high", REJECT_3)}},
     )
     rows, register = apply(world, repairs)
     entry = register["cases"][1]
@@ -2110,7 +2183,9 @@ def test_a_case_waiting_for_its_repair(world: World) -> None:
     repairs = world.write("repairs.jsonl", [repaired_m02()])
     inputs = replace(world.second, repairs=repairs)
     v.plan_round(world.round_2, world.drafts, inputs)
-    v.verify(world.round_2, GLM, world.drafts, inputs, client=Fake(GLM, lambda text: reply("high")))
+    v.verify(
+        world.round_2, SECOND, world.drafts, inputs, client=Fake(SECOND, lambda text: reply("high"))
+    )
     rows, register = apply(world, repairs)
     assert rows[1]["label_check"] == {"status": "none"}
     assert {key: rows[1][key] for key in world.drafts.cases[1]} == world.drafts.cases[1]
@@ -2206,7 +2281,7 @@ def clear_the_flag(rows: list[dict[str, Any]]) -> None:
 @pytest.mark.parametrize(
     ("change", "message"),
     [
-        (promote, "a model_verified case is not confirmed by two valid verdicts: M-02"),
+        (promote, "not confirmed by a valid verdict of every verifier: M-02"),
         (edit_verified, "a verified case is not the revision its verdicts were given on: M-01"),
         (edit_unverified, "an unrepaired case differs from its draft: M-02"),
         (unknown_case, "the verified set holds an unknown or repeated case: M-99"),
@@ -2223,7 +2298,7 @@ def test_check_refuses_a_verified_set_that_differs(
     change: Callable[[list[dict[str, Any]]], None],
     message: str,
 ) -> None:
-    reject_m02(world, {"M-04": {GLM: reply("critical", {"5b": {"verdict": "unverifiable"}})}})
+    reject_m02(world, {"M-04": {SECOND: reply("critical", {"5b": {"verdict": "unverifiable"}})}})
     apply(world)
     assert check(world)["status"] == "ok"
     rewrite(world, change)
@@ -2359,7 +2434,7 @@ def test_a_row_of_a_plan_is_not_taken_on_its_word(
         world,
         world.round_1,
         world.inputs,
-        {"M-02": {GLM: reply("critical"), OPUS: reply("critical")}},
+        {"M-02": {SECOND: reply("critical"), OPUS: reply("critical")}},
     )
     assert v.load_round(world.round_1, world.drafts).decisions["M-02"]["outcome"] == "rejected"
     apply(world)
@@ -2384,7 +2459,7 @@ def test_a_plan_of_another_author_or_other_verifiers_is_not_read(world: World) -
     run_round(world, world.round_1, world.inputs)
     original = (world.round_1 / "plan.json").read_bytes()
     changes: list[Callable[[dict[str, Any]], Any]] = [
-        lambda plan: plan["verifiers"][GLM].update(model="glm-5.2"),
+        lambda plan: plan["verifiers"][SECOND].update(model="another-model"),
         lambda plan: plan["verifiers"].pop(OPUS),
         lambda plan: plan["draft_author"].update(vendor="Anthropic"),
     ]
@@ -2394,7 +2469,7 @@ def test_a_plan_of_another_author_or_other_verifiers_is_not_read(world: World) -
         with pytest.raises(ValueError, match=message):
             v.decide(world.round_1, world.drafts)
         (world.round_1 / "plan.json").write_bytes(original)
-    replan(world, lambda plan: plan.update(verifiers=[GLM, OPUS]), world.round_1)
+    replan(world, lambda plan: plan.update(verifiers=[SECOND, OPUS]), world.round_1)
     with pytest.raises(ValueError, match="plan.json does not hold a plan"):
         v.decide(world.round_1, world.drafts)
     (world.round_1 / "plan.json").write_bytes(original)
@@ -2500,6 +2575,92 @@ def test_summary_reports_the_share_only_over_decided_cases() -> None:
     }
     assert summary["safety_critical"] == {"verified": 0, "verified_without_authority_unverified": 0}
     assert summary["complete"] is False and summary["verified_by_class"] == {}
+    assert summary["verified_after_repair"] == []
+
+
+# --- the registered rubric: one verifier ---------------------------------------------------
+
+
+def alone(text: str | None) -> dict[str, dict[str, dict[str, Any]] | None]:
+    return {OPUS: lv.parse_reply(text) if text else None}
+
+
+def test_one_verifier_decides_alone() -> None:
+    """The decision of the registered rubric: one verdict, and nobody to disagree with it."""
+    assert lv.decide("moderate", alone(reply())) == {
+        "outcome": "confirmed",
+        "missing": [],
+        "authority_unverified": False,
+        "rejecting_checks": [],
+        "disagreements": [],
+        "severity_differences": [],
+    }
+    silent = lv.decide("moderate", alone(None))
+    assert silent["outcome"] == "none" and silent["missing"] == [OPUS]
+    rejected = lv.decide("moderate", alone(reply("moderate", REJECT_3)))
+    assert rejected["outcome"] == "rejected" and rejected["disagreements"] == []
+    assert rejected["rejecting_checks"] == [{"check": "3", "verdicts": {OPUS: REJECT_3["3"]}}]
+    flagged = lv.decide("moderate", alone(reply("moderate", {"5b": {"verdict": "unverifiable"}})))
+    assert flagged["outcome"] == "confirmed" and flagged["authority_unverified"] is True
+    step = lv.decide("moderate", alone(reply("high")))
+    assert step["outcome"] == "confirmed" and step["disagreements"] == []
+    assert [item["steps"] for item in step["severity_differences"]] == [1]
+    crossing = lv.decide("high", alone(reply("critical")))
+    assert [item["check"] for item in crossing["rejecting_checks"]] == ["5c"]
+    assert lv.decide("moderate", alone(reply()), check_1=False)["outcome"] == "rejected"
+
+
+NO_REPAIR = "The question joins two rules, and no label within the bounds of a repair covers both."
+
+
+def test_a_set_checked_by_one_model_is_named_so(world: World, one_voice: None) -> None:
+    """The registered rubric end to end: one store a round, the status of a check by one model,
+    a repair marked with its author, and a case dropped because no repair answers its rejection."""
+    clients = run_round(
+        world,
+        world.round_1,
+        world.inputs,
+        {
+            "M-02": {OPUS: reply("high", REJECT_3)},
+            "M-03": {OPUS: reply("moderate", REJECT_3)},
+        },
+    )
+    assert list(clients) == [OPUS]
+    assert sorted(path.name for path in world.round_1.iterdir()) == [f"{OPUS}.jsonl", "plan.json"]
+    repairs = world.write("repairs.jsonl", [repaired_m02()])
+    declared = {"case_id": "M-03", "ground": "repair_not_possible", "reason": NO_REPAIR}
+    drops = world.write("drops.json", [{**declared, "documents": [DELTA], "note": "kept nowhere"}])
+    inputs = replace(world.second, repairs=repairs, drops=drops)
+    run_round(world, world.round_2, inputs)
+    plan = json.loads((world.round_2 / "plan.json").read_text(encoding="utf-8"))
+    assert list(plan["verifiers"]) == [OPUS] and plan["declared_drops"] == [declared]
+    rows, register = apply(world, repairs)
+    label = {
+        "status": "single_model_verified",
+        "verifiers": [OPUS],
+        "rubric_version": "label-verification/v2",
+    }
+    assert [row["case_id"] for row in rows] == ["M-01", "M-02", "M-04"]
+    assert rows[0]["label_check"] == {**label, "round": 1}
+    assert rows[1]["label_check"] == {**label, "round": 2, "repair_author": REPAIRER}
+    assert {row["label_origin"] for row in rows} == {"agent_labelled"}
+    assert list(register["verifiers"]) == [OPUS] and register["repair_author"] == REPAIRER
+    assert list(register["sent"]) == [OPUS] and register["sent"][OPUS]["requests"] == 5
+    summary = register["summary"]
+    assert summary["verified_after_repair"] == ["M-02"]
+    assert summary["verifier_disagreements"] == []
+    assert summary["dropped"] == [declared]
+    assert register["cases"][2]["drop"] == {"ground": "repair_not_possible", "reason": NO_REPAIR}
+    assert register["complete"] is True
+    assert check(world, repairs, inputs)["status"] == "ok"
+    # The word of a check by two vendors is not one this set may carry.
+    rewrite(world, lambda rows: rows[0]["label_check"].update(status="model_verified"))
+    with pytest.raises(ValueError, match="the verified set is not what the decisions give"):
+        check(world, repairs)
+    apply(world, repairs)
+    replan(world, lambda plan: plan["declared_drops"][0].update(reason=" "))
+    with pytest.raises(ValueError, match="a declared drop gives no reason: M-03"):
+        check(world, repairs)
 
 
 # --- the rules of one case, and the real pilot ---------------------------------------------

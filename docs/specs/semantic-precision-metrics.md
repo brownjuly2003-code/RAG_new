@@ -53,6 +53,19 @@ GPT-6-Astra before any code was written from it
 ([audit](../audits/audit_astra_04_10_26_label_verification.md), 22 findings,
 all applied). What the tool that runs the protocol must do:
 [label-verification.md](label-verification.md).
+Seventh revision 2026-10-04 under plan decision D12 — the owner's «ты должен
+все делать сам» (do all of it yourself): the agent of the session,
+`claude-opus-5-5`, does the plan's work and its checks, and no model of
+another vendor is called in any role. «Label verification» becomes rubric
+`label-verification/v2`: one verifier in place of two and the status
+`single_model_verified`; the repair of a rejected case by the agent in place
+of the draft author, with the second check named a consistency check; a
+second ground for a declared drop; an unchanged repair refused; and the three
+flags the verify script computes no longer sent or judged. No verdict was
+counted under v1. The rules of this file that name models of other vendors
+for other steps — the judges and references of the ruler, the NLI validation,
+the answer checks of acceptance — are re-registered before the step that
+uses them starts, and are not run as written here.
 
 ## Why a second ruler
 
@@ -207,7 +220,8 @@ Case schema (G6, G17, G18; slices 1.3a/1.3d): besides question, evidence
 spans and required / critical facts, every case carries `question_origin`
 (agent style A / agent style B / real ticket) and `label_origin`
 (`agent_labelled` / `real_labelled`), `label_check` (`none` /
-`model_verified`, with the verifier ids and the rubric version — see «Label
+`single_model_verified` / `model_verified`, with the verifier ids, the rubric
+version, the round and, after a repair, the repair author — see «Label
 verification»), the seed-selected source section, the
 primary class (single-doc / multi-doc / aggregation / needs refusal or
 clarification), overlapping flags (RU→EN, numeric facts, trap type among
@@ -218,31 +232,36 @@ rule and the severity of a wrong answer. Quotas live in the plan (1.3d); an
 unmet quota narrows the scope of the conclusion instead of being filled.
 
 Label verification (decision D11, added 2026-10-03; rubric
-`label-verification/v1`, registered 2026-10-04 in plan step 1.3b before the
-first check; it replaces the human approval of decision D3): no person
-approves a case. Two verifier models from two vendors, neither of them the
-draft author's vendor, check every dev and holdout case independently, each
-blind to the other's verdict. The draft author is the registered generator of
+`label-verification/v2`, registered 2026-10-04 in plan step 1.3b before the
+first counted check; it replaces the human approval of decision D3): no
+person approves a case. One verifier model, of a vendor other than the draft
+author's, checks every dev and holdout case. Rubric v1 named two verifiers of
+two vendors; plan decision D12 leaves the plan one model, the agent of the
+session, so v2 names that model alone and says below what a check by one
+model does not show. Under v1 no verdict was counted: one request to each
+verifier was sent as a trial of the routes before D12 was recorded, and
+neither reply is evidence. The draft author is the registered generator of
 the case, recorded per case as `draft_author` with its model and vendor (the
 pilot: `gpt-6.1-sol`, OpenAI).
 
-Registered verifiers for drafts by an OpenAI model:
+Registered verifier for drafts by an OpenAI model:
 
 | Verifier | Vendor | Route | Settings |
 |---|---|---|---|
-| `glm-5.3` | Z.ai | direct `api.z.ai` messages API, streamed | effort `xhigh` |
 | `claude-opus-5-5` | Anthropic | Claude Code CLI, first-party provider | effort `max`, no tools |
 
-One request holds one case for one verifier, in a new session with no
-conversation state and no tools. A reply counts only when the route reports
-the registered model id. The request names neither the draft author nor the
-other verifier and carries nothing of an earlier round. The exact prompt is
-registered with the rubric: plan step 1.3b records its SHA-256 here in the
-commit that adds the verification tool, before any request is sent; a reply
-counts only when the prompt SHA-256 stored with it is the recorded one, and
-a changed prompt is a new rubric version.
+One request holds one case, in a new session with no conversation state and
+no tools. The verifier is the model of the agent that runs the plan: the new
+session is what keeps the agent's own knowledge — the draft author, the
+round, the reasons of an earlier check — out of the verdict. A reply counts
+only when the route reports the registered model id. The request names
+neither the draft author nor the verifier and carries nothing of an earlier
+round. The exact prompt is registered with the rubric: its SHA-256 is
+recorded here in the commit that moves the verification tool to v2, before
+any request of v2 is sent; a reply counts only when the prompt SHA-256 stored
+with it is the recorded one, and a changed prompt is a new rubric version.
 
-Prompt SHA-256 (rubric label-verification/v1): `93511368316d5439be394e7eba77c0f0d2f7fe357f0fbb98c37efc8fb930c6c7`
+Prompt SHA-256 (rubric label-verification/v2): `3f7c114428028f6518aca3f21a03f5352d0497d99d0356f2c804b9389df756ad`
 
 The checks:
 
@@ -266,8 +285,13 @@ The checks:
    registered and no applicable passage of the scan makes the premise true.
    Where passages conflict or one is outdated, the verifier judges by the
    passage that applies on `as_of` and names it;
-4. the primary class, the flags, the trap type and `expected_action` agree
-   with the above;
+4. the primary class, the `safety_critical` flag, the trap type and
+   `expected_action` agree with the above. The flags `numeric`, `ru_to_en`
+   and `adversarial_unanswerable` are not judged: the verify script computes
+   each from the label by its registered rule and refuses a case whose stored
+   flag differs. Rubric v1 sent them and described `ru_to_en` more loosely
+   than its rule, and the trial request was rejected on that description
+   alone;
 5. (plan G38, question б) authority and weight of the case. Checks 5a and 5b
    concern the organisation's own documents as supplied: whether an external
    norm a document cites says the same is not checked, and a citation of an
@@ -296,7 +320,7 @@ The checks:
      the critical facts. A case without spans has no facts, and 5d is
      confirmed.
 
-A verifier answers `confirm` or `reject` on checks 2, 3, 4 and 5d, with a
+The verifier answers `confirm` or `reject` on checks 2, 3, 4 and 5d, with a
 one-sentence reason and, on a rejection, the element concerned (a fact, a
 span, a passage of the scan). On 5a and 5b it answers `confirm`, `reject` or
 `unverifiable`: `reject` needs positive evidence in the supplied material —
@@ -309,57 +333,69 @@ confirm something is the draft author's note from before decision D11, not
 evidence for 5a or 5b. A reply that does not follow this form is requested
 again, three attempts in all.
 
-A case without a valid reply from both verifiers has no outcome in that round
-and keeps `label_check: none`. With two valid replies the case is confirmed
-when check 1 passes, both verifiers confirm checks 2, 3, 4 and 5d, neither
-rejects 5a or 5b, and on 5c neither verifier's level is two or more steps
-from the registered one or on the other side of the `critical` boundary;
-otherwise it is rejected. A confirmed case carries `label_check:
-model_verified` with the verifier ids, the rubric version and the round. If
-either verifier answers `unverifiable` on 5a or 5b, the confirmed case
-carries `authority_unverified: true`: it stays in the set and does not count
-toward the safety-critical quota; counts of safety-critical cases are
+A case without a valid reply from the verifier has no outcome in that round
+and keeps `label_check: none`. With a valid reply the case is confirmed when
+check 1 passes, the verifier confirms checks 2, 3, 4 and 5d, does not reject
+5a or 5b, and on 5c its level is neither two or more steps from the
+registered one nor on the other side of the `critical` boundary; otherwise it
+is rejected. A confirmed case carries `label_check: single_model_verified`
+with the verifier id, the rubric version and the round. `model_verified` is
+the word of a check by verifiers of two vendors, and no case of this rubric
+gets it. If the verifier answers `unverifiable` on 5a or 5b, the confirmed
+case carries `authority_unverified: true`: it stays in the set and does not
+count toward the safety-critical quota; counts of safety-critical cases are
 reported with and without such cases. A one-step severity difference that
-does not cross the `critical` boundary is published as a disagreement, not a
+does not cross the `critical` boundary is published as a difference, not a
 rejection.
 
-A rejected case is repaired once by the draft author, who sees the reasons of
-both verifiers. A repair changes the label, never the question: the case id,
-the question text, the draft author, the corpus version, `as_of`, the
-seed-selected section and the question style stay as drafted; spans, partner
-sections, facts, the reference answer, the class, the flags, the trap type,
-`expected_action`, its reason, the authority documents and the severity may
-change. A repair cites no document of the holdout reserve. A case that could
-be repaired only with one is dropped without a second round: the draft author
-declares it and names the reserve document, and that declaration is recorded
-as the reason of the drop. The families of a repaired case are recomputed and
-published. A new question is a replacement of the
+A rejected case is repaired once by the agent of the session
+(`claude-opus-5-5`, recorded as `repair_author`), who sees the verifier's
+reasons; the draft author is not called (D12). A repair changes the label,
+never the question: the case id, the question text, the draft author, the
+corpus version, `as_of`, the seed-selected section and the question style
+stay as drafted; spans, partner sections, facts, the reference answer, the
+class, the flags, the trap type, `expected_action`, its reason, the authority
+documents and the severity may change. A repair that leaves the label as
+drafted is refused: a second request on an unchanged label would be a second
+draw of the same check, not a repair. A repair cites no document of the
+holdout reserve. A rejected case that is not repaired is dropped without a
+second round by a declaration of the repair author, on one of two grounds:
+`repair_needs_reserve` — only a document of the holdout reserve could repair
+it, and the declaration names the document; `repair_not_possible` — no change
+of the label within the bounds above answers the rejection, because the
+question itself is at fault or because the agent finds the rejection wrong
+and so has no repair to make — with the reason in one sentence. The
+declaration is recorded as the reason of the drop. The families of a repaired
+case are recomputed and published. A new question is a replacement of the
 case, which belongs to question в of plan G38, not a repair. The repaired
 case passes the per-case rules of the verify script and its source checks;
 the rules of the draft set as a whole — quotas, the split of styles, the
-SHA-256 of the file — bind the unchanged drafts only. Both verifiers then
-check the repaired case in full, in the same form and with no trace of the
-first round. A second rejection drops the case, with the rejecting checks
-recorded. A relabelled class or action changes the class counts: rejection
-shares are reported by the drafted class, the verified set by the class
-after repair, with the transitions listed, and the quota rule above applies.
-If fewer than two vendors other than the author's are available (a quota, an
-outage), verification waits: a second model of one vendor is not a second
-voice. The same holds for the repair when the author model is unavailable.
-Step 1.3b is closed only when every draft is confirmed or dropped.
+SHA-256 of the file — bind the unchanged drafts only. The verifier then
+checks the repaired case in full, in the same form, in a new session and with
+no trace of the first round. This second check is made by the model that
+wrote the repair: it is a consistency check — it can catch a repair that its
+own spans do not support — and not a check by another party. A case confirmed
+in round 2 carries `repair_author` in its `label_check` and is counted apart.
+A second rejection drops the case, with the rejecting checks recorded. A
+relabelled class or action changes the class counts: rejection shares are
+reported by the drafted class, the verified set by the class after repair,
+with the transitions listed, and the quota rule above applies. If the
+verifier is unavailable (a quota, an outage), verification waits. Step 1.3b
+is closed only when every draft is confirmed or dropped.
 
-The verifiers receive the whole draft case — question, span texts, facts with
-their quotes, reference answer, class, flags, trap type, `expected_action`,
-the registered reason, `as_of`, the authority documents and the severity —
+The verifier receives the whole draft case — question, span texts, facts with
+their quotes, reference answer, class, the `safety_critical` flag, trap type,
+`expected_action`, the registered reason, `as_of`, the authority documents
+and the severity; the three flags the verify script computes are not sent —
 with every source named by a pseudonym, never by its file name (plan G31); a
 file name inside a corpus text is replaced by the pseudonym of that document.
 The `scope` text of the pilot's `authority_source` is a template of the draft
-phase and is not sent. For check 5 they receive the document card of each
-authority document: the front-matter fields `title`, `document_type`,
+phase and is not sent. For check 5 the verifier receives the document card of
+each authority document: the front-matter fields `title`, `document_type`,
 `source_type`, `version`, `effective_date`, `owner_role` and
 `related_normative_sources` of the source file at the registered corpus
 version, and nothing else of the front matter. For refusal, clarification and
-trap cases they also receive the text of the seed-selected and partner
+trap cases it also receives the text of the seed-selected and partner
 sections and the texts of the wide scan.
 
 Wide scan (plan G38, question а; it replaces the control's pre-rerank pool in
@@ -380,20 +416,28 @@ verifier, and the chance that the scan misses an answering passage has not
 been estimated.
 
 The capsule publishes, per class, the share rejected at the first check, the
-disagreements between the verifiers, the cases flagged `authority_unverified`
-and the dropped cases. `label_origin` stays `agent_labelled`: a model check is
-not a human approval, `real_labelled` is not assigned and the count of real
-labelled cases does not rise. The check bounds label errors, it does not
-prove their absence: models can share an error, and on refusal, clarification
-and trap cases a passage outside the wide scan can leave an answerable
-question registered as unanswerable (plan G37). At acceptance such a case is
-resolved by the `gold_error` rule of the contract below. The severity scale
-was written after the pilot drafts were labelled; a severity the scale does
-not support is a rejection like any other. Still open in plan G38: the
-replacement of dropped cases (question в, before step 1.3c registers n).
-Screening drafts (below) are checked once by one model of a vendor other than
-their author's; rejected drafts are dropped, and more than 10 % rejected
-means the generator is rewritten and the check repeated (G32).
+cases confirmed only after a repair, the severity differences, the cases
+flagged `authority_unverified` and the dropped cases with their grounds.
+`label_origin` stays `agent_labelled`: a model check is not a human approval,
+`real_labelled` is not assigned and the count of real labelled cases does not
+rise. The check bounds label errors, it does not prove their absence. What a
+check by one model does not show: an error this model makes systematically —
+in reading a rule, in judging a severity — passes unseen, and there is no
+second verifier whose disagreement would point at it. On an unrepaired case
+the author of the label and its verifier are models of two vendors; on a
+repaired case they are one model. On refusal, clarification and trap cases a
+passage outside the wide scan can leave an answerable question registered as
+unanswerable (plan G37). At acceptance such a case is resolved by the
+`gold_error` rule of the contract below. The severity scale was written after
+the pilot drafts were labelled; a severity the scale does not support is a
+rejection like any other. Still open in plan G38: the replacement of dropped
+cases (question в, before step 1.3c registers n). Screening drafts (below)
+are checked once by one model of a vendor other than their author's; rejected
+drafts are dropped, and more than 10 % rejected means the generator is
+rewritten and the check repeated (G32). Under D12 the drafts of step 1.3d are
+written by the agent of the session, so no verifier of another vendor exists
+for them: who checks them and what that check is called is registered here,
+in a new rubric version, before step 1.3d sends its first request.
 
 Candidate and token budgets are equal between arms. `precision_at_5` and
 `ndcg_at_5` are computed on the reranked seeds before expansion;
@@ -479,8 +523,9 @@ text hash — one population per metric (№6).
   the observed effect is printed as description, never as evidence of
   adequacy (Astra final-plan audit №12).
 - **Screening tier** (G13): 300–500 `agent_labelled` questions drawn from the
-  dev families only, kept apart from the verified set (`model_verified`; until
-  2026-10-03 «the human set»), run retrieval-only with
+  dev families only, kept apart from the verified set (`single_model_verified`
+  since the seventh revision, `model_verified` in the fifth; until 2026-10-03
+  «the human set»), run retrieval-only with
   the consensus judge and the retrieval stages the mechanism needs. Judge
   grades are cached by the full request hash — `(question_hash, the ordered
   text_sha256 list of the presented set, rubric version, judge version)`:

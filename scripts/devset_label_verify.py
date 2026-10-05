@@ -1,7 +1,6 @@
-"""Check the labels of development-set drafts with two models of two other vendors.
+"""Check the labels of development-set drafts with the registered verifier model.
 
     python -m scripts.devset_label_verify plan --round 1
-    python -m scripts.devset_label_verify verify --round 1 --verifier glm-5.3 [--limit N]
     python -m scripts.devset_label_verify verify --round 1 --verifier claude-opus-5-5 [--limit N]
     python -m scripts.devset_label_verify decide --round 1
     python -m scripts.devset_label_verify plan --round 2 --repairs <jsonl> [--drops <json>]
@@ -19,12 +18,12 @@ repairs and the declared drops) and refuses inputs that no longer give the plan.
 
 verify sends the planned requests of one verifier and appends every reply to
 <round dir>/<verifier>.jsonl; a rerun resumes by request. --limit N takes up at most N
-requests in one run. The settings file of the GLM route may be named in RAG_JUDGE_GLM_SETTINGS
-and the Claude CLI in RAG_VERIFY_CLAUDE_CLI; neither is printed or stored. Only the request
-text leaves the machine.
+requests in one run. The Claude CLI may be named in RAG_VERIFY_CLAUDE_CLI; it is not printed or
+stored. Only the request text leaves the machine, and only to a registered verifier: the tool
+holds no route to any other model (plan decision D12).
 
 decide recomputes the outcome of every planned case from the stores, writes
-<round dir>/decisions.json and prints, for each rejected case, the reasons of both verifiers:
+<round dir>/decisions.json and prints, for each rejected case, the reasons of every verifier:
 the input of the repair.
 
 apply writes the verified set and its register; check recomputes both from the plans and the
@@ -58,7 +57,6 @@ from typing import Any, TextIO
 from evaluation import devset
 from evaluation import label_verification as lv
 from evaluation.blinded_judge_clients import (
-    GlmClient,
     JudgeUnavailable,
     RateLimited,
     Reply,
@@ -496,10 +494,7 @@ def second_round(
     order = {case["case_id"]: index for index, case in enumerate(drafts.cases)}
     repairs.sort(key=lambda case: order[case["case_id"]])
     drops = sorted(
-        (
-            {"case_id": drop["case_id"], "ground": drop["ground"], "documents": drop["documents"]}
-            for drop in declared
-        ),
+        ({"case_id": drop["case_id"], **lv.drop_record(drop)} for drop in declared),
         key=lambda drop: order[drop["case_id"]],
     )
     return (
@@ -711,11 +706,11 @@ class ClaudeCliClient:
 
 
 def make_client(name: str) -> Any:
-    """Build the client of a registered verifier from the environment; nothing is echoed."""
-    if name == "glm-5.3":
-        settings = os.environ.get("RAG_JUDGE_GLM_SETTINGS", "").strip()
-        return GlmClient(Path(settings) if settings else None)
-    if name == ClaudeCliClient.model:
+    """Build the client of a registered verifier from the environment; nothing is echoed.
+
+    A route exists for a registered verifier and for no other model.
+    """
+    if name == ClaudeCliClient.model and name in lv.VERIFIERS:
         return ClaudeCliClient(os.environ.get("RAG_VERIFY_CLAUDE_CLI", "").strip() or None)
     raise ValueError(f"no route is registered for the verifier {name}")
 
@@ -858,7 +853,7 @@ def verify(
 
 
 def rejection_lines(decisions: Mapping[str, Mapping[str, Any]]) -> list[str]:
-    """For each rejected case, the rejecting checks with the answers and reasons of both."""
+    """For each rejected case, the rejecting checks with the answer and reason of every verifier."""
     lines = []
     for case_id, decision in decisions.items():
         if decision["outcome"] != "rejected":
@@ -991,16 +986,19 @@ def build_outputs(drafts: Drafts, first: Round, second: Round | None) -> tuple[b
                 # The revision the verdicts were given on: the row of the plan is bound to it.
                 kept = second.revisions[case_id]
             label = {
-                "status": "model_verified",
+                "status": lv.verified_status(verifier_ids),
                 "verifiers": verifier_ids,
                 "rubric_version": lv.RUBRIC_VERSION,
                 "round": number,
             }
+            if number == 2:
+                # The verdicts of round 2 were given on a label its verifier's model wrote.
+                label["repair_author"] = dict(lv.REPAIR_AUTHOR)
             authority_unverified = (one if number == 1 else two or {})["authority_unverified"]
         elif state == "dropped":
             kept = None
             drop = (
-                {"ground": drops[case_id]["ground"], "documents": drops[case_id]["documents"]}
+                lv.drop_record(drops[case_id])
                 if case_id in drops
                 else {
                     "ground": lv.SECOND_REJECTION,
@@ -1044,6 +1042,7 @@ def build_outputs(drafts: Drafts, first: Round, second: Round | None) -> tuple[b
         "label_origin": "agent_labelled",
         "draft_author": author,
         "verifiers": first.plan["verifiers"],
+        "repair_author": lv.REPAIR_AUTHOR,
         "sha256": {
             **{key.removesuffix("_sha256"): first.plan["inputs"][key] for key in BOUND_INPUTS},
             "repairs": second.plan["inputs"]["repairs_sha256"] if second is not None else None,
@@ -1122,6 +1121,7 @@ def check(
                 )
     by_id = drafts.by_id()
     drops = second.drops if second is not None else {}
+    status = lv.verified_status(first.plan["verifiers"])
     seen: set[str] = set()
     for row in read_jsonl(verified):
         case_id = row.get("case_id")
@@ -1135,7 +1135,7 @@ def check(
             raise ValueError(f"a dropped case is still present: {case_id}")
         content = {key: value for key, value in row.items() if key not in lv.ADDED_FIELDS}
         label = row.get("label_check")
-        if not isinstance(label, dict) or label.get("status") != "model_verified":
+        if not isinstance(label, dict) or label.get("status") != status:
             if content != draft:
                 raise ValueError(f"an unrepaired case differs from its draft: {case_id}")
             continue
@@ -1143,7 +1143,7 @@ def check(
         decided = first if number == 1 else second if number == 2 else None
         if decided is None or decided.decisions.get(case_id, {}).get("outcome") != "confirmed":
             raise ValueError(
-                f"a model_verified case is not confirmed by two valid verdicts: {case_id}"
+                f"a verified case is not confirmed by a valid verdict of every verifier: {case_id}"
             )
         if lv.case_sha256(row) != decided.requests[case_id]["case_sha256"]:
             raise ValueError(
