@@ -3,6 +3,7 @@
     python -m scripts.baseline_report export --run <baseline run> --out <evidence dir>
     python -m scripts.baseline_report build --inputs <evidence dir> --judge-dir <judge dir>
         --out <report.json> [--judge opus] [--state <supervisor state>] [--host-samples <file>]
+    python -m scripts.baseline_report pack --judge-dir <judge dir>
 
 export reads a finished production-baseline run through the collector's own integrity
 checks and writes what the report is computed from, small enough to keep in the
@@ -15,6 +16,10 @@ lexical ruler and the development ruler for H and Hm, their intervals, the timin
 collection and the provenance fields the collector left to this step. It refuses when the
 files do not describe one run. Every rule is the metrics spec's, «Baseline of plan slice
 2.5»; nothing is chosen here, and nothing is sent anywhere.
+
+pack writes plan.json.gz beside the judge plan: the plan repeats every text it sends, so the
+repository keeps it packed. build reads a packed plan where plan.json is absent, so the
+report can be recomputed from the committed files as they are.
 """
 
 from __future__ import annotations
@@ -24,6 +29,7 @@ import gzip
 import json
 import math
 import subprocess
+import tempfile
 from collections.abc import Mapping, Sequence
 from pathlib import Path
 from typing import Any
@@ -221,12 +227,38 @@ def case_families(
     return mapping
 
 
+def pack(judge_dir: Path) -> dict[str, Any]:
+    """Write plan.json.gz, the judge plan as the repository keeps it; the same bytes every time."""
+    data = (judge_dir / "plan.json").read_bytes()
+    packed = judge_dir / "plan.json.gz"
+    if packed.exists():
+        if gzip.decompress(packed.read_bytes()) != data:
+            raise FileExistsError("A different plan.json.gz exists in the judge directory")
+    else:
+        packed.write_bytes(gzip.compress(data, compresslevel=9, mtime=0))
+    return {
+        "plan_sha256": parity.file_sha(judge_dir / "plan.json"),
+        "plan_bytes": len(data),
+        "packed_bytes": packed.stat().st_size,
+    }
+
+
+def _load_plan(judge_dir: Path) -> tuple[dict[str, Any], str]:
+    """Read the judge plan, packed or not, through the judge tool's own checks."""
+    if (judge_dir / "plan.json").is_file():
+        return judge_tool.load_plan(judge_dir), parity.file_sha(judge_dir / "plan.json")
+    data = gzip.decompress((judge_dir / "plan.json.gz").read_bytes())
+    with tempfile.TemporaryDirectory() as scratch:
+        unpacked = Path(scratch) / "plan.json"
+        unpacked.write_bytes(data)
+        return judge_tool.load_plan(unpacked.parent), parity.file_sha(unpacked)
+
+
 def load_judged(judge_dir: Path, judge: str, inputs: Mapping[str, Any]) -> dict[str, Any]:
     """Read the plan, the stores, the ruler input and the retest; refuse a stale or foreign one."""
     if judge not in judge_tool.JUDGES:
         raise ValueError(f"unknown judge: {judge}")
-    plan = judge_tool.load_plan(judge_dir)
-    plan_sha256 = parity.file_sha(judge_dir / "plan.json")
+    plan, plan_sha256 = _load_plan(judge_dir)
     if (
         plan["run_sha256"] != inputs["identity"]
         or plan["baseline_report_sha256"] != (inputs["collector_sha256"])
@@ -611,9 +643,14 @@ def main(argv: list[str] | None = None) -> int:
     build_command.add_argument("--judge", choices=judge_tool.JUDGES, default=judge_tool.JUDGES[0])
     build_command.add_argument("--state", type=Path)
     build_command.add_argument("--host-samples", type=Path)
+    pack_command = commands.add_parser("pack")
+    pack_command.add_argument("--judge-dir", type=Path, required=True)
     arguments = parser.parse_args(argv)
     if arguments.command == "export":
         print(json.dumps(export(arguments.run, arguments.out), ensure_ascii=False))
+        return 0
+    if arguments.command == "pack":
+        print(json.dumps(pack(arguments.judge_dir), ensure_ascii=False))
         return 0
     report = build(
         arguments.inputs,

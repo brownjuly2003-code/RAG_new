@@ -578,6 +578,28 @@ def test_cli_exports_and_builds(evidence, tmp_path, monkeypatch, capsys):
     assert read_store(judges / judge_tool.RUN_LOG)
 
 
+def test_a_packed_plan_gives_the_same_report_and_another_packed_plan_is_refused(evidence, capsys):
+    _, inputs, judges, families = evidence()
+    plain = _build(inputs, judges, families)
+    plan = judges / "plan.json"
+    assert report.main(["pack", "--judge-dir", str(judges)]) == 0
+    printed = json.loads(capsys.readouterr().out)
+    kept = (judges / "plan.json.gz").read_bytes()
+    assert gzip.decompress(kept) == plan.read_bytes()
+    assert printed == {
+        "plan_sha256": parity.file_sha(plan),
+        "plan_bytes": plan.stat().st_size,
+        "packed_bytes": len(kept),
+    }
+    assert report.pack(judges) == printed and (judges / "plan.json.gz").read_bytes() == kept
+    plan.rename(judges / "plan.moved")
+    assert _build(inputs, judges, families) == plain
+    (judges / "plan.moved").rename(plan)
+    (judges / "plan.json.gz").write_bytes(gzip.compress(b"{}"))
+    with pytest.raises(FileExistsError, match="plan.json.gz"):
+        report.pack(judges)
+
+
 def test_registered_family_map_leaves_four_clusters_in_h_and_one_in_hm():
     family_map = report.load_family_map(ROOT / report.FAMILY_MAP)
     counts = {}
