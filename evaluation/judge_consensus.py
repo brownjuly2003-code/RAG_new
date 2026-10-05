@@ -6,11 +6,19 @@ unchanged for the pinned P2 artifacts.
 
 from __future__ import annotations
 
+import random
+from collections import Counter
 from collections.abc import Hashable, Iterable, Mapping, Sequence
 from dataclasses import dataclass
 from typing import Any
 
-from evaluation.blinded_judge import lower_median
+from evaluation.blinded_judge import (
+    BOOTSTRAP_SAMPLES,
+    SEED,
+    _percentile,
+    lower_median,
+    quadratic_kappa,
+)
 from evaluation.judge_contract import validate_grade_record
 
 MISSING_SHARE_LIMIT = 0.05
@@ -203,4 +211,55 @@ def ruler_cases(
             subset: excluded_counts.get(subset, 0) for subset in sorted(subsets)
         },
         "kept_by_subset": {subset: kept_counts.get(subset, 0) for subset in sorted(subsets)},
+    }
+
+
+def retest_stability(
+    pairs_by_case: Mapping[str, Sequence[tuple[int, int]]],
+    *,
+    samples: int = BOOTSTRAP_SAMPLES,
+    seed: int = SEED,
+) -> dict[str, Any]:
+    """Agreement of one judge with itself over units graded in two passes.
+
+    Each case maps to its `(first pass, second pass)` grade pairs. Quadratic
+    kappa is taken over every pair; its CI95 is a percentile bootstrap that
+    resamples cases, each entering with all its pairs. Kappa is `None` when it
+    is undefined on the sample, and the interval is `None` when it is undefined
+    in every resample. A flip is a pair whose relevance, grade >= 2, differs.
+    """
+    case_ids = sorted(case_id for case_id, pairs in pairs_by_case.items() if pairs)
+    for case_id in case_ids:
+        for pair in pairs_by_case[case_id]:
+            if len(pair) != 2 or any(
+                type(grade) is not int or not 0 <= grade <= 3 for grade in pair
+            ):
+                raise ValueError("grades must be integers 0-3")
+    counted = Counter(pair for case_id in case_ids for pair in pairs_by_case[case_id])
+    left = [first for case_id in case_ids for first, _ in pairs_by_case[case_id]]
+    right = [second for case_id in case_ids for _, second in pairs_by_case[case_id]]
+    kappa = quadratic_kappa(left, right)
+    draws: list[float] = []
+    if kappa is not None:
+        rng = random.Random(seed)
+        size = len(case_ids)
+        for _ in range(samples):
+            chosen = [case_ids[rng.randrange(size)] for _ in range(size)]
+            value = quadratic_kappa(
+                [first for case_id in chosen for first, _ in pairs_by_case[case_id]],
+                [second for case_id in chosen for _, second in pairs_by_case[case_id]],
+            )
+            if value is not None:
+                draws.append(value)
+        draws.sort()
+    return {
+        "cases": len(case_ids),
+        "units": len(left),
+        "quadratic_kappa": kappa,
+        "ci95": [_percentile(draws, 0.025), _percentile(draws, 0.975)] if draws else None,
+        "resamples_used": len(draws),
+        "resamples_undefined": (samples - len(draws)) if kappa is not None else 0,
+        "exact_agreement": sum(count for (a, b), count in counted.items() if a == b),
+        "relevance_flips": sum(count for (a, b), count in counted.items() if (a >= 2) != (b >= 2)),
+        "cross_table": {str(a): {str(b): counted[(a, b)] for b in range(4)} for a in range(4)},
     }

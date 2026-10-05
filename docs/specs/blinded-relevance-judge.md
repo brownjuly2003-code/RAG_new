@@ -237,15 +237,43 @@ first. A single part keeps the case id; the parts of a split case are
 `request_sha256` and prompt length, and SHALL be refused on read when either no
 longer rebuilds from the stored question and documents.
 
-`judge --out <dir> --judge glm|sonnet` SHALL send the planned requests through the
-v2 runner into `<dir>/<judge>.jsonl`, under the judge version the runner's own CLI
-gives the same judge, route, parameters and endpoint. One store SHALL hold the
-attempts of one judge version: before any request `judge` SHALL refuse a store
-that holds an attempt of another version. The Sonnet endpoint SHALL come from
-`RAG_JUDGE_GK_BASE`; without it the command SHALL be refused before any request.
-Neither the endpoint nor a credential SHALL be printed. The summary SHALL report
-what left the machine as an upper bound: the calls, texts and prompt characters of
-every attempt that was not a reuse.
+`judge --out <dir> --judge opus` SHALL send the planned requests through the v2
+runner into `<dir>/<judge>.jsonl`, under the judge version the runner derives from
+the judge's name, route and parameters. The registered judge of new texts is one
+model (metrics spec, «Judge of new texts»; plan decision D12): `claude-opus-5-5`
+through the Claude Code CLI with exactly the arguments of the P2 Opus reference
+collection, one new process and session per request. The command SHALL hold no
+route to any other model: a judge name outside the registry SHALL be refused
+before any request. Until 2026-10-05 the registry named GLM 5.3 and Sonnet 5, the
+judges of the P2 consensus; their grades stay in their published stores and the
+command no longer calls them. A reply SHALL be accepted only when the CLI reports
+that the registered model alone, through the first-party provider, produced it;
+anything else is an absent attempt. Of the CLI's usage report the store SHALL keep
+five numeric counters and nothing else. One store SHALL hold the attempts of one
+judge version: before any request `judge` SHALL refuse a store that holds an
+attempt of another version. The CLI may be named in `RAG_JUDGE_CLAUDE_CLI`; the
+value SHALL NOT be printed or stored. The summary SHALL report what left the
+machine as an upper bound: the calls, texts and prompt characters of every attempt
+that was not a reuse.
+
+`judge --retest` SHALL send the stability sub-sample a second time into
+`<dir>/<judge>-retest.jsonl` and SHALL reuse no reply of the first pass. The
+sub-sample is derived from the plan alone: per subset, the planned cases that have
+a request, sorted by the SHA-256 of `20260925:retest:<case_id>`, the first 10.
+Every request of a drawn case is sent as `<request id>~retest`, which gives its
+documents another blind order. `plan` SHALL print the number of drawn cases and of
+retest requests next to its other counts.
+
+`retest --out <dir> --judge opus` SHALL compare the two passes over the units of
+the sub-sample graded in both and write `<judge>-retest.json`: quadratic-weighted κ
+with a percentile bootstrap CI95 over 10 000 resamples of cases (seed 20260925),
+for the whole sub-sample and per subset, the 4 × 4 table, the exact agreements and
+the units whose relevance differs. The verdict reads the interval of the whole
+sub-sample: `single_judge` when it lies at or above 0.7, `provisional_ruler`
+otherwise. When either pass misses more than 5 % of the sub-sample's units, or κ
+is undefined, the verdict and the status SHALL be `NOT_EVIDENCE` and the exit
+status 1. Passes graded under two judge versions SHALL be refused. The command
+computes no retrieval-quality number.
 
 `consensus --out <dir>` SHALL count a grade only when its request id and
 `request_sha256` are in the plan. It SHALL refuse a store whose attempts, whatever
@@ -259,8 +287,9 @@ never scored. A text sent more than once is one document of the ruler input, kep
 at its first position, and the repeats SHALL be counted; seeds are passed as
 ranked. With no consensus grade at all the status SHALL be `NOT_EVIDENCE`,
 `ruler-input.json` SHALL NOT be written and the exit status SHALL be 1; the counts
-of kept and excluded cases SHALL be reported for both statuses. The command
-computes no quality number.
+of kept and excluded cases SHALL be reported for both statuses. The summary and
+the ruler input SHALL name the source of the grades: `single_judge` when one judge
+is included, `consensus` when more are. The command computes no quality number.
 
 ### Scenario: a case with more than ten texts is split
 - **GIVEN** a case whose seeds and sent documents hold 21 distinct addressed texts
@@ -282,8 +311,34 @@ computes no quality number.
 
 ### Scenario: the judge configuration changes in a used directory
 - **GIVEN** a store that holds attempts of one judge version
-- **WHEN** `judge` runs there with another endpoint or other judge parameters
+- **WHEN** `judge` runs there with another route or other judge parameters
 - **THEN** it is refused before any request and the store is unchanged
+
+### Scenario: a model outside the registry is named
+- **GIVEN** the registry with its one judge
+- **WHEN** `judge` is called with `glm`, `sonnet` or any other name
+- **THEN** the command is refused and no store is created
+
+### Scenario: one judge grades alone
+- **GIVEN** a plan and the valid replies of the registered judge
+- **WHEN** the consensus is formed
+- **THEN** every grade is the judge's own and the summary says `single_judge`
+- **AND** a store that misses more than 5 % of the units gives `NOT_EVIDENCE`
+
+### Scenario: the judge repeats itself
+- **GIVEN** two passes of the sub-sample with equal grades
+- **WHEN** `retest` runs
+- **THEN** κ is 1, the verdict is `single_judge` and the report names both stores
+
+### Scenario: the judge contradicts itself
+- **GIVEN** a second pass whose grades differ from the first on most units
+- **WHEN** `retest` runs
+- **THEN** the verdict is `provisional_ruler` and the differing units are counted
+
+### Scenario: a pass of the retest is incomplete
+- **GIVEN** a second pass that misses more than 5 % of the sub-sample's units
+- **WHEN** `retest` runs
+- **THEN** the verdict is `NOT_EVIDENCE` and the exit status is 1
 
 ### Scenario: one text is sent twice
 - **GIVEN** a sent context that holds one text under two addresses and one other text

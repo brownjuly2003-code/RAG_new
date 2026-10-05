@@ -66,6 +66,15 @@ counted under v1. The rules of this file that name models of other vendors
 for other steps — the judges and references of the ruler, the NLI validation,
 the answer checks of acceptance — are re-registered before the step that
 uses them starts, and are not run as written here.
+Eighth revision 2026-10-05 (UTC) under the same decision, before the first
+relevance grade of plan slice 2.5: «Relevance grades» names the judge of new
+texts — `claude-opus-5-5` alone — and the status `single_judge` of every
+number computed from its grades; says what was measured about this judge on
+the P2 sample; puts a stability retest in the place of the reference
+sub-sample for expanded contexts and new classes (question г of plan G38);
+and says what a `single_judge` ruler may claim. The registered consensus, its
+D2 verdict and every published number are unchanged; the answer checks of
+2.8 and 4.1 are still to be re-registered.
 
 ## Why a second ruler
 
@@ -87,7 +96,9 @@ adding matching text or by dropping documents that carry required facts
   list). Two model references check the consensus and never replace it as
   the source: GPT-6-Astra (OpenAI — a vendor outside the consensus) and
   Opus 5.5 (Anthropic, the vendor of the Sonnet judge — a control, not an
-  independent voice).
+  independent voice). This is the source of every grade published up to
+  step 1.1; texts graded from slice 2.5 on have the source named in «Judge
+  of new texts» below.
 - Rule (decision D2 as changed by D11, refined per GLM-1): quadratic-weighted
   κ between the consensus and each of the two model references on the blind
   ten-case sample is published with a bootstrap CI95 clustered by case
@@ -128,6 +139,82 @@ adding matching text or by dropping documents that carry required facts
   once, as in branch (1); if that set does not pass either, the campaign
   closes without acceptance 4.1 and the owner decides what follows (until
   2026-10-03 the owner decided right after the second indeterminate κ).
+  Since the eighth revision no reference sub-sample is graded: one of the two
+  references is a model of another vendor, and the stability retest below
+  takes its place.
+- Judge of new texts (decision D12; eighth revision, registered before the
+  first grade of slice 2.5). Every text graded from slice 2.5 on is graded by
+  one judge: `claude-opus-5-5` (Anthropic) through the Claude Code CLI,
+  first-party provider, effort `max`, no tools, a new session for each
+  request — the arguments and the system prompt of the P2 Opus reference
+  collection (`scripts/p2_opus_reference.py`; system prompt SHA-256
+  `2845935202ebc7963c0a6cb9efe7c51a975fae41dadd50cfca7acc7ce25ce76d`) — with
+  the v2 request of `evaluation.judge_contract`: rubric `p2-0-3-v1`, grading
+  instruction SHA-256
+  `7877c3845a742013e3c189e260ef506ba07dc65749fa3df8455a181a4dcedc33`, 1 to 10
+  documents in the registered blind order. The consensus of GLM 5.3 and
+  Sonnet 5 grades no new text: GLM is a model of another vendor, and D12
+  leaves the plan one model. A grade of the judge is used as it is. A text
+  the judge gave no valid grade is unjudged, never grade 0, and its case
+  leaves the judged metrics with the reason; a store that misses more than
+  5 % of a run's units makes the run `NOT_EVIDENCE`. A request without a
+  valid reply may be sent again by an explicit rerun, and every attempt stays
+  in the store.
+- Status `single_judge`: every number computed from these grades carries it
+  and names the judge. Such a number is not the registered consensus and is
+  not `model-cross-checked`, and it is never set against a published
+  consensus number as a difference — the P2 baseline of the ruler, the κ of
+  step 1.1 and the numbers of 1.4 stay what they are, on their own grades.
+  The two arms of any later comparison are graded by this judge under one
+  judge version and one rubric version.
+- What is known of this judge. On the blind ten-case sample — 50 documents,
+  the five-document request of P2 — the same model graded as a reference
+  through the same route and arguments (CLI 2.1.283): quadratic-weighted κ
+  0.9604, CI95 [0.9087, 1.0000] to the registered consensus, 0.9727
+  [0.9257, 1.0000] to GPT-6-Astra, 0.9133 [0.8580, 0.9672] to GLM 5.3 and
+  0.8950 [0.8267, 0.9485] to Sonnet 5
+  ([capsule](../evidence/p2-model-reference-kappa.md)). The numbers were
+  published before this rule was written, so the choice of the judge is not
+  blind to them, and no new comparison with a model of another vendor is made
+  (D12). They cover what the sample covers: its question classes, unexpanded
+  top-5 contexts and the five-document request. Nothing was measured for
+  expanded contexts, for the request of 1 to 10 documents or for an Hm case.
+- Stability retest (closes question г of plan G38). Where the scope rule
+  asked for a reference sub-sample, the judge grades a sub-sample twice. The
+  sub-sample is fixed by the judge plan, before any grade of the run exists:
+  per subset, the planned cases that have a request, sorted by the SHA-256 of
+  `20260925:retest:<case_id>`, the first 10 (all of them when the subset has
+  fewer). Every request of a drawn case is sent a second time, in a new
+  session, under the request id `<request id>~retest` — which gives its
+  documents another registered blind order — into a store of its own, so no
+  reply of the first pass is reused. Published per subset and over the whole
+  sub-sample: quadratic-weighted κ between the two passes over the units
+  graded in both, its bootstrap CI95 clustered by case (10 000 resamples of
+  cases, percentile interval, seed 20260925), the 4 × 4 table of grades and
+  the number of units whose relevance (grade ≥ 2) differs between the passes.
+  A retest in which either pass misses more than 5 % of the sub-sample's
+  units is `NOT_EVIDENCE`. The rule reads the interval of the whole sub-sample. Entirely at or above
+  0.7, the threshold registered on 2026-09-30: the grades of this context
+  type are used as a `single_judge` ruler. Otherwise the ruler on this
+  context type is `provisional_ruler`: no semantic gain is claimed on it, and
+  the judge rule is re-registered once before any deciding comparison. Only
+  the first pass enters a metric; the second is never averaged in and never
+  replaces a grade. A retest shows whether one model repeats itself under
+  another order in another session. It is not a second voice, and an error
+  the model makes both times stays invisible. The 0.7 threshold was
+  registered for the agreement of two graders; for one grader with itself it
+  is a low bar, kept because no other number was registered — the capsule
+  prints κ and the table, and the reader judges the margin.
+- What a `single_judge` ruler may claim. With a passed retest: the baseline
+  numbers of slice 2.5 as the control's numbers, and for a track-3 experiment
+  a result under the unchanged decision rule below, reported as «on a
+  `single_judge` ruler (Opus 5.5)». Every such capsule gives the retest κ and
+  the P2-sample agreement above and says that neither a model of another
+  vendor nor a person checked the grades of the run. It may not claim
+  `model-cross-checked` or `human-validated`, a difference to a consensus
+  number, or that an error Opus makes systematically would have been seen
+  (plan G37). Acceptance 4.1 is not covered here: its rules are re-registered
+  before the holdout opens.
 - Unit of grading (A4, G16): a grade belongs to a text and carries two keys
   — the **chunk address** `{source_id, source_revision, section_path or
   char offsets, chunker_version}` (which source the text came from; the same
@@ -526,13 +613,16 @@ text hash — one population per metric (№6).
   dev families only, kept apart from the verified set (`single_model_verified`
   since the seventh revision, `model_verified` in the fifth; until 2026-10-03
   «the human set»), run retrieval-only with
-  the consensus judge and the retrieval stages the mechanism needs. Judge
+  the registered judge (the consensus until the eighth revision, the judge
+  of new texts since) and the retrieval stages the mechanism needs. Judge
   grades are cached by the full request hash — `(question_hash, the ordered
   text_sha256 list of the presented set, rubric version, judge version)`:
   documents are graded jointly, neighbours and order can move a grade, so
   only an identical set in the same order is reused (Astra final-plan audit
   №19); the expected number of new requests is published before the run; a run graded by one judge because the other
-  hit its limit is `single_judge`, outside the consensus (G24). It ranks
+  hit its limit is `single_judge`, outside the consensus (G24) — since the
+  eighth revision every new run is graded by one judge and is `single_judge`
+  («Relevance grades»). The tier ranks
   candidates and nothing else: it cannot pass a non-inferiority check, prove
   answer safety or produce a semantic gain, and families — not questions —
   are its unit of independence. Cross-reference, added 2026-10-03 with no new
