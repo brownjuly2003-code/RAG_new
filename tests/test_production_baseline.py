@@ -154,9 +154,15 @@ def test_production_baseline_expansion_timer_and_text_capture(monkeypatch):
     assert probe["ranked_scores"] == [3.0]
 
 
-def test_production_baseline_report_exclusion_and_all_provenance(tmp_path):
+@pytest.mark.parametrize(
+    "subsets,counted", [(("H", "Hm"), {"H": 0, "Hm": 1}), (("pilot", "pilot"), {"pilot": 1})]
+)
+def test_production_baseline_report_exclusion_and_all_provenance(tmp_path, subsets, counted):
     manifest = {
-        "cases": [{"case_id": "bad", "subset": "H"}, {"case_id": "clean", "subset": "Hm"}],
+        "cases": [
+            {"case_id": "bad", "subset": subsets[0]},
+            {"case_id": "clean", "subset": subsets[1]},
+        ],
         "source_manifest": {"corpus_sha256": "c" * 64},
         "index_receipt": {"corpus_sha256": "a" * 64, "embedder_manifest": {"model_id": "fixture"}},
         "code_sha": "b" * 40,
@@ -195,7 +201,7 @@ def test_production_baseline_report_exclusion_and_all_provenance(tmp_path):
     baseline.report(tmp_path, manifest, False)
     report = parity.load_stage(tmp_path / "report.json", identity)
     assert report["denominator"] == 1
-    assert report["denominators"] == {"H": 0, "Hm": 1}
+    assert report["denominators"] == counted
     assert report["exclusions"] == [bad["exclusion"]]
     assert report["documents_without_address"] == 1
     provenance = report["provenance"]
@@ -802,8 +808,7 @@ def test_production_baseline_digest_error_stops_stage(real_run, monkeypatch):
     assert not (run / "transform/clean.json").exists()
 
 
-def test_production_baseline_registration_all_cases_in_file_order(tmp_path, monkeypatch):
-    root = tmp_path
+def registration_inputs(root, monkeypatch):
     evaluation = root / "evaluation"
     evaluation.mkdir()
     for filename, count in (
@@ -837,11 +842,21 @@ def test_production_baseline_registration_all_cases_in_file_order(tmp_path, monk
     monkeypatch.chdir(root)
     monkeypatch.setattr(parity, "runtime_identity", lambda: {"platform": "fixture"})
     monkeypatch.setattr(baseline, "corpus_directory", lambda: root)
-    args = SimpleNamespace(
+    return SimpleNamespace(
         run=root / "run", index=index, checkpoint=checkpoint, code_sha="b" * 40, resume=False
     )
+
+
+def test_production_baseline_registration_all_cases_in_file_order(tmp_path, monkeypatch):
+    root = tmp_path
+    evaluation = root / "evaluation"
+    args = registration_inputs(root, monkeypatch)
     baseline.prepare(args)
     manifest = parity.read(args.run / "manifest.json")
+    assert manifest["config"] == parity.CONFIG
+    assert "config_overrides" not in manifest
+    assert manifest["ledger_entry"]["task"] == "T-68/2.5a"
+    assert manifest["selection"] == "all H then Hm in file order"
     assert len(manifest["cases"]) == 115
     assert manifest["cases"][0]["case_id"].endswith("jsonl0")
     assert manifest["cases"][99]["subset"] == "H"
@@ -853,10 +868,144 @@ def test_production_baseline_registration_all_cases_in_file_order(tmp_path, monk
     args.resume = False
     with pytest.raises(FileExistsError, match="resume"):
         baseline.prepare(args)
+    arm = SimpleNamespace(**{**vars(args), "resume": True, "settings": ["rerank_top_k=3"]})
+    with pytest.raises(baseline.IntegrityError, match="registration mismatch"):
+        baseline.prepare(arm)
     dataset = evaluation / "curated_cases_aircargo_gr_multihop.jsonl"
     dataset.write_text("tampered", encoding="utf-8")
     with pytest.raises(baseline.IntegrityError, match="Input"):
         baseline.validate_inputs(manifest)
+
+
+PILOT_ROWS = [
+    {
+        "case_id": "P-1",
+        "question": "Кто согласует бюджет?",
+        "evidence_spans": [{"span_id": "P-1-E1"}],
+        "expected_action": "answer",
+    },
+    {"case_id": "P-2", "query": "What cargo?", "question": "not read", "required_facts": []},
+]
+
+
+def pilot_arguments(root, monkeypatch, rows=PILOT_ROWS, **options):
+    args = registration_inputs(root, monkeypatch)
+    cases = root / "pilot.jsonl"
+    cases.write_text(
+        "".join(json.dumps(row, ensure_ascii=False) + "\n" for row in rows), encoding="utf-8"
+    )
+    arm = {
+        "cases": cases,
+        "subset": "pilot",
+        "task": "plan 1.3c pilot",
+        "settings": ["retrieval_top_k=40"],
+    }
+    vars(args).update({**arm, **options})
+    return args
+
+
+def test_production_baseline_registers_a_case_file_without_its_labels(tmp_path, monkeypatch):
+    args = pilot_arguments(tmp_path, monkeypatch)
+    baseline.prepare(args)
+    manifest = parity.read(args.run / "manifest.json")
+    assert manifest["cases"] == [
+        {"case_id": "P-1", "query": "Кто согласует бюджет?", "subset": "pilot"},
+        {"case_id": "P-2", "query": "What cargo?", "subset": "pilot"},
+    ]
+    assert manifest["datasets"] == {
+        "pilot": {
+            "path": str(args.cases.resolve()),
+            "sha256": parity.file_sha(args.cases),
+            "count": 2,
+        }
+    }
+    assert manifest["selection"] == "all pilot in file order; case_id and question only"
+    assert manifest["config"] == {**parity.CONFIG, "retrieval_top_k": 40}
+    assert manifest["config_overrides"] == {"retrieval_top_k": 40}
+    assert manifest["ledger_entry"]["task"] == "plan 1.3c pilot"
+    assert manifest["ledger_entry"]["config_sha256"] == parity.digest(manifest["config"])
+    assert "evidence_spans" not in (args.run / "manifest.json").read_text(encoding="utf-8")
+    assert len(list((args.run / "prepare").glob("*.json"))) == 2
+    baseline.validate_inputs(manifest)
+    args.resume = True
+    baseline.prepare(args)
+    for change in (
+        {"settings": []},
+        {"settings": ["rerank_top_k=3"]},
+        {"task": None},
+        {"cases": tmp_path / "other.jsonl"},
+        {"cases": None, "subset": None},
+    ):
+        with pytest.raises(baseline.IntegrityError, match="registration mismatch"):
+            baseline.prepare(SimpleNamespace(**{**vars(args), **change}))
+    args.cases.write_text("tampered", encoding="utf-8")
+    with pytest.raises(baseline.IntegrityError, match="Input"):
+        baseline.validate_inputs(manifest)
+
+
+@pytest.mark.parametrize(
+    "options,message",
+    [
+        ({"settings": ["rrf_k=10"]}, "not registered"),
+        ({"settings": ["retrieval_top_k=40", "retrieval_top_k=30"]}, "repeated"),
+        ({"settings": ["retrieval_top_k"]}, "whole number"),
+        ({"settings": ["retrieval_top_k=0"]}, "whole number"),
+        ({"settings": ["retrieval_top_k=201"]}, "whole number"),
+        ({"settings": ["rerank_top_k=3.0"]}, "whole number"),
+        ({"settings": ["rerank_top_k=٣"]}, "whole number"),
+        ({"subset": "H"}, "subset name of its own"),
+        ({"subset": "a/b"}, "subset name of its own"),
+        ({"subset": None}, "together"),
+        ({"cases": None}, "together"),
+    ],
+)
+def test_production_baseline_refuses_an_arm_outside_the_registered_ones(
+    tmp_path, monkeypatch, options, message
+):
+    args = pilot_arguments(tmp_path, monkeypatch, **options)
+    with pytest.raises(baseline.IntegrityError, match=message):
+        baseline.prepare(args)
+    assert not args.run.exists()
+
+
+@pytest.mark.parametrize(
+    "rows,message",
+    [
+        ([], "Every case needs a question"),
+        ([{"case_id": "P-1"}], "Every case needs a question"),
+        ([{"case_id": "P-1", "question": "  "}], "Every case needs a question"),
+        ([{"question": "cargo?"}], "Case file unreadable"),
+        (["cargo?"], "Case file unreadable"),
+        (
+            [{"case_id": "P-1", "question": "a"}, {"case_id": "P-1", "question": "b"}],
+            "unique safe filenames",
+        ),
+    ],
+)
+def test_production_baseline_refuses_a_case_file_it_cannot_register(
+    tmp_path, monkeypatch, rows, message
+):
+    args = pilot_arguments(tmp_path, monkeypatch, rows=rows)
+    with pytest.raises(baseline.IntegrityError, match=message):
+        baseline.prepare(args)
+    assert not args.run.exists()
+
+
+def test_production_baseline_arm_options_are_read_by_prepare_alone(tmp_path, monkeypatch, capsys):
+    args = pilot_arguments(tmp_path, monkeypatch)
+    registered = [
+        *("--run", str(args.run), "--index", str(args.index)),
+        *("--checkpoint", str(args.checkpoint), "--code-sha", args.code_sha),
+        *("--cases", str(args.cases), "--subset", "pilot", "--task", "plan 1.3c pilot"),
+        *("--set", "rerank_top_k=3"),
+    ]
+    assert baseline.main(["--stage", "prepare", *registered]) == 0
+    assert parity.read(args.run / "manifest.json")["config_overrides"] == {"rerank_top_k": 3}
+    with pytest.raises(SystemExit) as stop:
+        baseline.main(["--stage", "transform", "--run", str(args.run), "--set", "rerank_top_k=3"])
+    assert stop.value.code == 2
+    assert "belong to prepare" in capsys.readouterr().err
+    assert not (args.run / "transform.abort.json").exists()
 
 
 def test_production_baseline_corrupt_stage_record_records_stop(real_run):

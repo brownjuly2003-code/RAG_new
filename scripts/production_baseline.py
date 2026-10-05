@@ -2,6 +2,11 @@
 
 Run each stage in a separate process: prepare, transform, embed, retrieve, grade.
 Model failures exclude a case; integrity and environment failures abort the run.
+
+prepare registers H and Hm, or the case file --cases names under --subset: of such a file
+the run keeps the ids and the questions and none of the labels. --set moves one of the two
+candidate counts of the control (retrieval_top_k, rerank_top_k) and nothing else, so an arm
+of a pilot is the registered collection with one number changed.
 """
 
 from __future__ import annotations
@@ -13,6 +18,7 @@ import http.client
 import json
 import math
 import platform
+import re
 import sys
 import time
 import urllib.error
@@ -79,6 +85,8 @@ DECIDING_METRICS = (
     "retrieve_p95",
 )
 T65 = "N/A: filled by T-65"
+TASK = "T-68/2.5a"
+SETTABLE = ("retrieval_top_k", "rerank_top_k")
 
 
 class IntegrityError(ValueError):
@@ -233,26 +241,43 @@ def load_address_book(manifest: dict) -> tuple[AddressBook, list[dict]]:
     return book, chunks
 
 
-def prepare(args: Any) -> None:
-    if args.run.exists():
-        if not args.resume:
-            raise FileExistsError("Run exists; explicit --resume required")
-        manifest = load_manifest(args.run)
-        if (
-            manifest["index"] != str(args.index.resolve())
-            or manifest["checkpoint"] != str(args.checkpoint.resolve())
-            or manifest["code_sha"] != args.code_sha
-        ):
-            raise IntegrityError("Prepare registration mismatch")
-        validate_inputs(manifest)
-        for case in manifest["cases"]:
-            target = args.run / "prepare" / (case["case_id"] + ".json")
-            if target.exists():
-                parity.load_stage(target, parity.digest(manifest))
-            else:
-                parity.save_stage(target, {"status": "ok", "case": case}, parity.digest(manifest))
-        return
-    root = Path.cwd()
+def given_settings(pairs: list[str]) -> dict[str, int]:
+    """--set key=value: only the two candidate counts of the control may be moved."""
+    settings: dict[str, int] = {}
+    for pair in pairs:
+        key, _, value = pair.partition("=")
+        if key not in SETTABLE or key in settings:
+            raise IntegrityError(f"Setting is not registered or is repeated: {pair}")
+        if not (value.isascii() and value.isdigit() and 1 <= int(value) <= 200):
+            raise IntegrityError(f"Setting needs a whole number from 1 to 200: {pair}")
+        settings[key] = int(value)
+    return settings
+
+
+def case_file(path: Path, subset: str) -> tuple[dict, list[dict]]:
+    """A case file other than H and Hm; its labels stay in the file, out of the run."""
+    if not re.fullmatch(r"[A-Za-z][A-Za-z0-9_-]{0,31}", subset) or subset in ("H", "Hm"):
+        raise IntegrityError("A case file needs a subset name of its own")
+    try:
+        rows = [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines()]
+        cases = [
+            {
+                "case_id": row["case_id"],
+                "query": row.get("query", row.get("question")),
+                "subset": subset,
+            }
+            for row in rows
+        ]
+    except (OSError, ValueError, KeyError, TypeError, AttributeError) as exc:
+        raise IntegrityError(f"Case file unreadable: {type(exc).__name__}: {exc}") from exc
+    if not cases or any(not isinstance(c["query"], str) or not c["query"].strip() for c in cases):
+        raise IntegrityError("Every case needs a question")
+    dataset = {"path": str(path.resolve()), "sha256": parity.file_sha(path), "count": len(cases)}
+    return {subset: dataset}, cases
+
+
+def registered_sets(root: Path) -> tuple[dict, list[dict]]:
+    """H and Hm as registered: every case of both files, whole rows, in file order."""
     datasets = {}
     cases = []
     for subset, filename, count in (
@@ -277,6 +302,45 @@ def prepare(args: Any) -> None:
                 manifest_path=str(dataset_manifest.resolve()),
                 manifest_sha256=parity.file_sha(dataset_manifest),
             )
+    return datasets, cases
+
+
+def prepare(args: Any) -> None:
+    cases_path = getattr(args, "cases", None)
+    subset = getattr(args, "subset", None)
+    if (cases_path is None) != (subset is None):
+        raise IntegrityError("--cases and --subset name one case file together")
+    settings = given_settings(getattr(args, "settings", None) or [])
+    task = getattr(args, "task", None) or TASK
+    if args.run.exists():
+        if not args.resume:
+            raise FileExistsError("Run exists; explicit --resume required")
+        manifest = load_manifest(args.run)
+        if (
+            manifest["index"] != str(args.index.resolve())
+            or manifest["checkpoint"] != str(args.checkpoint.resolve())
+            or manifest["code_sha"] != args.code_sha
+            or manifest.get("config_overrides", {}) != settings
+            or manifest["ledger_entry"]["task"] != task
+            or sorted(manifest["datasets"]) != ([subset] if cases_path else ["H", "Hm"])
+            or (cases_path and manifest["datasets"][subset]["path"] != str(cases_path.resolve()))
+        ):
+            raise IntegrityError("Prepare registration mismatch")
+        validate_inputs(manifest)
+        for case in manifest["cases"]:
+            target = args.run / "prepare" / (case["case_id"] + ".json")
+            if target.exists():
+                parity.load_stage(target, parity.digest(manifest))
+            else:
+                parity.save_stage(target, {"status": "ok", "case": case}, parity.digest(manifest))
+        return
+    root = Path.cwd()
+    if cases_path is None:
+        datasets, cases = registered_sets(root)
+        selection = "all H then Hm in file order"
+    else:
+        datasets, cases = case_file(cases_path, subset)
+        selection = f"all {subset} in file order; case_id and question only"
     ids = [c["case_id"] for c in cases]
     if len(set(ids)) != len(ids) or any(
         not isinstance(cid, str) or not cid or cid in (".", "..") or "/" in cid or "\\" in cid
@@ -296,7 +360,7 @@ def prepare(args: Any) -> None:
             raise IntegrityError("Corpus/checkpoint mismatch")
     source_manifest_path = root / "evaluation/aircargo_corpus.manifest.json"
     source_manifest = parity.read(source_manifest_path)
-    config = dict(parity.CONFIG)
+    config = {**parity.CONFIG, **settings}
     manifest = {
         "schema_version": 1,
         "code_sha": args.code_sha,
@@ -304,7 +368,7 @@ def prepare(args: Any) -> None:
         "runtime": parity.runtime_identity(),
         "datasets": datasets,
         "cases": cases,
-        "selection": "all H then Hm in file order",
+        "selection": selection,
         "config": config,
         "index": str(args.index.resolve()),
         "checkpoint": str(args.checkpoint.resolve()),
@@ -319,13 +383,15 @@ def prepare(args: Any) -> None:
         "llm": {"model": parity.MODEL, "digest": parity.DIGEST, "provider": "OllamaProvider"},
         "reranker": {"model": "BAAI/bge-reranker-v2-m3", "revision": parity.RERANK_REVISION},
         "ledger_entry": {
-            "task": "T-68/2.5a",
+            "task": task,
             "config_sha256": parity.digest(config),
             "datasets": datasets,
             "status": "registered",
             "file": "ledger-entry.json",
         },
     }
+    if settings:
+        manifest["config_overrides"] = settings
     load_address_book(manifest)
     args.run.mkdir(parents=True, exist_ok=False)
     parity.write_new(args.run / "manifest.json", manifest)
@@ -909,7 +975,8 @@ def report(run: Path, manifest: dict, resume: bool) -> None:
             "total_cases": len(rows),
             "denominator": len(valid),
             "denominators": {
-                subset: sum(c["subset"] == subset for c, _ in valid) for subset in ("H", "Hm")
+                subset: sum(c["subset"] == subset for c, _ in valid)
+                for subset in dict.fromkeys(c["subset"] for c in manifest["cases"])
             },
             "exclusions": [r["exclusion"] for r in rows if r["status"] == "excluded"],
             "documents_without_address": sum(
@@ -935,11 +1002,17 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--checkpoint", type=Path)
     parser.add_argument("--code-sha")
     parser.add_argument("--resume", action="store_true")
+    parser.add_argument("--cases", type=Path)
+    parser.add_argument("--subset")
+    parser.add_argument("--task")
+    parser.add_argument("--set", action="append", default=[], dest="settings", metavar="KEY=VALUE")
     args = parser.parse_args(argv)
     if args.stage == "prepare":
         if not all((args.index, args.checkpoint, args.code_sha)):
             parser.error("prepare requires --index, --checkpoint and --code-sha")
         prepare(args)
+    elif args.cases or args.subset or args.task or args.settings:
+        parser.error("--cases, --subset, --task and --set belong to prepare")
     else:
         check_start(args)
         try:
