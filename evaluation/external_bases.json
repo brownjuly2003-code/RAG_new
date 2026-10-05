@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "registered": "2026-10-05",
+  "converter_version": "external-markdown-v1",
+  "match_rule": "external-gold/range-coverage-v1",
+  "chunking": {
+    "chunk_size": 800,
+    "chunk_overlap": 200,
+    "structural_chunking": true,
+    "contextual_headers": true
+  },
+  "redistribution": "Outside the hosts go aggregates, attribution and provenance only: no question, evidence string, document, chunk or embedding of an external base is committed or published.",
+  "bases": {
+    "conditionalqa": {
+      "title": "ConditionalQA",
+      "citation": "Sun, Cohen, Salakhutdinov. ConditionalQA: A Complex Reading Comprehension Dataset with Conditional Answers. ACL 2022. arXiv:2110.06884",
+      "source": "https://github.com/haitian-sun/ConditionalQA",
+      "revision": "77bd295952daf415548b3244db10880d3d55cfe0",
+      "url": "https://raw.githubusercontent.com/haitian-sun/ConditionalQA/{revision}/{path}",
+      "license": "BSD-2-Clause (file LISCENSE of the repository); README: \"This dataset should ONLY be used for NLP research purpose. Answers are NOT verified by legal professionals and should NOT be used for any legal purposes.\" Page texts: GOV.UK, Open Government Licence v3.0.",
+      "labels": "evidence elements and answers chosen by the dataset's annotators",
+      "gold": "evidence elements of the question's document, as source ranges",
+      "tenant": "ext_conditionalqa",
+      "collection": "rag_docs_ext_conditionalqa",
+      "files": [
+        {"path": "v1_0/documents.json", "bytes": 6286258, "sha256": "1c977c1b14738b9ce1e53336c5abf3b3de34b72ee24985e7de6d8fae30856c59"},
+        {"path": "v1_0/train.json", "bytes": 2386451, "sha256": "2976f448bad58efd747c5b7b4127fb3ad7a4834f760e9022c06a86536618bc2d"},
+        {"path": "v1_0/dev.json", "bytes": 299726, "sha256": "a06cfe3e8b3ffe04f2652a2dbd912b647eb4448b724585c891539344b02fb7c7"},
+        {"path": "LISCENSE", "bytes": 1319, "sha256": "62a47f90ddb8fda1bbf1e731a5861d827c109a3570b86b371f9d927cbc75aa14"},
+        {"path": "README.md", "bytes": 986, "sha256": "2c128ba7e4a50c3481f65d63536b1a8f7ab09d7135573df38e5085faa5323d06"}
+      ],
+      "converted": {
+        "documents": 652,
+        "corpus_sha256": "e22275510a4c4516528a6e9fad0ce437d142697bb4d836f6b510434ae73eb676",
+        "cases": 2623,
+        "cases_sha256": "8467991cdb095fe1e2204d8eca90679da56f0bac53e3c81686d488cca59eb6b7"
+      }
+    },
+    "wixqa": {
+      "title": "WixQA",
+      "citation": "Cohen, Burg, Pykhnivskyi, Gur, Kovynov, Atzmon, Barkan (Wix.com AI Research). WixQA: A Multi-Dataset Benchmark for Enterprise Retrieval-Augmented Generation. 2025. arXiv:2505.08643",
+      "source": "https://huggingface.co/datasets/Wix/WixQA",
+      "revision": "d662dc42479c14e202eccd832f8c4b66a035c4cc",
+      "url": "https://huggingface.co/datasets/Wix/WixQA/resolve/{revision}/{path}",
+      "license": "MIT (dataset card); knowledge-base snapshot of 2024-12-02",
+      "labels": "ExpertWritten: support experts; Simulated: distilled from user-expert chats by GPT-4o and reviewed by experts",
+      "gold": "the articles named by article_ids, as documents",
+      "tenant": "ext_wixqa",
+      "collection": "rag_docs_ext_wixqa",
+      "files": [
+        {"path": "wix_kb_corpus/wix_kb_corpus.jsonl", "bytes": 53743863, "sha256": "46b852c60b85fb1828e7c6118bb56ba796eba99120a6b69c6b984c06e1c5e1fe"},
+        {"path": "wixqa_expertwritten/test.jsonl", "bytes": 255510, "sha256": "a1bb6888a8394f980bc88f0d09b873fcd283ff4c9782600bc203f8103c2f1bad"},
+        {"path": "wixqa_simulated/test.jsonl", "bytes": 88188, "sha256": "9a2b9f42c081467b3de5bd92511e770bca3cc7977f169526fd78dd3c985ac4a8"},
+        {"path": "README.md", "bytes": 4884, "sha256": "440f6c755676869bf57e206cbb455700c133ceda9cabbe228b570ff101d59dd5"}
+      ],
+      "converted": {
+        "documents": 6221,
+        "corpus_sha256": "08390ae999e25355af4e59f4d14355071b1bd6ad89ed54f0c2d0f330a3ae70a0",
+        "cases": 400,
+        "cases_sha256": "d18255995e045c791849db44fb940182f9573056ff3eb11578acb8bf69c20412"
+      }
+    },
+    "multihoprag": {
+      "title": "MultiHop-RAG",
+      "citation": "Tang, Yang. MultiHop-RAG: Benchmarking Retrieval-Augmented Generation for Multi-Hop Queries. 2024. arXiv:2401.15391",
+      "source": "https://huggingface.co/datasets/yixuantt/MultiHopRAG",
+      "revision": "71ac0d0bd1f951d2d6b70311f7d2ae404e1ffa82",
+      "url": "https://huggingface.co/datasets/yixuantt/MultiHopRAG/resolve/{revision}/{path}",
+      "license": "ODC-BY 1.0 (dataset card); the news texts remain their publishers'",
+      "labels": "llm_labelled: queries, answers and evidence sentences written by GPT-4",
+      "gold": "evidence sentences of the named articles, as source ranges",
+      "tenant": "ext_multihoprag",
+      "collection": "rag_docs_ext_multihoprag",
+      "files": [
+        {"path": "corpus.json", "bytes": 6785567, "sha256": "20b61b5ab84de84a927420c5d265b7ec8d859ae49980699958a787ade9e4d28f"},
+        {"path": "MultiHopRAG.json", "bytes": 5171312, "sha256": "03cfb4926461f868684903aadc8024447bdda5bb3f6804741424cce338515bff"},
+        {"path": "README.md", "bytes": 1312, "sha256": "f671db44cf1802f359451e466d82c68c5059d58451b8976ce8329b74d8b89001"}
+      ],
+      "converted": {
+        "documents": 609,
+        "corpus_sha256": "7e1c34980d35889f01dedc5dc21f9a5f2fe28e796be7c0004d44f38b13daa27b",
+        "cases": 2556,
+        "cases_sha256": "cf5f6462b30cac0d6f1b59cff722106001140baee01f003567fb34001c109fac"
+      }
+    }
+  }
+}
