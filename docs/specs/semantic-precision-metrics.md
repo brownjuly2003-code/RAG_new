@@ -75,6 +75,12 @@ sub-sample for expanded contexts and new classes (question г of plan G38);
 and says what a `single_judge` ruler may claim. The registered consensus, its
 D2 verdict and every published number are unchanged; the answer checks of
 2.8 and 4.1 are still to be re-registered.
+Ninth revision 2026-10-05 (UTC), also before the first relevance grade of
+slice 2.5: the new section «Baseline of plan slice 2.5» fixes what its report
+computes each number on, what it prints as `N/A`, the cluster unit of H and Hm
+with the number of clusters it leaves — 4 and 1 — the intervals that follow
+from so few clusters, why a single arm has no MDE, and the scope of its
+timings. No threshold, margin or metric changed.
 
 ## Why a second ruler
 
@@ -863,6 +869,72 @@ on 2026-10-02 for T-68.
 deployment target against the absolute SLO the owner names (D5). Without a
 named target and SLO there is no product SHIP. The per-tenant flag (4.3)
 follows product acceptance only.
+
+## Baseline of plan slice 2.5
+
+Registered in the ninth revision, 2026-10-05 (UTC): the collection of the
+baseline was still running and no relevance grade of it existed. The report
+is built by `scripts/baseline_report.py`; these rules were written before the
+script.
+
+- **Population.** H 100 + Hm 15 in the configuration of the collection:
+  hybrid retrieval with production expansion, graph `off`, model routing off,
+  single-turn; retrieval, rerank and grading, no generation. H and Hm are
+  reported apart and no pooled number is formed. A case the collection
+  excluded leaves every metric and is listed.
+- **What each number is computed on.** `precision_at_5` and `ndcg_at_5`: the
+  first five reranked seeds, their texts before expansion. `sent_precision`:
+  the documents left after grading — the sent context. Lexical
+  `context_precision`: the question as asked, not its rewrite; the texts of
+  the sent context in their order; the case's `expected.answer_contains` as
+  keywords. Printed beside it as a diagnostic, `context_precision_seeds`: the
+  same function over the first five seeds before expansion — the kind of
+  context the 0.63 threshold was set on. The sent-context number is on
+  expanded texts; 0.63 is printed beside it and is not applied to it. A case
+  with an unjudged text among its five seeds or its sent documents leaves the
+  three judged metrics with the reason and stays in the lexical ones.
+- **Not measured, printed as `N/A` with the reason.** `evidence_recall_pool`,
+  `all_evidence_coverage` and `fact_coverage`: H and Hm carry no registered
+  gold spans, evidence groups or facts; the loss map of the same slice reads
+  their keyword terms instead. Every answer metric and `critical_errors`:
+  nothing is generated in this mode, so the semantic invariants of a real
+  answer (fact, citation, action — plan G12) are not observed here and stay
+  with steps 2.8 and 4.1.
+- **Cluster unit.** The registered family map. A case's families are those of
+  the documents the map lists for it under
+  `development_used.<subset>.case_documents`: for H the documents of its
+  phase-C top five that P2 graded, for Hm its `source_documents`. Under this
+  rule H has **4 clusters — of 94, 2, 2 and 2 cases — and Hm has 1**, of all
+  15. Neither the map nor the rule is changed to get more: nearly every H
+  case shares a topic family with another through the documents of its top
+  five, the Hm cases share theirs through their sources, and showing that
+  dependence is what the unit is for.
+- **Intervals.** 10 000 resamples, seed 20261001, percentile CI95 — the
+  constants of `evaluation/semantic_ruler.py`. Both subsets have fewer than 10
+  clusters, so the interval-validity rule of the decision rule applies to this
+  single arm as it does to a paired difference: the cluster-robust t-interval
+  is printed beside the bootstrap, and the capsule reads the wider bound on
+  each side. With one cluster no variance can be estimated: the t-interval is
+  the whole range of the metric, [0, 1]. Printed beside as a sensitivity view
+  and named so — a bootstrap over cases, each case its own cluster; it ignores
+  the dependence the family map describes and is narrower than the truth.
+  Neither interval is a statement of how well the baseline is known that a
+  decision may rest on. The points are read as points.
+- **MDE and power.** A single arm has no paired difference. For every deciding
+  metric the report prints `n` and the clusters, and `N/A` with this reason
+  for the MDE and the achieved power. The cluster counts are an input of plan
+  step 1.3c: a development set whose cases join into a few components cannot
+  reach the registered power whatever its size, so 1.3c checks the
+  development set for the same collapse before it registers a size.
+- **Timings.** p50 and p95 per stage from the collector's trace: one run on
+  one host, its pauses and the foreign load on the host listed;
+  `latency_evidence` is false. `retrieve_p95` is that run's number without an
+  interval. It is not the control of the ≤ 200 ms check, whose protocol —
+  interleaved arms, three repeats a case, warm-up excluded — this run does not
+  follow.
+- **Status.** `single_judge`, as «Relevance grades» registers it, and
+  `provisional_ruler` until the stability retest of the same run passes — and
+  afterwards if it does not.
 
 ## Provenance every report carries
 

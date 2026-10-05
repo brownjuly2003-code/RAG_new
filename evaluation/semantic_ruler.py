@@ -339,6 +339,52 @@ def student_t_critical(df: int) -> float:
     return (low + high) / 2
 
 
+def single_arm_summary(
+    values: Mapping[str, float],
+    families: Mapping[str, Sequence[str]],
+    *,
+    seed: int = SEED,
+    resamples: int = RESAMPLES,
+) -> dict[str, Any]:
+    """Describe one arm's bounded metric by the registered intervals.
+
+    The cluster bootstrap always; under ten clusters the cluster-robust
+    t-interval beside it, the whole range for one cluster; the wider bound on
+    each side as the conservative interval; a bootstrap over cases as the
+    sensitivity view that ignores the families.
+    """
+    if any(not math.isfinite(value) or not 0 <= value <= 1 for value in values.values()):
+        raise ValueError("bounded metrics must lie in [0, 1]")
+    summary = cluster_summary(values, families, seed=seed, resamples=resamples)
+    active = [
+        [key for key in group if key in values]
+        for group in family_clusters(families)
+        if any(key in values for key in group)
+    ]
+    point, n, count = float(summary["point"]), len(values), len(active)
+    t_ci: list[float] | None = None
+    if count < 10:
+        if count == 1:
+            t_ci = [0.0, 1.0]
+        else:
+            residuals = [math.fsum(values[key] - point for key in group) for group in active]
+            se = math.sqrt(count / (count - 1) * math.fsum(v * v for v in residuals)) / n
+            radius = student_t_critical(count - 1) * se
+            t_ci = [max(0.0, point - radius), min(1.0, point + radius)]
+    conservative = list(summary["ci95"])
+    if t_ci is not None:
+        conservative = [min(conservative[0], t_ci[0]), max(conservative[1], t_ci[1])]
+    return {
+        **summary,
+        "cluster_sizes": sorted((len(group) for group in active), reverse=True),
+        "t_ci95": t_ci,
+        "ci95_conservative": conservative,
+        "case_bootstrap_ci95": cluster_summary(
+            values, {key: [key] for key in values}, seed=seed, resamples=resamples
+        )["ci95"],
+    }
+
+
 def paired_comparison(
     control: Mapping[str, float | None],
     arm: Mapping[str, float | None],

@@ -176,6 +176,54 @@ def test_cancelling_differences_within_families_are_degenerate():
     assert result["verdict"] == "INCONCLUSIVE"
 
 
+def test_single_arm_with_one_cluster_has_no_interval_to_offer():
+    values = {str(i): (1.0 if i % 4 else 0.0) for i in range(20)}
+    summary = ruler.single_arm_summary(values, {key: ["same"] for key in values})
+    assert summary["point"] == pytest.approx(0.75)
+    assert (summary["n"], summary["clusters"], summary["cluster_sizes"]) == (20, 1, [20])
+    assert summary["ci95"] == pytest.approx([0.75, 0.75])
+    assert summary["t_ci95"] == [0.0, 1.0]
+    assert summary["ci95_conservative"] == [0.0, 1.0]
+    low, high = summary["case_bootstrap_ci95"]
+    assert low < 0.75 < high
+
+
+def test_single_arm_under_ten_clusters_prints_the_t_interval_and_reads_the_wider_bound():
+    means = {"a": 0.5, "b": 0.52, "c": 0.48, "d": 0.5}
+    values = {f"{name}{i}": mean for name, mean in means.items() for i in range(25)}
+    families = {key: [key[0]] for key in values}
+    summary = ruler.single_arm_summary(values, families)
+    radius = ruler.student_t_critical(3) * math.sqrt(4 / 3 * 0.5) / 100
+    assert summary["point"] == pytest.approx(0.5)
+    assert (summary["clusters"], summary["cluster_sizes"]) == (4, [25, 25, 25, 25])
+    assert summary["t_ci95"] == pytest.approx([0.5 - radius, 0.5 + radius])
+    assert summary["ci95_conservative"] == [
+        min(summary["ci95"][0], summary["t_ci95"][0]),
+        max(summary["ci95"][1], summary["t_ci95"][1]),
+    ]
+    assert summary["case_bootstrap_ci95"][1] - summary["case_bootstrap_ci95"][0] < 2 * radius
+    wide = ruler.single_arm_summary({"a": 1.0, "b": 0.0, "c": 1.0}, {k: [k] for k in "abc"})
+    assert wide["t_ci95"] == [0.0, 1.0]
+
+
+def test_single_arm_with_ten_clusters_keeps_the_bootstrap_alone():
+    values = {str(i): i / 10 for i in range(10)}
+    summary = ruler.single_arm_summary(values, {key: [key] for key in values})
+    assert summary["clusters"] == 10
+    assert summary["t_ci95"] is None
+    assert summary["ci95_conservative"] == summary["ci95"] == summary["case_bootstrap_ci95"]
+
+
+def test_single_arm_counts_only_cases_that_have_a_value():
+    families = {"a": ["x"], "b": ["x"], "c": ["y"], "d": ["z"]}
+    summary = ruler.single_arm_summary({"a": 1.0, "c": 0.0}, families)
+    assert (summary["n"], summary["clusters"], summary["cluster_sizes"]) == (2, 2, [1, 1])
+    with pytest.raises(ValueError, match="bounded"):
+        ruler.single_arm_summary({"a": 1.5}, families)
+    with pytest.raises(ValueError, match="family mapping"):
+        ruler.single_arm_summary({"e": 0.5}, families)
+
+
 def test_gold_spans_groups_and_fact_matcher():
     span = ruler.GoldSpan("s", "v1", 0, 10, "required text")
     chunk = ruler.EvidenceChunk("s", "v1", "required text", 0, 10)
