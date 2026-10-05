@@ -43,6 +43,39 @@ def test_structural_split_caps_oversized_section() -> None:
     assert all(c.metadata["source"] == "x.md" for c in chunks)
 
 
+def test_structural_split_keeps_words_apart_at_non_ascii_whitespace() -> None:
+    # The header splitter keeps printable characters only: before the fix these came out as
+    # "10000", "ab", "cd", "itemone" and "line twoline three".
+    doc = manager.Document(
+        page_content=(
+            "# Тариф\n\nЦена 10 000 руб, a b, c\td.\r\n\r\n"
+            "## Часть\n\nline one\nline two line three\rline four\n\n- item　one\n"
+        ),
+        metadata={"source": "x.md"},
+    )
+    chunks = manager.structural_split([doc], max_chunk_size=800, chunk_overlap=200)
+
+    assert [c.page_content for c in chunks] == [
+        "# Тариф  \nЦена 10 000 руб, a b, c d.",
+        "## Часть  \nline one\nline two\nline three\nline four  \n- item one",
+    ]
+
+
+def test_plain_whitespace_covers_every_space_python_knows() -> None:
+    import sys
+
+    spaces = {chr(code) for code in range(sys.maxunicode + 1) if chr(code).isspace()}
+    mapped = set(manager._SPACE_SEPARATORS) | set(manager._LINE_SEPARATORS)
+
+    assert mapped == spaces - {" ", "\n"}
+    assert set(manager._LINE_SEPARATORS) == {
+        char for char in spaces - {"\n"} if len(f"a{char}b".splitlines()) == 2
+    }
+    assert manager.plain_whitespace("a\r\nb") == "a\nb"
+    # Invisible format characters are not whitespace: the splitter still drops them.
+    assert manager.plain_whitespace("zero​width") == "zero​width"
+
+
 # ---------------------------------------------------------------------------
 # select_chunks precedence: structural > semantic > fixed
 # ---------------------------------------------------------------------------

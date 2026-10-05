@@ -1237,6 +1237,22 @@ def semantic_split(
 # Markdown-structural chunking (opt-in)
 # ---------------------------------------------------------------------------
 
+# MarkdownHeaderTextSplitter оставляет в строке только printable-символы, а пробельные
+# разделители, кроме обычного пробела, к ним не относятся: "10 000" выходило "10000",
+# "a\tb" — "ab", одинокий "\r" склеивал строки. Перед сплиттером они становятся пробелом
+# или переводом строки (те же границы строк, что у str.splitlines).
+_SPACE_SEPARATORS = "\t\x1f\xa0              　"
+_LINE_SEPARATORS = "\r\x0b\x0c\x1c\x1d\x1e\x85  "
+_PLAIN_WHITESPACE = str.maketrans(
+    {**dict.fromkeys(_SPACE_SEPARATORS, " "), **dict.fromkeys(_LINE_SEPARATORS, "\n")}
+)
+
+
+def plain_whitespace(text: str) -> str:
+    """Whitespace the header splitter would delete, as a plain space or a line break."""
+    return text.replace("\r\n", "\n").translate(_PLAIN_WHITESPACE)
+
+
 def structural_split(
     docs: list[Document],
     max_chunk_size: int,
@@ -1266,7 +1282,7 @@ def structural_split(
     out: list[Document] = []
     for doc in docs:
         try:
-            sections = md_splitter.split_text(doc.page_content)
+            sections = md_splitter.split_text(plain_whitespace(doc.page_content))
         except Exception as exc:
             logger.warning("MarkdownHeaderTextSplitter failed for one doc, fallback: %s", exc)
             sections = char_splitter.split_documents([doc])
