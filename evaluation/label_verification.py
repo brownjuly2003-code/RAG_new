@@ -7,6 +7,11 @@ nothing here assigns real_labelled.
 
 The rubric registers one verifier (plan decision D12); the rules below hold for any number of
 them, and a check by one model is named single_model_verified, never model_verified.
+
+Rubric label-verification/v3 is v2 with another route, a verifier that may be the author of
+the label, and drafts and repairs written in requests of their own. The request, the checks
+and the decision are the same, so what is here serves both; `label_status` gives the word of
+a confirmed case under either.
 """
 
 from __future__ import annotations
@@ -22,6 +27,11 @@ from typing import Any, TypedDict
 import yaml  # type: ignore[import-untyped]
 
 RUBRIC_VERSION = "label-verification/v2"
+# The rubric of plan step 1.3d: v2 with another route and a verifier that may be the author
+# of the label. RUBRIC_VERSION stays the rubric the pilot was verified under.
+RUBRIC_V3 = "label-verification/v3"
+RUBRICS = (RUBRIC_VERSION, RUBRIC_V3)
+SELF_CHECKED = "single_model_self_checked"
 SEVERITY_SCALE = ("low", "moderate", "high", "critical")
 CONFIRM_CHECKS = ("2", "3", "4", "5d")
 AUTHORITY_CHECKS = ("5a", "5b")
@@ -34,6 +44,9 @@ STATES = ("verified", "repair_pending", "dropped", "unverified")
 # rejection.
 RESERVE_DROP = "repair_needs_reserve"
 NO_REPAIR_DROP = "repair_not_possible"
+# The reason of the one drop the script writes without asking for a repair (rubric v3): see
+# `no_repair_request`.
+NO_SPAN_AUTHORITY = "5a or 5b rejected on a case without spans"
 SECOND_REJECTION = "rejected_in_round_2"
 # A repair changes the label, never the question. The draft author and the corpus version are
 # kept as well: repair_violations and the per-case rules of evaluation.devset check them.
@@ -173,6 +186,9 @@ CLI_SYSTEM_PROMPT = (
     "You verify one labelled case of an evaluation set. Use only the material in the message "
     "and reply with the one JSON object it asks for."
 )
+# Registered in docs/specs/semantic-precision-metrics.md with plan step 1.3d: `plan` refuses a
+# system prompt whose SHA-256 is not this one, so no later plan of a rubric takes another.
+CLI_SYSTEM_PROMPT_SHA256 = "4178fef002ad32d05e155ec7ee266177499d266d62371c5b68eba9ca9541a413"
 
 
 def sha256_text(text: str) -> str:
@@ -203,7 +219,7 @@ VERIFIERS: dict[str, Verifier] = {
         },
     },
 }
-DRAFT_AUTHORS = {"gpt-6.1-sol": "OpenAI"}
+DRAFT_AUTHORS = {"gpt-6.1-sol": "OpenAI", "claude-opus-5-5": "Anthropic"}
 VERIFIERS_BY_AUTHOR_VENDOR = {"OpenAI": ("claude-opus-5-5",)}
 # A rejected case is repaired by the agent of the session (plan decision D12): the model of
 # the verifier, so the check of a repaired case is not a check by another party.
@@ -247,6 +263,21 @@ def check_vendors(author: Mapping[str, str], verifiers: Mapping[str, Verifier]) 
 def verified_status(verifiers: Collection[str]) -> str:
     """The word a confirmed case carries: a check by one model is not a cross-check."""
     return "single_model_verified" if len(verifiers) == 1 else "model_verified"
+
+
+def label_status(
+    rubric: str, label_author: Mapping[str, str], verifiers: Mapping[str, Verifier]
+) -> str:
+    """The word of a confirmed case, by its rubric and by who wrote the label that was checked.
+
+    Under v3 a label written by a model of the verifier's vendor - a draft of step 1.3d, any
+    label after a repair - was checked by its own author: single_model_self_checked. Under v2
+    the word does not look at the author, and a repaired case is told apart by `repair_author`.
+    """
+    vendors = {verifier["vendor"].casefold() for verifier in verifiers.values()}
+    if rubric == RUBRIC_V3 and label_author["vendor"].casefold() in vendors:
+        return SELF_CHECKED
+    return verified_status(verifiers)
 
 
 _FRONT_MATTER = re.compile(r"\A---[ \t]*\r?\n(.*?)\r?\n---[ \t]*(?:\r?\n|\Z)", re.DOTALL)
@@ -441,6 +472,11 @@ def _strings(value: Any) -> Iterator[str]:
             yield from _strings(item)
 
 
+def packet_strings(value: Any) -> Iterator[str]:
+    """Every string of a packet that goes out, the keys as well as the values."""
+    return _strings(value)
+
+
 def needs_scan(case: Mapping[str, Any]) -> bool:
     """A refusal, clarification or trap case: its reason is held against the wide scan."""
     return case["expected_action"] != "answer" or bool(case["trap_type"])
@@ -614,6 +650,22 @@ def build_request(
     )
 
 
+def request_problem(
+    case: Mapping[str, Any], texts: Mapping[str, str], masker: Masker
+) -> str | None:
+    """Why no verification request can be built from a case; None when one can.
+
+    Asked of a draft or a repair before any scan exists: a refusal, clarification or trap case
+    is built with a placeholder passage, so only the case's own text is judged.
+    """
+    passages = [{"source_id": case["documents"][0], "text": "."}] if needs_scan(case) else None
+    try:
+        build_request(case, texts, masker, passages)
+    except (ValueError, KeyError, TypeError) as exc:
+        return str(exc)
+    return None
+
+
 class ReplyFormatError(ValueError):
     """The reply does not follow the form of the protocol; it is stored and not counted."""
 
@@ -639,6 +691,11 @@ def _objects(text: str) -> list[dict[str, Any]]:
             found.append(value)
         index = text.find("{", end)
     return found
+
+
+def json_objects(text: str) -> list[dict[str, Any]]:
+    """Every top-level JSON object of a reply; a key given twice is a ReplyFormatError."""
+    return _objects(text)
 
 
 def _sentence(value: object) -> str | None:
@@ -793,8 +850,14 @@ def repair_violations(
     repaired: Mapping[str, Any],
     author: Mapping[str, str],
     reserve: Collection[str],
+    *,
+    barred: str = "the holdout reserve",
 ) -> list[str]:
-    """What a repair must not do, besides failing the per-case rules of the verify script."""
+    """What a repair must not do, besides failing the per-case rules of the verify script.
+
+    `reserve` are the documents a repair of this set may not cite and `barred` their name: the
+    holdout reserve for a development case, every other document for a case of the holdout.
+    """
     found = [
         f"a repair changes {field}"
         for field in KEPT_FIELDS
@@ -804,7 +867,7 @@ def repair_violations(
         found.append("a repair changes the draft author")
     cited = sorted(cited_documents(repaired) & set(reserve))
     if cited:
-        found.append("a repair cites the holdout reserve: " + ", ".join(cited))
+        found.append(f"a repair cites {barred}: " + ", ".join(cited))
     if case_sha256(repaired) == case_sha256(draft):
         # A second request on the label as drafted would be a second draw of the same check.
         found.append("a repair leaves the label as drafted")
@@ -835,6 +898,17 @@ def drop_violations(drop: Mapping[str, Any], reserve: Collection[str]) -> list[s
     if set(documents) - set(reserve):
         return ["a declared drop names a document outside the holdout reserve"]
     return []
+
+
+def no_repair_request(case: Mapping[str, Any], decision: Mapping[str, Any]) -> bool:
+    """Whether a case rejected under v3 is dropped without a repair request.
+
+    A label without spans keeps its authority documents through a repair, so no repair answers
+    a rejection of check 5a or 5b: a repaired label would be a second draw of the same check.
+    `decision` is what `decide` gave for the case in round 1.
+    """
+    rejected = {row["check"] for row in decision["rejecting_checks"]}
+    return not case["evidence_spans"] and not rejected.isdisjoint(AUTHORITY_CHECKS)
 
 
 def drop_record(drop: Mapping[str, Any]) -> dict[str, Any]:

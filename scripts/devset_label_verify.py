@@ -11,6 +11,15 @@
 The protocol is the section «Label verification» of docs/specs/semantic-precision-metrics.md;
 docs/specs/label-verification.md says what these commands must do.
 
+Every command takes --set. `pilot`, the default, is the pilot set under rubric
+label-verification/v2; its rounds are complete. The sets of plan step 1.3d are verified under
+rubric v3: `pilot-v3` (the verified pilot set, checked again), `development`, `holdout`, and
+`development-replacements` and `holdout-replacements`. A set of v3 keeps its rounds in
+reports/devset/label-verification/v3/<set>/ and is checked by the isolated route: every reply
+is stored with the record of its session, and a reply without the record of a session that
+loaded nothing is no verdict. Its repairs and declared drops are written by
+scripts/devset_label_repair.py.
+
 plan checks every input of one round and writes <round dir>/plan.json: per request its
 SHA-256, the pseudonym map and the counts. The request text is not written anywhere: verify
 rebuilds it from the same inputs (drafts, corpus, scan, chunk archive and, in round 2, the
@@ -48,13 +57,14 @@ import shutil
 import subprocess
 import tempfile
 import time
-from collections.abc import Callable, Mapping
+from collections.abc import Callable, Mapping, Sequence
 from contextlib import ExitStack
 from dataclasses import dataclass, replace
 from pathlib import Path
 from typing import Any, TextIO
 
 from evaluation import devset
+from evaluation import isolated_request as isolated
 from evaluation import label_verification as lv
 from evaluation.blinded_judge_clients import (
     JudgeUnavailable,
@@ -66,6 +76,7 @@ from evaluation.devset_sources import corpus_directory, read_sources
 from scripts import devset_wide_scan as wide
 
 ROOT = Path(__file__).resolve().parent.parent
+EVALUATION = ROOT / "evaluation"
 BASE = ROOT / "reports" / "devset" / "label-verification"
 ARCHIVE = ROOT / "evaluation" / "gr1b-4436d61-graph-chunks.json.gz"
 VERIFIED = ROOT / "evaluation" / "devset_pilot_verified.jsonl"
@@ -134,13 +145,24 @@ def usage_counts(usage: object) -> dict[str, int | float]:
 
 @dataclass(frozen=True)
 class Drafts:
-    """The registered drafts with what binds them. Nothing here is rewritten."""
+    """The registered drafts with what binds them. Nothing here is rewritten.
+
+    `rubric` is the rubric the set is verified under. `label_authors` names, per case, the
+    author of the label as the set holds it where that is not the draft author: a label that
+    was repaired before it came into this set. `holdout` marks a set drafted from the holdout
+    reserve, whose repairs are bound the other way round. `gate` refuses round 1 of a set that
+    waits for something; a set that waits for nothing has none.
+    """
 
     cases: list[dict[str, Any]]
     manifest: dict[str, Any]
     register: dict[str, Any]
     corpus: dict[str, Any]
     verify: Callable[[Path], object]
+    rubric: str = lv.RUBRIC_VERSION
+    label_authors: Mapping[str, Mapping[str, str]] | None = None
+    holdout: bool = False
+    gate: Callable[[], object] | None = None
 
     @property
     def author(self) -> dict[str, str]:
@@ -153,6 +175,48 @@ class Drafts:
     @property
     def reserve(self) -> frozenset[str]:
         return frozenset(self.register["holdout_reserve_documents"])
+
+    @property
+    def barred(self) -> frozenset[str]:
+        """The documents a repair of this set may not cite.
+
+        A development case cites no document of the holdout reserve. A case of the holdout is
+        drafted from the reserve, and its repair cites no document outside it: the families of
+        the two splits stay apart either way.
+        """
+        return frozenset(self.revisions) - self.reserve if self.holdout else self.reserve
+
+    @property
+    def barred_name(self) -> str:
+        return "a document outside the holdout reserve" if self.holdout else "the holdout reserve"
+
+    def label_author(self, case_id: str) -> dict[str, str]:
+        """Who wrote the label of a case as this set holds it."""
+        return dict((self.label_authors or {}).get(case_id) or self.author)
+
+    def verifiers(self) -> dict[str, lv.Verifier]:
+        """The registered verifiers of the set, by its rubric.
+
+        Under v3 the verifier of every label is the model of the session, asked by the isolated
+        route; under v2 it follows from the vendor of the draft author.
+        """
+        if self.rubric != lv.RUBRIC_V3:
+            return lv.registered_verifiers(self.author)
+        return {
+            isolated.MODEL: {
+                "model": isolated.MODEL,
+                "vendor": lv.REPAIR_AUTHOR["vendor"],
+                "route": isolated.ROUTE,
+                "settings": isolated.settings(lv.CLI_SYSTEM_PROMPT),
+            }
+        }
+
+    def drop_problem(self, drop: Mapping[str, Any]) -> str | None:
+        """What is wrong with a declared drop of a case of this set; None for a valid one."""
+        if self.holdout and drop.get("ground") == lv.RESERVE_DROP:
+            return f"a case of the holdout has no ground {lv.RESERVE_DROP}"
+        problems = lv.drop_violations(drop, self.reserve)
+        return problems[0] if problems else None
 
     def by_id(self) -> dict[str, dict[str, Any]]:
         return {case["case_id"]: case for case in self.cases}
@@ -173,6 +237,163 @@ def pilot_drafts() -> Drafts:
     return Drafts(
         cases, manifest, register, corpus, lambda directory: devset.verify(directory=directory)
     )
+
+
+def pilot_v3_drafts() -> Drafts:
+    """The verified pilot set as rubric v3 checks it again in plan step 1.3d.
+
+    A case confirmed as drafted is the draft of its author; a case confirmed after a repair
+    is a label of the model that repaired it, which is the model that now checks it.
+    """
+    pilot = pilot_drafts()
+    data = VERIFIED.read_bytes()
+    checks = read_json(REGISTER)
+    if not checks.get("complete") or checks["sha256"].get("verified_set") != sha256_bytes(data):
+        raise ValueError("the verified pilot set is not the one its register gives")
+    rows = read_jsonl(VERIFIED)
+    cases = [
+        {key: value for key, value in row.items() if key not in lv.ADDED_FIELDS} for row in rows
+    ]
+    manifest = {
+        "generator": pilot.manifest["generator"],
+        "jsonl_sha256": sha256_bytes(data),
+        "families_sha256": pilot.manifest["families_sha256"],
+    }
+    drafted = pilot.by_id()
+    families = devset.document_families(pilot.register)
+
+    def script(directory: Path) -> None:
+        texts = read_sources(pilot.corpus, directory)
+        frame = devset.source_frame(texts)
+        for case in cases:
+            seed = drafted[case["case_id"]]["seed_selected_source_section"]
+            devset.validate_case(
+                case, seed, pilot.revisions, pilot.corpus["corpus_sha256"], families
+            )
+            devset.validate_case_sources(case, texts, frame)
+
+    return Drafts(
+        cases,
+        manifest,
+        pilot.register,
+        pilot.corpus,
+        script,
+        rubric=lv.RUBRIC_V3,
+        label_authors={
+            row["case_id"]: row["label_check"]["repair_author"]
+            for row in rows
+            if "repair_author" in row["label_check"]
+        },
+    )
+
+
+def pilot_closed() -> None:
+    """The gate of the set `development`: its round 1 waits for the register of `pilot-v3`.
+
+    A case `pilot-v3` drops is replaced with the dropped drafts of development, and the code
+    that seats a replacement is tested before a draft of the step is verified. So no draft of
+    development is checked while that register is open, nor while it holds a dropped case
+    that the draft tool cannot seat yet.
+    """
+    from scripts import devset_draft as draft_tool
+
+    try:
+        draft_tool.pilot_register()
+    except ValueError as exc:
+        raise ValueError(f"round 1 of development waits for pilot-v3: {exc}") from None
+
+
+def split_drafts(split: str, replacement: bool = False) -> Drafts:
+    """The drafts of plan step 1.3d of one split, or the replacements of its dropped drafts."""
+    # The draft tool takes its file helpers from this module.
+    from scripts import devset_draft as draft_tool
+
+    path = draft_tool.drafts_path(split, replacement)
+    manifest = read_json(draft_tool.manifest_path(split, replacement))
+
+    def script(directory: Path) -> None:
+        draft_tool.check(
+            draft_tool.out_dir(split, replacement),
+            draft_tool.load_inputs(split, directory, replacement=replacement),
+            path,
+            draft_tool.manifest_path(split, replacement),
+        )
+
+    return Drafts(
+        read_jsonl(path),
+        manifest,
+        read_json(EVALUATION / "document_families.json"),
+        read_json(EVALUATION / "aircargo_corpus.manifest.json"),
+        script,
+        rubric=lv.RUBRIC_V3,
+        holdout=split == "holdout",
+        gate=pilot_closed if split == "development" and not replacement else None,
+    )
+
+
+@dataclass(frozen=True)
+class DraftSet:
+    """Where one draft set keeps its rounds and what `apply` writes for it."""
+
+    base: Path
+    verified: Path
+    register: Path
+
+
+def _v3(name: str) -> DraftSet:
+    stem = "devset_" + name.replace("-", "_")
+    return DraftSet(
+        BASE / "v3" / name,
+        EVALUATION / f"{stem}_verified.jsonl",
+        EVALUATION / f"{stem}_label_checks.json",
+    )
+
+
+# The pilot was verified under v2; every set of plan step 1.3d is verified under v3.
+SETS = {
+    "pilot": DraftSet(BASE, VERIFIED, REGISTER),
+    **{
+        name: _v3(name)
+        for name in (
+            "pilot-v3",
+            "development",
+            "holdout",
+            "development-replacements",
+            "holdout-replacements",
+        )
+    },
+}
+
+
+def load_set(name: str) -> Drafts:
+    if name == "pilot":
+        return pilot_drafts()
+    if name == "pilot-v3":
+        return pilot_v3_drafts()
+    split, _, rest = name.partition("-")
+    return split_drafts(split, rest == "replacements")
+
+
+def protected(name: str) -> tuple[Path, ...]:
+    """What `apply` never writes for a set: every file of drafts, and the outputs of the others."""
+    from scripts import devset_draft as draft_tool
+
+    drafts = [
+        path
+        for split in ("development", "holdout")
+        for replacement in (False, True)
+        for path in (
+            draft_tool.drafts_path(split, replacement),
+            draft_tool.manifest_path(split, replacement),
+        )
+    ]
+    others = [
+        path
+        for other, files in SETS.items()
+        if other != name
+        for path in (files.verified, files.register)
+    ]
+    return (*PROTECTED, *drafts, *others)
 
 
 @dataclass(frozen=True)
@@ -216,7 +437,7 @@ def load_plan(out: Path) -> dict[str, Any]:
     plan: dict[str, Any] = read_json(out / "plan.json")
     if not isinstance(plan, dict) or plan.get("plan_version") != PLAN_VERSION:
         raise ValueError("plan_version is not supported")
-    if plan.get("rubric_version") != lv.RUBRIC_VERSION:
+    if plan.get("rubric_version") not in lv.RUBRICS:
         raise ValueError("the plan is of another rubric version")
     if plan.get("prompt_sha256") != lv.PROMPT_SHA256:
         raise ValueError("the plan is of another prompt")
@@ -257,7 +478,8 @@ def read_store(out: Path, plan: Mapping[str, Any], name: str) -> list[dict[str, 
 
     A store is what `verify` writes: the attempt of a row is one more than the invalid replies
     before it, three attempts in all, and nothing follows a valid reply. Any other history is
-    refused: a verdict on a fourth attempt or a second verdict is not counted.
+    refused: a verdict on a fourth attempt or a second verdict is not counted. Under v3 a
+    reply counts only with the record of a session that loaded nothing.
     """
     path = out / f"{name}.jsonl"
     if not path.exists():
@@ -293,6 +515,11 @@ def read_store(out: Path, plan: Mapping[str, Any], name: str) -> list[dict[str, 
             raise ValueError(
                 f"the store of {name} holds attempts that verify does not write: {case_id}"
             )
+        if plan["rubric_version"] == lv.RUBRIC_V3 and row["status"] != "unavailable":
+            try:
+                isolated.check_record(row.get("session"))
+            except ValueError as exc:
+                raise ValueError(f"a stored reply the route does not vouch for: {exc}") from None
         if row["status"] == "valid":
             closed.add(case_id)
         elif row["status"] == "invalid":
@@ -338,7 +565,9 @@ def repair_problem(drafts: Drafts, case: dict[str, Any]) -> str | None:
     if draft is None:
         return "a repair is of no drafted case"
     try:
-        problems = lv.repair_violations(draft, case, drafts.author, drafts.reserve)
+        problems = lv.repair_violations(
+            draft, case, drafts.author, drafts.barred, barred=drafts.barred_name
+        )
         if not problems:
             drafts.case_rules(case, draft)
     except (ValueError, KeyError, TypeError) as exc:
@@ -355,8 +584,9 @@ def planned_revisions(
     is taken on the plan's word. Round 1 is held against the drafts, round 2 against the
     repairs file it was planned on.
     """
-    author = drafts.author
-    if plan["draft_author"] != author or plan["verifiers"] != lv.registered_verifiers(author):
+    if plan["rubric_version"] != drafts.rubric:
+        raise ValueError("the plan is not of the rubric these drafts are verified under")
+    if plan["draft_author"] != drafts.author or plan["verifiers"] != drafts.verifiers():
         raise ValueError("the plan is not of the registered draft author and verifiers")
     if plan["round"] == 1:
         cases = drafts.by_id()
@@ -427,16 +657,30 @@ def load_round(out: Path, drafts: Drafts, repairs: Path | None = None) -> Round:
     )
 
 
-def check_drops(first: Round, second: Round, reserve: frozenset[str]) -> None:
+def refuse_unrepairable(first: Round, drafts: Drafts, repaired: Sequence[str]) -> None:
+    """Refuse the repair of a case rubric v3 drops without one, whoever wrote the repair.
+
+    A case without spans that round 1 rejected on check 5a or 5b: its repair would be a
+    second draw of the same check. `repaired` are cases round 1 rejected.
+    """
+    if drafts.rubric != lv.RUBRIC_V3:
+        return
+    for case_id in repaired:
+        if lv.no_repair_request(first.revisions[case_id], first.decisions[case_id]):
+            raise ValueError(f"a case without spans rejected on 5a or 5b has no repair: {case_id}")
+
+
+def check_drops(first: Round, second: Round, drafts: Drafts) -> None:
     """Refuse a round 2 that plans what round 1 did not reject, or an invalid declared drop."""
     planned = [*second.requests, *second.drops]
     for case_id in planned:
         if first.decisions.get(case_id, {}).get("outcome") != "rejected":
             raise ValueError(f"a case was not rejected in round 1: {case_id}")
+    refuse_unrepairable(first, drafts, list(second.requests))
     for case_id, drop in second.drops.items():
-        problems = lv.drop_violations(drop, reserve)
-        if problems:
-            raise ValueError(f"{problems[0]}: {case_id}")
+        problem = drafts.drop_problem(drop)
+        if problem:
+            raise ValueError(f"{problem}: {case_id}")
 
 
 def second_round(
@@ -476,11 +720,11 @@ def second_round(
             )
         if first.decisions.get(case_id, {}).get("outcome") != "rejected":
             raise ValueError(f"a case was not rejected in round 1: {case_id}")
-    reserve = drafts.reserve
     for drop in declared:
-        problems = lv.drop_violations(drop, reserve)
-        if problems:
-            raise ValueError(f"{problems[0]}: {drop['case_id']}")
+        problem = drafts.drop_problem(drop)
+        if problem:
+            raise ValueError(f"{problem}: {drop['case_id']}")
+    refuse_unrepairable(first, drafts, [case["case_id"] for case in repairs])
     frame = devset.source_frame(texts) if repairs else None
     for case in repairs:
         problem = repair_problem(drafts, case)
@@ -512,30 +756,12 @@ def second_round(
     )
 
 
-def build_round(
-    drafts: Drafts, inputs: RoundInputs, verifiers: Mapping[str, lv.Verifier] | None = None
-) -> tuple[dict[str, Any], dict[str, str]]:
-    """Check every input of one round; return its plan and the request texts by case id.
+def read_scan(inputs: RoundInputs) -> tuple[bytes, dict[str, Any], list[dict[str, Any]]]:
+    """The wide scan of a round, as bytes and as read, and the chunks of its archive.
 
-    Nothing is written. Every refusal of `plan` is raised here as ValueError.
+    ValueError when a file is missing, the scan is not of the registered schema or one of its
+    texts is not the archive's.
     """
-    if lv.prompt_sha256() != lv.PROMPT_SHA256:
-        raise ValueError("the prompt is not the registered one")
-    if inputs.round not in (1, 2):
-        raise ValueError("a round is 1 or 2")
-    author = drafts.author
-    chosen = dict(verifiers) if verifiers is not None else lv.registered_verifiers(author)
-    lv.check_vendors(author, chosen)
-    try:
-        texts = read_sources(drafts.corpus, inputs.corpus_dir)
-    except OSError:
-        raise ValueError("the corpus is not the registered version: a file is missing") from None
-    except ValueError as exc:
-        raise ValueError(f"the corpus is not the registered version: {exc}") from None
-    try:
-        drafts.verify(inputs.corpus_dir)
-    except (ValueError, KeyError, TypeError) as exc:
-        raise ValueError(f"the drafts fail the verify script: {exc}") from None
     try:
         scan_bytes = inputs.scan.read_bytes()
         archive = inputs.archive.read_bytes()
@@ -552,6 +778,40 @@ def build_round(
         lv.check_scan(scan, chunks)
     except (KeyError, TypeError):
         raise ValueError("the scan file is not a wide scan of the registered schema") from None
+    return scan_bytes, scan, chunks
+
+
+def build_round(
+    drafts: Drafts, inputs: RoundInputs, verifiers: Mapping[str, lv.Verifier] | None = None
+) -> tuple[dict[str, Any], dict[str, str]]:
+    """Check every input of one round; return its plan and the request texts by case id.
+
+    Nothing is written. Every refusal of `plan` is raised here as ValueError.
+    """
+    if lv.prompt_sha256() != lv.PROMPT_SHA256:
+        raise ValueError("the prompt is not the registered one")
+    if lv.sha256_text(lv.CLI_SYSTEM_PROMPT) != lv.CLI_SYSTEM_PROMPT_SHA256:
+        raise ValueError("the system prompt is not the registered one")
+    if inputs.round not in (1, 2):
+        raise ValueError("a round is 1 or 2")
+    if inputs.round == 1 and drafts.gate is not None:
+        drafts.gate()
+    author = drafts.author
+    chosen = dict(verifiers) if verifiers is not None else drafts.verifiers()
+    if drafts.rubric != lv.RUBRIC_V3:
+        # v3 has the author of a label check it: the vendor rule of v2 cannot be met there.
+        lv.check_vendors(author, chosen)
+    try:
+        texts = read_sources(drafts.corpus, inputs.corpus_dir)
+    except OSError:
+        raise ValueError("the corpus is not the registered version: a file is missing") from None
+    except ValueError as exc:
+        raise ValueError(f"the corpus is not the registered version: {exc}") from None
+    try:
+        drafts.verify(inputs.corpus_dir)
+    except (ValueError, KeyError, TypeError) as exc:
+        raise ValueError(f"the drafts fail the verify script: {exc}") from None
+    scan_bytes, scan, chunks = read_scan(inputs)
     bound = {
         "drafts_sha256": drafts.manifest["jsonl_sha256"],
         "families_sha256": drafts.manifest["families_sha256"],
@@ -591,7 +851,7 @@ def build_round(
         )
     plan = {
         "plan_version": PLAN_VERSION,
-        "rubric_version": lv.RUBRIC_VERSION,
+        "rubric_version": drafts.rubric,
         "prompt_sha256": lv.PROMPT_SHA256,
         "round": inputs.round,
         "draft_author": author,
@@ -705,14 +965,50 @@ class ClaudeCliClient:
         )
 
 
+class IsolatedClient:
+    """The route of rubric v3: one request is one new session that loads nothing.
+
+    The reply comes back with the record of its session, and a verdict counts only with it.
+    """
+
+    model = isolated.MODEL
+    route = isolated.ROUTE
+
+    def __init__(
+        self,
+        executable: str | None = None,
+        timeout_s: float = CLI_TIMEOUT_S,
+        system_prompt: str = lv.CLI_SYSTEM_PROMPT,
+    ) -> None:
+        self.executable = executable
+        self.timeout_s = timeout_s
+        self.system_prompt = system_prompt
+
+    def grade(self, request_text: str) -> isolated.IsolatedReply:
+        executable = self.executable or isolated.find_cli()
+        if executable is None:
+            raise JudgeUnavailable("cli_missing", "Claude CLI is not installed")
+        return isolated.send(executable, self.system_prompt, request_text, timeout_s=self.timeout_s)
+
+
 def make_client(name: str) -> Any:
     """Build the client of a registered verifier from the environment; nothing is echoed.
 
-    A route exists for a registered verifier and for no other model.
+    A route exists for a registered verifier and for no other model. This is the route the
+    pilot was verified by under v2; a plan of v3 is sent by `isolated_client`.
     """
     if name == ClaudeCliClient.model and name in lv.VERIFIERS:
         return ClaudeCliClient(os.environ.get("RAG_VERIFY_CLAUDE_CLI", "").strip() or None)
     raise ValueError(f"no route is registered for the verifier {name}")
+
+
+def isolated_client(name: str, system_prompt: str = lv.CLI_SYSTEM_PROMPT) -> Any:
+    """The client of rubric v3 from the environment; nothing is echoed."""
+    if name != IsolatedClient.model:
+        raise ValueError(f"no route is registered for the verifier {name}")
+    return IsolatedClient(
+        os.environ.get("RAG_VERIFY_CLAUDE_CLI", "").strip() or None, system_prompt=system_prompt
+    )
 
 
 def emit(line: str) -> None:
@@ -722,10 +1018,18 @@ def emit(line: str) -> None:
         print(line.encode("ascii", "backslashreplace").decode("ascii"), flush=True)
 
 
-def attempt(client: Any, text: str, model: str, row: dict[str, Any]) -> dict[str, Any]:
-    """Send one request once; the row holds the reply as given, or the code of the failure."""
+def attempt(
+    client: Any, text: str, model: str, row: dict[str, Any], *, recorded: bool = False
+) -> dict[str, Any]:
+    """Send one request once; the row holds the reply as given, or the code of the failure.
+
+    With `recorded` (rubric v3) the row keeps the record of the reply's session, and a reply
+    without the record of a session that loaded nothing is no verdict.
+    """
     start = time.monotonic()
     blank: dict[str, Any] = {"model": None, "raw_reply": None, "usage": {}}
+    if recorded:
+        blank["session"] = None
     try:
         reply = client.grade(text)
     except JudgeUnavailable as exc:
@@ -751,6 +1055,19 @@ def attempt(client: Any, text: str, model: str, row: dict[str, Any]) -> dict[str
                 "elapsed_s": answered["elapsed_s"],
                 "error": "model_mismatch",
             }
+        if recorded:
+            answered["session"] = getattr(reply, "session", None)
+            try:
+                isolated.check_record(answered["session"])
+            except ValueError:
+                # Not a reply of the route: it is no verdict and is not kept.
+                return {
+                    **row,
+                    "status": "unavailable",
+                    **blank,
+                    "elapsed_s": answered["elapsed_s"],
+                    "error": "session_record",
+                }
         try:
             lv.parse_reply(reply.text)
         except lv.ReplyFormatError as exc:
@@ -783,8 +1100,9 @@ def verify(
     if rebuilt != plan:
         raise ValueError("the inputs no longer rebuild the plan of this round")
     rows = read_store(out, plan, name)
+    recorded = plan["rubric_version"] == lv.RUBRIC_V3
     if client is None:
-        client = make_client(name)
+        client = isolated_client(name) if recorded else make_client(name)
     model = plan["verifiers"][name]["model"]
     store = out / f"{name}.jsonl"
     taken = sent = 0
@@ -819,6 +1137,7 @@ def verify(
                         "prompt_sha256": plan["prompt_sha256"],
                         "rubric_version": plan["rubric_version"],
                     },
+                    recorded=recorded,
                 )
                 handle.write(json.dumps(row, ensure_ascii=False) + "\n")
                 handle.flush()
@@ -924,7 +1243,7 @@ def load_rounds(
         or any(second.plan["inputs"].get(key) != first.plan["inputs"][key] for key in BOUND_INPUTS)
     ):
         raise ValueError("the plan of round 2 is not planned on round 1")
-    check_drops(first, second, drafts.reserve)
+    check_drops(first, second, drafts)
     return first, second
 
 
@@ -955,9 +1274,20 @@ def sent_counts(rounds: list[Round]) -> dict[str, dict[str, int]]:
     return counts
 
 
+def label_word(drafts: Drafts, plan: Mapping[str, Any], case_id: str, number: object) -> str:
+    """The word of a case confirmed in round `number`: by the rubric and the label's author.
+
+    The label checked in round 1 is the one the set holds; the label checked in round 2 was
+    written by the repair author.
+    """
+    written_by = drafts.label_author(case_id) if number == 1 else lv.REPAIR_AUTHOR
+    return lv.label_status(plan["rubric_version"], written_by, plan["verifiers"])
+
+
 def build_outputs(drafts: Drafts, first: Round, second: Round | None) -> tuple[bytes, bytes]:
     """The verified set and its register, as they follow from the drafts, plans and stores."""
     author = drafts.author
+    rubric = first.plan["rubric_version"]
     verifier_ids = sorted(first.plan["verifiers"])
     drops = second.drops if second is not None else {}
     rows = []
@@ -986,14 +1316,17 @@ def build_outputs(drafts: Drafts, first: Round, second: Round | None) -> tuple[b
                 # The revision the verdicts were given on: the row of the plan is bound to it.
                 kept = second.revisions[case_id]
             label = {
-                "status": lv.verified_status(verifier_ids),
+                "status": label_word(drafts, first.plan, case_id, number),
                 "verifiers": verifier_ids,
-                "rubric_version": lv.RUBRIC_VERSION,
+                "rubric_version": rubric,
                 "round": number,
             }
             if number == 2:
                 # The verdicts of round 2 were given on a label its verifier's model wrote.
                 label["repair_author"] = dict(lv.REPAIR_AUTHOR)
+            elif drafts.label_author(case_id) != author:
+                # The set held a label that had been repaired before: its author is named.
+                label["repair_author"] = drafts.label_author(case_id)
             authority_unverified = (one if number == 1 else two or {})["authority_unverified"]
         elif state == "dropped":
             kept = None
@@ -1037,7 +1370,7 @@ def build_outputs(drafts: Drafts, first: Round, second: Round | None) -> tuple[b
     rounds_read = [first] if second is None else [first, second]
     register = {
         "schema_version": REGISTER_VERSION,
-        "rubric_version": lv.RUBRIC_VERSION,
+        "rubric_version": rubric,
         "prompt_sha256": lv.PROMPT_SHA256,
         "label_origin": "agent_labelled",
         "draft_author": author,
@@ -1067,10 +1400,11 @@ def apply(
     repairs: Path | None,
     verified: Path,
     register: Path,
+    protected: Sequence[Path] = PROTECTED,
 ) -> dict[str, Any]:
     """Write the verified set and its register; the drafts and their register are not touched."""
     targets = {verified.resolve(), register.resolve()}
-    if len(targets) != 2 or targets & {path.resolve() for path in PROTECTED}:
+    if len(targets) != 2 or targets & {path.resolve() for path in protected}:
         raise ValueError("the verified set and its register do not replace the drafts")
     first, second = load_rounds(drafts, round_1, round_2, repairs)
     set_bytes, register_bytes = build_outputs(drafts, first, second)
@@ -1121,7 +1455,6 @@ def check(
                 )
     by_id = drafts.by_id()
     drops = second.drops if second is not None else {}
-    status = lv.verified_status(first.plan["verifiers"])
     seen: set[str] = set()
     for row in read_jsonl(verified):
         case_id = row.get("case_id")
@@ -1135,7 +1468,9 @@ def check(
             raise ValueError(f"a dropped case is still present: {case_id}")
         content = {key: value for key, value in row.items() if key not in lv.ADDED_FIELDS}
         label = row.get("label_check")
-        if not isinstance(label, dict) or label.get("status") != status:
+        if not isinstance(label, dict) or label.get("status") != label_word(
+            drafts, first.plan, case_id, label.get("round")
+        ):
             if content != draft:
                 raise ValueError(f"an unrepaired case differs from its draft: {case_id}")
             continue
@@ -1169,12 +1504,14 @@ def main(argv: list[str] | None = None) -> int:
     commands = parser.add_subparsers(dest="command", required=True)
 
     def rounds(command: argparse.ArgumentParser) -> None:
-        command.add_argument("--round-1", type=Path, default=BASE / "round-1")
-        command.add_argument("--round-2", type=Path, default=BASE / "round-2")
+        # The directories, the scan and the outputs default to those of the set.
+        command.add_argument("--set", choices=sorted(SETS), default="pilot")
+        command.add_argument("--round-1", type=Path)
+        command.add_argument("--round-2", type=Path)
 
     def sources(command: argparse.ArgumentParser) -> None:
         command.add_argument("--corpus-dir", type=Path)
-        command.add_argument("--scan", type=Path, default=BASE / "wide-scan.json")
+        command.add_argument("--scan", type=Path)
         command.add_argument("--archive", type=Path, default=ARCHIVE)
         command.add_argument("--repairs", type=Path)
         command.add_argument("--drops", type=Path)
@@ -1196,8 +1533,8 @@ def main(argv: list[str] | None = None) -> int:
     for name in ("apply", "check"):
         command = commands.add_parser(name)
         rounds(command)
-        command.add_argument("--verified", type=Path, default=VERIFIED)
-        command.add_argument("--register", type=Path, default=REGISTER)
+        command.add_argument("--verified", type=Path)
+        command.add_argument("--register", type=Path)
         if name == "apply":
             command.add_argument("--repairs", type=Path)
         else:
@@ -1215,41 +1552,46 @@ def main(argv: list[str] | None = None) -> int:
 
 
 def run(arguments: argparse.Namespace) -> int:
+    chosen = SETS[arguments.set]
+    round_1 = arguments.round_1 or chosen.base / "round-1"
+    round_2 = arguments.round_2 or chosen.base / "round-2"
+    drafts = load_set(arguments.set)
     if arguments.command in ("plan", "verify"):
-        out = arguments.round_1 if arguments.round == 1 else arguments.round_2
+        out = round_1 if arguments.round == 1 else round_2
         inputs = RoundInputs(
             round=arguments.round,
             corpus_dir=arguments.corpus_dir or corpus_directory(),
-            scan=arguments.scan,
+            scan=arguments.scan or chosen.base / "wide-scan.json",
             archive=arguments.archive,
-            previous=arguments.round_1 if arguments.round == 2 else None,
+            previous=round_1 if arguments.round == 2 else None,
             repairs=arguments.repairs,
             drops=arguments.drops,
         )
         if arguments.command == "plan":
-            emit(json.dumps(plan_round(out, pilot_drafts(), inputs), ensure_ascii=False))
+            emit(json.dumps(plan_round(out, drafts, inputs), ensure_ascii=False))
             return 0
-        result = verify(out, arguments.verifier, pilot_drafts(), inputs, limit=arguments.limit)
+        result = verify(out, arguments.verifier, drafts, inputs, limit=arguments.limit)
         emit(json.dumps(result, ensure_ascii=False))
         return 0 if result["valid"] == result["requests"] else 1
     if arguments.command == "decide":
         summary, lines = decide(
-            arguments.round_1 if arguments.round == 1 else arguments.round_2,
-            pilot_drafts(),
-            arguments.repairs,
+            round_1 if arguments.round == 1 else round_2, drafts, arguments.repairs
         )
         for line in lines:
             emit(line)
         emit(json.dumps(summary, ensure_ascii=False))
         return 1 if summary["none"] else 0
+    verified = arguments.verified or chosen.verified
+    register = arguments.register or chosen.register
     if arguments.command == "apply":
         result = apply(
-            pilot_drafts(),
-            arguments.round_1,
-            arguments.round_2,
+            drafts,
+            round_1,
+            round_2,
             repairs=arguments.repairs,
-            verified=arguments.verified,
-            register=arguments.register,
+            verified=verified,
+            register=register,
+            protected=protected(arguments.set),
         )
     else:
         rebuilt: RoundInputs | None = None
@@ -1257,19 +1599,19 @@ def run(arguments: argparse.Namespace) -> int:
             rebuilt = RoundInputs(
                 round=1,
                 corpus_dir=arguments.corpus_dir or corpus_directory(),
-                scan=arguments.scan,
+                scan=arguments.scan or chosen.base / "wide-scan.json",
                 archive=arguments.archive,
-                previous=arguments.round_1,
+                previous=round_1,
                 repairs=arguments.repairs,
                 drops=arguments.drops,
             )
         result = check(
-            pilot_drafts(),
-            arguments.round_1,
-            arguments.round_2,
+            drafts,
+            round_1,
+            round_2,
             repairs=arguments.repairs,
-            verified=arguments.verified,
-            register=arguments.register,
+            verified=verified,
+            register=register,
             inputs=rebuilt,
         )
     emit(json.dumps(result, ensure_ascii=False))

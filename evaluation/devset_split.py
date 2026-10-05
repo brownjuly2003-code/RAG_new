@@ -47,6 +47,8 @@ HOLDOUT_SHARES = {
 }
 HOLDOUT_ROUNDS = 4
 AGGREGATION_ITEMS = 3
+# What the first verification of a split leaves of a seated position (rule `replacement`).
+OUTCOMES = ("confirmed", "dropped", "empty")
 TOKEN = re.compile(r"[^\W\d_]{3,}")
 ITEM = re.compile(r"(?m)^\s*(?:[-*+•]|\d+[.)])\s+\S|^\s*\|.*\|\s*$")
 RULES = {
@@ -211,6 +213,91 @@ def list_items(body: str) -> int:
     return len(ITEM.findall(body))
 
 
+class Seating:
+    """What positions are seated in: the order, the tests of the classes and what is used.
+
+    `taken` are the sections that were a seed, `pairs` the pairs of a section and its partner
+    that a position used, `seated` the positions a block holds for the cap.
+    """
+
+    def __init__(
+        self,
+        order: Sequence[dict[str, Any]],
+        blocks: Sequence[Mapping[str, Any]],
+        texts: Mapping[str, str],
+        idf: Mapping[str, float],
+        cap: int | None,
+    ) -> None:
+        self.order = order
+        self.texts = texts
+        self.idf = idf
+        self.cap = cap
+        self.block_of = {document: block for block in blocks for document in block["documents"]}
+        self.by_document: dict[str, list[dict[str, Any]]] = {}
+        for section in order:
+            self.by_document.setdefault(section["source_id"], []).append(section)
+        self.vectors: dict[tuple[str, int], dict[str, float]] = {}
+        self.taken: set[tuple[str, int]] = set()
+        self.pairs: set[frozenset[tuple[str, int]]] = set()
+        self.seated: Counter[str] = Counter()
+
+    def body(self, section: Mapping[str, Any]) -> str:
+        return self.texts[section["source_id"]][section["char_start"] : section["char_end"]]
+
+    def vectorised(self, section: Mapping[str, Any]) -> dict[str, float]:
+        if key(section) not in self.vectors:
+            self.vectors[key(section)] = vector(self.body(section), self.idf)
+        return self.vectors[key(section)]
+
+    def partner(self, section: Mapping[str, Any]) -> dict[str, Any] | None:
+        """The rule `partner`: among all sections of the order of the block's other documents."""
+        block = self.block_of[section["source_id"]]
+        others = [
+            other
+            for document in block["documents"]
+            if document != section["source_id"]
+            for other in self.by_document.get(document, [])
+        ]
+        if not others:
+            return None
+        own = self.vectorised(section)
+        return min(
+            others, key=lambda other: (-similarity(own, self.vectorised(other)), *key(other))
+        )
+
+    def place(self, number: int, primary_class: str) -> dict[str, Any]:
+        """Seat one position at the first section of the order that passes the test of its class."""
+        place: dict[str, Any] = {
+            "position": number,
+            "primary_class": primary_class,
+            "block_id": None,
+            "seed": None,
+            "partner": None,
+        }
+        for section in self.order:
+            block_id = self.block_of[section["source_id"]]["block_id"]
+            if key(section) in self.taken or (
+                self.cap is not None and self.seated[block_id] >= self.cap
+            ):
+                continue
+            other = None
+            if primary_class in SEVERAL_DOCUMENTS:
+                other = self.partner(section)
+                if other is None or frozenset((key(section), key(other))) in self.pairs:
+                    continue
+                if (
+                    primary_class == "aggregation"
+                    and list_items(self.body(section)) < AGGREGATION_ITEMS
+                ):
+                    continue
+                self.pairs.add(frozenset((key(section), key(other))))
+            self.taken.add(key(section))
+            self.seated[block_id] += 1
+            place.update(block_id=block_id, seed=section, partner=other)
+            break
+        return place
+
+
 def seat(
     sequence: Sequence[str],
     order: Sequence[dict[str, Any]],
@@ -220,63 +307,53 @@ def seat(
     cap: int | None,
 ) -> list[dict[str, Any]]:
     """Give every position the first section of the order that passes the test of its class."""
-    block_of = {document: block for block in blocks for document in block["documents"]}
-    by_document: dict[str, list[dict[str, Any]]] = {}
-    for section in order:
-        by_document.setdefault(section["source_id"], []).append(section)
-    vectors: dict[tuple[str, int], dict[str, float]] = {}
+    seating = Seating(order, blocks, texts, idf, cap)
+    return [
+        seating.place(number, primary_class) for number, primary_class in enumerate(sequence, 1)
+    ]
 
-    def body(section: Mapping[str, Any]) -> str:
-        return texts[section["source_id"]][section["char_start"] : section["char_end"]]
 
-    def vectorised(section: Mapping[str, Any]) -> dict[str, float]:
-        if key(section) not in vectors:
-            vectors[key(section)] = vector(body(section), idf)
-        return vectors[key(section)]
+def reseat(
+    positions: Sequence[Mapping[str, Any]],
+    outcomes: Mapping[int, str],
+    order: Sequence[dict[str, Any]],
+    blocks: Sequence[Mapping[str, Any]],
+    texts: Mapping[str, str],
+    idf: Mapping[str, float],
+    cap: int | None,
+) -> list[dict[str, Any]]:
+    """The place of the replacement of every dropped draft of a split, by the rule `replacement`.
 
-    def partner(section: Mapping[str, Any]) -> dict[str, Any] | None:
-        block = block_of[section["source_id"]]
-        others = [
-            other
-            for document in block["documents"]
-            if document != section["source_id"]
-            for other in by_document.get(document, [])
-        ]
-        if not others:
-            return None
-        own = vectorised(section)
-        return min(others, key=lambda other: (-similarity(own, vectorised(other)), *key(other)))
-
-    taken: set[tuple[str, int]] = set()
-    pairs: set[frozenset[tuple[str, int]]] = set()
-    seated: Counter[str] = Counter()
-    positions = []
-    for number, primary_class in enumerate(sequence, 1):
-        place: dict[str, Any] = {
-            "position": number,
-            "primary_class": primary_class,
-            "block_id": None,
-            "seed": None,
-            "partner": None,
-        }
-        for section in order:
-            block_id = block_of[section["source_id"]]["block_id"]
-            if key(section) in taken or (cap is not None and seated[block_id] >= cap):
-                continue
-            other = None
-            if primary_class in SEVERAL_DOCUMENTS:
-                other = partner(section)
-                if other is None or frozenset((key(section), key(other))) in pairs:
-                    continue
-                if primary_class == "aggregation" and list_items(body(section)) < AGGREGATION_ITEMS:
-                    continue
-                pairs.add(frozenset((key(section), key(other))))
-            taken.add(key(section))
-            seated[block_id] += 1
-            place.update(block_id=block_id, seed=section, partner=other)
-            break
-        positions.append(place)
-    return positions
+    `outcomes` says what the first verification left of every seated position: its draft was
+    confirmed, its draft was dropped, or it is empty because no draft was written for it. The
+    order and the tests are those of `seat`, applied to that state. A draft, confirmed or
+    dropped, bars its seed section and its pair; a confirmed draft counts for the cap of its
+    block and a dropped one does not. A position that never had a draft bars nothing: its
+    section was the seed of no draft. The dropped positions are replaced in ascending number,
+    each on the state the replacements before it left; a place with no section stays empty.
+    """
+    seated = sorted(
+        (place for place in positions if place["seed"] is not None),
+        key=lambda place: place["position"],
+    )
+    if set(outcomes) != {place["position"] for place in seated} or not set(
+        outcomes.values()
+    ) <= set(OUTCOMES):
+        raise ValueError("the outcomes are not those of the seated positions of the split")
+    seating = Seating(order, blocks, texts, idf, cap)
+    for place in seated:
+        if outcomes[place["position"]] == "empty":
+            continue
+        seating.taken.add(key(place["seed"]))
+        if place["partner"] is not None:
+            seating.pairs.add(frozenset((key(place["seed"]), key(place["partner"]))))
+        if outcomes[place["position"]] == "confirmed":
+            seating.seated[place["block_id"]] += 1
+    return [
+        seating.place(place["position"], place["primary_class"])
+        for place in seated
+        if outcomes[place["position"]] == "dropped"
+    ]
 
 
 def family_index(register: Mapping[str, Any]) -> dict[str, str]:
@@ -311,6 +388,42 @@ def case_families(
     return graph
 
 
+def eligible_text(
+    texts: Mapping[str, str], eligible: Sequence[Mapping[str, Any]]
+) -> dict[str, str]:
+    """The eligible-section text of every corpus document: what the similarity is computed on."""
+    joined: dict[str, str] = {name: "" for name in texts}
+    for section in eligible:
+        name = section["source_id"]
+        joined[name] += texts[name][section["char_start"] : section["char_end"]] + "\n"
+    return joined
+
+
+def replacements(
+    split: str,
+    registered: Mapping[str, Any],
+    texts: Mapping[str, str],
+    outcomes: Mapping[int, str],
+) -> list[dict[str, Any]]:
+    """Apply the rule `replacement` to one split of the registered file and this corpus."""
+    part = registered["splits"][split]
+    eligible = sources.eligible_sections(dict(texts))
+    by_key = {key(section): section for section in eligible}
+    try:
+        order = [by_key[name, start] for name, start in part["order"]]
+    except KeyError:
+        raise ValueError("the registered order is not of this corpus") from None
+    return reseat(
+        part["positions"],
+        outcomes,
+        order,
+        part["blocks"],
+        texts,
+        weights(eligible_text(texts, eligible)),
+        HOLDOUT_ROUNDS if split == "holdout" else None,
+    )
+
+
 def build(
     texts: Mapping[str, str], register: Mapping[str, Any], pilot: Sequence[Mapping[str, Any]]
 ) -> dict[str, Any]:
@@ -322,10 +435,7 @@ def build(
         for section in [case["seed_selected_source_section"], *case["partner_sections"]]
     }
     frame = [section for section in eligible if key(section) not in used]
-    frame_text: dict[str, str] = {name: "" for name in texts}
-    for section in eligible:
-        name = section["source_id"]
-        frame_text[name] += texts[name][section["char_start"] : section["char_end"]] + "\n"
+    frame_text = eligible_text(texts, eligible)
     idf = weights(frame_text)
     vectors = {name: vector(text, idf) for name, text in frame_text.items()}
     members = {

@@ -134,6 +134,41 @@ raise and cannot lower; the wider-pool arm moves the candidate count to
 30, because 40 is the budget of H5; the state a replacement is drawn in
 is registered; and the first clause of «Power» on the development-set
 size is superseded. Nothing has read the section since.
+Amended 2026-10-05 for plan step 1.3d, before a draft of the step was
+requested and before a request of rubric v3 was sent: the new section
+«Drafts of plan step 1.3d» registers the generator and repair prompts by
+SHA-256, the brief of a position, the five sets of rubric v3 and a sixth
+for the screening tier, the replacement of a dropped draft, the minimums
+of the flags and the screening tier. Two cold reads of the section, each
+by an isolated session of the same model, came before the commit. The
+first gave 15 findings — 1 blocker, 8 majors, 6 minors. Twelve were
+applied, in the text and in the tools: what a minimum counts, and a tool
+that counts it; a refusal that goes back without a file name; a new span
+held to the texts the request supplies; a label without spans, which keeps
+its sections and its authority documents; the SHA-256 of each prompt
+widened to every fixed text of its request, with the system prompt of the
+verifier registered beside them; the places an order cannot seat; NO CASE
+by the attempt of its declaration; the counts behind the turn of the
+quantity; the bound of a holdout repair; what the trials were run on; the
+screening tier, whose rule is now registered; and a replacement asked for
+no quantity. Two were answered by another change than the one asked: the
+replacement of a dropped pilot case is a registered rule, held by a
+refusal of the tools until its code is written, and a test builds the
+request of every section of both draw orders and finds none refused for
+naming a file. One was not applied: the section of an empty position
+stays open to a replacement. The second read took the fifteen again and
+found fourteen answered and that one not — the reason first given for it
+was wrong; the section now states it as a reading of «draft», with what
+the reading costs. It gave 10 places of its own — 1 blocker, 5 majors, 4
+minors — and all were applied: a case without spans rejected on 5a or 5b
+is dropped by the script, with no repair request; the safety-critical
+count that decides needs a span; round 1 of development waits for the
+register of `pilot-v3`; a refusal the script cannot quote goes back as a
+fixed sentence, which registered the SHA-256 of both prompts anew; an
+excerpt found over a heading is refused without a second search; the tier
+has 360 positions, a set of its own, and rules for what it bars and for
+the share of its rejected drafts; and four counts or claims were
+corrected. What the second read changed has been read by nothing since.
 
 ## Why a second ruler
 
@@ -853,6 +888,8 @@ repair as labels of the checking model (change 2). The capsule sets the two
 sets of verdicts side by side, and a pilot case rejected there is repaired
 or dropped like any other.
 
+Prompt SHA-256 (rubric label-verification/v3): `3f7c114428028f6518aca3f21a03f5352d0497d99d0356f2c804b9389df756ad`
+
 Candidate and token budgets are equal between arms. `precision_at_5` and
 `ndcg_at_5` are computed on the reranked seeds before expansion;
 `sent_precision` on the exact expanded documents the arm sends, identified by
@@ -1267,6 +1304,543 @@ arms. The grading stage alone took a median of 507 s a case in slice 2.5,
 so three arms over 24 cases are about eleven hours of the host; the capsule
 gives the hours spent and recomputes the budget of the campaign at the
 registered sizes.
+
+## Drafts of plan step 1.3d
+
+Registered 2026-10-05, before a draft of the step was requested, before a
+request of rubric `label-verification/v3` was sent and before its first
+repair. Rubric v3 left two prompts to this step: the generator's (its
+change 3) and the repair's (its change 4). This section registers both,
+what the tools do around them, and the readings the tools had to make
+where the rubric and «Replacement of a dropped case» do not say. One model,
+`claude-opus-5-5`, writes a draft, checks it, repairs it and writes its
+replacement — each in a request of its own, by the route of «Checks by one
+model in slices 2.8 and 4.1» — and a reply counts only with the record of a
+session that loaded nothing. The tools are
+[`evaluation/devset_drafting.py`](../../evaluation/devset_drafting.py) with
+[`scripts/devset_draft.py`](../../scripts/devset_draft.py) for drafts and
+replacements,
+[`evaluation/devset_repair.py`](../../evaluation/devset_repair.py) with
+[`scripts/devset_label_repair.py`](../../scripts/devset_label_repair.py)
+for repairs, and
+[`scripts/devset_label_verify.py`](../../scripts/devset_label_verify.py)
+for the checks, and
+[`evaluation/devset_minimums.py`](../../evaluation/devset_minimums.py) for
+the counts the minimums are held against. The section was written after
+the tools and from them; two cold reads of it, before any request, changed
+both, and the header of this file says what. What the second read changed
+has been read by nothing since.
+
+**What a draft is asked for.** A script decides it, not the model. A
+position of the registered split has its primary class, its seed section
+and, in the classes multi-doc and aggregation, its partner section. The
+brief rule `devset-brief-v1` adds three things, each by the turn of the
+position among the positions of its class, in ascending number:
+
+- the question style — `agent_style_A` and `agent_style_B` in turn,
+  starting with A;
+- the trap and the action — the pairs of the cycle of the class in turn.
+  Single-doc: none / answer, false_premise / correct_premise, none /
+  answer, none / answer, outdated_rule / correct_premise. Multi-doc:
+  none / answer, none / answer, conflicting_documents / correct_premise,
+  none / answer, false_premise / correct_premise. Aggregation: none /
+  answer. Needs-refusal/clarification: none / clarify, out_of_corpus /
+  refuse, dangerous_goods / escalate;
+- a quantity — in the classes single-doc and multi-doc the first position
+  of every three is asked for a question about a quantity the sections
+  state, so that the answer needs a numeric fact. An aggregation case
+  carries a number by its class, and a case of the class
+  needs-refusal/clarification has no facts.
+
+Within a class the three turn with periods that share no divisor — 2 for
+the style, 5 for the trap and 3 for the quantity in the classes single-doc
+and multi-doc, 2 and 3 in the class needs-refusal/clarification — so over
+a full cycle no trap is tied to one style or to the quantity. On the
+registered split the rule asks:
+
+| Split | Positions | False premise | Outdated rule | Conflicting documents | Out of corpus | Dangerous goods | Quantity |
+|---|---|---|---|---|---|---|---|
+| development, new | 30 | 4 | 1 | 2 | 2 | 2 | 7 |
+| holdout | 64 | 8 | 3 | 5 | 4 | 4 | 14 |
+
+A class is shorter than a full cycle, so the crossing of the quantity with
+the trap is counted, not assumed. Of the positions of the classes
+single-doc and multi-doc, 7 of 18 in development and 16 of 41 in the
+holdout are asked for a trap; of the quantity requests, 2 of 7 and 5 of 14
+fall on such a position. The first turn of three was taken for the
+quantity because on the registered split it asks for the most quantities:
+21, against 20 and 18 for the other two. Of its 21 requests 7 fall on a
+position asked for a trap, against 10 of 20 and 6 of 18. Such a position
+is the hardest to write as asked: the second turn would put half of its
+requests there, and the third loads it as the first does and asks for
+three quantities fewer.
+
+Neither a trap nor a quantity is forced onto a section that does not carry
+it. A draft may take the plain pair of its class in place of the requested
+one — no trap with the action `answer`; in the class
+needs-refusal/clarification, no trap with `clarify` — and no other pair,
+and it may be written without a quantity. The manifest of a draft set
+gives what was asked and what was written as asked. The brief steers
+nothing else: `ru_to_en` and `numeric` are computed from the case,
+`safety_critical` and the severity are the model's labels, and `as_of` is
+2026-10-01 for every draft.
+
+**The request of a draft** is the generator prompt followed by the brief, a
+JSON object: the class, the style in words, the requested trap and action,
+`plain_allowed`, `numeric_requested`, `as_of`, and the sections — the seed,
+then the partner — each with the pseudonym of its document (`D1`, `D2`),
+the headings above it, the document card a verification request shows, and
+its text exactly as the document has it, so that a span can be copied from
+it character for character. Headings and cards are masked as in a
+verification request. A section whose own text names a file cannot go out
+as it is, and `plan` refuses the split instead of masking it; it refuses
+as well a heading or a card that still reads as naming a file once it is
+masked. No section can bring either about. A seed or a partner, of a first
+draft or of a replacement, is a section of the draw order of its split,
+and the partner of a seed is the one the rule `partner` gives it; a test
+builds, from the corpus, the request of every section of both registered
+orders as a seed with its partner, and none is refused — 0 of 814 in
+development and 0 of 128 in the holdout. A request of a first draft is of
+12 to 15 thousand characters. The generator sees nothing else of the
+corpus, nothing of another draft and nothing of the pilot.
+
+Prompt SHA-256 (generator devset-generator/v1): `914490be7b928f573eaa78f202f17532cbcb416cd00bc2ecfec23d89148aaa5a`
+
+The SHA-256 is of every fixed text a request of a draft can carry, written
+as one JSON object with sorted keys and no added white space: the system
+prompt of the route, the prompt, the two descriptions of the question
+style, the frame a later attempt adds around a refusal, the sentence that
+stands for a refusal the script cannot quote, the advice the script
+appends to a refusal of the per-case rules, and the neutral word that
+stands for a file name. `plan` refuses texts whose SHA-256 is not this
+one, and a stored reply counts only with the prompt SHA-256 of its plan.
+Once a draft has been requested, a changed text is a new generator
+version. Any other refusal sentence of the code is not under the SHA-256:
+each is stored word for word with the reply it refused, and the capsule
+names the commit of the code that wrote it. The prompt is the text of the
+trials below: alone it has the SHA-256 `c9079aac81655af7e756dff870fa418ab727d19a0cae564f27497e9955e69ab7`,
+the value this section gave before the first cold read widened what is
+hashed. The second read added the sentence for a refusal that cannot be
+quoted, and the value above was registered anew with it, still before any
+request.
+
+**The reply** is one JSON object in the form of the prompt — the question,
+the reference answer, the labels, the spans as excerpts of the sections
+with their groups, the facts with their quotes, the aggregation — or the
+words NO CASE with one sentence of reason. The script builds the case from
+the object. The case id, the class, the style, `as_of`, the seed and
+partner sections, the documents and the authority documents come from the
+brief and the split, never from the reply. A span and a quote are stored as
+the source writes them: an excerpt that differs from the section in white
+space only is taken at the place it stands, and any other difference is a
+refusal. The built case must carry the requested pair or the plain pair of
+its class, pass the per-case rules of the verify script and its source
+checks — those that bind a pilot draft — and give a verification request
+that names no file. A reply the script refuses is asked for again in a new
+request that holds the same brief, the refusal in words and the refused
+reply: three attempts in all, and a position without a valid reply after
+three stays empty. The refusal is the one text of a later attempt that the
+script writes knowing the file names, and a rule it cites can name a
+document. A refusal of the per-case rules is cleared before it is stored:
+every file name of the corpus in it, and whatever else in it reads as a
+file name or a path, is replaced by the neutral word. A refusal of the
+form of a reply cites no rule and is stored as written. Either one that
+would still read as naming a file does not go back. The attempt is sent
+all the same, so that the position keeps its three: the place of the
+refusal is taken by the fixed sentence «the reply broke a rule the script
+cannot quote here», a text under the SHA-256, and the refusal stays in
+the store beside the reply it refused. The refused reply goes back as it
+was given: its author was shown no file name, and it is not searched for
+one — in the text of a JSON reply an escaped line break reads as a path.
+A request the route does not answer, or answers without the record of a
+clean session, is no attempt: the run stops, and a rerun resumes.
+
+**An empty position.** A reply that begins with NO CASE declares that the
+sections cannot give the case the brief asks for. The position then stays
+empty and is not asked again. «The generator passes over nothing» is read
+so: no section is passed over in favour of another, because no other
+section is drawn for the position, and the set is one case short. The
+declaration is taken at any of the three attempts. After a refusal of the
+script it can be the way out of a case that is hard to write, which the
+prompt forbids and no script can tell from a section that gives no case;
+so the manifest gives the NO CASE positions by the attempt of the
+declaration, apart from the positions that three refused replies left
+empty.
+
+An empty position is not a dropped case and gets no replacement. The rule
+`replacement` of the registered split bars a section «that was the seed of
+any draft of the split», and this section reads «draft» there as a draft
+the script accepted: an empty position has none, and its section stays
+open. That is a reading made here, not a consequence of the SHA-256 of the
+split. «Replacement of a dropped case» can be read the other way, most
+easily for three refused replies, which it sets against a «valid draft».
+The reading is taken because the other one lets a declaration of the
+generator take a section out of the order for good, and by that passage
+«a section is skipped by the script or not at all». What the reading
+does: the section on which the generator declared NO CASE, or failed three
+times, goes to the first replacement that reaches it in the order and
+passes the test of its class, and in the holdout the block of an empty
+position counts one position fewer for the cap. The section is asked there
+under another brief — the class, the style, the trap and the action of the
+draft that was dropped — so a section that gave no case once is drawn a
+second time. The capsule names each replacement seated at the section of
+an empty position, and what became of it.
+
+**Ids and files.** A draft is `DV-NN` or `HO-NN`, NN the number of its
+position — `DV-01` to `DV-30`, `HO-01` to `HO-64`; the pilot cases keep
+their ids. The plan and every reply, with the record of its session, are
+kept in `reports/devset/drafts/<split>/`. `build` writes
+`evaluation/devset_<split>_drafts.jsonl` and its manifest from them, and
+`check` recomputes both and refuses files that differ. The plan holds no
+request text: a request is rebuilt from the corpus and the registered split
+and held to the SHA-256 the plan gives it. The manifest marks the drafts
+`agent_labelled` with `label_check: none`: nothing of a draft is checked
+until the verify tool has run on it.
+
+**The sets of rubric v3.** `development` and `holdout` are the drafts of
+the two splits; `development-replacements` and `holdout-replacements` are
+the replacements of their dropped drafts; `pilot-v3` is the verified pilot
+set, checked again. Each keeps its rounds in
+`reports/devset/label-verification/v3/<set>/` and its outputs in
+`evaluation/devset_<set>_verified.jsonl` and
+`evaluation/devset_<set>_label_checks.json`, the hyphen of a set name
+written as an underscore; `apply` of one set writes neither a file of
+drafts nor the outputs of another set. Rubric v2 is not closed in the tool:
+it stays the rubric of the set `pilot`, whose rounds are complete and are
+still read and checked. In `pilot-v3` the 25 cases confirmed as drafted
+enter as drafts of `gpt-6.1-sol` and keep the word `single_model_verified`
+when confirmed again; the 5 confirmed after a repair enter as labels of
+their repair author, `claude-opus-5-5`, and can only be
+`single_model_self_checked`. The wide scan of a pilot case is the one made
+for step 1.3b: a repair changes no question. Every draft and every
+replacement gets its wide scan before its first check, whatever its class:
+a repair can turn an answerable case into a refusal, and the check of a
+refusal needs the scan. A sixth set, `screening`, is registered with the
+tier below; the tools do not hold it yet.
+
+**The fixed texts of a check.** A verification request carries two: the
+rubric prompt, whose SHA-256 is registered with rubric v3, and the system
+prompt of the route.
+
+System prompt SHA-256 (rubric label-verification/v3): `4178fef002ad32d05e155ec7ee266177499d266d62371c5b68eba9ca9541a413`
+
+It is the text the two rounds of the pilot were sent with under v2, and
+`plan` of a round refuses another. A later attempt of the verifier is the
+same request sent again: no refusal goes back to it, and nothing is added.
+
+**The repair of a rejected case.** A case that round 1 rejected gets one
+request: the repair prompt; the verifier's request exactly as the verifier
+received it, rebuilt from the plan of round 1; the verifier's reply as
+stored; a supplement; and a closing line that asks for the reply.
+
+Prompt SHA-256 (repair devset-repair/v1): `adc26f0e15a915a26c13e63c70c64f546eb1b4fa20b889a82222bb126d951410`
+
+The SHA-256 is written as the generator's is, of every fixed text a repair
+request can carry: the system prompt of the route, the prompt, the two
+lines that part the material, the closing line, the frame a later attempt
+adds, the sentence that stands for a refusal the script cannot quote, the
+advice the script appends to a refusal of the per-case rules, and the
+neutral word. `plan` refuses texts whose SHA-256 is not this one, and any
+other refusal sentence of the code is stored with the reply it refused.
+The prompt and its closing line are the text of the trial below: together
+they have the SHA-256 `94215c251b3098123c8cd3855ff91cf99a8f01bb37f5b9fc980844e2a3d5d364`,
+the value this section gave at first. The value above was registered anew
+with the generator's, for the same sentence and before any request.
+
+The supplement is what the verifier's request does not show: the seed
+document; the *barred* documents — documents of which that request holds a
+text and which a repair must not cite; whether a drop for their sake takes
+the ground `repair_needs_reserve`; and two labels of the case, its
+complexity and the groups of its spans. A document is *supplied* when the
+verifier's request holds a text of it — a span, a section or a passage of
+the wide scan. A document that a supplied text only names has a pseudonym
+and no text, and cannot be cited.
+
+The reply is a repair — the whole label — or the declaration of a drop. In
+a repair a span or a fact of the case is kept by its id. A new span is an
+excerpt of a text the verifier's request supplies for its document: a span
+of the case and, in a request that shows them, the seed and partner
+sections and the passages of the wide scan. The script looks for the
+excerpt in these texts alone, each at the place it stands in the source
+and in that order, and takes it where it is first found; an excerpt that
+runs over a heading there is refused, and no later text is tried. An
+excerpt the document has elsewhere was not supplied and is refused as
+well. A passage of the scan is a chunk of the archive under a line of
+context that is not of the document: its place is found without that line,
+and a plan is refused when a passage has no place — of the 5589 chunks of
+the registered archive none is without one, which a test recomputes.
+
+The model does not write the partner sections, the document list or the
+authority documents. Where the label has spans they follow from the spans:
+a document that lost its last span leaves the case; a document that a new
+span brings in comes with the frame section that holds the span, and a
+span that would bring a document in from a section the frame does not draw
+on is refused. A label without spans keeps the partner sections and the
+authority documents of the case. «Label verification» lets a repair change
+the authority documents, and this protocol narrows that. A case without
+spans that round 1 rejected on 5a or 5b gets no repair request, whatever
+else was rejected: no repair of it can name another authority document,
+and a repaired label would be a second draw of the same check. The script
+writes its drop — `repair_not_possible` with the reason «5a or 5b rejected
+on a case without spans» — the plan of the repairs lists the case under
+`without_request`, and `plan --round 2` refuses a repairs file that holds
+such a case, whoever wrote it. For a case with spans the authority
+documents follow from the spans, and a drop is the repair author's
+declaration. The capsule counts apart the drops written without a
+request. To a reply the script then applies the limits of a repair:
+
+- the case id, the question, the draft author, the corpus version, `as_of`,
+  the seed section and the question style are the case's, and the reply
+  cannot write them;
+- the label must change in what it says: the class, the trap, the action
+  and its reason, the complexity, the severity, the safety flag, the
+  reference answer, the aggregation, the places of the spans with their
+  grouping, the facts and the critical facts. The same label with its
+  spans, groups or facts in another order or under other ids is refused as
+  unchanged;
+- a single-doc label has all its spans in the seed document, and a
+  multi-doc or aggregation label has a span in the seed document and one in
+  another: the seed document stays the document the case is about;
+- no barred document is cited. For a case of `development`, of `pilot-v3`
+  and of the development replacements the barred documents are those of the
+  holdout reserve. The registered sentence «A repair cites no document of
+  the holdout reserve» is written for development and is not applied to a
+  case of the holdout or of its replacements, whose own documents are of
+  the reserve. Its rule is the mirror: its repair cites no document outside
+  the reserve, and it has no ground `repair_needs_reserve` — a holdout case
+  that only a document outside the reserve could repair is dropped as
+  `repair_not_possible`. A drop on that ground gives its reason in the
+  model's words, and no script sorts such reasons: the holdout drops on it
+  are published with their reasons word for word, not split by cause;
+- the per-case rules of the verify script and its source checks, as for a
+  draft, and what `plan --round 2` asks of a repair.
+
+A reply that breaks a limit, cannot be read, or declares a drop without
+what its ground needs goes back with the refusal and the refused reply,
+three attempts in all. A refusal is cleared of file names as the refusal
+of a draft is, and one that would still read as naming a file is replaced
+in the later attempt by the same fixed sentence; a file name of the corpus
+that the verifier's reply would carry is replaced by the neutral word as
+well. A case that three replies left without a valid repair or declaration
+is dropped as `repair_not_possible` with the reason «no reply gave a valid
+repair in three attempts». The plan and the replies are kept in
+`reports/devset/label-verification/v3/<set>/repair/`; `build` writes
+`repairs.jsonl` and `drops.json` into the directory of the set, round 2 is
+planned on these two files by name, and `check` recomputes both and
+refuses a round 2 planned on other files. Round 2 is a new session that
+holds nothing of round 1, as under v2, and `repair_author` is the model of
+the repair request.
+
+**The replacement of a dropped draft** is written by the draft tool with
+`--replacements`, once, when the first verification of the split is
+complete: its register says that every draft is verified or dropped. The
+places are seated by the rule `replacement` of the registered split on
+what that verification left of every position — a confirmed draft, a
+dropped one, or none. The brief of a replacement is the brief of its
+position with the class, the style, the trap and the action of the dropped
+draft as it was drafted, and with `plain_allowed` false: the new draft
+keeps these four, so the plain pair is not accepted in the place of a
+trap, and a section that does not carry the trap is answered with NO CASE
+and leaves the place empty. It is asked for no quantity: the registered
+request of a replacement steers by these four fields alone, and
+`numeric_requested` is false in its brief whatever its position was asked.
+Nothing else of the dropped draft and nothing of its rejection reaches the
+request. A replacement is `DV-NNR` or `HO-NNR`. The replacements of a
+split are a set of their own, `evaluation/devset_<split>_replacements.jsonl`,
+whose plan binds by SHA-256 the drafts and the register it was seated
+from; they are verified like any draft, a repair included, and a
+replacement that is dropped leaves its place empty. A place for which the
+order has no section left is not asked for: the plan and the manifest list
+it under `unseated_positions`.
+
+A case of `pilot-v3` that is dropped is replaced once as well:
+«Replacement of a dropped case» replaces every case dropped during
+verification, and rubric v3 has a rejected pilot case «repaired or dropped
+like any other». So the replacements of development are planned only when
+the registers of `development` and of `pilot-v3` are both complete, and
+their plan binds both. A dropped pilot case is seated after the dropped
+positions of the split, in ascending id, by the same rule `replacement`,
+with the class, the style, the trap and the action it had when it entered
+`pilot-v3`. It is asked for no quantity, its id is the pilot id with `R`,
+and it is a case of `development-replacements`; having no position in the
+split, its place is recorded in the plan and the manifest under its case
+id. This seating is registered here, before a request of v3, and its code
+is owed only if a pilot case is dropped. «Variance pilot and sizes of plan
+step 1.3c» has the function of the rule `replacement` tested before the
+first draft of the step is verified, and this part of it keeps that
+order: round 1 of `development` is not planned until the register of
+`pilot-v3` is complete, and while that register holds a dropped case, not
+until the seating code is written and tested. The verify tool refuses the
+round, and the draft tool the replacements of development, on that one
+condition.
+
+**Minimums.** The plan gives the minimums of the flags at the reference
+sizes 60 and 100 and scales them with n. Registered here, before a draft
+exists: the minimum of a split is the plan's number times the registered
+size of the split over the reference size, rounded up. Development, 60 of
+60: `ru_to_en` ≥ 12, numeric ≥ 12, traps ≥ 12 with all five types. Holdout,
+64 of 100: `ru_to_en` ≥ 13, numeric ≥ 13, traps ≥ 13 with all five types,
+safety-critical ≥ 7.
+
+What a minimum counts is registered with its number.
+[`evaluation/devset_minimums.py`](../../evaluation/devset_minimums.py)
+counts it and prints, per split, the minimums, the counts and the minimums
+unmet:
+
+- the cases are the verified cases of the split: for development the
+  verified files of `pilot-v3`, `development` and
+  `development-replacements` together, for the holdout those of `holdout`
+  and `holdout-replacements`. A set whose verification is not complete is
+  not counted and is named as such, and a case that stands in two sets is
+  refused;
+- a trap is a verified case whose `trap_type` is set. The flag
+  `adversarial_unanswerable` is not the count: it is also true of a plain
+  refusal or clarification. «All five types» asks for at least one
+  verified case of each;
+- `ru_to_en` and numeric are the flags the scripts compute from the case;
+- safety-critical is counted under the plan's condition, that the right
+  behaviour is stated word for word by a rule of the corpus. The count
+  that decides has the flag `safety_critical` true, is not
+  `authority_unverified` and holds at least one span, the quoted rule. Two
+  wider counts are printed in the same line and decide nothing: every
+  verified case with the flag, and those of them that are not
+  `authority_unverified` — the count «Label verification» registers, which
+  the plan's condition narrows.
+
+A minimum the verified set does not meet is published as unmet and narrows
+the conclusion; no draft is added to fill it. Nothing steers
+`safety_critical`: whether a wrong answer is a safety risk follows from the
+question a section gives. The four holdout positions asked for dangerous
+goods lean to it, but a case written there as asked has no span — the
+prompt defines that trap on a section «that gives no such authority» — so
+it enters the two wider counts and not the one that decides. The pilot is
+the only measure of how often a draft has both the flag and a span: 1 of
+its 30 verified cases, with 3 carrying the flag. At that rate the holdout
+would hold about two such cases against a minimum of 7; the minimum then
+stays unmet, and the capsule says that the set supports no conclusion on
+safety-critical cases as a stratum.
+
+**What the capsule adds** to what «Replacement of a dropped case» and
+rubric v3 already ask of it: per split, the positions left empty and
+whether by three refusals, by NO CASE — with the attempt of the
+declaration — or by an order with no section left; the replacements
+seated at the section of an empty position; the traps and the quantities
+asked and written as asked; the repairs by the attempt that gave them and
+the drops by ground, with those written without a request — cases without
+spans rejected on 5a or 5b — counted apart and the holdout reasons of
+`repair_not_possible` word for word; the attempts that carried the fixed
+sentence in place of a refusal; the minimums met and unmet, with the three
+safety-critical counts; and the commit of the code whose refusal sentences
+the stores hold.
+
+**The trials.** Both prompts were tried before this registration: the
+generator on sections that seat no position, the repair prompt on the
+round-1 requests of rubric v2 for five pilot cases, which enter `pilot-v3`
+in their repaired form. The replies of a trial are kept outside the
+repository and no tool reads them. A trial shows that a form can be
+written and what a request costs; it says nothing of the quality of a
+label, which is the verifier's to check.
+
+- *The generator, an earlier text.* Nine briefs — every class, both styles,
+  all five traps — on sections from the tail of the development draw order,
+  which seat no position: nine valid cases, each at the first attempt, 48
+  to 652 seconds a request, 44 minutes in all. The brief that asked for an
+  outdated rule came back as the plain pair. Of the nine cases only the
+  aggregation held a numeric fact; the request of a quantity was added to
+  the brief and to the prompt for that reason, and the prompt registered
+  above is the text with it.
+- *The generator, the registered text.* Four briefs asked for a quantity,
+  on further sections of the same tail: three on a section that states a
+  quantity, one of them with a false premise, and one on a section that
+  states none. Four valid cases at the first attempt, 65 to 299 seconds, 14
+  minutes in all. The three came back with a numeric fact, the false
+  premise kept; the fourth came back without one, as the prompt allows.
+- *The repair prompt, the registered text.* The five pilot cases that
+  round 1 of rubric v2 rejected, each with the verifier's request and reply
+  of that round: five valid repairs at the first attempt, 37 to 239
+  seconds. Each changed what the repair of step 1.3b had changed by hand —
+  the severity and the critical facts — and nothing else: the five labels
+  equal those repairs in every part of a label the script compares. The
+  cases were decided under v2, and the trial repairs are used nowhere.
+
+A section a trial used can still seat a replacement: a request holds
+nothing of another, and no trial reply reaches a tool. At the pace of the
+trials — four to five minutes a draft — the 94 drafts are seven to eight
+hours of one request stream.
+
+**Readings made here**, each open to change before the first request of
+its kind and after it only as a new version: NO CASE at any attempt and
+the empty position; «draft» in the rule `replacement` as a draft the
+script accepted, which leaves the section of an empty position open to a
+replacement; the request of a quantity, and none in a replacement; a
+refused reply sent back as given, and the fixed sentence for a refusal
+that cannot be quoted; the supplement of a repair request; a new span
+held to the supplied texts; the mirrored bound of a holdout repair; a
+label that changes in what it says; partner sections and authority
+documents that follow from the spans or stay the case's; no repair
+request for a case without spans rejected on 5a or 5b; a pilot label
+repaired under v2 as a label of its repair author; rubric v2 left to the
+set `pilot`; the seating of a dropped pilot case, and round 1 of
+development held until the pilot's register is complete; the brief of a
+replacement; what a minimum counts, the span in the safety-critical count
+included; the size, the seating and the 10 % of the screening tier.
+
+**The screening tier.** The plan asks, apart from the verified set, for
+300 to 500 `agent_labelled` questions from development families, kept
+apart from that set and never moved into the holdout (G13). Its rule is
+registered here, before a draft of the step exists; its code is not
+written yet.
+
+- The tier has 360 positions of its own, numbered from 1, in the class
+  shares of development: 108 single-doc, 120 multi-doc, 60 aggregation
+  and 72 needs-refusal/clarification. The class of a position follows
+  from the rule `sequence` of the registered split on these quotas. The
+  size leaves room for what the check drops: a rejected draft is not
+  replaced, and at the 10 % the rule allows, 300 positions would end
+  below the plan's range. A built tier of fewer than 300 questions is
+  published as short of that range.
+- A position is seated by the rules of the registered split for
+  development — its draw order, its tests of a class and its partner rule
+  — after the replacements of development, or after its first
+  verification where nothing was replaced. Barred for the tier are the
+  seed and the pair of every position and of every replacement place of
+  development for which a request was sent, whatever came back: a
+  confirmed draft, a dropped one, NO CASE or three refusals. The tier
+  draws only what the requests of the verified set left untouched, and a
+  pair of a section and its partner serves once within it. A position for
+  which the order has no section left stays unseated and is listed.
+- The brief of a position is that of `devset-brief-v1`, its turn counted
+  among the positions of its class in the tier; the request, the attempts
+  and the empty positions are those of a draft. A screening draft is
+  `SC-NNN`. The set is `screening`: its drafts are kept in
+  `reports/devset/drafts/screening/` and written to
+  `evaluation/devset_screening_drafts.jsonl`, its one round in
+  `reports/devset/label-verification/v3/screening/`, its outputs in
+  `evaluation/devset_screening_verified.jsonl` and
+  `evaluation/devset_screening_label_checks.json`. `apply` of another set
+  writes none of these files, and the repair tool and the count of the
+  minimums do not take the set.
+- The tier has no replacements, no repairs and no round 2. «Label
+  verification» registers its check: every draft gets its wide scan and
+  is checked once under rubric v3, and a rejected draft is dropped. The
+  share that decides is the rejected drafts over the drafts with a valid
+  verdict, taken when every draft has a verdict or has spent its three
+  attempts; an empty or unseated position is in neither number, and a
+  draft left without a valid verdict is in neither, is not in the tier
+  and is listed. Above 10 %, every draft of the first pass is discarded,
+  the generator prompt is rewritten once — a new generator version,
+  registered here by its SHA-256 before its first request — every seated
+  position is asked again under the same brief, and the tier is the
+  confirmed drafts of the second pass alone: replies of two generator
+  versions are not joined. Above 10 % a second time, and the tier is not
+  built, which its capsule says.
+- The code and its tests are written and pass before the first screening
+  draft is requested, and the tier has a capsule of its own.
+
+Plan step 1.3d closes with the tier built or given up by that rule, and
+not without it. At the pace of the trials — four to five minutes a draft
+— the 360 drafts are about 27 hours of one request stream; the time of a
+check under rubric v3 has not been measured.
 
 ## Acceptance contract (plan track 4)
 

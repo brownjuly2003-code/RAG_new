@@ -267,6 +267,104 @@ def test_the_cap_passes_over_a_block_that_holds_its_share() -> None:
     assert [place["seed"] for place in free] == order[:3]
 
 
+def test_a_replacement_takes_the_first_section_that_was_the_seed_of_no_draft() -> None:
+    texts, sections = corpus(a=["первый", "второй", "третий", "четвёртый"])
+    order, blocks, idf = sections["a"], [block("block-a", "a")], every_token(texts)
+    positions = split.seat(
+        ["single-doc", "needs-refusal/clarification"], order, blocks, texts, idf, None
+    )
+    assert [place["seed"] for place in positions] == order[:2]
+    # The section of the dropped draft is not taken again, and neither is that of the kept one.
+    (place,) = split.reseat(
+        positions, {1: "dropped", 2: "confirmed"}, order, blocks, texts, idf, None
+    )
+    assert place == {
+        "position": 1,
+        "primary_class": "single-doc",
+        "block_id": "block-a",
+        "seed": order[2],
+        "partner": None,
+    }
+    # In ascending number, each on the state the replacement before it left; the class is kept.
+    first, second = split.reseat(
+        positions[::-1], {2: "dropped", 1: "dropped"}, order, blocks, texts, idf, None
+    )
+    assert (first["position"], first["seed"]) == (1, order[2])
+    assert (second["position"], second["seed"]) == (2, order[3])
+    assert second["primary_class"] == "needs-refusal/clarification"
+    assert (
+        split.reseat(positions, {1: "confirmed", 2: "confirmed"}, order, blocks, texts, idf, None)
+        == []
+    )
+
+
+def test_a_position_that_had_no_draft_bars_nothing_and_is_not_replaced() -> None:
+    texts, sections = corpus(a=["первый", "второй", "третий"])
+    order, blocks, idf = sections["a"], [block("block-a", "a")], every_token(texts)
+    positions = split.seat(["single-doc"] * 2, order, blocks, texts, idf, None)
+    (place,) = split.reseat(positions, {1: "empty", 2: "dropped"}, order, blocks, texts, idf, None)
+    # The section of position 1 was the seed of no draft: the replacement of position 2 takes it.
+    assert (place["position"], place["seed"]) == (2, order[0])
+
+
+def test_a_replacement_passes_the_test_of_its_class_and_no_used_pair_serves_again() -> None:
+    texts, sections = corpus(a=["груз весы склад", "груз весы ангар"], b=["груз весы терминал"])
+    order = [sections["a"][0], sections["b"][0], sections["a"][1]]
+    blocks, idf = [block("block-ab", "a", "b")], every_token(texts)
+    positions = split.seat(["multi-doc"], order, blocks, texts, idf, None)
+    assert positions[0]["seed"] == sections["a"][0] and positions[0]["partner"] == sections["b"][0]
+    (place,) = split.reseat(positions, {1: "dropped"}, order, blocks, texts, idf, None)
+    # b0 would take a0 for its partner, the pair of the dropped draft; a1 takes b0: the partner
+    # is looked for among all sections of the other document, a partner of a draft included.
+    assert place["seed"] == sections["a"][1] and place["partner"] == sections["b"][0]
+    # A second drop finds no pair left, and the place stays empty.
+    seated = [*positions, {**place, "position": 2}]
+    (empty,) = split.reseat(seated, {1: "confirmed", 2: "dropped"}, order, blocks, texts, idf, None)
+    assert (empty["position"], empty["seed"], empty["partner"], empty["block_id"]) == (
+        2,
+        None,
+        None,
+        None,
+    )
+
+
+def test_the_cap_counts_confirmed_drafts_and_replacements_and_no_dropped_draft() -> None:
+    texts, sections = corpus(a=["первый", "второй", "третий", "четвёртый"], b=["пятый", "шестой"])
+    a, b = sections["a"], sections["b"]
+    blocks, idf = [block("block-a", "a"), block("block-b", "b")], every_token(texts)
+    order = [a[0], b[0], a[1], a[2], a[3], b[1]]
+    positions = split.seat(["single-doc"] * 3, order, blocks, texts, idf, 2)
+    assert [place["seed"] for place in positions] == [a[0], b[0], a[1]]
+    # Block a holds one confirmed draft and one dropped: the dropped one leaves its seat free.
+    (place,) = split.reseat(
+        positions, {1: "dropped", 2: "confirmed", 3: "confirmed"}, order, blocks, texts, idf, 2
+    )
+    assert place["seed"] == a[2] and place["block_id"] == "block-a"
+    # The replacement of position 1 fills block a, and that of position 2 is passed on to b.
+    first, second = split.reseat(
+        positions, {1: "dropped", 2: "dropped", 3: "confirmed"}, order, blocks, texts, idf, 2
+    )
+    assert (first["seed"], second["seed"]) == (a[2], b[1])
+    # Without a cap the order alone decides.
+    first, second = split.reseat(
+        positions, {1: "dropped", 2: "dropped", 3: "confirmed"}, order, blocks, texts, idf, None
+    )
+    assert (first["seed"], second["seed"]) == (a[2], a[3])
+
+
+@pytest.mark.parametrize(
+    "outcomes",
+    [{1: "dropped"}, {1: "dropped", 2: "confirmed", 3: "confirmed"}, {1: "dropped", 2: "kept"}],
+)
+def test_the_outcomes_are_those_of_the_seated_positions(outcomes: dict[int, str]) -> None:
+    texts, sections = corpus(a=["первый", "второй"])
+    order, blocks, idf = sections["a"], [block("block-a", "a")], every_token(texts)
+    positions = split.seat(["single-doc"] * 3, order, blocks, texts, idf, None)
+    assert positions[2]["seed"] is None
+    with pytest.raises(ValueError, match="not those of the seated positions"):
+        split.reseat(positions, outcomes, order, blocks, texts, idf, None)
+
+
 def synthetic() -> tuple[dict[str, str], dict[str, Any], list[dict[str, Any]]]:
     words = {
         "a1": ["груз", "багаж"],
@@ -366,6 +464,54 @@ def test_the_build_does_not_depend_on_the_order_of_its_inputs() -> None:
     assert split.dump(split.build(shuffled, turned, pilot)) == split.dump(
         split.build(texts, register, pilot)
     )
+
+
+def test_replacements_of_a_built_split_take_what_its_order_has_left() -> None:
+    texts, register, pilot = synthetic()
+    # The file as it is registered: sections and order as JSON gives them.
+    built = json.loads(split.dump(split.build(texts, register, pilot)))
+    holdout = built["splits"]["holdout"]
+    seated = [place for place in holdout["positions"] if place["seed"] is not None]
+    kept = {place["position"]: "confirmed" for place in seated}
+    assert split.replacements("holdout", built, texts, kept) == []
+    order = [tuple(entry) for entry in holdout["order"]]
+    seeds = {split.key(place["seed"]) for place in seated}
+    single = next(place for place in seated if place["primary_class"] == "single-doc")
+    other = next(place for place in seated if place is not single)
+
+    def replaced(**outcomes: str) -> tuple[str, int] | None:
+        given = {**kept, **{int(number[1:]): outcome for number, outcome in outcomes.items()}}
+        (place,) = split.replacements("holdout", built, texts, given)
+        assert place["position"] == single["position"] and place["primary_class"] == "single-doc"
+        return split.key(place["seed"]) if place["seed"] is not None else None
+
+    # A class of one document takes the first section of the order that was no seed, if any.
+    free = [entry for entry in order if entry not in seeds]
+    assert replaced(**{f"p{single['position']}": "dropped"}) == (free[0] if free else None)
+    # A position that had no draft frees its section for the replacement of another.
+    freed = [entry for entry in order if entry not in seeds - {split.key(other["seed"])}]
+    assert (
+        replaced(**{f"p{single['position']}": "dropped", f"p{other['position']}": "empty"})
+        == freed[0]
+    )
+    with pytest.raises(ValueError, match="the registered order is not of this corpus"):
+        split.replacements("holdout", built, {**texts, "x.md": "## Раздел 1\nкоротко\n"}, kept)
+
+
+def test_a_block_whose_sections_were_all_seeds_gives_no_replacement() -> None:
+    texts, sections = corpus(a=["первый", "второй"])
+    order, blocks, idf = sections["a"], [block("block-a", "a")], every_token(texts)
+    positions = split.seat(["single-doc"] * 2, order, blocks, texts, idf, None)
+    (place,) = split.reseat(
+        positions, {1: "confirmed", 2: "dropped"}, order, blocks, texts, idf, None
+    )
+    assert place == {
+        "position": 2,
+        "primary_class": "single-doc",
+        "block_id": None,
+        "seed": None,
+        "partner": None,
+    }
 
 
 def registered() -> dict[str, Any]:
@@ -471,4 +617,48 @@ def test_the_registered_split_is_a_rebuild_of_its_inputs() -> None:
     if not directory.is_dir():
         pytest.skip(f"AirCargo corpus absent at {directory}; set AIRCARGO_CORPUS_DIR")
     assert split.dump(split.rebuilt()) == split.REGISTERED.read_text(encoding="utf-8")
+
+
+@pytest.mark.parametrize("name", ["development", "holdout"])
+def test_replacements_on_the_registered_split_follow_the_rule(name: str) -> None:
+    directory = corpus_directory()
+    if not directory.is_dir():
+        pytest.skip(f"AirCargo corpus absent at {directory}; set AIRCARGO_CORPUS_DIR")
+    texts = split.load_inputs()[0]
+    value = registered()
+    positions = value["splits"][name]["positions"]
+    dropped = {place["position"] for place in positions if place["position"] % 5 == 0}
+    outcomes = {
+        place["position"]: "dropped" if place["position"] in dropped else "confirmed"
+        for place in positions
+    }
+    places = split.replacements(name, value, texts, outcomes)
+    assert [place["position"] for place in places] == sorted(dropped)
+    by_number = {place["position"]: place for place in positions}
+    order = {tuple(entry) for entry in value["splits"][name]["order"]}
+    seeds = {split.key(place["seed"]) for place in positions}
+    pairs = {
+        frozenset((split.key(place["seed"]), split.key(place["partner"])))
+        for place in positions
+        if place["partner"] is not None
+    }
+    per_block = Counter(by_number[number]["block_id"] for number in set(by_number) - dropped)
+    seated = [place for place in places if place["seed"] is not None]
+    for place in seated:
+        assert place["primary_class"] == by_number[place["position"]]["primary_class"]
+        assert split.key(place["seed"]) in order - seeds
+        seeds.add(split.key(place["seed"]))
+        several = place["primary_class"] in split.SEVERAL_DOCUMENTS
+        assert (place["partner"] is not None) == several
+        if several:
+            pair = frozenset((split.key(place["seed"]), split.key(place["partner"])))
+            assert pair not in pairs and place["partner"]["source_id"] != place["seed"]["source_id"]
+            pairs.add(pair)
+        per_block[place["block_id"]] += 1
+    if name == "holdout":
+        assert max(per_block.values()) <= split.HOLDOUT_ROUNDS
+        # Twelve drops free twelve seats; the tests of the classes leave four of them empty.
+        assert [place["position"] for place in places if place["seed"] is None] == [35, 50, 55, 60]
+    else:
+        assert len(seated) == len(dropped) == 6
     assert split.main([]) == 0

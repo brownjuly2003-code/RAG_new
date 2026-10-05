@@ -18,6 +18,23 @@ the protocol is right and the difference is a defect of this file. The tool:
 `apply`, `check`). A model check is not a human approval: nothing here
 assigns `real_labelled` or raises the count of real labelled cases.
 
+Plan step 1.3d checks its drafts under `label-verification/v3`: the rules
+below hold, with the four changes the protocol registers for v3 — the
+isolated route and the record of a session beside every verdict, the check
+of a label by the model that wrote it (`single_model_self_checked`), drafts
+by a registered generator prompt, and a repair that is one request of a
+registered repair prompt. What the tools of v3 must do — the five sets and
+their files, `evaluation/devset_drafting.py` with `scripts/devset_draft.py`,
+`evaluation/devset_repair.py` with `scripts/devset_label_repair.py` — is the
+section «Drafts of plan step 1.3d» of the development ruler, and the tests
+`tests/test_label_verification_v3.py`, `tests/test_devset_drafting.py` and
+`tests/test_devset_repair.py` hold the tools to it. Two refusals of v3 are
+the verify tool's own: round 1 of `development` is not planned before the
+register of `pilot-v3` is complete, and round 2 takes no repair of a case
+without spans that round 1 rejected on check 5a or 5b — the repair tool
+writes that drop itself, with no request. The set `pilot` stays under v2,
+and the scenarios below describe it as it was run.
+
 The rules below are written for any number of registered verifiers: every
 verifier must confirm, and any one can reject. The registry names one, and a
 scenario that needs two says so. A second verifier would be a registry entry
