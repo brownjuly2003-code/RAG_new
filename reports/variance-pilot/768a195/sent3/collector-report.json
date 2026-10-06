@@ -1,0 +1,568 @@
+{
+  "run_sha256": "32effb08da1aebb7c62b564a92087d8a6d493fdd9beddcae03f7d11148cd14b9",
+  "result": {
+    "manifest_sha256": "32effb08da1aebb7c62b564a92087d8a6d493fdd9beddcae03f7d11148cd14b9",
+    "provenance": {
+      "corpus_sha256": "c8562a64f88f72172f29e30865091be79f08d00ce65fbf675f34de64dcebe343",
+      "archive_sha256": "2a9da515a4c69b46453a59ed6d0bb772b0aad6fed23c87ee465851b43dbdef12",
+      "code_sha": "768a195900a9c2543c161fa1e933a65108582e3a",
+      "datasets": {
+        "pilot-gold": {
+          "path": "/Users/julia/RAG_new_pilot_19f4e8041089/evaluation/devset_pilot_gold_questions.jsonl",
+          "sha256": "c5017d2f81f47b4751183a090d7ff505afded013335bb7f01bf3045c5edffccf",
+          "count": 24
+        }
+      },
+      "config": {
+        "retrieval_strategy": "hybrid",
+        "model_routing_enabled": false,
+        "graph_retrieval": "off",
+        "hyde": false,
+        "agentic_mode": false,
+        "retrieval_top_k": 20,
+        "rerank_top_k": 3,
+        "rrf_k": 60,
+        "rrf_doc_key_chars": 200,
+        "rerank_batch": 8,
+        "parent_expansion": true,
+        "parent_expansion_window": 2,
+        "parent_expansion_max_chars": 3600,
+        "ask_budget_sec": 0,
+        "llm_role_params_json": "",
+        "llm_max_calls_per_request": 24,
+        "llm_max_input_tokens_per_request": 48000,
+        "llm_max_output_tokens_per_request": 8000,
+        "llm_max_total_tokens_per_request": 50000,
+        "rag_device": "cpu",
+        "embedding_backend": "local",
+        "RAG_RERANK_BATCH": 8
+      },
+      "model": {
+        "model": "qwen2.5:7b",
+        "digest": "845dbda0ea48ed749caafd9e6037047aa19acfcfd82e704d7ca97d631a0b697e",
+        "provider": "OllamaProvider"
+      },
+      "reranker": {
+        "model": "BAAI/bge-reranker-v2-m3",
+        "revision": "953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e"
+      },
+      "graph_digest": "N/A: graph off",
+      "entity_graph_status": "N/A: graph off",
+      "cached_contexts": [
+        {
+          "case_id": "T64-01",
+          "file": "grade/T64-01.json",
+          "sent_context_sha256": "c29f6630c3657a8245ef7ff89450a8671ec8840ab27c6c96863e414dd8b29148"
+        },
+        {
+          "case_id": "T64-02",
+          "file": "grade/T64-02.json",
+          "sent_context_sha256": "b905bd81d34ee89a6681e4b3337e41a363ce6d01bb7dc3d553b9802041b03d1d"
+        },
+        {
+          "case_id": "T64-03",
+          "file": "grade/T64-03.json",
+          "sent_context_sha256": "ec74e48ba57aae52d4d6a5f869e8f2895e060d2fa056af5254d1ded2dec99cda"
+        },
+        {
+          "case_id": "T64-04",
+          "file": "grade/T64-04.json",
+          "sent_context_sha256": "045d272b77b0e322c27135c0eca037032238639692892136257edbccea8148ea"
+        },
+        {
+          "case_id": "T64-05",
+          "file": "grade/T64-05.json",
+          "sent_context_sha256": "3d55fb4685268415f53d2362d0d93b3c9681c6c524fc771c28a8074a2554e071"
+        },
+        {
+          "case_id": "T64-06",
+          "file": "grade/T64-06.json",
+          "sent_context_sha256": "0402822cc8f19a5d31d9b33cd7c3cb0d9229a809007167c50cc94386da0e7a9d"
+        },
+        {
+          "case_id": "T64-07",
+          "file": "grade/T64-07.json",
+          "sent_context_sha256": "e73b74d65c9c5c24cb12c195d1e7287cb7c1af997bbd10e9602a85d38749e24b"
+        },
+        {
+          "case_id": "T64-08",
+          "file": "grade/T64-08.json",
+          "sent_context_sha256": "90ef93cd0ad89074089f79eb8322d5d92e4aa097a763b9775277d27f77df7712"
+        },
+        {
+          "case_id": "T64-09",
+          "file": "grade/T64-09.json",
+          "sent_context_sha256": "f70aeea1f9319bd6322e028abc320bf6f63d291af378ac96a88e40a6b72ee40a"
+        },
+        {
+          "case_id": "T64-10",
+          "file": "grade/T64-10.json",
+          "sent_context_sha256": "dddd25b9e350abef6d1b6c8f6ef40bb57f33598910911c1fd351f09244a5332e"
+        },
+        {
+          "case_id": "T64-11",
+          "file": "grade/T64-11.json",
+          "sent_context_sha256": "4d93d6d1f901941c17d2312ab1e3a0c7999ecd2fc76800c586a6b81bdd54b046"
+        },
+        {
+          "case_id": "T64-12",
+          "file": "grade/T64-12.json",
+          "sent_context_sha256": "fd027f8ce58478d8d694fa96e90430053ffc00623fb7b1a1586c1583fde98ed8"
+        },
+        {
+          "case_id": "T64-13",
+          "file": "grade/T64-13.json",
+          "sent_context_sha256": "cbcae0d3547afdbf43a956c886d4591719078261fa8f8822e35cad5f371347cc"
+        },
+        {
+          "case_id": "T64-14",
+          "file": "grade/T64-14.json",
+          "sent_context_sha256": "07f1d4143a32ff6b185128ac0708c8a2389c653d6dc005230fc1dc149bb26938"
+        },
+        {
+          "case_id": "T64-15",
+          "file": "grade/T64-15.json",
+          "sent_context_sha256": "a52d5ec6c04b9d38f16c2227765623a6bba58fe9e60e1e52ba02e8e325584b51"
+        },
+        {
+          "case_id": "T64-16",
+          "file": "grade/T64-16.json",
+          "sent_context_sha256": "3240d9a16956314779ae4d57a40f0d29a35994c46715725c1377de9737935e22"
+        },
+        {
+          "case_id": "T64-17",
+          "file": "grade/T64-17.json",
+          "sent_context_sha256": "5db2cb86d9e5793026d53ed55b23889d754e8b928d0e3734eed45521a235cc36"
+        },
+        {
+          "case_id": "T64-18",
+          "file": "grade/T64-18.json",
+          "sent_context_sha256": "8e169de9781edcabc06479ae3b7de194d0676948007c64ccd1fb19631f1619f9"
+        },
+        {
+          "case_id": "T64-19",
+          "file": "grade/T64-19.json",
+          "sent_context_sha256": "076a1171d62f76c19ee20ce3e077ef9a43115581bd7a0fa263582e8033e70cf3"
+        },
+        {
+          "case_id": "T64-20",
+          "file": "grade/T64-20.json",
+          "sent_context_sha256": "64e61fb5dae02f3a17e130a643479a3c335a719c81698da2dd663af49fd11635"
+        },
+        {
+          "case_id": "T64-21",
+          "file": "grade/T64-21.json",
+          "sent_context_sha256": "5b392bf8e4b72b90c03a51ee4521cdab644dd71a1db09f62eed988f34964c3dc"
+        },
+        {
+          "case_id": "T64-22",
+          "file": "grade/T64-22.json",
+          "sent_context_sha256": "6ddb659769d673084c74deea92c1117bcdc4969165a32c45dbe0fcb8abe3ade4"
+        },
+        {
+          "case_id": "T64-23",
+          "file": "grade/T64-23.json",
+          "sent_context_sha256": "d7fdb69e5e5d58445e06e79107c593636fc1c4e9c90f6e9e26c04457472e2e3e"
+        },
+        {
+          "case_id": "T64-24",
+          "file": "grade/T64-24.json",
+          "sent_context_sha256": "229434b2ff5d9f0c51ba46cc99845bef277e2465864c185f450f3d7bf7537f01"
+        }
+      ],
+      "raw_judge_replies": "N/A: filled by T-65; production LLM replies retained in per-case model_calls cache files",
+      "bootstrap_seed": "N/A: filled by T-65",
+      "host": [
+        "iMac-Julia.local"
+      ],
+      "runtime": {
+        "python": "3.11.15",
+        "platform": "macOS-13.7.8-x86_64-i386-64bit",
+        "packages": {
+          "numpy": "1.26.4",
+          "torch": "2.2.2",
+          "sentence-transformers": "2.7.0",
+          "transformers": "4.44.2",
+          "chromadb": "1.5.9",
+          "langchain-ollama": "1.1.0",
+          "langgraph": "1.2.2",
+          "rank-bm25": "0.2.2"
+        }
+      },
+      "ingestion_snapshot_id": "2a9da515a4c69b46453a59ed6d0bb772b0aad6fed23c87ee465851b43dbdef12",
+      "chunker_version": "gr1b-4436d61-graph-chunks:2a9da515a4c69b46453a59ed6d0bb772b0aad6fed23c87ee465851b43dbdef12",
+      "effective_queries": [
+        {
+          "case_id": "T64-01",
+          "query_effective": "политика релокации согласование бюджета релокации предложение после согласования бюджета",
+          "query_transform": "rewrite",
+          "query_transform_hash": "fb74a86dc0f31c0b21910f4cb644fdecece14703de88c2d74aaa110c8a691946",
+          "routing_mode": "hybrid; graph off; model routing off; single-turn"
+        },
+        {
+          "case_id": "T64-02",
+          "query_effective": "Юрист международные контракты образование языки уровень английского",
+          "query_transform": "rewrite",
+          "query_transform_hash": "fb74a86dc0f31c0b21910f4cb644fdecece14703de88c2d74aaa110c8a691946",
+          "routing_mode": "hybrid; graph off; model routing off; single-turn"
+        },
+        {
+          "case_id": "T64-03",
+          "query_effective": "Цели формирования кадрового резерва ООО Северный Контур позиции",
+          "query_transform": "rewrite",
+          "query_transform_hash": "fb74a86dc0f31c0b21910f4cb644fdecece14703de88c2d74aaa110c8a691946",
+          "routing_mode": "hybrid; graph off; model routing off; single-turn"
+        },
+        {
+          "case_id": "T64-04",
+          "query_effective": "соглашение о неразглашении тарифы авианакладные журналы доступа назначение редакция соглашения",
+          "query_transform": "rewrite",
+          "query_transform_hash": "fb74a86dc0f31c0b21910f4cb644fdecece14703de88c2d74aaa110c8a691946",
+          "routing_mode": "hybrid; graph off; model routing off; single-turn"
+        },
+        {
+          "case_id": "T64-05",
+          "query_effective": "События договора страхования гражданской ответственности перевозчика возвращающие проект юристам операционной команде финансовому отделу специалистам по страхованию",
+          "query_transform": "rewrite",
+          "query_transform_hash": "fb74a86dc0f31c0b21910f4cb644fdecece14703de88c2d74aaa110c8a691946",
+          "routing_mode": "hybrid; graph off; model routing off; single-turn"
+        },
+        {
+          "case_id": "T64-06",
+          "query_effective": "выплаты больничного после несчастного случая стаж влияет процент льготы",
+          "query_transform": "rewrite",
+          "query_transform_hash": "fb74a86dc0f31c0b21910f4cb644fdecece14703de88c2d74aaa110c8a691946",
+          "routing_mode": "hybrid; graph off; model routing off; single-turn"
+        },
+        {
+          "case_id": "T64-07",
+          "query_effective": "Требования стажа старшего логиста владение системами должностная инструкция",
+          "query_transform": "rewrite",
+          "query_transform_hash": "fb74a86dc0f31c0b21910f4cb644fdecece14703de88c2d74aaa110c8a691946",
+          "routing_mode": "hybrid; graph off; model routing off; single-turn"
+        },
+        {
+          "case_id": "T64-08",
+          "query_effective": "шаблон допсоглашения трудового договора область применения ст. 74 ограничения",
+          "query_transform": "rewrite",
+          "query_transform_hash": "fb74a86dc0f31c0b21910f4cb644fdecece14703de88c2d74aaa110c8a691946",
+          "routing_mode": "hybrid; graph off; model routing off; single-turn"
+        },
+        {
+          "case_id": "T64-09",
+          "query_effective": "политика хранения данных категории рейсового документа приостановка удаления ключевые поля систем хранения E20",
+          "query_transform": "rewrite",
+          "query_transform_hash": "fb74a86dc0f31c0b21910f4cb644fdecece14703de88c2d74aaa110c8a691946",
+          "routing_mode": "hybrid; graph off; model routing off; single-turn"
+        },
+        {
+          "case_id": "T64-10",
+          "query_effective": "Принятие на замещение внутренний перевод оформление приказ о приеме формулировки шаблон",
+          "query_transform": "rewrite",
+          "query_transform_hash": "fb74a86dc0f31c0b21910f4cb644fdecece14703de88c2d74aaa110c8a691946",
+          "routing_mode": "hybrid; graph off; model routing off; single-turn"
+        },
+        {
+          "case_id": "T64-11",
+          "query_effective": "Ограничения доказательств претензии утраты авиагруза критерии претензии повреждения",
+          "query_transform": "rewrite",
+          "query_transform_hash": "fb74a86dc0f31c0b21910f4cb644fdecece14703de88c2d74aaa110c8a691946",
+          "routing_mode": "hybrid; graph off; model routing off; single-turn"
+        },
+        {
+          "case_id": "T64-12",
+          "query_effective": "Показатели оценки результативности кадрового резерва минимальный результат оценки кадровый резерв",
+          "query_transform": "rewrite",
+          "query_transform_hash": "fb74a86dc0f31c0b21910f4cb644fdecece14703de88c2d74aaa110c8a691946",
+          "routing_mode": "hybrid; graph off; model routing off; single-turn"
+        },
+        {
+          "case_id": "T64-13",
+          "query_effective": "Запрет скрытого профилирования в политике файлов веб-аналитики совместимость с подключением агента к порталу бронирования в политике обработки данных ограничения аналитики контроль данных агента",
+          "query_transform": "rewrite",
+          "query_transform_hash": "fb74a86dc0f31c0b21910f4cb644fdecece14703de88c2d74aaa110c8a691946",
+          "routing_mode": "hybrid; graph off; model routing off; single-turn"
+        },
+        {
+          "case_id": "T64-14",
+          "query_effective": "дресс-код обувь аптечка рабочее место инструкция ОТ",
+          "query_transform": "rewrite",
+          "query_transform_hash": "fb74a86dc0f31c0b21910f4cb644fdecece14703de88c2d74aaa110c8a691946",
+          "routing_mode": "hybrid; graph off; model routing off; single-turn"
+        },
+        {
+          "case_id": "T64-15",
+          "query_effective": "FAQ претензии направление спор ограничения контрольного списка утраты ответ",
+          "query_transform": "rewrite",
+          "query_transform_hash": "fb74a86dc0f31c0b21910f4cb644fdecece14703de88c2d74aaa110c8a691946",
+          "routing_mode": "hybrid; graph off; model routing off; single-turn"
+        },
+        {
+          "case_id": "T64-16",
+          "query_effective": "назначение шаблона отчета продление испытательного срока review этап 5 регламента испытания",
+          "query_transform": "rewrite",
+          "query_transform_hash": "fb74a86dc0f31c0b21910f4cb644fdecece14703de88c2d74aaa110c8a691946",
+          "routing_mode": "hybrid; graph off; model routing off; single-turn"
+        },
+        {
+          "case_id": "T64-17",
+          "query_effective": "Когда и кем заполняется отчёт об испытательном сроке по шаблону проверка процедур и документов этапе итоговой оценки регламента кто проверяет",
+          "query_transform": "rewrite",
+          "query_transform_hash": "fb74a86dc0f31c0b21910f4cb644fdecece14703de88c2d74aaa110c8a691946",
+          "routing_mode": "hybrid; graph off; model routing off; single-turn"
+        },
+        {
+          "case_id": "T64-18",
+          "query_effective": "применение правил коммуникации удалённая работа контроль рабочего времени",
+          "query_transform": "rewrite",
+          "query_transform_hash": "fb74a86dc0f31c0b21910f4cb644fdecece14703de88c2d74aaa110c8a691946",
+          "routing_mode": "hybrid; graph off; model routing off; single-turn"
+        },
+        {
+          "case_id": "T64-19",
+          "query_effective": "Основной оплачиваемый отпуск рабочий год открытие карточки Заявление на отпуск положение шаблон",
+          "query_transform": "rewrite",
+          "query_transform_hash": "fb74a86dc0f31c0b21910f4cb644fdecece14703de88c2d74aaa110c8a691946",
+          "routing_mode": "hybrid; graph off; model routing off; single-turn"
+        },
+        {
+          "case_id": "T64-20",
+          "query_effective": "таможенная задержка повреждение претензии хронология ответственность роли события",
+          "query_transform": "rewrite",
+          "query_transform_hash": "fb74a86dc0f31c0b21910f4cb644fdecece14703de88c2d74aaa110c8a691946",
+          "routing_mode": "hybrid; graph off; model routing off; single-turn"
+        },
+        {
+          "case_id": "T64-21",
+          "query_effective": "критерии уведомления об арбитраже контрольный список претензии об утрате дублирующие доказательства авианакладные основная домовая",
+          "query_transform": "rewrite",
+          "query_transform_hash": "fb74a86dc0f31c0b21910f4cb644fdecece14703de88c2d74aaa110c8a691946",
+          "routing_mode": "hybrid; graph off; model routing off; single-turn"
+        },
+        {
+          "case_id": "T64-22",
+          "query_effective": "HR-календарь отпуск согласование обязанности сроки ответственность шаблон отчета испытание",
+          "query_transform": "rewrite",
+          "query_transform_hash": "fb74a86dc0f31c0b21910f4cb644fdecece14703de88c2d74aaa110c8a691946",
+          "routing_mode": "hybrid; graph off; model routing off; single-turn"
+        },
+        {
+          "case_id": "T64-23",
+          "query_effective": "Пересечение таблиц HR-менеджера логиста подразделения одинаковые названия",
+          "query_transform": "rewrite",
+          "query_transform_hash": "fb74a86dc0f31c0b21910f4cb644fdecece14703de88c2d74aaa110c8a691946",
+          "routing_mode": "hybrid; graph off; model routing off; single-turn"
+        },
+        {
+          "case_id": "T64-24",
+          "query_effective": "Уникальные документы смены должности перевода трудовая книжка акт передачи",
+          "query_transform": "rewrite",
+          "query_transform_hash": "fb74a86dc0f31c0b21910f4cb644fdecece14703de88c2d74aaa110c8a691946",
+          "routing_mode": "hybrid; graph off; model routing off; single-turn"
+        }
+      ],
+      "routing_mode": "hybrid; graph off; model routing off; single-turn",
+      "generator_fingerprint": "N/A: no generation",
+      "embedder_manifest": {
+        "backend": "local",
+        "dimension": 1024,
+        "document_prompt": "",
+        "model_id": "BAAI/bge-m3",
+        "normalize": true,
+        "query_prompt": "",
+        "revision": "5617a9f61b028005a4858fdac845db406aefb181",
+        "revision_source": "hf_snapshot",
+        "schema_version": 1
+      },
+      "embedder_load_check": [
+        "eligible: exact manifest match",
+        "eligible: exact manifest match",
+        "eligible: exact manifest match",
+        "eligible: exact manifest match",
+        "eligible: exact manifest match",
+        "eligible: exact manifest match",
+        "eligible: exact manifest match",
+        "eligible: exact manifest match",
+        "eligible: exact manifest match",
+        "eligible: exact manifest match",
+        "eligible: exact manifest match",
+        "eligible: exact manifest match",
+        "eligible: exact manifest match",
+        "eligible: exact manifest match",
+        "eligible: exact manifest match",
+        "eligible: exact manifest match",
+        "eligible: exact manifest match",
+        "eligible: exact manifest match",
+        "eligible: exact manifest match",
+        "eligible: exact manifest match",
+        "eligible: exact manifest match",
+        "eligible: exact manifest match",
+        "eligible: exact manifest match",
+        "eligible: exact manifest match"
+      ],
+      "fact_matcher_version": "N/A: filled by T-65",
+      "judge_model": "N/A: filled by T-65",
+      "judge_revision": "N/A: filled by T-65",
+      "rubric_version": "N/A: filled by T-65",
+      "label_migration_report": "N/A: unchanged registered corpus; no label migration",
+      "residency_mode": "separate stage processes; LLM unloaded after transform and grade; CPU embed/rerank",
+      "peak_host_rss": "N/A: collector process peak measured; external Ollama/host peak requires T-65 monitoring",
+      "peak_rss_bytes": 2687385600,
+      "peak_rss_scope": "collector process only; excludes external Ollama",
+      "ledger_entry": {
+        "task": "1.3c variance pilot",
+        "config_sha256": "acd57f3c28011016e0dcb634cdf2b7aa0cb5025ac06a828c27fdebd87b93c260",
+        "datasets": {
+          "pilot-gold": {
+            "path": "/Users/julia/RAG_new_pilot_19f4e8041089/evaluation/devset_pilot_gold_questions.jsonl",
+            "sha256": "c5017d2f81f47b4751183a090d7ff505afded013335bb7f01bf3045c5edffccf",
+            "count": 24
+          }
+        },
+        "status": "registered",
+        "file": "ledger-entry.json"
+      },
+      "metrics": {
+        "sent_precision": {
+          "n": "N/A: filled by T-65",
+          "clusters": "N/A: filled by T-65",
+          "MDE": "N/A: filled by T-65",
+          "achieved_power": "N/A: filled by T-65"
+        },
+        "all_evidence_coverage": {
+          "n": "N/A: filled by T-65",
+          "clusters": "N/A: filled by T-65",
+          "MDE": "N/A: filled by T-65",
+          "achieved_power": "N/A: filled by T-65"
+        },
+        "precision_at_5": {
+          "n": "N/A: filled by T-65",
+          "clusters": "N/A: filled by T-65",
+          "MDE": "N/A: filled by T-65",
+          "achieved_power": "N/A: filled by T-65"
+        },
+        "evidence_recall_pool": {
+          "n": "N/A: filled by T-65",
+          "clusters": "N/A: filled by T-65",
+          "MDE": "N/A: filled by T-65",
+          "achieved_power": "N/A: filled by T-65"
+        },
+        "fact_coverage": {
+          "n": "N/A: filled by T-65",
+          "clusters": "N/A: filled by T-65",
+          "MDE": "N/A: filled by T-65",
+          "achieved_power": "N/A: filled by T-65"
+        },
+        "abstention_correct": {
+          "n": "N/A: filled by T-65",
+          "clusters": "N/A: filled by T-65",
+          "MDE": "N/A: filled by T-65",
+          "achieved_power": "N/A: filled by T-65"
+        },
+        "faithfulness": {
+          "n": "N/A: filled by T-65",
+          "clusters": "N/A: filled by T-65",
+          "MDE": "N/A: filled by T-65",
+          "achieved_power": "N/A: filled by T-65"
+        },
+        "answer_fact_coverage": {
+          "n": "N/A: filled by T-65",
+          "clusters": "N/A: filled by T-65",
+          "MDE": "N/A: filled by T-65",
+          "achieved_power": "N/A: filled by T-65"
+        },
+        "citation_correctness": {
+          "n": "N/A: filled by T-65",
+          "clusters": "N/A: filled by T-65",
+          "MDE": "N/A: filled by T-65",
+          "achieved_power": "N/A: filled by T-65"
+        },
+        "citation_presence": {
+          "n": "N/A: filled by T-65",
+          "clusters": "N/A: filled by T-65",
+          "MDE": "N/A: filled by T-65",
+          "achieved_power": "N/A: filled by T-65"
+        },
+        "action_correct": {
+          "n": "N/A: filled by T-65",
+          "clusters": "N/A: filled by T-65",
+          "MDE": "N/A: filled by T-65",
+          "achieved_power": "N/A: filled by T-65"
+        },
+        "critical_errors": {
+          "n": "N/A: filled by T-65",
+          "clusters": "N/A: filled by T-65",
+          "MDE": "N/A: filled by T-65",
+          "achieved_power": "N/A: filled by T-65"
+        },
+        "context_precision": {
+          "n": "N/A: filled by T-65",
+          "clusters": "N/A: filled by T-65",
+          "MDE": "N/A: filled by T-65",
+          "achieved_power": "N/A: filled by T-65"
+        },
+        "retrieve_p95": {
+          "n": "N/A: filled by T-65",
+          "clusters": "N/A: filled by T-65",
+          "MDE": "N/A: filled by T-65",
+          "achieved_power": "N/A: filled by T-65"
+        }
+      },
+      "stage_aborts": []
+    },
+    "total_cases": 24,
+    "denominator": 24,
+    "denominators": {
+      "pilot-gold": 24
+    },
+    "exclusions": [],
+    "documents_without_address": 2,
+    "expanded_documents_without_address": 2,
+    "timings_ms": {
+      "transform": {
+        "n": 24,
+        "p50": 9522.938737063669,
+        "p95": 29514.129958674304
+      },
+      "embed": {
+        "n": 24,
+        "p50": 268.43687100335956,
+        "p95": 465.6826251884922
+      },
+      "pools": {
+        "n": 24,
+        "p50": 111.761,
+        "p95": 282.99019999999973
+      },
+      "rerank": {
+        "n": 24,
+        "p50": 26221.0605,
+        "p95": 39725.785199999984
+      },
+      "total": {
+        "n": 24,
+        "p50": 26341.173000000003,
+        "p95": 39865.179649999984
+      },
+      "expansion": {
+        "n": 24,
+        "p50": 0.10778254363685846,
+        "p95": 0.1181921805255115
+      },
+      "retrieve": {
+        "n": 24,
+        "p50": 26354.24756538123,
+        "p95": 39884.42822294308
+      },
+      "grade": {
+        "n": 24,
+        "p50": 376414.7277944721,
+        "p95": 457651.70037774363
+      }
+    },
+    "timing_scope": "one run on one host, not speed evidence; failed attempts included",
+    "latency_evidence": false,
+    "quality_metrics": "N/A: collection only; filled by T-65"
+  },
+  "result_sha256": "6a9a084f6589ae070fda64b97ad8d7c7c94ef75e97ad25aac765e78e4c41fe6b"
+}

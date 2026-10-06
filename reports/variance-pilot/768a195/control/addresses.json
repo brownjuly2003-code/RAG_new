@@ -1,0 +1,1819 @@
+{
+ "addresses_version": "variance-pilot-addresses/v1",
+ "cases": [
+  {
+   "case_id": "T64-01",
+   "pool": [
+    731,
+    728,
+    738,
+    193,
+    743,
+    739,
+    903,
+    746,
+    741,
+    733,
+    744,
+    737,
+    745,
+    736,
+    747,
+    727,
+    1005,
+    740,
+    732,
+    742,
+    1508,
+    734,
+    729,
+    2023,
+    892
+   ],
+   "ranked": [
+    731,
+    738,
+    732,
+    746,
+    747
+   ],
+   "sent": [
+    {
+     "chunk_index": 731,
+     "parent_expanded": true,
+     "source_id": "01_hr_pol_relocation.md",
+     "text_sha256": "8bb0ceebec79ea75b1167c93b764760d90fee5762ebdd6dd13f9cf5e4f38203f"
+    },
+    {
+     "chunk_index": 738,
+     "parent_expanded": true,
+     "source_id": "01_hr_pol_relocation.md",
+     "text_sha256": "732e93c83fe69315559795a29fdd116e114f9d60a35fa21b68488cf87ee90d1d"
+    },
+    {
+     "chunk_index": 732,
+     "parent_expanded": true,
+     "source_id": "01_hr_pol_relocation.md",
+     "text_sha256": "395543776a1e6d08bf3edb2e0dc6ab66ab1b3f9e2b94342404d72cd202025483"
+    },
+    {
+     "chunk_index": 746,
+     "parent_expanded": true,
+     "source_id": "01_hr_pol_relocation.md",
+     "text_sha256": "aa5885a260e3d58c285dd798e3ee0a3b31dc2d1ae5e7f8200985258072261d92"
+    },
+    {
+     "chunk_index": 747,
+     "parent_expanded": false,
+     "source_id": "01_hr_pol_relocation.md",
+     "text_sha256": "e8b75e81e20dcd79dbc1be1871d7a93dc65c48cfbdd50549aced1151391f2f4a"
+    }
+   ],
+   "status": "ok"
+  },
+  {
+   "case_id": "T64-02",
+   "pool": [
+    1198,
+    1218,
+    1195,
+    303,
+    1206,
+    4356,
+    1194,
+    429,
+    2241,
+    202,
+    1784,
+    1086,
+    2235,
+    1134,
+    2215,
+    1178,
+    2216,
+    284,
+    2224,
+    427,
+    1781,
+    1431,
+    2060,
+    4859,
+    1799,
+    5044,
+    2280,
+    5047,
+    2223,
+    911,
+    1191,
+    4857,
+    2040,
+    5583,
+    2220,
+    1203,
+    2589,
+    5403
+   ],
+   "ranked": [
+    1198,
+    1784,
+    1781,
+    1218,
+    1799
+   ],
+   "sent": [
+    {
+     "chunk_index": 1198,
+     "parent_expanded": true,
+     "source_id": "02_hr_tmp_job_description_lawyer.md",
+     "text_sha256": "4a3197bb239e9d03869aa4fec4e13731f9014911892692dccd8a77dced9d4f08"
+    },
+    {
+     "chunk_index": 1784,
+     "parent_expanded": true,
+     "source_id": "03_legal_contract_expedition_international.md",
+     "text_sha256": "49bf0c5d81cd72bf827bd54af803f7a1977dfa1c5b4bc4289ff154ced05cee0b"
+    },
+    {
+     "chunk_index": 1781,
+     "parent_expanded": true,
+     "source_id": "03_legal_contract_expedition_international.md",
+     "text_sha256": "c5a0fd987b3b837191f28b9daed19dd256cb4a706e0061cac1139be38721f8f5"
+    },
+    {
+     "chunk_index": 1799,
+     "parent_expanded": true,
+     "source_id": "03_legal_contract_expedition_international.md",
+     "text_sha256": "3b0d43f93baa37be33e4d4a6c1257fa8bf2882f85ec7c3a4de8b55f2e0efa160"
+    }
+   ],
+   "status": "ok"
+  },
+  {
+   "case_id": "T64-03",
+   "pool": [
+    909,
+    219,
+    424,
+    851,
+    112,
+    364,
+    708,
+    425,
+    510,
+    1252,
+    888,
+    1296,
+    601,
+    301,
+    178,
+    491,
+    259,
+    1,
+    344,
+    640,
+    577,
+    403,
+    319,
+    1211,
+    728,
+    47,
+    870,
+    533,
+    113,
+    470,
+    69
+   ],
+   "ranked": [
+    909,
+    888,
+    425,
+    728,
+    47
+   ],
+   "sent": [
+    {
+     "chunk_index": 909,
+     "parent_expanded": true,
+     "source_id": "01_hr_pol_talent_pool.md",
+     "text_sha256": "251fdcece89d74248d716cb70e795cab05a47cd05f2cc8d15e45de096499d7c0"
+    },
+    {
+     "chunk_index": 888,
+     "parent_expanded": true,
+     "source_id": "01_hr_pol_social_package.md",
+     "text_sha256": "400dee992ec4958d3c914ae2ea90a8386877ab5cec4eb172404c1c5fe1790570"
+    },
+    {
+     "chunk_index": 425,
+     "parent_expanded": true,
+     "source_id": "01_hr_pol_hiring.md",
+     "text_sha256": "c6dbee7b40708c9deb374bade48a27950335ce4abb96cae8a0711db159ef87b5"
+    },
+    {
+     "chunk_index": 728,
+     "parent_expanded": true,
+     "source_id": "01_hr_pol_relocation.md",
+     "text_sha256": "7a0b3b4cc92996b4010707d685df5756edaf379ba9c22bf55bfbea7d591c29cf"
+    }
+   ],
+   "status": "ok"
+  },
+  {
+   "case_id": "T64-04",
+   "pool": [
+    5072,
+    5104,
+    2070,
+    5105,
+    5112,
+    5099,
+    5073,
+    2089,
+    5084,
+    5116,
+    5093,
+    5089,
+    2095,
+    5117,
+    2078,
+    5097,
+    2334,
+    5102,
+    2076,
+    5133,
+    5090,
+    5085,
+    2072,
+    4857,
+    5083,
+    5080,
+    5074,
+    5106,
+    5294,
+    4859,
+    2087,
+    5088,
+    2085,
+    2077
+   ],
+   "ranked": [
+    2070,
+    5072,
+    5104,
+    5117,
+    5085
+   ],
+   "sent": [
+    {
+     "chunk_index": 2070,
+     "parent_expanded": true,
+     "source_id": "03_legal_contract_ndc.md",
+     "text_sha256": "b7026699662d4fe990a0fab07d1d35eb2f159153596c2e0fb1264b7f15beeafa"
+    },
+    {
+     "chunk_index": 5072,
+     "parent_expanded": true,
+     "source_id": "06_comp_policy_nda_contractor.md",
+     "text_sha256": "8a46c158f8b3762c0aead4a687d70d136b587a5ddfad397f1fbf98caade0cecf"
+    },
+    {
+     "chunk_index": 5104,
+     "parent_expanded": true,
+     "source_id": "06_comp_policy_nda_employee.md",
+     "text_sha256": "970b2b480b6b5e653bbca31b23482e22034f63e0a16c3835335e8a188033354a"
+    },
+    {
+     "chunk_index": 5085,
+     "parent_expanded": true,
+     "source_id": "06_comp_policy_nda_contractor.md",
+     "text_sha256": "07f4de74e7763f3678f6e6cffe11242d9b87937f737a025af880d9fc38bcc75e"
+    }
+   ],
+   "status": "ok"
+  },
+  {
+   "case_id": "T64-05",
+   "pool": [
+    1965,
+    1980,
+    1936,
+    1953,
+    1672,
+    1972,
+    1907,
+    1978,
+    1759,
+    1973,
+    1613,
+    1960,
+    2520,
+    1976,
+    2431,
+    2460,
+    1968,
+    1584,
+    1957,
+    2257,
+    1959,
+    1994,
+    1961,
+    1820,
+    1970,
+    2610,
+    1955,
+    1956,
+    1975,
+    2228,
+    1979,
+    2550,
+    1967,
+    2724,
+    1954,
+    1526,
+    1958,
+    2315,
+    1977
+   ],
+   "ranked": [
+    1955,
+    1965,
+    1953,
+    1936,
+    1973
+   ],
+   "sent": [
+    {
+     "chunk_index": 1955,
+     "parent_expanded": true,
+     "source_id": "03_legal_contract_insurance_civil_liability.md",
+     "text_sha256": "2ced935cf5c885907834feb07f4978dd8a6dcde27815d4d40fad2ae770abd5da"
+    },
+    {
+     "chunk_index": 1965,
+     "parent_expanded": true,
+     "source_id": "03_legal_contract_insurance_civil_liability.md",
+     "text_sha256": "7d5cb20f1af9ed69cb2d923399491babc53c4b0d8be057494e7bafe5511c4af8"
+    },
+    {
+     "chunk_index": 1953,
+     "parent_expanded": true,
+     "source_id": "03_legal_contract_insurance_civil_liability.md",
+     "text_sha256": "3489174d791723d25c18af37752428a02bd404bd8e32a2d0a9ffb91735b2fa4f"
+    },
+    {
+     "chunk_index": 1936,
+     "parent_expanded": true,
+     "source_id": "03_legal_contract_insurance_cargo.md",
+     "text_sha256": "dd6d4cc7e37894cd85e285344b9c2596285f3ca1d9dd3fe3a8ef0252fad436a8"
+    },
+    {
+     "chunk_index": 1973,
+     "parent_expanded": true,
+     "source_id": "03_legal_contract_insurance_civil_liability.md",
+     "text_sha256": "26b510ff63704336d42db06d3093aae72e889c68b07ace69b53257f64808aae2"
+    }
+   ],
+   "status": "ok"
+  },
+  {
+   "case_id": "T64-06",
+   "pool": [
+    454,
+    447,
+    194,
+    187,
+    1469,
+    192,
+    179,
+    755,
+    1466,
+    452,
+    1455,
+    550,
+    1456,
+    173,
+    1453,
+    1463,
+    897,
+    518,
+    465,
+    1458,
+    572,
+    1468,
+    1449,
+    811,
+    904,
+    670,
+    902,
+    559,
+    164,
+    694,
+    1461,
+    1084,
+    466,
+    1213
+   ],
+   "ranked": [
+    454,
+    194,
+    179,
+    904,
+    192
+   ],
+   "sent": [
+    {
+     "chunk_index": 179,
+     "parent_expanded": true,
+     "source_id": "01_hr_pol_compensation.md",
+     "text_sha256": "608294b79f0a161a662ff1c19b9653be291256024e2b3c4d120d834bfcc464bb"
+    },
+    {
+     "chunk_index": 192,
+     "parent_expanded": true,
+     "source_id": "01_hr_pol_compensation.md",
+     "text_sha256": "949be2557dd121dd4fd18378ba54914d1c45868b62435bf3f6769944c06b4434"
+    }
+   ],
+   "status": "ok"
+  },
+  {
+   "case_id": "T64-07",
+   "pool": [
+    1218,
+    1134,
+    1212,
+    1198,
+    1211,
+    1215,
+    1178,
+    1210,
+    1155,
+    1226,
+    1224,
+    1219,
+    1213,
+    1170,
+    1220,
+    1126,
+    1221,
+    1147,
+    1191,
+    1229,
+    4184,
+    1222,
+    4182,
+    4148,
+    4209,
+    1125,
+    4111,
+    979,
+    1169,
+    1190,
+    1225
+   ],
+   "ranked": [
+    1218,
+    1212,
+    979,
+    1134,
+    1215
+   ],
+   "sent": [
+    {
+     "chunk_index": 1218,
+     "parent_expanded": true,
+     "source_id": "02_hr_tmp_job_description_logistics.md",
+     "text_sha256": "b22fe0f74de3d6f1af13458f8eccb66423bd7928accf5689036df6fbea04697a"
+    },
+    {
+     "chunk_index": 1212,
+     "parent_expanded": true,
+     "source_id": "02_hr_tmp_job_description_logistics.md",
+     "text_sha256": "9617bdfc5d14f417d6ffdf27af017324ad11379bf63c887504ae70a372633c38"
+    },
+    {
+     "chunk_index": 1215,
+     "parent_expanded": false,
+     "source_id": "02_hr_tmp_job_description_logistics.md",
+     "text_sha256": "8f2053af233645d3b0a4dcd4aea886fa500ed8ffc4f51869e9358e19635a469e"
+    }
+   ],
+   "status": "ok"
+  },
+  {
+   "case_id": "T64-08",
+   "pool": [
+    974,
+    1060,
+    975,
+    1385,
+    1275,
+    972,
+    384,
+    987,
+    1038,
+    973,
+    2,
+    2418,
+    829,
+    26,
+    1059,
+    5414,
+    984,
+    1232,
+    1084,
+    556,
+    989,
+    1435,
+    982,
+    1105,
+    983,
+    1340,
+    990,
+    1362,
+    1076,
+    1450,
+    806,
+    1398,
+    1429,
+    772,
+    4692
+   ],
+   "ranked": [
+    974,
+    975,
+    972,
+    987,
+    1060
+   ],
+   "sent": [
+    {
+     "chunk_index": 974,
+     "parent_expanded": true,
+     "source_id": "02_hr_tmp_add_agreement.md",
+     "text_sha256": "874ba4c7656dab327851cef722d1f113758cc680a416751beb148db4404ce522"
+    },
+    {
+     "chunk_index": 975,
+     "parent_expanded": true,
+     "source_id": "02_hr_tmp_add_agreement.md",
+     "text_sha256": "4b1e97db9d87e29ba491d13471b23c5ef23671c3b0d728ae60d101098848e71a"
+    },
+    {
+     "chunk_index": 972,
+     "parent_expanded": false,
+     "source_id": "02_hr_tmp_add_agreement.md",
+     "text_sha256": "80d1024ec04e50c546cf24b878004adc83cf5c198cea08aafc6a3cef1b6f6e14"
+    },
+    {
+     "chunk_index": 987,
+     "parent_expanded": true,
+     "source_id": "02_hr_tmp_add_agreement.md",
+     "text_sha256": "39798339449704985d7f17a0d74874dc8c006f568454a62ab85fd895523fcfaf"
+    },
+    {
+     "chunk_index": 1060,
+     "parent_expanded": true,
+     "source_id": "02_hr_tmp_employment_contract.md",
+     "text_sha256": "95d8c3682b128567e078870e1076e554048974cf9397ec844879b713646e33a5"
+    }
+   ],
+   "status": "ok"
+  },
+  {
+   "case_id": "T64-09",
+   "pool": [
+    5015,
+    5013,
+    5032,
+    5028,
+    5010,
+    5009,
+    5011,
+    4919,
+    5024,
+    4731,
+    4735,
+    5137,
+    4980,
+    5235,
+    4763,
+    4982,
+    5156,
+    5034,
+    4728,
+    5003,
+    5169,
+    5045,
+    5012,
+    5029,
+    4747,
+    4911,
+    5035,
+    4906,
+    5160,
+    4784,
+    5037,
+    4999,
+    5026
+   ],
+   "ranked": [
+    5015,
+    5028,
+    5013,
+    5032,
+    5024
+   ],
+   "sent": [
+    {
+     "chunk_index": 5015,
+     "parent_expanded": true,
+     "source_id": "06_comp_policy_data_retention.md",
+     "text_sha256": "0fc5ba5fe5c776ee9ad84b5ce191813258ab6d32c4525aafbc8b9baea351da20"
+    },
+    {
+     "chunk_index": 5028,
+     "parent_expanded": true,
+     "source_id": "06_comp_policy_data_retention.md",
+     "text_sha256": "4ed5997837c7b4747f228a3f9f1c2531bb51a1ee44253cd6eab367a364d82d24"
+    },
+    {
+     "chunk_index": 5013,
+     "parent_expanded": true,
+     "source_id": "06_comp_policy_data_retention.md",
+     "text_sha256": "006efd17f7facb8797863fe95fe4e42394bf1262ef3297277d282d03b05f18da"
+    },
+    {
+     "chunk_index": 5032,
+     "parent_expanded": true,
+     "source_id": "06_comp_policy_data_retention.md",
+     "text_sha256": "480ad61b436584c591fa7e387c14e3b6be553d7bb88f73756c69cd7ca253e19a"
+    },
+    {
+     "chunk_index": 5024,
+     "parent_expanded": true,
+     "source_id": "06_comp_policy_data_retention.md",
+     "text_sha256": "51e8c6828c6166c616f1e8bf42518a96697a768a4191501742742466f01d9a50"
+    }
+   ],
+   "status": "ok"
+  },
+  {
+   "case_id": "T64-10",
+   "pool": [
+    1082,
+    1500,
+    1504,
+    1493,
+    1084,
+    916,
+    1492,
+    1502,
+    1094,
+    1494,
+    1092,
+    1097,
+    1507,
+    1099,
+    1509,
+    1499,
+    1318,
+    1083,
+    1497,
+    1495,
+    1327,
+    1098,
+    1077,
+    24,
+    1085,
+    1317,
+    1001,
+    1246,
+    1498,
+    37,
+    1510,
+    1355,
+    1503,
+    1086,
+    1319,
+    1324,
+    26
+   ],
+   "ranked": [
+    1084,
+    1082,
+    1085,
+    1492,
+    1494
+   ],
+   "sent": [
+    {
+     "chunk_index": 1084,
+     "parent_expanded": true,
+     "source_id": "02_hr_tmp_employment_order.md",
+     "text_sha256": "ac93646a27df3d1991018effed7c2c1c1fbd7f5371ef49499610ccada06c936e"
+    },
+    {
+     "chunk_index": 1082,
+     "parent_expanded": false,
+     "source_id": "02_hr_tmp_employment_order.md",
+     "text_sha256": "cb94ecdb06ddbb0767b5d245e3a1005fb6fcbcd9fd93a4fb272a8545ca0bb735"
+    },
+    {
+     "chunk_index": 1085,
+     "parent_expanded": true,
+     "source_id": "02_hr_tmp_employment_order.md",
+     "text_sha256": "622775b7f46323e10da7c33f0090e18740ba4f986e165c1c52fd75ce800aa81b"
+    },
+    {
+     "chunk_index": 1492,
+     "parent_expanded": true,
+     "source_id": "02_hr_tmp_transfer_order.md",
+     "text_sha256": "88d102e4e722cf8a6a4d6565baa4bc9df677fa5781dcd8dab645e076d79eb927"
+    },
+    {
+     "chunk_index": 1494,
+     "parent_expanded": true,
+     "source_id": "02_hr_tmp_transfer_order.md",
+     "text_sha256": "b317acd2da8b0847e68c819e5e0503a7f77d9bd4cfd753f9ce7a4231c3dd3f78"
+    }
+   ],
+   "status": "ok"
+  },
+  {
+   "case_id": "T64-11",
+   "pool": [
+    2710,
+    3546,
+    2689,
+    5342,
+    3285,
+    1133,
+    3262,
+    5543,
+    2687,
+    2711,
+    5544,
+    2707,
+    3547,
+    3269,
+    5029,
+    2694,
+    3458,
+    3288,
+    5564,
+    3270,
+    2746,
+    3279,
+    3498,
+    2704,
+    5563,
+    3286,
+    5028,
+    2702,
+    1813,
+    2715,
+    2046,
+    2713,
+    2337,
+    3261,
+    4999,
+    2722,
+    3031,
+    2686,
+    1900
+   ],
+   "ranked": [
+    2710,
+    2707,
+    3285,
+    2687,
+    3262
+   ],
+   "sent": [
+    {
+     "chunk_index": 2710,
+     "parent_expanded": true,
+     "source_id": "04_legal_claim_cargo_damage.md",
+     "text_sha256": "99edd83e0f9f4e7bac2abafc5804d402f19fbe863bacff17909c41d1238b28ab"
+    },
+    {
+     "chunk_index": 2707,
+     "parent_expanded": true,
+     "source_id": "04_legal_claim_cargo_damage.md",
+     "text_sha256": "eac03881de9ba26bb8b367873a69995628a44fba036afdb7b5050dd14063f549"
+    },
+    {
+     "chunk_index": 3285,
+     "parent_expanded": true,
+     "source_id": "04_legal_reply_cargo_damage.md",
+     "text_sha256": "afa8413b6b268f0c907550de0001fb4d2799df6f3110b23178aebbf4bc01e162"
+    },
+    {
+     "chunk_index": 2687,
+     "parent_expanded": true,
+     "source_id": "04_legal_claim_cargo_damage.md",
+     "text_sha256": "e5c2d719dd5c327e0136a1ad7ea0e6cd525758ff6c86a55599750d27d54bd059"
+    },
+    {
+     "chunk_index": 3262,
+     "parent_expanded": true,
+     "source_id": "04_legal_reply_cargo_damage.md",
+     "text_sha256": "d5714925f2fe1f5b1d750c5ea19bb918c0e1892a1c0b38581e5245e8d3097a1d"
+    }
+   ],
+   "status": "ok"
+  },
+  {
+   "case_id": "T64-12",
+   "pool": [
+    924,
+    919,
+    1346,
+    908,
+    922,
+    913,
+    510,
+    702,
+    114,
+    692,
+    703,
+    910,
+    441,
+    917,
+    920,
+    521,
+    686,
+    20,
+    515,
+    513,
+    1350,
+    5437,
+    528,
+    512,
+    723,
+    509,
+    4887,
+    923,
+    1502,
+    925,
+    693,
+    683,
+    1415,
+    911,
+    1047
+   ],
+   "ranked": [
+    913,
+    924,
+    917,
+    911,
+    919
+   ],
+   "sent": [
+    {
+     "chunk_index": 913,
+     "parent_expanded": true,
+     "source_id": "01_hr_pol_talent_pool.md",
+     "text_sha256": "1e9e888b37a1aa444250776e10c3f41d7d6eb1babfd0f9416857bbdf57079fdf"
+    },
+    {
+     "chunk_index": 911,
+     "parent_expanded": true,
+     "source_id": "01_hr_pol_talent_pool.md",
+     "text_sha256": "50829e6e58f5a622aef02e7758b383b71e566abc16eb3befdd8f89bcfc9ccab0"
+    },
+    {
+     "chunk_index": 919,
+     "parent_expanded": true,
+     "source_id": "01_hr_pol_talent_pool.md",
+     "text_sha256": "e8b9ae0e907eb5de0505db2f1664c3ad2f83116173c10862f98df530d3d8a201"
+    }
+   ],
+   "status": "ok"
+  },
+  {
+   "case_id": "T64-13",
+   "pool": [
+    4944,
+    4916,
+    4938,
+    4943,
+    4935,
+    4937,
+    4917,
+    4915,
+    4918,
+    4779,
+    4776,
+    4919,
+    4778,
+    4926,
+    4907,
+    4940,
+    5188,
+    4923,
+    4784,
+    5284,
+    5151,
+    4874,
+    4933,
+    4912,
+    4934,
+    5035,
+    4946,
+    204,
+    5157,
+    4941,
+    4920,
+    4753
+   ],
+   "ranked": [
+    4916,
+    4937,
+    5151,
+    4779,
+    4938
+   ],
+   "sent": [
+    {
+     "chunk_index": 4916,
+     "parent_expanded": true,
+     "source_id": "06_comp_policy_cookies.md",
+     "text_sha256": "3b8986e86fc07b8efb7b420e568f583c84c0f0aa8bb632f1743d6a41929824ca"
+    },
+    {
+     "chunk_index": 4937,
+     "parent_expanded": true,
+     "source_id": "06_comp_policy_cookies.md",
+     "text_sha256": "920ba3392ce1f90e696a515d599b34e7610f7e7d6f75c0ed568919272a97bde8"
+    },
+    {
+     "chunk_index": 5151,
+     "parent_expanded": true,
+     "source_id": "06_comp_policy_pdp.md",
+     "text_sha256": "6037a711a25412d6485b30c82cb0a0d6f38c10f9dcc1b342680c5fa192ac0793"
+    },
+    {
+     "chunk_index": 4779,
+     "parent_expanded": true,
+     "source_id": "06_comp_policy_access_control.md",
+     "text_sha256": "39826a304aa598b1fab0dac92442a4be9997103934a23f507255d16045a8dba3"
+    },
+    {
+     "chunk_index": 4938,
+     "parent_expanded": true,
+     "source_id": "06_comp_policy_cookies.md",
+     "text_sha256": "67c3eaf8f6e82bcbb61ea9c733fdc0909cbf9f6233fc236f77c0f89fc11ef3da"
+    }
+   ],
+   "status": "ok"
+  },
+  {
+   "case_id": "T64-14",
+   "pool": [
+    285,
+    778,
+    280,
+    282,
+    287,
+    290,
+    284,
+    291,
+    286,
+    1088,
+    281,
+    770,
+    261,
+    769,
+    288,
+    777,
+    296,
+    294,
+    773,
+    751,
+    83,
+    1087,
+    4104,
+    728,
+    562,
+    753,
+    446,
+    50,
+    540,
+    772,
+    749,
+    302
+   ],
+   "ranked": [
+    778,
+    285,
+    773,
+    777,
+    286
+   ],
+   "sent": [
+    {
+     "chunk_index": 778,
+     "parent_expanded": true,
+     "source_id": "01_hr_pol_safety.md",
+     "text_sha256": "1f67601f04737edf01c3ce67b39081e812281f98cd84feae506683a4fa5bb2b8"
+    },
+    {
+     "chunk_index": 285,
+     "parent_expanded": true,
+     "source_id": "01_hr_pol_dress_code.md",
+     "text_sha256": "ce900c4eb12ec90203ec30d0c101c76de851410d39d53430c2abd105383e6829"
+    },
+    {
+     "chunk_index": 773,
+     "parent_expanded": true,
+     "source_id": "01_hr_pol_safety.md",
+     "text_sha256": "2d42e2309969c908107ef6d081571456ecc38c479121e2a98828e3fa7250ebbb"
+    },
+    {
+     "chunk_index": 777,
+     "parent_expanded": false,
+     "source_id": "01_hr_pol_safety.md",
+     "text_sha256": "c9d9d1906d193675eb0a2b5e13df6be237f3528426574dfe16e581a587b431f1"
+    },
+    {
+     "chunk_index": 286,
+     "parent_expanded": true,
+     "source_id": "01_hr_pol_dress_code.md",
+     "text_sha256": "dfb4fe3670fb5cc20da4be752fea8e347e3f22d689f404441927fc88a73172a6"
+    }
+   ],
+   "status": "ok"
+  },
+  {
+   "case_id": "T64-15",
+   "pool": [
+    2740,
+    580,
+    5349,
+    5484,
+    3375,
+    5342,
+    5338,
+    5412,
+    2714,
+    5389,
+    2739,
+    5512,
+    2999,
+    5366,
+    3401,
+    5491,
+    5332,
+    5513,
+    2884,
+    5390,
+    2945,
+    5434,
+    2737,
+    5367,
+    2730,
+    5490,
+    2826,
+    5433,
+    2971,
+    5411,
+    2722,
+    5344,
+    3344,
+    5345,
+    5326,
+    5460,
+    4784,
+    5535,
+    3084,
+    5393
+   ],
+   "ranked": [
+    5349,
+    5344,
+    2740,
+    3401,
+    3344
+   ],
+   "sent": [
+    {
+     "chunk_index": 5349,
+     "parent_expanded": true,
+     "source_id": "07_faq_claims_procedure.md",
+     "text_sha256": "dbf7326e0f00cb0f63d20303d5c8e6e1d009aa3d55095dad6a8aeee55a5492fc"
+    },
+    {
+     "chunk_index": 5344,
+     "parent_expanded": true,
+     "source_id": "07_faq_claims_procedure.md",
+     "text_sha256": "33626c2487b6b036bc36c78e91eda9ebb10cb4ba0c9010c0452595e6e4c94e50"
+    },
+    {
+     "chunk_index": 2740,
+     "parent_expanded": true,
+     "source_id": "04_legal_claim_cargo_loss.md",
+     "text_sha256": "c800c1264d8c3576c6f8e5ec72072b988573950a96e503e961aae23e8db1509b"
+    },
+    {
+     "chunk_index": 3401,
+     "parent_expanded": true,
+     "source_id": "04_legal_reply_service_fail.md",
+     "text_sha256": "abc9da9a4f7d688a077f9d79b8e521af5a3f36f000df10e63a5941da5284741a"
+    },
+    {
+     "chunk_index": 3344,
+     "parent_expanded": true,
+     "source_id": "04_legal_reply_late_delivery.md",
+     "text_sha256": "a805af9c3b483b5663429ea74accbf66809f26031d1d732810f1382466dab772"
+    }
+   ],
+   "status": "ok"
+  },
+  {
+   "case_id": "T64-16",
+   "pool": [
+    54,
+    1339,
+    957,
+    1343,
+    956,
+    5528,
+    1344,
+    954,
+    955,
+    1357,
+    1338,
+    1354,
+    952,
+    1350,
+    958,
+    1346,
+    953,
+    1349,
+    951,
+    1342,
+    949,
+    1358,
+    1340,
+    53,
+    1356,
+    950,
+    1348,
+    963,
+    1449,
+    3451,
+    962,
+    1347,
+    5521,
+    5532,
+    47
+   ],
+   "ranked": [
+    1339,
+    54,
+    1343,
+    1344,
+    1340
+   ],
+   "sent": [
+    {
+     "chunk_index": 1339,
+     "parent_expanded": true,
+     "source_id": "02_hr_tmp_probation_report.md",
+     "text_sha256": "936626c7a32c49a007c6300fb05eb5ca2ce99f1be6b20d15d86bbe62c687b71d"
+    },
+    {
+     "chunk_index": 54,
+     "parent_expanded": true,
+     "source_id": "01_hr_pol_adaptation.md",
+     "text_sha256": "79e97141f367049a1bc8e18f01f3b7597129e02fb869f4abfcbbb548a0f1d90a"
+    },
+    {
+     "chunk_index": 1343,
+     "parent_expanded": true,
+     "source_id": "02_hr_tmp_probation_report.md",
+     "text_sha256": "ddae07534d03aade5d25df4a7ce281b5d18661fc984877319018f456c8f0192c"
+    },
+    {
+     "chunk_index": 1344,
+     "parent_expanded": true,
+     "source_id": "02_hr_tmp_probation_report.md",
+     "text_sha256": "0334e905e008508c298ee7b8ffc7d5d11a016e907253b615947a70eaecc9d5e0"
+    },
+    {
+     "chunk_index": 1340,
+     "parent_expanded": false,
+     "source_id": "02_hr_tmp_probation_report.md",
+     "text_sha256": "3621c3b4ecdec974bbc68bc69d4d5ff89fd742a2006afbfc8a4a0881e20a2e4f"
+    }
+   ],
+   "status": "ok"
+  },
+  {
+   "case_id": "T64-17",
+   "pool": [
+    955,
+    1358,
+    1349,
+    1340,
+    1353,
+    1357,
+    1342,
+    970,
+    5540,
+    1339,
+    1343,
+    1352,
+    1350,
+    4702,
+    951,
+    1346,
+    1341,
+    4736,
+    1354,
+    705,
+    1356,
+    963,
+    511,
+    1347,
+    5395,
+    1351,
+    959,
+    971,
+    952,
+    949,
+    5427,
+    725,
+    1359
+   ],
+   "ranked": [
+    955,
+    1340,
+    1353,
+    1349,
+    1342
+   ],
+   "sent": [
+    {
+     "chunk_index": 955,
+     "parent_expanded": true,
+     "source_id": "01_hr_probation_procedure.md",
+     "text_sha256": "d6b2d42179b331e724b4d38fcdf99d0ccb9d53a093e1e74350f3748caeaeaf2c"
+    },
+    {
+     "chunk_index": 1340,
+     "parent_expanded": true,
+     "source_id": "02_hr_tmp_probation_report.md",
+     "text_sha256": "a5bb740098fac548612f2e73fcff23948e0d47908ccc1216900f231082d9cbe6"
+    },
+    {
+     "chunk_index": 1353,
+     "parent_expanded": true,
+     "source_id": "02_hr_tmp_probation_report.md",
+     "text_sha256": "f1d2d0f138d51b23376e60a4d167d078597daee784b8406c1cb47bde7d6584b6"
+    },
+    {
+     "chunk_index": 1349,
+     "parent_expanded": true,
+     "source_id": "02_hr_tmp_probation_report.md",
+     "text_sha256": "df52ecac188aa4de20ed346e470487d084887361b279550c2660c0ab6a7774f6"
+    },
+    {
+     "chunk_index": 1342,
+     "parent_expanded": true,
+     "source_id": "02_hr_tmp_probation_report.md",
+     "text_sha256": "6de0e2b5e5ca0dd06c0c1784590e6696edbce0d66082701e898d22c9bfc3b114"
+    }
+   ],
+   "status": "ok"
+  },
+  {
+   "case_id": "T64-18",
+   "pool": [
+    88,
+    765,
+    97,
+    763,
+    749,
+    758,
+    754,
+    91,
+    748,
+    104,
+    100,
+    642,
+    761,
+    107,
+    764,
+    98,
+    1400,
+    94,
+    471,
+    161,
+    766,
+    835,
+    750,
+    103,
+    760,
+    1384,
+    563,
+    1402,
+    641,
+    1398,
+    1484,
+    1383,
+    647,
+    482
+   ],
+   "ranked": [
+    763,
+    749,
+    754,
+    765,
+    766
+   ],
+   "sent": [
+    {
+     "chunk_index": 763,
+     "parent_expanded": true,
+     "source_id": "01_hr_pol_remote_work.md",
+     "text_sha256": "c1b7688cf3fef36c70083d704919ae044157ed6aee6ffde7416097d47316cfbb"
+    },
+    {
+     "chunk_index": 749,
+     "parent_expanded": true,
+     "source_id": "01_hr_pol_remote_work.md",
+     "text_sha256": "a5cd4187fa1b99eec3da63cefff0b0f7986c116767836d8c58b54a2a89e9971a"
+    },
+    {
+     "chunk_index": 754,
+     "parent_expanded": true,
+     "source_id": "01_hr_pol_remote_work.md",
+     "text_sha256": "74d57c22cee751f7335731eceb0d9c847bfe855e5329f62afeff9d87411edee5"
+    },
+    {
+     "chunk_index": 765,
+     "parent_expanded": true,
+     "source_id": "01_hr_pol_remote_work.md",
+     "text_sha256": "b0c756290732b55c1ac44fc7b6c0d36c066fc3a9dd0cb2dbacb1dbffb5f03971"
+    },
+    {
+     "chunk_index": 766,
+     "parent_expanded": true,
+     "source_id": "01_hr_pol_remote_work.md",
+     "text_sha256": "536c7e4b7f7b9299aae63a409d248d371ed95df3537499e3edfcfe730b97a5d0"
+    }
+   ],
+   "status": "ok"
+  },
+  {
+   "case_id": "T64-19",
+   "pool": [
+    1246,
+    1252,
+    1263,
+    549,
+    1235,
+    1236,
+    1266,
+    1237,
+    1261,
+    1251,
+    535,
+    163,
+    1242,
+    542,
+    550,
+    1230,
+    547,
+    1233,
+    670,
+    1258,
+    564,
+    164,
+    1231,
+    1255,
+    1232,
+    162,
+    1269,
+    572,
+    1270,
+    1245,
+    1248
+   ],
+   "ranked": [
+    1255,
+    1251,
+    1258,
+    1269,
+    1263
+   ],
+   "sent": [
+    {
+     "chunk_index": 1255,
+     "parent_expanded": true,
+     "source_id": "02_hr_tmp_leave_request.md",
+     "text_sha256": "e2350e4762c537b91a8671963360d8ccf1039123823752dbb7c4eda8af5565da"
+    },
+    {
+     "chunk_index": 1251,
+     "parent_expanded": true,
+     "source_id": "02_hr_tmp_leave_request.md",
+     "text_sha256": "5c500608f972f01b2ea0cd1612ad0d19e824779c0b0db451ba178ef27c9a4ee4"
+    },
+    {
+     "chunk_index": 1258,
+     "parent_expanded": true,
+     "source_id": "02_hr_tmp_leave_request.md",
+     "text_sha256": "627c01e6b8d478702aad1027007b6add808351543fc0ec07f6e384555c90b99d"
+    },
+    {
+     "chunk_index": 1269,
+     "parent_expanded": true,
+     "source_id": "02_hr_tmp_leave_request.md",
+     "text_sha256": "60ba63db2323b863fe7c1c3b2c3e7e20b333a90078aef701a2d5c03218f13b1f"
+    },
+    {
+     "chunk_index": 1263,
+     "parent_expanded": true,
+     "source_id": "02_hr_tmp_leave_request.md",
+     "text_sha256": "e8232fc45825e4b3cba6bc5da5e5494e503e0ed0941aa49f2dfac6cdd2d19565"
+    }
+   ],
+   "status": "ok"
+  },
+  {
+   "case_id": "T64-20",
+   "pool": [
+    2746,
+    2763,
+    2878,
+    2767,
+    2745,
+    2861,
+    2769,
+    3338,
+    2755,
+    2858,
+    1153,
+    3321,
+    1216,
+    2871,
+    3318,
+    2768,
+    2743,
+    5343,
+    2689,
+    5458,
+    2883,
+    2764,
+    2758,
+    5559,
+    2870,
+    5327,
+    3281,
+    5442,
+    2873,
+    5543,
+    3333,
+    1657,
+    2038,
+    2751,
+    3439,
+    2710
+   ],
+   "ranked": [
+    2763,
+    3338,
+    2878,
+    3281,
+    2746
+   ],
+   "sent": [
+    {
+     "chunk_index": 2763,
+     "parent_expanded": true,
+     "source_id": "04_legal_claim_customs_delay.md",
+     "text_sha256": "02d2014c8cb77faf4e155ddcae3024a795cabf493c665db617601738bfe6854e"
+    },
+    {
+     "chunk_index": 3338,
+     "parent_expanded": true,
+     "source_id": "04_legal_reply_late_delivery.md",
+     "text_sha256": "3093fe658024c4820edc944865642b96e5e0b898a6a18b02dd0e9917fe189d7a"
+    },
+    {
+     "chunk_index": 2878,
+     "parent_expanded": true,
+     "source_id": "04_legal_claim_late_delivery.md",
+     "text_sha256": "537821fce8764871229aafc7be18e2e8d7e35ab3317d5dba92b11976221ce9a7"
+    },
+    {
+     "chunk_index": 3281,
+     "parent_expanded": true,
+     "source_id": "04_legal_reply_cargo_damage.md",
+     "text_sha256": "69e83724de18d33cafba6ba23bf06f69696e773628c12efe1a9ea934d3e1ace9"
+    },
+    {
+     "chunk_index": 2746,
+     "parent_expanded": true,
+     "source_id": "04_legal_claim_customs_delay.md",
+     "text_sha256": "9fc3ec5ba510b69a89ec7f78e2e021508b06d18db6d1ee24fe622821fa6b11fb"
+    }
+   ],
+   "status": "ok"
+  },
+  {
+   "case_id": "T64-21",
+   "pool": [
+    2999,
+    2998,
+    2977,
+    2740,
+    2992,
+    2993,
+    2986,
+    1055,
+    2975,
+    1248,
+    2987,
+    2733,
+    2994,
+    2974,
+    1424,
+    3365,
+    1357,
+    2990,
+    551,
+    2979,
+    1402,
+    3048,
+    824,
+    2732,
+    1445,
+    3055,
+    766,
+    3001,
+    3250,
+    65,
+    2980,
+    108,
+    2983,
+    529,
+    3251,
+    945
+   ],
+   "ranked": [
+    2998,
+    2999,
+    2977,
+    2975,
+    2983
+   ],
+   "sent": [
+    {
+     "chunk_index": 2998,
+     "parent_expanded": true,
+     "source_id": "04_legal_letter_arbitration_notice.md",
+     "text_sha256": "27e8e328ebe94ed8b3c08e6bee80653752d7bd47271fbbd8721ce704a84907ba"
+    },
+    {
+     "chunk_index": 2999,
+     "parent_expanded": true,
+     "source_id": "04_legal_letter_arbitration_notice.md",
+     "text_sha256": "3e0761e7bd6d109537822c89cd210c5543b3cff03e11693b80581ade227e867e"
+    },
+    {
+     "chunk_index": 2977,
+     "parent_expanded": true,
+     "source_id": "04_legal_letter_arbitration_notice.md",
+     "text_sha256": "c856c4d4389534feb1f45381ba554d18d4facc803ad251a7ae0a53f97e9cc9c7"
+    },
+    {
+     "chunk_index": 2975,
+     "parent_expanded": true,
+     "source_id": "04_legal_letter_arbitration_notice.md",
+     "text_sha256": "7868759fd4b40915bee2b6227fc65c78555474041acea769782b5147099a9749"
+    },
+    {
+     "chunk_index": 2983,
+     "parent_expanded": true,
+     "source_id": "04_legal_letter_arbitration_notice.md",
+     "text_sha256": "7d3db8b734c9bcc4dd1bef6582745be750a6e5985773dd746a621dd5ed7c7e22"
+    }
+   ],
+   "status": "ok"
+  },
+  {
+   "case_id": "T64-22",
+   "pool": [
+    1252,
+    1261,
+    1244,
+    1106,
+    1248,
+    1276,
+    1265,
+    1342,
+    1270,
+    1061,
+    1269,
+    1259,
+    1230,
+    5378,
+    1247,
+    1170,
+    1353,
+    1258,
+    1240,
+    1211,
+    544,
+    1264,
+    551,
+    1339,
+    550,
+    1126,
+    1467,
+    1251,
+    1462,
+    1147,
+    1489,
+    997,
+    542,
+    1191,
+    1357,
+    5581,
+    573,
+    1246
+   ],
+   "ranked": [
+    1353,
+    1259,
+    1244,
+    1258,
+    1247
+   ],
+   "sent": [
+    {
+     "chunk_index": 1353,
+     "parent_expanded": true,
+     "source_id": "02_hr_tmp_probation_report.md",
+     "text_sha256": "f1d2d0f138d51b23376e60a4d167d078597daee784b8406c1cb47bde7d6584b6"
+    },
+    {
+     "chunk_index": 1259,
+     "parent_expanded": true,
+     "source_id": "02_hr_tmp_leave_request.md",
+     "text_sha256": "e14dc1cea694c165bc4098544fb5228f3892f988558bda50b2b77a7c5a3ece79"
+    },
+    {
+     "chunk_index": 1244,
+     "parent_expanded": true,
+     "source_id": "02_hr_tmp_leave_order.md",
+     "text_sha256": "a6d03263ddd953f05c7c56e877bfc991f59f1a4d880265cac1734a8dfc2a912f"
+    }
+   ],
+   "status": "ok"
+  },
+  {
+   "case_id": "T64-23",
+   "pool": [
+    1212,
+    1219,
+    1318,
+    847,
+    1170,
+    1227,
+    1211,
+    1177,
+    839,
+    1218,
+    857,
+    1213,
+    1217,
+    1345,
+    98,
+    3546,
+    786,
+    4392,
+    649,
+    3771,
+    866,
+    4538,
+    3621,
+    827,
+    3475,
+    4111,
+    713,
+    1224,
+    1340,
+    692,
+    330,
+    4545,
+    997,
+    798,
+    4357,
+    1335,
+    1089,
+    4582,
+    3993
+   ],
+   "ranked": [
+    1219,
+    1224,
+    98,
+    1217,
+    847
+   ],
+   "sent": [
+    {
+     "chunk_index": 1224,
+     "parent_expanded": true,
+     "source_id": "02_hr_tmp_job_description_logistics.md",
+     "text_sha256": "d7fdb69e5e5d58445e06e79107c593636fc1c4e9c90f6e9e26c04457472e2e3e"
+    }
+   ],
+   "status": "ok"
+  },
+  {
+   "case_id": "T64-24",
+   "pool": [
+    1508,
+    1324,
+    1504,
+    37,
+    717,
+    1329,
+    5575,
+    988,
+    707,
+    1333,
+    3,
+    1496,
+    27,
+    41,
+    1321,
+    1493,
+    1378,
+    38,
+    738,
+    5569,
+    31,
+    1320,
+    1501,
+    1372,
+    24,
+    29,
+    30,
+    14,
+    859,
+    5573,
+    1498,
+    1046,
+    1502,
+    9,
+    1500,
+    1360,
+    1439,
+    1327
+   ],
+   "ranked": [
+    1329,
+    37,
+    1333,
+    1508,
+    1501
+   ],
+   "sent": [
+    {
+     "chunk_index": 1329,
+     "parent_expanded": true,
+     "source_id": "02_hr_tmp_position_change_order.md",
+     "text_sha256": "81ceddbd6e826f956490a7f01af1039d8b70ebfbeee8a66489c1240fb5b2d7f2"
+    },
+    {
+     "chunk_index": 37,
+     "parent_expanded": true,
+     "source_id": "01_hr_internal_transfer.md",
+     "text_sha256": "38380d450472dd393e3df685b11e0c3ca7c752d7f8dc1fd5132bb4a70659dac8"
+    },
+    {
+     "chunk_index": 1333,
+     "parent_expanded": true,
+     "source_id": "02_hr_tmp_position_change_order.md",
+     "text_sha256": "e8058330fc15753cdf093fde065e551013870f74ff3081220bee95747e51432c"
+    },
+    {
+     "chunk_index": 1508,
+     "parent_expanded": true,
+     "source_id": "02_hr_tmp_transfer_order.md",
+     "text_sha256": "b555890d75572462dfcdd3a56519345aba8a6864bd5972f6fba675c1ceefb258"
+    }
+   ],
+   "status": "ok"
+  }
+ ],
+ "run_sha256": "0f6b8dafa7860cb40454f6cefd738d37cb99678955361f6e4b695bf425a1adfb"
+}

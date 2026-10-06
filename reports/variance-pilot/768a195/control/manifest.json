@@ -1,0 +1,1243 @@
+{
+  "schema_version": 1,
+  "code_sha": "768a195900a9c2543c161fa1e933a65108582e3a",
+  "source_sha256": "5a96e312785edad64031035b5b2177819eacd0618d6285d623bc0526f0cc6f03",
+  "runtime": {
+    "python": "3.11.15",
+    "platform": "macOS-13.7.8-x86_64-i386-64bit",
+    "packages": {
+      "numpy": "1.26.4",
+      "torch": "2.2.2",
+      "sentence-transformers": "2.7.0",
+      "transformers": "4.44.2",
+      "chromadb": "1.5.9",
+      "langchain-ollama": "1.1.0",
+      "langgraph": "1.2.2",
+      "rank-bm25": "0.2.2"
+    }
+  },
+  "datasets": {
+    "pilot-gold": {
+      "path": "/Users/julia/RAG_new_pilot_19f4e8041089/evaluation/devset_pilot_gold_questions.jsonl",
+      "sha256": "c5017d2f81f47b4751183a090d7ff505afded013335bb7f01bf3045c5edffccf",
+      "count": 24
+    }
+  },
+  "cases": [
+    {
+      "case_id": "T64-01",
+      "query": "Кто согласовывает бюджет релокации и какое предложение получает сотрудник после положительного решения? Ответьте по политике релокации.",
+      "subset": "pilot-gold"
+    },
+    {
+      "case_id": "T64-02",
+      "query": "Нужен юрист для международных контрактов. Что шаблон его должностной инструкции требует по образованию и языку? Уровень английского не придумывай.",
+      "subset": "pilot-gold"
+    },
+    {
+      "case_id": "T64-03",
+      "query": "Для какой цели формируется кадровый резерв в ООО «Северный Контур» и на какие позиции он ориентирован?",
+      "subset": "pilot-gold"
+    },
+    {
+      "case_id": "T64-04",
+      "query": "Коллега говорит, что соглашение о неразглашении для сотрудников касается только тарифов, а авианакладные и журналы доступа туда не входят. Исправь это по разделу «Назначение» соглашения.",
+      "subset": "pilot-gold"
+    },
+    {
+      "case_id": "T64-05",
+      "query": "Какие события в терминах договора страхования гражданской ответственности перевозчика возвращают проект к юристам, операционной команде и финансовому отделу или специалистам по страхованию?",
+      "subset": "pilot-gold"
+    },
+    {
+      "case_id": "T64-06",
+      "query": "В старой памятке мне написали 60% больничного после несчастного случая. Что именно обещает раздел «Выплаты и льготы» этой внутренней политики и зависит ли процент от стажа? Не выдавай это за проверку действующего закона.",
+      "subset": "pilot-gold"
+    },
+    {
+      "case_id": "T64-07",
+      "query": "Какие требования к стажу старшего логиста и к владению системами перечисляет его должностная инструкция?",
+      "subset": "pilot-gold"
+    },
+    {
+      "case_id": "T64-08",
+      "query": "Когда шаблон допсоглашения к трудовому договору применяется, а когда сам раздел «Область применения» направляет к ст. 74? Перескажи ограничение шаблона, без юридического решения за нас.",
+      "subset": "pilot-gold"
+    },
+    {
+      "case_id": "T64-09",
+      "query": "Назовите поля политики сроков хранения данных, которые описывают категорию рейсового документа, приостановку удаления и систему хранения. Укажите точные ключи полей.",
+      "subset": "pilot-gold"
+    },
+    {
+      "case_id": "T64-10",
+      "query": "Принимаем человека на замещение, а потом оформляем внутренний перевод по новому месту. Какие ситуации охватывает шаблон приказа о приеме и одинаковые ли формулировки использовать?",
+      "subset": "pilot-gold"
+    },
+    {
+      "case_id": "T64-11",
+      "query": "Сопоставьте ограничения доказательств в контрольном списке претензии об утрате и критериях претензии о повреждении авиагруза: без чего нельзя считать утрату доказанной и без чего нельзя утверждать причину повреждения?",
+      "subset": "pilot-gold"
+    },
+    {
+      "case_id": "T64-12",
+      "query": "Готовим постановку целей и отбор в кадровый резерв. Какие показатели задаются при оценке результативности и какой минимальный результат последней оценки нужен резервисту?",
+      "subset": "pilot-gold"
+    },
+    {
+      "case_id": "T64-13",
+      "query": "Как запрет скрытого профилирования в политике использования файлов веб-аналитики сочетается с результатом подключения агента к порталу бронирования в политике обработки персональных данных? Укажите ограничение аналитики и объём и контроль данных агента.",
+      "subset": "pilot-gold"
+    },
+    {
+      "case_id": "T64-14",
+      "query": "На складе спорят об открытой обуви и аптечке. Что запрещает дресс-код и чем рабочее место должно быть обеспечено по общей инструкции ОТ?",
+      "subset": "pilot-gold"
+    },
+    {
+      "case_id": "T64-15",
+      "query": "По правилам FAQ о претензиях куда направляется конкретный спор, и какое ограничение контрольного списка претензии об утрате нужно сохранить в ответе? Дайте общий ответ, не решая конкретный спор.",
+      "subset": "pilot-gold"
+    },
+    {
+      "case_id": "T64-16",
+      "query": "В назначении шаблона отчета вижу «продление испытательного срока». Значит, слабый review позволяет добавить месяц? Сверь это с этапом 5 регламента испытания и исправь посылку.",
+      "subset": "pilot-gold"
+    },
+    {
+      "case_id": "T64-17",
+      "query": "Когда и кем заполняется отчёт об испытательном сроке по шаблону, и кто проверяет процедуры и документы на этапе итоговой оценки регламента?",
+      "subset": "pilot-gold"
+    },
+    {
+      "case_id": "T64-18",
+      "query": "Удалёнщик говорит, что правила внутреннего общения его не касаются, а начальник требует связь круглосуточно. Что говорят область применения правил коммуникации и раздел контроля удалённой работы?",
+      "subset": "pilot-gold"
+    },
+    {
+      "case_id": "T64-19",
+      "query": "Как определены основной оплачиваемый отпуск и рабочий год, и кто и на каких основаниях открывает карточку «Заявление на отпуск»? Используйте положение и шаблон заявления.",
+      "subset": "pilot-gold"
+    },
+    {
+      "case_id": "T64-20",
+      "query": "Сравни роли по претензиям о таможенной задержке и повреждении: кто ведёт хронологию и какие события у каждой роли?",
+      "subset": "pilot-gold"
+    },
+    {
+      "case_id": "T64-21",
+      "query": "В перечнях доказательств критериев уведомления об арбитраже и контрольного списка претензии об утрате сколько дословно одинаково названных видов доказательств? Перечислите пересечение; основную и домовую авианакладные считайте одним видом.",
+      "subset": "pilot-gold"
+    },
+    {
+      "case_id": "T64-22",
+      "query": "Собираю HR-календарь: сколько отдельных обязанностей со сроком записано только в разделе согласования отпуска и области применения шаблона отчёта об испытании? Назови ответственных и каждый срок; одинаковые числа не объединяй.",
+      "subset": "pilot-gold"
+    },
+    {
+      "case_id": "T64-23",
+      "query": "В таблицах взаимодействия HR-менеджера и логиста сколько подразделений названы одинаково у обоих? Перечислите только пересечение таблиц.",
+      "subset": "pilot-gold"
+    },
+    {
+      "case_id": "T64-24",
+      "query": "Для чек-листа смены должности и перевода посчитай уникальные документы: только строка «Документ» таблицы отличий и первые два пункта «Действия после подписания» приказа о переводе. Перечисли их; трудовую книжку считай одной, акт передачи — отдельным документом.",
+      "subset": "pilot-gold"
+    }
+  ],
+  "selection": "all pilot-gold in file order; case_id and question only",
+  "config": {
+    "retrieval_strategy": "hybrid",
+    "model_routing_enabled": false,
+    "graph_retrieval": "off",
+    "hyde": false,
+    "agentic_mode": false,
+    "retrieval_top_k": 20,
+    "rerank_top_k": 5,
+    "rrf_k": 60,
+    "rrf_doc_key_chars": 200,
+    "rerank_batch": 8,
+    "parent_expansion": true,
+    "parent_expansion_window": 2,
+    "parent_expansion_max_chars": 3600,
+    "ask_budget_sec": 0,
+    "llm_role_params_json": "",
+    "llm_max_calls_per_request": 24,
+    "llm_max_input_tokens_per_request": 48000,
+    "llm_max_output_tokens_per_request": 8000,
+    "llm_max_total_tokens_per_request": 50000,
+    "rag_device": "cpu",
+    "embedding_backend": "local"
+  },
+  "index": "/Users/julia/RAG_new_t65_embeddings_2851e3811508/.tmp/t65-index-72fbd72",
+  "checkpoint": "/Users/julia/RAG_new_t65_embeddings_2851e3811508/.tmp/t65-verified-embeddings.npz",
+  "corpus": "/Users/julia/RAG_new_pilot_19f4e8041089/evaluation/gr1b-4436d61-graph-chunks.json.gz",
+  "index_receipt": {
+    "checkpoint_sha256": "3903187e56dd4d8accf642f612910c6ca2082d1e7e55b7d67cd072ce0978fb5a",
+    "chromadb_version": "1.5.9",
+    "chunk_count": 5589,
+    "code_sha": "72fbd722c62722aede7c870b6cf0dfa71227a4d2",
+    "collection_name": "rag_docs_aircargo",
+    "configuration": {
+      "hnsw": {
+        "sync_threshold": 1
+      }
+    },
+    "corpus_sha256": "2a9da515a4c69b46453a59ed6d0bb772b0aad6fed23c87ee465851b43dbdef12",
+    "embedder_manifest": {
+      "backend": "local",
+      "dimension": 1024,
+      "document_prompt": "",
+      "model_id": "BAAI/bge-m3",
+      "normalize": true,
+      "query_prompt": "",
+      "revision": "5617a9f61b028005a4858fdac845db406aefb181",
+      "revision_source": "hf_snapshot",
+      "schema_version": 1
+    },
+    "evidence_status": "preparation",
+    "schema_version": 1,
+    "texts_sha256": "cedd1e073310b529b06f8aa4a565929a67313e35399337633549a1d282221302"
+  },
+  "index_receipt_sha256": "52f733a08d84fe238cbbc1f9ea6080db58c4f8d758a31a257c350278d47fa51c",
+  "source_manifest": {
+    "corpus_sha256": "c8562a64f88f72172f29e30865091be79f08d00ce65fbf675f34de64dcebe343",
+    "file_count": 201,
+    "files": [
+      {
+        "bytes": 19218,
+        "name": "01_hr_dismissal_procedure.md",
+        "sha256": "ec95ee4419f4e248d334a54259e2a67e9fa09b58799c94195ea00581465764a8"
+      },
+      {
+        "bytes": 17848,
+        "name": "01_hr_internal_transfer.md",
+        "sha256": "aeea97235b7d800521d1fa32aa4cbeafd0204e64a48c1efc3e9cbb95154f7018"
+      },
+      {
+        "bytes": 17666,
+        "name": "01_hr_pol_adaptation.md",
+        "sha256": "09e79336f93ff4054b135c2abdaab1788b1a2d21bc98205eb7d8a307d076d7ac"
+      },
+      {
+        "bytes": 15808,
+        "name": "01_hr_pol_alcohol.md",
+        "sha256": "b6f17952c8038d8c3e7a9dfa4525019cbfa1b944d296358d7f95a52e2a43512a"
+      },
+      {
+        "bytes": 18492,
+        "name": "01_hr_pol_attendance.md",
+        "sha256": "ebb1fd5a14d8da56e656e9b9f751a194974450d4be39e1a6b832b53215f65090"
+      },
+      {
+        "bytes": 17483,
+        "name": "01_hr_pol_bonus.md",
+        "sha256": "517afb0cd7d3ed1b6f693cdf99e42c59b079d62a6ba97905c2fd9d1b0b58e353"
+      },
+      {
+        "bytes": 17881,
+        "name": "01_hr_pol_business_trip.md",
+        "sha256": "d97b2b82010994f8180fcc4927d019d768ab491411ec876c9a103987d3cd7609"
+      },
+      {
+        "bytes": 19174,
+        "name": "01_hr_pol_childcare.md",
+        "sha256": "a3509c28ce75fbe6d5a2950178aaf518b1f223486d46eb68d5d4e2770c393dd6"
+      },
+      {
+        "bytes": 17045,
+        "name": "01_hr_pol_compensation.md",
+        "sha256": "87e201c176b8ca3a41a809277363c130c13f8a839f9904972c559daf2831574b"
+      },
+      {
+        "bytes": 15672,
+        "name": "01_hr_pol_confidentiality_emp.md",
+        "sha256": "f28598b252a6be2f56d6d01fd5f1dce131a42659c5d2b81ddc485408d1ef6f39"
+      },
+      {
+        "bytes": 15710,
+        "name": "01_hr_pol_conflict_interest.md",
+        "sha256": "ecae7b5a2c4c457c5fc7303b9c65637ddc83a6bad3fc3bfa0d06331f405df061"
+      },
+      {
+        "bytes": 20085,
+        "name": "01_hr_pol_corruption.md",
+        "sha256": "7aa8a76397a2893eea976f0128bbc8b2a62e09be704b41ecc516fdca275277b3"
+      },
+      {
+        "bytes": 19643,
+        "name": "01_hr_pol_diversity.md",
+        "sha256": "f1072a3cd388416bc4d4a38ac7de3d25ce401f788c19308a492d44f7ee9b1959"
+      },
+      {
+        "bytes": 15175,
+        "name": "01_hr_pol_dress_code.md",
+        "sha256": "9f871f91b9d07b253523a1738f85de6821a07d68cf673aac023d68f9b27ae6ef"
+      },
+      {
+        "bytes": 14810,
+        "name": "01_hr_pol_electrical_safety.md",
+        "sha256": "5b151d23d3aff639bb4ff2e8377ec07eb056615f9a663423b1819125f0327f3e"
+      },
+      {
+        "bytes": 18105,
+        "name": "01_hr_pol_exit_interview.md",
+        "sha256": "b997c04524b2698d190aa87cb0506a2a73ff97984de18df40e6f635dab7dfa2c"
+      },
+      {
+        "bytes": 15508,
+        "name": "01_hr_pol_fire_safety.md",
+        "sha256": "66b28096b379207546075debe33508259963250a304eef35a503267a00be5fdd"
+      },
+      {
+        "bytes": 14645,
+        "name": "01_hr_pol_gifts.md",
+        "sha256": "8fc18f31fbca955ec6c67968ee34319ca13c4e2dd8aba93a7f0d21e678fde364"
+      },
+      {
+        "bytes": 15695,
+        "name": "01_hr_pol_grievance.md",
+        "sha256": "1f69b8fa30bd055c7c91cc4063181a95502e2c441a2457f92ea4dd2476a5b298"
+      },
+      {
+        "bytes": 17359,
+        "name": "01_hr_pol_harassment.md",
+        "sha256": "999371c1d5359fd3d22cb6a7d5497f23f842bc3e671a6456dd895f42dd5b665f"
+      },
+      {
+        "bytes": 18138,
+        "name": "01_hr_pol_hiring.md",
+        "sha256": "6df7eb18a272cb4954173ae1eb9a84f024b9dd8ac5296c2ae66415e47d82143c"
+      },
+      {
+        "bytes": 20626,
+        "name": "01_hr_pol_injury.md",
+        "sha256": "21126991bb3801e9a58f9ffd1f2a5f2874217da3b9a74075efb889c074f88310"
+      },
+      {
+        "bytes": 19007,
+        "name": "01_hr_pol_internal_comm.md",
+        "sha256": "747f24caf1c1f398f1c33c1723048061dd37847a911fb1b35b68759cdef24e01"
+      },
+      {
+        "bytes": 15260,
+        "name": "01_hr_pol_it_access.md",
+        "sha256": "5066379e1a8df6df71a718a1551c6641c8e8833ed93392ae0be9218a650f8e6d"
+      },
+      {
+        "bytes": 18289,
+        "name": "01_hr_pol_kpi.md",
+        "sha256": "aad5dc18020b93576fbd64b133c4d6d6163b1002476091451fdb7ee4ce29b2d8"
+      },
+      {
+        "bytes": 18192,
+        "name": "01_hr_pol_leave.md",
+        "sha256": "3716465362b072baf350282f4134d8c349ac0cefe11eaf31c69d7a1052432eb8"
+      },
+      {
+        "bytes": 19691,
+        "name": "01_hr_pol_maternity.md",
+        "sha256": "fa51b086ec9e9f8e55d1af452f23acf2aa43e9b74abf88208bb4a674edae8e52"
+      },
+      {
+        "bytes": 19919,
+        "name": "01_hr_pol_medical_check.md",
+        "sha256": "8156d38e35456efdf5f805abcc629bb2435d13f33781654bf4d2dbf49b4f7a67"
+      },
+      {
+        "bytes": 17750,
+        "name": "01_hr_pol_mental_health.md",
+        "sha256": "1b55c86bd747f64cdc8701a53b37164d40fa04cdc0f0277eeb1d81d493e40f82"
+      },
+      {
+        "bytes": 15237,
+        "name": "01_hr_pol_night_shift.md",
+        "sha256": "1a2374d2a552e35d3fda961175905e2f65220ee03c4c977db054686552d28da0"
+      },
+      {
+        "bytes": 17864,
+        "name": "01_hr_pol_overtime.md",
+        "sha256": "6d5f8399911c1123033d196f4180df0ffeb6fce534528c661146dc2840cc0f05"
+      },
+      {
+        "bytes": 18877,
+        "name": "01_hr_pol_part_time.md",
+        "sha256": "9acb31d71094cb49c8c05ba3fc50b46211ec4302c7d55d54188beee5dda5289c"
+      },
+      {
+        "bytes": 19529,
+        "name": "01_hr_pol_performance_review.md",
+        "sha256": "2dedce2186fcf4e071419ca4ae18b44d64a98d952c31a7bb3698276c4d297ab5"
+      },
+      {
+        "bytes": 15157,
+        "name": "01_hr_pol_references.md",
+        "sha256": "915024a45f2a795e6a56889d8af366f77d77727f8757988f07caaf5edf5bffee"
+      },
+      {
+        "bytes": 18018,
+        "name": "01_hr_pol_relocation.md",
+        "sha256": "4734ec6436a059369bca67db2035d5e3493d35cdc0052ff4b4b49a46153903eb"
+      },
+      {
+        "bytes": 17401,
+        "name": "01_hr_pol_remote_work.md",
+        "sha256": "a06866aad3b4f337c0a07c10756343751c5b620ec4bb5ea4408e2857f59db53d"
+      },
+      {
+        "bytes": 30225,
+        "name": "01_hr_pol_safety.md",
+        "sha256": "8e660e5e881071e969f349ac33bab1d172cb8f62d492f395317989c0ae52f86b"
+      },
+      {
+        "bytes": 18529,
+        "name": "01_hr_pol_salary.md",
+        "sha256": "c74be37b339c1c17b43d8740e5bc6e20ab9b46c416b351d399810427e3a939bf"
+      },
+      {
+        "bytes": 19145,
+        "name": "01_hr_pol_second_job.md",
+        "sha256": "b6d6112c575952e490284ca0084c0702a2f8805c44993a3df26f5b023a5aa351"
+      },
+      {
+        "bytes": 14447,
+        "name": "01_hr_pol_shift_schedule.md",
+        "sha256": "22921e89734b8f81653a4b2068ebb88208acfb4f6f0d7cf7e9a0f31d192f7bd1"
+      },
+      {
+        "bytes": 13925,
+        "name": "01_hr_pol_smoking.md",
+        "sha256": "9e9fd3a32db73bebc3514240b3bedb2c7ea26673886a10a1454a07a8acda11a5"
+      },
+      {
+        "bytes": 17773,
+        "name": "01_hr_pol_social_package.md",
+        "sha256": "eb7f2a56cea89b077e2718a5a979759bbc053828de26ce8bad0a5b1d7f87f839"
+      },
+      {
+        "bytes": 18032,
+        "name": "01_hr_pol_talent_pool.md",
+        "sha256": "314a9a6c60efe3a2dba80b254ebec17fb0f940374a3127a00b11384cb53d6ddb"
+      },
+      {
+        "bytes": 17003,
+        "name": "01_hr_pol_training.md",
+        "sha256": "0f95b0e7d157ed323497aceb27941553a068669cf525cb5e502630ea931cd30b"
+      },
+      {
+        "bytes": 19473,
+        "name": "01_hr_probation_procedure.md",
+        "sha256": "8c5f95930b560375a25cf692c05062cf44b6487058f9426c4e72b9a8010cfaed"
+      },
+      {
+        "bytes": 18867,
+        "name": "02_hr_tmp_add_agreement.md",
+        "sha256": "abb0d8314f625dc0c9e349e448741b3b48f7b60ab5136a5b6e2fbcd526bcd580"
+      },
+      {
+        "bytes": 17208,
+        "name": "02_hr_tmp_business_trip_order.md",
+        "sha256": "8bdabe1612dd436e5c284fa03868071dcbd2d33607050a968e7dd281ab3f4b60"
+      },
+      {
+        "bytes": 18357,
+        "name": "02_hr_tmp_confidentiality_ack.md",
+        "sha256": "08f5ed59fdb013239712cd6aaf59e8eaa02d7eef390f38bada1461eec4171633"
+      },
+      {
+        "bytes": 18426,
+        "name": "02_hr_tmp_dismissal_order.md",
+        "sha256": "ff16772d0b51cf8589b558986a10a6b540cf7189c285ef76964c2c32ff56a801"
+      },
+      {
+        "bytes": 22500,
+        "name": "02_hr_tmp_employment_contract.md",
+        "sha256": "99c29b9bcea506fdf75c7000ea33cf51f558b8028ab78361588ede422096c6ca"
+      },
+      {
+        "bytes": 17269,
+        "name": "02_hr_tmp_employment_order.md",
+        "sha256": "95eca65dad3320365e02310841e145b7a981e7a883c531403926780d88a3e9c8"
+      },
+      {
+        "bytes": 17998,
+        "name": "02_hr_tmp_internship_agreement.md",
+        "sha256": "1ee47966946dcfc2cf6f4d5d44202854bcf6eef4ed00278abb6b7ec801c203ad"
+      },
+      {
+        "bytes": 18701,
+        "name": "02_hr_tmp_job_description_accountant.md",
+        "sha256": "454102e0de528ee77fa4445c789b8e338e799d8a4d495540525595fc530ffff5"
+      },
+      {
+        "bytes": 19713,
+        "name": "02_hr_tmp_job_description_driver.md",
+        "sha256": "31e225bc29428373cbc59f9a42a96f2f1e82c2e19350434bde5a51c9923be0a2"
+      },
+      {
+        "bytes": 18163,
+        "name": "02_hr_tmp_job_description_hr.md",
+        "sha256": "a459a1783178731c820d3866abf84655c5667d8bae2e89820e4703d91a82bb7d"
+      },
+      {
+        "bytes": 18900,
+        "name": "02_hr_tmp_job_description_lawyer.md",
+        "sha256": "2862a53bc2102eb25d93f55dbbe4cd126ea0ca68d34b6efd0b6a636c9883865f"
+      },
+      {
+        "bytes": 19023,
+        "name": "02_hr_tmp_job_description_logistics.md",
+        "sha256": "28e4ed25252f7420756a49726ff4d961b4753b947802013ae8d44e14e2b48647"
+      },
+      {
+        "bytes": 17721,
+        "name": "02_hr_tmp_leave_order.md",
+        "sha256": "ae8982bcb55019ea213d23427f09788becfd17d07544e443640cc00fe8e47817"
+      },
+      {
+        "bytes": 17886,
+        "name": "02_hr_tmp_leave_request.md",
+        "sha256": "7330a504d2261fc84864282690471df757d47916b8fa18a8166b3149c9e27122"
+      },
+      {
+        "bytes": 19346,
+        "name": "02_hr_tmp_material_liability_agreement.md",
+        "sha256": "4fcbc7b0e1f596203981e6edb4d17b9381dd97715fc1f9e9a6c1d1aa6ebcb473"
+      },
+      {
+        "bytes": 18227,
+        "name": "02_hr_tmp_nepotism_disclosure.md",
+        "sha256": "00ab837923723fd4ea366f7f3aff7dcb5d9f5ddae4ec23b31887cf6e43d55531"
+      },
+      {
+        "bytes": 17510,
+        "name": "02_hr_tmp_position_change_order.md",
+        "sha256": "c03473b0c8f088af15b2586a6da6436c3bd83e809cee837ccf07b4c58388f550"
+      },
+      {
+        "bytes": 18046,
+        "name": "02_hr_tmp_probation_report.md",
+        "sha256": "f1de4b076bfc66308de320988c936f31004b90758c5c989e74228b3d02c56d37"
+      },
+      {
+        "bytes": 18699,
+        "name": "02_hr_tmp_reference_letter_template.md",
+        "sha256": "ed5d5d04a0ec00fa62d907a8732b2ca3f16b5d1a3c82548c26108190030f9b23"
+      },
+      {
+        "bytes": 17943,
+        "name": "02_hr_tmp_remote_work_agreement.md",
+        "sha256": "38d2d4f5a4d230604546eb40a1304e96b877baf7f9fafdc4a5e1f5d9970cddf8"
+      },
+      {
+        "bytes": 17946,
+        "name": "02_hr_tmp_resignation_letter.md",
+        "sha256": "ad70b78fd2a15e6e7fa05290fdbf72c4759845de0ff476df184de0f5a63e26f5"
+      },
+      {
+        "bytes": 17413,
+        "name": "02_hr_tmp_salary_change_order.md",
+        "sha256": "68c85d397140c5b4906cf6f94ac933e2b2e12d7d6ab3472639a65392f6228238"
+      },
+      {
+        "bytes": 18803,
+        "name": "02_hr_tmp_sick_leave_procedure.md",
+        "sha256": "4aa449cccca7334a76dc60a1fe4c1dcb480bfadbfffe34f2a967c7e34eeef4dc"
+      },
+      {
+        "bytes": 18017,
+        "name": "02_hr_tmp_timesheet.md",
+        "sha256": "ebdfeb2af56eafd1e05fc4395d38c8de04483df6a263a4875c759da333490a1b"
+      },
+      {
+        "bytes": 17080,
+        "name": "02_hr_tmp_transfer_order.md",
+        "sha256": "a5e3cf4189dd4d0217303b1824bebd73db10d892091db4392d18f9f66f87376b"
+      },
+      {
+        "bytes": 23420,
+        "name": "03_legal_contract_agency.md",
+        "sha256": "f53bb65cf835e450ee0dfc69db0a13f24122763bb3b46832f3014e8b8e009d35"
+      },
+      {
+        "bytes": 24188,
+        "name": "03_legal_contract_amendment_procedure.md",
+        "sha256": "560970c9e5797ae85836fdc2ee2cf278d678a7622f7df95a89771f04fd5d4671"
+      },
+      {
+        "bytes": 24590,
+        "name": "03_legal_contract_assignment.md",
+        "sha256": "f022e206597282d2b157dfa6dd8afd62987aa69726165833063133b8de31d5fa"
+      },
+      {
+        "bytes": 23689,
+        "name": "03_legal_contract_cargo_transport_general.md",
+        "sha256": "bd7d66330fcb4ee0089151a59ba9cd3674f409eaf622bb3d70a279a624b8a0bc"
+      },
+      {
+        "bytes": 24811,
+        "name": "03_legal_contract_cargo_transport_rail.md",
+        "sha256": "9c754de3995d019f9e6142b58dd87c023bfa876dbab920c444630fe472f585c0"
+      },
+      {
+        "bytes": 24869,
+        "name": "03_legal_contract_cargo_transport_road.md",
+        "sha256": "d6e7a52cc67a6be28ed04d516e80e498cbf5eb24534f3eebcdc66f1bb3a78794"
+      },
+      {
+        "bytes": 24023,
+        "name": "03_legal_contract_commission.md",
+        "sha256": "778ad1df5fcbc90842d52be630acb8d8b83c2404afec70536daf342d153a8641"
+      },
+      {
+        "bytes": 23903,
+        "name": "03_legal_contract_customs_broker.md",
+        "sha256": "9c06e3eb5b2c70d85515ceb05198c990a9aded96858e032a7a3d5136eef82f0b"
+      },
+      {
+        "bytes": 24044,
+        "name": "03_legal_contract_expedition_general.md",
+        "sha256": "18a5003cf2558cde162771c97496f8e028185f0d361cb44f839e5e797b260c8f"
+      },
+      {
+        "bytes": 24433,
+        "name": "03_legal_contract_expedition_international.md",
+        "sha256": "0a382ffd6924fd4548222c4e0f37a318488e638ab91937aba444ec234ac752b8"
+      },
+      {
+        "bytes": 24008,
+        "name": "03_legal_contract_factoring.md",
+        "sha256": "d2eaf7206e5b53792717e558ebab9387229dc8b8449e61a3c4b5cd4f0d51c71b"
+      },
+      {
+        "bytes": 23917,
+        "name": "03_legal_contract_framework.md",
+        "sha256": "ecd0d886c89ba929dc16001059fc41894bf922cd7691dcdb4070b5c018282fd4"
+      },
+      {
+        "bytes": 24005,
+        "name": "03_legal_contract_franchise.md",
+        "sha256": "35055961a61f19c2e1e563883ac5836907c082679910e755b0e38d90e3087ec5"
+      },
+      {
+        "bytes": 23658,
+        "name": "03_legal_contract_guarantee.md",
+        "sha256": "546c089868856fb8ea47f63138256fa8b4e5c5841d6c02a400253fedfe13b5b2"
+      },
+      {
+        "bytes": 23559,
+        "name": "03_legal_contract_insurance_cargo.md",
+        "sha256": "27f2d1ed10066a419a6224447d62e9e0d3c80f5f58728684e8d27e885ab80449"
+      },
+      {
+        "bytes": 24633,
+        "name": "03_legal_contract_insurance_civil_liability.md",
+        "sha256": "b7e02e2d72d690c72a55c315f14e50f0737b81f46f3c27b3daeab38192efdf72"
+      },
+      {
+        "bytes": 23726,
+        "name": "03_legal_contract_joint_activity.md",
+        "sha256": "b34a37e688e59d0ccffb2907185aeef9eda9c555c0389f2f6318076968b5fbc3"
+      },
+      {
+        "bytes": 24652,
+        "name": "03_legal_contract_leasing_vehicle.md",
+        "sha256": "807cdab7f0f13c791391eb41407306df2918ec4f2181d89279f97a49864fb5ea"
+      },
+      {
+        "bytes": 23365,
+        "name": "03_legal_contract_loan.md",
+        "sha256": "e11fd406954e00f9c5593e0b3f8f48238ea142ab797083efb6ef63a46c5ced0e"
+      },
+      {
+        "bytes": 23769,
+        "name": "03_legal_contract_ndc.md",
+        "sha256": "28656cbbaf5c11cc169e0faff890a7477534e6671cf452e712d0c79c5dfdd7d3"
+      },
+      {
+        "bytes": 23077,
+        "name": "03_legal_contract_penalty_clause.md",
+        "sha256": "2c1c43669cc9448fb9b114baf7fb67f162196c97e3fbfafe92e3680066da7b9f"
+      },
+      {
+        "bytes": 24450,
+        "name": "03_legal_contract_rent_office.md",
+        "sha256": "b6698d9b784a6e51d210575053b31172666bf75c25f46d9cf521063f5171b2a4"
+      },
+      {
+        "bytes": 24084,
+        "name": "03_legal_contract_rent_warehouse.md",
+        "sha256": "10928042968112e4ffb3f33d323609baeceddd7eba8495d0966a661b7314048b"
+      },
+      {
+        "bytes": 23322,
+        "name": "03_legal_contract_services_accounting.md",
+        "sha256": "20700dfd705392b06ea10c2a3c5545281b19faa5859732d199092197e5745006"
+      },
+      {
+        "bytes": 23926,
+        "name": "03_legal_contract_services_consulting.md",
+        "sha256": "35c591990ae1defc6497136cbb8a0a7a4a42365cb0a81972190352d9a778e29d"
+      },
+      {
+        "bytes": 23817,
+        "name": "03_legal_contract_services_general.md",
+        "sha256": "57936fb6d47808e43b41dc09ea695ec92876230cb5e60566b8fdf814823fdd0d"
+      },
+      {
+        "bytes": 23100,
+        "name": "03_legal_contract_services_it.md",
+        "sha256": "e5ca5dbf231b67db9e2d91b3124989d715656ab973df3341e5dee42ab26519e3"
+      },
+      {
+        "bytes": 23263,
+        "name": "03_legal_contract_services_marketing.md",
+        "sha256": "201655f5113b8d5bdf31c5b78ac4e86af063437e55e7ecb559c275394fe652ce"
+      },
+      {
+        "bytes": 23640,
+        "name": "03_legal_contract_settlement.md",
+        "sha256": "1362ac5a25c592bbdccfe86d666da4330148b04b8697d4b576acc8de11441370"
+      },
+      {
+        "bytes": 23704,
+        "name": "03_legal_contract_software_license.md",
+        "sha256": "8bcf815dc4438e4fca82a0cc3cafff9dd519cf940b0f0df9ad5fc875ccf1a8e2"
+      },
+      {
+        "bytes": 23284,
+        "name": "03_legal_contract_subcontract.md",
+        "sha256": "ebbf9f3a7b152344709df04b36edb292f5380b684740ea8fc2c8961da64d13ba"
+      },
+      {
+        "bytes": 24574,
+        "name": "03_legal_contract_supplement_general.md",
+        "sha256": "0980960e3fa994ab849f5fc99ab33878296c6f0f408914b64642e61d82766d6e"
+      },
+      {
+        "bytes": 23619,
+        "name": "03_legal_contract_supply_auto_parts.md",
+        "sha256": "0225370b2f448b2675239f8b0225f4646d2c5559681acf4293a9436ffaf4cf22"
+      },
+      {
+        "bytes": 23926,
+        "name": "03_legal_contract_supply_equipment.md",
+        "sha256": "0b9943d53f5f3963762278bccd16942ba38f4e9c945a6a0292c73a6c318ac382"
+      },
+      {
+        "bytes": 23638,
+        "name": "03_legal_contract_supply_fuel.md",
+        "sha256": "f32cf18a2c9cd4294d75dd6195e5a4963cb9b7e1758e29f536241fdad26ec304"
+      },
+      {
+        "bytes": 24312,
+        "name": "03_legal_contract_supply_goods.md",
+        "sha256": "f169f5deebf72048fd04e7587f05816584f7fcd0a2f2e70fd9c93ab88c44f7bd"
+      },
+      {
+        "bytes": 23716,
+        "name": "03_legal_contract_tender_rules.md",
+        "sha256": "2221fd8193fe516ac45468ca91962b3d3b86b25374f86bd8950d25820669a6c8"
+      },
+      {
+        "bytes": 23678,
+        "name": "03_legal_contract_termination_checklist.md",
+        "sha256": "e80801666e84183e71e92705e87e78ade76d1f47ce2b23085ed56270d8a8f324"
+      },
+      {
+        "bytes": 23432,
+        "name": "03_legal_contract_warehouse_services.md",
+        "sha256": "79ec748702d462a322052eadbbff05ea9809cc571a95ea2d8ca443ed6c664173"
+      },
+      {
+        "bytes": 24178,
+        "name": "03_legal_contract_warehouse_storage.md",
+        "sha256": "c8736ba3cad7f9523b4e60f1a9703fe2ca7ada78518d7b87861856c4e98f4f48"
+      },
+      {
+        "bytes": 21123,
+        "name": "04_legal_claim_cargo_damage.md",
+        "sha256": "49a6cbad35a8196851fb2ca74910538f1122e5b5338f7b4658830fc3d0e47472"
+      },
+      {
+        "bytes": 21036,
+        "name": "04_legal_claim_cargo_loss.md",
+        "sha256": "85b2c3429296a207efdb2471bed79ad43bc1f2af1e56537e8ce0a1c7d5ba7e94"
+      },
+      {
+        "bytes": 20885,
+        "name": "04_legal_claim_customs_delay.md",
+        "sha256": "e29abf2a51ad707e7de70407621e59d8c51337d55a0f29b9081e3d951f3d7233"
+      },
+      {
+        "bytes": 20825,
+        "name": "04_legal_claim_defective_goods.md",
+        "sha256": "4ab7db270f4fd30a462ca0e4f40ac30c8af839c401e42fca75a8a058d03bde9c"
+      },
+      {
+        "bytes": 21011,
+        "name": "04_legal_claim_expedition_breach.md",
+        "sha256": "47ee904103a4e1d4763a3fd356a4374e0182b894e144cac53c62fb13c0bd49fd"
+      },
+      {
+        "bytes": 21430,
+        "name": "04_legal_claim_ip_infringement.md",
+        "sha256": "6c0e9dc1389a4c567f94d9f6534c05bd82cc35bcbbd7e000a64ba0698356e408"
+      },
+      {
+        "bytes": 20830,
+        "name": "04_legal_claim_late_delivery.md",
+        "sha256": "5df37d58fe153984dd6aa0d39b1b75617cf40e884453ddabc6c570f82420f7c2"
+      },
+      {
+        "bytes": 21599,
+        "name": "04_legal_claim_lease_breach.md",
+        "sha256": "c4e4ca344b7d32c501208096e66a643f8c017ca4b874ed24ff1c694c17b3aa87"
+      },
+      {
+        "bytes": 20570,
+        "name": "04_legal_claim_non_payment.md",
+        "sha256": "95a7dc72547b6054097d5ef0fb49afd5a8e2b5a98906dc45c41d0b2872945e90"
+      },
+      {
+        "bytes": 20996,
+        "name": "04_legal_claim_service_fail.md",
+        "sha256": "8b58b03d1b304355e0982be5fbdfb3a68583baa0ae7d3a16d05f5109a95e9585"
+      },
+      {
+        "bytes": 20627,
+        "name": "04_legal_letter_arbitration_notice.md",
+        "sha256": "36e40ddbcd9e0b84589d76fddb2e264dbd10867fb4f47ef62f86fe09e47e3029"
+      },
+      {
+        "bytes": 20759,
+        "name": "04_legal_letter_debt_collection.md",
+        "sha256": "5481381375e6b11672f703dd4f238edd248da3e6828a47e629eee4c1ab2f5d64"
+      },
+      {
+        "bytes": 20762,
+        "name": "04_legal_letter_demand.md",
+        "sha256": "3486eb3f82f2f9d18a2b190b81e3e45a877823606afbdeed311891b2e207ccbb"
+      },
+      {
+        "bytes": 21233,
+        "name": "04_legal_letter_notary_demand.md",
+        "sha256": "6b627b89080c941880daa75b18f14b7c4826c89b217d911630c5f9fd93dc8a2e"
+      },
+      {
+        "bytes": 20819,
+        "name": "04_legal_letter_settlement_proposal.md",
+        "sha256": "0704108ac8183afa60f1335bfe02c0705e90c8222f8bb664f7eaa91d49f3db78"
+      },
+      {
+        "bytes": 20531,
+        "name": "04_legal_memo_contract_breach.md",
+        "sha256": "1f89570e70800bdf9e006c7c7d8a3d3e1267c8ff66b82f2999db67a90fb53f2f"
+      },
+      {
+        "bytes": 20645,
+        "name": "04_legal_memo_dispute_risk.md",
+        "sha256": "4050f0328088823b9e98cac7c044afcba4c20b0dcbf3b066a4e432b88d526801"
+      },
+      {
+        "bytes": 21008,
+        "name": "04_legal_power_of_attorney_bank.md",
+        "sha256": "cf7a44139ec1a3a6803047cb450f306b446902d1b927373d8c21e21e397c30a6"
+      },
+      {
+        "bytes": 20725,
+        "name": "04_legal_power_of_attorney_contracts.md",
+        "sha256": "0fcb84779604f44e93e7b1d2c3227a4ad9aad32fb7e45e3567085b7de40cbab5"
+      },
+      {
+        "bytes": 20558,
+        "name": "04_legal_power_of_attorney_court.md",
+        "sha256": "53e35d64520490c17c002b87a3f37186f62d19fac1eafd793d839bb9c07ffbda"
+      },
+      {
+        "bytes": 20599,
+        "name": "04_legal_reply_cargo_damage.md",
+        "sha256": "30bd217a1504b1928ce3b602fc58d7defbb7be16f1f780efe64427421d0738bf"
+      },
+      {
+        "bytes": 20610,
+        "name": "04_legal_reply_defective_goods.md",
+        "sha256": "5ce02f3516085bebfb0d2213dd5ff8a17440e893071a0f96a35ec17c95f11a4c"
+      },
+      {
+        "bytes": 20692,
+        "name": "04_legal_reply_late_delivery.md",
+        "sha256": "460d83e1eb0529d1c9fc65870c88ea77cf3fe3b6d2065b9e3d762757a9721b8f"
+      },
+      {
+        "bytes": 20512,
+        "name": "04_legal_reply_non_payment.md",
+        "sha256": "abca1c6b4dab645675870b462a202ef8d1ea10ec5ce9a655d627c962ee5d6063"
+      },
+      {
+        "bytes": 20764,
+        "name": "04_legal_reply_service_fail.md",
+        "sha256": "4e9ade9769d114da7b42d2b00fbf866f02699422bcf05f1382e9aaf723d1380a"
+      },
+      {
+        "bytes": 25635,
+        "name": "05_tlog_checklist_cargo_acceptance.md",
+        "sha256": "3777adeb625b63bfa73e9a43ea8999a67df8783e6bd086af2acfe9d0984f520e"
+      },
+      {
+        "bytes": 25154,
+        "name": "05_tlog_checklist_claims_road.md",
+        "sha256": "25d2e93eb2144f08ade98664df285558dc15c6bec9a1667b981b8f576ab318af"
+      },
+      {
+        "bytes": 25036,
+        "name": "05_tlog_checklist_driver_pre_trip.md",
+        "sha256": "2d22f275554eef9788d15c8087cd2f0affa73c22d65817840de9b3df38f53754"
+      },
+      {
+        "bytes": 26175,
+        "name": "05_tlog_checklist_vehicle_inspection.md",
+        "sha256": "71e38c3bda99d7b075ad35cb0f13268a1e002d1dd7362758c207008bbca2bd97"
+      },
+      {
+        "bytes": 25224,
+        "name": "05_tlog_contract_cargo_insurance.md",
+        "sha256": "5e6e0b3846cb8086d456c57e4429c42a19cd9973601bebfd649def76f64b5db2"
+      },
+      {
+        "bytes": 26808,
+        "name": "05_tlog_contract_carrier_liability.md",
+        "sha256": "6f4a64bf5420edce8d411fe22075c804e7cbdbce67715e45b06fb457064388a3"
+      },
+      {
+        "bytes": 25850,
+        "name": "05_tlog_contract_customs_representative.md",
+        "sha256": "d2c6536dd25aee1daf38441770895bd402e9bc433550ec71636417a9812314ca"
+      },
+      {
+        "bytes": 26476,
+        "name": "05_tlog_contract_driver_services.md",
+        "sha256": "fa11e93acf586962b4c1b88de8c28f42d36b6fe4e6a34181eb6df6a889a51174"
+      },
+      {
+        "bytes": 25858,
+        "name": "05_tlog_contract_expedition_domestic.md",
+        "sha256": "50a0117a2ad5a7e5f392fac8b21262abe5e255bceaa313d08a909fd4d92fd673"
+      },
+      {
+        "bytes": 26006,
+        "name": "05_tlog_contract_expedition_multimodal.md",
+        "sha256": "c02575f6926199abf1c4eb0e88172dcbdbb9be93be6dee3091903d04167c78df"
+      },
+      {
+        "bytes": 24985,
+        "name": "05_tlog_contract_forwarder.md",
+        "sha256": "c607cc029089cc1d056861836685aeab16ecb5bc839a56ccde94633828c9ebd4"
+      },
+      {
+        "bytes": 25353,
+        "name": "05_tlog_contract_fuel_supply.md",
+        "sha256": "dc5ef008a733963f3726a23dcae138821517b46d06a5000aefdd41d3ce591cee"
+      },
+      {
+        "bytes": 25330,
+        "name": "05_tlog_contract_leasing_truck.md",
+        "sha256": "d7c84d58aaeda754a6a4e2704b798fd66f28c3ae88f374e43ce74f4449311d59"
+      },
+      {
+        "bytes": 25651,
+        "name": "05_tlog_contract_tire_service.md",
+        "sha256": "5b653fc2374287dc30f59d554a9c90efde89b1e23acfc00d771b33428b0d65b3"
+      },
+      {
+        "bytes": 25221,
+        "name": "05_tlog_contract_transport_air.md",
+        "sha256": "693cfe1b3e0df3ccffd7c051708dca070698a479b9ae28984b563a36ec3345eb"
+      },
+      {
+        "bytes": 26334,
+        "name": "05_tlog_contract_transport_rail.md",
+        "sha256": "a076978a5103a936c88694a491a4107f6716c86b9743497a2a5dc2c6672054dd"
+      },
+      {
+        "bytes": 26403,
+        "name": "05_tlog_contract_transport_road.md",
+        "sha256": "cc977efac4d1a73c25b09332d39ab40f1dd2a5f3174e4ae9d668982eba4026f0"
+      },
+      {
+        "bytes": 25989,
+        "name": "05_tlog_contract_transport_sea.md",
+        "sha256": "28e9043c15e7936f219fdb5f3cafa4da0937037ef2b313b6f9eca77a95439ab8"
+      },
+      {
+        "bytes": 25434,
+        "name": "05_tlog_contract_warehouse_3pl.md",
+        "sha256": "7d50eb3548ce3440015c1679cbe37ca6460376c9e9e3cc40c5a8735c3a124027"
+      },
+      {
+        "bytes": 25115,
+        "name": "05_tlog_instruction_dispatcher.md",
+        "sha256": "43c0a959e8565dba0559274c7a3332f57a17e6b0f8d552c6bcd92b2b6652ab32"
+      },
+      {
+        "bytes": 26460,
+        "name": "05_tlog_instruction_driver_duty.md",
+        "sha256": "b946f2c0e98e008799230e6d7e95f279d6f51495218868180014134d2ca84c2a"
+      },
+      {
+        "bytes": 25545,
+        "name": "05_tlog_instruction_logistics_manager.md",
+        "sha256": "f7be9b5e4fee5ceff56b43e35d0499b19c52cab14db83c57860d587284a1c561"
+      },
+      {
+        "bytes": 25574,
+        "name": "05_tlog_policy_driver_hours.md",
+        "sha256": "659e24f7fb72d8d1aca495a1d2d18aaa3e1148bede284500467fd2c10edfea22"
+      },
+      {
+        "bytes": 25163,
+        "name": "05_tlog_policy_eco_norms.md",
+        "sha256": "854be4827d703824319a5e55424aa90373081714435d7d655eb2f6a0c431918f"
+      },
+      {
+        "bytes": 25791,
+        "name": "05_tlog_policy_transport_safety.md",
+        "sha256": "aabd86050acc2dcc28b9f1f24b5418e54daa8ba38c7e6e4f0b956ea915e188b4"
+      },
+      {
+        "bytes": 25857,
+        "name": "05_tlog_regulation_cmr.md",
+        "sha256": "2484f5ccd8b09575616b11766b457575d1a79e113cc276e1d5ff55601382ad4c"
+      },
+      {
+        "bytes": 25743,
+        "name": "05_tlog_regulation_cross_border.md",
+        "sha256": "d2e67b49fcaf370e34119965cc807f453fa595a1e3b76f8a8d1940c60f9273f2"
+      },
+      {
+        "bytes": 25471,
+        "name": "05_tlog_regulation_customs_clearance.md",
+        "sha256": "8f589707b083f0e7da663d7cf91c9c1d3dcb910c7a32e3aba8a31182050e885d"
+      },
+      {
+        "bytes": 25437,
+        "name": "05_tlog_regulation_dangerous_goods.md",
+        "sha256": "d5fd5acd3c72e70cdc57f3ce57a05fb2113c312c8bf3d6c69b17a4788f126bc2"
+      },
+      {
+        "bytes": 25565,
+        "name": "05_tlog_regulation_dispatch.md",
+        "sha256": "3cc6e158d8489b222dc44ccbe6f33134169a93780d0fe372920a168919355b06"
+      },
+      {
+        "bytes": 25164,
+        "name": "05_tlog_regulation_gps_tracking.md",
+        "sha256": "757b0d1a6e0531e4514356484030dea849b6151b9f02f594921e8425d6c0dda8"
+      },
+      {
+        "bytes": 25502,
+        "name": "05_tlog_regulation_oversized.md",
+        "sha256": "c13967646878b12d9610df34abe3403167ba8379d39520e4b049f8e8bad75ae9"
+      },
+      {
+        "bytes": 25749,
+        "name": "05_tlog_regulation_perishable.md",
+        "sha256": "0609cc308a6f41cdc691d16a21e9ea47dd53e83316ff36db3ef15905402c3ded"
+      },
+      {
+        "bytes": 30075,
+        "name": "05_tlog_regulation_waybill.md",
+        "sha256": "05e3cc0e9746a4caf33e5bf6b13932da53f932c724ce62d893052e7a17ba4fa7"
+      },
+      {
+        "bytes": 25734,
+        "name": "05_tlog_regulation_weight_control.md",
+        "sha256": "b1aa52db86725f8239d6aab9e5aad0911339d1079ae2f7e438ead763ba46e950"
+      },
+      {
+        "bytes": 24785,
+        "name": "06_comp_checklist_contract_compliance.md",
+        "sha256": "77be64b4e77a4263f051a6a6237bec6116ee902d832c2954c96f3babc50bca18"
+      },
+      {
+        "bytes": 22883,
+        "name": "06_comp_checklist_pdp_audit.md",
+        "sha256": "5bd61a67a8980b2a278ea890088798f2ad1a6afe7d9c81a95a9222a31bf4ff47"
+      },
+      {
+        "bytes": 24023,
+        "name": "06_comp_policy_access_control.md",
+        "sha256": "7a82e4344be316c58e20feae460c5728966d4368a27b9fc7df76d8b567829ad8"
+      },
+      {
+        "bytes": 24713,
+        "name": "06_comp_policy_anticorruption_local.md",
+        "sha256": "c768cc930bc1c2bfcb886a01891c393a84ddba413812a405cb8f8d5a214b9d7d"
+      },
+      {
+        "bytes": 25076,
+        "name": "06_comp_policy_breach_notification.md",
+        "sha256": "48864b69773690e66acb035f07a3f2c49b3d00f497af53a004226a7738940ec4"
+      },
+      {
+        "bytes": 24681,
+        "name": "06_comp_policy_commercial_secret.md",
+        "sha256": "6786fc002b30739426db0cb76157ac1592d201ba0fe788260fe96c2d40d49c2e"
+      },
+      {
+        "bytes": 24684,
+        "name": "06_comp_policy_consent_form.md",
+        "sha256": "13f7b28e5b28c1255c64ba21e6043571932d2d91ffd6082f9fd3f9444e7a6941"
+      },
+      {
+        "bytes": 23880,
+        "name": "06_comp_policy_cookies.md",
+        "sha256": "5cd9b3cd7879fb409dab494ec747ea838cfb4d24d81b68cc600db543f0018a4d"
+      },
+      {
+        "bytes": 24831,
+        "name": "06_comp_policy_cross_border_transfer.md",
+        "sha256": "93f552eab8fd8393a446c7a2b4af7ab14eeb3dc395e8a91db89a4a13fce10f7a"
+      },
+      {
+        "bytes": 24069,
+        "name": "06_comp_policy_data_destruction.md",
+        "sha256": "95f9414662ffb67f29c6770cca60f9a1e49b628de9a2ab57b7f9b1a1d014fd33"
+      },
+      {
+        "bytes": 24040,
+        "name": "06_comp_policy_data_retention.md",
+        "sha256": "674cb6711832d5fa0ded948a17190689abb08ec3abd4e7e259785a2e46317815"
+      },
+      {
+        "bytes": 24560,
+        "name": "06_comp_policy_incident_response.md",
+        "sha256": "9638faaff9f26fb1570b413b61c316ea1186adc6c2562baaf0988f9a1c199e4f"
+      },
+      {
+        "bytes": 24462,
+        "name": "06_comp_policy_nda_contractor.md",
+        "sha256": "356e0817848e74e9aad62e31fdd8ac47967886d7327771dde27888f3be0980b3"
+      },
+      {
+        "bytes": 24058,
+        "name": "06_comp_policy_nda_employee.md",
+        "sha256": "60b343a26d3b42a5c2f2ecf0be9b4d9aa933f94e46e3d499fc32429868795cb7"
+      },
+      {
+        "bytes": 25764,
+        "name": "06_comp_policy_pdp.md",
+        "sha256": "8de9064c2f474d253990cb04f1436a86acff4083a1e44512e1464181af77a3d6"
+      },
+      {
+        "bytes": 24726,
+        "name": "06_comp_policy_subject_rights.md",
+        "sha256": "b09902736511fba27625409d1ce63ddf95bf98af1d58090c1d31f5481667a161"
+      },
+      {
+        "bytes": 26020,
+        "name": "06_comp_policy_trade_compliance.md",
+        "sha256": "9d6a014244ef0cc7f9ae25c2711f39560e67d5afce1eefc16ceadcd3ebdd10e1"
+      },
+      {
+        "bytes": 24304,
+        "name": "06_comp_policy_video_surveillance.md",
+        "sha256": "151c0360d20bed1e6160dcf850222439760a780ed5ecff80b4a0184deb2abe09"
+      },
+      {
+        "bytes": 24371,
+        "name": "06_comp_policy_whistleblower.md",
+        "sha256": "62635eb26a79124600ee2afe5c2d29e6ff7b93833b8a513090d8f92ebf05e082"
+      },
+      {
+        "bytes": 24950,
+        "name": "06_comp_regulation_contract_approval.md",
+        "sha256": "fbbfc7e8a39af30833a69b8a6a66ad1e5469f4c48be650fb0a23a6ec4097e260"
+      },
+      {
+        "bytes": 20508,
+        "name": "07_faq_claims_procedure.md",
+        "sha256": "f7ab115d3fcd3a840199c37ce2f37334b48348ba9a10c28f569e09fed757e3c1"
+      },
+      {
+        "bytes": 16827,
+        "name": "07_faq_commercial_secret.md",
+        "sha256": "cdfd49c4991be7ea4e351b5a56ed213d2cb8a188165d65efd8ea6be720e1b468"
+      },
+      {
+        "bytes": 16895,
+        "name": "07_faq_contract_templates.md",
+        "sha256": "8584c0186e17f5840defbc63a4b494f8b6485c5909fb7598e5b9a963df81be04"
+      },
+      {
+        "bytes": 16828,
+        "name": "07_faq_dismissal.md",
+        "sha256": "47cb3822686f5166c3c2368963c19f3ed01aec4b106e653488d6b68fadcbb25e"
+      },
+      {
+        "bytes": 16677,
+        "name": "07_faq_employee_material_liability.md",
+        "sha256": "afdd7888d974893db388e7610b071ef15700065532fda2c2374d3e5190a07b4f"
+      },
+      {
+        "bytes": 28414,
+        "name": "07_faq_expedition.md",
+        "sha256": "36eed3518a0458ed1e3f16c13cb37a8a2d5dbd2ad7fa81a7c36d707414a9653f"
+      },
+      {
+        "bytes": 17004,
+        "name": "07_faq_leave.md",
+        "sha256": "0a95bfe80db99aeeeb561a752417e0a405ab564dc8f1e2328df8be80025a5d13"
+      },
+      {
+        "bytes": 16686,
+        "name": "07_faq_pdp.md",
+        "sha256": "6aa2c6e06c476989b7c58be3e2ebab64931b7852614ab263cfe16201a9eaefe9"
+      },
+      {
+        "bytes": 16938,
+        "name": "07_faq_probation.md",
+        "sha256": "37a11d76696096b2b8d651ca7977002611539742630d3a7c05f2b6a4c83c1f74"
+      },
+      {
+        "bytes": 20105,
+        "name": "07_faq_transport_road.md",
+        "sha256": "5e80532a7897c1a3cb40c8f51918e753a13b238c4e84b6227a6e92618156751c"
+      },
+      {
+        "bytes": 17146,
+        "name": "external_tk_rf_chapter_11.md",
+        "sha256": "564ea0f403acc861d3e3f5c886fcf530c540a7235a2ace91f8319e7d6eb30771"
+      }
+    ],
+    "name": "aircargo",
+    "root": "data/uploads/aircargo",
+    "schema_version": 1
+  },
+  "source_manifest_path": "/Users/julia/RAG_new_pilot_19f4e8041089/evaluation/aircargo_corpus.manifest.json",
+  "source_manifest_sha256": "2b2e9232e69b4f52a55237f3ee620f34c91d1900383877c2310ba616c6590444",
+  "source_directory": "/Users/julia/RAG_Support_Assistant/data/uploads/aircargo",
+  "chunker_version": "gr1b-4436d61-graph-chunks:2a9da515a4c69b46453a59ed6d0bb772b0aad6fed23c87ee465851b43dbdef12",
+  "llm": {
+    "model": "qwen2.5:7b",
+    "digest": "845dbda0ea48ed749caafd9e6037047aa19acfcfd82e704d7ca97d631a0b697e",
+    "provider": "OllamaProvider"
+  },
+  "reranker": {
+    "model": "BAAI/bge-reranker-v2-m3",
+    "revision": "953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e"
+  },
+  "ledger_entry": {
+    "task": "1.3c variance pilot",
+    "config_sha256": "843772da5793c8762ec1e0b14933740717059bd228d5787825dbab9fd8aa28e0",
+    "datasets": {
+      "pilot-gold": {
+        "path": "/Users/julia/RAG_new_pilot_19f4e8041089/evaluation/devset_pilot_gold_questions.jsonl",
+        "sha256": "c5017d2f81f47b4751183a090d7ff505afded013335bb7f01bf3045c5edffccf",
+        "count": 24
+      }
+    },
+    "status": "registered",
+    "file": "ledger-entry.json"
+  }
+}
