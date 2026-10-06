@@ -1,0 +1,109 @@
+{
+  "rubric_version": "label-verification/v3",
+  "prompt_sha256": "3f7c114428028f6518aca3f21a03f5352d0497d99d0356f2c804b9389df756ad",
+  "round": 2,
+  "plan_sha256": "1672eec0054ca0480236662e0fa81e7c8bb5f1670bde347756c6dffac8d6131f",
+  "stores_sha256": {
+    "claude-opus-5-5": "f5b5e8c05dc8719fc37c39c75d57da0d547af5b9162eacd19aeefd934754dd4f"
+  },
+  "summary": {
+    "round": 2,
+    "confirmed": 2,
+    "rejected": 0,
+    "none": 0,
+    "declared_drops": 0
+  },
+  "cases": [
+    {
+      "case_id": "T64-15",
+      "outcome": "confirmed",
+      "missing": [],
+      "authority_unverified": false,
+      "rejecting_checks": [],
+      "disagreements": [],
+      "severity_differences": [],
+      "verdicts": {
+        "claude-opus-5-5": {
+          "2": {
+            "verdict": "confirm",
+            "reason": "F1 and F3 are verbatim in S1 and F2 is verbatim in S2, and the reference answer only restates these three statements plus the scope caveat the question itself asks for.",
+            "element": null
+          },
+          "3": {
+            "verdict": "confirm",
+            "reason": "S1 gives both destinations of a specific dispute (the profile document of the corpus and manual review) and S2 names the one checklist item labelled as the limitation, so F1-F3 answer both parts of the question without deciding a dispute.",
+            "element": null
+          },
+          "4": {
+            "verdict": "confirm",
+            "reason": "The answer rests on two documents (D2 and D1) with no count, no premise needs correcting, a general answer is the right action, and the subject is claims handling rather than a safety matter.",
+            "element": null
+          },
+          "5a": {
+            "verdict": "confirm",
+            "reason": "Both cards give version 1.0 with effective date 2026-05-15, earlier than as_of 2026-10-01, and nothing supplied says either document is replaced or expired."
+          },
+          "5b": {
+            "verdict": "confirm",
+            "reason": "Both cards show source_type internal_controlled with the Head of Legal as owner, and the supplied text shows D2 holds the FAQ's own answer-routing rules and D1 the loss-claim checklist the case relies on."
+          },
+          "5c": {
+            "level": "high",
+            "reason": "The most harmful wrong answer would let a dispute be settled from the FAQ and loss be treated as proven without the terminal shortage act and reconciliation, risking an unsupported or lost cargo claim, which is a material financial loss but not a safety, security, dangerous-goods or personal-data breach."
+          },
+          "5d": {
+            "verdict": "confirm",
+            "reason": "F2 is a prohibition whose misstatement would lead to treating loss as proven without the required evidence, while F1 and F3 are routing instructions whose omission leaves the answer incomplete but does not itself lead to an unlawful or materially costly action.",
+            "element": null
+          }
+        }
+      }
+    },
+    {
+      "case_id": "T64-19",
+      "outcome": "confirmed",
+      "missing": [],
+      "authority_unverified": false,
+      "rejecting_checks": [],
+      "disagreements": [],
+      "severity_differences": [],
+      "verdicts": {
+        "claude-opus-5-5": {
+          "2": {
+            "verdict": "confirm",
+            "reason": "F1 and F2 are stated verbatim in S1 and F3 and F4 in the first sentence of S2, and the reference answer restates only these four statements.",
+            "element": null
+          },
+          "3": {
+            "verdict": "confirm",
+            "reason": "The question asks for the two definitions and for who opens the card and on what grounds; S1 and S2 give all of this and the reference answer covers each part with nothing left out.",
+            "element": null
+          },
+          "4": {
+            "verdict": "confirm",
+            "reason": "The answer rests on two documents (D1 for the definitions, D2 for the card opening) with no count computed, no trap and no safety aspect, so multi-doc, null trap, answer and safety_critical false all agree.",
+            "element": null
+          },
+          "5a": {
+            "verdict": "confirm",
+            "reason": "Both D1 and D2 have an effective date of 2026-05-15, before the as_of date of 2026-10-01, and nothing supplied says either is replaced or expired."
+          },
+          "5b": {
+            "verdict": "confirm",
+            "reason": "Both cards show internal_controlled documents, version 1.0, owned by the HR director; D1 is the leave regulation that defines the terms and D2's procedure section states the card-opening rule."
+          },
+          "5c": {
+            "level": "high",
+            "reason": "A wrong leave entitlement or working-year definition would lead to leave being granted contrary to the labour-law-based rule, a wrongly decided personnel case, with no safety, security or personal-data harm involved."
+          },
+          "5d": {
+            "verdict": "confirm",
+            "reason": "F1 is the leave entitlement whose misstatement would lead to unlawful leave decisions, while F2 is a supporting definition and F3 and F4 are procedural routing whose errors the process corrects.",
+            "element": null
+          }
+        }
+      }
+    }
+  ],
+  "declared_drops": []
+}

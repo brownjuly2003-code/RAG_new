@@ -1,0 +1,976 @@
+{
+  "plan_version": 1,
+  "rubric_version": "label-verification/v3",
+  "prompt_sha256": "3f7c114428028f6518aca3f21a03f5352d0497d99d0356f2c804b9389df756ad",
+  "round": 1,
+  "draft_author": {
+    "model": "gpt-6.1-sol",
+    "vendor": "OpenAI"
+  },
+  "verifiers": {
+    "claude-opus-5-5": {
+      "model": "claude-opus-5-5",
+      "vendor": "Anthropic",
+      "route": "Claude Code CLI in safe mode, first-party provider",
+      "settings": {
+        "model": "claude-opus-5-5",
+        "effort": "max",
+        "tools": "none",
+        "session": "safe mode: no instruction file, memory, hook, skill, plugin or MCP server; no tools; an empty working directory; nothing stored; one turn",
+        "system_prompt_sha256": "4178fef002ad32d05e155ec7ee266177499d266d62371c5b68eba9ca9541a413"
+      }
+    }
+  },
+  "inputs": {
+    "drafts_sha256": "05ebf00743e2ae3b6a8117f735a3d9a34b451f8bf066a4dd1dfcaadf8e708df4",
+    "families_sha256": "54bdb736180e00325bff20f49e2b9d985dd62278fe9f9cdb6161a0da719e3584",
+    "corpus_sha256": "c8562a64f88f72172f29e30865091be79f08d00ce65fbf675f34de64dcebe343",
+    "scan_sha256": "8faf58d4ef3091875b0b263aa05e99cab30b8c0c7948ab06a0fca33436d8466b",
+    "archive_sha256": "2a9da515a4c69b46453a59ed6d0bb772b0aad6fed23c87ee465851b43dbdef12",
+    "previous_plan_sha256": null,
+    "repairs_sha256": null,
+    "drops_sha256": null
+  },
+  "requests": [
+    {
+      "case_id": "T64-01",
+      "round": 1,
+      "request_sha256": "19e271427c1956986d0c00f65ad265605bd6d6a1c91a747134cb97be50b6dd8d",
+      "pseudonyms": {
+        "D1": "01_hr_pol_relocation.md"
+      },
+      "characters": 9616,
+      "corpus_texts": 2,
+      "corpus_text_counts": {
+        "spans": 1,
+        "cards": 1,
+        "sections": 0,
+        "scan": 0
+      },
+      "case_sha256": "ee75df9a8caad18a51e0899f0170994e7e44b1913ce26753b332a054f47a48ef",
+      "registered_severity": "moderate",
+      "primary_class": "single-doc",
+      "safety_critical": false,
+      "documents": [
+        "01_hr_pol_relocation.md"
+      ],
+      "families": [
+        "family-8fb33acb875d"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "T64-02",
+      "round": 1,
+      "request_sha256": "a8806d302374b6152c5b6c4ec9d0dc9891e6e9ae3a43d478843fa21c8e5523ea",
+      "pseudonyms": {
+        "D1": "02_hr_tmp_job_description_lawyer.md"
+      },
+      "characters": 9523,
+      "corpus_texts": 2,
+      "corpus_text_counts": {
+        "spans": 1,
+        "cards": 1,
+        "sections": 0,
+        "scan": 0
+      },
+      "case_sha256": "2628b4f815cc92b032a3882878e9b1f536f6ed75e9b9c9f507c04f5c09e73fdb",
+      "registered_severity": "moderate",
+      "primary_class": "single-doc",
+      "safety_critical": false,
+      "documents": [
+        "02_hr_tmp_job_description_lawyer.md"
+      ],
+      "families": [
+        "family-d4fc5aee069f"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "T64-03",
+      "round": 1,
+      "request_sha256": "0ed2b5ac970ec80d1fd88ebfb3b44868a629b9db880d944e8aa21c136681b8a6",
+      "pseudonyms": {
+        "D1": "01_hr_pol_talent_pool.md"
+      },
+      "characters": 9916,
+      "corpus_texts": 2,
+      "corpus_text_counts": {
+        "spans": 1,
+        "cards": 1,
+        "sections": 0,
+        "scan": 0
+      },
+      "case_sha256": "de5545ba13664577327ffbf7c3a87f074f13d11e9ab6ba57b74a900f37bc4bd5",
+      "registered_severity": "moderate",
+      "primary_class": "single-doc",
+      "safety_critical": false,
+      "documents": [
+        "01_hr_pol_talent_pool.md"
+      ],
+      "families": [
+        "family-a8c6914bae42"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "T64-04",
+      "round": 1,
+      "request_sha256": "8192aaa38de2f740adaf3db1cc9f607b8da62fd1d0a62ecae3a3f703a49cecc6",
+      "pseudonyms": {
+        "D1": "06_comp_policy_nda_employee.md",
+        "D2": "03_legal_contract_ndc.md",
+        "D3": "04_legal_letter_settlement_proposal.md",
+        "D4": "05_tlog_contract_cargo_insurance.md",
+        "D5": "06_comp_policy_commercial_secret.md",
+        "D6": "06_comp_policy_nda_contractor.md",
+        "D7": "06_comp_policy_whistleblower.md",
+        "D8": "06_comp_regulation_contract_approval.md"
+      },
+      "characters": 32959,
+      "corpus_texts": 36,
+      "corpus_text_counts": {
+        "spans": 1,
+        "cards": 1,
+        "sections": 1,
+        "scan": 33
+      },
+      "case_sha256": "e6961e6d5929ef3196e8cc6fed30fc4c62857a56c2967a4855dc47b0355d3a1d",
+      "registered_severity": "critical",
+      "primary_class": "single-doc",
+      "safety_critical": false,
+      "documents": [
+        "06_comp_policy_nda_employee.md"
+      ],
+      "families": [
+        "family-c3346b4cbd17"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "T64-05",
+      "round": 1,
+      "request_sha256": "dad761673cca5d9ea8e46cf98c63db0cc968f59604442335746fd1c35c4522a6",
+      "pseudonyms": {
+        "D1": "03_legal_contract_insurance_civil_liability.md"
+      },
+      "characters": 9746,
+      "corpus_texts": 2,
+      "corpus_text_counts": {
+        "spans": 1,
+        "cards": 1,
+        "sections": 0,
+        "scan": 0
+      },
+      "case_sha256": "b099a18c0441007e9ab13cbb87ad6fd35db58669e0726fefae249cbda2cbd887",
+      "registered_severity": "high",
+      "primary_class": "single-doc",
+      "safety_critical": false,
+      "documents": [
+        "03_legal_contract_insurance_civil_liability.md"
+      ],
+      "families": [
+        "family-1335dc50d706"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "T64-06",
+      "round": 1,
+      "request_sha256": "00018f465245708bf5a18ba887d513c10d4671ce535075d347f7f240ffc35639",
+      "pseudonyms": {
+        "D1": "01_hr_pol_injury.md",
+        "D2": "01_hr_pol_childcare.md",
+        "D3": "01_hr_pol_compensation.md",
+        "D4": "01_hr_pol_dress_code.md",
+        "D5": "01_hr_pol_internal_comm.md",
+        "D6": "01_hr_pol_leave.md",
+        "D7": "01_hr_pol_maternity.md",
+        "D8": "01_hr_pol_mental_health.md",
+        "D9": "01_hr_pol_references.md",
+        "D10": "01_hr_pol_remote_work.md",
+        "D11": "01_hr_pol_salary.md",
+        "D12": "01_hr_pol_social_package.md",
+        "D13": "02_hr_tmp_sick_leave_procedure.md",
+        "D14": "07_faq_claims_procedure.md",
+        "D15": "07_faq_dismissal.md",
+        "D16": "07_faq_leave.md"
+      },
+      "characters": 33398,
+      "corpus_texts": 39,
+      "corpus_text_counts": {
+        "spans": 1,
+        "cards": 1,
+        "sections": 1,
+        "scan": 36
+      },
+      "case_sha256": "f17e3438887e0db298902463460851855b42ff8f78d3f7f1418c206466bbaafd",
+      "registered_severity": "high",
+      "primary_class": "single-doc",
+      "safety_critical": false,
+      "documents": [
+        "01_hr_pol_injury.md"
+      ],
+      "families": [
+        "family-0287c6d94d73"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "T64-07",
+      "round": 1,
+      "request_sha256": "1f2478a2df8bd7d4558498409e078b953cb822b3e90d95fa2c614ec52c672278",
+      "pseudonyms": {
+        "D1": "02_hr_tmp_job_description_logistics.md"
+      },
+      "characters": 9334,
+      "corpus_texts": 2,
+      "corpus_text_counts": {
+        "spans": 1,
+        "cards": 1,
+        "sections": 0,
+        "scan": 0
+      },
+      "case_sha256": "10d6675a753cb34a00d24ec651f2b9803e0b9d4e8d0e730c991c1060361374b9",
+      "registered_severity": "moderate",
+      "primary_class": "single-doc",
+      "safety_critical": false,
+      "documents": [
+        "02_hr_tmp_job_description_logistics.md"
+      ],
+      "families": [
+        "family-607595028116"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "T64-08",
+      "round": 1,
+      "request_sha256": "474104f5da3ef03ccc6263f0d214f78c32aef37b44e83c9e85296ea66b8c0f4a",
+      "pseudonyms": {
+        "D1": "02_hr_tmp_add_agreement.md"
+      },
+      "characters": 10427,
+      "corpus_texts": 2,
+      "corpus_text_counts": {
+        "spans": 1,
+        "cards": 1,
+        "sections": 0,
+        "scan": 0
+      },
+      "case_sha256": "f8d032795d12ab44a9b5398aa169a5475c71908373f585f636bfd84d0381e876",
+      "registered_severity": "high",
+      "primary_class": "single-doc",
+      "safety_critical": false,
+      "documents": [
+        "02_hr_tmp_add_agreement.md"
+      ],
+      "families": [
+        "family-2b2b0aee7e47"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "T64-09",
+      "round": 1,
+      "request_sha256": "65611aeeec050e6b1d08f5707ed28bffeb69c7caaa613cdf420bbf6c11de0977",
+      "pseudonyms": {
+        "D1": "06_comp_policy_data_retention.md"
+      },
+      "characters": 10187,
+      "corpus_texts": 2,
+      "corpus_text_counts": {
+        "spans": 1,
+        "cards": 1,
+        "sections": 0,
+        "scan": 0
+      },
+      "case_sha256": "b0cdd0a0b5777370836317d4cefab44574c55659d5820bc78eb0c3c94f6365e9",
+      "registered_severity": "moderate",
+      "primary_class": "single-doc",
+      "safety_critical": false,
+      "documents": [
+        "06_comp_policy_data_retention.md"
+      ],
+      "families": [
+        "family-74d57abc1479"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "T64-10",
+      "round": 1,
+      "request_sha256": "a082ed2e0ffb96cf81da86460decf54b86256b35764f928aeedd8c2a4ec484c4",
+      "pseudonyms": {
+        "D1": "02_hr_tmp_employment_order.md"
+      },
+      "characters": 11067,
+      "corpus_texts": 2,
+      "corpus_text_counts": {
+        "spans": 1,
+        "cards": 1,
+        "sections": 0,
+        "scan": 0
+      },
+      "case_sha256": "79ee94439a3e9992debc4a8d560ec16da5ad59d98e5f0d2396fab2364c897ee5",
+      "registered_severity": "moderate",
+      "primary_class": "single-doc",
+      "safety_critical": false,
+      "documents": [
+        "02_hr_tmp_employment_order.md"
+      ],
+      "families": [
+        "family-77f4371dbcc9"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "T64-11",
+      "round": 1,
+      "request_sha256": "7fba6bf0841bcfd7de1eb0d60e9d50bb119deea7f08c72457cf65a0202910c47",
+      "pseudonyms": {
+        "D1": "04_legal_claim_cargo_damage.md",
+        "D2": "04_legal_claim_cargo_loss.md"
+      },
+      "characters": 11207,
+      "corpus_texts": 4,
+      "corpus_text_counts": {
+        "spans": 2,
+        "cards": 2,
+        "sections": 0,
+        "scan": 0
+      },
+      "case_sha256": "d39ed6e9103c020f1b028133c41cda32be6b9f63c978ee095e302259d312d274",
+      "registered_severity": "high",
+      "primary_class": "multi-doc",
+      "safety_critical": false,
+      "documents": [
+        "04_legal_claim_cargo_damage.md",
+        "04_legal_claim_cargo_loss.md"
+      ],
+      "families": [
+        "family-0802124c14e4"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "T64-12",
+      "round": 1,
+      "request_sha256": "6e1cd5bc11f742e7b6f955d643b75f5bdbd9f12c24960ff15565a6cd58f0c334",
+      "pseudonyms": {
+        "D1": "01_hr_pol_performance_review.md",
+        "D2": "01_hr_pol_talent_pool.md"
+      },
+      "characters": 10800,
+      "corpus_texts": 4,
+      "corpus_text_counts": {
+        "spans": 2,
+        "cards": 2,
+        "sections": 0,
+        "scan": 0
+      },
+      "case_sha256": "7353fc9b877e215dc52e3479ae95fada4b337ed856b193495ef46621e251def7",
+      "registered_severity": "moderate",
+      "primary_class": "multi-doc",
+      "safety_critical": false,
+      "documents": [
+        "01_hr_pol_performance_review.md",
+        "01_hr_pol_talent_pool.md"
+      ],
+      "families": [
+        "family-a8c6914bae42"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "T64-13",
+      "round": 1,
+      "request_sha256": "14ff202b67c8cd92217726c78bf1837875141d946c116e306fbcf28f002b05a7",
+      "pseudonyms": {
+        "D1": "06_comp_policy_cookies.md",
+        "D2": "06_comp_policy_pdp.md"
+      },
+      "characters": 12141,
+      "corpus_texts": 4,
+      "corpus_text_counts": {
+        "spans": 2,
+        "cards": 2,
+        "sections": 0,
+        "scan": 0
+      },
+      "case_sha256": "352f6d3b09d9c923b474eda31fbb5ab6d37788ab39a1f45388fe46c14ec1fe92",
+      "registered_severity": "critical",
+      "primary_class": "multi-doc",
+      "safety_critical": false,
+      "documents": [
+        "06_comp_policy_cookies.md",
+        "06_comp_policy_pdp.md"
+      ],
+      "families": [
+        "family-74d57abc1479"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "T64-14",
+      "round": 1,
+      "request_sha256": "aa644d34ca3b29d010b7010d52412a1b20bfd085a1cfa77427caed9e36f05065",
+      "pseudonyms": {
+        "D1": "01_hr_pol_dress_code.md",
+        "D2": "01_hr_pol_safety.md"
+      },
+      "characters": 10571,
+      "corpus_texts": 4,
+      "corpus_text_counts": {
+        "spans": 2,
+        "cards": 2,
+        "sections": 0,
+        "scan": 0
+      },
+      "case_sha256": "e17c4ce7be91f7137007af283a8ce928f3e0c95fb2610461713bc926ee57d548",
+      "registered_severity": "critical",
+      "primary_class": "multi-doc",
+      "safety_critical": true,
+      "documents": [
+        "01_hr_pol_dress_code.md",
+        "01_hr_pol_safety.md"
+      ],
+      "families": [
+        "family-15428e19d874",
+        "family-7bddb9f0076c"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "T64-15",
+      "round": 1,
+      "request_sha256": "7aeebbc302f8117881e95649ec863cdfa1d34f60c0f974b5649a1c6cf087e214",
+      "pseudonyms": {
+        "D1": "04_legal_claim_cargo_loss.md",
+        "D2": "07_faq_claims_procedure.md"
+      },
+      "characters": 11417,
+      "corpus_texts": 4,
+      "corpus_text_counts": {
+        "spans": 2,
+        "cards": 2,
+        "sections": 0,
+        "scan": 0
+      },
+      "case_sha256": "fb30421331583afeb071c50729fcec9397231e422d6a8ceaba0671f9d716efed",
+      "registered_severity": "high",
+      "primary_class": "multi-doc",
+      "safety_critical": false,
+      "documents": [
+        "04_legal_claim_cargo_loss.md",
+        "07_faq_claims_procedure.md"
+      ],
+      "families": [
+        "family-0802124c14e4"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "T64-16",
+      "round": 1,
+      "request_sha256": "8e1652023c60c816cbeec819eb6c921680446a17c85ca40953cb33959cf03545",
+      "pseudonyms": {
+        "D1": "01_hr_probation_procedure.md",
+        "D2": "02_hr_tmp_probation_report.md",
+        "D3": "01_hr_pol_adaptation.md",
+        "D4": "01_hr_pol_performance_review.md",
+        "D5": "02_hr_tmp_dismissal_order.md",
+        "D6": "02_hr_tmp_employment_contract.md",
+        "D7": "02_hr_tmp_employment_order.md",
+        "D8": "07_faq_contract_templates.md",
+        "D9": "07_faq_probation.md"
+      },
+      "characters": 36695,
+      "corpus_texts": 41,
+      "corpus_text_counts": {
+        "spans": 2,
+        "cards": 2,
+        "sections": 2,
+        "scan": 35
+      },
+      "case_sha256": "b68f4cd0b2d7be024b8c0d1ee0e2e05660ff16d496cca95edcbd35c8c22e5651",
+      "registered_severity": "high",
+      "primary_class": "multi-doc",
+      "safety_critical": false,
+      "documents": [
+        "01_hr_probation_procedure.md",
+        "02_hr_tmp_probation_report.md"
+      ],
+      "families": [
+        "family-322a2b65afeb"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "T64-17",
+      "round": 1,
+      "request_sha256": "db79418385d25525c1a2ac6dd38c7b5e127042108e0e98bac1ad8e1dad669da2",
+      "pseudonyms": {
+        "D1": "01_hr_probation_procedure.md",
+        "D2": "02_hr_tmp_probation_report.md"
+      },
+      "characters": 10352,
+      "corpus_texts": 4,
+      "corpus_text_counts": {
+        "spans": 2,
+        "cards": 2,
+        "sections": 0,
+        "scan": 0
+      },
+      "case_sha256": "ad32ab245fa3b8c89a6cbd6ff4bd9ef382ddba7da5c6eec03e510689c6e32240",
+      "registered_severity": "moderate",
+      "primary_class": "multi-doc",
+      "safety_critical": false,
+      "documents": [
+        "01_hr_probation_procedure.md",
+        "02_hr_tmp_probation_report.md"
+      ],
+      "families": [
+        "family-322a2b65afeb"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "T64-18",
+      "round": 1,
+      "request_sha256": "bcc608ef5529ec226c3775cbf9d6972d7efaa3ebb1d5ed348fb6d4d2f091f8dc",
+      "pseudonyms": {
+        "D1": "01_hr_pol_internal_comm.md",
+        "D2": "01_hr_pol_remote_work.md",
+        "D3": "01_hr_pol_attendance.md",
+        "D4": "01_hr_pol_dress_code.md",
+        "D5": "01_hr_pol_leave.md",
+        "D6": "01_hr_pol_second_job.md",
+        "D7": "01_hr_pol_shift_schedule.md",
+        "D8": "01_hr_pol_smoking.md",
+        "D9": "02_hr_tmp_employment_order.md",
+        "D10": "02_hr_tmp_internship_agreement.md",
+        "D11": "02_hr_tmp_material_liability_agreement.md",
+        "D12": "02_hr_tmp_reference_letter_template.md",
+        "D13": "02_hr_tmp_remote_work_agreement.md",
+        "D14": "02_hr_tmp_sick_leave_procedure.md",
+        "D15": "05_tlog_policy_driver_hours.md",
+        "D16": "06_comp_policy_video_surveillance.md",
+        "D17": "07_faq_claims_procedure.md",
+        "D18": "07_faq_employee_material_liability.md",
+        "D19": "07_faq_probation.md"
+      },
+      "characters": 33790,
+      "corpus_texts": 43,
+      "corpus_text_counts": {
+        "spans": 2,
+        "cards": 2,
+        "sections": 2,
+        "scan": 37
+      },
+      "case_sha256": "e3b14653514f7d31f8628cdb36ef2c41139aa38d46dae0826d13ac3c43e8c845",
+      "registered_severity": "moderate",
+      "primary_class": "multi-doc",
+      "safety_critical": false,
+      "documents": [
+        "01_hr_pol_internal_comm.md",
+        "01_hr_pol_remote_work.md"
+      ],
+      "families": [
+        "family-0a592eb457f7",
+        "family-8c0e4923864e"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "T64-19",
+      "round": 1,
+      "request_sha256": "a5792a15cc189cc26e81a268b87c8314609b891ca7fed6379932b19732aa4d60",
+      "pseudonyms": {
+        "D1": "01_hr_pol_leave.md",
+        "D2": "02_hr_tmp_leave_request.md"
+      },
+      "characters": 11756,
+      "corpus_texts": 4,
+      "corpus_text_counts": {
+        "spans": 2,
+        "cards": 2,
+        "sections": 0,
+        "scan": 0
+      },
+      "case_sha256": "c24b14bb069eff4abb276af1a83db8fc3fcdc1b251ee634e9182be332c3a6ccd",
+      "registered_severity": "moderate",
+      "primary_class": "multi-doc",
+      "safety_critical": false,
+      "documents": [
+        "01_hr_pol_leave.md",
+        "02_hr_tmp_leave_request.md"
+      ],
+      "families": [
+        "family-aa4b8e9bebee"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "T64-20",
+      "round": 1,
+      "request_sha256": "384c61ebbe6206cf2ae59182f21c7596f7f9b0587f83b9f266e11e536c8a8c22",
+      "pseudonyms": {
+        "D1": "04_legal_claim_cargo_damage.md",
+        "D2": "04_legal_claim_customs_delay.md"
+      },
+      "characters": 12436,
+      "corpus_texts": 4,
+      "corpus_text_counts": {
+        "spans": 2,
+        "cards": 2,
+        "sections": 0,
+        "scan": 0
+      },
+      "case_sha256": "34e8503381df6bbb418b0bf7451ddb2c445dec21cca1416411baadee0f0bc824",
+      "registered_severity": "moderate",
+      "primary_class": "multi-doc",
+      "safety_critical": false,
+      "documents": [
+        "04_legal_claim_cargo_damage.md",
+        "04_legal_claim_customs_delay.md"
+      ],
+      "families": [
+        "family-0802124c14e4"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "T64-21",
+      "round": 1,
+      "request_sha256": "001f25b6ca930a5920f426b2c86ee661c41fef9181e4471a627bbe399fdbd1ea",
+      "pseudonyms": {
+        "D1": "04_legal_claim_cargo_loss.md",
+        "D2": "04_legal_letter_arbitration_notice.md"
+      },
+      "characters": 11333,
+      "corpus_texts": 4,
+      "corpus_text_counts": {
+        "spans": 2,
+        "cards": 2,
+        "sections": 0,
+        "scan": 0
+      },
+      "case_sha256": "7f4edbd3e96d3d4c4270175cab3ba9805d0cdc836aea94980346a4e1d9d27010",
+      "registered_severity": "moderate",
+      "primary_class": "aggregation",
+      "safety_critical": false,
+      "documents": [
+        "04_legal_claim_cargo_loss.md",
+        "04_legal_letter_arbitration_notice.md"
+      ],
+      "families": [
+        "family-0802124c14e4"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "T64-22",
+      "round": 1,
+      "request_sha256": "0cb9c79aa527b781e7a1d9858fb439dee99f195d34b03571d1e948e9003cd731",
+      "pseudonyms": {
+        "D1": "01_hr_pol_leave.md",
+        "D2": "02_hr_tmp_probation_report.md"
+      },
+      "characters": 11688,
+      "corpus_texts": 4,
+      "corpus_text_counts": {
+        "spans": 2,
+        "cards": 2,
+        "sections": 0,
+        "scan": 0
+      },
+      "case_sha256": "a8c01eb0d590421eb355e7bd81b53adccc302cabbecca077657118f98f78624e",
+      "registered_severity": "moderate",
+      "primary_class": "aggregation",
+      "safety_critical": false,
+      "documents": [
+        "01_hr_pol_leave.md",
+        "02_hr_tmp_probation_report.md"
+      ],
+      "families": [
+        "family-322a2b65afeb",
+        "family-aa4b8e9bebee"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "T64-23",
+      "round": 1,
+      "request_sha256": "cb2bbc9abca05b86bd179a133bd497611c1f7af197d846b32d24556b565acaa1",
+      "pseudonyms": {
+        "D1": "02_hr_tmp_job_description_hr.md",
+        "D2": "02_hr_tmp_job_description_logistics.md"
+      },
+      "characters": 11244,
+      "corpus_texts": 4,
+      "corpus_text_counts": {
+        "spans": 2,
+        "cards": 2,
+        "sections": 0,
+        "scan": 0
+      },
+      "case_sha256": "fb084aea950b3fca0ddc4073937528cdb671cc5f6a81e8d86fbae8dd4ac0f929",
+      "registered_severity": "moderate",
+      "primary_class": "aggregation",
+      "safety_critical": false,
+      "documents": [
+        "02_hr_tmp_job_description_hr.md",
+        "02_hr_tmp_job_description_logistics.md"
+      ],
+      "families": [
+        "family-607595028116",
+        "family-a9b6c262b16d"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "T64-24",
+      "round": 1,
+      "request_sha256": "6cc69e5703040031c974de8cd26ef5c682d76ba724d3c6b9f460da4dcca878b3",
+      "pseudonyms": {
+        "D1": "02_hr_tmp_position_change_order.md",
+        "D2": "02_hr_tmp_transfer_order.md"
+      },
+      "characters": 11709,
+      "corpus_texts": 4,
+      "corpus_text_counts": {
+        "spans": 2,
+        "cards": 2,
+        "sections": 0,
+        "scan": 0
+      },
+      "case_sha256": "d4233f79aa3150dcd85aab72133bfeb195ef25316da8778ca6c297910f99b547",
+      "registered_severity": "moderate",
+      "primary_class": "aggregation",
+      "safety_critical": false,
+      "documents": [
+        "02_hr_tmp_position_change_order.md",
+        "02_hr_tmp_transfer_order.md"
+      ],
+      "families": [
+        "family-9cf46d1e5c4e"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "T64-25",
+      "round": 1,
+      "request_sha256": "3804a6b83e15b7776156fd1582402aa5aa016a49cc2db49cec35096954d08a56",
+      "pseudonyms": {
+        "D1": "05_tlog_regulation_waybill.md",
+        "D2": "05_tlog_checklist_cargo_acceptance.md",
+        "D3": "05_tlog_checklist_driver_pre_trip.md",
+        "D4": "05_tlog_checklist_vehicle_inspection.md",
+        "D5": "05_tlog_contract_fuel_supply.md",
+        "D6": "05_tlog_instruction_dispatcher.md",
+        "D7": "05_tlog_instruction_driver_duty.md",
+        "D8": "05_tlog_regulation_cross_border.md",
+        "D9": "05_tlog_regulation_customs_clearance.md",
+        "D10": "05_tlog_regulation_dangerous_goods.md",
+        "D11": "05_tlog_regulation_gps_tracking.md",
+        "D12": "05_tlog_regulation_oversized.md",
+        "D13": "05_tlog_regulation_perishable.md",
+        "D14": "05_tlog_regulation_weight_control.md",
+        "D15": "07_faq_expedition.md"
+      },
+      "characters": 39557,
+      "corpus_texts": 42,
+      "corpus_text_counts": {
+        "spans": 0,
+        "cards": 1,
+        "sections": 1,
+        "scan": 40
+      },
+      "case_sha256": "cd15c5513d2fa8c4daf78ad6e7956c2ef8926ec3c01f899baf248defbfd3f81a",
+      "registered_severity": "critical",
+      "primary_class": "needs-refusal/clarification",
+      "safety_critical": true,
+      "documents": [
+        "05_tlog_regulation_waybill.md"
+      ],
+      "families": [
+        "family-48888b3f1285"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "T64-26",
+      "round": 1,
+      "request_sha256": "09e9dad1d682ff88756d0ece0ed4eb2ce8f3d22dae2e80a9a1c2a20448fb59d8",
+      "pseudonyms": {
+        "D1": "06_comp_policy_incident_response.md",
+        "D2": "06_comp_policy_access_control.md",
+        "D3": "06_comp_policy_breach_notification.md",
+        "D4": "06_comp_policy_commercial_secret.md",
+        "D5": "06_comp_policy_pdp.md",
+        "D6": "06_comp_regulation_contract_approval.md",
+        "D7": "06_comp_checklist_contract_compliance.md"
+      },
+      "characters": 29190,
+      "corpus_texts": 30,
+      "corpus_text_counts": {
+        "spans": 0,
+        "cards": 1,
+        "sections": 1,
+        "scan": 28
+      },
+      "case_sha256": "8011281767cf3862e055c8d20812f2f5020131051867fbd2b244872befb77cba",
+      "registered_severity": "critical",
+      "primary_class": "needs-refusal/clarification",
+      "safety_critical": false,
+      "documents": [
+        "06_comp_policy_incident_response.md"
+      ],
+      "families": [
+        "family-9808803a9d5a"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "T64-27",
+      "round": 1,
+      "request_sha256": "f62091e0864199c63399a1e2de54b9efb8965daff0f5e4e759b4a98026cb1c60",
+      "pseudonyms": {
+        "D1": "04_legal_reply_cargo_damage.md",
+        "D2": "04_legal_claim_cargo_damage.md",
+        "D3": "04_legal_claim_cargo_loss.md",
+        "D4": "04_legal_claim_defective_goods.md",
+        "D5": "04_legal_claim_expedition_breach.md",
+        "D6": "04_legal_claim_non_payment.md",
+        "D7": "04_legal_reply_late_delivery.md",
+        "D8": "04_legal_reply_non_payment.md",
+        "D9": "07_faq_claims_procedure.md"
+      },
+      "characters": 36284,
+      "corpus_texts": 37,
+      "corpus_text_counts": {
+        "spans": 0,
+        "cards": 1,
+        "sections": 1,
+        "scan": 35
+      },
+      "case_sha256": "44ffcdd4503e51d0a0b7709246be74c6077b5429d333949b4e25205c9238aca3",
+      "registered_severity": "high",
+      "primary_class": "needs-refusal/clarification",
+      "safety_critical": false,
+      "documents": [
+        "04_legal_reply_cargo_damage.md"
+      ],
+      "families": [
+        "family-0802124c14e4"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "T64-28",
+      "round": 1,
+      "request_sha256": "e41ed72e82fb14d55a793a3b1535ac3fbc1f763fb09ced240d0af37f5d9b5227",
+      "pseudonyms": {
+        "D1": "02_hr_tmp_dismissal_order.md",
+        "D2": "01_hr_dismissal_procedure.md",
+        "D3": "01_hr_pol_adaptation.md",
+        "D4": "01_hr_pol_exit_interview.md",
+        "D5": "01_hr_pol_hiring.md",
+        "D6": "01_hr_pol_leave.md",
+        "D7": "01_hr_pol_maternity.md",
+        "D8": "02_hr_tmp_leave_order.md",
+        "D9": "02_hr_tmp_resignation_letter.md",
+        "D10": "02_hr_tmp_salary_change_order.md",
+        "D11": "07_faq_dismissal.md"
+      },
+      "characters": 31037,
+      "corpus_texts": 37,
+      "corpus_text_counts": {
+        "spans": 0,
+        "cards": 1,
+        "sections": 1,
+        "scan": 35
+      },
+      "case_sha256": "1706e48087affa217297f1f7611ffbecd9c8c07e67f180f78fbff15af7789378",
+      "registered_severity": "high",
+      "primary_class": "needs-refusal/clarification",
+      "safety_critical": false,
+      "documents": [
+        "02_hr_tmp_dismissal_order.md"
+      ],
+      "families": [
+        "family-679a7415df67"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "T64-29",
+      "round": 1,
+      "request_sha256": "5b75fa806357af48123d181793434be6624ba7744920890a89c152e938cf43fc",
+      "pseudonyms": {
+        "D1": "06_comp_policy_pdp.md",
+        "D2": "06_comp_policy_access_control.md",
+        "D3": "06_comp_policy_commercial_secret.md",
+        "D4": "06_comp_policy_consent_form.md",
+        "D5": "06_comp_policy_cross_border_transfer.md",
+        "D6": "06_comp_policy_data_destruction.md",
+        "D7": "06_comp_policy_subject_rights.md",
+        "D8": "07_faq_pdp.md"
+      },
+      "characters": 35045,
+      "corpus_texts": 34,
+      "corpus_text_counts": {
+        "spans": 0,
+        "cards": 1,
+        "sections": 1,
+        "scan": 32
+      },
+      "case_sha256": "cb58e7a47f030a549639027ac1f9e555f518b1b2bc3326d4d9bc84c7077841c0",
+      "registered_severity": "critical",
+      "primary_class": "needs-refusal/clarification",
+      "safety_critical": true,
+      "documents": [
+        "06_comp_policy_pdp.md"
+      ],
+      "families": [
+        "family-74d57abc1479"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "T64-30",
+      "round": 1,
+      "request_sha256": "bf6c5d4e597e2b9c6487fb5833b903a2f5f4b40295b7c066c53d44e568b61d77",
+      "pseudonyms": {
+        "D1": "07_faq_employee_material_liability.md",
+        "D2": "01_hr_pol_salary.md",
+        "D3": "04_legal_claim_cargo_damage.md",
+        "D4": "04_legal_reply_cargo_damage.md",
+        "D5": "07_faq_claims_procedure.md",
+        "D6": "07_faq_expedition.md",
+        "D7": "07_faq_transport_road.md"
+      },
+      "characters": 34939,
+      "corpus_texts": 37,
+      "corpus_text_counts": {
+        "spans": 0,
+        "cards": 1,
+        "sections": 1,
+        "scan": 35
+      },
+      "case_sha256": "afd49b049f3f76992488c4f347ad0063973f036a714ebe013c8aa7a5afdfc31d",
+      "registered_severity": "high",
+      "primary_class": "needs-refusal/clarification",
+      "safety_critical": false,
+      "documents": [
+        "07_faq_employee_material_liability.md"
+      ],
+      "families": [
+        "family-f97265fc4a1d"
+      ],
+      "check_1": "passed"
+    }
+  ],
+  "declared_drops": []
+}

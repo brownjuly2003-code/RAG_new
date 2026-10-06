@@ -1,0 +1,95 @@
+{
+  "plan_version": 1,
+  "rubric_version": "label-verification/v3",
+  "prompt_sha256": "3f7c114428028f6518aca3f21a03f5352d0497d99d0356f2c804b9389df756ad",
+  "round": 2,
+  "draft_author": {
+    "model": "gpt-6.1-sol",
+    "vendor": "OpenAI"
+  },
+  "verifiers": {
+    "claude-opus-5-5": {
+      "model": "claude-opus-5-5",
+      "vendor": "Anthropic",
+      "route": "Claude Code CLI in safe mode, first-party provider",
+      "settings": {
+        "model": "claude-opus-5-5",
+        "effort": "max",
+        "tools": "none",
+        "session": "safe mode: no instruction file, memory, hook, skill, plugin or MCP server; no tools; an empty working directory; nothing stored; one turn",
+        "system_prompt_sha256": "4178fef002ad32d05e155ec7ee266177499d266d62371c5b68eba9ca9541a413"
+      }
+    }
+  },
+  "inputs": {
+    "drafts_sha256": "05ebf00743e2ae3b6a8117f735a3d9a34b451f8bf066a4dd1dfcaadf8e708df4",
+    "families_sha256": "54bdb736180e00325bff20f49e2b9d985dd62278fe9f9cdb6161a0da719e3584",
+    "corpus_sha256": "c8562a64f88f72172f29e30865091be79f08d00ce65fbf675f34de64dcebe343",
+    "scan_sha256": "8faf58d4ef3091875b0b263aa05e99cab30b8c0c7948ab06a0fca33436d8466b",
+    "archive_sha256": "2a9da515a4c69b46453a59ed6d0bb772b0aad6fed23c87ee465851b43dbdef12",
+    "previous_plan_sha256": "194eab59de6b0a883fdd3b98c1ddb2479026a737e7587177e5dce23f22c80cfd",
+    "repairs_sha256": "97174ec7fd19764bb3d0857dffbadea7f580f2ffe110694a3902a941198c64ff",
+    "drops_sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+  },
+  "requests": [
+    {
+      "case_id": "T64-15",
+      "round": 2,
+      "request_sha256": "2dec7bef76ec17847367451d5709ecae2c01603b4c67da1611339de29efdce81",
+      "pseudonyms": {
+        "D1": "04_legal_claim_cargo_loss.md",
+        "D2": "07_faq_claims_procedure.md"
+      },
+      "characters": 12001,
+      "corpus_texts": 4,
+      "corpus_text_counts": {
+        "spans": 2,
+        "cards": 2,
+        "sections": 0,
+        "scan": 0
+      },
+      "case_sha256": "e989ecb0325cecfb3932d7e27822d5d2dfd80f04126cb6e164e0a96ac0f3fe38",
+      "registered_severity": "high",
+      "primary_class": "multi-doc",
+      "safety_critical": false,
+      "documents": [
+        "04_legal_claim_cargo_loss.md",
+        "07_faq_claims_procedure.md"
+      ],
+      "families": [
+        "family-0802124c14e4"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "T64-19",
+      "round": 2,
+      "request_sha256": "44634b724c25abd1f69faf805f3948b297d4d1cfecac297dc6b2ddebee4c5380",
+      "pseudonyms": {
+        "D1": "01_hr_pol_leave.md",
+        "D2": "02_hr_tmp_leave_request.md"
+      },
+      "characters": 11751,
+      "corpus_texts": 4,
+      "corpus_text_counts": {
+        "spans": 2,
+        "cards": 2,
+        "sections": 0,
+        "scan": 0
+      },
+      "case_sha256": "01966b750dbddfbf7a12041fb4b69b35f4fb375c0f26bdd281a5ddccd482b52c",
+      "registered_severity": "high",
+      "primary_class": "multi-doc",
+      "safety_critical": false,
+      "documents": [
+        "01_hr_pol_leave.md",
+        "02_hr_tmp_leave_request.md"
+      ],
+      "families": [
+        "family-aa4b8e9bebee"
+      ],
+      "check_1": "passed"
+    }
+  ],
+  "declared_drops": []
+}

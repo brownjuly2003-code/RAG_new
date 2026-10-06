@@ -1,0 +1,1053 @@
+{
+  "plan_version": 1,
+  "generator_version": "devset-generator/v1",
+  "prompt_sha256": "914490be7b928f573eaa78f202f17532cbcb416cd00bc2ecfec23d89148aaa5a",
+  "author": {
+    "model": "claude-opus-5-5",
+    "vendor": "Anthropic"
+  },
+  "route": "Claude Code CLI in safe mode, first-party provider",
+  "settings": {
+    "model": "claude-opus-5-5",
+    "effort": "max",
+    "tools": "none",
+    "session": "safe mode: no instruction file, memory, hook, skill, plugin or MCP server; no tools; an empty working directory; nothing stored; one turn",
+    "system_prompt_sha256": "46ac895df537bd8e07a088db94de5fcd028fa96985e67f4612bf396d0cae5e88"
+  },
+  "split": "development",
+  "replacement": false,
+  "as_of": "2026-10-01",
+  "brief_rule": {
+    "version": "devset-brief-v1",
+    "style": "the positions of one class take agent_style_A and agent_style_B in turn, starting with A",
+    "trap": "the positions of one class take the pairs of TRAP_CYCLES of that class in turn",
+    "fallback": "a reply may write the plain pair of its class instead of the requested one: no trap with the action answer, or clarify in the class needs-refusal/clarification",
+    "numeric": "the positions of one class of NUMERIC_CLASSES are asked for a quantity in the turn of NUMERIC_TURNS; a reply may write the case without one",
+    "replacement": "the replacement of a dropped draft is asked for the class, the style, the trap and the action of that draft as it was drafted, and the plain pair is not accepted in their place; it is not asked for a quantity",
+    "no_case": "a reply that begins with NO CASE declares that the sections cannot give the case: the position stays empty and is not asked for again",
+    "as_of": "2026-10-01",
+    "cycles": {
+      "single-doc": [
+        [
+          null,
+          "answer"
+        ],
+        [
+          "false_premise",
+          "correct_premise"
+        ],
+        [
+          null,
+          "answer"
+        ],
+        [
+          null,
+          "answer"
+        ],
+        [
+          "outdated_rule",
+          "correct_premise"
+        ]
+      ],
+      "multi-doc": [
+        [
+          null,
+          "answer"
+        ],
+        [
+          null,
+          "answer"
+        ],
+        [
+          "conflicting_documents",
+          "correct_premise"
+        ],
+        [
+          null,
+          "answer"
+        ],
+        [
+          "false_premise",
+          "correct_premise"
+        ]
+      ],
+      "aggregation": [
+        [
+          null,
+          "answer"
+        ]
+      ],
+      "needs-refusal/clarification": [
+        [
+          null,
+          "clarify"
+        ],
+        [
+          "out_of_corpus",
+          "refuse"
+        ],
+        [
+          "dangerous_goods",
+          "escalate"
+        ]
+      ]
+    },
+    "numeric_classes": [
+      "single-doc",
+      "multi-doc"
+    ],
+    "numeric_turns": [
+      true,
+      false,
+      false
+    ]
+  },
+  "inputs": {
+    "split_sha256": "20d69e9bb30043f7012823e3b39ca2692badc58bf9e04a737691abbcab2c44a8",
+    "corpus_sha256": "c8562a64f88f72172f29e30865091be79f08d00ce65fbf675f34de64dcebe343",
+    "families_sha256": "54bdb736180e00325bff20f49e2b9d985dd62278fe9f9cdb6161a0da719e3584"
+  },
+  "unseated_positions": [],
+  "requests": [
+    {
+      "position": 1,
+      "case_id": "DV-01",
+      "primary_class": "multi-doc",
+      "question_origin": "agent_style_A",
+      "requested_trap": null,
+      "requested_action": "answer",
+      "plain_allowed": true,
+      "numeric_requested": true,
+      "block_id": "block-a9ce84c9392e",
+      "seed": {
+        "char_end": 7639,
+        "char_start": 7082,
+        "section_path": [
+          "Инструкция по air cargo dangerous goods",
+          "Порядок действий",
+          "5. Согласование"
+        ],
+        "source_id": "05_tlog_regulation_dangerous_goods.md"
+      },
+      "partner": {
+        "char_end": 7512,
+        "char_start": 6935,
+        "section_path": [
+          "Порядок air cargo перевозки perishables и pharma/cold chain",
+          "Порядок действий",
+          "5. Согласование"
+        ],
+        "source_id": "05_tlog_regulation_perishable.md"
+      },
+      "request_sha256": "8efd1e5492c8d88affe5dc9d51e95d91f422e7d089b7b8224d06c79a23eabc38",
+      "pseudonyms": {
+        "D1": "05_tlog_regulation_dangerous_goods.md",
+        "D2": "05_tlog_regulation_perishable.md"
+      },
+      "characters": 13915
+    },
+    {
+      "position": 2,
+      "case_id": "DV-02",
+      "primary_class": "single-doc",
+      "question_origin": "agent_style_A",
+      "requested_trap": null,
+      "requested_action": "answer",
+      "plain_allowed": true,
+      "numeric_requested": true,
+      "block_id": "block-2c7c746cc931",
+      "seed": {
+        "char_end": 2633,
+        "char_start": 2401,
+        "section_path": [
+          "Положение об обучении и развитии",
+          "Порядок действий",
+          "3. Согласование и договор"
+        ],
+        "source_id": "01_hr_pol_training.md"
+      },
+      "partner": null,
+      "request_sha256": "32c7f6e86d875b33e9033c36656b307c81b8c6115b1080340bcef7e2a0e99595",
+      "pseudonyms": {
+        "D1": "01_hr_pol_training.md"
+      },
+      "characters": 12343
+    },
+    {
+      "position": 3,
+      "case_id": "DV-03",
+      "primary_class": "aggregation",
+      "question_origin": "agent_style_A",
+      "requested_trap": null,
+      "requested_action": "answer",
+      "plain_allowed": true,
+      "numeric_requested": false,
+      "block_id": "block-80338f3d7b48",
+      "seed": {
+        "char_end": 2350,
+        "char_start": 1629,
+        "section_path": [
+          "Договор поставки топлива",
+          "Термины"
+        ],
+        "source_id": "03_legal_contract_supply_fuel.md"
+      },
+      "partner": {
+        "char_end": 974,
+        "char_start": 582,
+        "section_path": [
+          "Договор поставки ГСМ для транспорта airport first/last mile",
+          "Назначение"
+        ],
+        "source_id": "05_tlog_contract_fuel_supply.md"
+      },
+      "request_sha256": "b9f2bdfd4a921d8ff64dcd2cc3f28c4097247df6e34a95dbf180f9ad12ffff7a",
+      "pseudonyms": {
+        "D1": "03_legal_contract_supply_fuel.md",
+        "D2": "05_tlog_contract_fuel_supply.md"
+      },
+      "characters": 13774
+    },
+    {
+      "position": 4,
+      "case_id": "DV-04",
+      "primary_class": "needs-refusal/clarification",
+      "question_origin": "agent_style_A",
+      "requested_trap": null,
+      "requested_action": "clarify",
+      "plain_allowed": true,
+      "numeric_requested": false,
+      "block_id": "block-1c63299131d6",
+      "seed": {
+        "char_end": 1904,
+        "char_start": 1668,
+        "section_path": [
+          "Политика противодействия домогательствам",
+          "Порядок действий",
+          "1. Предотвращение"
+        ],
+        "source_id": "01_hr_pol_harassment.md"
+      },
+      "partner": null,
+      "request_sha256": "23d7494c8781546fe0f817c8b9d138b2f95103e1c38e0c821f6526afb2ec496a",
+      "pseudonyms": {
+        "D1": "01_hr_pol_harassment.md"
+      },
+      "characters": 12415
+    },
+    {
+      "position": 5,
+      "case_id": "DV-05",
+      "primary_class": "multi-doc",
+      "question_origin": "agent_style_B",
+      "requested_trap": null,
+      "requested_action": "answer",
+      "plain_allowed": true,
+      "numeric_requested": false,
+      "block_id": "block-2f12118fb6e7",
+      "seed": {
+        "char_end": 1440,
+        "char_start": 1038,
+        "section_path": [
+          "Должностная инструкция руководителя авиагрузовой логистики",
+          "Область применения"
+        ],
+        "source_id": "05_tlog_instruction_logistics_manager.md"
+      },
+      "partner": {
+        "char_end": 1479,
+        "char_start": 995,
+        "section_path": [
+          "Порядок перевозки oversized cargo воздушным транспортом",
+          "Область применения"
+        ],
+        "source_id": "05_tlog_regulation_oversized.md"
+      },
+      "request_sha256": "b94135214a0101aca2d27c70d09c484be7e059c962a6a304dba4c925b7dbbd05",
+      "pseudonyms": {
+        "D1": "05_tlog_instruction_logistics_manager.md",
+        "D2": "05_tlog_regulation_oversized.md"
+      },
+      "characters": 13642
+    },
+    {
+      "position": 6,
+      "case_id": "DV-06",
+      "primary_class": "single-doc",
+      "question_origin": "agent_style_B",
+      "requested_trap": "false_premise",
+      "requested_action": "correct_premise",
+      "plain_allowed": true,
+      "numeric_requested": false,
+      "block_id": "block-4fa8d3a34a99",
+      "seed": {
+        "char_end": 782,
+        "char_start": 587,
+        "section_path": [
+          "Регламент выдачи справок и характеристик",
+          "Назначение"
+        ],
+        "source_id": "01_hr_pol_references.md"
+      },
+      "partner": null,
+      "request_sha256": "97f6056d14aa519dabd5a1c7068d3b265babe24b8c0842a46a21816ab8af4fad",
+      "pseudonyms": {
+        "D1": "01_hr_pol_references.md"
+      },
+      "characters": 12352
+    },
+    {
+      "position": 7,
+      "case_id": "DV-07",
+      "primary_class": "aggregation",
+      "question_origin": "agent_style_B",
+      "requested_trap": null,
+      "requested_action": "answer",
+      "plain_allowed": true,
+      "numeric_requested": false,
+      "block_id": "block-28c80f1c51c2",
+      "seed": {
+        "char_end": 9286,
+        "char_start": 8596,
+        "section_path": [
+          "Чеклист приемки авиагруза к перевозке",
+          "Stop/go критерии"
+        ],
+        "source_id": "05_tlog_checklist_cargo_acceptance.md"
+      },
+      "partner": {
+        "char_end": 1486,
+        "char_start": 1100,
+        "section_path": [
+          "Политика авиационной грузовой безопасности",
+          "Область применения"
+        ],
+        "source_id": "05_tlog_policy_transport_safety.md"
+      },
+      "request_sha256": "ed638203aaf5120869c0d031d14d813dfdd57aee481e8d15ea8064dd3086b56e",
+      "pseudonyms": {
+        "D1": "05_tlog_checklist_cargo_acceptance.md",
+        "D2": "05_tlog_policy_transport_safety.md"
+      },
+      "characters": 13800
+    },
+    {
+      "position": 8,
+      "case_id": "DV-08",
+      "primary_class": "multi-doc",
+      "question_origin": "agent_style_A",
+      "requested_trap": "conflicting_documents",
+      "requested_action": "correct_premise",
+      "plain_allowed": true,
+      "numeric_requested": false,
+      "block_id": "block-7f2a93815f6e",
+      "seed": {
+        "char_end": 9871,
+        "char_start": 9132,
+        "section_path": [
+          "Договор с таможенным брокером",
+          "Практический сценарий"
+        ],
+        "source_id": "03_legal_contract_customs_broker.md"
+      },
+      "partner": {
+        "char_end": 9333,
+        "char_start": 8541,
+        "section_path": [
+          "Политика торгового compliance (санкции, эксп.контроль)",
+          "Практический сценарий"
+        ],
+        "source_id": "06_comp_policy_trade_compliance.md"
+      },
+      "request_sha256": "cb12e09abcfc2cd7e6e249b6f430c32243a22ebd0606b1f02c2a4bfeccfae7b9",
+      "pseudonyms": {
+        "D1": "03_legal_contract_customs_broker.md",
+        "D2": "06_comp_policy_trade_compliance.md"
+      },
+      "characters": 14329
+    },
+    {
+      "position": 9,
+      "case_id": "DV-09",
+      "primary_class": "needs-refusal/clarification",
+      "question_origin": "agent_style_B",
+      "requested_trap": "out_of_corpus",
+      "requested_action": "refuse",
+      "plain_allowed": true,
+      "numeric_requested": false,
+      "block_id": "block-7569f5e075b5",
+      "seed": {
+        "char_end": 3184,
+        "char_start": 2924,
+        "section_path": [
+          "Положение об учете рабочего времени",
+          "Порядок действий",
+          "4. Ночные смены"
+        ],
+        "source_id": "01_hr_pol_attendance.md"
+      },
+      "partner": null,
+      "request_sha256": "1f8ac201d6c5e2089209beeb60776b4702210e08c33a253dc0b0ba60a88b87da",
+      "pseudonyms": {
+        "D1": "01_hr_pol_attendance.md"
+      },
+      "characters": 12508
+    },
+    {
+      "position": 10,
+      "case_id": "DV-10",
+      "primary_class": "single-doc",
+      "question_origin": "agent_style_A",
+      "requested_trap": null,
+      "requested_action": "answer",
+      "plain_allowed": true,
+      "numeric_requested": false,
+      "block_id": "block-32057dd0085a",
+      "seed": {
+        "char_end": 842,
+        "char_start": 551,
+        "section_path": [
+          "Договор авиаперевозки",
+          "Назначение"
+        ],
+        "source_id": "05_tlog_contract_transport_air.md"
+      },
+      "partner": null,
+      "request_sha256": "091091e75fa71e3d0fda6a0f753861fa2c944c5f43d3a6dc59d890cc0c52a5c3",
+      "pseudonyms": {
+        "D1": "05_tlog_contract_transport_air.md"
+      },
+      "characters": 12407
+    },
+    {
+      "position": 11,
+      "case_id": "DV-11",
+      "primary_class": "multi-doc",
+      "question_origin": "agent_style_B",
+      "requested_trap": null,
+      "requested_action": "answer",
+      "plain_allowed": true,
+      "numeric_requested": true,
+      "block_id": "block-4bba676a927c",
+      "seed": {
+        "char_end": 2522,
+        "char_start": 1742,
+        "section_path": [
+          "Договор международной экспедиции",
+          "Термины"
+        ],
+        "source_id": "03_legal_contract_expedition_international.md"
+      },
+      "partner": {
+        "char_end": 2457,
+        "char_start": 1727,
+        "section_path": [
+          "Договор транспортной экспедиции (общий шаблон)",
+          "Термины"
+        ],
+        "source_id": "03_legal_contract_expedition_general.md"
+      },
+      "request_sha256": "576be2010c3dd80cb42da32e36598d0721cad663d49f83728325b346e8568642",
+      "pseudonyms": {
+        "D1": "03_legal_contract_expedition_international.md",
+        "D2": "03_legal_contract_expedition_general.md"
+      },
+      "characters": 14305
+    },
+    {
+      "position": 12,
+      "case_id": "DV-12",
+      "primary_class": "aggregation",
+      "question_origin": "agent_style_A",
+      "requested_trap": null,
+      "requested_action": "answer",
+      "plain_allowed": true,
+      "numeric_requested": false,
+      "block_id": "block-6a90b82a6913",
+      "seed": {
+        "char_end": 15312,
+        "char_start": 14658,
+        "section_path": [
+          "Договор железнодорожного фидерного плеча авиагруза",
+          "Контрольный список"
+        ],
+        "source_id": "03_legal_contract_cargo_transport_rail.md"
+      },
+      "partner": {
+        "char_end": 1187,
+        "char_start": 619,
+        "section_path": [
+          "Договор фидерного плеча авиагруза до/из аэропорта",
+          "Назначение"
+        ],
+        "source_id": "05_tlog_contract_transport_rail.md"
+      },
+      "request_sha256": "5eb550ccd2f692d0b0bb8f4fa64bf89c5b46b25dd24e98fa8408214045f27ec3",
+      "pseudonyms": {
+        "D1": "03_legal_contract_cargo_transport_rail.md",
+        "D2": "05_tlog_contract_transport_rail.md"
+      },
+      "characters": 13975
+    },
+    {
+      "position": 13,
+      "case_id": "DV-13",
+      "primary_class": "needs-refusal/clarification",
+      "question_origin": "agent_style_A",
+      "requested_trap": "dangerous_goods",
+      "requested_action": "escalate",
+      "plain_allowed": true,
+      "numeric_requested": false,
+      "block_id": "block-063b5c637033",
+      "seed": {
+        "char_end": 1215,
+        "char_start": 919,
+        "section_path": [
+          "Политика разграничения доступа к данным",
+          "Область применения"
+        ],
+        "source_id": "06_comp_policy_access_control.md"
+      },
+      "partner": null,
+      "request_sha256": "16b63c55e1a6b3144118eaaa18a8c658c9ff6679c1902e08b5aff2ddf93796c6",
+      "pseudonyms": {
+        "D1": "06_comp_policy_access_control.md"
+      },
+      "characters": 12473
+    },
+    {
+      "position": 14,
+      "case_id": "DV-14",
+      "primary_class": "single-doc",
+      "question_origin": "agent_style_B",
+      "requested_trap": null,
+      "requested_action": "answer",
+      "plain_allowed": true,
+      "numeric_requested": true,
+      "block_id": "block-51c9b9c3885d",
+      "seed": {
+        "char_end": 1089,
+        "char_start": 823,
+        "section_path": [
+          "Положение о премировании",
+          "Область применения"
+        ],
+        "source_id": "01_hr_pol_bonus.md"
+      },
+      "partner": null,
+      "request_sha256": "1b94a729d6525b5b3374651692d873f3df5c0937e35061385c562c90c31084ce",
+      "pseudonyms": {
+        "D1": "01_hr_pol_bonus.md"
+      },
+      "characters": 12374
+    },
+    {
+      "position": 15,
+      "case_id": "DV-15",
+      "primary_class": "multi-doc",
+      "question_origin": "agent_style_A",
+      "requested_trap": "false_premise",
+      "requested_action": "correct_premise",
+      "plain_allowed": true,
+      "numeric_requested": false,
+      "block_id": "block-32dbeba2cb06",
+      "seed": {
+        "char_end": 3337,
+        "char_start": 2583,
+        "section_path": [
+          "Политика сообщений о нарушениях (whistleblowing)",
+          "Порядок действий",
+          "2. Обязательные поля"
+        ],
+        "source_id": "06_comp_policy_whistleblower.md"
+      },
+      "partner": {
+        "char_end": 3364,
+        "char_start": 2566,
+        "section_path": [
+          "Локальный акт по противодействию коррупции",
+          "Порядок действий",
+          "2. Обязательные поля"
+        ],
+        "source_id": "06_comp_policy_anticorruption_local.md"
+      },
+      "request_sha256": "f57c3733fa2420f3167600bdb2f12521d622703b2869fd79baa3a1a2ce6bd64d",
+      "pseudonyms": {
+        "D1": "06_comp_policy_whistleblower.md",
+        "D2": "06_comp_policy_anticorruption_local.md"
+      },
+      "characters": 14348
+    },
+    {
+      "position": 16,
+      "case_id": "DV-16",
+      "primary_class": "multi-doc",
+      "question_origin": "agent_style_B",
+      "requested_trap": null,
+      "requested_action": "answer",
+      "plain_allowed": true,
+      "numeric_requested": false,
+      "block_id": "block-e24337dd8243",
+      "seed": {
+        "char_end": 2419,
+        "char_start": 1660,
+        "section_path": [
+          "Договор аренды складских помещений",
+          "Термины"
+        ],
+        "source_id": "03_legal_contract_rent_warehouse.md"
+      },
+      "partner": {
+        "char_end": 2408,
+        "char_start": 1660,
+        "section_path": [
+          "Договор на складские услуги",
+          "Термины"
+        ],
+        "source_id": "03_legal_contract_warehouse_services.md"
+      },
+      "request_sha256": "e85174a33ea4e206c4081cb554df737e8d7d3558f5110ac57fa48169637a5f01",
+      "pseudonyms": {
+        "D1": "03_legal_contract_rent_warehouse.md",
+        "D2": "03_legal_contract_warehouse_services.md"
+      },
+      "characters": 14147
+    },
+    {
+      "position": 17,
+      "case_id": "DV-17",
+      "primary_class": "single-doc",
+      "question_origin": "agent_style_A",
+      "requested_trap": "outdated_rule",
+      "requested_action": "correct_premise",
+      "plain_allowed": true,
+      "numeric_requested": false,
+      "block_id": "block-6cd91678207f",
+      "seed": {
+        "char_end": 1393,
+        "char_start": 935,
+        "section_path": [
+          "Договор страхования авиагруза",
+          "Область применения"
+        ],
+        "source_id": "05_tlog_contract_cargo_insurance.md"
+      },
+      "partner": null,
+      "request_sha256": "8838e734c42863072d152a08f3d3c91d75b5222f3c61dee6503129c27840c5dc",
+      "pseudonyms": {
+        "D1": "05_tlog_contract_cargo_insurance.md"
+      },
+      "characters": 12572
+    },
+    {
+      "position": 18,
+      "case_id": "DV-18",
+      "primary_class": "aggregation",
+      "question_origin": "agent_style_B",
+      "requested_trap": null,
+      "requested_action": "answer",
+      "plain_allowed": true,
+      "numeric_requested": false,
+      "block_id": "block-58587be13be7",
+      "seed": {
+        "char_end": 14744,
+        "char_start": 14155,
+        "section_path": [
+          "Договор страхования гражданской ответственности перевозчика",
+          "Критерии качества ответа"
+        ],
+        "source_id": "03_legal_contract_insurance_civil_liability.md"
+      },
+      "partner": {
+        "char_end": 14494,
+        "char_start": 13953,
+        "section_path": [
+          "Договор перевозки груза (общий шаблон)",
+          "Критерии качества ответа"
+        ],
+        "source_id": "03_legal_contract_cargo_transport_general.md"
+      },
+      "request_sha256": "b4cde973dd3cc2d720827549300273ad731df902e2b9ec089b937024a1dbdf88",
+      "pseudonyms": {
+        "D1": "03_legal_contract_insurance_civil_liability.md",
+        "D2": "03_legal_contract_cargo_transport_general.md"
+      },
+      "characters": 13869
+    },
+    {
+      "position": 19,
+      "case_id": "DV-19",
+      "primary_class": "needs-refusal/clarification",
+      "question_origin": "agent_style_B",
+      "requested_trap": null,
+      "requested_action": "clarify",
+      "plain_allowed": true,
+      "numeric_requested": false,
+      "block_id": "block-82a1a339198e",
+      "seed": {
+        "char_end": 1669,
+        "char_start": 1156,
+        "section_path": [
+          "Договор резервного фидерного плеча авиагруза",
+          "Область применения"
+        ],
+        "source_id": "05_tlog_contract_transport_sea.md"
+      },
+      "partner": null,
+      "request_sha256": "d46c618c503f2b3a089d354e9b071086d308bb52a5f095dd546cff5bf812af7a",
+      "pseudonyms": {
+        "D1": "05_tlog_contract_transport_sea.md"
+      },
+      "characters": 12703
+    },
+    {
+      "position": 20,
+      "case_id": "DV-20",
+      "primary_class": "multi-doc",
+      "question_origin": "agent_style_A",
+      "requested_trap": null,
+      "requested_action": "answer",
+      "plain_allowed": true,
+      "numeric_requested": true,
+      "block_id": "block-10ecde179a74",
+      "seed": {
+        "char_end": 7124,
+        "char_start": 6556,
+        "section_path": [
+          "Политика GPS-мониторинга наземного плеча авиагруза",
+          "Порядок действий",
+          "5. Согласование"
+        ],
+        "source_id": "05_tlog_regulation_gps_tracking.md"
+      },
+      "partner": {
+        "char_end": 7521,
+        "char_start": 6942,
+        "section_path": [
+          "Порядок оформления путевых листов для airport first/last mile",
+          "Порядок действий",
+          "5. Согласование"
+        ],
+        "source_id": "05_tlog_regulation_waybill.md"
+      },
+      "request_sha256": "994216fd2a83a658c6ae9e6d7f0048d1fa6305e6a739693b2f61efee4c371b99",
+      "pseudonyms": {
+        "D1": "05_tlog_regulation_gps_tracking.md",
+        "D2": "05_tlog_regulation_waybill.md"
+      },
+      "characters": 13898
+    },
+    {
+      "position": 21,
+      "case_id": "DV-21",
+      "primary_class": "single-doc",
+      "question_origin": "agent_style_B",
+      "requested_trap": null,
+      "requested_action": "answer",
+      "plain_allowed": true,
+      "numeric_requested": false,
+      "block_id": "block-fc77599603d6",
+      "seed": {
+        "char_end": 3729,
+        "char_start": 3484,
+        "section_path": [
+          "Регламент внутреннего перевода",
+          "Порядок действий",
+          "7. Временный перевод"
+        ],
+        "source_id": "01_hr_internal_transfer.md"
+      },
+      "partner": null,
+      "request_sha256": "d15cef711029d0dc6ab2dfa61a61082d457bfe4d9a1d89e973294e190482c7f2",
+      "pseudonyms": {
+        "D1": "01_hr_internal_transfer.md"
+      },
+      "characters": 12338
+    },
+    {
+      "position": 22,
+      "case_id": "DV-22",
+      "primary_class": "aggregation",
+      "question_origin": "agent_style_A",
+      "requested_trap": null,
+      "requested_action": "answer",
+      "plain_allowed": true,
+      "numeric_requested": false,
+      "block_id": "block-5502576abc78",
+      "seed": {
+        "char_end": 3660,
+        "char_start": 3373,
+        "section_path": [
+          "Приказ о приеме на работу (шаблон)",
+          "Порядок действий",
+          "4. Действия после подписания"
+        ],
+        "source_id": "02_hr_tmp_employment_order.md"
+      },
+      "partner": {
+        "char_end": 2104,
+        "char_start": 1711,
+        "section_path": [
+          "Политика подбора персонала",
+          "Порядок действий",
+          "1. Формирование заявки на подбор"
+        ],
+        "source_id": "01_hr_pol_hiring.md"
+      },
+      "request_sha256": "90346da2c203d16e54308d400ba7fb5eb98a4d0d2b096c152418c5487c8bbbb2",
+      "pseudonyms": {
+        "D1": "02_hr_tmp_employment_order.md",
+        "D2": "01_hr_pol_hiring.md"
+      },
+      "characters": 13431
+    },
+    {
+      "position": 23,
+      "case_id": "DV-23",
+      "primary_class": "multi-doc",
+      "question_origin": "agent_style_B",
+      "requested_trap": "conflicting_documents",
+      "requested_action": "correct_premise",
+      "plain_allowed": true,
+      "numeric_requested": false,
+      "block_id": "block-d5fc84d12da2",
+      "seed": {
+        "char_end": 1605,
+        "char_start": 1066,
+        "section_path": [
+          "Положение о командировках",
+          "Термины"
+        ],
+        "source_id": "01_hr_pol_business_trip.md"
+      },
+      "partner": {
+        "char_end": 1570,
+        "char_start": 1079,
+        "section_path": [
+          "Приказ о командировке (шаблон)",
+          "Термины"
+        ],
+        "source_id": "02_hr_tmp_business_trip_order.md"
+      },
+      "request_sha256": "84fa507f914711aef5c7b3254bfd3c5b05dec6b8a511592d6ba3df5f14fe7beb",
+      "pseudonyms": {
+        "D1": "01_hr_pol_business_trip.md",
+        "D2": "02_hr_tmp_business_trip_order.md"
+      },
+      "characters": 13635
+    },
+    {
+      "position": 24,
+      "case_id": "DV-24",
+      "primary_class": "needs-refusal/clarification",
+      "question_origin": "agent_style_A",
+      "requested_trap": "out_of_corpus",
+      "requested_action": "refuse",
+      "plain_allowed": true,
+      "numeric_requested": false,
+      "block_id": "block-d5c9fe6cc449",
+      "seed": {
+        "char_end": 2247,
+        "char_start": 1881,
+        "section_path": [
+          "Договор о полной материальной ответственности (шаблон)",
+          "Порядок действий",
+          "1. Инициирование"
+        ],
+        "source_id": "02_hr_tmp_material_liability_agreement.md"
+      },
+      "partner": null,
+      "request_sha256": "ee65dfacd9bc77063f523cf594a13de9207ad9452547901923b1cfb9a6651052",
+      "pseudonyms": {
+        "D1": "02_hr_tmp_material_liability_agreement.md"
+      },
+      "characters": 12609
+    },
+    {
+      "position": 25,
+      "case_id": "DV-25",
+      "primary_class": "single-doc",
+      "question_origin": "agent_style_A",
+      "requested_trap": "false_premise",
+      "requested_action": "correct_premise",
+      "plain_allowed": true,
+      "numeric_requested": true,
+      "block_id": "block-b005c8d4fe67",
+      "seed": {
+        "char_end": 1085,
+        "char_start": 848,
+        "section_path": [
+          "Регламент увольнения сотрудников",
+          "Область применения"
+        ],
+        "source_id": "01_hr_dismissal_procedure.md"
+      },
+      "partner": null,
+      "request_sha256": "1816f3de585bbcb0288878d04f63657bb381d5256b02519e2a8625918ecd455b",
+      "pseudonyms": {
+        "D1": "01_hr_dismissal_procedure.md"
+      },
+      "characters": 12396
+    },
+    {
+      "position": 26,
+      "case_id": "DV-26",
+      "primary_class": "multi-doc",
+      "question_origin": "agent_style_A",
+      "requested_trap": null,
+      "requested_action": "answer",
+      "plain_allowed": true,
+      "numeric_requested": false,
+      "block_id": "block-be6c3fa62e68",
+      "seed": {
+        "char_end": 8412,
+        "char_start": 7670,
+        "section_path": [
+          "Положение о коммерческой тайне",
+          "Практический сценарий"
+        ],
+        "source_id": "06_comp_policy_commercial_secret.md"
+      },
+      "partner": {
+        "char_end": 8568,
+        "char_start": 7876,
+        "section_path": [
+          "Соглашение о неразглашении (NDA) для контрагентов",
+          "Практический сценарий"
+        ],
+        "source_id": "06_comp_policy_nda_contractor.md"
+      },
+      "request_sha256": "c62978b733266f4124db81e26a900335c4a480330c57ff6ef6ee914d6b8b3757",
+      "pseudonyms": {
+        "D1": "06_comp_policy_commercial_secret.md",
+        "D2": "06_comp_policy_nda_contractor.md"
+      },
+      "characters": 14083
+    },
+    {
+      "position": 27,
+      "case_id": "DV-27",
+      "primary_class": "aggregation",
+      "question_origin": "agent_style_B",
+      "requested_trap": null,
+      "requested_action": "answer",
+      "plain_allowed": true,
+      "numeric_requested": false,
+      "block_id": "block-76098e4d4e29",
+      "seed": {
+        "char_end": 3450,
+        "char_start": 2555,
+        "section_path": [
+          "План реагирования на инциденты ИБ и утечки",
+          "Порядок действий",
+          "2. Обязательные поля"
+        ],
+        "source_id": "06_comp_policy_incident_response.md"
+      },
+      "partner": {
+        "char_end": 15029,
+        "char_start": 14397,
+        "section_path": [
+          "Договор оказания услуг (общий шаблон)",
+          "Контрольный список"
+        ],
+        "source_id": "03_legal_contract_services_general.md"
+      },
+      "request_sha256": "ffab170024d6191a05e34d282277a7f3784afe6835cebe67894b166b6619628d",
+      "pseudonyms": {
+        "D1": "06_comp_policy_incident_response.md",
+        "D2": "03_legal_contract_services_general.md"
+      },
+      "characters": 14309
+    },
+    {
+      "position": 28,
+      "case_id": "DV-28",
+      "primary_class": "needs-refusal/clarification",
+      "question_origin": "agent_style_B",
+      "requested_trap": "dangerous_goods",
+      "requested_action": "escalate",
+      "plain_allowed": true,
+      "numeric_requested": false,
+      "block_id": "block-71b1f8060c9e",
+      "seed": {
+        "char_end": 13679,
+        "char_start": 12854,
+        "section_path": [
+          "Чеклист проверки договора на compliance",
+          "Критерии качества ответа"
+        ],
+        "source_id": "06_comp_checklist_contract_compliance.md"
+      },
+      "partner": null,
+      "request_sha256": "a172138dbe2537ed590721e8d88633c62ece90a48caeab1a8b2cd627062acabb",
+      "pseudonyms": {
+        "D1": "06_comp_checklist_contract_compliance.md"
+      },
+      "characters": 13071
+    },
+    {
+      "position": 29,
+      "case_id": "DV-29",
+      "primary_class": "single-doc",
+      "question_origin": "agent_style_B",
+      "requested_trap": null,
+      "requested_action": "answer",
+      "plain_allowed": true,
+      "numeric_requested": false,
+      "block_id": "block-76644742a721",
+      "seed": {
+        "char_end": 781,
+        "char_start": 527,
+        "section_path": [
+          "Положение об удаленной работе",
+          "Назначение"
+        ],
+        "source_id": "01_hr_pol_remote_work.md"
+      },
+      "partner": null,
+      "request_sha256": "33bf024b07582d54c5ef193fa1968586a757923df7efb2a2648167cebb94ee2d",
+      "pseudonyms": {
+        "D1": "01_hr_pol_remote_work.md"
+      },
+      "characters": 12322
+    },
+    {
+      "position": 30,
+      "case_id": "DV-30",
+      "primary_class": "multi-doc",
+      "question_origin": "agent_style_B",
+      "requested_trap": "false_premise",
+      "requested_action": "correct_premise",
+      "plain_allowed": true,
+      "numeric_requested": true,
+      "block_id": "block-1246041c68b5",
+      "seed": {
+        "char_end": 3427,
+        "char_start": 2927,
+        "section_path": [
+          "Должностная инструкция — логист",
+          "Порядок действий",
+          "3. Ответственность"
+        ],
+        "source_id": "02_hr_tmp_job_description_logistics.md"
+      },
+      "partner": {
+        "char_end": 3495,
+        "char_start": 3118,
+        "section_path": [
+          "Должностная инструкция — водитель-экспедитор",
+          "Порядок действий",
+          "3. Ответственность"
+        ],
+        "source_id": "02_hr_tmp_job_description_driver.md"
+      },
+      "request_sha256": "f6afe51188a0101ee7dc891ee016a22f6c91dd0513bb713a42684060c364fb87",
+      "pseudonyms": {
+        "D1": "02_hr_tmp_job_description_logistics.md",
+        "D2": "02_hr_tmp_job_description_driver.md"
+      },
+      "characters": 13504
+    }
+  ]
+}
