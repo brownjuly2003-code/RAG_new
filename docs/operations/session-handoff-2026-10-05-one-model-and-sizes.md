@@ -1,5 +1,8 @@
 # Session handoff — 2026-10-05, one model does everything; sizes registered
 
+Continued by the [log of 2026-10-06](session-handoff-2026-10-06-sets-bases-reference.md),
+which is the one to read first.
+
 Written for the next session because Julia asked for a stop point: «поставь
 точку, где логично и обнови доку». The session ran from 2026-10-04 23:28 UTC
 into 2026-10-05 on her request to take the next ten slices of the quality plan
