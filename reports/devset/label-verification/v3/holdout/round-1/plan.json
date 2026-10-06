@@ -1,0 +1,2187 @@
+{
+  "plan_version": 1,
+  "rubric_version": "label-verification/v3",
+  "prompt_sha256": "3f7c114428028f6518aca3f21a03f5352d0497d99d0356f2c804b9389df756ad",
+  "round": 1,
+  "draft_author": {
+    "model": "claude-opus-5-5",
+    "vendor": "Anthropic"
+  },
+  "verifiers": {
+    "claude-opus-5-5": {
+      "model": "claude-opus-5-5",
+      "vendor": "Anthropic",
+      "route": "Claude Code CLI in safe mode, first-party provider",
+      "settings": {
+        "model": "claude-opus-5-5",
+        "effort": "max",
+        "tools": "none",
+        "session": "safe mode: no instruction file, memory, hook, skill, plugin or MCP server; no tools; an empty working directory; nothing stored; one turn",
+        "system_prompt_sha256": "4178fef002ad32d05e155ec7ee266177499d266d62371c5b68eba9ca9541a413"
+      }
+    }
+  },
+  "inputs": {
+    "drafts_sha256": "2d3eed624ba51e2b0b76e9f75b3a347df7b6d41fd75b86fb81f69ceb4a3fb593",
+    "families_sha256": "54bdb736180e00325bff20f49e2b9d985dd62278fe9f9cdb6161a0da719e3584",
+    "corpus_sha256": "c8562a64f88f72172f29e30865091be79f08d00ce65fbf675f34de64dcebe343",
+    "scan_sha256": "5af9b935c8d1bb349cbdd0eec40a8398482539683a53535095c5c9e1ccef507c",
+    "archive_sha256": "2a9da515a4c69b46453a59ed6d0bb772b0aad6fed23c87ee465851b43dbdef12",
+    "previous_plan_sha256": null,
+    "repairs_sha256": null,
+    "drops_sha256": null
+  },
+  "requests": [
+    {
+      "case_id": "HO-01",
+      "round": 1,
+      "request_sha256": "77d15d90e619ef7e3df0115674786795a2e25391a30fa65c5ac39eb9e8b66e76",
+      "pseudonyms": {
+        "D1": "01_hr_pol_fire_safety.md",
+        "D2": "02_hr_tmp_job_description_accountant.md"
+      },
+      "characters": 11693,
+      "corpus_texts": 4,
+      "corpus_text_counts": {
+        "spans": 2,
+        "cards": 2,
+        "sections": 0,
+        "scan": 0
+      },
+      "case_sha256": "b576a3a172ea833decc902e711ed5b4b235518893c3b7ef570774b4d926c99cd",
+      "registered_severity": "moderate",
+      "primary_class": "multi-doc",
+      "safety_critical": false,
+      "documents": [
+        "01_hr_pol_fire_safety.md",
+        "02_hr_tmp_job_description_accountant.md"
+      ],
+      "families": [
+        "family-0d52ce3cbc6a",
+        "family-40d68279e773"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "HO-02",
+      "round": 1,
+      "request_sha256": "f70ed18ca7236c653876c46b1a648f5fc54eb91f473b74023cacb8f1caadef0f",
+      "pseudonyms": {
+        "D1": "03_legal_contract_leasing_vehicle.md"
+      },
+      "characters": 11191,
+      "corpus_texts": 2,
+      "corpus_text_counts": {
+        "spans": 1,
+        "cards": 1,
+        "sections": 0,
+        "scan": 0
+      },
+      "case_sha256": "b134b3acd741b8bbf60876799b26ebf9ba92b9e791e63c0c005f054bfba076ac",
+      "registered_severity": "moderate",
+      "primary_class": "single-doc",
+      "safety_critical": false,
+      "documents": [
+        "03_legal_contract_leasing_vehicle.md"
+      ],
+      "families": [
+        "family-910fcbb578cc"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "HO-03",
+      "round": 1,
+      "request_sha256": "615328ce6d12e3734ab584860215884e7a0c6d53e0fbd87f444d7c29b49173da",
+      "pseudonyms": {
+        "D1": "04_legal_power_of_attorney_bank.md",
+        "D2": "04_legal_letter_notary_demand.md",
+        "D3": "04_legal_letter_demand.md",
+        "D4": "04_legal_memo_dispute_risk.md",
+        "D5": "04_legal_reply_non_payment.md",
+        "D6": "03_legal_contract_customs_broker.md",
+        "D7": "05_tlog_contract_transport_air.md",
+        "D8": "04_legal_power_of_attorney_contracts.md",
+        "D9": "04_legal_power_of_attorney_court.md",
+        "D10": "04_legal_reply_cargo_damage.md",
+        "D11": "07_faq_claims_procedure.md"
+      },
+      "characters": 33966,
+      "corpus_texts": 35,
+      "corpus_text_counts": {
+        "spans": 0,
+        "cards": 1,
+        "sections": 1,
+        "scan": 33
+      },
+      "case_sha256": "f36af73bfdebf219bae44e617c93bd88ee9e59f2345133aadd33ff37c788cb64",
+      "registered_severity": "high",
+      "primary_class": "needs-refusal/clarification",
+      "safety_critical": false,
+      "documents": [
+        "04_legal_power_of_attorney_bank.md"
+      ],
+      "families": [
+        "family-3aa942c0c670"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "HO-04",
+      "round": 1,
+      "request_sha256": "af526471a719e4e26c29dd78c227a40dbcccaddd2cdc30849f0c0ca608e97d5f",
+      "pseudonyms": {
+        "D1": "03_legal_contract_joint_activity.md",
+        "D2": "03_legal_contract_subcontract.md"
+      },
+      "characters": 10249,
+      "corpus_texts": 4,
+      "corpus_text_counts": {
+        "spans": 2,
+        "cards": 2,
+        "sections": 0,
+        "scan": 0
+      },
+      "case_sha256": "867ab9deeea5fa581a4dd632f523807a88834904b20cfb0aa16e6dabe759495c",
+      "registered_severity": "high",
+      "primary_class": "multi-doc",
+      "safety_critical": false,
+      "documents": [
+        "03_legal_contract_joint_activity.md",
+        "03_legal_contract_subcontract.md"
+      ],
+      "families": [
+        "family-2022ff872658",
+        "family-4b3ed7b1d5a5"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "HO-06",
+      "round": 1,
+      "request_sha256": "572dcf7cc70fc60143e65a913aa6ccbda97e3c1dfa4f310cf932cccc4eeed100",
+      "pseudonyms": {
+        "D1": "01_hr_pol_medical_check.md",
+        "D2": "01_hr_pol_second_job.md",
+        "D3": "01_hr_pol_attendance.md",
+        "D4": "01_hr_pol_childcare.md",
+        "D5": "01_hr_pol_injury.md",
+        "D6": "01_hr_pol_maternity.md",
+        "D7": "01_hr_pol_overtime.md",
+        "D8": "01_hr_pol_part_time.md",
+        "D9": "01_hr_pol_remote_work.md",
+        "D10": "01_hr_pol_social_package.md",
+        "D11": "02_hr_tmp_employment_contract.md",
+        "D12": "02_hr_tmp_timesheet.md",
+        "D13": "external_tk_rf_chapter_11.md"
+      },
+      "characters": 33945,
+      "corpus_texts": 42,
+      "corpus_text_counts": {
+        "spans": 2,
+        "cards": 2,
+        "sections": 2,
+        "scan": 36
+      },
+      "case_sha256": "ecce671e1239ba02d6210ddc4f61825b8ed3dbeb10aabdf4ce17d7c047ea9723",
+      "registered_severity": "high",
+      "primary_class": "multi-doc",
+      "safety_critical": false,
+      "documents": [
+        "01_hr_pol_medical_check.md",
+        "01_hr_pol_second_job.md"
+      ],
+      "families": [
+        "family-373712b722da",
+        "family-f8971146c660"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "HO-07",
+      "round": 1,
+      "request_sha256": "95734c8e0cf1df62b02bce7bfdfa0e97fb2788a79dde37c8b9092d3433688e2d",
+      "pseudonyms": {
+        "D1": "03_legal_contract_supply_equipment.md",
+        "D2": "01_hr_pol_adaptation.md",
+        "D3": "01_hr_pol_grievance.md",
+        "D4": "01_hr_pol_training.md",
+        "D5": "01_hr_probation_procedure.md",
+        "D6": "02_hr_tmp_leave_order.md",
+        "D7": "03_legal_contract_leasing_vehicle.md",
+        "D8": "03_legal_contract_rent_warehouse.md",
+        "D9": "03_legal_contract_supply_auto_parts.md",
+        "D10": "03_legal_contract_tender_rules.md",
+        "D11": "03_legal_contract_termination_checklist.md",
+        "D12": "05_tlog_checklist_cargo_acceptance.md",
+        "D13": "05_tlog_checklist_driver_pre_trip.md",
+        "D14": "05_tlog_contract_transport_air.md",
+        "D15": "05_tlog_regulation_dispatch.md",
+        "D16": "04_legal_claim_cargo_damage.md",
+        "D17": "05_tlog_checklist_vehicle_inspection.md",
+        "D18": "05_tlog_contract_driver_services.md",
+        "D19": "06_comp_checklist_contract_compliance.md",
+        "D20": "07_faq_probation.md"
+      },
+      "characters": 40011,
+      "corpus_texts": 42,
+      "corpus_text_counts": {
+        "spans": 1,
+        "cards": 1,
+        "sections": 1,
+        "scan": 39
+      },
+      "case_sha256": "a01d462dface8bb97653d74001f3ee4e191f283606a3718670e645cabd8c31d6",
+      "registered_severity": "moderate",
+      "primary_class": "single-doc",
+      "safety_critical": false,
+      "documents": [
+        "03_legal_contract_supply_equipment.md"
+      ],
+      "families": [
+        "family-3e0120bafe09"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "HO-08",
+      "round": 1,
+      "request_sha256": "9365fcbde2c2065c025c86b73f1bc419150f339acad48f4129075f735d39805e",
+      "pseudonyms": {
+        "D1": "03_legal_contract_supply_goods.md",
+        "D2": "01_hr_pol_adaptation.md",
+        "D3": "01_hr_pol_business_trip.md",
+        "D4": "01_hr_pol_medical_check.md",
+        "D5": "01_hr_pol_part_time.md",
+        "D6": "01_hr_pol_social_package.md",
+        "D7": "02_hr_tmp_add_agreement.md",
+        "D8": "03_legal_contract_cargo_transport_rail.md",
+        "D9": "03_legal_contract_services_accounting.md",
+        "D10": "03_legal_contract_settlement.md",
+        "D11": "03_legal_contract_supplement_general.md",
+        "D12": "03_legal_contract_supply_auto_parts.md",
+        "D13": "03_legal_contract_supply_equipment.md",
+        "D14": "03_legal_contract_supply_fuel.md",
+        "D15": "04_legal_claim_customs_delay.md",
+        "D16": "04_legal_claim_defective_goods.md",
+        "D17": "04_legal_claim_late_delivery.md",
+        "D18": "04_legal_claim_non_payment.md",
+        "D19": "04_legal_letter_debt_collection.md",
+        "D20": "04_legal_reply_defective_goods.md",
+        "D21": "04_legal_reply_non_payment.md",
+        "D22": "05_tlog_checklist_cargo_acceptance.md",
+        "D23": "05_tlog_contract_customs_representative.md",
+        "D24": "05_tlog_regulation_customs_clearance.md"
+      },
+      "characters": 38899,
+      "corpus_texts": 41,
+      "corpus_text_counts": {
+        "spans": 0,
+        "cards": 1,
+        "sections": 1,
+        "scan": 39
+      },
+      "case_sha256": "c9cca86cea606f5c09da4558f87bf0a741c230d4ed6825091dd747739ab8b838",
+      "registered_severity": "high",
+      "primary_class": "needs-refusal/clarification",
+      "safety_critical": false,
+      "documents": [
+        "03_legal_contract_supply_goods.md"
+      ],
+      "families": [
+        "family-6bced4ae5a0e"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "HO-09",
+      "round": 1,
+      "request_sha256": "51a6f8845e66294c47ad2d55b63a4f86315742c5bbbe33d14a974d33aad0a9b2",
+      "pseudonyms": {
+        "D1": "03_legal_contract_franchise.md",
+        "D2": "05_tlog_contract_tire_service.md"
+      },
+      "characters": 11652,
+      "corpus_texts": 4,
+      "corpus_text_counts": {
+        "spans": 2,
+        "cards": 2,
+        "sections": 0,
+        "scan": 0
+      },
+      "case_sha256": "a900e2724698f743afc7692bb7260ee37f90cafa313b23d1e5e3436be0289ba7",
+      "registered_severity": "high",
+      "primary_class": "multi-doc",
+      "safety_critical": false,
+      "documents": [
+        "03_legal_contract_franchise.md",
+        "05_tlog_contract_tire_service.md"
+      ],
+      "families": [
+        "family-796b49339c8b",
+        "family-d6c6b1195af0"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "HO-10",
+      "round": 1,
+      "request_sha256": "fc82d58067a932577d8d7e0b10fcf3947fd81d82e86a875693ad4a97c9228315",
+      "pseudonyms": {
+        "D1": "04_legal_power_of_attorney_contracts.md",
+        "D2": "04_legal_power_of_attorney_court.md"
+      },
+      "characters": 13094,
+      "corpus_texts": 4,
+      "corpus_text_counts": {
+        "spans": 2,
+        "cards": 2,
+        "sections": 0,
+        "scan": 0
+      },
+      "case_sha256": "6831cce1680f7370e23f025a0f275c260915ae9853a342626314bcb51ed6cd34",
+      "registered_severity": "moderate",
+      "primary_class": "aggregation",
+      "safety_critical": false,
+      "documents": [
+        "04_legal_power_of_attorney_contracts.md",
+        "04_legal_power_of_attorney_court.md"
+      ],
+      "families": [
+        "family-67311784e409",
+        "family-972443d41e88"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "HO-11",
+      "round": 1,
+      "request_sha256": "3be83034ff3a828bb8193a6ef7c14b5336103625a0f9b9af5429cb9bfc7d7f02",
+      "pseudonyms": {
+        "D1": "03_legal_contract_services_it.md"
+      },
+      "characters": 9498,
+      "corpus_texts": 2,
+      "corpus_text_counts": {
+        "spans": 1,
+        "cards": 1,
+        "sections": 0,
+        "scan": 0
+      },
+      "case_sha256": "31231f54212f46ffb8485104763d76ad512e36144997a89264b29343aad33cdc",
+      "registered_severity": "high",
+      "primary_class": "single-doc",
+      "safety_critical": false,
+      "documents": [
+        "03_legal_contract_services_it.md"
+      ],
+      "families": [
+        "family-df3b87d06453"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "HO-12",
+      "round": 1,
+      "request_sha256": "a7b5a1307a427a1f4b27d1326c4efe2ab3d131ae5d9fe324309b2be33effca27",
+      "pseudonyms": {
+        "D1": "03_legal_contract_services_marketing.md",
+        "D2": "03_legal_contract_tender_rules.md",
+        "D3": "03_legal_contract_agency.md",
+        "D4": "03_legal_contract_commission.md",
+        "D5": "03_legal_contract_expedition_general.md",
+        "D6": "03_legal_contract_framework.md",
+        "D7": "03_legal_contract_franchise.md",
+        "D8": "03_legal_contract_insurance_civil_liability.md",
+        "D9": "03_legal_contract_joint_activity.md",
+        "D10": "03_legal_contract_services_accounting.md",
+        "D11": "03_legal_contract_services_consulting.md",
+        "D12": "03_legal_contract_services_general.md",
+        "D13": "03_legal_contract_supply_goods.md"
+      },
+      "characters": 40981,
+      "corpus_texts": 42,
+      "corpus_text_counts": {
+        "spans": 2,
+        "cards": 2,
+        "sections": 2,
+        "scan": 36
+      },
+      "case_sha256": "27a9c55a9c990f898ba245d5dd2afd37a9a44ce6abf2c5ae6ef68d83dffaecdf",
+      "registered_severity": "high",
+      "primary_class": "multi-doc",
+      "safety_critical": false,
+      "documents": [
+        "03_legal_contract_services_marketing.md",
+        "03_legal_contract_tender_rules.md"
+      ],
+      "families": [
+        "family-5891d2a4c4e9",
+        "family-6c616ea5de97"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "HO-13",
+      "round": 1,
+      "request_sha256": "1fa2a5b527927737e249ba6e4721ce2a6db029ec1b744e4fbab3a77e330db147",
+      "pseudonyms": {
+        "D1": "01_hr_pol_smoking.md",
+        "D2": "01_hr_pol_fire_safety.md",
+        "D3": "01_hr_pol_safety.md",
+        "D4": "03_legal_contract_penalty_clause.md",
+        "D5": "03_legal_contract_rent_warehouse.md",
+        "D6": "03_legal_contract_termination_checklist.md",
+        "D7": "03_legal_contract_warehouse_storage.md",
+        "D8": "05_tlog_checklist_vehicle_inspection.md",
+        "D9": "05_tlog_contract_warehouse_3pl.md",
+        "D10": "07_faq_dismissal.md",
+        "D11": "07_faq_leave.md",
+        "D12": "external_tk_rf_chapter_11.md"
+      },
+      "characters": 30313,
+      "corpus_texts": 34,
+      "corpus_text_counts": {
+        "spans": 0,
+        "cards": 1,
+        "sections": 1,
+        "scan": 32
+      },
+      "case_sha256": "07786c40da9a9e23f8e3adf98e219d88e4815a93167ff71b0a9ee481e8d3ccde",
+      "registered_severity": "critical",
+      "primary_class": "needs-refusal/clarification",
+      "safety_critical": true,
+      "documents": [
+        "01_hr_pol_smoking.md"
+      ],
+      "families": [
+        "family-b28ab8d39f59"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "HO-14",
+      "round": 1,
+      "request_sha256": "c42bd3af7e65d88fcbfe5c59417385fa029f259176f3645f2b189e9f0c80b6d2",
+      "pseudonyms": {
+        "D1": "03_legal_contract_guarantee.md",
+        "D2": "03_legal_contract_loan.md"
+      },
+      "characters": 11364,
+      "corpus_texts": 4,
+      "corpus_text_counts": {
+        "spans": 2,
+        "cards": 2,
+        "sections": 0,
+        "scan": 0
+      },
+      "case_sha256": "5930f27fab245893a4d5fdae43816317f5b0675a0f934c8c33cf9f3a118bbf4d",
+      "registered_severity": "moderate",
+      "primary_class": "multi-doc",
+      "safety_critical": false,
+      "documents": [
+        "03_legal_contract_guarantee.md",
+        "03_legal_contract_loan.md"
+      ],
+      "families": [
+        "family-4526b9c94130",
+        "family-759f96f36f6e"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "HO-15",
+      "round": 1,
+      "request_sha256": "811c067c0777a1226e856d35c4712440de5ab1dc063d4ffaebea98e179b712ff",
+      "pseudonyms": {
+        "D1": "03_legal_contract_factoring.md"
+      },
+      "characters": 10973,
+      "corpus_texts": 2,
+      "corpus_text_counts": {
+        "spans": 1,
+        "cards": 1,
+        "sections": 0,
+        "scan": 0
+      },
+      "case_sha256": "d8c1ce9f9c3545f3f2792bc8a15e971196f47f0320b076e85fefe89eb67b6830",
+      "registered_severity": "moderate",
+      "primary_class": "single-doc",
+      "safety_critical": false,
+      "documents": [
+        "03_legal_contract_factoring.md"
+      ],
+      "families": [
+        "family-c45d399bf562"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "HO-16",
+      "round": 1,
+      "request_sha256": "955d393b194a6929ee09c3280fff520090b8bd6fcd5be1daff4a3fd3f08286f9",
+      "pseudonyms": {
+        "D1": "03_legal_contract_penalty_clause.md",
+        "D2": "03_legal_contract_services_consulting.md"
+      },
+      "characters": 11363,
+      "corpus_texts": 4,
+      "corpus_text_counts": {
+        "spans": 2,
+        "cards": 2,
+        "sections": 0,
+        "scan": 0
+      },
+      "case_sha256": "066c2e22e41b43ed4cdf4adb206772017593a9acca314633ef4088d0bb6f9f00",
+      "registered_severity": "high",
+      "primary_class": "multi-doc",
+      "safety_critical": false,
+      "documents": [
+        "03_legal_contract_penalty_clause.md",
+        "03_legal_contract_services_consulting.md"
+      ],
+      "families": [
+        "family-6f8931567e31",
+        "family-e8555864e9f3"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "HO-17",
+      "round": 1,
+      "request_sha256": "1c4221d5165962cedaece9dcb4165a658f3418b4e68befab975dc8ababccb1a2",
+      "pseudonyms": {
+        "D1": "03_legal_contract_agency.md",
+        "D2": "03_legal_contract_commission.md"
+      },
+      "characters": 11773,
+      "corpus_texts": 4,
+      "corpus_text_counts": {
+        "spans": 2,
+        "cards": 2,
+        "sections": 0,
+        "scan": 0
+      },
+      "case_sha256": "2d5da8d9ceafed793725c7e43840df2e534066152e83597bd613fc691b0699db",
+      "registered_severity": "moderate",
+      "primary_class": "aggregation",
+      "safety_critical": false,
+      "documents": [
+        "03_legal_contract_agency.md",
+        "03_legal_contract_commission.md"
+      ],
+      "families": [
+        "family-60558bd5252c",
+        "family-9f876667a65d"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "HO-18",
+      "round": 1,
+      "request_sha256": "307e577c7cb7a76c74e1aadb894b3cad2e62f519dd058076538cabd65e631c87",
+      "pseudonyms": {
+        "D1": "01_hr_pol_diversity.md",
+        "D2": "01_hr_dismissal_procedure.md",
+        "D3": "01_hr_pol_adaptation.md",
+        "D4": "01_hr_pol_conflict_interest.md",
+        "D5": "01_hr_pol_corruption.md",
+        "D6": "01_hr_pol_dress_code.md",
+        "D7": "01_hr_pol_harassment.md",
+        "D8": "01_hr_pol_internal_comm.md",
+        "D9": "01_hr_pol_mental_health.md",
+        "D10": "01_hr_pol_training.md",
+        "D11": "02_hr_tmp_job_description_logistics.md",
+        "D12": "05_tlog_contract_tire_service.md",
+        "D13": "07_faq_probation.md"
+      },
+      "characters": 27489,
+      "corpus_texts": 32,
+      "corpus_text_counts": {
+        "spans": 0,
+        "cards": 1,
+        "sections": 1,
+        "scan": 30
+      },
+      "case_sha256": "4e3e4f3075e912af03a0b31d5eb3d52d47eebeddfc84b7225c150fafb4e07c6e",
+      "registered_severity": "moderate",
+      "primary_class": "needs-refusal/clarification",
+      "safety_critical": false,
+      "documents": [
+        "01_hr_pol_diversity.md"
+      ],
+      "families": [
+        "family-e5ca50122400"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "HO-20",
+      "round": 1,
+      "request_sha256": "a9f7fb7323faedb422be658e580e8c92a838049b48bc7eebb2086e011143b5a2",
+      "pseudonyms": {
+        "D1": "03_legal_contract_leasing_vehicle.md"
+      },
+      "characters": 9665,
+      "corpus_texts": 2,
+      "corpus_text_counts": {
+        "spans": 1,
+        "cards": 1,
+        "sections": 0,
+        "scan": 0
+      },
+      "case_sha256": "b4f4467bbec41f12c6fe5aa5b6a6378494bf81877accc5354b89d3c1f45eb916",
+      "registered_severity": "high",
+      "primary_class": "single-doc",
+      "safety_critical": false,
+      "documents": [
+        "03_legal_contract_leasing_vehicle.md"
+      ],
+      "families": [
+        "family-910fcbb578cc"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "HO-21",
+      "round": 1,
+      "request_sha256": "1fe618b529c34bc16ce284526c1c73e84b927af0df52f72c016745ce1d6024aa",
+      "pseudonyms": {
+        "D1": "03_legal_contract_services_accounting.md",
+        "D2": "04_legal_power_of_attorney_bank.md"
+      },
+      "characters": 11141,
+      "corpus_texts": 4,
+      "corpus_text_counts": {
+        "spans": 2,
+        "cards": 2,
+        "sections": 0,
+        "scan": 0
+      },
+      "case_sha256": "f9a91dc816d80334ab6d132a71e038d3d2caeef57e989a7e42e6b1251378baef",
+      "registered_severity": "high",
+      "primary_class": "multi-doc",
+      "safety_critical": false,
+      "documents": [
+        "03_legal_contract_services_accounting.md",
+        "04_legal_power_of_attorney_bank.md"
+      ],
+      "families": [
+        "family-1ab6956c0864",
+        "family-3aa942c0c670"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "HO-22",
+      "round": 1,
+      "request_sha256": "354ca10e1f2cec2cfd681053ee5ff7d8b480074fce31bc6373e129b7f81f3bd3",
+      "pseudonyms": {
+        "D1": "03_legal_contract_joint_activity.md",
+        "D2": "01_hr_pol_bonus.md",
+        "D3": "01_hr_pol_childcare.md",
+        "D4": "02_hr_tmp_salary_change_order.md",
+        "D5": "03_legal_contract_cargo_transport_rail.md",
+        "D6": "03_legal_contract_expedition_general.md",
+        "D7": "03_legal_contract_services_general.md",
+        "D8": "03_legal_contract_supply_goods.md",
+        "D9": "04_legal_claim_non_payment.md",
+        "D10": "04_legal_memo_contract_breach.md",
+        "D11": "03_legal_contract_loan.md",
+        "D12": "03_legal_contract_supplement_general.md",
+        "D13": "03_legal_contract_supply_auto_parts.md",
+        "D14": "04_legal_claim_expedition_breach.md",
+        "D15": "04_legal_letter_demand.md",
+        "D16": "04_legal_memo_dispute_risk.md",
+        "D17": "04_legal_reply_non_payment.md",
+        "D18": "03_legal_contract_customs_broker.md",
+        "D19": "05_tlog_contract_transport_air.md",
+        "D20": "04_legal_letter_debt_collection.md",
+        "D21": "05_tlog_contract_fuel_supply.md",
+        "D22": "05_tlog_contract_transport_rail.md",
+        "D23": "05_tlog_regulation_oversized.md",
+        "D24": "05_tlog_regulation_dispatch.md",
+        "D25": "05_tlog_checklist_cargo_acceptance.md",
+        "D26": "04_legal_claim_cargo_damage.md",
+        "D27": "external_tk_rf_chapter_11.md"
+      },
+      "characters": 34020,
+      "corpus_texts": 38,
+      "corpus_text_counts": {
+        "spans": 0,
+        "cards": 1,
+        "sections": 1,
+        "scan": 36
+      },
+      "case_sha256": "5fe577494a477752268df4f25b27a66b8f83b023774983f4a5e1572ade77d049",
+      "registered_severity": "high",
+      "primary_class": "needs-refusal/clarification",
+      "safety_critical": false,
+      "documents": [
+        "03_legal_contract_joint_activity.md"
+      ],
+      "families": [
+        "family-4b3ed7b1d5a5"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "HO-23",
+      "round": 1,
+      "request_sha256": "c9e6905044be74eed204495335c215771a03d18202e4809e572a5db78d29732d",
+      "pseudonyms": {
+        "D1": "01_hr_pol_medical_check.md",
+        "D2": "01_hr_pol_second_job.md"
+      },
+      "characters": 12008,
+      "corpus_texts": 4,
+      "corpus_text_counts": {
+        "spans": 2,
+        "cards": 2,
+        "sections": 0,
+        "scan": 0
+      },
+      "case_sha256": "68359fee0eaa36d6b6a92edf1a5e5658106506a97d7993eeff2870c71acc92b0",
+      "registered_severity": "critical",
+      "primary_class": "aggregation",
+      "safety_critical": true,
+      "documents": [
+        "01_hr_pol_medical_check.md",
+        "01_hr_pol_second_job.md"
+      ],
+      "families": [
+        "family-373712b722da",
+        "family-f8971146c660"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "HO-24",
+      "round": 1,
+      "request_sha256": "28a6847a03c05bfbbaf0c5d8ab2aa8f042624fb977302df5aed72f2f9132a73a",
+      "pseudonyms": {
+        "D1": "01_hr_pol_electrical_safety.md",
+        "D2": "01_hr_pol_grievance.md",
+        "D3": "01_hr_pol_adaptation.md",
+        "D4": "01_hr_pol_bonus.md",
+        "D5": "01_hr_pol_business_trip.md",
+        "D6": "01_hr_pol_childcare.md",
+        "D7": "01_hr_pol_injury.md",
+        "D8": "01_hr_pol_leave.md",
+        "D9": "01_hr_pol_maternity.md",
+        "D10": "01_hr_pol_night_shift.md",
+        "D11": "01_hr_pol_overtime.md",
+        "D12": "01_hr_pol_part_time.md",
+        "D13": "01_hr_pol_safety.md",
+        "D14": "01_hr_pol_second_job.md",
+        "D15": "01_hr_pol_shift_schedule.md",
+        "D16": "01_hr_pol_talent_pool.md",
+        "D17": "07_faq_expedition.md"
+      },
+      "characters": 35428,
+      "corpus_texts": 43,
+      "corpus_text_counts": {
+        "spans": 2,
+        "cards": 2,
+        "sections": 2,
+        "scan": 37
+      },
+      "case_sha256": "2e35ae6466031841faf068f80ebf5b60c9ebc7dc1c0c510660f7324eebb42650",
+      "registered_severity": "moderate",
+      "primary_class": "multi-doc",
+      "safety_critical": false,
+      "documents": [
+        "01_hr_pol_electrical_safety.md",
+        "01_hr_pol_grievance.md"
+      ],
+      "families": [
+        "family-343a13e9d9f1",
+        "family-cef2df4ddf74"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "HO-25",
+      "round": 1,
+      "request_sha256": "bc29d58035c3025e72ae42f4c6021a9bd9843db7183dddb285c67f65f985a299",
+      "pseudonyms": {
+        "D1": "03_legal_contract_rent_office.md"
+      },
+      "characters": 9407,
+      "corpus_texts": 2,
+      "corpus_text_counts": {
+        "spans": 1,
+        "cards": 1,
+        "sections": 0,
+        "scan": 0
+      },
+      "case_sha256": "51b4349144a59e47d250cf1d943aeaab4bbb05d5da315120f005cd843c59c218",
+      "registered_severity": "high",
+      "primary_class": "single-doc",
+      "safety_critical": false,
+      "documents": [
+        "03_legal_contract_rent_office.md"
+      ],
+      "families": [
+        "family-c13f19c7fced"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "HO-26",
+      "round": 1,
+      "request_sha256": "542bf8ea50a6285e788cafe54193612a4f907a67e68e0256fefaf7362b339798",
+      "pseudonyms": {
+        "D1": "03_legal_contract_supply_auto_parts.md",
+        "D2": "03_legal_contract_supply_goods.md"
+      },
+      "characters": 10318,
+      "corpus_texts": 4,
+      "corpus_text_counts": {
+        "spans": 2,
+        "cards": 2,
+        "sections": 0,
+        "scan": 0
+      },
+      "case_sha256": "77fc0aa27c45780d11f8db78834570e098a19bc00db8857d2d76d238d4b00b94",
+      "registered_severity": "moderate",
+      "primary_class": "multi-doc",
+      "safety_critical": false,
+      "documents": [
+        "03_legal_contract_supply_auto_parts.md",
+        "03_legal_contract_supply_goods.md"
+      ],
+      "families": [
+        "family-6bced4ae5a0e",
+        "family-7a0562fc02af"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "HO-27",
+      "round": 1,
+      "request_sha256": "c7c2194f0a4c9333a148190cdd3d7421fbbcc6479f5e1b5ad59caae2b1d9c1c4",
+      "pseudonyms": {
+        "D1": "05_tlog_contract_tire_service.md",
+        "D2": "01_hr_pol_injury.md",
+        "D3": "01_hr_pol_medical_check.md",
+        "D4": "01_hr_pol_safety.md",
+        "D5": "05_tlog_checklist_driver_pre_trip.md",
+        "D6": "05_tlog_checklist_vehicle_inspection.md",
+        "D7": "05_tlog_contract_expedition_multimodal.md",
+        "D8": "05_tlog_contract_fuel_supply.md",
+        "D9": "05_tlog_contract_leasing_truck.md",
+        "D10": "05_tlog_contract_transport_air.md",
+        "D11": "05_tlog_contract_transport_rail.md",
+        "D12": "05_tlog_contract_transport_road.md",
+        "D13": "05_tlog_instruction_dispatcher.md",
+        "D14": "05_tlog_instruction_driver_duty.md",
+        "D15": "05_tlog_instruction_logistics_manager.md",
+        "D16": "05_tlog_policy_eco_norms.md",
+        "D17": "05_tlog_regulation_dangerous_goods.md",
+        "D18": "05_tlog_regulation_perishable.md",
+        "D19": "06_comp_policy_consent_form.md",
+        "D20": "07_faq_expedition.md",
+        "D21": "07_faq_transport_road.md",
+        "D22": "external_tk_rf_chapter_11.md"
+      },
+      "characters": 40528,
+      "corpus_texts": 41,
+      "corpus_text_counts": {
+        "spans": 0,
+        "cards": 1,
+        "sections": 1,
+        "scan": 39
+      },
+      "case_sha256": "5e8541aef1b284669328efa3ab098bc4e642f431250a1027839cfb1321ffeebb",
+      "registered_severity": "critical",
+      "primary_class": "needs-refusal/clarification",
+      "safety_critical": true,
+      "documents": [
+        "05_tlog_contract_tire_service.md"
+      ],
+      "families": [
+        "family-d6c6b1195af0"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "HO-28",
+      "round": 1,
+      "request_sha256": "28a70f375ca8d8f94ea0ee5ebd5d37a0b7dfdcd85622c6cd8e864b9894908e47",
+      "pseudonyms": {
+        "D1": "04_legal_power_of_attorney_contracts.md",
+        "D2": "03_legal_contract_services_accounting.md",
+        "D3": "03_legal_contract_services_consulting.md",
+        "D4": "03_legal_contract_services_it.md",
+        "D5": "03_legal_contract_services_marketing.md",
+        "D6": "03_legal_contract_settlement.md",
+        "D7": "03_legal_contract_software_license.md",
+        "D8": "03_legal_contract_supplement_general.md",
+        "D9": "03_legal_contract_supply_goods.md",
+        "D10": "03_legal_contract_warehouse_services.md",
+        "D11": "04_legal_letter_notary_demand.md",
+        "D12": "04_legal_letter_settlement_proposal.md",
+        "D13": "04_legal_power_of_attorney_bank.md",
+        "D14": "04_legal_power_of_attorney_court.md"
+      },
+      "characters": 35496,
+      "corpus_texts": 37,
+      "corpus_text_counts": {
+        "spans": 1,
+        "cards": 1,
+        "sections": 1,
+        "scan": 34
+      },
+      "case_sha256": "6e64999b6bf89aad462319e7f45f7d8438365f874890321360524da49bdfedab",
+      "registered_severity": "high",
+      "primary_class": "single-doc",
+      "safety_critical": false,
+      "documents": [
+        "04_legal_power_of_attorney_contracts.md"
+      ],
+      "families": [
+        "family-67311784e409"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "HO-29",
+      "round": 1,
+      "request_sha256": "8d7192c6c36a1c390a4ed15a88b09ca7e2278b9cae376f1efed325e6af09a368",
+      "pseudonyms": {
+        "D1": "03_legal_contract_services_it.md",
+        "D2": "03_legal_contract_software_license.md"
+      },
+      "characters": 11307,
+      "corpus_texts": 4,
+      "corpus_text_counts": {
+        "spans": 2,
+        "cards": 2,
+        "sections": 0,
+        "scan": 0
+      },
+      "case_sha256": "9dbabb54a61c67d0a5750f38ed48e5012431b7e747635707141eb6176e4cd4b8",
+      "registered_severity": "moderate",
+      "primary_class": "multi-doc",
+      "safety_critical": false,
+      "documents": [
+        "03_legal_contract_services_it.md",
+        "03_legal_contract_software_license.md"
+      ],
+      "families": [
+        "family-0fab9e95139d",
+        "family-df3b87d06453"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "HO-30",
+      "round": 1,
+      "request_sha256": "a0eba6f42114f103d2883a216b72d2c02c3edd72d0f5070cea29c0884dc2cd46",
+      "pseudonyms": {
+        "D1": "03_legal_contract_services_marketing.md",
+        "D2": "03_legal_contract_tender_rules.md"
+      },
+      "characters": 12008,
+      "corpus_texts": 4,
+      "corpus_text_counts": {
+        "spans": 2,
+        "cards": 2,
+        "sections": 0,
+        "scan": 0
+      },
+      "case_sha256": "fb2055bdaf497ca19e7ebcdf731fb508eb641506eb3982b4c7904def60eaea57",
+      "registered_severity": "moderate",
+      "primary_class": "aggregation",
+      "safety_critical": false,
+      "documents": [
+        "03_legal_contract_services_marketing.md",
+        "03_legal_contract_tender_rules.md"
+      ],
+      "families": [
+        "family-5891d2a4c4e9",
+        "family-6c616ea5de97"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "HO-31",
+      "round": 1,
+      "request_sha256": "87045d74ecb7dc17492d787cca9a06606332029dd6f981ec04613d3469a15dfb",
+      "pseudonyms": {
+        "D1": "01_hr_pol_alcohol.md",
+        "D2": "01_hr_pol_smoking.md",
+        "D3": "01_hr_pol_compensation.md",
+        "D4": "01_hr_pol_conflict_interest.md",
+        "D5": "01_hr_pol_electrical_safety.md",
+        "D6": "01_hr_pol_fire_safety.md",
+        "D7": "01_hr_pol_gifts.md",
+        "D8": "01_hr_pol_harassment.md",
+        "D9": "01_hr_pol_mental_health.md",
+        "D10": "01_hr_pol_overtime.md",
+        "D11": "01_hr_pol_relocation.md",
+        "D12": "01_hr_pol_remote_work.md",
+        "D13": "02_hr_tmp_leave_request.md"
+      },
+      "characters": 27996,
+      "corpus_texts": 36,
+      "corpus_text_counts": {
+        "spans": 2,
+        "cards": 2,
+        "sections": 2,
+        "scan": 30
+      },
+      "case_sha256": "eda7890c0cc3194a697424f43f4ffefe2fdfb897fc1c979e8b525b5a269b0c01",
+      "registered_severity": "high",
+      "primary_class": "multi-doc",
+      "safety_critical": false,
+      "documents": [
+        "01_hr_pol_alcohol.md",
+        "01_hr_pol_smoking.md"
+      ],
+      "families": [
+        "family-b28ab8d39f59",
+        "family-b5866965615c"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "HO-32",
+      "round": 1,
+      "request_sha256": "ea34c94bbb45c301de6906f8da3b852c18d701b56d4c0937654f7757a2a7f28e",
+      "pseudonyms": {
+        "D1": "03_legal_contract_loan.md"
+      },
+      "characters": 9636,
+      "corpus_texts": 2,
+      "corpus_text_counts": {
+        "spans": 1,
+        "cards": 1,
+        "sections": 0,
+        "scan": 0
+      },
+      "case_sha256": "1cb820a3786d99268c0272f76d8491a025c28848777203201929c479e19cc687",
+      "registered_severity": "high",
+      "primary_class": "single-doc",
+      "safety_critical": false,
+      "documents": [
+        "03_legal_contract_loan.md"
+      ],
+      "families": [
+        "family-4526b9c94130"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "HO-33",
+      "round": 1,
+      "request_sha256": "241706720b60cdcf17b1f9a7c40850f5e90e7ec25c52f4009e3ab4b5a54bbb7e",
+      "pseudonyms": {
+        "D1": "03_legal_contract_assignment.md",
+        "D2": "03_legal_contract_services_general.md",
+        "D3": "03_legal_contract_supply_goods.md",
+        "D4": "04_legal_claim_non_payment.md",
+        "D5": "04_legal_memo_contract_breach.md",
+        "D6": "04_legal_claim_cargo_loss.md",
+        "D7": "04_legal_letter_debt_collection.md",
+        "D8": "04_legal_letter_settlement_proposal.md"
+      },
+      "characters": 33537,
+      "corpus_texts": 34,
+      "corpus_text_counts": {
+        "spans": 0,
+        "cards": 1,
+        "sections": 1,
+        "scan": 32
+      },
+      "case_sha256": "e698d81eb89e4a5ffd1ce3da6877cd2107e81a6fb29176f4827d59cf8fcd4595",
+      "registered_severity": "high",
+      "primary_class": "needs-refusal/clarification",
+      "safety_critical": false,
+      "documents": [
+        "03_legal_contract_assignment.md"
+      ],
+      "families": [
+        "family-54935d6121af"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "HO-34",
+      "round": 1,
+      "request_sha256": "55fff43502a702043368cc7d77cb81f35d1c44b39dd77c08965474ebf8a96e4c",
+      "pseudonyms": {
+        "D1": "03_legal_contract_penalty_clause.md",
+        "D2": "03_legal_contract_services_consulting.md"
+      },
+      "characters": 10351,
+      "corpus_texts": 4,
+      "corpus_text_counts": {
+        "spans": 2,
+        "cards": 2,
+        "sections": 0,
+        "scan": 0
+      },
+      "case_sha256": "145221c7c0ef448514b4b70ca636ef918c3adeba9e6e2cc71dbeceff91c88411",
+      "registered_severity": "high",
+      "primary_class": "multi-doc",
+      "safety_critical": false,
+      "documents": [
+        "03_legal_contract_penalty_clause.md",
+        "03_legal_contract_services_consulting.md"
+      ],
+      "families": [
+        "family-6f8931567e31",
+        "family-e8555864e9f3"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "HO-35",
+      "round": 1,
+      "request_sha256": "bb84830751410bb211400df3a23bf75e729fad7a527d76e47d1e49607cc5145b",
+      "pseudonyms": {
+        "D1": "01_hr_pol_fire_safety.md",
+        "D2": "02_hr_tmp_job_description_accountant.md"
+      },
+      "characters": 15093,
+      "corpus_texts": 4,
+      "corpus_text_counts": {
+        "spans": 2,
+        "cards": 2,
+        "sections": 0,
+        "scan": 0
+      },
+      "case_sha256": "d98a705cc0b92b93d4a09c6820067c27beacb7116c5140bb922daf803901d7cf",
+      "registered_severity": "critical",
+      "primary_class": "aggregation",
+      "safety_critical": true,
+      "documents": [
+        "01_hr_pol_fire_safety.md",
+        "02_hr_tmp_job_description_accountant.md"
+      ],
+      "families": [
+        "family-0d52ce3cbc6a",
+        "family-40d68279e773"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "HO-36",
+      "round": 1,
+      "request_sha256": "275a017f5a117d04d232d0a7cedd690737d89783097a14864b613dd695519619",
+      "pseudonyms": {
+        "D1": "01_hr_pol_diversity.md",
+        "D2": "01_hr_pol_mental_health.md",
+        "D3": "01_hr_pol_adaptation.md",
+        "D4": "01_hr_pol_compensation.md",
+        "D5": "01_hr_pol_conflict_interest.md",
+        "D6": "01_hr_pol_harassment.md",
+        "D7": "01_hr_pol_hiring.md",
+        "D8": "01_hr_pol_maternity.md",
+        "D9": "01_hr_pol_second_job.md",
+        "D10": "01_hr_pol_social_package.md",
+        "D11": "07_faq_pdp.md"
+      },
+      "characters": 34244,
+      "corpus_texts": 39,
+      "corpus_text_counts": {
+        "spans": 2,
+        "cards": 2,
+        "sections": 2,
+        "scan": 33
+      },
+      "case_sha256": "67b3d6b0cd5955fbd7ace8095d6b0c31bc7e89b1694c7ba9a6a28b14d36cdbb4",
+      "registered_severity": "high",
+      "primary_class": "multi-doc",
+      "safety_critical": false,
+      "documents": [
+        "01_hr_pol_diversity.md",
+        "01_hr_pol_mental_health.md"
+      ],
+      "families": [
+        "family-c51170307aa8",
+        "family-e5ca50122400"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "HO-37",
+      "round": 1,
+      "request_sha256": "5a6cba61f54efd87c2eb0ebf062517cb3e0d241349dc75eef1e42fe237987cb6",
+      "pseudonyms": {
+        "D1": "03_legal_contract_agency.md"
+      },
+      "characters": 9746,
+      "corpus_texts": 2,
+      "corpus_text_counts": {
+        "spans": 1,
+        "cards": 1,
+        "sections": 0,
+        "scan": 0
+      },
+      "case_sha256": "dcddf0eda14bbd74f2048bcd02214d60ccefda04bde8f64c99e7cb0eb82c0193",
+      "registered_severity": "high",
+      "primary_class": "single-doc",
+      "safety_critical": false,
+      "documents": [
+        "03_legal_contract_agency.md"
+      ],
+      "families": [
+        "family-60558bd5252c"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "HO-38",
+      "round": 1,
+      "request_sha256": "7e8992ec5f7f1c32e84f3af523e57c5b75650d3460d9c665adc3012b4e163dfc",
+      "pseudonyms": {
+        "D1": "05_tlog_contract_leasing_truck.md",
+        "D2": "01_hr_pol_maternity.md",
+        "D3": "01_hr_pol_mental_health.md",
+        "D4": "01_hr_pol_safety.md",
+        "D5": "03_legal_contract_cargo_transport_rail.md",
+        "D6": "03_legal_contract_cargo_transport_road.md",
+        "D7": "03_legal_contract_leasing_vehicle.md",
+        "D8": "03_legal_contract_warehouse_storage.md",
+        "D9": "05_tlog_checklist_vehicle_inspection.md",
+        "D10": "05_tlog_contract_driver_services.md",
+        "D11": "05_tlog_contract_transport_rail.md",
+        "D12": "05_tlog_contract_transport_road.md",
+        "D13": "05_tlog_policy_transport_safety.md",
+        "D14": "05_tlog_regulation_gps_tracking.md",
+        "D15": "07_faq_transport_road.md"
+      },
+      "characters": 38967,
+      "corpus_texts": 42,
+      "corpus_text_counts": {
+        "spans": 0,
+        "cards": 1,
+        "sections": 1,
+        "scan": 40
+      },
+      "case_sha256": "723fa1b3f6b9349e80d7e014e02d5cd90773cb5efa077cc87f03a5f2e4d0fdec",
+      "registered_severity": "moderate",
+      "primary_class": "needs-refusal/clarification",
+      "safety_critical": false,
+      "documents": [
+        "05_tlog_contract_leasing_truck.md"
+      ],
+      "families": [
+        "family-910fcbb578cc"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "HO-39",
+      "round": 1,
+      "request_sha256": "b5d6b16657d5662210f8b2b5b69dae6492d7e2e243263b8e7f4379b89d035c8e",
+      "pseudonyms": {
+        "D1": "03_legal_contract_services_accounting.md",
+        "D2": "04_legal_power_of_attorney_bank.md"
+      },
+      "characters": 11146,
+      "corpus_texts": 4,
+      "corpus_text_counts": {
+        "spans": 2,
+        "cards": 2,
+        "sections": 0,
+        "scan": 0
+      },
+      "case_sha256": "90154472eeb9f2b756cce7aa224e6f8dbb855d633cae50b173f2af2a730a2f3e",
+      "registered_severity": "high",
+      "primary_class": "multi-doc",
+      "safety_critical": false,
+      "documents": [
+        "03_legal_contract_services_accounting.md",
+        "04_legal_power_of_attorney_bank.md"
+      ],
+      "families": [
+        "family-1ab6956c0864",
+        "family-3aa942c0c670"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "HO-40",
+      "round": 1,
+      "request_sha256": "3b1669f40377942c120d0ad715d2bd3f12642186d8e8146af9b0b71cdb4296a1",
+      "pseudonyms": {
+        "D1": "01_hr_pol_second_job.md"
+      },
+      "characters": 10526,
+      "corpus_texts": 3,
+      "corpus_text_counts": {
+        "spans": 2,
+        "cards": 1,
+        "sections": 0,
+        "scan": 0
+      },
+      "case_sha256": "282cb2a262ae7a3f59241470a657f49308c6616357e0a36206fe63e3fda83a6a",
+      "registered_severity": "moderate",
+      "primary_class": "single-doc",
+      "safety_critical": false,
+      "documents": [
+        "01_hr_pol_second_job.md"
+      ],
+      "families": [
+        "family-373712b722da"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "HO-41",
+      "round": 1,
+      "request_sha256": "debb6c0dbb2d4dd2bd9fe8da5354039c260d983577ba077f569ebe47b2cc7e25",
+      "pseudonyms": {
+        "D1": "03_legal_contract_rent_office.md",
+        "D2": "03_legal_contract_supply_equipment.md"
+      },
+      "characters": 10225,
+      "corpus_texts": 4,
+      "corpus_text_counts": {
+        "spans": 2,
+        "cards": 2,
+        "sections": 0,
+        "scan": 0
+      },
+      "case_sha256": "1c2289b160ea72a32ca1aa8df2d64dbb1d9d23bb03c4b865ca930fe8d2851b7b",
+      "registered_severity": "high",
+      "primary_class": "multi-doc",
+      "safety_critical": false,
+      "documents": [
+        "03_legal_contract_rent_office.md",
+        "03_legal_contract_supply_equipment.md"
+      ],
+      "families": [
+        "family-3e0120bafe09",
+        "family-c13f19c7fced"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "HO-42",
+      "round": 1,
+      "request_sha256": "db09fa253a1ac9c3da3c500586d5da011469dca6128144fbf10006c517ad45ee",
+      "pseudonyms": {
+        "D1": "03_legal_contract_supply_auto_parts.md",
+        "D2": "03_legal_contract_supply_goods.md"
+      },
+      "characters": 11925,
+      "corpus_texts": 4,
+      "corpus_text_counts": {
+        "spans": 2,
+        "cards": 2,
+        "sections": 0,
+        "scan": 0
+      },
+      "case_sha256": "57de454a401a3f14610d03eb94d81a8ce635fe40a7e32b32f0f85cd1478ff4e8",
+      "registered_severity": "moderate",
+      "primary_class": "aggregation",
+      "safety_critical": false,
+      "documents": [
+        "03_legal_contract_supply_auto_parts.md",
+        "03_legal_contract_supply_goods.md"
+      ],
+      "families": [
+        "family-6bced4ae5a0e",
+        "family-7a0562fc02af"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "HO-43",
+      "round": 1,
+      "request_sha256": "a219e2d0deab07f79055fa7d15bf864d030a47fdcb8170e623033d0c49507dfb",
+      "pseudonyms": {
+        "D1": "01_hr_pol_grievance.md",
+        "D2": "01_hr_pol_bonus.md",
+        "D3": "01_hr_pol_corruption.md",
+        "D4": "01_hr_pol_gifts.md",
+        "D5": "01_hr_pol_injury.md",
+        "D6": "01_hr_pol_safety.md",
+        "D7": "02_hr_tmp_add_agreement.md",
+        "D8": "02_hr_tmp_employment_contract.md",
+        "D9": "02_hr_tmp_employment_order.md",
+        "D10": "02_hr_tmp_job_description_accountant.md",
+        "D11": "02_hr_tmp_job_description_driver.md",
+        "D12": "02_hr_tmp_job_description_hr.md",
+        "D13": "02_hr_tmp_job_description_lawyer.md",
+        "D14": "02_hr_tmp_job_description_logistics.md",
+        "D15": "04_legal_claim_cargo_damage.md",
+        "D16": "04_legal_claim_cargo_loss.md",
+        "D17": "04_legal_claim_defective_goods.md",
+        "D18": "04_legal_claim_non_payment.md",
+        "D19": "04_legal_letter_arbitration_notice.md",
+        "D20": "04_legal_letter_debt_collection.md",
+        "D21": "04_legal_letter_demand.md",
+        "D22": "04_legal_power_of_attorney_court.md",
+        "D23": "04_legal_reply_cargo_damage.md",
+        "D24": "04_legal_reply_defective_goods.md",
+        "D25": "07_faq_claims_procedure.md",
+        "D26": "07_faq_leave.md",
+        "D27": "external_tk_rf_chapter_11.md"
+      },
+      "characters": 35682,
+      "corpus_texts": 41,
+      "corpus_text_counts": {
+        "spans": 0,
+        "cards": 1,
+        "sections": 1,
+        "scan": 39
+      },
+      "case_sha256": "fd489f94204ac0f923b58ede3dea972f69b02a1b10677202751b83ce04dc92cc",
+      "registered_severity": "critical",
+      "primary_class": "needs-refusal/clarification",
+      "safety_critical": true,
+      "documents": [
+        "01_hr_pol_grievance.md"
+      ],
+      "families": [
+        "family-343a13e9d9f1"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "HO-44",
+      "round": 1,
+      "request_sha256": "303c4768dba00d832af7cc55bd2489362fa2b5b23ec8af4ba30221a8ce2e373e",
+      "pseudonyms": {
+        "D1": "03_legal_contract_services_it.md",
+        "D2": "03_legal_contract_software_license.md",
+        "D3": "01_hr_pol_internal_comm.md",
+        "D4": "02_hr_tmp_job_description_driver.md",
+        "D5": "03_legal_contract_cargo_transport_road.md",
+        "D6": "03_legal_contract_customs_broker.md",
+        "D7": "03_legal_contract_insurance_cargo.md",
+        "D8": "03_legal_contract_leasing_vehicle.md",
+        "D9": "03_legal_contract_services_accounting.md",
+        "D10": "03_legal_contract_warehouse_services.md",
+        "D11": "05_tlog_contract_customs_representative.md",
+        "D12": "05_tlog_regulation_dispatch.md",
+        "D13": "06_comp_policy_consent_form.md",
+        "D14": "06_comp_policy_cookies.md",
+        "D15": "06_comp_policy_data_retention.md"
+      },
+      "characters": 41427,
+      "corpus_texts": 43,
+      "corpus_text_counts": {
+        "spans": 2,
+        "cards": 2,
+        "sections": 2,
+        "scan": 37
+      },
+      "case_sha256": "a6938da4ad3ba1973d41a3f6516735ff147e9c59996f094f955233a59de4f75f",
+      "registered_severity": "high",
+      "primary_class": "multi-doc",
+      "safety_critical": false,
+      "documents": [
+        "03_legal_contract_services_it.md",
+        "03_legal_contract_software_license.md"
+      ],
+      "families": [
+        "family-0fab9e95139d",
+        "family-df3b87d06453"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "HO-45",
+      "round": 1,
+      "request_sha256": "19ba41e55af1540b55d098263805b0b91f9b8dcbf0c5e2e3d21fd56b4f685ae8",
+      "pseudonyms": {
+        "D1": "03_legal_contract_franchise.md"
+      },
+      "characters": 11475,
+      "corpus_texts": 2,
+      "corpus_text_counts": {
+        "spans": 1,
+        "cards": 1,
+        "sections": 0,
+        "scan": 0
+      },
+      "case_sha256": "ef32cf40277b0ae5c33fa48eb8044c87a100be8711763db4c45ddcb8d0c8d1fa",
+      "registered_severity": "moderate",
+      "primary_class": "single-doc",
+      "safety_critical": false,
+      "documents": [
+        "03_legal_contract_franchise.md"
+      ],
+      "families": [
+        "family-796b49339c8b"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "HO-46",
+      "round": 1,
+      "request_sha256": "ccba50dc43b2077661dba16451f1063fd14028e6422bb1f264f0a22fa692ca35",
+      "pseudonyms": {
+        "D1": "01_hr_pol_alcohol.md",
+        "D2": "01_hr_pol_smoking.md"
+      },
+      "characters": 10764,
+      "corpus_texts": 4,
+      "corpus_text_counts": {
+        "spans": 2,
+        "cards": 2,
+        "sections": 0,
+        "scan": 0
+      },
+      "case_sha256": "06defe9f5b79121bf31710aba91ea92b40500e92aba8399fd37ca74a2f24e6cb",
+      "registered_severity": "critical",
+      "primary_class": "multi-doc",
+      "safety_critical": true,
+      "documents": [
+        "01_hr_pol_alcohol.md",
+        "01_hr_pol_smoking.md"
+      ],
+      "families": [
+        "family-b28ab8d39f59",
+        "family-b5866965615c"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "HO-47",
+      "round": 1,
+      "request_sha256": "8012707ac8667a7e89df708861c7a328711a60505909454cd52c5113a82f40a6",
+      "pseudonyms": {
+        "D1": "04_legal_power_of_attorney_court.md",
+        "D2": "01_hr_pol_grievance.md",
+        "D3": "02_hr_tmp_job_description_lawyer.md",
+        "D4": "04_legal_claim_customs_delay.md",
+        "D5": "04_legal_claim_late_delivery.md",
+        "D6": "04_legal_letter_notary_demand.md",
+        "D7": "04_legal_reply_cargo_damage.md",
+        "D8": "04_legal_reply_late_delivery.md"
+      },
+      "characters": 35013,
+      "corpus_texts": 39,
+      "corpus_text_counts": {
+        "spans": 0,
+        "cards": 1,
+        "sections": 1,
+        "scan": 37
+      },
+      "case_sha256": "ce92ffdf9ee6f6ccc39e0a8aabafa16ce05a16c50aa9cab66c6e232d6ef80e21",
+      "registered_severity": "high",
+      "primary_class": "needs-refusal/clarification",
+      "safety_critical": false,
+      "documents": [
+        "04_legal_power_of_attorney_court.md"
+      ],
+      "families": [
+        "family-972443d41e88"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "HO-48",
+      "round": 1,
+      "request_sha256": "32f14330dca96d4f01075d1a761317abd84c300fda49740ea698bffb55703ee9",
+      "pseudonyms": {
+        "D1": "03_legal_contract_assignment.md",
+        "D2": "03_legal_contract_factoring.md",
+        "D3": "01_hr_pol_childcare.md",
+        "D4": "01_hr_pol_safety.md",
+        "D5": "01_hr_pol_second_job.md",
+        "D6": "02_hr_tmp_add_agreement.md",
+        "D7": "03_legal_contract_supplement_general.md",
+        "D8": "04_legal_claim_non_payment.md",
+        "D9": "04_legal_letter_debt_collection.md",
+        "D10": "04_legal_reply_non_payment.md",
+        "D11": "06_comp_regulation_contract_approval.md",
+        "D12": "07_faq_contract_templates.md",
+        "D13": "07_faq_employee_material_liability.md",
+        "D14": "07_faq_expedition.md",
+        "D15": "external_tk_rf_chapter_11.md"
+      },
+      "characters": 40836,
+      "corpus_texts": 44,
+      "corpus_text_counts": {
+        "spans": 2,
+        "cards": 2,
+        "sections": 2,
+        "scan": 38
+      },
+      "case_sha256": "334ef2c842437f537188984b4ed8b9ef8149cc5cf930f73aed7eded2921c309f",
+      "registered_severity": "moderate",
+      "primary_class": "multi-doc",
+      "safety_critical": false,
+      "documents": [
+        "03_legal_contract_assignment.md",
+        "03_legal_contract_factoring.md"
+      ],
+      "families": [
+        "family-54935d6121af",
+        "family-c45d399bf562"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "HO-49",
+      "round": 1,
+      "request_sha256": "1e2058134a02b5fc80f88c075d5c2dbb255a462ee30689f61ae2abcc47daa34a",
+      "pseudonyms": {
+        "D1": "01_hr_pol_diversity.md",
+        "D2": "01_hr_pol_mental_health.md"
+      },
+      "characters": 11821,
+      "corpus_texts": 5,
+      "corpus_text_counts": {
+        "spans": 3,
+        "cards": 2,
+        "sections": 0,
+        "scan": 0
+      },
+      "case_sha256": "1364a4ea2f1b0b911aec69b048a5e98e3cf197d4bec5c664e4cdba042d631d8e",
+      "registered_severity": "moderate",
+      "primary_class": "aggregation",
+      "safety_critical": false,
+      "documents": [
+        "01_hr_pol_diversity.md",
+        "01_hr_pol_mental_health.md"
+      ],
+      "families": [
+        "family-c51170307aa8",
+        "family-e5ca50122400"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "HO-50",
+      "round": 1,
+      "request_sha256": "177d55411b5a9b31cb0c401e496ee33ba8dfe0070943d59ab8ac0e2d8db52e94",
+      "pseudonyms": {
+        "D1": "03_legal_contract_tender_rules.md",
+        "D2": "01_hr_pol_training.md",
+        "D3": "03_legal_contract_commission.md",
+        "D4": "03_legal_contract_customs_broker.md",
+        "D5": "03_legal_contract_framework.md",
+        "D6": "03_legal_contract_penalty_clause.md",
+        "D7": "03_legal_contract_software_license.md",
+        "D8": "03_legal_contract_supply_equipment.md",
+        "D9": "03_legal_contract_supply_fuel.md",
+        "D10": "03_legal_contract_supply_goods.md",
+        "D11": "03_legal_contract_warehouse_services.md",
+        "D12": "04_legal_claim_customs_delay.md",
+        "D13": "04_legal_claim_defective_goods.md",
+        "D14": "04_legal_letter_arbitration_notice.md",
+        "D15": "04_legal_letter_settlement_proposal.md",
+        "D16": "04_legal_reply_late_delivery.md",
+        "D17": "04_legal_reply_non_payment.md",
+        "D18": "05_tlog_contract_transport_sea.md",
+        "D19": "06_comp_policy_nda_contractor.md",
+        "D20": "07_faq_claims_procedure.md",
+        "D21": "07_faq_commercial_secret.md",
+        "D22": "07_faq_expedition.md"
+      },
+      "characters": 39882,
+      "corpus_texts": 41,
+      "corpus_text_counts": {
+        "spans": 1,
+        "cards": 1,
+        "sections": 1,
+        "scan": 38
+      },
+      "case_sha256": "51ee0b32aadd521c3034b95caf76e82e3dc5f193c096beabb63e3103614aee64",
+      "registered_severity": "high",
+      "primary_class": "single-doc",
+      "safety_critical": false,
+      "documents": [
+        "03_legal_contract_tender_rules.md"
+      ],
+      "families": [
+        "family-5891d2a4c4e9"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "HO-51",
+      "round": 1,
+      "request_sha256": "c55a43220a4f66ea6ce2ec47a55418758f306a38e369f96c24df42f010fa383a",
+      "pseudonyms": {
+        "D1": "01_hr_pol_fire_safety.md",
+        "D2": "02_hr_tmp_job_description_accountant.md"
+      },
+      "characters": 10039,
+      "corpus_texts": 4,
+      "corpus_text_counts": {
+        "spans": 2,
+        "cards": 2,
+        "sections": 0,
+        "scan": 0
+      },
+      "case_sha256": "cc27e945c3269365b65a7e918b006ac65ab7bf866d62a184505fda97af298ca2",
+      "registered_severity": "critical",
+      "primary_class": "multi-doc",
+      "safety_critical": true,
+      "documents": [
+        "01_hr_pol_fire_safety.md",
+        "02_hr_tmp_job_description_accountant.md"
+      ],
+      "families": [
+        "family-0d52ce3cbc6a",
+        "family-40d68279e773"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "HO-52",
+      "round": 1,
+      "request_sha256": "c42b87acc58ffb2d7eae49e9569335024edb9b26fbde2bfc48e8b141f4a74ab1",
+      "pseudonyms": {
+        "D1": "03_legal_contract_services_consulting.md",
+        "D2": "03_legal_contract_leasing_vehicle.md",
+        "D3": "03_legal_contract_supplement_general.md",
+        "D4": "04_legal_claim_defective_goods.md",
+        "D5": "04_legal_letter_arbitration_notice.md",
+        "D6": "04_legal_letter_demand.md",
+        "D7": "04_legal_memo_dispute_risk.md",
+        "D8": "04_legal_reply_non_payment.md",
+        "D9": "03_legal_contract_customs_broker.md",
+        "D10": "05_tlog_contract_transport_air.md",
+        "D11": "04_legal_letter_settlement_proposal.md",
+        "D12": "04_legal_reply_cargo_damage.md",
+        "D13": "04_legal_reply_defective_goods.md",
+        "D14": "04_legal_reply_late_delivery.md",
+        "D15": "05_tlog_contract_customs_representative.md",
+        "D16": "05_tlog_regulation_dispatch.md",
+        "D17": "05_tlog_checklist_cargo_acceptance.md",
+        "D18": "04_legal_claim_cargo_damage.md",
+        "D19": "05_tlog_regulation_cross_border.md"
+      },
+      "characters": 33244,
+      "corpus_texts": 36,
+      "corpus_text_counts": {
+        "spans": 0,
+        "cards": 1,
+        "sections": 1,
+        "scan": 34
+      },
+      "case_sha256": "932753978ed0d7608ab34842dfdcce69ad19e7cde6f2cdb10d0789e81c22ea88",
+      "registered_severity": "high",
+      "primary_class": "needs-refusal/clarification",
+      "safety_critical": false,
+      "documents": [
+        "03_legal_contract_services_consulting.md"
+      ],
+      "families": [
+        "family-6f8931567e31"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "HO-53",
+      "round": 1,
+      "request_sha256": "5d7a8c11232d02587ada07fb3d29072b5b33e6ba92d11014b635932c1fe674bb",
+      "pseudonyms": {
+        "D1": "03_legal_contract_services_accounting.md",
+        "D2": "04_legal_power_of_attorney_bank.md"
+      },
+      "characters": 11741,
+      "corpus_texts": 4,
+      "corpus_text_counts": {
+        "spans": 2,
+        "cards": 2,
+        "sections": 0,
+        "scan": 0
+      },
+      "case_sha256": "7ed5170972f2e6f2d701ac27fb7ab1e3f87d5e21cec500cda7b31f8bef38b09b",
+      "registered_severity": "moderate",
+      "primary_class": "multi-doc",
+      "safety_critical": false,
+      "documents": [
+        "03_legal_contract_services_accounting.md",
+        "04_legal_power_of_attorney_bank.md"
+      ],
+      "families": [
+        "family-1ab6956c0864",
+        "family-3aa942c0c670"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "HO-54",
+      "round": 1,
+      "request_sha256": "e93e04c2c211d7af6bb7ef5fc96855220649c248ff4600518db7c34a5ef87097",
+      "pseudonyms": {
+        "D1": "03_legal_contract_commission.md"
+      },
+      "characters": 9089,
+      "corpus_texts": 2,
+      "corpus_text_counts": {
+        "spans": 1,
+        "cards": 1,
+        "sections": 0,
+        "scan": 0
+      },
+      "case_sha256": "37e995aa04c3012517c919235471d904dca06fff4d2e4d6057c9d85c8938ca49",
+      "registered_severity": "moderate",
+      "primary_class": "single-doc",
+      "safety_critical": false,
+      "documents": [
+        "03_legal_contract_commission.md"
+      ],
+      "families": [
+        "family-9f876667a65d"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "HO-55",
+      "round": 1,
+      "request_sha256": "ff78a73eb4ba4534be702c55afbe646ebab2610680a0e8bcf5fc80ce052eb7f1",
+      "pseudonyms": {
+        "D1": "03_legal_contract_franchise.md",
+        "D2": "05_tlog_contract_tire_service.md"
+      },
+      "characters": 12289,
+      "corpus_texts": 4,
+      "corpus_text_counts": {
+        "spans": 2,
+        "cards": 2,
+        "sections": 0,
+        "scan": 0
+      },
+      "case_sha256": "b20d054a797225b61e80fefbb8036dd8c04679724b567f856449827fca2d280f",
+      "registered_severity": "moderate",
+      "primary_class": "aggregation",
+      "safety_critical": false,
+      "documents": [
+        "03_legal_contract_franchise.md",
+        "05_tlog_contract_tire_service.md"
+      ],
+      "families": [
+        "family-796b49339c8b",
+        "family-d6c6b1195af0"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "HO-56",
+      "round": 1,
+      "request_sha256": "3043679ba1a97a7ca050de0b5bf3ac01ebb1f5c87724f407c678460ba894018a",
+      "pseudonyms": {
+        "D1": "01_hr_pol_medical_check.md",
+        "D2": "01_hr_pol_second_job.md",
+        "D3": "01_hr_pol_adaptation.md",
+        "D4": "01_hr_pol_bonus.md",
+        "D5": "01_hr_pol_business_trip.md",
+        "D6": "01_hr_pol_maternity.md",
+        "D7": "01_hr_pol_night_shift.md",
+        "D8": "01_hr_pol_overtime.md",
+        "D9": "01_hr_pol_part_time.md",
+        "D10": "01_hr_pol_shift_schedule.md",
+        "D11": "01_hr_pol_social_package.md",
+        "D12": "01_hr_pol_talent_pool.md",
+        "D13": "02_hr_tmp_employment_order.md",
+        "D14": "06_comp_policy_commercial_secret.md",
+        "D15": "external_tk_rf_chapter_11.md"
+      },
+      "characters": 36538,
+      "corpus_texts": 44,
+      "corpus_text_counts": {
+        "spans": 2,
+        "cards": 2,
+        "sections": 2,
+        "scan": 38
+      },
+      "case_sha256": "8a2cfab055c66d25cf912343366d1d6bf87b3db1a98516ecead609965b554d37",
+      "registered_severity": "critical",
+      "primary_class": "multi-doc",
+      "safety_critical": true,
+      "documents": [
+        "01_hr_pol_medical_check.md",
+        "01_hr_pol_second_job.md"
+      ],
+      "families": [
+        "family-373712b722da",
+        "family-f8971146c660"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "HO-57",
+      "round": 1,
+      "request_sha256": "e8a3ce0874026af50a0b5986b699dba841c0d96fa83e72472532b9a6438b093e",
+      "pseudonyms": {
+        "D1": "01_hr_pol_grievance.md",
+        "D2": "01_hr_pol_business_trip.md",
+        "D3": "01_hr_pol_leave.md",
+        "D4": "01_hr_pol_safety.md",
+        "D5": "01_hr_pol_salary.md",
+        "D6": "02_hr_tmp_job_description_driver.md",
+        "D7": "03_legal_contract_cargo_transport_general.md",
+        "D8": "03_legal_contract_insurance_cargo.md",
+        "D9": "03_legal_contract_insurance_civil_liability.md",
+        "D10": "04_legal_claim_cargo_damage.md",
+        "D11": "04_legal_letter_arbitration_notice.md",
+        "D12": "04_legal_letter_settlement_proposal.md",
+        "D13": "04_legal_reply_cargo_damage.md",
+        "D14": "04_legal_reply_defective_goods.md",
+        "D15": "05_tlog_checklist_claims_road.md",
+        "D16": "05_tlog_checklist_driver_pre_trip.md",
+        "D17": "05_tlog_contract_transport_sea.md",
+        "D18": "05_tlog_contract_warehouse_3pl.md",
+        "D19": "05_tlog_instruction_logistics_manager.md",
+        "D20": "06_comp_checklist_contract_compliance.md",
+        "D21": "06_comp_policy_commercial_secret.md",
+        "D22": "06_comp_policy_nda_employee.md",
+        "D23": "07_faq_claims_procedure.md",
+        "D24": "07_faq_commercial_secret.md",
+        "D25": "07_faq_dismissal.md",
+        "D26": "07_faq_employee_material_liability.md",
+        "D27": "07_faq_expedition.md",
+        "D28": "07_faq_leave.md",
+        "D29": "07_faq_probation.md",
+        "D30": "external_tk_rf_chapter_11.md"
+      },
+      "characters": 33474,
+      "corpus_texts": 42,
+      "corpus_text_counts": {
+        "spans": 0,
+        "cards": 1,
+        "sections": 1,
+        "scan": 40
+      },
+      "case_sha256": "9a70e819ff47668ae7ddfffb5d9c02dc92c30def1b71d61d2cde200400c82450",
+      "registered_severity": "critical",
+      "primary_class": "needs-refusal/clarification",
+      "safety_critical": true,
+      "documents": [
+        "01_hr_pol_grievance.md"
+      ],
+      "families": [
+        "family-343a13e9d9f1"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "HO-58",
+      "round": 1,
+      "request_sha256": "c847e028f0546a82f14ac383d84d7cb211df44e47d857dad7e98c912b4c82c1f",
+      "pseudonyms": {
+        "D1": "03_legal_contract_supply_equipment.md"
+      },
+      "characters": 9572,
+      "corpus_texts": 2,
+      "corpus_text_counts": {
+        "spans": 1,
+        "cards": 1,
+        "sections": 0,
+        "scan": 0
+      },
+      "case_sha256": "2d9904eddbbb664a4e7f1314573fd7e699f9bbaca01254074a37b5e73d45e0e6",
+      "registered_severity": "high",
+      "primary_class": "single-doc",
+      "safety_critical": false,
+      "documents": [
+        "03_legal_contract_supply_equipment.md"
+      ],
+      "families": [
+        "family-3e0120bafe09"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "HO-59",
+      "round": 1,
+      "request_sha256": "5a044cd9664debb3d2d8edd4da86602a6171cdef30aa1144d00b2186ddb960d8",
+      "pseudonyms": {
+        "D1": "04_legal_power_of_attorney_contracts.md",
+        "D2": "04_legal_power_of_attorney_court.md"
+      },
+      "characters": 10457,
+      "corpus_texts": 4,
+      "corpus_text_counts": {
+        "spans": 2,
+        "cards": 2,
+        "sections": 0,
+        "scan": 0
+      },
+      "case_sha256": "29abfe4db9b17f1a0aaca97b96a1356f4c086f6fca290a2cffbbf83f944d6df0",
+      "registered_severity": "high",
+      "primary_class": "multi-doc",
+      "safety_critical": false,
+      "documents": [
+        "04_legal_power_of_attorney_contracts.md",
+        "04_legal_power_of_attorney_court.md"
+      ],
+      "families": [
+        "family-67311784e409",
+        "family-972443d41e88"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "HO-60",
+      "round": 1,
+      "request_sha256": "8bee6ac836235eaf086b15af27a179a251026788a4299b32e206dca693719f6d",
+      "pseudonyms": {
+        "D1": "03_legal_contract_services_marketing.md",
+        "D2": "03_legal_contract_tender_rules.md",
+        "D3": "03_legal_contract_franchise.md",
+        "D4": "03_legal_contract_services_accounting.md",
+        "D5": "03_legal_contract_services_general.md",
+        "D6": "03_legal_contract_software_license.md",
+        "D7": "03_legal_contract_supply_equipment.md",
+        "D8": "03_legal_contract_supply_fuel.md",
+        "D9": "04_legal_letter_notary_demand.md",
+        "D10": "04_legal_power_of_attorney_contracts.md",
+        "D11": "04_legal_power_of_attorney_court.md"
+      },
+      "characters": 44476,
+      "corpus_texts": 46,
+      "corpus_text_counts": {
+        "spans": 2,
+        "cards": 2,
+        "sections": 2,
+        "scan": 40
+      },
+      "case_sha256": "4248188de543234c5ebbdad16c0a33694931cd7ce5248426b9ec7e8d18e65fd1",
+      "registered_severity": "moderate",
+      "primary_class": "multi-doc",
+      "safety_critical": false,
+      "documents": [
+        "03_legal_contract_services_marketing.md",
+        "03_legal_contract_tender_rules.md"
+      ],
+      "families": [
+        "family-5891d2a4c4e9",
+        "family-6c616ea5de97"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "HO-61",
+      "round": 1,
+      "request_sha256": "d2ff42bed62338315fb78f4982944ebb00592dd7138ceadb4538f9a4adb53e86",
+      "pseudonyms": {
+        "D1": "01_hr_pol_alcohol.md",
+        "D2": "01_hr_pol_smoking.md"
+      },
+      "characters": 13670,
+      "corpus_texts": 4,
+      "corpus_text_counts": {
+        "spans": 2,
+        "cards": 2,
+        "sections": 0,
+        "scan": 0
+      },
+      "case_sha256": "77bc91c2a57274465c6d7d7c264c93a834b1020cf00c9db1fc81f30a52c5243f",
+      "registered_severity": "critical",
+      "primary_class": "aggregation",
+      "safety_critical": true,
+      "documents": [
+        "01_hr_pol_alcohol.md",
+        "01_hr_pol_smoking.md"
+      ],
+      "families": [
+        "family-b28ab8d39f59",
+        "family-b5866965615c"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "HO-62",
+      "round": 1,
+      "request_sha256": "6320bd6da153d4102bbe10b0a6cfe8f547bc37f5ceff6b854807195fab1e1d08",
+      "pseudonyms": {
+        "D1": "03_legal_contract_services_it.md",
+        "D2": "01_hr_pol_it_access.md",
+        "D3": "01_hr_pol_mental_health.md",
+        "D4": "01_hr_pol_safety.md",
+        "D5": "02_hr_tmp_add_agreement.md",
+        "D6": "03_legal_contract_joint_activity.md",
+        "D7": "03_legal_contract_services_accounting.md",
+        "D8": "03_legal_contract_services_general.md",
+        "D9": "03_legal_contract_supplement_general.md",
+        "D10": "03_legal_contract_warehouse_services.md",
+        "D11": "06_comp_policy_commercial_secret.md",
+        "D12": "06_comp_policy_incident_response.md",
+        "D13": "07_faq_claims_procedure.md"
+      },
+      "characters": 35345,
+      "corpus_texts": 38,
+      "corpus_text_counts": {
+        "spans": 0,
+        "cards": 1,
+        "sections": 1,
+        "scan": 36
+      },
+      "case_sha256": "d6b35cb8aa6c336cbe816c704a87bb0ca8936b4cbb612f034f68d47f4f43b722",
+      "registered_severity": "high",
+      "primary_class": "needs-refusal/clarification",
+      "safety_critical": false,
+      "documents": [
+        "03_legal_contract_services_it.md"
+      ],
+      "families": [
+        "family-df3b87d06453"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "HO-63",
+      "round": 1,
+      "request_sha256": "51253e1e4eccb825e6582e4168229cf013847520a782bcd586a378e715f707c8",
+      "pseudonyms": {
+        "D1": "03_legal_contract_services_consulting.md"
+      },
+      "characters": 12599,
+      "corpus_texts": 2,
+      "corpus_text_counts": {
+        "spans": 1,
+        "cards": 1,
+        "sections": 0,
+        "scan": 0
+      },
+      "case_sha256": "92ade730dad7467d9cf326fde2332106d0a827834e06861439280ebad64b8406",
+      "registered_severity": "moderate",
+      "primary_class": "single-doc",
+      "safety_critical": false,
+      "documents": [
+        "03_legal_contract_services_consulting.md"
+      ],
+      "families": [
+        "family-6f8931567e31"
+      ],
+      "check_1": "passed"
+    },
+    {
+      "case_id": "HO-64",
+      "round": 1,
+      "request_sha256": "5d45b11d01679b1849afefb0475549d2d61a6c71f6ae730dd7d04d83530b85eb",
+      "pseudonyms": {
+        "D1": "01_hr_pol_diversity.md",
+        "D2": "01_hr_pol_mental_health.md"
+      },
+      "characters": 10492,
+      "corpus_texts": 4,
+      "corpus_text_counts": {
+        "spans": 2,
+        "cards": 2,
+        "sections": 0,
+        "scan": 0
+      },
+      "case_sha256": "c51008b2dfd3e0971c9b59b599606ac9745cb661221b54990d15e4acbfeca7da",
+      "registered_severity": "low",
+      "primary_class": "multi-doc",
+      "safety_critical": false,
+      "documents": [
+        "01_hr_pol_diversity.md",
+        "01_hr_pol_mental_health.md"
+      ],
+      "families": [
+        "family-c51170307aa8",
+        "family-e5ca50122400"
+      ],
+      "check_1": "passed"
+    }
+  ],
+  "declared_drops": []
+}
