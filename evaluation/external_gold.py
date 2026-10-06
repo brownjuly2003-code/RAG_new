@@ -18,7 +18,7 @@ by where a text comes from, by the rule ``MATCH_RULE``:
   (``evaluation/external_convert.render``); a sentence's places are all the occurrences of its
   visible characters in the article body. An element or sentence that stands in several places
   of its document has every place as an alternative: nothing says which one the annotator meant,
-  and the first is never taken.
+  the first is not preferred, and a text at any of them is credited.
 - **Chunks.** The place of a chunk is the place of its body's visible characters in its
   document, found in the order of the archive (``locate_chunks``).
 - **Presence.** A gold place is present in a set of texts when the union of the texts' places in
@@ -27,8 +27,10 @@ by where a text comes from, by the rule ``MATCH_RULE``:
   satisfied when one of its alternatives is present.
 
 The rule credits an element that only two retrieved chunks hold together, and credits no text for
-an element it merely repeats. Our own verified cases keep ``verified-gold/text-containment-v1``:
-their spans were labelled as text, without places of the kind this rule needs.
+an element it merely repeats outside the places of that element. Among those places it cannot
+tell which one the annotator meant. Our own verified cases keep
+``verified-gold/text-containment-v1``: their spans were labelled as text, without places of the
+kind this rule needs.
 """
 
 from __future__ import annotations

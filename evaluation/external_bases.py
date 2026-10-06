@@ -31,7 +31,7 @@ import hashlib
 import json
 import re
 from collections import Counter
-from collections.abc import Mapping
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -226,8 +226,10 @@ def _conditionalqa(
                 not any(alternative["same_section"] for alternative in group["alternatives"])
                 for group in ambiguous
             )
-            counts["questions_with_evidence_in_several_parts"] += _spread(groups, "part")
-            counts["questions_with_evidence_in_several_sections"] += _spread(groups, "section")
+            counts["questions_with_evidence_in_several_parts"] += evidence_spread(groups, "part")
+            counts["questions_with_evidence_in_several_sections"] += evidence_spread(
+                groups, "section"
+            )
             counts["questions_with_two_or_more_evidence_groups"] += len(groups) > 1
     return (
         documents,
@@ -257,7 +259,7 @@ def _mark_neighbours(groups: list[dict[str, Any]]) -> None:
                 )
 
 
-def _spread(groups: list[dict[str, Any]], level: str) -> bool:
+def evidence_spread(groups: Sequence[Mapping[str, Any]], level: str) -> bool:
     """Whether the evidence of a question cannot be placed in one part (or section)."""
     common: set[Any] | None = None
     for group in groups:

@@ -1,4 +1,4 @@
-"""Prepare an external base on a host: its pinned files, its documents, its chunks, its losses.
+"""Prepare an external base on a host: its files, its documents, its chunks, its losses, its parts.
 
 Usage: python -m scripts.external_base <step> --base NAME [--raw DIR] --out DIR
 
@@ -12,9 +12,14 @@ Usage: python -m scripts.external_base <step> --base NAME [--raw DIR] --out DIR
     preserve  read the corpus, the archive and the cases; write preserve-report.json — how much
               of the documents the chunks hold and how they hold every gold place — and
               preserve-cases.jsonl with the state of each case's evidence
+    parts     hold the registered parts of the base (evaluation/external_parts.json) to its
+              cases and write parts-report.json: the counts of every part and selection
+    select    write selections/<selection>.questions.jsonl — the ids and the questions of one
+              registered selection, in its order, for a run to read; a selection of a part
+              that acceptance has not opened is refused
 
-The reports hold counts and digests and may leave the host. The corpus, the cases, the archive
-and preserve-cases.jsonl hold the texts of the base and stay on it
+The reports hold counts and digests and may leave the host. The corpus, the cases, the archive,
+preserve-cases.jsonl and the question files hold the texts of the base and stay on it
 (evaluation/external_bases.json, "redistribution").
 """
 
@@ -33,6 +38,7 @@ from typing import Any
 from evaluation import external_bases as bases
 from evaluation import external_convert as convert
 from evaluation import external_gold as gold
+from evaluation import external_parts as parts
 from scripts import corpus_manifest
 
 HEADER_LIMIT = 200  # vectordb._base_manager.add_contextual_headers cuts a header there
@@ -346,25 +352,70 @@ def preserve_step(name: str, out: Path) -> dict[str, Any]:
     return report
 
 
+def parts_step(name: str, out: Path) -> dict[str, Any]:
+    _base(name)
+    cases = parts.load_cases(out, name, bases.registration())
+    report = parts.verify(parts.registration(), name, cases)
+    _write_json(out / "parts-report.json", report)
+    return report
+
+
+def select_step(name: str, out: Path, selection: str) -> dict[str, Any]:
+    _base(name)
+    registered = parts.registration()
+    if selection not in registered["selections"].get(name, {}):
+        raise SystemExit(f"unregistered selection of {name}: {selection}")
+    ids = parts.read(registered, name, selection=selection)
+    cases = parts.load_cases(out, name, bases.registration())
+    parts.verify(registered, name, cases)
+    query = {case["case_id"]: case["query"] for case in cases}
+    lines = [
+        json.dumps({"case_id": case_id, "query": query[case_id]}, ensure_ascii=False) + "\n"
+        for case_id in ids
+    ]
+    data = "".join(lines).encode("utf-8")
+    target = out / "selections" / f"{selection}.questions.jsonl"
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_bytes(data)
+    chosen = registered["selections"][name][selection]
+    return {
+        "base": name,
+        "selection": selection,
+        "part": chosen["rule"]["part"],
+        "cases": len(ids),
+        "cases_sha256": chosen["cases_sha256"],
+        "questions_sha256": bases.sha256(data),
+    }
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
-    parser.add_argument("step", choices=("fetch", "convert", "chunks", "preserve"))
+    parser.add_argument(
+        "step", choices=("fetch", "convert", "chunks", "preserve", "parts", "select")
+    )
     parser.add_argument("--base", required=True)
     parser.add_argument("--raw", type=Path, help="directory that holds <base>/<registered path>")
     parser.add_argument("--out", type=Path, help="directory of the converted base")
+    parser.add_argument("--selection", help="a registered selection of the base")
     args = parser.parse_args(argv)
     if args.step in ("fetch", "convert") and args.raw is None:
         parser.error("--raw is required")
     if args.step != "fetch" and args.out is None:
         parser.error("--out is required")
+    if args.step == "select" and args.selection is None:
+        parser.error("--selection is required")
     if args.step == "fetch":
         report = fetch(args.base, args.raw)
     elif args.step == "convert":
         report = convert_step(args.base, args.raw, args.out)
     elif args.step == "chunks":
         report = chunks_step(args.base, args.out)
-    else:
+    elif args.step == "preserve":
         report = preserve_step(args.base, args.out)
+    elif args.step == "parts":
+        report = parts_step(args.base, args.out)
+    else:
+        report = select_step(args.base, args.out, args.selection)
     print(json.dumps(report, ensure_ascii=False, sort_keys=True), flush=True)
     return 0
 

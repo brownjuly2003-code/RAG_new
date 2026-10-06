@@ -169,6 +169,43 @@ excerpt found over a heading is refused without a second search; the tier
 has 360 positions, a set of its own, and rules for what it bars and for
 the share of its rejected drafts; and four counts or claims were
 corrected. What the second read changed has been read by nothing since.
+Amended 2026-10-05 for plan slice 1.6, before a run read a question of an
+external base: the new section «External bases: parts and pilot of plan
+slice 1.6» registers the parts of the three bases and their lock, the
+selections a run reads, the rule that reads their gold by source ranges, the
+metrics of ConditionalQA and WixQA at the points of the production path with
+their primary metrics, the pilot of two arms with its rule on lost pairs,
+what leaves the host, how the sizes of a part are read, the selection
+that step 1 of acceptance reads, and the budget inside which a base gets its
+graph. It changes no rule of «Acceptance
+contract» — the role of the bases enters with the eleventh revision — and
+supersedes one number of it: the denominator «the 395 answerable questions»
+of the paragraph on the external control. The section was read cold twice on
+2026-10-06, before the pilot ran, each time by a fresh-context reader on the
+session's model, which is also its author's (decision D12). The first read
+gave no blocker, six major points and fifteen minor ones, each applied. It
+fixed the selection of step 1 before the pilot — one question a page under a
+ceiling of nights, the pilot's correlation as description only; a locked
+part is read once, by one selection; a pilot whose variance is not used can
+still raise the registered variance; a chunk without a place stops the
+measure; the measure refuses a document that would carry a question or the
+name of a document; the rule on what leaves the host names the run
+directories; and the list of what the eleventh revision takes was completed.
+The second read found eighteen of those points closed and three closed in
+part, and gave no blocker, two major points and seven minor ones, each
+applied. A pilot is measured once and not run again: the rule the first read
+had brought for a second run contradicted itself and had no code. The
+ceiling of nights is shown at the means beside the medians, where it is
+close, and a ceiling moved after the pilot is a deviation that the eleventh
+revision publishes. The count of pages is said to narrow plan row 1.6; the
+numbers of what step 1 reads stand beside those of the whole parts; the
+stratum and the base of a mechanism have a default and are named from no
+number of the pilot; `reserve` and `excluded` are read by no run of this
+campaign; and the list for the eleventh revision gained three items. Of the
+three points closed in part two are closed by these, and the third stays a
+reading of the section: that a list of ids is provenance. What the second
+read changed, and the paragraph on the graph of a base, which was written
+after the snapshot of that read was taken, have been read by nothing since.
 
 ## Why a second ruler
 
@@ -1841,6 +1878,623 @@ Plan step 1.3d closes with the tier built or given up by that rule, and
 not without it. At the pace of the trials — four to five minutes a draft
 — the 360 drafts are about 27 hours of one request stream; the time of a
 check under rubric v3 has not been measured.
+
+## External bases: parts and pilot of plan slice 1.6
+
+The cut was made on 2026-10-05 and this section written with it; the section
+was amended on 2026-10-06 after its two cold reads and committed that day,
+before a run read a question of an external base. The cut precedes the first
+index of a base, whose build began on 2026-10-06, and the order needs no
+witness: the cut is a function of the seed and of the converted questions
+alone, and is rebuilt byte for byte (below). The pilot's numbers go into its
+capsule; no rule below is changed by them, and where the pilot raises a
+variance the capsule and the eleventh revision carry the registered MDE.
+
+**Why the bases are cut now.** Plan decision D7, in its wording of
+2026-10-05, gives the three external bases a new role: mechanisms are
+compared on a part of each kept for tuning, and the gain row of acceptance
+4.1 is decided on a part that no run has read. That role enters this spec
+with its eleventh revision, which needs the numbers of the pilot registered
+here. The cut cannot wait for it: a part is unread only if it was set apart
+before the first run. So the parts, their lock, the rule that reads the gold
+and the pilot are registered first, and until the eleventh revision the
+contract below stands as it is.
+
+**The parts.** [`evaluation/external_parts.json`](../../evaluation/external_parts.json),
+SHA-256 `992f6fe065c9eaa64a51b3957e70f44b6ea35a31c0b6099d944546bd35f67060`,
+is written by [`evaluation/external_parts.py`](../../evaluation/external_parts.py)
+from the questions of the three bases as converted and from the seed
+20260925. The conversion is pinned by
+[`evaluation/external_bases.json`](../../evaluation/external_bases.json),
+SHA-256 `cf80efc2e0194028c9469a0008a01f0e105bcf3669de71bcfa19947f3a6be167`:
+the revision and SHA-256 of every source file, and the SHA-256 of the
+converted corpus and questions of each base. No model, no index and no
+result of a run took part in the cut. Its rules are the `rules` of the
+file. Everything is drawn by one order — ascending SHA-256 of
+`'<seed>:<base>:<kind>:<id>'`, the kind being `document` or `question`. On
+a host that holds the converted questions
+`python -m evaluation.external_parts --data DIR` rebuilds the file and
+compares it byte for byte; in the repository a test holds the counts and
+the digests of the file to the ids it lists.
+
+| Base | Part | Access | Questions | Clusters | Largest cluster |
+|---|---|---|---|---|---|
+| ConditionalQA | `tuning` | open | 882 | 165 | 12 |
+| ConditionalQA | `locked` | locked | 859 | 165 | 12 |
+| ConditionalQA | `reserve` | locked | 882 | 165 | 14 |
+| WixQA | `tuning` | open | 142 | 109 | 8 |
+| WixQA | `locked` | locked | 200 | 154 | 11 |
+| WixQA | `excluded` | locked | 58 | 27 | 17 |
+| MultiHop-RAG | `advisory` | open | 1117 | 42 | 622 |
+
+«Questions» counts every question of a part. «Clusters» counts the clusters
+of its questions that carry gold: the primary questions of ConditionalQA,
+every question of WixQA, and in MultiHop-RAG the 816 of the 1,117 that have
+a gold article.
+
+- **ConditionalQA** — 2,623 questions on 652 pages, 495 of which carry a
+  question. The unit is the page: a question is asked about one page, and
+  the questions of a page share its text. The pages that carry a question
+  stand in the order and are cut into three runs of 165 — `tuning`,
+  `locked`, and `reserve` for a second campaign. A question stands in the
+  part of its page, a not-answerable one too. The 157 pages without a
+  question stay in the index and belong to no part. A question is *primary*
+  when it is answerable, carries an evidence group and has no evidence the
+  conversion could not place: the denominator of `all_evidence_coverage`.
+  A *section* is what stands under one heading of the page, of any depth,
+  up to the next heading. The stratum `several_sections` is the primary
+  questions whose evidence cannot be placed in one section of the page: no
+  one section holds a place of every evidence group. It is the stratum plan
+  hypothesis H1 is read on — H1 keeps a lone piece of evidence that the
+  coherence filter of the graph branch drops, taking coherence as a soft
+  preference, and plan row 3.1 names these questions as its default for the
+  gain row. A cluster is the primary questions of one page.
+
+| Part | Pages | Questions | Not answerable | Primary | Of them `several_sections` | Pages with such a question |
+|---|---|---|---|---|---|---|
+| `tuning` | 165 | 882 | 38 | 844 | 397 | 152 |
+| `locked` | 165 | 859 | 36 | 823 | 390 | 145 |
+| `reserve` | 165 | 882 | 31 | 850 | 435 | 152 |
+
+In `reserve` one answerable question carries no evidence group and is not
+primary: 882 = 31 + 850 + 1. The stratum has 1,222 questions in the three
+parts. The plan's 1,259 was counted by its research before the conversion
+was registered, by a reading of a section that is not this one.
+
+- **WixQA** — 400 questions over 6,221 articles. `locked` is the 200
+  ExpertWritten questions. `tuning` is the 142 Simulated questions that
+  share no gold article with a locked one. The 58 Simulated questions that
+  do are `excluded`, and locked as well: tuning on them would tune on a gold
+  article of the locked part. There is no reserve — reading ExpertWritten a
+  second time in another campaign is a regression check, not a new
+  confirmation. A cluster is the questions joined by a shared gold article,
+  directly or through other questions, counted inside the part that is read.
+- **MultiHop-RAG** — 2,556 questions over 609 articles. `advisory` is the
+  1,117 questions of the types inference (816) and null (301), the sub-slice
+  of plan slice 1.5d; the other 1,439 stand in no part. Nothing is locked:
+  the labels were written by a model (`llm_labelled`) and the base decides
+  nothing. It could not decide in any case: shared articles join 622 of the
+  816 questions that have gold into one cluster, and the clusters number 42.
+
+**The lock.** A part is `open` to development runs or `locked`. Locked means
+that no run of the retrieval path reads the question, by any tool. The
+conversion, the cut, the chunking and the preservation report read the
+labels of every question, locked ones too, and no output of a model: the
+counts of this section are properties of the labels and the chunking, the
+same for every arm. A change of the chunking or of the gold rule after this
+registration is registered before it is applied and is not chosen from a
+count on a locked part. The list `opened` of the registration is empty.
+`external_parts.read` gives the ids of a part or of a selection and raises
+`Locked` for a locked part that `opened` does not name. The collector takes
+the questions of a run on an external base from a registered selection and
+from nothing else — it accepts no case file there — and refuses a selection
+of a locked part before it registers the run. A test holds `opened` empty.
+Opening a part is therefore a commit that changes the registration and that
+test, and acceptance 4.1 alone makes it: the locked parts are held as the
+holdout of step 1.3e is.
+
+A part named `locked` is read once in a campaign, by one selection, for one
+named mechanism: in step 1 of acceptance 4.1, which reads the locked parts
+of the external bases before step 2 reads our holdout. `reserve` and
+`excluded` are read by no run of this campaign, so the diagnostic that the
+contract gives Simulated at acceptance reads the 142 questions of `tuning`
+— the ones the mechanism was tuned on, and it is reported as that. A larger
+selection of the
+same part read later is neither a new confirmation nor an extension of the
+first; like a second reading of ExpertWritten, it is a regression check. No
+registered rule draws a selection of the rest of a part without the
+questions already read, so the rest is kept for no later reading, and a
+second campaign reads `reserve`. Today an entry of `opened` names a part and
+opens the whole of it; none is made before the eleventh revision, which
+makes an entry name the selection, so that `read` gives that selection and
+nothing else of the part.
+
+**Selections.** What a run reads of a part is a *selection*: a prefix of the
+part's order, by a rule that names its size. A size chosen later therefore
+draws nothing anew, and of two selections by one rule on one stratum with
+one number of questions a page the larger holds the smaller. A selection by
+documents takes the first pages that carry at least the asked number of
+questions of the named stratum, and of each page its first ones up to that
+number; a selection by questions takes the first questions of the part. One
+selection is registered now, `pilot`. Of ConditionalQA it is the first 25
+pages of `tuning` with two primary questions or more, two of each: 50
+questions in 25 clusters, 27 of them of the stratum `several_sections`, on
+19 pages. Of WixQA it is the first 40 questions of `tuning`: 33 clusters —
+29 of one question, one of two and three of three. A later selection is
+registered by a commit that adds it to the file and replaces the SHA above,
+before the run that reads it; the seed, the rules and the ids of every part
+do not change, and a test holds them. The selection of step 1 of acceptance
+is fixed by the rule under «Sizes»; the selections of the open parts that
+the baseline of slice 1.7 and the comparisons of track 3 read are named by
+the eleventh revision.
+
+**One number of the contract is superseded now.** The paragraph of
+«Acceptance contract» on the external control stays in force until the
+eleventh revision: a separate transferability line, not a SHIP condition.
+Its denominator for ConditionalQA, «the 395 answerable questions», is the
+count of no registered part. The denominator of ConditionalQA's primary
+metric is the primary questions of the selection that is read of its locked
+part. The eleventh revision names that selection, and no locked part is read
+before it, so until then the paragraph stands without that number and
+decides nothing. The plan's rows say «answerable»; primary is narrower by
+the one question of `reserve` named above.
+
+**Gold by ranges** (rule `external-gold/range-coverage-v1`,
+[`evaluation/external_gold.py`](../../evaluation/external_gold.py)). Our
+verified cases are read by text: a text holds a span when it contains the
+span's normalised text whole (`verified-gold/text-containment-v1`). The gold
+of an external base is another kind of object — an element of a page chosen
+by an annotator (ConditionalQA), a sentence of an article (MultiHop-RAG) —
+and containment fails it in three ways. A short element, a list item of two
+words or a heading, is contained in many texts of its page that are not its
+place. An element cut by the chunker is whole in no chunk, though two
+adjacent chunks hold it together. And a sent document joins a seed chunk
+with its neighbours and repeats the overlap between them, so an element that
+lies across two chunks is not contiguous in it. This gold is therefore read
+by where a text comes from:
+
+- a document is the sequence of its visible characters — printable and not
+  whitespace — which chunking leaves in their order; a place is a range of
+  that sequence;
+- the place of an element is given by the conversion that wrote the
+  document; an element or sentence that stands in several places of its
+  document has every one of them as an alternative: nothing says which one
+  the annotator meant, the first is not preferred, and a text at any of them
+  is credited;
+- the place of a chunk is the place of its body — its text without the
+  header line the chunker puts before it — in its document. A chunk whose
+  body has no place stops the measure when it is read for a question, at a
+  point or among the chunks of a page that carries the question's gold, and
+  the committed document gives the number of such chunks in the archive; the
+  preservation reports count none in the three bases;
+- a sent document is resolved into the chunks it was joined from, and a text
+  that is no such join stops the measure — it is not counted as absent;
+- a gold place is *present* in a set of texts when the union of their places
+  in its document covers it, and an evidence group is satisfied when one of
+  its alternatives is present.
+
+The rule credits an element that only two retrieved chunks hold together,
+and credits no text for an element it merely repeats outside the places of
+that element. Among those places it cannot tell which one the annotator
+meant: where the text of an element stands in several places of its page, a
+chunk at any of them satisfies the group, which for a short element raises
+the metric — in both arms alike. The conversion counts such groups: 327 of
+the 10,271 evidence groups of ConditionalQA and 29 of the 6,084 of
+MultiHop-RAG, published by the capsule of the connection of the bases
+(plan slices 1.5 and 1.5d).
+The plan asked for alternatives «checked by section and meaning»; the
+conversion marks, on each alternative, whether single-place evidence of the
+same question stands in its section, and removes none. WixQA needs none of
+it: its gold is whole articles, and an article is present when one of its
+chunks is.
+
+**Points and metrics.** A run of the collector records, for every question,
+what the production path held at six points: `vector` and `bm25`, the
+candidates of the two lanes; `pool`, the fused pool the reranker received;
+`ranked`, the reranked seeds, of which the first five are read; `expanded`,
+the context after parent expansion and before grading; `sent`, the context
+left after grading — what a generator would be sent.
+
+- ConditionalQA is read at all six, on its primary questions.
+  `evidence_recall` is the share of the question's evidence groups that are
+  satisfied at the point, and `all_evidence_coverage` is 1 when all of them
+  are. At `sent` the second is the `all_evidence_coverage` of «Metrics per
+  case». At `pool` the first is its `evidence_recall_pool` with an evidence
+  group where that definition has a gold span: a group is one element the
+  annotator chose, and its alternatives are the places that element stands
+  in. Primary metric: `all_evidence_coverage` at `sent`.
+- WixQA is read at the first four, and its runs stop after retrieval.
+  `gold_article` is 1 when a chunk of a gold article of the question is
+  present, and `gold_articles` is the share of its gold articles that have
+  one. Primary metric: `gold_article` at `ranked` — a gold article among the
+  first five reranked seeds. The stratum that decides is ExpertWritten;
+  Simulated is diagnostic at acceptance, as the contract registers, and is
+  the part mechanisms are tuned and compared on.
+- MultiHop-RAG takes no part in the pilot; its metric and points are
+  registered before the baseline of slice 1.7 reads it.
+
+The primary metric of a base and its point are the ones plan slices 1.5 and
+1.5c name. The point of a metric is not exchanged for a cheaper one to save
+time (decision D9): ConditionalQA is run through grading.
+
+**Equal context budget.** The plan reads the primary metric of ConditionalQA
+at an equal context budget between the arms: parent expansion widens a seed
+with its neighbours up to 3,600 characters, and an arm that sends more of a
+page covers more of the evidence without finding it better. In the pilot the
+budget is four settings — `rerank_top_k`, `parent_expansion`,
+`parent_expansion_window` and `parent_expansion_max_chars` — which the
+measuring tool requires to be the same in both arms. That is why `sent3` of
+step 1.3c is not an arm here: it moves `rerank_top_k`. The characters
+actually sent are published by arm and as a paired difference, so an arm
+that sent more inside the same settings is seen. What an equal budget is for
+a mechanism that changes one of the four, and how a gain is read when an arm
+keeps the four and still sends more characters — the tolerated paired
+difference and what a gain beyond it counts as — is registered by the
+eleventh revision, before that mechanism is compared.
+
+**The pilot.** Two arms of the production retrieval path, run by the
+collector of slice 2.5 on the selection `pilot` of ConditionalQA and of
+WixQA, with no generator and no judge: `control`, the registered control,
+and `pool30`, with `retrieval_top_k` 30 in place of 20 — the perturbation of
+step 1.3c. It is not a mechanism candidate: no verdict is given on it and
+nothing is chosen from it. It is run because the interval of a comparison is
+made of paired differences, and their spread can only be seen between two
+arms. ConditionalQA runs the stages transform, embed, retrieve and grade;
+WixQA stops after retrieve. Both arms of a base run from one commit on one
+index, are development runs and enter the ledger with their config hashes.
+The measuring tool ([`scripts/external_pilot.py`](../../scripts/external_pilot.py))
+accepts these two arms and no others. It holds them to the registered
+selection and conversion, to one code, one index and one set of models, and
+to settings that differ in the moved count alone.
+
+**What is estimated.** For the perturbation, each metric and each point,
+over the measured pairs: the paired differences arm − control, their mean
+and sample variance, the share of pairs that differ, the clusters with a
+non-zero sum of differences, which the interval-validity rule counts, and
+the intra-cluster correlation — as it comes out and kept inside [0, 1]
+([`evaluation/power.py`](../../evaluation/power.py), `pair_variance`) — over
+the clusters of the selection. For the primary metric, the same over the
+pairs of the stratum `several_sections`, clustered among themselves. Beside
+them: for every point the pairs whose arms held different chunks there,
+since a metric can move in no other pair; the mean of every metric at every
+point in each arm; the questions for which the chunks of the index can give
+the primary metric 1 — every evidence group of a ConditionalQA question, one
+gold article of a WixQA question — which is the ceiling the chunking leaves
+every arm; the sizes of the lanes, the pool and the contexts; and the
+seconds a question took at every stage — mean, median, 95th percentile and
+total.
+
+**Lost pairs.** The collector excludes a question on a model failure and
+does not run it again, outside a streak of three that the collection rule
+stops and resumes; a pair is lost when either arm excluded its question.
+A lost pair is listed with the stage and the error type of the exclusion.
+The reason is not published: it may quote the base. The variance is taken
+over the measured pairs when at most a tenth of the pairs are lost — the
+share above which the collection rule makes a subset's numbers
+`NOT_EVIDENCE`. Step 1.3c asked for every pair, of 24. Here an arm of
+ConditionalQA is fifty questions through grading, and running it again for
+one failed call would cost most of a night. A variance over nine tenths of
+the pairs is a rougher estimate, not a more favourable rule: whatever it is,
+the registered variance stays at or above the grid value. It can be
+understated all the same, because losses are not random: a failure at
+grading depends on the size of the context, which the perturbation changes.
+The capsule says so beside the number.
+
+**One pilot, measured once.** The pilot of a base is its two runs and one
+document of the measure. Until that document is written the pilot has shown
+no number of a metric. A run that stops is resumed, as the collection rule
+has it. Runs that cannot be resumed, and runs that the measure refuses — a
+chunk without a place, a context that is no expansion of its seed, arms that
+differ in more than the moved count — have measured no pair: the fault is
+fixed by a commit, the runs or the measure are made again, and what stopped
+is published by stage and error type. Once the document is written the pilot
+is not run or measured again: not for lost pairs, whatever their share, and
+not for a condition of use that failed (next paragraph). The measure refuses
+to replace its document with a different one, and every run enters the
+ledger, so a second run is seen there. A fault that a measured pilot shows —
+in the match, the index or the collector — is fixed before the baseline of
+slice 1.7, whose runs on the tuning parts are its check; the pilot's
+variance stays what the next paragraph leaves it, and its seconds count the
+ceiling of step 1 as they are.
+
+**When the pilot gives no variance.** The perturbation's variance of the
+primary metric is used only if at most a tenth of the pairs are lost, the
+chunks of the index can give the primary metric 1 for at least one question
+of the selection, and the control's primary metric is 1 on at least one
+measured question. Otherwise the perturbation is published as description,
+the grid stands in its place and the capsule says which condition failed —
+so a match that finds nothing is not read as a perturbation that moved
+nothing. One thing such a pilot still does: a variance over its measured
+pairs that is above the grid raises the registered variance, so that a pilot
+set aside is not read in the favourable direction. It is not run again to
+give a variance that could be used.
+
+**What leaves the host.** The measure runs on the host that holds the base
+and writes numbers, ids of questions and digests. Its document carries a row
+of numbers for every question and stays on the host, beside the runs. What
+is committed is the same document without those rows and with the SHA-256
+of the full one: counts, means, variances, the sizes of the clusters — a
+cluster is a number there, never the name of a page — seconds, the ids of
+lost pairs with stage and error type, and provenance. Neither holds a
+question, an evidence string, a text, a list of retrieved chunks or the name
+of a document. The measure refuses to write a document in which a string is
+the name of a document of the base or holds a question of the selection; on
+a constructed base a test holds the full document to the rest; and the
+committed one is a part of the full one. The directories of a run on an
+external base — its records, the `report.json` that a run through grading
+writes, with the effective queries and the reasons of exclusions and stops,
+and the question file of the selection — stay on the host: of a run, only what the committed document of
+the measure carries leaves it, and the «publishes» of the collection rule
+does not apply to such a report. This is the rule the registration of the
+bases gives: outside the hosts go aggregates, attribution and provenance
+only. That rule does not name ids. We read a list of ids as provenance: an
+id names a row of a pinned public file and carries none of its text, and
+the «slices» that decision D7 keeps on the hosts are the questions and texts
+of a subset, not the list of its ids. That is why the registration of the
+parts lists the ids and gives pages and articles as digests, and why a lost
+pair is named by its id.
+
+**Sizes** (`python -m scripts.external_pilot sizes --out FILE`). For every
+part of ConditionalQA and WixQA, every stratum and every design, a row gives
+n, the clusters and the scenario of `evaluation/power.py`:
+
+- *Variance.* The registered variance of a base's primary metric is the
+  largest of three: the grid value 0.10, which is the middle of the grid
+  0.05 / 0.10 / 0.20 of step 1.3c; the variance the perturbation gives over
+  all measured pairs; and, for a stratum, the variance it gives over the
+  pairs of that stratum. The pilot can raise it and cannot lower it, as in
+  step 1.3c. For a metric of two values the grid value stands for about a
+  tenth of the pairs differing; a mechanism that moves a fifth of them has
+  twice the variance and an MDE 1.4 times as large.
+- *Reading.* The registered MDE is the MDE at correlation 1 with the Student
+  quantile for clusters − 1 degrees of freedom, as in step 1.3c: the
+  questions of a cluster are taken to move as one. Beside it stand, as
+  description, the MDE of independent questions and, after the pilot, the
+  MDE at its estimate of the correlation — the estimate over all measured
+  pairs, in a stratum's row too: in the pilot the stratum has 8 clusters of
+  two questions and 11 of one. A negative estimate is kept at 0 and an
+  absent one leaves its column empty; neither changes a registered number.
+- *Designs.* The whole part and, for ConditionalQA, a grid of selections by
+  documents that the tool prints: 25, 50, 75, 100, 125 or 150 pages with 1,
+  2, 3 or 4 questions of the stratum each, where the part has that many such
+  pages, and every page that carries a question of the stratum with one
+  question each. The rule of a selection gives other counts as well.
+- *The whole rule.* The primary rule passes when the point gain is at least
+  +0.05 and the interval lies above zero. With power 0.8 it therefore passes
+  at a true gain of the larger of the two thresholds — +0.05 and the
+  quantile times the standard error — plus the 0.8 quantile of the normal
+  law times the standard error. Where the interval is the stricter threshold
+  that gain is the MDE; where +0.05 is, it is more than the MDE. The powers
+  are normal approximations of the rule; the cluster bootstrap decides a
+  comparison.
+- *Hours.* After the pilot: two arms at the mean seconds a question took the
+  control, summed over its stages — a lower estimate, since excluded
+  questions and the loading of the models are outside it.
+
+At the grid value, before the pilot — «rule at +0.05» is the power of the
+whole primary rule at a true +0.05, «NI at zero» the power of a
+non-inferiority check at a true zero, both in the registered reading:
+
+| Base | Part | Stratum | Design | n | Clusters | Registered MDE | Gain the rule needs | Rule at +0.05 | NI at zero | MDE of independent questions | Gain the rule needs, independent questions |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| ConditionalQA | `locked` | primary | whole | 823 | 165 | 0.074 | 0.074 | 0.47 | 0.11 | 0.031 | 0.059 |
+| ConditionalQA | `locked` | `several_sections` | whole | 390 | 145 | 0.083 | 0.083 | 0.39 | 0.10 | 0.045 | 0.063 |
+| ConditionalQA | `locked` | primary | 165 pages × 1 | 165 | 165 | 0.069 | 0.071 | 0.50 | 0.12 | 0.069 | 0.071 |
+| ConditionalQA | `locked` | `several_sections` | 145 pages × 1 | 145 | 145 | 0.074 | 0.074 | 0.47 | 0.11 | 0.074 | 0.074 |
+| ConditionalQA | `locked` | primary | 150 pages × 1 | 150 | 150 | 0.073 | 0.073 | 0.48 | 0.11 | 0.072 | 0.072 |
+| ConditionalQA | `locked` | primary | 100 pages × 1 | 100 | 100 | 0.089 | 0.089 | 0.34 | 0.09 | 0.089 | 0.089 |
+| ConditionalQA | `locked` | primary | 100 pages × 2 | 200 | 100 | 0.089 | 0.089 | 0.34 | 0.09 | 0.063 | 0.069 |
+| ConditionalQA | `locked` | primary | 50 pages × 2 | 100 | 50 | 0.128 | 0.128 | 0.19 | 0.06 | 0.089 | 0.089 |
+| ConditionalQA | `tuning` | primary | whole | 844 | 165 | 0.073 | 0.073 | 0.48 | 0.11 | 0.030 | 0.059 |
+| ConditionalQA | `tuning` | `several_sections` | whole | 397 | 152 | 0.080 | 0.080 | 0.41 | 0.10 | 0.044 | 0.063 |
+| ConditionalQA | `reserve` | primary | whole | 850 | 165 | 0.073 | 0.073 | 0.48 | 0.11 | 0.030 | 0.059 |
+| ConditionalQA | `reserve` | `several_sections` | whole | 435 | 152 | 0.082 | 0.082 | 0.40 | 0.10 | 0.042 | 0.063 |
+| WixQA | `locked` | all | whole | 200 | 154 | 0.091 | 0.091 | 0.33 | 0.09 | 0.063 | 0.069 |
+| WixQA | `tuning` | all | whole | 142 | 109 | 0.109 | 0.109 | 0.25 | 0.07 | 0.074 | 0.074 |
+
+Every registered MDE is above the minimally useful effect of +0.05. On an
+external base, too, the campaign is registered as checking gains of at least
+the registered MDE — at the grid value and with a part read whole, 0.074 on
+the locked part of ConditionalQA, 0.083 on its stratum `several_sections`,
+0.091 on ExpertWritten — and at a true +0.05 the whole rule passes there
+with probability 0.33 to 0.47. Were the questions of a cluster independent,
+the rule would need a true gain of 0.059 to 0.069. These numbers replace the
+reference values that plan row 1.6, decision D7 and gap G39 gave before the
+cut (0.06–0.08; about half; 0.11–0.24): they are the registered reading on
+the parts as cut. Step 1 does not read ConditionalQA whole. On what it reads
+by the rule below — 165 or 145 pages with one question each, and
+ExpertWritten whole — the registered MDE is 0.069 to 0.091, the rule needs a
+true gain of 0.071 to 0.091 and passes at a true +0.05 with probability 0.33
+to 0.50. The registered MDE of our own holdout is 0.224 to 0.229:
+the external bases are read for a gain two and a half to three times
+smaller, and that is what they are for. The registered MDE of the campaign
+is the row of the selection that step 1 reads, at the registered variance
+after the pilot, raised by the refinement of «What the pilot does not show»
+if that gives more; the capsule of the pilot and the eleventh revision carry
+the first, the capsule of the refinement the second.
+
+**The selection of step 1** is fixed here, before the pilot: of what the
+pilot shows only the seconds of its control enter it, through the ceiling
+below. In the registered reading the questions of a
+page beyond its first add nothing, and pages of unequal size cost: the whole
+locked part counts as about 146 pages of its 165 — n²/Σm² over its clusters
+— and ExpertWritten as about 96 clusters of its 154. 150 pages with one
+question each have the MDE of the whole locked part, 0.073 against 0.074, at
+150 questions in place of 823. The registered MDE therefore does not rank
+designs by their size. For independent questions the whole part has 0.031
+against 0.072, and the truth lies between the two readings. The pilot's
+correlation cannot say where: it is estimated on 25 clusters of two
+questions, with a standard error of about 0.2, and it is the correlation of
+a perturbation, not of a mechanism. It is published as description and
+chooses nothing.
+
+What chooses is an inequality that holds at every correlation ρ from 0 to 1.
+With equal weights and one variance v of a question, a question on a page
+not yet read lowers the variance of the mean at least as much as another
+question on a page already read — by 2mρ·v/(n+1)² more, m being the
+questions already read on that page and n all the questions read. So:
+
+- of ConditionalQA step 1 reads one question a page — the first question of
+  the deciding stratum on each page, in the order of the part — on every
+  page of the locked part that carries one: 165 pages for all primary
+  questions, 145 for `several_sections`. No second question is added to a
+  page: in the registered reading it lowers nothing;
+- the stratum that decides for a mechanism is named before the runs of that
+  mechanism, in its spec (plan row 3.1), from the plan's hypothesis for it —
+  for H1 the plan's default is `several_sections` — and from no number of
+  the pilot; the eleventh revision records what is named by then. Where the
+  hypothesis names no stratum, or ConditionalQA is not the base the
+  mechanism is named for, the selection is drawn on all primary questions.
+  The base a mechanism is named for is named in the same way, from no number
+  of the pilot. Each stratum has its selection; the one read is that of the
+  mechanism nominated into acceptance 4.1, and the other is not read;
+- the pages are fewer only for cost. Two arms of step 1 on both bases —
+  ConditionalQA through grading, the locked part of WixQA up to the reranked
+  list — are counted at the mean seconds a question took the control of each
+  pilot: the mean over the questions the control measured, whether or not
+  the pilot's variance is used. If they exceed eight nights of eight hours,
+  the plan's estimate for the step, the pages of ConditionalQA are cut to
+  the largest count that fits, by the prefix rule. The ceiling is close: at
+  the means of the control of step 1.3c on our corpus, 627 s and 59 s, two
+  arms on 165 pages and on ExpertWritten take 64.03 hours, and 164 pages
+  fit; at the medians of slice 2.5 they take about 54. The ceiling is the
+  owner's to move, in the plan. Moved before a pilot is measured, it is the
+  registered ceiling; moved after, it is a deviation: the eleventh revision
+  then gives the count that eight nights gave beside the count that is read,
+  and why. It moves the number of pages and nothing else;
+- of WixQA the whole locked part is read. One question a cluster would have
+  a registered MDE of 0.072 against 0.091, but the contract's denominator is
+  the ExpertWritten stratum and no registered rule draws such a selection.
+
+No variance, no correlation and no level of a metric in an arm enters the
+count of pages; the variance gives that count its registered MDE. This
+narrows plan row 1.6, which let the variance and the measured time name the
+count: here the time alone does, as gap G39 has it. From the two pilots
+`sizes` prints the selection by this rule (`step_1`). A selection
+of one question a page reads the mean over pages, not the mean over the
+questions of the part: a page with eight questions counts as a page with
+one. At the grid value the rule needs a true gain of 0.071 on 165 pages —
+there +0.05 is the stricter threshold, and the registered MDE is 0.069 — and
+of 0.074 on the 145 pages of the stratum. In every other row of the table
+the interval is the stricter threshold, and the registered MDE is also the
+gain the rule needs. At the medians of slice 2.5 two arms through grading
+cost about 50 hours for 165 questions and 44 for 145, where the whole locked
+part would cost about 250 hours and its stratum 118; 200 ExpertWritten
+questions in two arms cost about 4 hours.
+
+No non-inferiority check reaches power 0.8 at a true zero here either: 0.09
+to 0.11 in the registered reading on the locked parts, and 0.44 at best for
+independent questions, on the whole locked part of ConditionalQA. A
+mechanism that is neutral on such a row is expected to end `INCONCLUSIVE`
+on it, as on our own sets. The margin −0.02 is not widened (decision D9).
+The «confirmation» of the paragraph on the external control is this check:
+its point condition holds by itself at these standard errors, and it passes
+with power 0.8 only at a true gain of the registered MDE less 0.02 — 0.054
+to 0.071 on the whole locked parts. On what step 1 reads — one question a
+page, and ExpertWritten whole — the two numbers are 0.09 to 0.12 and 0.049
+to 0.071.
+
+**What the pilot does not show.** A perturbation is not a mechanism: the
+variance of the chosen mechanism's paired differences is refined on the
+tuning part before a locked part opens. A refined variance above the
+registered one raises the registered MDE of the selection that is read, and
+the selection is not enlarged for it: it already holds every page, or as
+many as the ceiling lets it. A refined variance below the registered one
+changes nothing. The estimator of the refinement and the selection it reads
+are registered by the eleventh revision, before its run; the tool has no
+input for it yet. The correlation is estimated on 25 clusters of two
+questions in ConditionalQA and on 33 clusters in WixQA, four of them of more
+than one question: it is rough, which is why the registered reading stays at
+correlation 1 and the selection does not depend on it. WixQA is piloted on
+Simulated questions and decided on ExpertWritten ones, which other authors
+wrote in another way: the pilot's variance is a stand-in there, with the
+grid value as its floor. No judged metric and no answer metric is read on an
+external base (decision D7: retrieval metrics only), so none gets a variance
+here. The seconds are the control's, of one run on one host: an arm of a
+mechanism can cost more and is timed in its own comparison.
+
+**Cost.** Fifty questions of ConditionalQA in two arms through grading and
+forty of WixQA in two arms up to the reranked list: about sixteen hours of
+the host at the medians the collection of slice 2.5 took on our corpus — 39 s
+a question up to the reranked list, 546 s through grading — and about
+nineteen at the means of the control of step 1.3c, 59 s and 627 s. The pages
+of the external bases are not ours, and the capsule gives the hours spent.
+
+**The graph of a base.** Plan slice 1.5 leaves to this slice the budget
+inside which a base gets its graph, and plan row 3.1 lets ConditionalQA
+decide for H1 «если на базе построен граф». The branch has two lanes
+([policy of plan slice 3.0](graph-enablement-policy.md)), and this section
+reads that condition by lane:
+
+- the structural lane reads the headings of the chunks. Its graph
+  (`ingestion/structure_graph.py`) is built from the chunk archive in
+  seconds and by no model, so every base has it; the capsule of the
+  connection gives its counts and digest. In the first campaign model
+  routing is off, and the experiment arm of the branch is this lane (policy,
+  «the first campaign runs a static policy»), so no base is taken from H1
+  for want of a graph;
+- the entity lane reads a graph that the product's pinned extractor writes
+  with one request a chunk. No mechanism of the first campaign uses that
+  lane — one that does registers first how the entities of a query are
+  produced (same requirement of the policy) — so no entity graph of an
+  external base is built now, and the timing that plan slice 1.5 asks for
+  is run when such a mechanism is registered, before its runs. Its rule is
+  fixed now. The extractor reads the chunks of the first 100 documents of
+  the tuning part of ConditionalQA, in the order of the part, and the mean
+  seconds a chunk times the chunks of a base is the cost of that base. A
+  base gets its entity graph when that cost is at most three nights of eight
+  hours — what the plan gives the whole baseline of slice 1.7. Otherwise it
+  keeps the structural graph alone, and the mechanism is recorded
+  `not_applicable` on it before its runs (plan gap G39). The timing stops
+  early once the chunks read have taken longer than those 100 documents may
+  take if ConditionalQA is to fit — the ceiling times their share of the
+  base's chunks: from then on the base cannot fit.
+
+The ceiling is the owner's to move. It is a cost: no number of a metric
+enters it. The extractor's prompt is written in Russian for our corpus
+(policy, «What does not depend on the corpus, and what does»), so the timing
+will say what the entity graph of an English base costs and nothing of what
+it is worth.
+
+**What the eleventh revision takes from the pilot.** For each base: the
+selections of its locked part that step 1 of acceptance can read, drawn by
+the rule above — of ConditionalQA one on all primary questions and one on
+`several_sections`, of WixQA the whole part — each with its n, clusters,
+registered MDE, the power of the gain rule and of each non-inferiority
+check, and the nights it costs. Inside the selection drawn on all primary
+questions the stratum `several_sections` is read too and gets a row of its
+own; inside the one drawn on `several_sections` there is no such row for
+all primary questions. With them:
+
+- the role of the bases in «Acceptance contract» and in its paragraph on the
+  external control, with the denominator of each base;
+- which base a mechanism is named for, which stratum decides for it, and
+  when a mechanism does not apply to a base;
+- the rule by which the comparisons of track 3 nominate a candidate into
+  acceptance 4.1;
+- how the second base is read: the three outcomes of the contract, and what
+  a convincing contradiction forbids;
+- the metrics of an external base that the non-inferiority checks stand on;
+- what an equal context budget is for a mechanism that changes it or sends
+  more inside it;
+- what an entry of `opened` names;
+- what counts as the one reading of a locked selection when its run stops,
+  is refused by the measure or ends `NOT_EVIDENCE`;
+- the selections of the open parts that the baseline of slice 1.7, the
+  comparisons of track 3 and the refinement of the variance read, each
+  registered before the run that reads it. A selection that nominates a
+  candidate is drawn by the rule of step 1 or gives the mean over pages
+  beside the mean over questions: acceptance reads the mean over pages;
+- the estimator of that refinement — as in the pilot, the sample variance of
+  the paired differences of the primary metric, over all measured pairs and
+  over the pairs of the deciding stratum — and its rule on lost pairs;
+- the metric and the points of MultiHop-RAG, before the baseline reads its
+  advisory part;
+- what the bases leave open (plan gap G39).
+
+The revision is committed before the first comparison of a mechanism on an
+external base. Until then the registered contract stands and no locked part
+is opened.
 
 ## Acceptance contract (plan track 4)
 

@@ -7,6 +7,13 @@ prepare registers H and Hm, or the case file --cases names under --subset: of su
 the run keeps the ids and the questions and none of the labels. --set moves one of the two
 candidate counts of the control (retrieval_top_k, rerank_top_k) and nothing else, so an arm
 of a pilot is the registered collection with one number changed.
+
+--base NAME --base-dir DIR --selection NAME registers a run on an external base in place of
+aircargo: the archive, the corpus and its manifest are those of DIR, as
+scripts/external_base.py wrote them; the tenant is the base's; and the questions are one
+registered selection of the base (evaluation/external_parts.json), read from
+DIR/selections/NAME.questions.jsonl. A selection of a part that acceptance has not opened is
+refused, so no run reads a locked part.
 """
 
 from __future__ import annotations
@@ -235,6 +242,8 @@ def load_address_book(manifest: dict) -> tuple[AddressBook, list[dict]]:
     sources = read_sources(manifest["source_manifest"], Path(manifest["source_directory"]))
     book = AddressBook(manifest["source_manifest"], sources, manifest["chunker_version"])
     payload = json.loads(gzip.decompress(Path(manifest["corpus"]).read_bytes()))
+    if "base" in manifest and payload.get("tenant_id") != manifest["base"]["tenant"]:
+        raise IntegrityError("The archive belongs to another tenant")
     chunks = payload["chunks"]
     for chunk in chunks:
         book.check_metadata(chunk.get("metadata") or {})
@@ -276,6 +285,53 @@ def case_file(path: Path, subset: str) -> tuple[dict, list[dict]]:
     return {subset: dataset}, cases
 
 
+def external_base(name: str, directory: Path, selection: str) -> tuple[dict, Path]:
+    """What a run on an external base registers, and the question file of its selection.
+
+    The questions are one registered selection of the base and no other list: the file is held
+    to the ids of the selection, in their order, and to the questions of the registered
+    conversion. A selection of a locked part is refused.
+    """
+    from evaluation import external_bases as bases
+    from evaluation import external_parts as parts
+
+    try:
+        converted = bases.registration()
+        drawn = parts.registration()
+        if name not in converted["bases"] or selection not in drawn["selections"].get(name, {}):
+            raise IntegrityError(f"Unregistered external base or selection: {name}/{selection}")
+        base = converted["bases"][name]
+        chosen = drawn["selections"][name][selection]
+        ids = parts.read(drawn, name, selection=selection)
+        query = {c["case_id"]: c["query"] for c in parts.load_cases(directory, name, converted)}
+        questions = directory / "selections" / f"{selection}.questions.jsonl"
+        rows = [json.loads(line) for line in questions.read_text(encoding="utf-8").splitlines()]
+        if [(row["case_id"], row["query"]) for row in rows] != [(cid, query[cid]) for cid in ids]:
+            raise IntegrityError("The question file is not the registered selection")
+    except IntegrityError:
+        raise
+    except parts.Locked as exc:
+        raise IntegrityError(str(exc)) from exc
+    except (OSError, ValueError, KeyError, TypeError, AttributeError) as exc:
+        raise IntegrityError(f"External base unreadable: {type(exc).__name__}: {exc}") from exc
+    block = {
+        "name": name,
+        "tenant": base["tenant"],
+        "collection": base["collection"],
+        "revision": base["revision"],
+        "corpus_sha256": base["converted"]["corpus_sha256"],
+        "directory": str(directory.resolve()),
+        "selection": selection,
+        "part": chosen["rule"]["part"],
+        "cases_sha256": chosen["cases_sha256"],
+        "registrations": {
+            path.name: {"path": str(path.resolve()), "sha256": parity.file_sha(path)}
+            for path in (bases.REGISTRATION, parts.REGISTRATION)
+        },
+    }
+    return block, questions
+
+
 def registered_sets(root: Path) -> tuple[dict, list[dict]]:
     """H and Hm as registered: every case of both files, whole rows, in file order."""
     datasets = {}
@@ -311,6 +367,16 @@ def prepare(args: Any) -> None:
     if (cases_path is None) != (subset is None):
         raise IntegrityError("--cases and --subset name one case file together")
     settings = given_settings(getattr(args, "settings", None) or [])
+    named = [getattr(args, key, None) for key in ("base", "base_dir", "selection")]
+    block = None
+    if any(value is not None for value in named):
+        if None in named or cases_path is not None or getattr(args, "task", None) is None:
+            raise IntegrityError(
+                "--base, --base-dir, --selection and --task name one run on an external base;"
+                " its questions are the selection's, not a --cases file"
+            )
+        block, cases_path = external_base(*named)
+        subset = block["selection"]
     task = getattr(args, "task", None) or TASK
     if args.run.exists():
         if not args.resume:
@@ -321,6 +387,7 @@ def prepare(args: Any) -> None:
             or manifest["checkpoint"] != str(args.checkpoint.resolve())
             or manifest["code_sha"] != args.code_sha
             or manifest.get("config_overrides", {}) != settings
+            or manifest.get("base") != block
             or manifest["ledger_entry"]["task"] != task
             or sorted(manifest["datasets"]) != ([subset] if cases_path else ["H", "Hm"])
             or (cases_path and manifest["datasets"][subset]["path"] != str(cases_path.resolve()))
@@ -351,15 +418,29 @@ def prepare(args: Any) -> None:
         raise IntegrityError("A full code SHA is required")
     receipt_path = args.index / "index-receipt.json"
     receipt = parity.read(receipt_path)
-    archive = root / "evaluation" / (ARCHIVE + ".json.gz")
+    if block is None:
+        archive = root / "evaluation" / (ARCHIVE + ".json.gz")
+        source_manifest_path = root / "evaluation/aircargo_corpus.manifest.json"
+        source_directory = corpus_directory()
+        chunker_version = ARCHIVE + ":" + receipt["corpus_sha256"]
+    else:
+        folder = Path(block["directory"])
+        archive = folder / "chunks.json.gz"
+        source_manifest_path = folder / "corpus.manifest.json"
+        source_directory = folder / "corpus"
+        chunker_version = block["tenant"] + "-chunks:" + receipt["corpus_sha256"]
     for path, expected in (
         (archive, receipt["corpus_sha256"]),
         (args.checkpoint, receipt["checkpoint_sha256"]),
     ):
         if parity.file_sha(path) != expected:
             raise IntegrityError("Corpus/checkpoint mismatch")
-    source_manifest_path = root / "evaluation/aircargo_corpus.manifest.json"
     source_manifest = parity.read(source_manifest_path)
+    if block is not None and (
+        receipt.get("collection_name") != block["collection"]
+        or source_manifest.get("corpus_sha256") != block["corpus_sha256"]
+    ):
+        raise IntegrityError("The index or the corpus is not the registered base's")
     config = {**parity.CONFIG, **settings}
     manifest = {
         "schema_version": 1,
@@ -378,8 +459,8 @@ def prepare(args: Any) -> None:
         "source_manifest": source_manifest,
         "source_manifest_path": str(source_manifest_path.resolve()),
         "source_manifest_sha256": parity.file_sha(source_manifest_path),
-        "source_directory": str(corpus_directory().resolve()),
-        "chunker_version": ARCHIVE + ":" + receipt["corpus_sha256"],
+        "source_directory": str(source_directory.resolve()),
+        "chunker_version": chunker_version,
         "llm": {"model": parity.MODEL, "digest": parity.DIGEST, "provider": "OllamaProvider"},
         "reranker": {"model": "BAAI/bge-reranker-v2-m3", "revision": parity.RERANK_REVISION},
         "ledger_entry": {
@@ -392,6 +473,8 @@ def prepare(args: Any) -> None:
     }
     if settings:
         manifest["config_overrides"] = settings
+    if block is not None:
+        manifest["base"] = block
     load_address_book(manifest)
     args.run.mkdir(parents=True, exist_ok=False)
     parity.write_new(args.run / "manifest.json", manifest)
@@ -482,6 +565,10 @@ def validate_inputs(manifest: dict) -> None:
             for d in manifest["datasets"].values()
             if "manifest_path" in d
         )
+        expected_inputs.extend(
+            (Path(d["path"]), d["sha256"])
+            for d in manifest.get("base", {}).get("registrations", {}).values()
+        )
         for path, expected in expected_inputs:
             if parity.file_sha(path) != expected:
                 raise IntegrityError(f"Input changed since registration: {path}")
@@ -497,6 +584,12 @@ def make_retriever(manifest: dict, cache: BaselineCache) -> tuple[Any, dict]:
     original_expand = retriever._expand_parents
     original_rank = retriever._rerank_scored_with_status
     original_search = retriever._vector_store.similarity_search
+    original_merge = retriever._rrf_merge
+
+    def merge(vector_results, lexical_results, *more):
+        # The lexical lane as it enters the fusion. An empty lane is not merged at all.
+        probe["bm25"] = [d.metadata["chunk_index"] for d in lexical_results]
+        return original_merge(vector_results, lexical_results, *more)
 
     def vector_search(*args, **kwargs):
         try:
@@ -524,6 +617,7 @@ def make_retriever(manifest: dict, cache: BaselineCache) -> tuple[Any, dict]:
                 raise
             cache.require_clean()
             raise ModelFailure(str(exc)) from exc
+        probe.setdefault("bm25", [])
         probe["ranked_scores"] = [score for _, score in result]
         probe["seeds"] = [
             {"page_content": d.page_content, "metadata": d.metadata} for d, _ in result
@@ -533,6 +627,7 @@ def make_retriever(manifest: dict, cache: BaselineCache) -> tuple[Any, dict]:
     retriever._expand_parents = expand
     retriever._rerank_scored_with_status = ranked
     retriever._vector_store.similarity_search = vector_search
+    retriever._rrf_merge = merge
     return retriever, probe
 
 
@@ -722,7 +817,7 @@ def _run_stage(args: Any, manifest: dict, streak: list[dict], progress: dict) ->
             timings = dict(previous.get("timings_ms", {})) if previous else {}
             try:
                 if stage == "transform":
-                    state = create_initial_state(case["query"], tenant_id="aircargo")
+                    state = create_initial_state(case["query"], tenant_id=parity.tenant(manifest))
                     state = graph.make_classify_complexity_node(llm)(state)
                     state = graph.make_transform_query_node(llm)(state)
                     checked_state(state, cache)
@@ -967,6 +1062,8 @@ def report(run: Path, manifest: dict, resume: bool) -> None:
             for stop in [parity.read(path)]
         ],
     }
+    if "base" in manifest:
+        provenance["base"] = manifest["base"]
     parity.save_stage(
         target,
         {
@@ -1006,13 +1103,17 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--subset")
     parser.add_argument("--task")
     parser.add_argument("--set", action="append", default=[], dest="settings", metavar="KEY=VALUE")
+    parser.add_argument("--base", help="a registered external base, in place of aircargo")
+    parser.add_argument("--base-dir", type=Path, help="the directory of the converted base")
+    parser.add_argument("--selection", help="a registered selection of the base")
     args = parser.parse_args(argv)
+    arm = (args.cases, args.subset, args.task, args.settings)
     if args.stage == "prepare":
         if not all((args.index, args.checkpoint, args.code_sha)):
             parser.error("prepare requires --index, --checkpoint and --code-sha")
         prepare(args)
-    elif args.cases or args.subset or args.task or args.settings:
-        parser.error("--cases, --subset, --task and --set belong to prepare")
+    elif any(arm) or args.base or args.base_dir or args.selection:
+        parser.error("--cases, --subset, --task, --set and the --base options belong to prepare")
     else:
         check_start(args)
         try:

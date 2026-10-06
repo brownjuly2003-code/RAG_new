@@ -37,6 +37,11 @@ RERANK_REVISION = "953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e"
 BASE_URL = "http://127.0.0.1:11434"
 
 
+def tenant(manifest: dict) -> str:
+    """The tenant a run reads: aircargo, or the one its registered external base names."""
+    return manifest.get("base", {}).get("tenant", "aircargo")
+
+
 def digest(value: Any) -> str:
     return hashlib.sha256(json.dumps(
         value, ensure_ascii=False, sort_keys=True, separators=(",", ":"), allow_nan=False,
@@ -288,13 +293,14 @@ def make_retriever(manifest: dict, cache: ReplayCache, arm: str, live: bool) -> 
     collection = client.get_collection(receipt["collection_name"], embedding_function=None)
     status = check_collection_manifest(
         SimpleNamespace(_collection=collection),
-        SimpleNamespace(manifest=EmbedderManifest(**receipt["embedder_manifest"])), tenant_id="aircargo",
+        SimpleNamespace(manifest=EmbedderManifest(**receipt["embedder_manifest"])),
+        tenant_id=tenant(manifest),
     )
     if status["evidence_status"] != "eligible" or collection.count() != len(chunks):
         raise ValueError("Ineligible index")
     from vectordb import manager
 
-    manager._index_manifest_status["aircargo"] = status
+    manager._index_manifest_status[tenant(manifest)] = status
     probe: dict[str, Any] = {}
 
     class Store:

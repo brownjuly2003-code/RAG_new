@@ -137,10 +137,12 @@ def test_production_baseline_resume_checks_referenced_cache(tmp_path):
 
 def test_production_baseline_expansion_timer_and_text_capture(monkeypatch):
     doc = SimpleNamespace(page_content="expanded text", metadata={"chunk_index": 0})
+    other = SimpleNamespace(page_content="lexical text", metadata={"chunk_index": 7})
     instance = SimpleNamespace(
         _expand_parents=lambda docs: [doc],
         _rerank_scored_with_status=lambda query, docs: ([(doc, 3.0)], True),
         _vector_store=SimpleNamespace(similarity_search=lambda *a, **kw: [doc]),
+        _rrf_merge=lambda vector, lexical: [*vector, *lexical],
     )
     probe = {}
     monkeypatch.setattr(parity, "make_retriever", lambda *a: (instance, probe))
@@ -148,10 +150,16 @@ def test_production_baseline_expansion_timer_and_text_capture(monkeypatch):
     monkeypatch.setattr(baseline.time, "perf_counter", lambda: next(clock))
     wrapped, _ = baseline.make_retriever({}, None)
     wrapped._rerank_scored_with_status("cargo", [doc])
+    # No fusion ran: the lexical lane gave nothing, and the record says so.
+    assert probe["bm25"] == []
     assert wrapped._expand_parents([doc]) == [doc]
     assert probe["expansion_ms"] == pytest.approx(2.0)
     assert probe["expanded"][0]["page_content"] == "expanded text"
     assert probe["ranked_scores"] == [3.0]
+    # The lexical candidates are recorded as they enter the fusion, in their order.
+    assert wrapped._rrf_merge([doc], [other, doc]) == [doc, other, doc]
+    wrapped._rerank_scored_with_status("cargo", [doc, other])
+    assert probe["bm25"] == [7, 0]
 
 
 @pytest.mark.parametrize(
@@ -231,6 +239,7 @@ def real_run(tmp_path, monkeypatch):
     payload = json.loads(gzip.decompress(inputs["archive"].read_bytes()))
     for chunk in payload["chunks"]:
         chunk["metadata"].update(content_hash=sha(chunk["page_content"]), h1="Cargo")
+    payload["tenant_id"] = "ext_fixture"  # read by a run on an external base alone
     inputs["archive"].write_bytes(gzip.compress(json.dumps(payload).encode()))
     inputs["archive_sha256"] = parity.file_sha(inputs["archive"])
     inputs["checkpoint"] = tmp_path / "addressed-vectors.npz"
@@ -724,6 +733,31 @@ def test_production_baseline_clean_real_chroma_control_and_resume(real_run):
     assert "stage_aborts" in baseline.PROVENANCE_FIELDS
     assert not list(run.glob("*.abort.json"))
     assert not (run / "aborts").exists()
+    # The lexical lane is recorded beside the vector lane and the pool they give.
+    assert len(row["bm25"]) == row["path"]["candidates"]["bm25"]
+    assert set(row["bm25"]) <= set(row["pool"]) == {0, 1}
+    assert row["state"]["tenant_id"] == "aircargo" and "base" not in report["provenance"]
+
+
+def test_production_baseline_runs_under_the_tenant_of_an_external_base(real_run):
+    from vectordb import manager
+
+    run, manifest, _ = real_run
+    manifest["base"] = {"tenant": "ext_fixture"}
+    manager._index_manifest_status.pop("ext_fixture", None)
+    for stage in baseline.STAGES[1:]:
+        execute(run, manifest, stage)
+    identity = parity.digest(manifest)
+    row = parity.load_stage(run / "grade/clean.json", identity)
+    assert row["status"] == "ok" and row["state"]["tenant_id"] == "ext_fixture"
+    assert manager._index_manifest_status["ext_fixture"]["evidence_status"] == "eligible"
+    report = parity.load_stage(run / "report.json", identity)
+    assert report["provenance"]["base"] == {"tenant": "ext_fixture"}
+    assert report["documents_without_address"] == 0
+    # An archive cut for another tenant is not read under this one.
+    with pytest.raises(baseline.IntegrityError, match="another tenant"):
+        baseline.load_address_book({**manifest, "base": {"tenant": "ext_other"}})
+    assert parity.tenant({}) == "aircargo"
 
 
 def test_production_baseline_preflight_integrity_marker(real_run, monkeypatch):
@@ -1001,11 +1035,227 @@ def test_production_baseline_arm_options_are_read_by_prepare_alone(tmp_path, mon
     ]
     assert baseline.main(["--stage", "prepare", *registered]) == 0
     assert parity.read(args.run / "manifest.json")["config_overrides"] == {"rerank_top_k": 3}
-    with pytest.raises(SystemExit) as stop:
-        baseline.main(["--stage", "transform", "--run", str(args.run), "--set", "rerank_top_k=3"])
-    assert stop.value.code == 2
-    assert "belong to prepare" in capsys.readouterr().err
+    for option in (("--set", "rerank_top_k=3"), ("--base", "wixqa"), ("--selection", "pilot")):
+        with pytest.raises(SystemExit) as stop:
+            baseline.main(["--stage", "transform", "--run", str(args.run), *option])
+        assert stop.value.code == 2
+        assert "belong to prepare" in capsys.readouterr().err
     assert not (args.run / "transform.abort.json").exists()
+
+
+def external_arguments(root, monkeypatch):
+    """A small WixQA converted under root, its two registrations, its index and a run on it."""
+    from evaluation import external_bases as bases
+    from evaluation import external_parts as parts
+    from scripts import corpus_manifest, external_base
+    from tests import test_external_parts as small
+
+    monkeypatch.setattr(parts, "PILOT", small.SMALL_PILOT)
+    converted = json.loads(bases.REGISTRATION.read_text(encoding="utf-8"))
+    folder = root / "data" / "wixqa"
+    (folder / "corpus").mkdir(parents=True)
+    for name in ("d.md", "e.md", "f.md"):
+        (folder / "corpus" / name).write_bytes(f"# {name}\n\ntext of {name}\n".encode())
+    corpus = corpus_manifest.build_manifest(folder / "corpus", name="ext_wixqa")
+    corpus_manifest.write_manifest(folder / "corpus.manifest.json", corpus)
+    for base, cases in small.CASES.items():
+        converted["bases"][base]["converted"]["cases_sha256"] = bases.sha256(small._file(cases))
+    converted["bases"]["wixqa"]["converted"]["corpus_sha256"] = corpus["corpus_sha256"]
+    (folder / "cases.jsonl").write_bytes(small._file(small.WIXQA))
+    registered = parts.build(
+        small.CASES, {base: bases.sha256(small._file(cases)) for base, cases in small.CASES.items()}
+    )
+    (root / "bases.json").write_text(json.dumps(converted), encoding="utf-8")
+    (root / "parts.json").write_bytes(parts.dump(registered))
+    monkeypatch.setattr(bases, "REGISTRATION", root / "bases.json")
+    monkeypatch.setattr(parts, "REGISTRATION", root / "parts.json")
+    external_base.select_step("wixqa", folder, "pilot")
+    revision = {entry["name"]: entry["sha256"] for entry in corpus["files"]}
+    chunk = {
+        "page_content": "[Контекст: Из документа d.md]\ntext of d.md",
+        "metadata": {"source": "d.md", "content_hash": revision["d.md"], "h1": "d.md"},
+    }
+    archive = folder / "chunks.json.gz"
+    archive.write_bytes(
+        gzip.compress(json.dumps({"tenant_id": "ext_wixqa", "chunks": [chunk]}).encode())
+    )
+    checkpoint = root / "checkpoint"
+    checkpoint.write_bytes(b"fixture")
+    index = root / "index"
+    index.mkdir()
+    receipt = {
+        "corpus_sha256": parity.file_sha(archive),
+        "checkpoint_sha256": parity.file_sha(checkpoint),
+        "collection_name": "rag_docs_ext_wixqa",
+        "embedder_manifest": {"revision": "a" * 40},
+    }
+    parity.write_new(index / "index-receipt.json", receipt)
+    monkeypatch.chdir(root)
+    monkeypatch.setattr(parity, "runtime_identity", lambda: {"platform": "fixture"})
+    return SimpleNamespace(
+        run=root / "run",
+        index=index,
+        checkpoint=checkpoint,
+        code_sha="b" * 40,
+        resume=False,
+        base="wixqa",
+        base_dir=folder,
+        selection="pilot",
+        task="plan 1.6 pilot",
+        settings=["retrieval_top_k=30"],
+        registered=registered,
+        receipt=receipt,
+    )
+
+
+def test_production_baseline_registers_a_selection_of_an_external_base(tmp_path, monkeypatch):
+    from evaluation import external_parts as parts
+
+    args = external_arguments(tmp_path, monkeypatch)
+    folder = args.base_dir
+    questions = folder / "selections" / "pilot.questions.jsonl"
+    baseline.prepare(args)
+    manifest = parity.read(args.run / "manifest.json")
+    pilot = args.registered["selections"]["wixqa"]["pilot"]
+    assert [case["case_id"] for case in manifest["cases"]] == pilot["case_ids"]
+    assert all(
+        case == {"case_id": case["case_id"], "query": case["query"], "subset": "pilot"}
+        and case["query"].startswith("how do I simulated")
+        for case in manifest["cases"]
+    )
+    assert manifest["base"] == {
+        "name": "wixqa",
+        "tenant": "ext_wixqa",
+        "collection": "rag_docs_ext_wixqa",
+        "revision": "d662dc42479c14e202eccd832f8c4b66a035c4cc",
+        "corpus_sha256": manifest["source_manifest"]["corpus_sha256"],
+        "directory": str(folder.resolve()),
+        "selection": "pilot",
+        "part": "tuning",
+        "cases_sha256": pilot["cases_sha256"],
+        "registrations": {
+            name: {
+                "path": str((tmp_path / name).resolve()),
+                "sha256": parity.file_sha(tmp_path / name),
+            }
+            for name in ("bases.json", "parts.json")
+        },
+    }
+    assert parity.tenant(manifest) == "ext_wixqa"
+    assert manifest["corpus"] == str((folder / "chunks.json.gz").resolve())
+    assert manifest["source_manifest_path"] == str((folder / "corpus.manifest.json").resolve())
+    assert manifest["source_directory"] == str((folder / "corpus").resolve())
+    assert manifest["chunker_version"] == "ext_wixqa-chunks:" + args.receipt["corpus_sha256"]
+    assert manifest["datasets"] == {
+        "pilot": {
+            "path": str(questions.resolve()),
+            "sha256": parity.file_sha(questions),
+            "count": 2,
+        }
+    }
+    assert manifest["config_overrides"] == {"retrieval_top_k": 30}
+    assert manifest["ledger_entry"]["task"] == "plan 1.6 pilot"
+    # Nothing but the ids and the questions of the selection is in the run.
+    assert "gold_sources" not in (args.run / "manifest.json").read_text(encoding="utf-8")
+    baseline.validate_inputs(manifest)
+    args.resume = True
+    baseline.prepare(args)
+    for change in (
+        {"base": None, "base_dir": None, "selection": None, "cases": questions, "subset": "pilot"},
+        {"settings": []},
+        {"task": "another task"},
+    ):
+        with pytest.raises(baseline.IntegrityError, match="registration mismatch"):
+            baseline.prepare(SimpleNamespace(**{**vars(args), **change}))
+    # A registration that changed after the run was prepared stops its stages.
+    opened = {**args.registered, "opened": [{"base": "wixqa", "part": "locked", "by": "4.1"}]}
+    (tmp_path / "parts.json").write_bytes(parts.dump(opened))
+    with pytest.raises(baseline.IntegrityError, match="Input changed"):
+        baseline.validate_inputs(manifest)
+
+
+def _damage_external(args, root, damage):
+    """Break one thing a run on an external base is registered from."""
+    from evaluation import external_parts as parts
+
+    folder = args.base_dir
+    questions = folder / "selections" / "pilot.questions.jsonl"
+    rows = questions.read_text(encoding="utf-8").splitlines()
+    bases_file, receipt_file = root / "bases.json", args.index / "index-receipt.json"
+
+    def receipt(**changed):
+        receipt_file.unlink()
+        parity.write_new(receipt_file, {**args.receipt, **changed})
+
+    if damage == "locked":
+        locked = args.registered["bases"]["wixqa"]["parts"]["locked"]["case_ids"][:1]
+        args.registered["selections"]["wixqa"]["acceptance"] = {
+            "rule": {"part": "locked", "questions": 1},
+            "cases": 1,
+            "cases_sha256": parts.digest(locked),
+            "case_ids": locked,
+        }
+        (root / "parts.json").write_bytes(parts.dump(args.registered))
+        row = {"case_id": locked[0], "query": "how do I expertwritten 0"}
+        (folder / "selections" / "acceptance.questions.jsonl").write_text(
+            json.dumps(row) + "\n", encoding="utf-8"
+        )
+        args.selection = "acceptance"
+    elif damage == "question":
+        first = {**json.loads(rows[0]), "query": "another question"}
+        questions.write_text("\n".join([json.dumps(first), *rows[1:]]) + "\n", encoding="utf-8")
+    elif damage == "order":
+        questions.write_text("\n".join(rows[::-1]) + "\n", encoding="utf-8")
+    elif damage == "selection":
+        args.selection = "baseline"
+    elif damage == "base":
+        args.base = "hotpotqa"
+    elif damage == "cases":
+        with (folder / "cases.jsonl").open("ab") as handle:
+            handle.write(b"{}\n")
+    elif damage == "collection":
+        receipt(collection_name="rag_docs_aircargo")
+    elif damage == "corpus":
+        converted = json.loads(bases_file.read_text(encoding="utf-8"))
+        converted["bases"]["wixqa"]["converted"]["corpus_sha256"] = "0" * 64
+        bases_file.write_text(json.dumps(converted), encoding="utf-8")
+    elif damage == "tenant":
+        archive = folder / "chunks.json.gz"
+        archive.write_bytes(gzip.compress(json.dumps({"tenant_id": "x", "chunks": []}).encode()))
+        receipt(corpus_sha256=parity.file_sha(archive))
+    elif damage == "task":
+        args.task = None
+    elif damage == "case file":
+        args.cases, args.subset = questions, "pilot"
+    else:
+        args.base_dir = None
+
+
+@pytest.mark.parametrize(
+    "damage,message",
+    [
+        ("locked", "locked until acceptance 4.1"),
+        ("question", "not the registered selection"),
+        ("order", "not the registered selection"),
+        ("selection", "Unregistered external base or selection"),
+        ("base", "Unregistered external base or selection"),
+        ("cases", "External base unreadable"),
+        ("collection", "not the registered base's"),
+        ("corpus", "not the registered base's"),
+        ("tenant", "another tenant"),
+        ("task", "name one run on an external base"),
+        ("case file", "name one run on an external base"),
+        ("half", "name one run on an external base"),
+    ],
+)
+def test_production_baseline_refuses_a_run_outside_a_registered_selection(
+    tmp_path, monkeypatch, damage, message
+):
+    args = external_arguments(tmp_path, monkeypatch)
+    _damage_external(args, tmp_path, damage)
+    with pytest.raises(baseline.IntegrityError, match=message):
+        baseline.prepare(args)
+    assert not args.run.exists()
 
 
 def test_production_baseline_corrupt_stage_record_records_stop(real_run):
