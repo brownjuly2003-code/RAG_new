@@ -206,6 +206,20 @@ three points closed in part two are closed by these, and the third stays a
 reading of the section: that a list of ids is provenance. What the second
 read changed, and the paragraph on the graph of a base, which was written
 after the snapshot of that read was taken, have been read by nothing since.
+Amended 2026-10-06 for plan slice 2.8, before a unit of its sample was
+labelled or a request of it sent: the block «How the reference of 2.8 is
+drawn and asked», under «Checks by one model in slices 2.8 and 4.1»,
+registers how the pool of the research is rebuilt from committed files, the
+draw of the 200 units with the cap of four a question, the replacements
+that meet the quotas, the single label of a pair that stands in both
+sources, the top-up and the control with their orders, the text of a
+request and of its second pass with the SHA-256 of the prompt and of the
+system prompt, and the stages of the tool. It changes no rule of the tenth
+revision. Where that revision and the research leave a reading open, the
+block names the one taken: the cap counts a question over both sources; the
+top-up stays under the cap and so has 24 units, not 50; a κ between the
+passes that cannot be computed fails the bound. The block has been read by
+nothing but its author yet.
 
 ## Why a second ruler
 
@@ -2929,6 +2943,112 @@ passes, the tiers of §3.7 (4) and the word `NLI_NOT_VALIDATED` are not used:
 every judge stays `provisional_judge`. Compared are M0–M3 and the optional
 A3 and B2. An accepted judge decides nothing at acceptance (below): its
 number is printed.
+
+**How the reference of 2.8 is drawn and asked.** Amended 2026-10-06, before
+a unit of the sample was labelled. The paragraphs above leave the draw of
+the 200 assertions to the research, and the research gives sizes, quotas
+and «a second permutation with the same seed» but no algorithm; nor is the
+text of a request fixed anywhere. Both are fixed here, as
+`evaluation/nli_validation.py` builds them and `scripts/nli_reference.py`
+runs them.
+
+- *Pool.* Rebuilt from the two phase C reports (SHA-256
+  `ac8d9cc20a8d414490fd0ada46e35731d7a2891e7169c3ec22ef88a4644db534` for
+  C.1a, `1663ea598b769af2aee6464c5da90a001b9187f83114217f03f6552856a70f5f`
+  for C.1b), the candidates archive
+  `evaluation/c1a-c06bdf5-phase-c-C-candidates.json.gz`
+  (`c28d676ac79450d54904cc83c697ddb709dfe95e6bbe86d305c3505db50338c3`; it
+  unpacks to the file the research read, `91ce1745…`) and the family map
+  `evaluation/document_families.json`
+  (`54bdb736180e00325bff20f49e2b9d985dd62278fe9f9cdb6161a0da719e3584`). A
+  unit is a (source, case, text) triple with `claim_id` the SHA-256 of
+  `<source>|<case_id>|<text>`, the sources named `c1a` and `c1b`; a unit
+  met in several runs is taken from the first. Two readings the research
+  leaves open are fixed by its own counts: the lexical overlap counts every
+  word form of the unit, a repeated one each time, and a fragment has three
+  words or fewer by `\w+`. The tool refuses a pool whose counts are not the
+  research's — 656 units, the seven strata, the five quota pools.
+- *Draw.* The strata the sample takes whole, b1 and b2, enter first. The
+  rest of the pool is walked once in the first order — ascending SHA-256 of
+  `20260925:nli_sample:<claim_id>` — and a unit enters when its stratum
+  lacks units, its question has fewer than four units in the sample, and
+  the sample can still be completed with it in. A question is a `case_id`,
+  the cluster of every interval of this slice, so the cap of four counts
+  the units of both sources. The third condition is needed because a few
+  questions hold most units of some strata — the 81 units of a1 stand in 26
+  questions — and a walk without it ends a1 at 38 units of 40. It is exact:
+  the sample can be completed when no group of unfilled strata lacks more
+  units than the questions can still give it, a question giving the lesser
+  of its free places and of its units of the group not yet walked.
+- *Quotas*, in the order of the research's table. An unmet quota is met by
+  replacements inside a stratum. The unit that enters is the first in the
+  second order — `20260925:nli_sample2:<claim_id>` — that carries the flag
+  and never was in the sample. The unit that leaves is the last in the
+  first order among the units of the same stratum that were drawn, lack the
+  flag and can leave without breaking the cap or a quota that is met. On
+  this pool the walk gives 12 units with a number and 12 from answers with
+  an LLM score of 0.6 or less, and seven replacements bring both to 15; the
+  other three quotas hold from the walk on — after the replacements 21
+  units without Cyrillic, 15 introducing lines, 63 fragments. The sample
+  covers 86 of the 100 questions.
+- *A pair of both sources.* Nineteen (case, text) pairs stand in both
+  sources, and the research labels such a pair once. When both units of a
+  pair are in the sample, one request is sent: it shows the unit with the
+  lower `claim_id` in the answer of its own source, and its label serves
+  both. Two pairs are in the sample, so a pass has 198 requests for 200
+  units. κ between the passes is computed over requests — a pair once —
+  and the share of unstable assertions over the units of the sample.
+- *Top-up.* The research adds «50 from a2, a3 and b2 the same way». The
+  first order goes on over the units of those strata outside the sample,
+  the cap of four kept. b2 is whole in the sample already, and the cap
+  leaves 24 units of a2 and a3 (8 and 16), not 50: every question of the
+  other 46 is full. The top-up, when the rule calls it, adds those 24; one
+  of them is the pair of a labelled unit and takes its label.
+- *Control.* Read over the sample's units of b3 and a4 (92), in the order
+  registered above. The partner of a unit is the next drawn unit,
+  cyclically, of another question, whose five contexts come from no
+  document family of this unit's five — families by the family map,
+  documents by `cand_sources` of the candidates file, which names the
+  source of every context. Each of the first 20 has a partner. A unit drawn
+  beyond the first 20 looks for its partner among all units drawn by then;
+  the partners of the earlier units do not change. The request id of a
+  control request is `control-<claim_id>`.
+- *Request.* The registered template holds the task; how a unit is read —
+  an item of a list with the line that introduces it, a short answer with
+  the question; the four label definitions; five flags; the form of the
+  reply; then the question, the whole answer with the unit between `>>>`
+  and `<<<`, the unit, and the five contexts as «PASSAGE 1» to «PASSAGE 5».
+  The instructions are English and the material stands as it is. The label
+  definitions are those of research §3.3 put into English without its
+  examples from the corpus: an example taken from the pool would label a
+  unit of the sample. The flags MULTI, FRAGMENT, CONTRA, OUTSIDE and
+  REFUSAL are asked for and enter no number; NUMERIC is read from the text,
+  and AMBIGUOUS is replaced by the passes. The reply is one JSON object:
+  `label`, `flags`, `passages` — the numbers of the contexts that support
+  the unit or a part of it — and `reason`, one sentence. A control request
+  is the same text with the contexts of the partner.
+- *Second pass.* The label definitions stand in the ascending order of the
+  SHA-256 of `20260925:pass2:<request id>~pass2:label:<LABEL>`, the
+  contexts in that of `20260925:pass2:<request id>~pass2:context:<n>`, n
+  their place in the first pass. An order the hashes leave as it was is
+  turned by one place, so the second order always differs from the first.
+  The numbers a reply cites are taken back to the stored contexts.
+- *Bound.* A resample in which κ is undefined — one label for every unit in
+  both passes — is not counted, and the number of such resamples is
+  published. A κ that is undefined on the sample itself fails the bound.
+- *Stages.* `plan` writes the sample, the control order and the 436
+  requests of stage 1 — twice 198 and twice 20 — with the SHA-256 of their
+  texts and no text. `send` sends what waits in the hashed order and prints
+  request ids with the status of a reply. `next` lists stage 2 — the top-up
+  and the control units drawn beyond the first 20 — and prints their
+  counts. `derive` writes the labels and the bound. `check` holds every
+  stored file to these rules: a plan the inputs no longer rebuild, a stored
+  row of another request or prompt, a reply without the record of a clean
+  session, a second reply after a valid one — each is refused.
+
+Prompt SHA-256 (rubric nli-reference/v1): `3fe45ff2e08abed52ceb18e282fb7056618be293590812e76bea80ac75ce7f37`
+
+System prompt SHA-256 (rubric nli-reference/v1): `c8b0fe6315813cd8fa768601d8672055b5d5426c462aa00e1ca7b0dbf26ca094`
 
 **Answer checks of acceptance (slice 4.1; question ж).** An answer is
 checked by four kinds of request, each sent in passes and stages as above.

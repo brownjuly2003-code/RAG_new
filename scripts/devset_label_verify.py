@@ -1019,12 +1019,19 @@ def emit(line: str) -> None:
 
 
 def attempt(
-    client: Any, text: str, model: str, row: dict[str, Any], *, recorded: bool = False
+    client: Any,
+    text: str,
+    model: str,
+    row: dict[str, Any],
+    *,
+    recorded: bool = False,
+    parse: Callable[[str], Any] = lv.parse_reply,
 ) -> dict[str, Any]:
     """Send one request once; the row holds the reply as given, or the code of the failure.
 
     With `recorded` (rubric v3) the row keeps the record of the reply's session, and a reply
-    without the record of a session that loaded nothing is no verdict.
+    without the record of a session that loaded nothing is no verdict. `parse` reads the form
+    of the check the request belongs to and raises `ReplyFormatError` on another.
     """
     start = time.monotonic()
     blank: dict[str, Any] = {"model": None, "raw_reply": None, "usage": {}}
@@ -1069,7 +1076,7 @@ def attempt(
                     "error": "session_record",
                 }
         try:
-            lv.parse_reply(reply.text)
+            parse(reply.text)
         except lv.ReplyFormatError as exc:
             return {**row, "status": "invalid", **answered, "error": str(exc)}
         return {**row, "status": "valid", **answered, "error": None}
