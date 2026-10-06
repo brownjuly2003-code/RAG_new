@@ -1,0 +1,2126 @@
+{
+  "plan_version": 1,
+  "generator_version": "devset-generator/v1",
+  "prompt_sha256": "914490be7b928f573eaa78f202f17532cbcb416cd00bc2ecfec23d89148aaa5a",
+  "author": {
+    "model": "claude-opus-5-5",
+    "vendor": "Anthropic"
+  },
+  "route": "Claude Code CLI in safe mode, first-party provider",
+  "settings": {
+    "model": "claude-opus-5-5",
+    "effort": "max",
+    "tools": "none",
+    "session": "safe mode: no instruction file, memory, hook, skill, plugin or MCP server; no tools; an empty working directory; nothing stored; one turn",
+    "system_prompt_sha256": "46ac895df537bd8e07a088db94de5fcd028fa96985e67f4612bf396d0cae5e88"
+  },
+  "split": "holdout",
+  "replacement": false,
+  "as_of": "2026-10-01",
+  "brief_rule": {
+    "version": "devset-brief-v1",
+    "style": "the positions of one class take agent_style_A and agent_style_B in turn, starting with A",
+    "trap": "the positions of one class take the pairs of TRAP_CYCLES of that class in turn",
+    "fallback": "a reply may write the plain pair of its class instead of the requested one: no trap with the action answer, or clarify in the class needs-refusal/clarification",
+    "numeric": "the positions of one class of NUMERIC_CLASSES are asked for a quantity in the turn of NUMERIC_TURNS; a reply may write the case without one",
+    "replacement": "the replacement of a dropped draft is asked for the class, the style, the trap and the action of that draft as it was drafted, and the plain pair is not accepted in their place; it is not asked for a quantity",
+    "no_case": "a reply that begins with NO CASE declares that the sections cannot give the case: the position stays empty and is not asked for again",
+    "as_of": "2026-10-01",
+    "cycles": {
+      "single-doc": [
+        [
+          null,
+          "answer"
+        ],
+        [
+          "false_premise",
+          "correct_premise"
+        ],
+        [
+          null,
+          "answer"
+        ],
+        [
+          null,
+          "answer"
+        ],
+        [
+          "outdated_rule",
+          "correct_premise"
+        ]
+      ],
+      "multi-doc": [
+        [
+          null,
+          "answer"
+        ],
+        [
+          null,
+          "answer"
+        ],
+        [
+          "conflicting_documents",
+          "correct_premise"
+        ],
+        [
+          null,
+          "answer"
+        ],
+        [
+          "false_premise",
+          "correct_premise"
+        ]
+      ],
+      "aggregation": [
+        [
+          null,
+          "answer"
+        ]
+      ],
+      "needs-refusal/clarification": [
+        [
+          null,
+          "clarify"
+        ],
+        [
+          "out_of_corpus",
+          "refuse"
+        ],
+        [
+          "dangerous_goods",
+          "escalate"
+        ]
+      ]
+    },
+    "numeric_classes": [
+      "single-doc",
+      "multi-doc"
+    ],
+    "numeric_turns": [
+      true,
+      false,
+      false
+    ]
+  },
+  "inputs": {
+    "split_sha256": "20d69e9bb30043f7012823e3b39ca2692badc58bf9e04a737691abbcab2c44a8",
+    "corpus_sha256": "c8562a64f88f72172f29e30865091be79f08d00ce65fbf675f34de64dcebe343",
+    "families_sha256": "54bdb736180e00325bff20f49e2b9d985dd62278fe9f9cdb6161a0da719e3584"
+  },
+  "unseated_positions": [],
+  "requests": [
+    {
+      "position": 1,
+      "case_id": "HO-01",
+      "primary_class": "multi-doc",
+      "question_origin": "agent_style_A",
+      "requested_trap": null,
+      "requested_action": "answer",
+      "plain_allowed": true,
+      "numeric_requested": true,
+      "block_id": "block-eef05d50486a",
+      "seed": {
+        "char_end": 3297,
+        "char_start": 2879,
+        "section_path": [
+          "Должностная инструкция — бухгалтер",
+          "Порядок действий",
+          "3. Ответственность"
+        ],
+        "source_id": "02_hr_tmp_job_description_accountant.md"
+      },
+      "partner": {
+        "char_end": 783,
+        "char_start": 581,
+        "section_path": [
+          "Инструкция по пожарной безопасности",
+          "Назначение"
+        ],
+        "source_id": "01_hr_pol_fire_safety.md"
+      },
+      "request_sha256": "f86fb77893ef988e72006bb53c5a7a627a54f7eba24ac0b36a61ab60832acecc",
+      "pseudonyms": {
+        "D1": "02_hr_tmp_job_description_accountant.md",
+        "D2": "01_hr_pol_fire_safety.md"
+      },
+      "characters": 13274
+    },
+    {
+      "position": 2,
+      "case_id": "HO-02",
+      "primary_class": "single-doc",
+      "question_origin": "agent_style_A",
+      "requested_trap": null,
+      "requested_action": "answer",
+      "plain_allowed": true,
+      "numeric_requested": true,
+      "block_id": "block-e405471d536a",
+      "seed": {
+        "char_end": 15470,
+        "char_start": 14819,
+        "section_path": [
+          "Договор лизинга транспортных средств",
+          "Контрольный список"
+        ],
+        "source_id": "03_legal_contract_leasing_vehicle.md"
+      },
+      "partner": null,
+      "request_sha256": "6e9111112eb5e43ddc1573835194660d706d9f2cb3005309a0c46a350de63a20",
+      "pseudonyms": {
+        "D1": "03_legal_contract_leasing_vehicle.md"
+      },
+      "characters": 12783
+    },
+    {
+      "position": 3,
+      "case_id": "HO-03",
+      "primary_class": "needs-refusal/clarification",
+      "question_origin": "agent_style_A",
+      "requested_trap": null,
+      "requested_action": "clarify",
+      "plain_allowed": true,
+      "numeric_requested": false,
+      "block_id": "block-6bd33e081226",
+      "seed": {
+        "char_end": 1219,
+        "char_start": 617,
+        "section_path": [
+          "Доверенность на банковские и страховые действия по air cargo claim",
+          "Назначение"
+        ],
+        "source_id": "04_legal_power_of_attorney_bank.md"
+      },
+      "partner": null,
+      "request_sha256": "682ac175bda28c3e132fc00cfabfcf1f98c92280d4ddda11ec8a7c95f0a7a221",
+      "pseudonyms": {
+        "D1": "04_legal_power_of_attorney_bank.md"
+      },
+      "characters": 12804
+    },
+    {
+      "position": 4,
+      "case_id": "HO-04",
+      "primary_class": "multi-doc",
+      "question_origin": "agent_style_B",
+      "requested_trap": null,
+      "requested_action": "answer",
+      "plain_allowed": true,
+      "numeric_requested": false,
+      "block_id": "block-25b5610451d2",
+      "seed": {
+        "char_end": 2366,
+        "char_start": 1624,
+        "section_path": [
+          "Договор субподряда",
+          "Термины"
+        ],
+        "source_id": "03_legal_contract_subcontract.md"
+      },
+      "partner": {
+        "char_end": 2429,
+        "char_start": 1704,
+        "section_path": [
+          "Договор о совместной деятельности",
+          "Термины"
+        ],
+        "source_id": "03_legal_contract_joint_activity.md"
+      },
+      "request_sha256": "24b8458a1b44fda9ab22dad62accd8ce9c0a438b94c55a2b8cf41cbc81b8cd11",
+      "pseudonyms": {
+        "D1": "03_legal_contract_subcontract.md",
+        "D2": "03_legal_contract_joint_activity.md"
+      },
+      "characters": 14096
+    },
+    {
+      "position": 5,
+      "case_id": "HO-05",
+      "primary_class": "aggregation",
+      "question_origin": "agent_style_A",
+      "requested_trap": null,
+      "requested_action": "answer",
+      "plain_allowed": true,
+      "numeric_requested": false,
+      "block_id": "block-c4354baa5ef5",
+      "seed": {
+        "char_end": 1913,
+        "char_start": 1703,
+        "section_path": [
+          "Инструкция по электробезопасности",
+          "Порядок действий",
+          "3. Первая помощь при поражении током"
+        ],
+        "source_id": "01_hr_pol_electrical_safety.md"
+      },
+      "partner": {
+        "char_end": 1640,
+        "char_start": 1437,
+        "section_path": [
+          "Порядок рассмотрения трудовых споров",
+          "Порядок действий",
+          "1. Досудебное урегулирование"
+        ],
+        "source_id": "01_hr_pol_grievance.md"
+      },
+      "request_sha256": "181c1e9a810f3235bcbefb22ef264210b6743938eeaf792f6cf3f6d1aa8c7c51",
+      "pseudonyms": {
+        "D1": "01_hr_pol_electrical_safety.md",
+        "D2": "01_hr_pol_grievance.md"
+      },
+      "characters": 13143
+    },
+    {
+      "position": 6,
+      "case_id": "HO-06",
+      "primary_class": "multi-doc",
+      "question_origin": "agent_style_A",
+      "requested_trap": "conflicting_documents",
+      "requested_action": "correct_premise",
+      "plain_allowed": true,
+      "numeric_requested": false,
+      "block_id": "block-c9a717d6c714",
+      "seed": {
+        "char_end": 2681,
+        "char_start": 2398,
+        "section_path": [
+          "Порядок совместительства",
+          "Порядок действий",
+          "1. Внутреннее совместительство",
+          "1.3. График и продолжительность"
+        ],
+        "source_id": "01_hr_pol_second_job.md"
+      },
+      "partner": {
+        "char_end": 2174,
+        "char_start": 1478,
+        "section_path": [
+          "Порядок прохождения медосмотров",
+          "Термины"
+        ],
+        "source_id": "01_hr_pol_medical_check.md"
+      },
+      "request_sha256": "b696a5873ff661283d37e76a1c490145e4e38dc13e30b6722cc14ed55eeeaa76",
+      "pseudonyms": {
+        "D1": "01_hr_pol_second_job.md",
+        "D2": "01_hr_pol_medical_check.md"
+      },
+      "characters": 13706
+    },
+    {
+      "position": 7,
+      "case_id": "HO-07",
+      "primary_class": "single-doc",
+      "question_origin": "agent_style_B",
+      "requested_trap": "false_premise",
+      "requested_action": "correct_premise",
+      "plain_allowed": true,
+      "numeric_requested": false,
+      "block_id": "block-f8b61dc46322",
+      "seed": {
+        "char_end": 15213,
+        "char_start": 14575,
+        "section_path": [
+          "Договор поставки оборудования",
+          "Контрольный список"
+        ],
+        "source_id": "03_legal_contract_supply_equipment.md"
+      },
+      "partner": null,
+      "request_sha256": "0acdbcc761cd74eb190a34e18c20115a0922d4a76bf47115829655c3a2e5b767",
+      "pseudonyms": {
+        "D1": "03_legal_contract_supply_equipment.md"
+      },
+      "characters": 12775
+    },
+    {
+      "position": 8,
+      "case_id": "HO-08",
+      "primary_class": "needs-refusal/clarification",
+      "question_origin": "agent_style_B",
+      "requested_trap": "out_of_corpus",
+      "requested_action": "refuse",
+      "plain_allowed": true,
+      "numeric_requested": false,
+      "block_id": "block-f930af3ef676",
+      "seed": {
+        "char_end": 2452,
+        "char_start": 1706,
+        "section_path": [
+          "Договор поставки товаров (общий шаблон)",
+          "Термины"
+        ],
+        "source_id": "03_legal_contract_supply_goods.md"
+      },
+      "partner": null,
+      "request_sha256": "beafb7ce6b19160c843332df2766d0fcaf9a5f157553c747fed4443ccef6dddf",
+      "pseudonyms": {
+        "D1": "03_legal_contract_supply_goods.md"
+      },
+      "characters": 12913
+    },
+    {
+      "position": 9,
+      "case_id": "HO-09",
+      "primary_class": "multi-doc",
+      "question_origin": "agent_style_B",
+      "requested_trap": null,
+      "requested_action": "answer",
+      "plain_allowed": true,
+      "numeric_requested": true,
+      "block_id": "block-113c2c8e735d",
+      "seed": {
+        "char_end": 7561,
+        "char_start": 6994,
+        "section_path": [
+          "Договор ТО транспорта для airport first/last mile",
+          "Порядок действий",
+          "5. Согласование"
+        ],
+        "source_id": "05_tlog_contract_tire_service.md"
+      },
+      "partner": {
+        "char_end": 14893,
+        "char_start": 14267,
+        "section_path": [
+          "Договор франшизы (коммерческой концессии)",
+          "Контрольный список"
+        ],
+        "source_id": "03_legal_contract_franchise.md"
+      },
+      "request_sha256": "84d48e5caefa548b0ab8648b351bd2bb0c50ee78c50af86ffeee686fc5ab1b47",
+      "pseudonyms": {
+        "D1": "05_tlog_contract_tire_service.md",
+        "D2": "03_legal_contract_franchise.md"
+      },
+      "characters": 13895
+    },
+    {
+      "position": 10,
+      "case_id": "HO-10",
+      "primary_class": "aggregation",
+      "question_origin": "agent_style_B",
+      "requested_trap": null,
+      "requested_action": "answer",
+      "plain_allowed": true,
+      "numeric_requested": false,
+      "block_id": "block-72c1fd2bc9d4",
+      "seed": {
+        "char_end": 11190,
+        "char_start": 10383,
+        "section_path": [
+          "Доверенность на подписание air cargo документов и претензий",
+          "Ответственные роли"
+        ],
+        "source_id": "04_legal_power_of_attorney_contracts.md"
+      },
+      "partner": {
+        "char_end": 11056,
+        "char_start": 10263,
+        "section_path": [
+          "Доверенность на представительство в суде по air cargo dispute",
+          "Ответственные роли"
+        ],
+        "source_id": "04_legal_power_of_attorney_court.md"
+      },
+      "request_sha256": "56482b75060f1b7310d9324bb28cbf621a2cb947d9998a601a03f33c02965468",
+      "pseudonyms": {
+        "D1": "04_legal_power_of_attorney_contracts.md",
+        "D2": "04_legal_power_of_attorney_court.md"
+      },
+      "characters": 14392
+    },
+    {
+      "position": 11,
+      "case_id": "HO-11",
+      "primary_class": "single-doc",
+      "question_origin": "agent_style_A",
+      "requested_trap": null,
+      "requested_action": "answer",
+      "plain_allowed": true,
+      "numeric_requested": false,
+      "block_id": "block-8d19da7e33e5",
+      "seed": {
+        "char_end": 14789,
+        "char_start": 14154,
+        "section_path": [
+          "Договор на ИТ-услуги и поддержку",
+          "Контрольный список"
+        ],
+        "source_id": "03_legal_contract_services_it.md"
+      },
+      "partner": null,
+      "request_sha256": "291732ddedfc10aa5939f0e965475a96bdd09fcdd71f988c6dad077d913d5718",
+      "pseudonyms": {
+        "D1": "03_legal_contract_services_it.md"
+      },
+      "characters": 12770
+    },
+    {
+      "position": 12,
+      "case_id": "HO-12",
+      "primary_class": "multi-doc",
+      "question_origin": "agent_style_A",
+      "requested_trap": "false_premise",
+      "requested_action": "correct_premise",
+      "plain_allowed": true,
+      "numeric_requested": false,
+      "block_id": "block-38d70a7e8430",
+      "seed": {
+        "char_end": 14770,
+        "char_start": 14133,
+        "section_path": [
+          "Договор на маркетинговые услуги",
+          "Контрольный список"
+        ],
+        "source_id": "03_legal_contract_services_marketing.md"
+      },
+      "partner": {
+        "char_end": 15234,
+        "char_start": 14571,
+        "section_path": [
+          "Правила проведения закупочных процедур",
+          "Контрольный список"
+        ],
+        "source_id": "03_legal_contract_tender_rules.md"
+      },
+      "request_sha256": "33a93ed3a14d2d365d32f515c6589f91f6e52f3bc026c89f3f5b245e8051b33d",
+      "pseudonyms": {
+        "D1": "03_legal_contract_services_marketing.md",
+        "D2": "03_legal_contract_tender_rules.md"
+      },
+      "characters": 14031
+    },
+    {
+      "position": 13,
+      "case_id": "HO-13",
+      "primary_class": "needs-refusal/clarification",
+      "question_origin": "agent_style_A",
+      "requested_trap": "dangerous_goods",
+      "requested_action": "escalate",
+      "plain_allowed": true,
+      "numeric_requested": false,
+      "block_id": "block-3816cae01de8",
+      "seed": {
+        "char_end": 1669,
+        "char_start": 1455,
+        "section_path": [
+          "Правила курения на территории",
+          "Порядок действий",
+          "3. Ответственность"
+        ],
+        "source_id": "01_hr_pol_smoking.md"
+      },
+      "partner": null,
+      "request_sha256": "af7dd0710823fdf3c21b368c06f41372b9aa8e9ef64a8f4ab09bd4a832a3c907",
+      "pseudonyms": {
+        "D1": "01_hr_pol_smoking.md"
+      },
+      "characters": 12327
+    },
+    {
+      "position": 14,
+      "case_id": "HO-14",
+      "primary_class": "multi-doc",
+      "question_origin": "agent_style_B",
+      "requested_trap": null,
+      "requested_action": "answer",
+      "plain_allowed": true,
+      "numeric_requested": false,
+      "block_id": "block-5ca01fed3f03",
+      "seed": {
+        "char_end": 2357,
+        "char_start": 1618,
+        "section_path": [
+          "Договор поручительства",
+          "Термины"
+        ],
+        "source_id": "03_legal_contract_guarantee.md"
+      },
+      "partner": {
+        "char_end": 2335,
+        "char_start": 1616,
+        "section_path": [
+          "Договор займа (между юрлицами)",
+          "Термины"
+        ],
+        "source_id": "03_legal_contract_loan.md"
+      },
+      "request_sha256": "3acb3ee4cdad27a3d5141ef1b4a9be331bd0a99c844f35bd83ce2e3f05093413",
+      "pseudonyms": {
+        "D1": "03_legal_contract_guarantee.md",
+        "D2": "03_legal_contract_loan.md"
+      },
+      "characters": 14074
+    },
+    {
+      "position": 15,
+      "case_id": "HO-15",
+      "primary_class": "single-doc",
+      "question_origin": "agent_style_B",
+      "requested_trap": null,
+      "requested_action": "answer",
+      "plain_allowed": true,
+      "numeric_requested": true,
+      "block_id": "block-a892905565a6",
+      "seed": {
+        "char_end": 2349,
+        "char_start": 1630,
+        "section_path": [
+          "Договор факторинга",
+          "Термины"
+        ],
+        "source_id": "03_legal_contract_factoring.md"
+      },
+      "partner": null,
+      "request_sha256": "9663c2c8a5e2262292aa92a94fc60f4b59e327d066cad80ac289dc18940d79df",
+      "pseudonyms": {
+        "D1": "03_legal_contract_factoring.md"
+      },
+      "characters": 12815
+    },
+    {
+      "position": 16,
+      "case_id": "HO-16",
+      "primary_class": "multi-doc",
+      "question_origin": "agent_style_A",
+      "requested_trap": null,
+      "requested_action": "answer",
+      "plain_allowed": true,
+      "numeric_requested": true,
+      "block_id": "block-ade1247f0888",
+      "seed": {
+        "char_end": 14563,
+        "char_start": 13947,
+        "section_path": [
+          "Регламент применения неустоек и штрафов",
+          "Контрольный список"
+        ],
+        "source_id": "03_legal_contract_penalty_clause.md"
+      },
+      "partner": {
+        "char_end": 14935,
+        "char_start": 14298,
+        "section_path": [
+          "Договор на юридическое консультирование",
+          "Контрольный список"
+        ],
+        "source_id": "03_legal_contract_services_consulting.md"
+      },
+      "request_sha256": "0f4ee8f0629006cc961b6ba52abc3a3b77d8cf3538555f0e22e749e9efdbe00f",
+      "pseudonyms": {
+        "D1": "03_legal_contract_penalty_clause.md",
+        "D2": "03_legal_contract_services_consulting.md"
+      },
+      "characters": 13958
+    },
+    {
+      "position": 17,
+      "case_id": "HO-17",
+      "primary_class": "aggregation",
+      "question_origin": "agent_style_A",
+      "requested_trap": null,
+      "requested_action": "answer",
+      "plain_allowed": true,
+      "numeric_requested": false,
+      "block_id": "block-65738f3e9ddc",
+      "seed": {
+        "char_end": 2244,
+        "char_start": 1583,
+        "section_path": [
+          "Агентский договор",
+          "Термины"
+        ],
+        "source_id": "03_legal_contract_agency.md"
+      },
+      "partner": {
+        "char_end": 2300,
+        "char_start": 1583,
+        "section_path": [
+          "Договор комиссии",
+          "Термины"
+        ],
+        "source_id": "03_legal_contract_commission.md"
+      },
+      "request_sha256": "f2c4c86f8858639ac94aa4ec34c253e3e4fc0544bb5a4cc73471d3180cd8b15b",
+      "pseudonyms": {
+        "D1": "03_legal_contract_agency.md",
+        "D2": "03_legal_contract_commission.md"
+      },
+      "characters": 13958
+    },
+    {
+      "position": 18,
+      "case_id": "HO-18",
+      "primary_class": "needs-refusal/clarification",
+      "question_origin": "agent_style_B",
+      "requested_trap": null,
+      "requested_action": "clarify",
+      "plain_allowed": true,
+      "numeric_requested": false,
+      "block_id": "block-76269410b23b",
+      "seed": {
+        "char_end": 4131,
+        "char_start": 3832,
+        "section_path": [
+          "Политика инклюзии и разнообразия",
+          "Порядок действий",
+          "5. Обучение и культура"
+        ],
+        "source_id": "01_hr_pol_diversity.md"
+      },
+      "partner": null,
+      "request_sha256": "6b4d721fb2030b78f6d2c8a7d44fbc4e4360a0f888f469840272ad1e1a53258a",
+      "pseudonyms": {
+        "D1": "01_hr_pol_diversity.md"
+      },
+      "characters": 12474
+    },
+    {
+      "position": 19,
+      "case_id": "HO-19",
+      "primary_class": "multi-doc",
+      "question_origin": "agent_style_B",
+      "requested_trap": "conflicting_documents",
+      "requested_action": "correct_premise",
+      "plain_allowed": true,
+      "numeric_requested": false,
+      "block_id": "block-eef05d50486a",
+      "seed": {
+        "char_end": 1078,
+        "char_start": 839,
+        "section_path": [
+          "Должностная инструкция — бухгалтер",
+          "Область применения"
+        ],
+        "source_id": "02_hr_tmp_job_description_accountant.md"
+      },
+      "partner": {
+        "char_end": 2075,
+        "char_start": 1744,
+        "section_path": [
+          "Инструкция по пожарной безопасности",
+          "Порядок действий",
+          "3. Эвакуация"
+        ],
+        "source_id": "01_hr_pol_fire_safety.md"
+      },
+      "request_sha256": "d1223683d75e09af42002d197df50c6d1a647ad96e859e6ad57a068d60a587ad",
+      "pseudonyms": {
+        "D1": "02_hr_tmp_job_description_accountant.md",
+        "D2": "01_hr_pol_fire_safety.md"
+      },
+      "characters": 13264
+    },
+    {
+      "position": 20,
+      "case_id": "HO-20",
+      "primary_class": "single-doc",
+      "question_origin": "agent_style_A",
+      "requested_trap": "outdated_rule",
+      "requested_action": "correct_premise",
+      "plain_allowed": true,
+      "numeric_requested": false,
+      "block_id": "block-e405471d536a",
+      "seed": {
+        "char_end": 2448,
+        "char_start": 1696,
+        "section_path": [
+          "Договор лизинга транспортных средств",
+          "Термины"
+        ],
+        "source_id": "03_legal_contract_leasing_vehicle.md"
+      },
+      "partner": null,
+      "request_sha256": "1b01489add836fdb83be077a5976fa6f016a6a3238ccb63797ebf9ad1bd159d9",
+      "pseudonyms": {
+        "D1": "03_legal_contract_leasing_vehicle.md"
+      },
+      "characters": 12894
+    },
+    {
+      "position": 21,
+      "case_id": "HO-21",
+      "primary_class": "multi-doc",
+      "question_origin": "agent_style_A",
+      "requested_trap": null,
+      "requested_action": "answer",
+      "plain_allowed": true,
+      "numeric_requested": false,
+      "block_id": "block-6bd33e081226",
+      "seed": {
+        "char_end": 12759,
+        "char_start": 12270,
+        "section_path": [
+          "Доверенность на банковские и страховые действия по air cargo claim",
+          "Критерии качества ответа"
+        ],
+        "source_id": "04_legal_power_of_attorney_bank.md"
+      },
+      "partner": {
+        "char_end": 9688,
+        "char_start": 8944,
+        "section_path": [
+          "Договор на бухгалтерское обслуживание",
+          "Практический сценарий"
+        ],
+        "source_id": "03_legal_contract_services_accounting.md"
+      },
+      "request_sha256": "de1f645b3561608445b39f2d7d6c5e61e725ea61a926ee6c1961f3ea836d4940",
+      "pseudonyms": {
+        "D1": "04_legal_power_of_attorney_bank.md",
+        "D2": "03_legal_contract_services_accounting.md"
+      },
+      "characters": 13987
+    },
+    {
+      "position": 22,
+      "case_id": "HO-22",
+      "primary_class": "needs-refusal/clarification",
+      "question_origin": "agent_style_A",
+      "requested_trap": "out_of_corpus",
+      "requested_action": "refuse",
+      "plain_allowed": true,
+      "numeric_requested": false,
+      "block_id": "block-25b5610451d2",
+      "seed": {
+        "char_end": 2429,
+        "char_start": 1704,
+        "section_path": [
+          "Договор о совместной деятельности",
+          "Термины"
+        ],
+        "source_id": "03_legal_contract_joint_activity.md"
+      },
+      "partner": null,
+      "request_sha256": "2730e14be6d07501f4beeffe9efc18da54f5ecf35f6001a8f8ca7dc598b8e972",
+      "pseudonyms": {
+        "D1": "03_legal_contract_joint_activity.md"
+      },
+      "characters": 12881
+    },
+    {
+      "position": 23,
+      "case_id": "HO-23",
+      "primary_class": "aggregation",
+      "question_origin": "agent_style_B",
+      "requested_trap": null,
+      "requested_action": "answer",
+      "plain_allowed": true,
+      "numeric_requested": false,
+      "block_id": "block-c9a717d6c714",
+      "seed": {
+        "char_end": 2082,
+        "char_start": 1828,
+        "section_path": [
+          "Порядок совместительства",
+          "Порядок действий",
+          "1. Внутреннее совместительство",
+          "1.1. Условия"
+        ],
+        "source_id": "01_hr_pol_second_job.md"
+      },
+      "partner": {
+        "char_end": 3353,
+        "char_start": 3040,
+        "section_path": [
+          "Порядок прохождения медосмотров",
+          "Порядок действий",
+          "1. Предварительный медосмотр",
+          "1.3. Заключение"
+        ],
+        "source_id": "01_hr_pol_medical_check.md"
+      },
+      "request_sha256": "dc75f9e05cdb7a3fd462021766a6e1cff44fb59e07c15e14b6d9cc6df00716f5",
+      "pseudonyms": {
+        "D1": "01_hr_pol_second_job.md",
+        "D2": "01_hr_pol_medical_check.md"
+      },
+      "characters": 13326
+    },
+    {
+      "position": 24,
+      "case_id": "HO-24",
+      "primary_class": "multi-doc",
+      "question_origin": "agent_style_B",
+      "requested_trap": "false_premise",
+      "requested_action": "correct_premise",
+      "plain_allowed": true,
+      "numeric_requested": true,
+      "block_id": "block-c4354baa5ef5",
+      "seed": {
+        "char_end": 815,
+        "char_start": 592,
+        "section_path": [
+          "Порядок рассмотрения трудовых споров",
+          "Назначение"
+        ],
+        "source_id": "01_hr_pol_grievance.md"
+      },
+      "partner": {
+        "char_end": 1178,
+        "char_start": 904,
+        "section_path": [
+          "Инструкция по электробезопасности",
+          "Термины"
+        ],
+        "source_id": "01_hr_pol_electrical_safety.md"
+      },
+      "request_sha256": "0fb48d4c8ae90b73c8609aea9392b37be7efc630e5b4e3a05fc03464f8da46b6",
+      "pseudonyms": {
+        "D1": "01_hr_pol_grievance.md",
+        "D2": "01_hr_pol_electrical_safety.md"
+      },
+      "characters": 13158
+    },
+    {
+      "position": 25,
+      "case_id": "HO-25",
+      "primary_class": "single-doc",
+      "question_origin": "agent_style_B",
+      "requested_trap": null,
+      "requested_action": "answer",
+      "plain_allowed": true,
+      "numeric_requested": false,
+      "block_id": "block-f8b61dc46322",
+      "seed": {
+        "char_end": 15292,
+        "char_start": 14662,
+        "section_path": [
+          "Договор аренды офисных помещений",
+          "Контрольный список"
+        ],
+        "source_id": "03_legal_contract_rent_office.md"
+      },
+      "partner": null,
+      "request_sha256": "4b60a924eb5c451d50c7769b5c17af2f987c24378f24008af70b2e2f4313f82b",
+      "pseudonyms": {
+        "D1": "03_legal_contract_rent_office.md"
+      },
+      "characters": 12746
+    },
+    {
+      "position": 26,
+      "case_id": "HO-26",
+      "primary_class": "multi-doc",
+      "question_origin": "agent_style_A",
+      "requested_trap": null,
+      "requested_action": "answer",
+      "plain_allowed": true,
+      "numeric_requested": false,
+      "block_id": "block-f930af3ef676",
+      "seed": {
+        "char_end": 2348,
+        "char_start": 1614,
+        "section_path": [
+          "Договор поставки автозапчастей",
+          "Термины"
+        ],
+        "source_id": "03_legal_contract_supply_auto_parts.md"
+      },
+      "partner": {
+        "char_end": 2452,
+        "char_start": 1706,
+        "section_path": [
+          "Договор поставки товаров (общий шаблон)",
+          "Термины"
+        ],
+        "source_id": "03_legal_contract_supply_goods.md"
+      },
+      "request_sha256": "fff588f2a08877f79a8b69ab7c0bd66c36067f9651acd0ed2ed2ec07dddb6b24",
+      "pseudonyms": {
+        "D1": "03_legal_contract_supply_auto_parts.md",
+        "D2": "03_legal_contract_supply_goods.md"
+      },
+      "characters": 14095
+    },
+    {
+      "position": 27,
+      "case_id": "HO-27",
+      "primary_class": "needs-refusal/clarification",
+      "question_origin": "agent_style_B",
+      "requested_trap": "dangerous_goods",
+      "requested_action": "escalate",
+      "plain_allowed": true,
+      "numeric_requested": false,
+      "block_id": "block-113c2c8e735d",
+      "seed": {
+        "char_end": 1568,
+        "char_start": 1050,
+        "section_path": [
+          "Договор ТО транспорта для airport first/last mile",
+          "Область применения"
+        ],
+        "source_id": "05_tlog_contract_tire_service.md"
+      },
+      "partner": null,
+      "request_sha256": "f0b15fa7ec190187c348f7c0e8ac7038b3eaf631c305d57684fb199e8b1f0992",
+      "pseudonyms": {
+        "D1": "05_tlog_contract_tire_service.md"
+      },
+      "characters": 12667
+    },
+    {
+      "position": 28,
+      "case_id": "HO-28",
+      "primary_class": "single-doc",
+      "question_origin": "agent_style_A",
+      "requested_trap": "false_premise",
+      "requested_action": "correct_premise",
+      "plain_allowed": true,
+      "numeric_requested": true,
+      "block_id": "block-72c1fd2bc9d4",
+      "seed": {
+        "char_end": 13303,
+        "char_start": 12702,
+        "section_path": [
+          "Доверенность на подписание air cargo документов и претензий",
+          "Контрольный список"
+        ],
+        "source_id": "04_legal_power_of_attorney_contracts.md"
+      },
+      "partner": null,
+      "request_sha256": "308c569c6afc9f21b54a9acd194fe6f2f58141948359d9209a7fa35c64800a96",
+      "pseudonyms": {
+        "D1": "04_legal_power_of_attorney_contracts.md"
+      },
+      "characters": 12798
+    },
+    {
+      "position": 29,
+      "case_id": "HO-29",
+      "primary_class": "multi-doc",
+      "question_origin": "agent_style_B",
+      "requested_trap": null,
+      "requested_action": "answer",
+      "plain_allowed": true,
+      "numeric_requested": false,
+      "block_id": "block-8d19da7e33e5",
+      "seed": {
+        "char_end": 15088,
+        "char_start": 14469,
+        "section_path": [
+          "Лицензионный договор на ПО",
+          "Контрольный список"
+        ],
+        "source_id": "03_legal_contract_software_license.md"
+      },
+      "partner": {
+        "char_end": 14789,
+        "char_start": 14154,
+        "section_path": [
+          "Договор на ИТ-услуги и поддержку",
+          "Контрольный список"
+        ],
+        "source_id": "03_legal_contract_services_it.md"
+      },
+      "request_sha256": "7fdd53ec3146836e2faf69bc915e0a49d4374811a594d188aee7944f5373fc66",
+      "pseudonyms": {
+        "D1": "03_legal_contract_software_license.md",
+        "D2": "03_legal_contract_services_it.md"
+      },
+      "characters": 13941
+    },
+    {
+      "position": 30,
+      "case_id": "HO-30",
+      "primary_class": "aggregation",
+      "question_origin": "agent_style_A",
+      "requested_trap": null,
+      "requested_action": "answer",
+      "plain_allowed": true,
+      "numeric_requested": false,
+      "block_id": "block-38d70a7e8430",
+      "seed": {
+        "char_end": 9598,
+        "char_start": 8855,
+        "section_path": [
+          "Договор на маркетинговые услуги",
+          "Практический сценарий"
+        ],
+        "source_id": "03_legal_contract_services_marketing.md"
+      },
+      "partner": {
+        "char_end": 9905,
+        "char_start": 9122,
+        "section_path": [
+          "Правила проведения закупочных процедур",
+          "Практический сценарий"
+        ],
+        "source_id": "03_legal_contract_tender_rules.md"
+      },
+      "request_sha256": "f66f7f3429989d18fce9a0600866ff3d58001b42eda6fb637d32bb30fbe7e8dd",
+      "pseudonyms": {
+        "D1": "03_legal_contract_services_marketing.md",
+        "D2": "03_legal_contract_tender_rules.md"
+      },
+      "characters": 14239
+    },
+    {
+      "position": 31,
+      "case_id": "HO-31",
+      "primary_class": "multi-doc",
+      "question_origin": "agent_style_A",
+      "requested_trap": "conflicting_documents",
+      "requested_action": "correct_premise",
+      "plain_allowed": true,
+      "numeric_requested": true,
+      "block_id": "block-3816cae01de8",
+      "seed": {
+        "char_end": 697,
+        "char_start": 487,
+        "section_path": [
+          "Правила курения на территории",
+          "Назначение"
+        ],
+        "source_id": "01_hr_pol_smoking.md"
+      },
+      "partner": {
+        "char_end": 820,
+        "char_start": 613,
+        "section_path": [
+          "Политика нулевой терпимости к алкоголю",
+          "Назначение"
+        ],
+        "source_id": "01_hr_pol_alcohol.md"
+      },
+      "request_sha256": "3a11861cb50e209d5b3f3a1f9e69594d18ccb1cb910c2968ee38b0b2cba9d705",
+      "pseudonyms": {
+        "D1": "01_hr_pol_smoking.md",
+        "D2": "01_hr_pol_alcohol.md"
+      },
+      "characters": 13060
+    },
+    {
+      "position": 32,
+      "case_id": "HO-32",
+      "primary_class": "single-doc",
+      "question_origin": "agent_style_B",
+      "requested_trap": null,
+      "requested_action": "answer",
+      "plain_allowed": true,
+      "numeric_requested": false,
+      "block_id": "block-5ca01fed3f03",
+      "seed": {
+        "char_end": 2335,
+        "char_start": 1616,
+        "section_path": [
+          "Договор займа (между юрлицами)",
+          "Термины"
+        ],
+        "source_id": "03_legal_contract_loan.md"
+      },
+      "partner": null,
+      "request_sha256": "73310c9fece0b34c146913d7c02575196a12cdb20dff53152f01745e2d8116aa",
+      "pseudonyms": {
+        "D1": "03_legal_contract_loan.md"
+      },
+      "characters": 12823
+    },
+    {
+      "position": 33,
+      "case_id": "HO-33",
+      "primary_class": "needs-refusal/clarification",
+      "question_origin": "agent_style_A",
+      "requested_trap": null,
+      "requested_action": "clarify",
+      "plain_allowed": true,
+      "numeric_requested": false,
+      "block_id": "block-a892905565a6",
+      "seed": {
+        "char_end": 2413,
+        "char_start": 1705,
+        "section_path": [
+          "Договор цессии (уступки права требования)",
+          "Термины"
+        ],
+        "source_id": "03_legal_contract_assignment.md"
+      },
+      "partner": null,
+      "request_sha256": "ad60be0afb0669a141b33dfea3446b5bbc3b44d5076d5949e6fe6155850fb68c",
+      "pseudonyms": {
+        "D1": "03_legal_contract_assignment.md"
+      },
+      "characters": 12877
+    },
+    {
+      "position": 34,
+      "case_id": "HO-34",
+      "primary_class": "multi-doc",
+      "question_origin": "agent_style_B",
+      "requested_trap": null,
+      "requested_action": "answer",
+      "plain_allowed": true,
+      "numeric_requested": false,
+      "block_id": "block-ade1247f0888",
+      "seed": {
+        "char_end": 2387,
+        "char_start": 1678,
+        "section_path": [
+          "Регламент применения неустоек и штрафов",
+          "Термины"
+        ],
+        "source_id": "03_legal_contract_penalty_clause.md"
+      },
+      "partner": {
+        "char_end": 2459,
+        "char_start": 1715,
+        "section_path": [
+          "Договор на юридическое консультирование",
+          "Термины"
+        ],
+        "source_id": "03_legal_contract_services_consulting.md"
+      },
+      "request_sha256": "61034876b38a1008d1661d38f12cdebb4e417f47663029292665939cff88b3ef",
+      "pseudonyms": {
+        "D1": "03_legal_contract_penalty_clause.md",
+        "D2": "03_legal_contract_services_consulting.md"
+      },
+      "characters": 14144
+    },
+    {
+      "position": 35,
+      "case_id": "HO-35",
+      "primary_class": "aggregation",
+      "question_origin": "agent_style_B",
+      "requested_trap": null,
+      "requested_action": "answer",
+      "plain_allowed": true,
+      "numeric_requested": false,
+      "block_id": "block-eef05d50486a",
+      "seed": {
+        "char_end": 3816,
+        "char_start": 3319,
+        "section_path": [
+          "Должностная инструкция — бухгалтер",
+          "Порядок действий",
+          "4. Взаимодействие"
+        ],
+        "source_id": "02_hr_tmp_job_description_accountant.md"
+      },
+      "partner": {
+        "char_end": 1727,
+        "char_start": 1451,
+        "section_path": [
+          "Инструкция по пожарной безопасности",
+          "Порядок действий",
+          "2. При обнаружении пожара"
+        ],
+        "source_id": "01_hr_pol_fire_safety.md"
+      },
+      "request_sha256": "4cb1193fced7b9adb29c47d1dd2d7736fb42e1a1d2f2625374d983e24c02e8c7",
+      "pseudonyms": {
+        "D1": "02_hr_tmp_job_description_accountant.md",
+        "D2": "01_hr_pol_fire_safety.md"
+      },
+      "characters": 13483
+    },
+    {
+      "position": 36,
+      "case_id": "HO-36",
+      "primary_class": "multi-doc",
+      "question_origin": "agent_style_A",
+      "requested_trap": "false_premise",
+      "requested_action": "correct_premise",
+      "plain_allowed": true,
+      "numeric_requested": false,
+      "block_id": "block-76269410b23b",
+      "seed": {
+        "char_end": 1111,
+        "char_start": 856,
+        "section_path": [
+          "Политика психологической поддержки",
+          "Область применения"
+        ],
+        "source_id": "01_hr_pol_mental_health.md"
+      },
+      "partner": {
+        "char_end": 1346,
+        "char_start": 1064,
+        "section_path": [
+          "Политика инклюзии и разнообразия",
+          "Область применения"
+        ],
+        "source_id": "01_hr_pol_diversity.md"
+      },
+      "request_sha256": "0ce06274bbd31d930d2be0caa70262f9ff87765c0957c4480469de9c9193dce5",
+      "pseudonyms": {
+        "D1": "01_hr_pol_mental_health.md",
+        "D2": "01_hr_pol_diversity.md"
+      },
+      "characters": 13161
+    },
+    {
+      "position": 37,
+      "case_id": "HO-37",
+      "primary_class": "single-doc",
+      "question_origin": "agent_style_A",
+      "requested_trap": null,
+      "requested_action": "answer",
+      "plain_allowed": true,
+      "numeric_requested": false,
+      "block_id": "block-65738f3e9ddc",
+      "seed": {
+        "char_end": 1069,
+        "char_start": 502,
+        "section_path": [
+          "Агентский договор",
+          "Назначение"
+        ],
+        "source_id": "03_legal_contract_agency.md"
+      },
+      "partner": null,
+      "request_sha256": "7a7f40aef9f33e5e2e5ce933d69992cae01ce08711adef0036a2adc311257425",
+      "pseudonyms": {
+        "D1": "03_legal_contract_agency.md"
+      },
+      "characters": 12652
+    },
+    {
+      "position": 38,
+      "case_id": "HO-38",
+      "primary_class": "needs-refusal/clarification",
+      "question_origin": "agent_style_B",
+      "requested_trap": "out_of_corpus",
+      "requested_action": "refuse",
+      "plain_allowed": true,
+      "numeric_requested": false,
+      "block_id": "block-e405471d536a",
+      "seed": {
+        "char_end": 1073,
+        "char_start": 599,
+        "section_path": [
+          "Договор лизинга транспорта для airport first/last mile",
+          "Назначение"
+        ],
+        "source_id": "05_tlog_contract_leasing_truck.md"
+      },
+      "partner": null,
+      "request_sha256": "2fa0a7019ee8ca47e7158cc40607c081c07939bc0f779876b25a0caee3040625",
+      "pseudonyms": {
+        "D1": "05_tlog_contract_leasing_truck.md"
+      },
+      "characters": 12632
+    },
+    {
+      "position": 39,
+      "case_id": "HO-39",
+      "primary_class": "multi-doc",
+      "question_origin": "agent_style_B",
+      "requested_trap": null,
+      "requested_action": "answer",
+      "plain_allowed": true,
+      "numeric_requested": true,
+      "block_id": "block-6bd33e081226",
+      "seed": {
+        "char_end": 13407,
+        "char_start": 12781,
+        "section_path": [
+          "Доверенность на банковские и страховые действия по air cargo claim",
+          "Контрольный список"
+        ],
+        "source_id": "04_legal_power_of_attorney_bank.md"
+      },
+      "partner": {
+        "char_end": 9688,
+        "char_start": 8944,
+        "section_path": [
+          "Договор на бухгалтерское обслуживание",
+          "Практический сценарий"
+        ],
+        "source_id": "03_legal_contract_services_accounting.md"
+      },
+      "request_sha256": "67a11b1fed2ef4d9f61d1bb475b5ebe15d02036958deb53cc4cad776147545d0",
+      "pseudonyms": {
+        "D1": "04_legal_power_of_attorney_bank.md",
+        "D2": "03_legal_contract_services_accounting.md"
+      },
+      "characters": 14129
+    },
+    {
+      "position": 40,
+      "case_id": "HO-40",
+      "primary_class": "single-doc",
+      "question_origin": "agent_style_B",
+      "requested_trap": "outdated_rule",
+      "requested_action": "correct_premise",
+      "plain_allowed": true,
+      "numeric_requested": true,
+      "block_id": "block-c9a717d6c714",
+      "seed": {
+        "char_end": 1753,
+        "char_start": 1204,
+        "section_path": [
+          "Порядок совместительства",
+          "Термины"
+        ],
+        "source_id": "01_hr_pol_second_job.md"
+      },
+      "partner": null,
+      "request_sha256": "492de929fd08348c42f32ba2b6e85a521964327f2bb97509621ae23ffb71e15f",
+      "pseudonyms": {
+        "D1": "01_hr_pol_second_job.md"
+      },
+      "characters": 12669
+    },
+    {
+      "position": 41,
+      "case_id": "HO-41",
+      "primary_class": "multi-doc",
+      "question_origin": "agent_style_A",
+      "requested_trap": null,
+      "requested_action": "answer",
+      "plain_allowed": true,
+      "numeric_requested": false,
+      "block_id": "block-f8b61dc46322",
+      "seed": {
+        "char_end": 2393,
+        "char_start": 1657,
+        "section_path": [
+          "Договор аренды офисных помещений",
+          "Термины"
+        ],
+        "source_id": "03_legal_contract_rent_office.md"
+      },
+      "partner": {
+        "char_end": 2405,
+        "char_start": 1661,
+        "section_path": [
+          "Договор поставки оборудования",
+          "Термины"
+        ],
+        "source_id": "03_legal_contract_supply_equipment.md"
+      },
+      "request_sha256": "2b703d3d67db8a6ed985435ac1c61ae15d33a5468073af478ad1af934e1616ac",
+      "pseudonyms": {
+        "D1": "03_legal_contract_rent_office.md",
+        "D2": "03_legal_contract_supply_equipment.md"
+      },
+      "characters": 14093
+    },
+    {
+      "position": 42,
+      "case_id": "HO-42",
+      "primary_class": "aggregation",
+      "question_origin": "agent_style_A",
+      "requested_trap": null,
+      "requested_action": "answer",
+      "plain_allowed": true,
+      "numeric_requested": false,
+      "block_id": "block-f930af3ef676",
+      "seed": {
+        "char_end": 15346,
+        "char_start": 14697,
+        "section_path": [
+          "Договор поставки товаров (общий шаблон)",
+          "Контрольный список"
+        ],
+        "source_id": "03_legal_contract_supply_goods.md"
+      },
+      "partner": {
+        "char_end": 2348,
+        "char_start": 1614,
+        "section_path": [
+          "Договор поставки автозапчастей",
+          "Термины"
+        ],
+        "source_id": "03_legal_contract_supply_auto_parts.md"
+      },
+      "request_sha256": "aae04a828f60324f4e8e5155e7653554b6a8f4e458e2cee44782c3bd370b2f92",
+      "pseudonyms": {
+        "D1": "03_legal_contract_supply_goods.md",
+        "D2": "03_legal_contract_supply_auto_parts.md"
+      },
+      "characters": 14011
+    },
+    {
+      "position": 43,
+      "case_id": "HO-43",
+      "primary_class": "needs-refusal/clarification",
+      "question_origin": "agent_style_A",
+      "requested_trap": "dangerous_goods",
+      "requested_action": "escalate",
+      "plain_allowed": true,
+      "numeric_requested": false,
+      "block_id": "block-c4354baa5ef5",
+      "seed": {
+        "char_end": 1640,
+        "char_start": 1437,
+        "section_path": [
+          "Порядок рассмотрения трудовых споров",
+          "Порядок действий",
+          "1. Досудебное урегулирование"
+        ],
+        "source_id": "01_hr_pol_grievance.md"
+      },
+      "partner": null,
+      "request_sha256": "bfd89474baf7d5f7a3c11790fa05907d248e0ab2515d880650bf024743af4d41",
+      "pseudonyms": {
+        "D1": "01_hr_pol_grievance.md"
+      },
+      "characters": 12418
+    },
+    {
+      "position": 44,
+      "case_id": "HO-44",
+      "primary_class": "multi-doc",
+      "question_origin": "agent_style_B",
+      "requested_trap": "conflicting_documents",
+      "requested_action": "correct_premise",
+      "plain_allowed": true,
+      "numeric_requested": false,
+      "block_id": "block-8d19da7e33e5",
+      "seed": {
+        "char_end": 2387,
+        "char_start": 1659,
+        "section_path": [
+          "Лицензионный договор на ПО",
+          "Термины"
+        ],
+        "source_id": "03_legal_contract_software_license.md"
+      },
+      "partner": {
+        "char_end": 2411,
+        "char_start": 1681,
+        "section_path": [
+          "Договор на ИТ-услуги и поддержку",
+          "Термины"
+        ],
+        "source_id": "03_legal_contract_services_it.md"
+      },
+      "request_sha256": "f97b3dbd4d2151ec4f473df4a0558ef430303756b6002f4f81283f18a6c17ba6",
+      "pseudonyms": {
+        "D1": "03_legal_contract_software_license.md",
+        "D2": "03_legal_contract_services_it.md"
+      },
+      "characters": 14151
+    },
+    {
+      "position": 45,
+      "case_id": "HO-45",
+      "primary_class": "single-doc",
+      "question_origin": "agent_style_A",
+      "requested_trap": null,
+      "requested_action": "answer",
+      "plain_allowed": true,
+      "numeric_requested": false,
+      "block_id": "block-113c2c8e735d",
+      "seed": {
+        "char_end": 14893,
+        "char_start": 14267,
+        "section_path": [
+          "Договор франшизы (коммерческой концессии)",
+          "Контрольный список"
+        ],
+        "source_id": "03_legal_contract_franchise.md"
+      },
+      "partner": null,
+      "request_sha256": "10c472ac59a6ab5b4fdc29803f71e131c21482e0f467603afc695635302d7715",
+      "pseudonyms": {
+        "D1": "03_legal_contract_franchise.md"
+      },
+      "characters": 12769
+    },
+    {
+      "position": 46,
+      "case_id": "HO-46",
+      "primary_class": "multi-doc",
+      "question_origin": "agent_style_A",
+      "requested_trap": null,
+      "requested_action": "answer",
+      "plain_allowed": true,
+      "numeric_requested": true,
+      "block_id": "block-3816cae01de8",
+      "seed": {
+        "char_end": 1357,
+        "char_start": 1003,
+        "section_path": [
+          "Политика нулевой терпимости к алкоголю",
+          "Термины"
+        ],
+        "source_id": "01_hr_pol_alcohol.md"
+      },
+      "partner": {
+        "char_end": 697,
+        "char_start": 487,
+        "section_path": [
+          "Правила курения на территории",
+          "Назначение"
+        ],
+        "source_id": "01_hr_pol_smoking.md"
+      },
+      "request_sha256": "fab482520cb5d08050737259e08e4c07686af8b123382ce5f73a69dea71045f5",
+      "pseudonyms": {
+        "D1": "01_hr_pol_alcohol.md",
+        "D2": "01_hr_pol_smoking.md"
+      },
+      "characters": 13178
+    },
+    {
+      "position": 47,
+      "case_id": "HO-47",
+      "primary_class": "needs-refusal/clarification",
+      "question_origin": "agent_style_B",
+      "requested_trap": null,
+      "requested_action": "clarify",
+      "plain_allowed": true,
+      "numeric_requested": false,
+      "block_id": "block-72c1fd2bc9d4",
+      "seed": {
+        "char_end": 11056,
+        "char_start": 10263,
+        "section_path": [
+          "Доверенность на представительство в суде по air cargo dispute",
+          "Ответственные роли"
+        ],
+        "source_id": "04_legal_power_of_attorney_court.md"
+      },
+      "partner": null,
+      "request_sha256": "1ba10ea56389b2095447dad1910ebb537c76de9abed6214de0489bc8619b58ff",
+      "pseudonyms": {
+        "D1": "04_legal_power_of_attorney_court.md"
+      },
+      "characters": 13002
+    },
+    {
+      "position": 48,
+      "case_id": "HO-48",
+      "primary_class": "multi-doc",
+      "question_origin": "agent_style_B",
+      "requested_trap": "false_premise",
+      "requested_action": "correct_premise",
+      "plain_allowed": true,
+      "numeric_requested": false,
+      "block_id": "block-a892905565a6",
+      "seed": {
+        "char_end": 1189,
+        "char_start": 574,
+        "section_path": [
+          "Договор цессии (уступки права требования)",
+          "Назначение"
+        ],
+        "source_id": "03_legal_contract_assignment.md"
+      },
+      "partner": {
+        "char_end": 2349,
+        "char_start": 1630,
+        "section_path": [
+          "Договор факторинга",
+          "Термины"
+        ],
+        "source_id": "03_legal_contract_factoring.md"
+      },
+      "request_sha256": "b2b5a15ad646922feeaf0a035be71680e98960b532402ad09957fa5d49089600",
+      "pseudonyms": {
+        "D1": "03_legal_contract_assignment.md",
+        "D2": "03_legal_contract_factoring.md"
+      },
+      "characters": 14026
+    },
+    {
+      "position": 49,
+      "case_id": "HO-49",
+      "primary_class": "aggregation",
+      "question_origin": "agent_style_B",
+      "requested_trap": null,
+      "requested_action": "answer",
+      "plain_allowed": true,
+      "numeric_requested": false,
+      "block_id": "block-76269410b23b",
+      "seed": {
+        "char_end": 3581,
+        "char_start": 3253,
+        "section_path": [
+          "Политика психологической поддержки",
+          "Порядок действий",
+          "4. Обучение руководителей"
+        ],
+        "source_id": "01_hr_pol_mental_health.md"
+      },
+      "partner": {
+        "char_end": 4131,
+        "char_start": 3832,
+        "section_path": [
+          "Политика инклюзии и разнообразия",
+          "Порядок действий",
+          "5. Обучение и культура"
+        ],
+        "source_id": "01_hr_pol_diversity.md"
+      },
+      "request_sha256": "38fc8105b57ef12ec9e1360c5c51c9badb9391962d7e36a45d6a13d7ae4b11c2",
+      "pseudonyms": {
+        "D1": "01_hr_pol_mental_health.md",
+        "D2": "01_hr_pol_diversity.md"
+      },
+      "characters": 13306
+    },
+    {
+      "position": 50,
+      "case_id": "HO-50",
+      "primary_class": "single-doc",
+      "question_origin": "agent_style_B",
+      "requested_trap": "false_premise",
+      "requested_action": "correct_premise",
+      "plain_allowed": true,
+      "numeric_requested": false,
+      "block_id": "block-38d70a7e8430",
+      "seed": {
+        "char_end": 9905,
+        "char_start": 9122,
+        "section_path": [
+          "Правила проведения закупочных процедур",
+          "Практический сценарий"
+        ],
+        "source_id": "03_legal_contract_tender_rules.md"
+      },
+      "partner": null,
+      "request_sha256": "9976e5ba2aadfbaaf07a00c784b78d4eb3b81192a07d7f1f3b3d66dac209aeef",
+      "pseudonyms": {
+        "D1": "03_legal_contract_tender_rules.md"
+      },
+      "characters": 12967
+    },
+    {
+      "position": 51,
+      "case_id": "HO-51",
+      "primary_class": "multi-doc",
+      "question_origin": "agent_style_A",
+      "requested_trap": null,
+      "requested_action": "answer",
+      "plain_allowed": true,
+      "numeric_requested": false,
+      "block_id": "block-eef05d50486a",
+      "seed": {
+        "char_end": 4207,
+        "char_start": 3849,
+        "section_path": [
+          "Должностная инструкция — бухгалтер",
+          "Порядок действий",
+          "5. Требования к квалификации"
+        ],
+        "source_id": "02_hr_tmp_job_description_accountant.md"
+      },
+      "partner": {
+        "char_end": 2075,
+        "char_start": 1744,
+        "section_path": [
+          "Инструкция по пожарной безопасности",
+          "Порядок действий",
+          "3. Эвакуация"
+        ],
+        "source_id": "01_hr_pol_fire_safety.md"
+      },
+      "request_sha256": "ef49d414399bf32a18d3b7ed3c558889e3e781cc9fb9ab7c4c1bbdd541c6c586",
+      "pseudonyms": {
+        "D1": "02_hr_tmp_job_description_accountant.md",
+        "D2": "01_hr_pol_fire_safety.md"
+      },
+      "characters": 13383
+    },
+    {
+      "position": 52,
+      "case_id": "HO-52",
+      "primary_class": "needs-refusal/clarification",
+      "question_origin": "agent_style_A",
+      "requested_trap": "out_of_corpus",
+      "requested_action": "refuse",
+      "plain_allowed": true,
+      "numeric_requested": false,
+      "block_id": "block-ade1247f0888",
+      "seed": {
+        "char_end": 2459,
+        "char_start": 1715,
+        "section_path": [
+          "Договор на юридическое консультирование",
+          "Термины"
+        ],
+        "source_id": "03_legal_contract_services_consulting.md"
+      },
+      "partner": null,
+      "request_sha256": "a243cfde600c0c9d648eb8345e9ea3d9dd66a44cd1167b215d30faa67a8df7c8",
+      "pseudonyms": {
+        "D1": "03_legal_contract_services_consulting.md"
+      },
+      "characters": 12909
+    },
+    {
+      "position": 53,
+      "case_id": "HO-53",
+      "primary_class": "multi-doc",
+      "question_origin": "agent_style_B",
+      "requested_trap": null,
+      "requested_action": "answer",
+      "plain_allowed": true,
+      "numeric_requested": true,
+      "block_id": "block-6bd33e081226",
+      "seed": {
+        "char_end": 2382,
+        "char_start": 1665,
+        "section_path": [
+          "Договор на бухгалтерское обслуживание",
+          "Термины"
+        ],
+        "source_id": "03_legal_contract_services_accounting.md"
+      },
+      "partner": {
+        "char_end": 1219,
+        "char_start": 617,
+        "section_path": [
+          "Доверенность на банковские и страховые действия по air cargo claim",
+          "Назначение"
+        ],
+        "source_id": "04_legal_power_of_attorney_bank.md"
+      },
+      "request_sha256": "d78932a8505ad194fbff9b4f03a24f6d192d85b8866e35176ab223398a498c54",
+      "pseudonyms": {
+        "D1": "03_legal_contract_services_accounting.md",
+        "D2": "04_legal_power_of_attorney_bank.md"
+      },
+      "characters": 14057
+    },
+    {
+      "position": 54,
+      "case_id": "HO-54",
+      "primary_class": "single-doc",
+      "question_origin": "agent_style_A",
+      "requested_trap": null,
+      "requested_action": "answer",
+      "plain_allowed": true,
+      "numeric_requested": true,
+      "block_id": "block-65738f3e9ddc",
+      "seed": {
+        "char_end": 2300,
+        "char_start": 1583,
+        "section_path": [
+          "Договор комиссии",
+          "Термины"
+        ],
+        "source_id": "03_legal_contract_commission.md"
+      },
+      "partner": null,
+      "request_sha256": "5660d1c0db98a10f6bbae5ecdcca992bbf29aab9e9eeed9e7c57f1cbea5dc826",
+      "pseudonyms": {
+        "D1": "03_legal_contract_commission.md"
+      },
+      "characters": 12790
+    },
+    {
+      "position": 55,
+      "case_id": "HO-55",
+      "primary_class": "aggregation",
+      "question_origin": "agent_style_A",
+      "requested_trap": null,
+      "requested_action": "answer",
+      "plain_allowed": true,
+      "numeric_requested": false,
+      "block_id": "block-113c2c8e735d",
+      "seed": {
+        "char_end": 2412,
+        "char_start": 1682,
+        "section_path": [
+          "Договор франшизы (коммерческой концессии)",
+          "Термины"
+        ],
+        "source_id": "03_legal_contract_franchise.md"
+      },
+      "partner": {
+        "char_end": 7561,
+        "char_start": 6994,
+        "section_path": [
+          "Договор ТО транспорта для airport first/last mile",
+          "Порядок действий",
+          "5. Согласование"
+        ],
+        "source_id": "05_tlog_contract_tire_service.md"
+      },
+      "request_sha256": "77c3c9e6a71e92a2804f63d286c44fee3b3088848883083b5c20e61f73782d22",
+      "pseudonyms": {
+        "D1": "03_legal_contract_franchise.md",
+        "D2": "05_tlog_contract_tire_service.md"
+      },
+      "characters": 13981
+    },
+    {
+      "position": 56,
+      "case_id": "HO-56",
+      "primary_class": "multi-doc",
+      "question_origin": "agent_style_A",
+      "requested_trap": "conflicting_documents",
+      "requested_action": "correct_premise",
+      "plain_allowed": true,
+      "numeric_requested": false,
+      "block_id": "block-c9a717d6c714",
+      "seed": {
+        "char_end": 1193,
+        "char_start": 894,
+        "section_path": [
+          "Порядок совместительства",
+          "Область применения"
+        ],
+        "source_id": "01_hr_pol_second_job.md"
+      },
+      "partner": {
+        "char_end": 950,
+        "char_start": 580,
+        "section_path": [
+          "Порядок прохождения медосмотров",
+          "Назначение"
+        ],
+        "source_id": "01_hr_pol_medical_check.md"
+      },
+      "request_sha256": "f569a0a97ada76dd48f331d0fc10bc0c14308a9ecdb4f73626c943f914678d56",
+      "pseudonyms": {
+        "D1": "01_hr_pol_second_job.md",
+        "D2": "01_hr_pol_medical_check.md"
+      },
+      "characters": 13320
+    },
+    {
+      "position": 57,
+      "case_id": "HO-57",
+      "primary_class": "needs-refusal/clarification",
+      "question_origin": "agent_style_B",
+      "requested_trap": "dangerous_goods",
+      "requested_action": "escalate",
+      "plain_allowed": true,
+      "numeric_requested": false,
+      "block_id": "block-c4354baa5ef5",
+      "seed": {
+        "char_end": 1086,
+        "char_start": 837,
+        "section_path": [
+          "Порядок рассмотрения трудовых споров",
+          "Область применения"
+        ],
+        "source_id": "01_hr_pol_grievance.md"
+      },
+      "partner": null,
+      "request_sha256": "cf1b8b3bfbd8f1af18e271faaa5889bf645edec235cbc1faedcd33eb3c99ad09",
+      "pseudonyms": {
+        "D1": "01_hr_pol_grievance.md"
+      },
+      "characters": 12440
+    },
+    {
+      "position": 58,
+      "case_id": "HO-58",
+      "primary_class": "single-doc",
+      "question_origin": "agent_style_B",
+      "requested_trap": null,
+      "requested_action": "answer",
+      "plain_allowed": true,
+      "numeric_requested": false,
+      "block_id": "block-f8b61dc46322",
+      "seed": {
+        "char_end": 2405,
+        "char_start": 1661,
+        "section_path": [
+          "Договор поставки оборудования",
+          "Термины"
+        ],
+        "source_id": "03_legal_contract_supply_equipment.md"
+      },
+      "partner": null,
+      "request_sha256": "cf1af7ba7c290b887b71f7b7d243549373a93812016ea63d9860db5078967f59",
+      "pseudonyms": {
+        "D1": "03_legal_contract_supply_equipment.md"
+      },
+      "characters": 12850
+    },
+    {
+      "position": 59,
+      "case_id": "HO-59",
+      "primary_class": "multi-doc",
+      "question_origin": "agent_style_B",
+      "requested_trap": null,
+      "requested_action": "answer",
+      "plain_allowed": true,
+      "numeric_requested": false,
+      "block_id": "block-72c1fd2bc9d4",
+      "seed": {
+        "char_end": 12534,
+        "char_start": 12068,
+        "section_path": [
+          "Доверенность на представительство в суде по air cargo dispute",
+          "Критерии качества ответа"
+        ],
+        "source_id": "04_legal_power_of_attorney_court.md"
+      },
+      "partner": {
+        "char_end": 12680,
+        "char_start": 12207,
+        "section_path": [
+          "Доверенность на подписание air cargo документов и претензий",
+          "Критерии качества ответа"
+        ],
+        "source_id": "04_legal_power_of_attorney_contracts.md"
+      },
+      "request_sha256": "148e3b84ad81d400c30fa00b8d4068ca545e5be712cc05f7eb6fbfd72c36d848",
+      "pseudonyms": {
+        "D1": "04_legal_power_of_attorney_court.md",
+        "D2": "04_legal_power_of_attorney_contracts.md"
+      },
+      "characters": 13741
+    },
+    {
+      "position": 60,
+      "case_id": "HO-60",
+      "primary_class": "multi-doc",
+      "question_origin": "agent_style_A",
+      "requested_trap": "false_premise",
+      "requested_action": "correct_premise",
+      "plain_allowed": true,
+      "numeric_requested": true,
+      "block_id": "block-38d70a7e8430",
+      "seed": {
+        "char_end": 3744,
+        "char_start": 2933,
+        "section_path": [
+          "Договор на маркетинговые услуги",
+          "Порядок действий",
+          "2. Обязательные поля"
+        ],
+        "source_id": "03_legal_contract_services_marketing.md"
+      },
+      "partner": {
+        "char_end": 3884,
+        "char_start": 2998,
+        "section_path": [
+          "Правила проведения закупочных процедур",
+          "Порядок действий",
+          "2. Обязательные поля"
+        ],
+        "source_id": "03_legal_contract_tender_rules.md"
+      },
+      "request_sha256": "8ed65fe8a1e7c01ab394f63e53c274de262477ecea28ed1dc2505c12327e2d57",
+      "pseudonyms": {
+        "D1": "03_legal_contract_services_marketing.md",
+        "D2": "03_legal_contract_tender_rules.md"
+      },
+      "characters": 14487
+    },
+    {
+      "position": 61,
+      "case_id": "HO-61",
+      "primary_class": "aggregation",
+      "question_origin": "agent_style_B",
+      "requested_trap": null,
+      "requested_action": "answer",
+      "plain_allowed": true,
+      "numeric_requested": false,
+      "block_id": "block-3816cae01de8",
+      "seed": {
+        "char_end": 2037,
+        "char_start": 1664,
+        "section_path": [
+          "Политика нулевой терпимости к алкоголю",
+          "Порядок действий",
+          "2. Алкотестирование"
+        ],
+        "source_id": "01_hr_pol_alcohol.md"
+      },
+      "partner": {
+        "char_end": 1669,
+        "char_start": 1455,
+        "section_path": [
+          "Правила курения на территории",
+          "Порядок действий",
+          "3. Ответственность"
+        ],
+        "source_id": "01_hr_pol_smoking.md"
+      },
+      "request_sha256": "1b6d17b719ac69733697fcab9654163401042e9f38b6b9ce3edd1e549e5c7874",
+      "pseudonyms": {
+        "D1": "01_hr_pol_alcohol.md",
+        "D2": "01_hr_pol_smoking.md"
+      },
+      "characters": 13288
+    },
+    {
+      "position": 62,
+      "case_id": "HO-62",
+      "primary_class": "needs-refusal/clarification",
+      "question_origin": "agent_style_A",
+      "requested_trap": null,
+      "requested_action": "clarify",
+      "plain_allowed": true,
+      "numeric_requested": false,
+      "block_id": "block-8d19da7e33e5",
+      "seed": {
+        "char_end": 2411,
+        "char_start": 1681,
+        "section_path": [
+          "Договор на ИТ-услуги и поддержку",
+          "Термины"
+        ],
+        "source_id": "03_legal_contract_services_it.md"
+      },
+      "partner": null,
+      "request_sha256": "a47fc967a8a365c73ce8a655b1b5a3e805af11305ab574a480ce88ba6f4063e9",
+      "pseudonyms": {
+        "D1": "03_legal_contract_services_it.md"
+      },
+      "characters": 12872
+    },
+    {
+      "position": 63,
+      "case_id": "HO-63",
+      "primary_class": "single-doc",
+      "question_origin": "agent_style_A",
+      "requested_trap": "outdated_rule",
+      "requested_action": "correct_premise",
+      "plain_allowed": true,
+      "numeric_requested": false,
+      "block_id": "block-ade1247f0888",
+      "seed": {
+        "char_end": 14935,
+        "char_start": 14298,
+        "section_path": [
+          "Договор на юридическое консультирование",
+          "Контрольный список"
+        ],
+        "source_id": "03_legal_contract_services_consulting.md"
+      },
+      "partner": null,
+      "request_sha256": "a73d2797591394e4ffe2d13db0f1036cc0c20faed1ae2ccc7741f200221b2b2a",
+      "pseudonyms": {
+        "D1": "03_legal_contract_services_consulting.md"
+      },
+      "characters": 12806
+    },
+    {
+      "position": 64,
+      "case_id": "HO-64",
+      "primary_class": "multi-doc",
+      "question_origin": "agent_style_B",
+      "requested_trap": null,
+      "requested_action": "answer",
+      "plain_allowed": true,
+      "numeric_requested": false,
+      "block_id": "block-76269410b23b",
+      "seed": {
+        "char_end": 1042,
+        "char_start": 580,
+        "section_path": [
+          "Политика инклюзии и разнообразия",
+          "Назначение"
+        ],
+        "source_id": "01_hr_pol_diversity.md"
+      },
+      "partner": {
+        "char_end": 834,
+        "char_start": 510,
+        "section_path": [
+          "Политика психологической поддержки",
+          "Назначение"
+        ],
+        "source_id": "01_hr_pol_mental_health.md"
+      },
+      "request_sha256": "7e6f62834f8f2454e20c00b57f4b22640217f8bd6572e5a453656a847375f180",
+      "pseudonyms": {
+        "D1": "01_hr_pol_diversity.md",
+        "D2": "01_hr_pol_mental_health.md"
+      },
+      "characters": 13384
+    }
+  ]
+}

@@ -1,0 +1,180 @@
+{
+  "schema_version": "devset-drafts/v1",
+  "split": "holdout",
+  "replacement": false,
+  "generator": "claude-opus-5-5",
+  "generator_version": "devset-generator/v1",
+  "prompt_sha256": "914490be7b928f573eaa78f202f17532cbcb416cd00bc2ecfec23d89148aaa5a",
+  "route": "Claude Code CLI in safe mode, first-party provider",
+  "settings": {
+    "model": "claude-opus-5-5",
+    "effort": "max",
+    "tools": "none",
+    "session": "safe mode: no instruction file, memory, hook, skill, plugin or MCP server; no tools; an empty working directory; nothing stored; one turn",
+    "system_prompt_sha256": "46ac895df537bd8e07a088db94de5fcd028fa96985e67f4612bf396d0cae5e88"
+  },
+  "as_of": "2026-10-01",
+  "brief_rule": {
+    "version": "devset-brief-v1",
+    "style": "the positions of one class take agent_style_A and agent_style_B in turn, starting with A",
+    "trap": "the positions of one class take the pairs of TRAP_CYCLES of that class in turn",
+    "fallback": "a reply may write the plain pair of its class instead of the requested one: no trap with the action answer, or clarify in the class needs-refusal/clarification",
+    "numeric": "the positions of one class of NUMERIC_CLASSES are asked for a quantity in the turn of NUMERIC_TURNS; a reply may write the case without one",
+    "replacement": "the replacement of a dropped draft is asked for the class, the style, the trap and the action of that draft as it was drafted, and the plain pair is not accepted in their place; it is not asked for a quantity",
+    "no_case": "a reply that begins with NO CASE declares that the sections cannot give the case: the position stays empty and is not asked for again",
+    "as_of": "2026-10-01",
+    "cycles": {
+      "single-doc": [
+        [
+          null,
+          "answer"
+        ],
+        [
+          "false_premise",
+          "correct_premise"
+        ],
+        [
+          null,
+          "answer"
+        ],
+        [
+          null,
+          "answer"
+        ],
+        [
+          "outdated_rule",
+          "correct_premise"
+        ]
+      ],
+      "multi-doc": [
+        [
+          null,
+          "answer"
+        ],
+        [
+          null,
+          "answer"
+        ],
+        [
+          "conflicting_documents",
+          "correct_premise"
+        ],
+        [
+          null,
+          "answer"
+        ],
+        [
+          "false_premise",
+          "correct_premise"
+        ]
+      ],
+      "aggregation": [
+        [
+          null,
+          "answer"
+        ]
+      ],
+      "needs-refusal/clarification": [
+        [
+          null,
+          "clarify"
+        ],
+        [
+          "out_of_corpus",
+          "refuse"
+        ],
+        [
+          "dangerous_goods",
+          "escalate"
+        ]
+      ]
+    },
+    "numeric_classes": [
+      "single-doc",
+      "multi-doc"
+    ],
+    "numeric_turns": [
+      true,
+      false,
+      false
+    ]
+  },
+  "label_origin": "agent_labelled",
+  "label_check": "none",
+  "jsonl_sha256": "2d3eed624ba51e2b0b76e9f75b3a347df7b6d41fd75b86fb81f69ceb4a3fb593",
+  "split_sha256": "20d69e9bb30043f7012823e3b39ca2692badc58bf9e04a737691abbcab2c44a8",
+  "corpus_sha256": "c8562a64f88f72172f29e30865091be79f08d00ce65fbf675f34de64dcebe343",
+  "families_sha256": "54bdb736180e00325bff20f49e2b9d985dd62278fe9f9cdb6161a0da719e3584",
+  "plan_sha256": "1f4eb793b707b535d04d98a252254509e692c8b5e318d912af695a009ab486e8",
+  "store_sha256": "9ae8b47214241008f4d3848fbe91a7e567030f1d6ae911a0c016a11c4299503b",
+  "replies": {
+    "sent": 66,
+    "refused_by_script": 0,
+    "no_case": 2,
+    "unavailable": 2,
+    "cases_by_attempts": {
+      "1": 62
+    }
+  },
+  "positions": 64,
+  "drafted": 62,
+  "empty_positions": [
+    5,
+    19
+  ],
+  "class_counts": {
+    "aggregation": 9,
+    "multi-doc": 25,
+    "needs-refusal/clarification": 13,
+    "single-doc": 15
+  },
+  "style_counts": {
+    "agent_style_A": 32,
+    "agent_style_B": 30
+  },
+  "action_counts": {
+    "answer": 37,
+    "clarify": 5,
+    "correct_premise": 12,
+    "escalate": 4,
+    "refuse": 4
+  },
+  "traps_requested": {
+    "None": 40,
+    "conflicting_documents": 5,
+    "dangerous_goods": 4,
+    "false_premise": 8,
+    "out_of_corpus": 4,
+    "outdated_rule": 3
+  },
+  "traps_written_as_requested": {
+    "None": 39,
+    "conflicting_documents": 4,
+    "dangerous_goods": 4,
+    "false_premise": 8,
+    "out_of_corpus": 4
+  },
+  "trap_counts": {
+    "conflicting_documents": 4,
+    "dangerous_goods": 4,
+    "false_premise": 8,
+    "out_of_corpus": 4
+  },
+  "numeric_requested": 14,
+  "numeric_written_as_requested": 1,
+  "flags": {
+    "ru_to_en": 36,
+    "numeric": 10,
+    "safety_critical": 10,
+    "adversarial_unanswerable": 25
+  },
+  "no_case_positions": {
+    "1": [
+      5,
+      19
+    ],
+    "2": [],
+    "3": []
+  },
+  "unseated_positions": []
+}
