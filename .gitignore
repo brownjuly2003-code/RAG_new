@@ -40,6 +40,9 @@ reports/regression/*.md
 reports/ragas/*.json
 reports/ragas/*.md
 
+# Judge plan of a baseline run: the repository keeps the packed plan.json.gz
+reports/baseline/*/judge/plan.json
+
 # Autopilot runtime state
 .autopilot/
 .myflow/

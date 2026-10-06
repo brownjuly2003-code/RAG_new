@@ -1,0 +1,173 @@
+{
+  "status": "ok",
+  "verdict": "single_judge",
+  "judge": "opus",
+  "judge_version": "{\"judge\":\"opus\",\"parameters\":{\"effort\":\"max\",\"model\":\"claude-opus-5-5\",\"session\":\"safe mode: no instruction file, memory, hook, skill, plugin or MCP server; no tools; an empty working directory; nothing stored; one turn\",\"system_prompt_sha256\":\"2845935202ebc7963c0a6cb9efe7c51a975fae41dadd50cfca7acc7ce25ce76d\",\"tools\":\"none\"},\"route\":\"Claude Code CLI in safe mode, first-party provider\"}",
+  "run_sha256": "6b30fbbc25bb5e08c7b5ff0ebcfe4dcec3f3e92bda69fdf105127593d2581550",
+  "plan_sha256": "727ca9386ac61e86960a960c5bdc80634821853d3ca447f4088dc17d309a2aca",
+  "rule": "per subset, the planned cases that have a request, sorted by the SHA-256 of '20260925:retest:<case_id>', the first 10; every request of a drawn case is sent again as <request id>~retest into a store of its own",
+  "threshold": 0.7,
+  "missing_share_limit": 0.05,
+  "bootstrap": {
+    "seed": 20260925,
+    "resamples": 10000,
+    "cluster": "case"
+  },
+  "cases": [
+    "aircargo-secret-check",
+    "aircargo-warehouse-3pl-escalation",
+    "aircargo-conflict-interest-disclosure",
+    "aircargo-leave-risk",
+    "aircargo-fuel-supply-required-fields",
+    "aircargo-business-trip-foreign-approval",
+    "aircargo-contract-termination-open-awb",
+    "aircargo-dangerous-goods-fields",
+    "aircargo-leave-compensation",
+    "aircargo-cross-border-required-fields",
+    "aircargo-gr-loss-liability-boundary",
+    "aircargo-gr-claims-minimum-pack",
+    "aircargo-gr-offload-road-handover",
+    "aircargo-gr-customs-export-readiness",
+    "aircargo-gr-damage-insurance-proof",
+    "aircargo-gr-sea-air-handover",
+    "aircargo-gr-compare-loss-damage-evidence",
+    "aircargo-gr-customs-delay-release",
+    "aircargo-gr-loss-awb-conditions",
+    "aircargo-gr-road-air-handover"
+  ],
+  "requests": 20,
+  "units": 192,
+  "missing": {
+    "first": 0,
+    "second": 0
+  },
+  "stores": {
+    "first": "3cf525c2213f107d188a4dc6c20fa01eb9b5fd753fa441ac3a2a453c95615f17",
+    "second": "4601060c0efbd8aaa976bd1d92e2a4a1a5287cd378002c9875b75273913d87a3"
+  },
+  "all": {
+    "cases": 20,
+    "units": 192,
+    "quadratic_kappa": 0.9280958721704394,
+    "ci95": [
+      0.8592240307061677,
+      0.9755771947639108
+    ],
+    "resamples_used": 10000,
+    "resamples_undefined": 0,
+    "exact_agreement": 174,
+    "relevance_flips": 6,
+    "cross_table": {
+      "0": {
+        "0": 2,
+        "1": 0,
+        "2": 0,
+        "3": 0
+      },
+      "1": {
+        "0": 0,
+        "1": 64,
+        "2": 3,
+        "3": 0
+      },
+      "2": {
+        "0": 0,
+        "1": 3,
+        "2": 62,
+        "3": 9
+      },
+      "3": {
+        "0": 0,
+        "1": 0,
+        "2": 3,
+        "3": 46
+      }
+    }
+  },
+  "by_subset": {
+    "H": {
+      "cases": 10,
+      "units": 95,
+      "quadratic_kappa": 0.9585092444315039,
+      "ci95": [
+        0.9129818222934382,
+        0.9918257720519269
+      ],
+      "resamples_used": 10000,
+      "resamples_undefined": 0,
+      "exact_agreement": 89,
+      "relevance_flips": 3,
+      "cross_table": {
+        "0": {
+          "0": 2,
+          "1": 0,
+          "2": 0,
+          "3": 0
+        },
+        "1": {
+          "0": 0,
+          "1": 38,
+          "2": 0,
+          "3": 0
+        },
+        "2": {
+          "0": 0,
+          "1": 3,
+          "2": 23,
+          "3": 3
+        },
+        "3": {
+          "0": 0,
+          "1": 0,
+          "2": 0,
+          "3": 26
+        }
+      }
+    },
+    "Hm": {
+      "cases": 10,
+      "units": 97,
+      "quadratic_kappa": 0.8846153846153846,
+      "ci95": [
+        0.7349246523055472,
+        0.9810316392789844
+      ],
+      "resamples_used": 10000,
+      "resamples_undefined": 0,
+      "exact_agreement": 85,
+      "relevance_flips": 3,
+      "cross_table": {
+        "0": {
+          "0": 0,
+          "1": 0,
+          "2": 0,
+          "3": 0
+        },
+        "1": {
+          "0": 0,
+          "1": 26,
+          "2": 3,
+          "3": 0
+        },
+        "2": {
+          "0": 0,
+          "1": 0,
+          "2": 39,
+          "3": 6
+        },
+        "3": {
+          "0": 0,
+          "1": 0,
+          "2": 3,
+          "3": 20
+        }
+      }
+    }
+  },
+  "outbound": {
+    "calls": 20,
+    "texts": 192,
+    "characters": 317932
+  },
+  "quality_metrics": "N/A: agreement of one judge with itself, not a retrieval metric"
+}

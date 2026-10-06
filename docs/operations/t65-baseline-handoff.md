@@ -1,6 +1,8 @@
 # T-65 production baseline — preparation, 2026-10-02
 
-T-65 remains open: no new quality measurement has been published.
+T-65 is closed (2026-10-05): the baseline and its loss map are published — see
+the last section. This file is the journal of that work, oldest entry first; the
+«next» lists of the earlier sections are done.
 
 ## Implemented prerequisite
 
@@ -865,3 +867,67 @@ slice was written and its fast gate green when she asked. T-77 was not started.
     here». The second condition of a usable pilot was checked before any arm: 37 of the 38
     gold spans of the 24 cases are held whole by a chunk of the index's archive, `T64-16-E2`
     by none (`.tmp/pilot/handoff_numbers.py`, outside git).
+
+## T-65 published — 2026-10-05
+
+T-65 is closed under rule (c): [capsule](../evidence/production-baseline-h-hm.md), held to
+its files by `tests/test_production_baseline_artifact.py`; entry 2 of
+`evaluation/dev_ledger.jsonl`.
+
+- **What happened after the section above.** Two more passes brought the store to 115 valid
+  replies: 14:50–15:23 UTC, ended by the CLI's exit on one request, and 15:25–17:28 UTC. The
+  retest of 20 cases ran 18:15–18:52 UTC and passed — κ 0.9281, CI95 [0.8592, 0.9756] — so
+  the grades are a `single_judge` ruler and `provisional_ruler` is false. The report was built
+  on a clean tracked tree at `5d86213`, the loss map from the run directory.
+- **What the numbers say.** `precision_at_5` 0.5354 on H and 0.6800 on Hm — points, not
+  intervals: H is 4 family clusters, one of them 94 cases, Hm 1. On keyword terms H loses
+  little (91 of 100 cases without a loss) and Hm nearly everything (2 of 15); 14 of the 20 lost
+  Hm pairs sit in a document the pool already holds. The two rows are not one scale: the H rule
+  looks for a keyword in any text, the Hm rule for a phrase in one named document. And the
+  judge does not rank the cases as the map does — by the judge Hm stands above H, and the Hm
+  cases without a gold document in the sent context score above those with one.
+- **What was decided from the map.** Nothing was chosen by it. The plan's default — H1 in the
+  graph branch, the budget of 40 as its setting — stands, because the run was graph `off` and
+  the map gives no ground to replace it; the second slot is not taken. Where a term is lost it
+  is first lost before the pool more often (19 of 34 lost terms) than at the rerank cut (15),
+  and the cause before the pool is not observable: the collector records no BM25 candidates and
+  the search ran on the rewritten query. The cut belongs to H7 and the RU→EN pattern to the
+  embedder, H9, both frozen; the map is an observation, not the measured reason the plan asks
+  for before one of them returns, and a budget is the owner's decision.
+- **The cold read, and what it changed.** An isolated session of the same model read the first
+  version of the capsule against `report.json`, `loss-map.json`, the two specs and the plan
+  rows. Every table cell agreed with the files; fourteen faults were in what the text
+  concluded. The four that mattered: the capsule said «the losses are those of multi-document
+  questions» across two gold rules that do not compare; it presented the default as the map's
+  choice; it called the rerank cut «the measured reason» for H7; and it described `ndcg_at_5`
+  as a metric of the seeds, while the ruler takes the ideal from every graded text — expanded
+  ones among them — which costs about 0.2 (over the seeds alone the same grades give 0.9622 on
+  H and 0.9298 on Hm). The test now recounts each new count from the tracked files.
+- **What is not in git.** The run directory `.tmp/t65/run/baseline-68c5f8d` (1 785 files), the
+  supervisor's state and the host samples — the capsule gives their SHA-256. `judge/plan.json`
+  is ignored; the repository keeps `plan.json.gz`. On the Mac the snapshot
+  `/Users/julia/RAG_new_t65_baseline_7d2535f8876f` and the index
+  `/Users/julia/RAG_new_t65_embeddings_2851e3811508` stay: the variance pilot of step 1.3c and
+  later runs reuse the index.
+- **Lessons.**
+  - Build the report with nothing uncommitted. It records the commit and whether the tracked
+    tree was clean, and one edited document makes that `false`.
+  - A pass stopped from outside writes no row to `runs.jsonl`. The capsule had to take that
+    pass from the store rows and say so.
+  - The test replays what the repository can replay — the report without its `collection`
+    block, the judge's two summaries, the summaries of the map — and the capsule names what it
+    cannot: the host samples and the run directory.
+  - «Foreign load» in the host samples is every other process above 25 % of a CPU, this
+    session's own test runs on the Mac included. Keep them few while a timed run is on the
+    host.
+  - A test that holds every cell of a capsule to its files says nothing about the sentences
+    between the tables. The first version passed 276 tests and still drew conclusions the
+    numbers did not carry; a cold read against the rules found them. Read the conclusions
+    cold before the commit, and pin the counts they rest on.
+  - Two rulers over the same contexts should be set side by side before either is read:
+    precision by a judge and coverage of a keyword proxy answer different questions, and a
+    case can score 1.0 on the first with nothing of the second.
+  - Open after this slice, each a small change and none of them done: the collector records
+    no BM25 candidate ids; 62 of the 5 589 chunks (no heading, text not found in the source
+    as written) get no address, and a case that retrieves one leaves the judged metrics; the
+    ideal of `ndcg_at_5` counts texts that are not candidates for a seed.
