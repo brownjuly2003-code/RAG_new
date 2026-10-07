@@ -1,0 +1,26 @@
+{
+  "bases": {
+    "conditionalqa": {
+      "aggregate_matches_full_projection": true,
+      "aggregates_sha256": "d37938fdb0f48d589400af0358a807b23a7a4e0d41df0f27ce0e5902e1da3bf7",
+      "exit_code": 0,
+      "measure_seconds": 9.6,
+      "measure_sha256": "e9905af44f8737b59b33013daa90e883b2125c6c0f8ea3633eead1d0cccc81e7"
+    },
+    "wixqa": {
+      "aggregate_matches_full_projection": true,
+      "aggregates_sha256": "4fe0324e3bb92d85706188b7d130adb5c7b333d3b492bd31f83f4c49db55782d",
+      "exit_code": 0,
+      "measure_seconds": 1.8,
+      "measure_sha256": "0a040357391cb30a203a2f5f514e66d8131283effa8160c692b8314a3bc341cd"
+    }
+  },
+  "finished": "2026-10-07T00:25:03+00:00",
+  "host": "deproject-mac",
+  "sizes_command": "python -m scripts.external_pilot sizes --pilot wixqa=<wixqa.aggregates.json> --pilot conditionalqa=<conditionalqa.aggregates.json> --out sizes.json",
+  "sizes_sha256": "7f26292dcc0bd36c2dfb05c4e64f04a078844dfad1be3b0040b112a8a92cd839",
+  "snapshot": "/Users/julia/RAG_new_extpilot_f6c2bfa7a915",
+  "state_sha256": "57d2ce26d7ef37d85b65e6b9a34d4c2ac31e04222890081827b27d47c9d8d76c",
+  "status": "complete",
+  "version": "external-pilot-transfer/v1"
+}
