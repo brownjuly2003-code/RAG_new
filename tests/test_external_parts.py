@@ -389,7 +389,9 @@ def test_the_checks_of_the_registered_ids_do_not_rest_on_the_builder(
     """With the rebuilding check out of the way, the ids alone still give a fault away."""
     edited: dict[str, Any] = {}
 
-    def as_registered(base: str, cases: Any, cases_sha256: str) -> tuple[dict, dict]:
+    def as_registered(
+        base: str, cases: Any, cases_sha256: str, *, selection_rules: Any = None
+    ) -> tuple[dict, dict]:
         return edited["bases"][base], edited["selections"].get(base, {})
 
     monkeypatch.setattr(parts, "build_base", as_registered)
@@ -489,6 +491,103 @@ def test_the_builder_rebuilds_the_registration_byte_for_byte(
     assert "differs" in capsys.readouterr().out
     assert parts.main(["--data", str(host.root), "--write"]) == 0
     assert registration.read_bytes() == written
+
+
+@pytest.fixture
+def extended(host: SimpleNamespace) -> SimpleNamespace:
+    for base in CASES:
+        if base in SMALL_PILOT:
+            baseline = copy.deepcopy(host.registered["selections"][base]["pilot"])
+        else:
+            baseline = copy.deepcopy(host.registered["bases"][base]["parts"]["advisory"])
+            baseline.pop("access")
+            baseline = {"rule": {"part": "advisory", "questions": baseline["cases"]}, **baseline}
+        host.registered["selections"].setdefault(base, {})["baseline"] = baseline
+    (host.root / "parts.json").write_bytes(parts.dump(host.registered))
+    return host
+
+
+@pytest.mark.parametrize("base", CASES)
+def test_later_selections_are_verified_and_exported(extended: SimpleNamespace, base: str) -> None:
+    expected = extended.registered["selections"][base]["baseline"]
+
+    verified = parts.verify(extended.registered, base, CASES[base])
+    assert verified["selections"]["baseline"] == {
+        key: value for key, value in expected.items() if key != "case_ids"
+    }
+    report = external_base.select_step(base, extended.root / base, "baseline")
+    written = (extended.root / base / "selections" / "baseline.questions.jsonl").read_bytes()
+    rows = [json.loads(line) for line in written.splitlines()]
+    by_id = {case["case_id"]: case for case in CASES[base]}
+    assert rows == [
+        {"case_id": case_id, "query": by_id[case_id]["query"]} for case_id in expected["case_ids"]
+    ]
+    assert report["cases_sha256"] == expected["cases_sha256"]
+    assert report["questions_sha256"] == bases.sha256(written)
+
+
+def test_the_builder_preserves_later_selections_byte_for_byte(
+    extended: SimpleNamespace, capsys: pytest.CaptureFixture[str]
+) -> None:
+    path = extended.root / "parts.json"
+    written = path.read_bytes()
+
+    for flags in ([], ["--write"]):
+        assert parts.main(["--data", str(extended.root), *flags]) == 0
+        report = json.loads(capsys.readouterr().out)
+        assert all("baseline" in report[base]["selections"] for base in CASES)
+        assert path.read_bytes() == written
+
+
+@pytest.mark.parametrize("field", ["order", "rule", "cases", "cases_sha256", "clusters"])
+def test_later_selections_must_match_their_rule_and_counts(
+    extended: SimpleNamespace, field: str
+) -> None:
+    baseline = extended.registered["selections"]["wixqa"]["baseline"]
+    if field == "order":
+        baseline["case_ids"].reverse()
+        baseline["cases_sha256"] = parts.digest(baseline["case_ids"])
+    elif field == "rule":
+        baseline["rule"]["questions"] += 1
+    elif field == "cases_sha256":
+        baseline[field] = "0" * 64
+    else:
+        baseline[field] += 1
+
+    with pytest.raises(ValueError, match="not those the rules give"):
+        parts.verify(extended.registered, "wixqa", WIXQA)
+
+
+@pytest.mark.parametrize("change", ["remove", "replace"])
+def test_later_selections_do_not_allow_changing_the_registered_pilot(
+    extended: SimpleNamespace, change: str
+) -> None:
+    selections = extended.registered["selections"]["wixqa"]
+    if change == "remove":
+        selections.pop("pilot")
+    else:
+        pilot = copy.deepcopy(extended.registered["bases"]["wixqa"]["parts"]["tuning"])
+        pilot.pop("access")
+        selections["pilot"] = {"rule": {"part": "tuning", "questions": pilot["cases"]}, **pilot}
+
+    with pytest.raises(ValueError, match="not those the rules give"):
+        parts.verify(extended.registered, "wixqa", WIXQA)
+
+
+def test_verifying_a_later_locked_selection_does_not_open_it(host: SimpleNamespace) -> None:
+    acceptance = copy.deepcopy(host.registered["bases"]["wixqa"]["parts"]["locked"])
+    acceptance.pop("access")
+    host.registered["selections"]["wixqa"]["acceptance"] = {
+        "rule": {"part": "locked", "questions": acceptance["cases"]}, **acceptance
+    }
+    (host.root / "parts.json").write_bytes(parts.dump(host.registered))
+
+    report = parts.verify(host.registered, "wixqa", WIXQA)
+    assert report["selections"]["acceptance"]["cases"] == 2
+    assert host.registered["opened"] == []
+    with pytest.raises(parts.Locked):
+        external_base.select_step("wixqa", host.root / "wixqa", "acceptance")
+    assert not (host.root / "wixqa" / "selections").exists()
 
 
 def test_the_select_step_writes_the_questions_of_an_open_selection_only(

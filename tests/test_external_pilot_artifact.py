@@ -96,6 +96,13 @@ def test_primary_variances_follow_binary_pair_counts(aggregates):
 def test_sizes_replay_and_do_not_lower_the_registered_variance(aggregates):
     published = read(RUN / "sizes.json")
     rebuilt = pilot.sizes(parts.registration(), aggregates)
+    assert rebuilt.pop("code") == {
+        name: hashlib.sha256((ROOT / name).read_bytes()).hexdigest() for name in pilot.CODE_FILES
+    }
+    published_code = published.pop("code")
+    assert set(published_code) == set(pilot.CODE_FILES)
+    for document in aggregates.values():
+        assert published_code == document["provenance"]["measure_code"]
     assert rebuilt == published
     assert len(published["rows"]) == 124
     for strata in published["variances"].values():

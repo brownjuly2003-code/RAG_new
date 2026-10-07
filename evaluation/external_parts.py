@@ -295,7 +295,11 @@ def select(
 
 
 def build_base(
-    base: str, cases: Sequence[Mapping[str, Any]], cases_sha256: str
+    base: str,
+    cases: Sequence[Mapping[str, Any]],
+    cases_sha256: str,
+    *,
+    selection_rules: Mapping[str, Mapping[str, Any]] | None = None,
 ) -> tuple[dict[str, Any], dict[str, Any]]:
     """The registered block of a base and its selections."""
     parts = split(base, cases)
@@ -307,17 +311,28 @@ def build_base(
             name: _listed(base, part, access=ACCESS[base][name]) for name, part in parts.items()
         },
     }
-    selections = {}
-    if base in PILOT:
-        rule = PILOT[base]
-        selections["pilot"] = _listed(base, select(base, parts[rule["part"]], rule), rule=rule)
+    rules: dict[str, Mapping[str, Any]] = {"pilot": PILOT[base]} if base in PILOT else {}
+    rules.update({name: rule for name, rule in (selection_rules or {}).items() if name not in rules})
+    selections = {
+        name: _listed(base, select(base, parts[rule["part"]], rule), rule=rule)
+        for name, rule in rules.items()
+    }
     return block, selections
 
 
 def build(
-    cases: Mapping[str, Sequence[Mapping[str, Any]]], cases_sha256: Mapping[str, str]
+    cases: Mapping[str, Sequence[Mapping[str, Any]]],
+    cases_sha256: Mapping[str, str],
+    *,
+    selection_rules: Mapping[str, Mapping[str, Mapping[str, Any]]] | None = None,
 ) -> dict[str, Any]:
-    built = {base: build_base(base, cases[base], cases_sha256[base]) for base in ACCESS}
+    built = {
+        base: build_base(
+            base, cases[base], cases_sha256[base],
+            selection_rules=(selection_rules or {}).get(base),
+        )
+        for base in ACCESS
+    }
     return {
         "schema_version": 1,
         "registered": REGISTERED,
@@ -384,7 +399,10 @@ def verify(
     """
     block = registered["bases"][base]
     chosen = registered["selections"].get(base, {})
-    if (block, chosen) != build_base(base, cases, block["cases_sha256"]):
+    if (block, chosen) != build_base(
+        base, cases, block["cases_sha256"],
+        selection_rules={name: selection["rule"] for name, selection in chosen.items()},
+    ):
         raise ValueError(f"{base}: the registered parts are not those the rules give")
     by_id = {case["case_id"]: case for case in cases}
     ids = {name: part["case_ids"] for name, part in block["parts"].items()}
@@ -447,8 +465,13 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     converted = bases.registration()
     cases = {base: load_cases(args.data / base, base, converted) for base in ACCESS}
+    existing = json.loads(REGISTRATION.read_text(encoding="utf-8")) if REGISTRATION.exists() else {}
     built = build(
-        cases, {base: converted["bases"][base]["converted"]["cases_sha256"] for base in ACCESS}
+        cases, {base: converted["bases"][base]["converted"]["cases_sha256"] for base in ACCESS},
+        selection_rules={
+            base: {name: selection["rule"] for name, selection in chosen.items()}
+            for base, chosen in existing.get("selections", {}).items()
+        },
     )
     if args.write:
         REGISTRATION.write_bytes(dump(built))
