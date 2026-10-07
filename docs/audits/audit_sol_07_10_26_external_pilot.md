@@ -1,0 +1,118 @@
+# Проверка внешнего пилота участка 1.6 на Sol 6.1 xhigh
+
+Дата: 2026-10-07. По прямому разрешению владельца один встроенный агент
+`gpt-6.1-sol`, reasoning `xhigh`, проверил расчёты, тесты и существующий
+раздел 1.6 спецификации с Acceptance contract. Это разрешение относится к
+данной проверке. Основной агент сверил код, логи и численные результаты.
+
+**106 тестов прошли, независимый расчёт 124 строк совпал.** Обнаружена
+несовместимость регистрации новых выборок с verifier. Текущий пилот она
+не затрагивает, но требует исправления до baseline 1.7. Редакция 11 ещё
+не написана; её холодное ревью и закрытие всего участка 1.6 остаются впереди.
+
+Проверенный код: `fc44c7abdbf256f25dfc5c3842946cb1725dee8c`.
+Агрегаты и их тесты сохранены в `3f847e1`; происхождение измерений,
+ограничения и SHA — в [капсуле пилота](../evidence/external-bases-pilot.md)
+и [receipt](../../reports/external/64a72e5/pilot/receipt.json).
+При аудите реальные measure, retrieval и модели не запускались, вопросы
+holdout и locked не читались. Диагностические примеры использовали фикстуры.
+
+## Проверки на Mac
+
+Sol проверил исходный код в отдельном снимке
+`/Users/julia/RAG_new_sol61_slice16_20261007_b6e7a8d962fa`:
+
+```text
+python -m pytest tests/test_external_pilot.py tests/test_external_parts.py tests/test_external_gold.py tests/test_power.py tests/test_external_bases.py -q -p no:schemathesis -p no:cacheprovider --basetemp=.tmp/pytest-sol61-slice16 --tb=short
+```
+
+Результат: **72 passed, 1 warning, 8.09s, exit 0**. Первый запуск дал
+43 passed и 29 ошибок фикстур: `git archive` не включил ignored-каталог
+`.tmp`, нужный родитель `basetemp`. После создания каталога в снимке
+сделан один адресный повтор; код проекта не менялся.
+
+Основной агент проверил новые артефакты и документы в снимке
+`/Users/julia/RAG_new_pilot_artifact_20261007_fc44c7a` с явным overlay
+девяти файлов будущего коммита `3f847e1`:
+
+```text
+python -m pytest tests/test_external_pilot_artifact.py tests/test_external_connection_artifact.py tests/test_docs_hygiene.py tests/test_docs_quality.py tests/test_docs_publication.py -q -p no:schemathesis -p no:cacheprovider --basetemp=.tmp/pytest-pilot-green --tb=short
+```
+
+Результат: **34 passed, 1 warning, 6.36s, exit 0**. Оба прогона использовали
+`/Users/julia/RAG_new_gr4_venv/bin/python` и
+`PYTHONPATH=/Users/julia/RAG_new_mf_gate_site`. Предупреждение однотипное:
+существующий Starlette/AnyIO `DeprecationWarning`.
+
+Локальные логи: `.tmp/sol61-slice16-20261007/pytest-fixed.log` и
+`.tmp/pilot-20261007/green.log`; команды SSH и SHA overlay сохранены рядом.
+
+## Независимый расчёт
+
+Sol пересчитал все 124 строки
+[sizes.json](../../reports/external/64a72e5/pilot/sizes.json) без импорта
+кода проекта: квантиль Student через incomplete beta и бисекцию,
+variance, design effect, SE, MDE, effect_for_rule и мощности.
+Расхождений нет: максимальная ошибка квантиля `7.11e-15`, остальных
+величин `2.84e-15`. SHA агрегатов и sizes совпали с receipt.
+
+| Выборка шага 1 | Размер | MDE | Эффект для мощности правила 0.8 |
+|---|---:|---:|---:|
+| ConditionalQA primary | 165 страниц | 0.069329 | 0.070719 |
+| ConditionalQA several_sections | 145 страниц | 0.074009 | 0.074009 |
+| WixQA ExpertWritten | 200 вопросов, 154 кластера | 0.091070 | 0.091070 |
+
+В пилоте 50/40 пар, потерь нет, primary variance 0.020/0.025;
+зарегистрированная variance остаётся 0.10 при ICC=1 и Student.
+Две руки ConditionalQA и WixQA укладываются в 37.334487 или 33.289647 часа
+при потолке 64 часа. Две выборки ConditionalQA — альтернативы по гипотезе.
+Мощности условны: при эффекте +0.05 правило даёт 0.500/0.471/0.334,
+а NI при истинном нуле — 0.123/0.112/0.087. Пилот не доказывает выигрыш
+будущего механизма и не даёт SHIP-вердикта.
+
+Скрипты `audit_numbers.py`, `check_selected.py` и результаты `numbers.json`,
+`selected-numbers.json` сохранены в `.tmp/sol61-slice16-20261007/`.
+
+## Замечания к коду и действующему тексту
+
+1. **Исправить до 1.7: verifier отвергает новые selections.**
+   [Спецификация](../specs/semantic-precision-metrics.md), строки 2038–2042,
+   разрешает добавить выборку отдельным коммитом. Но
+   [external_parts.py](../../evaluation/external_parts.py), строки 297–313
+   и 375–388, сравнивает весь набор selections с `build_base`, создающим
+   только `pilot`. `select_step` в
+   [external_base.py](../../scripts/external_base.py), строка 370, вызывает
+   этот verifier. На Mac корректная baseline-копия pilot читается через
+   `read`, но `verify` даёт `ValueError: wixqa: the registered parts are not
+   those the rules give`. Это препятствует последующим регистрациям.
+2. **Известная работа редакции 11: замок на отдельную selection.**
+   `is_open` в `external_parts.py`, строки 349–372, учитывает только base
+   и part. Запись opened для выборки из одного synthetic-вопроса позволяет
+   прочитать весь part из трёх. Спецификация, строки 2021–2024, прямо
+   откладывает эту защиту до редакции 11. Реальный `opened` остаётся пуст;
+   пример не устанавливает раскрытие настоящих locked-данных.
+3. **Ограничение программной защиты от повторного measure.**
+   [external_pilot.py](../../scripts/external_pilot.py), строки 903–908
+   и 945–946, вычисляет результат до `_write_once`; последняя запрещает
+   другое содержимое по тому же пути. Это защита документа, а запрет
+   повторного измерения в спецификации, строки 2197–2212, остаётся
+   нормативным. Повторное реальное измерение не выполнялось.
+
+Synthetic probe завершился с exit 0; его команда и оба результата —
+`probe-ssh-script.txt` и `selection-probe.log` в каталоге проверки Sol.
+
+## Что должна закрыть редакция 11
+
+Нужно согласовать deciding и NI-метрики, nomination базы и страты,
+роль второй базы и собственного holdout, исходы противоречащих результатов;
+зарегистрировать baseline, acceptance и refinement selections с SHA,
+размерами, знаменателями, мощностью и стоимостью; ограничить opened
+выборкой и механизмом, определить одно чтение, возобновление и исчерпание.
+Для refinement нужны estimator и правила потерь, для равного бюджета —
+допуски, для MultiHop-RAG — advisory metrics и знаменатели.
+
+Устаревшие «395 вопросов» в Acceptance уже отменены разделом 1.6,
+строки 2045–2054. До редакции 11 действует только transferability-роль
+внешней базы. Новая редакция должна устранить эту временную разницу,
+сохранить ограничения мощности, missingness и переноса Simulated →
+ExpertWritten, а затем пройти отдельное холодное чтение.
