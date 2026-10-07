@@ -1,0 +1,799 @@
+{
+  "bases": {
+    "conditionalqa": {
+      "checkpoint_bytes": 56363682,
+      "chunks": {
+        "archive_bytes": 1896882,
+        "archive_sha256": "4f9a440de4b9879b0b4a354e4cb1b94c6c03aaa870b78ae6a43d6f799bc14ea1",
+        "base": "conditionalqa",
+        "chunking": {
+          "chunk_overlap": 200,
+          "chunk_size": 800,
+          "contextual_headers": true,
+          "structural_chunking": true
+        },
+        "chunks": 13778,
+        "collection": "rag_docs_ext_conditionalqa",
+        "corpus_sha256": "e22275510a4c4516528a6e9fad0ce437d142697bb4d836f6b510434ae73eb676",
+        "documents": 652,
+        "payload_sha256": "9685bfd2894f3fae55676a3bc4abc30517c6b14668ddb44dda3dff7453571e33",
+        "seconds": {
+          "headers": 0.276,
+          "load": 0.219,
+          "per_document": 0.00768,
+          "split": 4.515
+        },
+        "tenant": "ext_conditionalqa"
+      },
+      "convert": {
+        "base": "conditionalqa",
+        "cases": 2623,
+        "cases_sha256": "8467991cdb095fe1e2204d8eca90679da56f0bac53e3c81686d488cca59eb6b7",
+        "converter_version": "external-markdown-v1",
+        "corpus_bytes": 5110486,
+        "corpus_sha256": "e22275510a4c4516528a6e9fad0ce437d142697bb4d836f6b510434ae73eb676",
+        "counts": {
+          "alternatives": 10712,
+          "answerable_questions_without_evidence": 1,
+          "document_strings_with_several_places": 236,
+          "documents": 652,
+          "documents_with_questions": 495,
+          "elements": {
+            "h1": 3456,
+            "h2": 7260,
+            "h3": 2354,
+            "h4": 2,
+            "li": 23113,
+            "p": 30511,
+            "tr": 2503
+          },
+          "elements_without_text": 4,
+          "evidence_groups": 10271,
+          "evidence_groups_by_tag": {
+            "h2": 70,
+            "h3": 50,
+            "li": 4078,
+            "p": 5853,
+            "tr": 220
+          },
+          "evidence_groups_with_several_places": 327,
+          "evidence_references": 10284,
+          "evidence_strings_repeated_in_a_question": 13,
+          "evidence_unresolved": 0,
+          "not_answerable_questions_with_evidence": 0,
+          "questions": 2623,
+          "questions_answerable": 2518,
+          "questions_dev": 285,
+          "questions_train": 2338,
+          "questions_with_evidence_in_several_parts": 806,
+          "questions_with_evidence_in_several_sections": 1222,
+          "questions_with_two_or_more_evidence_groups": 2026,
+          "several_places_none_beside_other_evidence": 98,
+          "several_places_one_beside_other_evidence": 181
+        },
+        "documents": 652,
+        "files": [
+          {
+            "bytes": 6286258,
+            "path": "v1_0/documents.json",
+            "sha256": "1c977c1b14738b9ce1e53336c5abf3b3de34b72ee24985e7de6d8fae30856c59"
+          },
+          {
+            "bytes": 2386451,
+            "path": "v1_0/train.json",
+            "sha256": "2976f448bad58efd747c5b7b4127fb3ad7a4834f760e9022c06a86536618bc2d"
+          },
+          {
+            "bytes": 299726,
+            "path": "v1_0/dev.json",
+            "sha256": "a06cfe3e8b3ffe04f2652a2dbd912b647eb4448b724585c891539344b02fb7c7"
+          },
+          {
+            "bytes": 1319,
+            "path": "LISCENSE",
+            "sha256": "62a47f90ddb8fda1bbf1e731a5861d827c109a3570b86b371f9d927cbc75aa14"
+          },
+          {
+            "bytes": 986,
+            "path": "README.md",
+            "sha256": "2c128ba7e4a50c3481f65d63536b1a8f7ab09d7135573df38e5085faa5323d06"
+          }
+        ],
+        "match_rule": "external-gold/range-coverage-v1",
+        "revision": "77bd295952daf415548b3244db10880d3d55cfe0"
+      },
+      "embed": {
+        "attempts": 1,
+        "exit_code": 0,
+        "finished": "2026-10-06T05:30:53+00:00",
+        "foreign_cpu_samples": 8,
+        "peak_load1": 6.25,
+        "peak_rss_kb": 2862772,
+        "report": {
+          "checkpoint_sha256": "13b7997f31b599fe5bbf866e3a7aef6c0bc38ddafd30c7eaf99bb185cf956e9a",
+          "complete": true,
+          "completed_rows": 13778,
+          "corpus_sha256": "4f9a440de4b9879b0b4a354e4cb1b94c6c03aaa870b78ae6a43d6f799bc14ea1",
+          "embedder_manifest": {
+            "backend": "local",
+            "dimension": 1024,
+            "document_prompt": "",
+            "model_id": "BAAI/bge-m3",
+            "normalize": true,
+            "query_prompt": "",
+            "revision": "5617a9f61b028005a4858fdac845db406aefb181",
+            "revision_source": "hf_snapshot",
+            "schema_version": 1
+          },
+          "texts_sha256": "796f931acddc467d6f274daf738362516ed9f72b23800e632c5c51ec882a65ab",
+          "total_rows": 13778
+        },
+        "samples": 116,
+        "seconds": 6977,
+        "started": "2026-10-06T03:34:36+00:00"
+      },
+      "fetch": {
+        "base": "conditionalqa",
+        "downloaded": 5,
+        "files": 5
+      },
+      "index": {
+        "attempts": 1,
+        "exit_code": 0,
+        "finished": "2026-10-06T05:31:17+00:00",
+        "report": {
+          "checkpoint_sha256": "13b7997f31b599fe5bbf866e3a7aef6c0bc38ddafd30c7eaf99bb185cf956e9a",
+          "chromadb_version": "1.5.9",
+          "chunk_count": 13778,
+          "code_sha": "36f1167b9629e3ebcc367bff59c15b7365e0b1b6",
+          "collection_name": "rag_docs_ext_conditionalqa",
+          "configuration": {
+            "hnsw": {
+              "sync_threshold": 1
+            }
+          },
+          "corpus_sha256": "4f9a440de4b9879b0b4a354e4cb1b94c6c03aaa870b78ae6a43d6f799bc14ea1",
+          "embedder_manifest": {
+            "backend": "local",
+            "dimension": 1024,
+            "document_prompt": "",
+            "model_id": "BAAI/bge-m3",
+            "normalize": true,
+            "query_prompt": "",
+            "revision": "5617a9f61b028005a4858fdac845db406aefb181",
+            "revision_source": "hf_snapshot",
+            "schema_version": 1
+          },
+          "evidence_status": "preparation",
+          "schema_version": 1,
+          "texts_sha256": "796f931acddc467d6f274daf738362516ed9f72b23800e632c5c51ec882a65ab"
+        },
+        "seconds": 24,
+        "started": "2026-10-06T05:30:53+00:00"
+      },
+      "light_seconds": {
+        "chunks": 21.1,
+        "convert": 1.7,
+        "fetch": 5.8,
+        "preserve": 2.3
+      },
+      "preserve": {
+        "alternatives": {
+          "lost": 0,
+          "split": 0,
+          "whole": 10712
+        },
+        "alternatives_by_tag": {
+          "h2": {
+            "lost": 0,
+            "split": 0,
+            "whole": 73
+          },
+          "h3": {
+            "lost": 0,
+            "split": 0,
+            "whole": 57
+          },
+          "li": {
+            "lost": 0,
+            "split": 0,
+            "whole": 4287
+          },
+          "p": {
+            "lost": 0,
+            "split": 0,
+            "whole": 6023
+          },
+          "tr": {
+            "lost": 0,
+            "split": 0,
+            "whole": 272
+          }
+        },
+        "archive_sha256": "4f9a440de4b9879b0b4a354e4cb1b94c6c03aaa870b78ae6a43d6f799bc14ea1",
+        "base": "conditionalqa",
+        "cases": 2623,
+        "chunk_characters": {
+          "max": 1013,
+          "median": 503.0,
+          "min": 116,
+          "p95": 899
+        },
+        "chunks": 13778,
+        "chunks_longer_than_chunk_size": 1797,
+        "chunks_per_document": {
+          "max": 118,
+          "median": 17.0,
+          "min": 3,
+          "p95": 51
+        },
+        "chunks_whose_header_is_not_the_source_and_the_heading_path": 0,
+        "chunks_with_a_heading_path": 13778,
+        "chunks_without_a_place": 0,
+        "corpus_sha256": "e22275510a4c4516528a6e9fad0ce437d142697bb4d836f6b510434ae73eb676",
+        "documents": 652,
+        "documents_with_characters_in_no_chunk": 0,
+        "documents_without_chunks": 0,
+        "evidence_groups": {
+          "lost": 0,
+          "split": 0,
+          "whole": 10271
+        },
+        "fewest_path_characters_kept_in_a_cut_header": 114,
+        "gold_documents": 495,
+        "gold_documents_without_chunks": 0,
+        "heading_lines_absent_from_chunk_paths": 0,
+        "heading_lines_deeper_than_the_splitter_reads": 2,
+        "heading_lines_of_split_depth": 13722,
+        "heading_paths_cut_by_the_header_limit": 1174,
+        "match_rule": "external-gold/range-coverage-v1",
+        "questions_with_evidence": {
+          "worst_group_whole": 2517
+        },
+        "split_alternatives_by_chunks_touched": {},
+        "visible_characters": 4103217,
+        "visible_characters_in_no_chunk": 0
+      },
+      "structure_graph": {
+        "builder_version": "gr1-structural-v1",
+        "chunks": 13778,
+        "digest": "7e9d1bd93c8204e44065513df51f172c13e8d4b47c411c44d469f888d463e3d3",
+        "edges": {
+          "category": 652,
+          "contains": 26643,
+          "next": 13126,
+          "same_section": 913
+        },
+        "nodes": {
+          "category": 1,
+          "chunk": 13778,
+          "document": 652,
+          "section": 12865
+        },
+        "payload_sha256": "9685bfd2894f3fae55676a3bc4abc30517c6b14668ddb44dda3dff7453571e33",
+        "seconds_on_the_laptop": 1.75,
+        "tenant": "ext_conditionalqa",
+        "unresolved_cross_references": {
+          "file:not_found": 13778
+        }
+      }
+    },
+    "multihoprag": {
+      "checkpoint_bytes": 46004898,
+      "chunks": {
+        "archive_bytes": 2851253,
+        "archive_sha256": "21c9269557d803ca635bf40a34efc1db818a8006b8f54cfd6e614c00707704db",
+        "base": "multihoprag",
+        "chunking": {
+          "chunk_overlap": 200,
+          "chunk_size": 800,
+          "contextual_headers": true,
+          "structural_chunking": true
+        },
+        "chunks": 11231,
+        "collection": "rag_docs_ext_multihoprag",
+        "corpus_sha256": "7e1c34980d35889f01dedc5dc21f9a5f2fe28e796be7c0004d44f38b13daa27b",
+        "documents": 609,
+        "payload_sha256": "c32820e88d7bbd26298f72effebb591f3ccf92afa995b78e18784640620d5211",
+        "seconds": {
+          "headers": 0.258,
+          "load": 0.161,
+          "per_document": 0.00678,
+          "split": 3.709
+        },
+        "tenant": "ext_multihoprag"
+      },
+      "convert": {
+        "base": "multihoprag",
+        "cases": 2556,
+        "cases_sha256": "cf5f6462b30cac0d6f1b59cff722106001140baee01f003567fb34001c109fac",
+        "converter_version": "external-markdown-v1",
+        "corpus_bytes": 6432893,
+        "corpus_sha256": "7e1c34980d35889f01dedc5dc21f9a5f2fe28e796be7c0004d44f38b13daa27b",
+        "counts": {
+          "alternatives": 6113,
+          "documents": 609,
+          "evidence_groups": 6084,
+          "evidence_groups_with_several_places": 29,
+          "evidence_places_differ_from_verbatim_count": 0,
+          "evidence_references": 6084,
+          "evidence_unresolved": 0,
+          "questions": 2556,
+          "questions_by_gold_documents": {
+            "gold_documents_0": 301,
+            "gold_documents_2": 1169,
+            "gold_documents_3": 774,
+            "gold_documents_4": 312
+          },
+          "questions_by_type": {
+            "comparison_query": 856,
+            "inference_query": 816,
+            "null_query": 301,
+            "temporal_query": 583
+          }
+        },
+        "documents": 609,
+        "files": [
+          {
+            "bytes": 6785567,
+            "path": "corpus.json",
+            "sha256": "20b61b5ab84de84a927420c5d265b7ec8d859ae49980699958a787ade9e4d28f"
+          },
+          {
+            "bytes": 5171312,
+            "path": "MultiHopRAG.json",
+            "sha256": "03cfb4926461f868684903aadc8024447bdda5bb3f6804741424cce338515bff"
+          },
+          {
+            "bytes": 1312,
+            "path": "README.md",
+            "sha256": "f671db44cf1802f359451e466d82c68c5059d58451b8976ce8329b74d8b89001"
+          }
+        ],
+        "match_rule": "external-gold/range-coverage-v1",
+        "revision": "71ac0d0bd1f951d2d6b70311f7d2ae404e1ffa82"
+      },
+      "embed": {
+        "attempts": 1,
+        "exit_code": 0,
+        "finished": "2026-10-06T07:48:24+00:00",
+        "foreign_cpu_samples": 19,
+        "peak_load1": 6.95,
+        "peak_rss_kb": 2661484,
+        "report": {
+          "checkpoint_sha256": "a2ea57d6ed0ea3e23d623f66a652fd5b7dc48bb4954c503662d396a805964135",
+          "complete": true,
+          "completed_rows": 11231,
+          "corpus_sha256": "21c9269557d803ca635bf40a34efc1db818a8006b8f54cfd6e614c00707704db",
+          "embedder_manifest": {
+            "backend": "local",
+            "dimension": 1024,
+            "document_prompt": "",
+            "model_id": "BAAI/bge-m3",
+            "normalize": true,
+            "query_prompt": "",
+            "revision": "5617a9f61b028005a4858fdac845db406aefb181",
+            "revision_source": "hf_snapshot",
+            "schema_version": 1
+          },
+          "texts_sha256": "9d3c225c06d915e3387c432a24620d16e25ec72b36d1a9bb850015e29f0432f1",
+          "total_rows": 11231
+        },
+        "samples": 137,
+        "seconds": 8227,
+        "started": "2026-10-06T05:31:17+00:00"
+      },
+      "fetch": {
+        "base": "multihoprag",
+        "downloaded": 3,
+        "files": 3
+      },
+      "index": {
+        "attempts": 1,
+        "exit_code": 0,
+        "finished": "2026-10-06T07:48:44+00:00",
+        "report": {
+          "checkpoint_sha256": "a2ea57d6ed0ea3e23d623f66a652fd5b7dc48bb4954c503662d396a805964135",
+          "chromadb_version": "1.5.9",
+          "chunk_count": 11231,
+          "code_sha": "36f1167b9629e3ebcc367bff59c15b7365e0b1b6",
+          "collection_name": "rag_docs_ext_multihoprag",
+          "configuration": {
+            "hnsw": {
+              "sync_threshold": 1
+            }
+          },
+          "corpus_sha256": "21c9269557d803ca635bf40a34efc1db818a8006b8f54cfd6e614c00707704db",
+          "embedder_manifest": {
+            "backend": "local",
+            "dimension": 1024,
+            "document_prompt": "",
+            "model_id": "BAAI/bge-m3",
+            "normalize": true,
+            "query_prompt": "",
+            "revision": "5617a9f61b028005a4858fdac845db406aefb181",
+            "revision_source": "hf_snapshot",
+            "schema_version": 1
+          },
+          "evidence_status": "preparation",
+          "schema_version": 1,
+          "texts_sha256": "9d3c225c06d915e3387c432a24620d16e25ec72b36d1a9bb850015e29f0432f1"
+        },
+        "seconds": 20,
+        "started": "2026-10-06T07:48:24+00:00"
+      },
+      "light_seconds": {
+        "chunks": 7.1,
+        "convert": 1.9,
+        "fetch": 4.7,
+        "preserve": 2.5
+      },
+      "preserve": {
+        "alternatives": {
+          "lost": 0,
+          "split": 6,
+          "whole": 6107
+        },
+        "alternatives_by_tag": {},
+        "archive_sha256": "21c9269557d803ca635bf40a34efc1db818a8006b8f54cfd6e614c00707704db",
+        "base": "multihoprag",
+        "cases": 2556,
+        "chunk_characters": {
+          "max": 1012,
+          "median": 850,
+          "min": 158,
+          "p95": 996
+        },
+        "chunks": 11231,
+        "chunks_longer_than_chunk_size": 6835,
+        "chunks_per_document": {
+          "max": 131,
+          "median": 14,
+          "min": 8,
+          "p95": 40
+        },
+        "chunks_whose_header_is_not_the_source_and_the_heading_path": 0,
+        "chunks_with_a_heading_path": 11231,
+        "chunks_without_a_place": 0,
+        "corpus_sha256": "7e1c34980d35889f01dedc5dc21f9a5f2fe28e796be7c0004d44f38b13daa27b",
+        "documents": 609,
+        "documents_with_characters_in_no_chunk": 0,
+        "documents_without_chunks": 0,
+        "evidence_groups": {
+          "lost": 0,
+          "split": 6,
+          "whole": 6078
+        },
+        "fewest_path_characters_kept_in_a_cut_header": 105,
+        "gold_documents": 609,
+        "gold_documents_without_chunks": 0,
+        "heading_lines_absent_from_chunk_paths": 0,
+        "heading_lines_deeper_than_the_splitter_reads": 0,
+        "heading_lines_of_split_depth": 609,
+        "heading_paths_cut_by_the_header_limit": 3839,
+        "match_rule": "external-gold/range-coverage-v1",
+        "questions_with_evidence": {
+          "worst_group_split": 6,
+          "worst_group_whole": 2249
+        },
+        "split_alternatives_by_chunks_touched": {
+          "chunks_2": 6
+        },
+        "visible_characters": 5262578,
+        "visible_characters_in_no_chunk": 0
+      },
+      "structure_graph": {
+        "builder_version": "gr1-structural-v1",
+        "chunks": 11231,
+        "digest": "14fb2f4e2b3bd5c4ed4c4b9d7fb6cf5467d7e04db1942e65f9b3cd48043a85c4",
+        "edges": {
+          "category": 609,
+          "contains": 11840,
+          "next": 10622,
+          "same_section": 10622
+        },
+        "nodes": {
+          "category": 1,
+          "chunk": 11231,
+          "document": 609,
+          "section": 609
+        },
+        "payload_sha256": "c32820e88d7bbd26298f72effebb591f3ccf92afa995b78e18784640620d5211",
+        "seconds_on_the_laptop": 1.62,
+        "tenant": "ext_multihoprag",
+        "unresolved_cross_references": {
+          "file:not_found": 11231
+        }
+      }
+    },
+    "wixqa": {
+      "checkpoint_bytes": 153356962,
+      "chunks": {
+        "archive_bytes": 5387144,
+        "archive_sha256": "70dd0bd0c52f26281f6d2d5681e193f3d48fb675cac64f78a0889b9d70e2505f",
+        "base": "wixqa",
+        "chunking": {
+          "chunk_overlap": 200,
+          "chunk_size": 800,
+          "contextual_headers": true,
+          "structural_chunking": true
+        },
+        "chunks": 37571,
+        "collection": "rag_docs_ext_wixqa",
+        "corpus_sha256": "08390ae999e25355af4e59f4d14355071b1bd6ad89ed54f0c2d0f330a3ae70a0",
+        "documents": 6221,
+        "payload_sha256": "f3134d648fdbfec10e9dcfe9a210814cae7dffcc8e672934a8046c24471e81e7",
+        "seconds": {
+          "headers": 0.842,
+          "load": 1.235,
+          "per_document": 0.00118,
+          "split": 5.277
+        },
+        "tenant": "ext_wixqa"
+      },
+      "convert": {
+        "base": "wixqa",
+        "cases": 400,
+        "cases_sha256": "d18255995e045c791849db44fb940182f9573056ff3eb11578acb8bf69c20412",
+        "converter_version": "external-markdown-v1",
+        "corpus_bytes": 14733535,
+        "corpus_sha256": "08390ae999e25355af4e59f4d14355071b1bd6ad89ed54f0c2d0f330a3ae70a0",
+        "counts": {
+          "blocks": {
+            "code": 37,
+            "heading": 26142,
+            "item": 97571,
+            "para": 55159,
+            "row": 3365
+          },
+          "documents": 6221,
+          "documents_by_type": {
+            "article": 4109,
+            "feature_request": 2049,
+            "known_issue": 63
+          },
+          "documents_with_every_heading_in_order": 6221,
+          "documents_with_the_visible_text_of_contents": 6221,
+          "headings_in_html": 26142,
+          "headings_written": 26142,
+          "headings_written_by_level": {
+            "level_2": 25,
+            "level_3": 10192,
+            "level_4": 15925
+          },
+          "questions": {
+            "expertwritten": {
+              "gold_articles_1": 148,
+              "gold_articles_2": 46,
+              "gold_articles_3": 6,
+              "questions": 200
+            },
+            "simulated": {
+              "gold_articles_1": 173,
+              "gold_articles_2": 24,
+              "gold_articles_3": 3,
+              "questions": 200
+            }
+          }
+        },
+        "documents": 6221,
+        "files": [
+          {
+            "bytes": 53743863,
+            "path": "wix_kb_corpus/wix_kb_corpus.jsonl",
+            "sha256": "46b852c60b85fb1828e7c6118bb56ba796eba99120a6b69c6b984c06e1c5e1fe"
+          },
+          {
+            "bytes": 255510,
+            "path": "wixqa_expertwritten/test.jsonl",
+            "sha256": "a1bb6888a8394f980bc88f0d09b873fcd283ff4c9782600bc203f8103c2f1bad"
+          },
+          {
+            "bytes": 88188,
+            "path": "wixqa_simulated/test.jsonl",
+            "sha256": "9a2b9f42c081467b3de5bd92511e770bca3cc7977f169526fd78dd3c985ac4a8"
+          },
+          {
+            "bytes": 4884,
+            "path": "README.md",
+            "sha256": "440f6c755676869bf57e206cbb455700c133ceda9cabbe228b570ff101d59dd5"
+          }
+        ],
+        "match_rule": "external-gold/range-coverage-v1",
+        "revision": "d662dc42479c14e202eccd832f8c4b66a035c4cc"
+      },
+      "embed": {
+        "attempts": 1,
+        "exit_code": 0,
+        "finished": "2026-10-06T13:20:58+00:00",
+        "foreign_cpu_samples": 24,
+        "peak_load1": 10.08,
+        "peak_rss_kb": 2911588,
+        "report": {
+          "checkpoint_sha256": "bf3b706234bdfd05ed324a31aecc37d58d64980eb63d57838a6a821bbb7b2001",
+          "complete": true,
+          "completed_rows": 37571,
+          "corpus_sha256": "70dd0bd0c52f26281f6d2d5681e193f3d48fb675cac64f78a0889b9d70e2505f",
+          "embedder_manifest": {
+            "backend": "local",
+            "dimension": 1024,
+            "document_prompt": "",
+            "model_id": "BAAI/bge-m3",
+            "normalize": true,
+            "query_prompt": "",
+            "revision": "5617a9f61b028005a4858fdac845db406aefb181",
+            "revision_source": "hf_snapshot",
+            "schema_version": 1
+          },
+          "texts_sha256": "550112a8b4584fc3ed518bc7beecd7cdb2e069a1006e98cd84838e3b553c5c63",
+          "total_rows": 37571
+        },
+        "samples": 331,
+        "seconds": 19934,
+        "started": "2026-10-06T07:48:44+00:00"
+      },
+      "fetch": {
+        "base": "wixqa",
+        "downloaded": 4,
+        "files": 4
+      },
+      "index": {
+        "attempts": 1,
+        "exit_code": 0,
+        "finished": "2026-10-06T13:21:59+00:00",
+        "foreign_cpu_samples": 0,
+        "peak_load1": 3.02,
+        "peak_rss_kb": 754584,
+        "report": {
+          "checkpoint_sha256": "bf3b706234bdfd05ed324a31aecc37d58d64980eb63d57838a6a821bbb7b2001",
+          "chromadb_version": "1.5.9",
+          "chunk_count": 37571,
+          "code_sha": "36f1167b9629e3ebcc367bff59c15b7365e0b1b6",
+          "collection_name": "rag_docs_ext_wixqa",
+          "configuration": {
+            "hnsw": {
+              "sync_threshold": 1
+            }
+          },
+          "corpus_sha256": "70dd0bd0c52f26281f6d2d5681e193f3d48fb675cac64f78a0889b9d70e2505f",
+          "embedder_manifest": {
+            "backend": "local",
+            "dimension": 1024,
+            "document_prompt": "",
+            "model_id": "BAAI/bge-m3",
+            "normalize": true,
+            "query_prompt": "",
+            "revision": "5617a9f61b028005a4858fdac845db406aefb181",
+            "revision_source": "hf_snapshot",
+            "schema_version": 1
+          },
+          "evidence_status": "preparation",
+          "schema_version": 1,
+          "texts_sha256": "550112a8b4584fc3ed518bc7beecd7cdb2e069a1006e98cd84838e3b553c5c63"
+        },
+        "samples": 1,
+        "seconds": 61,
+        "started": "2026-10-06T13:20:58+00:00"
+      },
+      "light_seconds": {
+        "chunks": 13.8,
+        "convert": 13.6,
+        "fetch": 8.4,
+        "preserve": 6.7
+      },
+      "preserve": {
+        "alternatives": {
+          "lost": 0,
+          "split": 0,
+          "whole": 0
+        },
+        "alternatives_by_tag": {},
+        "archive_sha256": "70dd0bd0c52f26281f6d2d5681e193f3d48fb675cac64f78a0889b9d70e2505f",
+        "base": "wixqa",
+        "cases": 400,
+        "chunk_characters": {
+          "max": 1013,
+          "median": 543,
+          "min": 116,
+          "p95": 954
+        },
+        "chunks": 37571,
+        "chunks_longer_than_chunk_size": 7766,
+        "chunks_per_document": {
+          "max": 104,
+          "median": 3,
+          "min": 1,
+          "p95": 19
+        },
+        "chunks_whose_header_is_not_the_source_and_the_heading_path": 0,
+        "chunks_with_a_heading_path": 37571,
+        "chunks_without_a_place": 0,
+        "corpus_sha256": "08390ae999e25355af4e59f4d14355071b1bd6ad89ed54f0c2d0f330a3ae70a0",
+        "documents": 6221,
+        "documents_with_characters_in_no_chunk": 0,
+        "documents_without_chunks": 0,
+        "evidence_groups": {
+          "lost": 0,
+          "split": 0,
+          "whole": 0
+        },
+        "fewest_path_characters_kept_in_a_cut_header": 105,
+        "gold_documents": 340,
+        "gold_documents_without_chunks": 0,
+        "heading_lines_absent_from_chunk_paths": 0,
+        "heading_lines_deeper_than_the_splitter_reads": 0,
+        "heading_lines_of_split_depth": 32363,
+        "heading_paths_cut_by_the_header_limit": 6497,
+        "match_rule": "external-gold/range-coverage-v1",
+        "questions_with_evidence": {},
+        "split_alternatives_by_chunks_touched": {},
+        "visible_characters": 11967674,
+        "visible_characters_in_no_chunk": 0
+      },
+      "structure_graph": {
+        "builder_version": "gr1-structural-v1",
+        "chunks": 37571,
+        "digest": "1c755a39a7052a241cd58f39b30c478c3684ff6f698782d4b3553688d044b31e",
+        "edges": {
+          "category": 6221,
+          "contains": 69367,
+          "next": 31350,
+          "same_section": 5775
+        },
+        "nodes": {
+          "category": 1,
+          "chunk": 37571,
+          "document": 6221,
+          "section": 31796
+        },
+        "payload_sha256": "f3134d648fdbfec10e9dcfe9a210814cae7dffcc8e672934a8046c24471e81e7",
+        "seconds_on_the_laptop": 5.71,
+        "tenant": "ext_wixqa",
+        "unresolved_cross_references": {
+          "file:not_found": 37614
+        }
+      }
+    }
+  },
+  "code_sha": "36f1167b9629e3ebcc367bff59c15b7365e0b1b6",
+  "guarded": {
+    "after": {
+      "/Users/julia/RAG_Support_Assistant/data/uploads/aircargo": {
+        "files": 201,
+        "sha256": "007dfbf28f127316e16992d892fb36735c77d887d48a7cb44669bf12dbbdab30"
+      },
+      "/Users/julia/RAG_new_t65_embeddings_2851e3811508/.tmp/t65-index-72fbd72": {
+        "files": 8,
+        "sha256": "b0afc4698056cc6e2e8a5ebf49bec676bb2947b14fa2123aa7971bce66cf2494"
+      },
+      "/Users/julia/RAG_new_t65_embeddings_2851e3811508/.tmp/t65-verified-embeddings.npz": {
+        "files": 1,
+        "sha256": "f0ec39c547f39bfcbb0d1f3a6b56ae76be6d98108d60ee9f2083eae0641d685d"
+      }
+    },
+    "before": {
+      "/Users/julia/RAG_Support_Assistant/data/uploads/aircargo": {
+        "files": 201,
+        "sha256": "007dfbf28f127316e16992d892fb36735c77d887d48a7cb44669bf12dbbdab30"
+      },
+      "/Users/julia/RAG_new_t65_embeddings_2851e3811508/.tmp/t65-index-72fbd72": {
+        "files": 8,
+        "sha256": "b0afc4698056cc6e2e8a5ebf49bec676bb2947b14fa2123aa7971bce66cf2494"
+      },
+      "/Users/julia/RAG_new_t65_embeddings_2851e3811508/.tmp/t65-verified-embeddings.npz": {
+        "files": 1,
+        "sha256": "f0ec39c547f39bfcbb0d1f3a6b56ae76be6d98108d60ee9f2083eae0641d685d"
+      }
+    },
+    "unchanged": true
+  },
+  "registration_sha256": "cf80efc2e0194028c9469a0008a01f0e105bcf3669de71bcfa19947f3a6be167",
+  "supervisor": {
+    "finished": "2026-10-06T13:21:59+00:00",
+    "monitor_errors": 0,
+    "started": "2026-10-05T16:45:00+00:00",
+    "status": "complete",
+    "work_started": "2026-10-06T03:34:34+00:00"
+  },
+  "version": "external-connection/v1"
+}
