@@ -1999,7 +1999,7 @@ same for every arm. A change of the chunking or of the gold rule after this
 registration is registered before it is applied and is not chosen from a
 count on a locked part. The list `opened` of the registration is empty.
 `external_parts.read` gives the ids of a part or of a selection and raises
-`Locked` for a locked part that `opened` does not name. The collector takes
+`Locked` unless `opened` grants the exact selection of a locked part. The collector takes
 the questions of a run on an external base from a registered selection and
 from nothing else — it accepts no case file there — and refuses a selection
 of a locked part before it registers the run. A test holds `opened` empty.
@@ -2018,10 +2018,17 @@ same part read later is neither a new confirmation nor an extension of the
 first; like a second reading of ExpertWritten, it is a regression check. No
 registered rule draws a selection of the rest of a part without the
 questions already read, so the rest is kept for no later reading, and a
-second campaign reads `reserve`. Today an entry of `opened` names a part and
-opens the whole of it; none is made before the eleventh revision, which
-makes an entry name the selection, so that `read` gives that selection and
-nothing else of the part.
+second campaign reads `reserve`. Since 2026-10-08 an entry of `opened` must
+name `base`, `part`, `selection`, `cases_sha256` (the SHA-256 of the selected
+ids in their order), and `by: "acceptance 4.1"`. `read` grants only that named
+selection whose listed ids match both its stored digest and the entry;
+reading the whole locked part, another selection, or a changed list is
+refused. A part-only entry grants nothing. The registration checker and
+`--write` preserve existing `opened` entries while rebuilding the parts and
+selections; rebuilding adds no permit. The registration remains unopened:
+none is made before the eleventh revision. That revision must
+still bind the opening to a mechanism and define the one reading, its
+restart and exhaustion; this access check does not track those events.
 
 **Selections.** What a run reads of a part is a *selection*: a prefix of the
 part's order, by a rule that names its size. A size chosen later therefore

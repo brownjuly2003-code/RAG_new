@@ -85,11 +85,11 @@ variance, design effect, SE, MDE, effect_for_rule и мощности.
    этот verifier. На Mac корректная baseline-копия pilot читается через
    `read`, но `verify` даёт `ValueError: wixqa: the registered parts are not
    those the rules give`. Это препятствует последующим регистрациям.
-2. **Известная работа редакции 11: замок на отдельную selection.**
-   `is_open` в `external_parts.py`, строки 349–372, учитывает только base
+2. **Доступ к отдельной selection исправлен 2026-10-08 (раздел ниже).**
+   На момент аудита `is_open` в `external_parts.py` учитывал только base
    и part. Запись opened для выборки из одного synthetic-вопроса позволяет
    прочитать весь part из трёх. Спецификация, строки 2021–2024, прямо
-   откладывает эту защиту до редакции 11. Реальный `opened` остаётся пуст;
+   откладывала эту защиту до редакции 11. Реальный `opened` остаётся пуст;
    пример не устанавливает раскрытие настоящих locked-данных.
 3. **Ранний отказ по существующему выходному пути добавлен 2026-10-08.**
    [external_pilot.py](../../scripts/external_pilot.py), строки 903–908
@@ -157,3 +157,31 @@ Mac-снимок `/Users/julia/RAG_new_pilot_guard_20261008_d29aec0`: HEAD `d29a
 внешней базы. Новая редакция должна устранить эту временную разницу,
 сохранить ограничения мощности, missingness и переноса Simulated →
 ExpertWritten, а затем пройти отдельное холодное чтение.
+
+## Доступ к точной selection — 2026-10-08
+
+Разрешение `opened` теперь требует `base`, `part`, `selection`,
+`cases_sha256` и `by: "acceptance 4.1"`. SHA связывается со списком ID в
+его порядке. Оно разрешает только названную выборку: весь закрытый part,
+другая selection с теми же ID, расширенный или изменённый список,
+устаревший SHA и старое разрешение только на part отклоняются. Экспорт
+отказывает до чтения вопросов и создания выходного файла. Проверка
+регистрации и `--write` сохраняют существующие `opened` без расширения
+разрешений. Спецификация обновлена в пределах этого контракта доступа.
+
+Первая регрессия: **red 9 failed / 26 passed**. Дополнительная проверка
+пересборки выявила **2 failed / 35 passed**: verifier отвергал регистрацию
+с разрешением, а `--write` стирал его. После обоих исправлений на Mac
+**190 passed, 1 warning, exit 0**:
+
+```text
+python -m pytest tests/test_external_parts.py tests/test_external_pilot.py tests/test_external_gold.py tests/test_external_bases.py tests/test_external_pilot_artifact.py tests/test_external_connection_artifact.py tests/test_power.py tests/test_production_baseline.py -q -p no:schemathesis -p no:cacheprovider --basetemp=.tmp/pytest-selection-guard-builder-green --tb=short
+```
+
+`ruff` и `mypy evaluation/external_parts.py --follow-imports=skip` прошли.
+Снимок `/Users/julia/RAG_new_selection_guard_20261008_f60bdf1`: HEAD
+`f60bdf1` с явным overlay, SHA четырёх файлов сверены. Команды, SHA и
+логи сохранены локально в `.tmp/external-selection-guard-20261008/`.
+Тесты синтетические; настоящая регистрация и измерения не менялись.
+Это подготовка к 1.6: привязка к механизму, одно чтение, возобновление и
+исчерпание по-прежнему требуют редакции 11; весь участок не закрыт.

@@ -20,10 +20,10 @@ nothing else: no model, no index, no result of a run. Its rules are ``RULES``:
   decides nothing. The other types stand in no part.
 
 A part is ``open`` to development runs or ``locked``. A locked part is read by no run until an
-entry of ``opened`` in the registration names it, and only acceptance 4.1 adds one: ``read``
-refuses before that, so opening a part is a commit that changes the registration and the test
-that holds ``opened`` empty. Today an entry opens the whole of a part; the spec registers that a
-locked part is read once, by one selection, and that an entry will name the selection.
+entry of ``opened`` in the registration names its selection and the SHA-256 of that selection's
+ids, and only acceptance 4.1 adds one: ``read`` refuses before that, so opening a selection is a
+commit that changes the registration and the test that holds ``opened`` empty. An entry grants
+only that exact selection; reading the whole locked part is refused.
 
 A *selection* is what one run reads of a part: a prefix of the part's order, by a rule that
 names its size. A size chosen later therefore draws nothing anew, and of two selections by one
@@ -361,10 +361,23 @@ def registration(path: Path | None = None) -> dict[str, Any]:
     return registered
 
 
-def is_open(registered: Mapping[str, Any], base: str, part: str) -> bool:
+def is_open(
+    registered: Mapping[str, Any], base: str, part: str, *, selection: str | None = None,
+) -> bool:
     if registered["bases"][base]["parts"][part]["access"] == OPEN:
         return True
-    return any(entry["base"] == base and entry["part"] == part for entry in registered["opened"])
+    if selection is None:
+        return False
+    chosen = registered["selections"][base][selection]
+    selection_sha = chosen.get("cases_sha256")
+    if chosen["rule"]["part"] != part or selection_sha != digest(chosen["case_ids"]):
+        return False
+    return any(
+        entry.get("base") == base and entry.get("part") == part
+        and entry.get("selection") == selection and entry.get("cases_sha256") == selection_sha
+        and entry.get("by") == "acceptance 4.1"
+        for entry in registered["opened"]
+    )
 
 
 def read(
@@ -374,7 +387,7 @@ def read(
     part: str | None = None,
     selection: str | None = None,
 ) -> list[str]:
-    """The case ids of a part or of a selection, in order; a locked part is refused."""
+    """The case ids in order; locked access requires a permit for the exact selection."""
     if (part is None) == (selection is None):
         raise ValueError("name a part or a selection")
     if selection is not None:
@@ -382,8 +395,10 @@ def read(
         part = chosen["rule"]["part"]
     else:
         chosen = registered["bases"][base]["parts"][part]
-    if not is_open(registered, base, str(part)):
-        raise Locked(f"{base}: the part '{part}' is locked until acceptance 4.1 opens it")
+    if not is_open(registered, base, str(part), selection=selection):
+        raise Locked(
+            f"{base}: the part '{part}' is locked until acceptance 4.1 opens the requested selection"
+        )
     return list(chosen["case_ids"])
 
 
@@ -473,6 +488,7 @@ def main(argv: list[str] | None = None) -> int:
             for base, chosen in existing.get("selections", {}).items()
         },
     )
+    built["opened"] = existing.get("opened", [])
     if args.write:
         REGISTRATION.write_bytes(dump(built))
     elif REGISTRATION.read_bytes() != dump(built):

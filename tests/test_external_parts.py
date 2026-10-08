@@ -326,7 +326,7 @@ def test_the_registration_carries_counts_digests_and_the_ids_in_order(
     assert json.loads(parts.dump(small)) == small and parts.dump(small).endswith(b"\n")
 
 
-def test_a_locked_part_is_refused_until_an_entry_opens_it(small: dict[str, Any]) -> None:
+def test_opening_a_selection_keeps_the_rest_of_its_part_locked(small: dict[str, Any]) -> None:
     locked = small["bases"]["wixqa"]["parts"]["locked"]["case_ids"]
 
     assert parts.read(small, "wixqa", part="tuning") == parts.in_order(
@@ -343,13 +343,21 @@ def test_a_locked_part_is_refused_until_an_entry_opens_it(small: dict[str, Any])
             parts.read(small, base, part=part)
     small["selections"]["wixqa"]["acceptance"] = {
         "rule": {"part": "locked", "questions": 1},
+        "cases_sha256": parts.digest(locked[:1]),
         "case_ids": locked[:1],
     }
     with pytest.raises(parts.Locked):
         parts.read(small, "wixqa", selection="acceptance")
     small["opened"].append({"base": "wixqa", "part": "locked", "by": "acceptance 4.1"})
+    with pytest.raises(parts.Locked):
+        parts.read(small, "wixqa", selection="acceptance")
+    small["opened"] = [{
+        "base": "wixqa", "part": "locked", "selection": "acceptance",
+        "cases_sha256": parts.digest(locked[:1]), "by": "acceptance 4.1",
+    }]
     assert parts.read(small, "wixqa", selection="acceptance") == locked[:1]
-    assert parts.read(small, "wixqa", part="locked") == locked
+    with pytest.raises(parts.Locked):
+        parts.read(small, "wixqa", part="locked")
     # The entry opens the part it names and no other.
     for base, part in (("wixqa", "excluded"), ("conditionalqa", "locked")):
         with pytest.raises(parts.Locked):
@@ -588,6 +596,94 @@ def test_verifying_a_later_locked_selection_does_not_open_it(host: SimpleNamespa
     with pytest.raises(parts.Locked):
         external_base.select_step("wixqa", host.root / "wixqa", "acceptance")
     assert not (host.root / "wixqa" / "selections").exists()
+
+
+@pytest.fixture
+def permitted(host: SimpleNamespace) -> SimpleNamespace:
+    _, selections = parts.build_base(
+        "wixqa", WIXQA, host.registered["bases"]["wixqa"]["cases_sha256"],
+        selection_rules={
+            "acceptance": {"part": "locked", "questions": 1},
+            "larger": {"part": "locked", "questions": 2},
+        },
+    )
+    host.registered["selections"]["wixqa"] = selections
+    host.registered["opened"] = [{
+        "base": "wixqa", "part": "locked", "selection": "acceptance",
+        "cases_sha256": selections["acceptance"]["cases_sha256"], "by": "acceptance 4.1",
+    }]
+    (host.root / "parts.json").write_bytes(parts.dump(host.registered))
+    return host
+
+
+def test_export_reads_the_permitted_selection_and_refuses_other_selections(
+    permitted: SimpleNamespace,
+) -> None:
+    out = permitted.root / "wixqa"
+    chosen = permitted.registered["selections"]["wixqa"]["acceptance"]
+    report = external_base.select_step("wixqa", out, "acceptance")
+    written = (out / "selections" / "acceptance.questions.jsonl").read_bytes()
+    assert [json.loads(line)["case_id"] for line in written.splitlines()] == chosen["case_ids"]
+    assert report["cases"] == 1 and report["cases_sha256"] == chosen["cases_sha256"]
+    assert not parts.is_open(permitted.registered, "wixqa", "locked")
+
+    permitted.registered["selections"]["wixqa"]["another"] = copy.deepcopy(chosen)
+    (permitted.root / "parts.json").write_bytes(parts.dump(permitted.registered))
+    for selection in ("larger", "another"):
+        with pytest.raises(parts.Locked):
+            external_base.select_step("wixqa", out, selection)
+        assert not (out / "selections" / f"{selection}.questions.jsonl").exists()
+
+
+@pytest.mark.parametrize("flags", [[], ["--write"]], ids=["verify", "write"])
+def test_the_builder_preserves_selection_permits(
+    permitted: SimpleNamespace, flags: list[str],
+) -> None:
+    path = permitted.root / "parts.json"
+    written = path.read_bytes()
+    assert parts.main(["--data", str(permitted.root), *flags]) == 0
+    assert path.read_bytes() == written
+    registered = parts.registration()
+    assert parts.read(registered, "wixqa", selection="acceptance") == permitted.registered[
+        "selections"
+    ]["wixqa"]["acceptance"]["case_ids"]
+    with pytest.raises(parts.Locked):
+        parts.read(registered, "wixqa", selection="larger")
+
+
+@pytest.mark.parametrize(
+    "change", ["legacy", "selection", "digest", "by", "replacement", "expanded", "reordered"]
+)
+def test_export_refuses_an_incomplete_or_stale_selection_permit(
+    permitted: SimpleNamespace, change: str,
+) -> None:
+    entry = permitted.registered["opened"][0]
+    chosen = permitted.registered["selections"]["wixqa"]["acceptance"]
+    locked = permitted.registered["bases"]["wixqa"]["parts"]["locked"]["case_ids"]
+    if change == "legacy":
+        entry.pop("selection")
+        entry.pop("cases_sha256")
+    elif change == "selection":
+        entry["selection"] = "larger"
+    elif change == "digest":
+        entry["cases_sha256"] = "0" * 64
+    elif change == "by":
+        entry["by"] = "development"
+    elif change == "replacement":
+        chosen["case_ids"] = locked[1:]
+    else:
+        chosen.update(copy.deepcopy(permitted.registered["selections"]["wixqa"]["larger"]))
+        if change == "reordered":
+            entry["cases_sha256"] = chosen["cases_sha256"]
+            chosen["case_ids"].reverse()
+            chosen["cases_sha256"] = parts.digest(chosen["case_ids"])
+    (permitted.root / "parts.json").write_bytes(parts.dump(permitted.registered))
+
+    with pytest.raises(parts.Locked):
+        parts.read(permitted.registered, "wixqa", selection="acceptance")
+    with pytest.raises(parts.Locked):
+        external_base.select_step("wixqa", permitted.root / "wixqa", "acceptance")
+    assert not (permitted.root / "wixqa" / "selections").exists()
 
 
 def test_the_select_step_writes_the_questions_of_an_open_selection_only(
