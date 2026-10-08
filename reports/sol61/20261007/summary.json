@@ -1,0 +1,225 @@
+{
+  "verified": true,
+  "ordinary_completed": 40,
+  "empty_completed": 4,
+  "model": "gpt-6.1-sol",
+  "effort": "xhigh",
+  "bases": {
+    "aircargo": {
+      "ordinary_completed": 10,
+      "empty_completed": 1,
+      "tested_strata": {
+        "H": 8,
+        "Hm": 2
+      },
+      "citation_range_invalid": 0,
+      "answers_with_citations": 10,
+      "status": {
+        "correct": 10
+      },
+      "answerable_cases": 10,
+      "answerable_status": {
+        "correct": 10
+      },
+      "insufficient_context_on_answerable": 0,
+      "grounded": 10,
+      "context_sufficient": 10,
+      "citation_support_failures": 0,
+      "insufficient_context_abstentions": 0,
+      "sufficient_context_nonfull_answers": 0,
+      "issues": {},
+      "source_coverage_all": 0,
+      "source_coverage_eligible": 0,
+      "empty_control_pass": true,
+      "naturally_unanswerable": 0,
+      "naturally_unanswerable_safe": 0
+    },
+    "conditionalqa": {
+      "ordinary_completed": 10,
+      "empty_completed": 1,
+      "tested_strata": {
+        "answerable": 8,
+        "not_answerable": 2
+      },
+      "citation_range_invalid": 0,
+      "answers_with_citations": 10,
+      "status": {
+        "correct": 7,
+        "abstain": 2,
+        "partial": 1
+      },
+      "answerable_cases": 8,
+      "answerable_status": {
+        "correct": 7,
+        "abstain": 1
+      },
+      "insufficient_context_on_answerable": 1,
+      "grounded": 10,
+      "context_sufficient": 7,
+      "citation_support_failures": 0,
+      "insufficient_context_abstentions": 2,
+      "sufficient_context_nonfull_answers": 0,
+      "issues": {
+        "reference_disagreement": 2,
+        "retrieval_missing_evidence": 3,
+        "missing_required_detail": 1
+      },
+      "source_coverage_all": 8,
+      "source_coverage_eligible": 8,
+      "empty_control_pass": true,
+      "naturally_unanswerable": 2,
+      "naturally_unanswerable_safe": 1
+    },
+    "wixqa": {
+      "ordinary_completed": 10,
+      "empty_completed": 1,
+      "tested_strata": {
+        "simulated": 10
+      },
+      "citation_range_invalid": 0,
+      "answers_with_citations": 10,
+      "status": {
+        "correct": 6,
+        "partial": 2,
+        "abstain": 2
+      },
+      "answerable_cases": 10,
+      "answerable_status": {
+        "correct": 6,
+        "partial": 2,
+        "abstain": 2
+      },
+      "insufficient_context_on_answerable": 4,
+      "grounded": 10,
+      "context_sufficient": 6,
+      "citation_support_failures": 0,
+      "insufficient_context_abstentions": 2,
+      "sufficient_context_nonfull_answers": 0,
+      "issues": {
+        "retrieval_missing_evidence": 4
+      },
+      "source_coverage_all": 6,
+      "source_coverage_eligible": 10,
+      "empty_control_pass": true,
+      "naturally_unanswerable": 0,
+      "naturally_unanswerable_safe": 0
+    },
+    "multihoprag": {
+      "ordinary_completed": 10,
+      "empty_completed": 1,
+      "tested_strata": {
+        "inference_query": 5,
+        "null_query": 5
+      },
+      "citation_range_invalid": 0,
+      "answers_with_citations": 6,
+      "status": {
+        "correct": 4,
+        "partial": 1,
+        "abstain": 5
+      },
+      "answerable_cases": 5,
+      "answerable_status": {
+        "correct": 4,
+        "partial": 1
+      },
+      "insufficient_context_on_answerable": 5,
+      "grounded": 10,
+      "context_sufficient": 0,
+      "citation_support_failures": 0,
+      "insufficient_context_abstentions": 5,
+      "sufficient_context_nonfull_answers": 0,
+      "issues": {
+        "retrieval_missing_evidence": 10,
+        "missing_required_detail": 1
+      },
+      "source_coverage_all": 0,
+      "source_coverage_eligible": 5,
+      "empty_control_pass": true,
+      "naturally_unanswerable": 5,
+      "naturally_unanswerable_safe": 5
+    }
+  },
+  "limits": [
+    "diagnostic sample",
+    "same-model judging",
+    "source coverage is not evidence-span recall",
+    "no full HTTP or production graph acceptance"
+  ],
+  "provenance": {
+    "registration_sha256": "bdc900b8e1e2fa99c0c484bb917db0f9b486567cc0fdc5a128d8f939da45a6ff",
+    "requests_sha256": "64e88f5ced99a1083ab182ec428dbd366bd517210c9e07e33eb8a45c2155402b",
+    "transport_sha256": "c7357cc9a983a90ed871501241f424ce0c9255016535fc48ad845e8561164276",
+    "rubric_sha256": "b7dab07bb7ee9ac7b255eda85255338384281df3f0bab0f959e2ae929131a2ad",
+    "verifier_sha256": "41026a9530c99598b831fd5b6eb91f2f1f0f4dd0611e4ad50bf2f81a134ec38c",
+    "pre_review_summary_sha256": "9b46128e2d3cae35f50e340b91441716752c13eba7ecdcfb59a7372785d61daf",
+    "consistency_reviewer_sha256": "0cb123125a42337c9949eac04f023170b88b7ac7fbb3d86f421416370fc3aefa"
+  },
+  "post_run_judge_consistency_review": {
+    "aircargo": {
+      "correct_with_insufficient_context_count": 0,
+      "correct_with_insufficient_context_ids": [],
+      "reference_disagreement_count": 0,
+      "reference_disagreement_ids": [],
+      "interpretation": "Raw correct counts with missing required evidence are not confirmed complete RAG answers. Reference disagreements remain unresolved. Original grades are preserved."
+    },
+    "conditionalqa": {
+      "correct_with_insufficient_context_count": 0,
+      "correct_with_insufficient_context_ids": [],
+      "reference_disagreement_count": 2,
+      "reference_disagreement_ids": [
+        "conditionalqa-train-1484",
+        "conditionalqa-train-1587"
+      ],
+      "interpretation": "Raw correct counts with missing required evidence are not confirmed complete RAG answers. Reference disagreements remain unresolved. Original grades are preserved."
+    },
+    "wixqa": {
+      "correct_with_insufficient_context_count": 0,
+      "correct_with_insufficient_context_ids": [],
+      "reference_disagreement_count": 0,
+      "reference_disagreement_ids": [],
+      "interpretation": "Raw correct counts with missing required evidence are not confirmed complete RAG answers. Reference disagreements remain unresolved. Original grades are preserved."
+    },
+    "multihoprag": {
+      "correct_with_insufficient_context_count": 4,
+      "correct_with_insufficient_context_ids": [
+        "multihoprag-0954",
+        "multihoprag-1915",
+        "multihoprag-2248",
+        "multihoprag-2515"
+      ],
+      "reference_disagreement_count": 0,
+      "reference_disagreement_ids": [],
+      "interpretation": "Raw correct counts with missing required evidence are not confirmed complete RAG answers. Reference disagreements remain unresolved. Original grades are preserved."
+    }
+  },
+  "scope": "Fresh Chroma + BM25 + RRF + bge reranker + parent expansion on original questions, then QA_PROMPT_V1 via Sol. Query transformation/classifier/document grading/self-evaluation/repair/HTTP are not run; no product gate or latency verdict.",
+  "selection": "Aircargo: first 2 SHA256(case_id) in each of 4 H domains plus first 2 Hm; ConditionalQA: registered tuning order first 8 primary plus 2 not_answerable; WixQA first 10 tuning; MultiHop-RAG advisory first 5 inference and 5 null. One empty-context duplicate per base.",
+  "date": "2026-10-07",
+  "quality_evaluation": "Sol 6.1 xhigh evaluates its own outputs in separate stateless requests; uncalibrated single-model diagnostic, not independent validation. Aircargo has keyword expectations rather than complete reference answers.",
+  "excluded_attempts": "One initial four-base-run Aircargo response contained a CLI plugin catalog; preserved privately and excluded. Earlier setup probes also excluded. Clean retry used identical selection and RAG prompt after a recorded isolation amendment.",
+  "private_artifacts": "D:/RAG_new/.tmp/sol61-rag-20261007/four-bases",
+  "attribution": {
+    "conditionalqa": {
+      "citation": "Sun, Cohen, Salakhutdinov. ConditionalQA: A Complex Reading Comprehension Dataset with Conditional Answers. ACL 2022. arXiv:2110.06884",
+      "source": "https://github.com/haitian-sun/ConditionalQA",
+      "revision": "77bd295952daf415548b3244db10880d3d55cfe0",
+      "license": "BSD-2-Clause (file LISCENSE of the repository); README: \"This dataset should ONLY be used for NLP research purpose. Answers are NOT verified by legal professionals and should NOT be used for any legal purposes.\" Page texts: GOV.UK, Open Government Licence v3.0.",
+      "labels": "evidence elements and answers chosen by the dataset's annotators"
+    },
+    "wixqa": {
+      "citation": "Cohen, Burg, Pykhnivskyi, Gur, Kovynov, Atzmon, Barkan (Wix.com AI Research). WixQA: A Multi-Dataset Benchmark for Enterprise Retrieval-Augmented Generation. 2025. arXiv:2505.08643",
+      "source": "https://huggingface.co/datasets/Wix/WixQA",
+      "revision": "d662dc42479c14e202eccd832f8c4b66a035c4cc",
+      "license": "MIT (dataset card); knowledge-base snapshot of 2024-12-02",
+      "labels": "ExpertWritten: support experts; Simulated: distilled from user-expert chats by GPT-4o and reviewed by experts"
+    },
+    "multihoprag": {
+      "citation": "Tang, Yang. MultiHop-RAG: Benchmarking Retrieval-Augmented Generation for Multi-Hop Queries. 2024. arXiv:2401.15391",
+      "source": "https://huggingface.co/datasets/yixuantt/MultiHopRAG",
+      "revision": "71ac0d0bd1f951d2d6b70311f7d2ae404e1ffa82",
+      "license": "ODC-BY 1.0 (dataset card); the news texts remain their publishers'",
+      "labels": "llm_labelled: queries, answers and evidence sentences written by GPT-4"
+    }
+  }
+}
