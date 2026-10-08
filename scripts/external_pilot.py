@@ -25,7 +25,8 @@ and digests: no question, no text, no name of a document and no list of retrieve
 a string is the name of a document of the base or holds a question of the selection. The
 document it writes holds a row of numbers for every question and stays on the host;
 ``--aggregates`` writes it once more without those rows and with its SHA-256, and that copy is
-what leaves the host. ``sizes`` reads either.
+what leaves the host. Existing output paths are refused before reading the base or runs;
+the measure and aggregate must name distinct files. ``sizes`` reads either saved document.
 
 Gold is read by ``external-gold/range-coverage-v1`` (``evaluation/external_gold.py``) at the
 points of the path a run records:
@@ -942,6 +943,11 @@ def main(argv: list[str] | None = None) -> int:
         runs[name] = Path(run)
     if set(runs) != set(ARMS):
         parser.error("the pilot is measured on the control and pool30 together")
+    if args.aggregates is not None and args.out.resolve() == args.aggregates.resolve():
+        parser.error("--out and --aggregates must name different files")
+    for target in (args.out, args.aggregates):
+        if target is not None and target.exists():
+            raise FileExistsError(f"{target.name} exists; refusing to measure again")
     text = dump(measure(args.base, args.base_dir, runs))
     _write_once(args.out, text)
     report = json.loads(text)

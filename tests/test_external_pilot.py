@@ -796,15 +796,58 @@ def test_cli_writes_the_document_once_and_names_both_arms(
     assert printed["base"] == "wixqa" and printed["cases"] == 3 and printed["clusters"] == 2
     assert printed["pairs"] == {"pool30": 3} and printed["primary"]["pool30"]["used"] is True
     assert json.loads(out.read_text(encoding="utf-8")) == measured(world, "wixqa")
-    assert pilot.main(arguments) == 0
+    with pytest.raises(FileExistsError, match="wixqa.json exists; refusing to measure again"):
+        pilot.main(arguments)
     out.write_text("{}\n", encoding="utf-8")
-    with pytest.raises(FileExistsError, match="A different wixqa.json exists"):
+    with pytest.raises(FileExistsError, match="wixqa.json exists; refusing to measure again"):
         pilot.main(arguments)
     for broken in (arguments[:7], [*arguments[:7], "--arm", "sent3=x", *arguments[9:]]):
         with pytest.raises(SystemExit):
             pilot.main([*broken, "--out", str(out)] if "--out" not in broken else broken)
     with pytest.raises(SystemExit):
         pilot.main([*arguments, "--pilot", f"wixqa={out}"])
+
+
+@pytest.mark.parametrize("base", ["conditionalqa", "wixqa"])
+@pytest.mark.parametrize("existing", ["measure", "aggregates"])
+def test_measure_refuses_existing_outputs_before_reading_inputs(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str], base: str, existing: str
+) -> None:
+    out = tmp_path / "measure.json"
+    slim = tmp_path / "aggregates.json"
+    target = out if existing == "measure" else slim
+    target.write_bytes(b"saved result\n")
+    arguments = ["measure", "--base", base, "--base-dir", str(tmp_path / "absent-base")]
+    arguments += ["--arm", f"control={tmp_path / 'absent-control'}"]
+    arguments += ["--arm", f"pool30={tmp_path / 'absent-pool30'}"]
+    arguments += ["--out", str(out), "--aggregates", str(slim)]
+
+    with pytest.raises(FileExistsError, match=f"{target.name} exists; refusing to measure again"):
+        pilot.main(arguments)
+
+    assert target.read_bytes() == b"saved result\n"
+    assert not (slim if target == out else out).exists()
+    assert capsys.readouterr().out == ""
+
+
+@pytest.mark.parametrize("alias", [False, True])
+def test_measure_refuses_shared_output_paths_before_reading_inputs(
+    tmp_path: Path, alias: bool
+) -> None:
+    out = tmp_path / "measure.json"
+    nested = tmp_path / "nested"
+    nested.mkdir()
+    slim = nested / ".." / out.name if alias else out
+    arguments = ["measure", "--base", "wixqa", "--base-dir", str(tmp_path / "absent-base")]
+    arguments += ["--arm", f"control={tmp_path / 'absent-control'}"]
+    arguments += ["--arm", f"pool30={tmp_path / 'absent-pool30'}"]
+    arguments += ["--out", str(out), "--aggregates", str(slim)]
+
+    with pytest.raises(SystemExit) as stopped:
+        pilot.main(arguments)
+
+    assert stopped.value.code == 2
+    assert not out.exists()
 
 
 def test_what_leaves_the_host_is_the_document_without_the_rows_of_questions(
