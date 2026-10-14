@@ -1,7 +1,8 @@
 # Session handoff — 2026-10-14 — the web chat on the production Mac
 
-Session `ef96201d`, 2026-10-14 09:12–⟨END⟩ UTC, Claude Opus 5.5 alone (D12). Code measured at
-`33d4b42`; documents at the commit that adds this file. **Nothing is pushed:** `origin/master`
+Session `ef96201d`, 2026-10-14 09:12–13:15 UTC, Claude Opus 5.5 alone (D12). Code measured at
+`33d4b42`; the record and the documents at `ef9f5be` and the commit after it, which fills
+the verification. **Nothing is pushed:** `origin/master`
 as last fetched is `f7416ca` (2026-10-04); master is ahead of it by the 35 commits of
 2026-10-04…10-08 and by this session's.
 
@@ -205,12 +206,14 @@ SLO (first word or whole answer, at what share of questions). Both are Julia's.
 - 12:22–12:50 UTC — run R2 (`live-r2-rerank-gpu`): the reranker on the GPU with its error
   recorded, at batches 4 and 1, both models on the GPU at batch 4, and `auto` again.
 - A fresh agent of the same model read this file cold; its points were fixed in place.
-- ⟨REPORT⟩
+- 13:10 UTC — record committed (`ef9f5be`) and green on the Mac; the final report to Julia:
+  answers 1–3 and the two decisions that wait on her.
 
 ## State at the end
 
-- `master` (local): the five fixes `cefd7c3`…`33d4b42` and the commit that adds this file
-  and the record; `origin/master` is still `f7416ca`. Nothing pushed.
+- `master` (local): the five fixes `cefd7c3`…`33d4b42`, the record commit `ef9f5be` and the
+  commit that fills this file's verification; `origin/master` is still `f7416ca`. Nothing
+  pushed.
 - Committed (local, not published): `reports/chat-live/33d4b42/runs.json` with the tools
   that made it (`tools/`) and the bench (`bench/`), its row in `EVIDENCE_INDEX.md`, the test
   `tests/test_chat_live_artifact.py`, the subsection "Web chat on the production Mac" in
@@ -351,4 +354,22 @@ only if she chooses a smaller model or a shorter pipeline.
 
 ## Verification
 
-⟨VERIFICATION⟩
+- The record commit `ef9f5be` on the Mac (`sync_commit.py`: head `ef9f5be8f2`, tree
+  `7b5a5b787b`): `remote.py --site pytest tests/test_chat_live_artifact.py
+  tests/test_docs_hygiene.py tests/test_docs_quality.py tests/test_docs_publication.py
+  tests/test_transformers_cve_floor.py` — 34 passed; the record's eight tests listed one by
+  one (`-rA`), all passed.
+- Before that commit: a script found every phrase the test derives from `runs.json` in the
+  evidence row; the 20 pins match the files on disk and the committed blobs (the bench
+  script had CRLF endings and was normalised to LF, as `.gitattributes` does on commit);
+  `ruff format` and `ruff check` of the test clean.
+- The facts of this file were checked against `runs.json` and the code at `33d4b42`: the
+  setting defaults in `config/settings.py`, `_resolve_device` and
+  `_rerank_scored_with_status` in `vectordb/_base_manager.py`, the endpoint choice in
+  `static/chat.inline.js`, `chat_stream` handing over to `ask_stream`, and the run times,
+  notes and reranker errors in the record.
+- `CURRENT_STATE.md` 136 lines (cap 150); nine `.md` files in the root.
+- Not run: the whole `tests/` (399 files) on `33d4b42` or later — the five fixes were
+  checked on 78 files, this record on the five above.
+- A second commit fills this section and the log; the three docs tests passed on it on the
+  Mac.
