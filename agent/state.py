@@ -125,6 +125,9 @@ class GraphState(TypedDict, total=False):
     # Tokens of the context actually sent to the generator (after grading),
     # counted with the provider budget estimator; slice 2.1 (A8).
     generation_context_tokens: int
+    # The documents as the generator saw them (fitted to its input window), in
+    # citation order; verify_facts and evaluate judge against this view.
+    generation_context_docs: Optional[list[dict[str, Any]]]
     route: Optional[
         Literal[
             "auto",

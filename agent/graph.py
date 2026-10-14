@@ -937,11 +937,18 @@ def _invoke_with_schema(
     llm: Any,
     prompt: str,
     schema: dict[str, Any],
+    *,
+    role: str | None = None,
     **kwargs: Any,
 ) -> dict[str, Any] | list[Any] | None:
     method = getattr(llm, "generate_with_schema", None)
     if not callable(method):
         return None
+    if role is not None:
+        # The role's output budget, the one its prompt was fitted against.
+        from llm.role_params import generation_kwargs_for_role
+
+        kwargs = {**generation_kwargs_for_role(role), **kwargs}
     response = method([{"role": "user", "content": prompt}], schema, **kwargs)
     structured_output = getattr(response, "structured_output", None)
     if isinstance(structured_output, (dict, list)):
@@ -1783,6 +1790,37 @@ def make_retrieve_node(retriever: Any) -> Callable[[GraphState], GraphState]:
 # ---------------------------------------------------------------------------
 
 
+_DOC_GRADE_BATCH_SCHEMA: dict[str, Any] = {
+    "type": "object",
+    "properties": {
+        "grades": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "index": {"type": "integer"},
+                    "relevant": {"type": "boolean"},
+                    "reason": {"type": "string"},
+                },
+                "required": ["index", "relevant"],
+                "additionalProperties": True,
+            },
+        }
+    },
+    "required": ["grades"],
+    "additionalProperties": True,
+}
+_DOC_GRADE_SCHEMA: dict[str, Any] = {
+    "type": "object",
+    "properties": {
+        "relevant": {"type": "boolean"},
+        "reason": {"type": "string"},
+    },
+    "required": ["relevant"],
+    "additionalProperties": True,
+}
+
+
 def make_grade_docs_node(llm: SupportsInvoke) -> Callable[[GraphState], GraphState]:
     """Узел grade_docs: оценивает каждый документ на релевантность.
 
@@ -1800,6 +1838,7 @@ def make_grade_docs_node(llm: SupportsInvoke) -> Callable[[GraphState], GraphSta
             return state
         trace_id = state.get("trace_id", "unknown-trace-id")
         try:
+            from agent.context_window import fit_all_context_docs
             from agent.doc_grade import finalize_grade_state, replace_relevant_context_headers
 
             question = state.get("question", "")
@@ -1831,35 +1870,33 @@ def make_grade_docs_node(llm: SupportsInvoke) -> Callable[[GraphState], GraphSta
                 span.set_attribute("rag.input_docs", len(context_docs))
                 batch_grades: list[tuple[bool, str]] | None = None
                 if len(context_docs) > 1:
-                    batch_prompt = build_doc_grade_batch_prompt(question=question, documents=context_docs)
+                    batch_prompt = ""
                     try:
+                        # Every document stays in the batch under its index,
+                        # cut to its share of the grader's input window.
+                        batch_views = fit_all_context_docs(
+                            llm,
+                            question,
+                            context_docs,
+                            lambda views: build_doc_grade_batch_prompt(
+                                question=question, documents=views
+                            ),
+                            role="grade",
+                            schema=(
+                                _DOC_GRADE_BATCH_SCHEMA
+                                if _llm_supports_structured_output(llm)
+                                else None
+                            ),
+                        )
+                        batch_prompt = build_doc_grade_batch_prompt(
+                            question=question, documents=batch_views
+                        )
                         t0 = time.monotonic()
                         raw_verdict = ""
                         if _llm_supports_structured_output(llm):
                             try:
                                 structured = _invoke_with_schema(
-                                    llm,
-                                    batch_prompt,
-                                    {
-                                        "type": "object",
-                                        "properties": {
-                                            "grades": {
-                                                "type": "array",
-                                                "items": {
-                                                    "type": "object",
-                                                    "properties": {
-                                                        "index": {"type": "integer"},
-                                                        "relevant": {"type": "boolean"},
-                                                        "reason": {"type": "string"},
-                                                    },
-                                                    "required": ["index", "relevant"],
-                                                    "additionalProperties": True,
-                                                },
-                                            }
-                                        },
-                                        "required": ["grades"],
-                                        "additionalProperties": True,
-                                    },
+                                    llm, batch_prompt, _DOC_GRADE_BATCH_SCHEMA, role="grade"
                                 )
                             except Exception:
                                 structured = None
@@ -1896,23 +1933,27 @@ def make_grade_docs_node(llm: SupportsInvoke) -> Callable[[GraphState], GraphSta
                             filtered_count += 1
                 else:
                     for doc in context_docs:
-                        prompt = build_doc_grade_prompt(question=question, document=doc)
                         try:
+                            (view,) = fit_all_context_docs(
+                                llm,
+                                question,
+                                [doc],
+                                lambda views: build_doc_grade_prompt(
+                                    question=question, document=views[0]
+                                ),
+                                role="grade",
+                                schema=(
+                                    _DOC_GRADE_SCHEMA
+                                    if _llm_supports_structured_output(llm)
+                                    else None
+                                ),
+                            )
+                            prompt = build_doc_grade_prompt(question=question, document=view)
                             t0 = time.monotonic()
                             if _llm_supports_structured_output(llm):
                                 try:
                                     structured = _invoke_with_schema(
-                                        llm,
-                                        prompt,
-                                        {
-                                            "type": "object",
-                                            "properties": {
-                                                "relevant": {"type": "boolean"},
-                                                "reason": {"type": "string"},
-                                            },
-                                            "required": ["relevant"],
-                                            "additionalProperties": True,
-                                        },
+                                        llm, prompt, _DOC_GRADE_SCHEMA, role="grade"
                                     )
                                 except Exception:
                                     structured = None
@@ -2034,29 +2075,49 @@ def make_generate_node(
             return state
         trace_id = state.get("trace_id", "unknown-trace-id")
         try:
+            from agent.context_window import (
+                fit_context_docs,
+                prompt_input_limit,
+                prompt_input_tokens,
+            )
             from agent.doc_grade import resolve_generation_context_docs
 
             question = state.get("question", "")
             # Plan §5.3: after grade_docs, empty graded_docs must not fall back
             # to raw context_docs (silent restore of rejected / failed grade).
             docs = resolve_generation_context_docs(state)
-            context_text: str = "\n\n".join(
-                str(doc.get("page_content", "") or "") if isinstance(doc, dict)
-                else str(getattr(doc, "page_content", "") or "")
-                for doc in docs
-            )
-            generation_context_tokens = estimate_tokens(context_text)
-            chat_history = state.get("chat_history", [])
+            chat_history = list(state.get("chat_history", []) or [])
             complexity = state.get("complexity", "unknown")
             llm = llm_fast if complexity == "simple" else llm_strong
             model = _get_llm_model_name(llm) or ""
             usage = _new_llm_usage("generate")
             usage_recorded = False
 
-            if chat_history:
-                prompt = build_conversational_qa_prompt(question=question, context_docs=docs, chat_history=chat_history)
-            else:
-                prompt = build_qa_prompt(question=question, context_docs=docs)
+            def generation_prompt(selected: list[Any]) -> str:
+                if chat_history:
+                    return build_conversational_qa_prompt(
+                        question=question, context_docs=selected, chat_history=chat_history
+                    )
+                return build_qa_prompt(question=question, context_docs=selected)
+
+            # The model sees only what fits its input window: old history turns
+            # give way to the top document, then the leading documents are
+            # kept. Citations, verify_facts and evaluate use this same view.
+            limit = prompt_input_limit(llm, "generate")
+            while (
+                chat_history
+                and limit is not None
+                and prompt_input_tokens(generation_prompt(docs[:1])) > limit
+            ):
+                chat_history = chat_history[1:]
+            docs = fit_context_docs(llm, question, docs, generation_prompt, role="generate")
+            prompt = generation_prompt(docs)
+            context_text: str = "\n\n".join(
+                str(doc.get("page_content", "") or "") if isinstance(doc, dict)
+                else str(getattr(doc, "page_content", "") or "")
+                for doc in docs
+            )
+            generation_context_tokens = estimate_tokens(context_text)
 
             tracer = get_otel_tracer()
             with tracer.start_as_current_span("rag.generate") as span:
@@ -2119,6 +2180,7 @@ def make_generate_node(
                 "answer": answer,
                 "citations": citations,
                 "generation_context_tokens": generation_context_tokens,
+                "generation_context_docs": list(docs),
                 "generation_error": None,
             }
             if complexity == "simple":
@@ -2186,6 +2248,17 @@ def _fact_verification_provider_fail_closed(
     return new_state
 
 
+_VERIFY_CLAIM_SCHEMA: dict[str, Any] = {
+    "type": "object",
+    "properties": {
+        "supported": {"type": "boolean"},
+        "evidence": {"type": "string"},
+    },
+    "required": ["supported", "evidence"],
+    "additionalProperties": False,
+}
+
+
 def make_verify_facts_node(llm: SupportsInvoke) -> Callable[[GraphState], GraphState]:
     def node(state: GraphState) -> GraphState:
         if state.get("error"):
@@ -2217,11 +2290,13 @@ def make_verify_facts_node(llm: SupportsInvoke) -> Callable[[GraphState], GraphS
                 log_step(trace_id, "verify_facts", new_state)
                 return new_state
 
+            from agent.context_window import fit_context_docs
             from agent.doc_grade import resolve_generation_context_docs
 
             answer = state.get("answer", "")
-            # Same doc selection as generate (§5.3) — no silent restore after grade.
-            docs = resolve_generation_context_docs(state)
+            # The documents the answer was generated from, as the generator saw
+            # them (§5.3 selection, fitted to its window) — citation indices match.
+            docs = resolve_generation_context_docs(state, use_generated=True)
             # Verification evidence must cover the same context the answer was
             # generated from: with parent-expansion ON chunks reach
             # parent_expansion_max_chars (3600), so a tighter cap here would
@@ -2326,24 +2401,50 @@ def make_verify_facts_node(llm: SupportsInvoke) -> Callable[[GraphState], GraphS
                 getattr(settings, "fact_verify_reliability_level", "standard") or "standard"
             ).strip() or "standard"
 
+            structured_verify = consensus_enabled and _llm_supports_structured_output(llm)
+            # One evidence view for every claim, fitted to the verifier's window
+            # with the longest claim in the prompt.
+            evidence_docs = [
+                {"page_content": text}
+                for text in (
+                    str(
+                        d.get("page_content")
+                        if isinstance(d, dict)
+                        else getattr(d, "page_content", "")
+                    )[:chars_per_doc]
+                    for d in docs[:max_docs]
+                )
+            ]
+            longest_claim = max(claim_lines, key=len)
+            try:
+                evidence_docs = fit_context_docs(
+                    llm,
+                    str(answer),
+                    evidence_docs,
+                    lambda selected: build_verify_claim_prompt(
+                        longest_claim,
+                        "\n\n".join(str(doc["page_content"]) for doc in selected),
+                    ),
+                    role="verify",
+                    schema=_VERIFY_CLAIM_SCHEMA if structured_verify else None,
+                )
+            except ValueError as exc:
+                return _fact_verification_provider_fail_closed(
+                    state, exc, usage=usage if usage_recorded else None
+                )
+            context_text = "\n\n".join(str(doc["page_content"]) for doc in evidence_docs)
+
             claims_result: list[dict] = []
             for claim in claim_lines:
                 verify_prompt = build_verify_claim_prompt(claim, context_text)
-                if consensus_enabled and _llm_supports_structured_output(llm):
+                if structured_verify:
                     t0 = time.monotonic()
                     try:
                         structured = _invoke_with_schema(
                             llm,
                             verify_prompt,
-                            {
-                                "type": "object",
-                                "properties": {
-                                    "supported": {"type": "boolean"},
-                                    "evidence": {"type": "string"},
-                                },
-                                "required": ["supported", "evidence"],
-                                "additionalProperties": False,
-                            },
+                            _VERIFY_CLAIM_SCHEMA,
+                            role="verify",
                             reliability_level=reliability_level,
                         )
                     except Exception as exc:
@@ -2528,14 +2629,29 @@ def make_evaluate_node(
             llm = resolution.judge_llm
             model = _get_llm_model_name(llm) or model
             provider = _get_llm_provider_name(llm) or provider
+            from agent.context_window import fit_context_docs
+
             question = state.get("question", "")
             answer = state.get("answer") or ""
-            docs = state.get("graded_docs") or state.get("context_docs", []) or []
+            # The generator's view of the documents when it saw any.
+            docs = (
+                state.get("generation_context_docs")
+                or state.get("graded_docs")
+                or state.get("context_docs", [])
+                or []
+            )
             answer_for_eval = re.sub(r"\s*\[\d+\]", "", answer)
             answer_for_eval = re.sub(r"\s{2,}", " ", answer_for_eval).strip()
-            prompt = build_self_eval_prompt(
-                question=question, answer=answer_for_eval, context_docs=docs
+
+            def eval_prompt(selected: list[Any]) -> str:
+                return build_self_eval_prompt(
+                    question=question, answer=answer_for_eval, context_docs=selected
+                )
+
+            docs = fit_context_docs(
+                llm, f"{question} {answer_for_eval}", docs, eval_prompt, role="evaluate"
             )
+            prompt = eval_prompt(docs)
             usage = _new_llm_usage("evaluate")
             usage_recorded = False
             raw = ""
@@ -2860,6 +2976,7 @@ def make_rewrite_query_node(llm: SupportsInvoke) -> Callable[[GraphState], Graph
                 "iteration": iteration + 1,
                 "context_docs": [],
                 "graded_docs": [],
+                "generation_context_docs": None,
                 "answer": None,
                 "claims": [],
                 "factuality_score": 0,

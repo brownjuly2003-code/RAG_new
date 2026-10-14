@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import json
-import logging
 import time
 from collections.abc import AsyncIterator
 from typing import Any
@@ -15,8 +14,6 @@ from llm.providers.base import (
     parse_structured_output,
     window_input_limit,
 )
-
-logger = logging.getLogger(__name__)
 
 
 def _with_timeout_kwargs(kwargs: dict[str, Any], timeout_sec: float) -> list[dict[str, Any]]:
@@ -83,21 +80,19 @@ class OllamaProvider:
         self.supports_batch = False
 
     def _window_kwargs(self, prompt: str, kwargs: dict[str, Any]) -> dict[str, Any]:
-        """num_ctx/num_predict for one call; warn about a prompt the window cannot hold.
+        """num_ctx/num_predict for one call; refuse a prompt the window cannot hold.
 
-        Ollama drops the beginning of an oversized prompt without an error, and
-        the instructions and first sources go with it.
+        Ollama would drop the beginning of an oversized prompt without an error,
+        and the instructions and first sources with it. Callers fit their
+        context first (agent.context_window).
         """
         output_budget = int(kwargs.get("max_tokens") or 512)
         estimate = estimate_window_tokens(prompt)
         limit = window_input_limit(self.context_window, output_budget)
         if estimate > limit:
-            logger.warning(
-                "Ollama prompt of ~%d tokens exceeds the %d-token input limit of num_ctx=%d; "
-                "the model will not see its beginning",
-                estimate,
-                limit,
-                self.context_window,
+            raise ValueError(
+                f"Prompt of ~{estimate} tokens exceeds the model input window: "
+                f"{limit} tokens of num_ctx={self.context_window} are left for input"
             )
         # LangChain Ollama uses num_predict for completion length.
         gen_kwargs: dict[str, Any] = {"num_ctx": self.context_window, "num_predict": output_budget}

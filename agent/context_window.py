@@ -103,6 +103,57 @@ def _excerpt(text: str, question: str, max_tokens: int) -> str:
     return EXCERPT_GAP.join(chosen[i] for i in sorted(chosen))
 
 
+def fit_all_context_docs(
+    llm: Any,
+    question: str,
+    docs: list[dict[str, Any]],
+    build_prompt: Callable[[list[dict[str, Any]]], str],
+    *,
+    role: str,
+    schema: dict[str, Any] | None = None,
+) -> list[dict[str, Any]]:
+    """A view of every document, in order, that fits the window (for grading).
+
+    Each document gets an equal share of the room left by the instructions and
+    labels, cut to its paragraphs closest to the question, so the grader still
+    judges all of them under their original indices.
+    """
+    limit = prompt_input_limit(llm, role)
+    if limit is None or prompt_input_tokens(build_prompt(docs), schema) <= limit:
+        return docs
+    empty = [{**doc, "page_content": ""} for doc in docs]
+    available = limit - prompt_input_tokens(build_prompt(empty), schema)
+    if available < len(docs):
+        raise ValueError("Document labels and instructions exceed the model input window")
+
+    def pack(budget: int) -> list[dict[str, Any]]:
+        share, extra = divmod(budget, len(docs))
+        return [
+            {
+                **doc,
+                "page_content": _excerpt(
+                    str(doc.get("page_content") or ""), question, share + (index < extra)
+                ),
+            }
+            for index, doc in enumerate(docs)
+        ]
+
+    views = pack(available)
+    if prompt_input_tokens(build_prompt(views), schema) <= limit:
+        return views
+    # A builder that is not additive in its documents: search for the largest
+    # share that is measured to fit.
+    fitted, low, high = empty, 0, available - 1
+    while low <= high:
+        middle = (low + high) // 2
+        candidate = pack(middle)
+        if prompt_input_tokens(build_prompt(candidate), schema) <= limit:
+            fitted, low = candidate, middle + 1
+        else:
+            high = middle - 1
+    return fitted
+
+
 def fit_context_docs(
     llm: Any,
     question: str,

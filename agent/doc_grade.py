@@ -86,12 +86,19 @@ def replace_relevant_context_headers(
     return resolved
 
 
-def resolve_generation_context_docs(state: Mapping[str, Any]) -> list[Any]:
+def resolve_generation_context_docs(
+    state: Mapping[str, Any], *, use_generated: bool = False
+) -> list[Any]:
     """Select docs for answer generation without silent post-grade restore.
 
     If ``doc_grade_reason`` is set, grade_docs has run: use ``graded_docs``
     only (may be empty). Otherwise prefer non-empty graded, else context.
+    ``use_generated`` returns the view the generator actually saw, once
+    generate has recorded it.
     """
+    generated = state.get("generation_context_docs")
+    if use_generated and isinstance(generated, list):
+        return list(generated)
     if state.get("doc_grade_reason") is not None:
         return list(state.get("graded_docs") or [])
     graded = state.get("graded_docs")

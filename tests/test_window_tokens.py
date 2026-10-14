@@ -1,4 +1,4 @@
-"""Local-model input window: token estimate, num_ctx and the oversized-prompt warning.
+"""Local-model input window: token estimate, num_ctx and refusal before inference.
 
 No Ollama server or model is needed: the langchain binding is replaced by a
 recording fake. The pinned counts below are exact Qwen2.5 token counts of the
@@ -10,7 +10,6 @@ from __future__ import annotations
 
 import asyncio
 import json
-import logging
 import sys
 import types
 from unittest.mock import patch
@@ -133,24 +132,30 @@ def test_realistic_russian_prompt_fits_where_the_byte_bound_refused():
     assert state["prompt"].endswith(prompt)
 
 
-def test_oversized_prompt_is_logged_with_its_estimate(caplog):
+def test_oversized_prompt_is_refused_before_any_client_is_built():
     state = {}
     prompt = "\n\n".join([SAMPLES["ru_policy"]] * 40)
     with patch.dict(sys.modules, langchain_ollama=_recording_binding(state)):
-        with caplog.at_level(logging.WARNING, logger="llm.providers.ollama"):
+        with pytest.raises(ValueError, match="2636 tokens of num_ctx=4096"):
             _provider().generate([{"role": "user", "content": prompt}], max_tokens=1024)
-    assert "exceeds the 2636-token input limit of num_ctx=4096" in caplog.text
-    assert state["kwargs"]["num_ctx"] == 4096
+    assert state == {}
 
 
-def test_fitting_prompt_logs_nothing(caplog):
+def test_stream_refuses_an_oversized_prompt():
     state = {}
-    with patch.dict(sys.modules, langchain_ollama=_recording_binding(state)):
-        with caplog.at_level(logging.WARNING, logger="llm.providers.ollama"):
-            _provider().generate(
-                [{"role": "user", "content": _five_chunk_prompt()}], max_tokens=1024
+
+    async def collect(prompt):
+        return [
+            chunk
+            async for chunk in _provider().generate_stream(
+                [{"role": "user", "content": prompt}], max_tokens=1024
             )
-    assert "exceeds" not in caplog.text
+        ]
+
+    with patch.dict(sys.modules, langchain_ollama=_recording_binding(state)):
+        with pytest.raises(ValueError, match="input window"):
+            asyncio.run(collect("\n\n".join([SAMPLES["ru_policy"]] * 40)))
+    assert state == {}
 
 
 def test_stream_sends_window_and_output_budget():
