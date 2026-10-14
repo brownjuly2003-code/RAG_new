@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import logging
 import time
 from collections.abc import AsyncIterator
 from typing import Any
@@ -9,9 +10,13 @@ from llm.providers.base import (
     LLMResponse,
     calculate_cost,
     estimate_tokens,
+    estimate_window_tokens,
     flatten_messages,
     parse_structured_output,
+    window_input_limit,
 )
+
+logger = logging.getLogger(__name__)
 
 
 def _with_timeout_kwargs(kwargs: dict[str, Any], timeout_sec: float) -> list[dict[str, Any]]:
@@ -63,6 +68,7 @@ class OllamaProvider:
         timeout_sec: float,
         input_price_per_1m_tokens: float,
         output_price_per_1m_tokens: float,
+        context_window: int = 4096,
     ) -> None:
         self.provider_id = "ollama"
         self.model_name = model_name
@@ -70,10 +76,34 @@ class OllamaProvider:
         self._timeout_sec = timeout_sec
         self._input_price_per_1m_tokens = input_price_per_1m_tokens
         self._output_price_per_1m_tokens = output_price_per_1m_tokens
+        self.context_window = int(context_window)
         self.supports_tool_use = False
         self.supports_structured_output = False
         self.supports_streaming = False
         self.supports_batch = False
+
+    def _window_kwargs(self, prompt: str, kwargs: dict[str, Any]) -> dict[str, Any]:
+        """num_ctx/num_predict for one call; warn about a prompt the window cannot hold.
+
+        Ollama drops the beginning of an oversized prompt without an error, and
+        the instructions and first sources go with it.
+        """
+        output_budget = int(kwargs.get("max_tokens") or 512)
+        estimate = estimate_window_tokens(prompt)
+        limit = window_input_limit(self.context_window, output_budget)
+        if estimate > limit:
+            logger.warning(
+                "Ollama prompt of ~%d tokens exceeds the %d-token input limit of num_ctx=%d; "
+                "the model will not see its beginning",
+                estimate,
+                limit,
+                self.context_window,
+            )
+        # LangChain Ollama uses num_predict for completion length.
+        gen_kwargs: dict[str, Any] = {"num_ctx": self.context_window, "num_predict": output_budget}
+        if kwargs.get("temperature") is not None:
+            gen_kwargs["temperature"] = float(kwargs["temperature"])
+        return gen_kwargs
 
     def generate(
         self,
@@ -83,15 +113,9 @@ class OllamaProvider:
     ) -> LLMResponse:
         _ = tools
         prompt = flatten_messages(messages)
-        started = time.perf_counter()
-
         # Plan §3.1d: optional role generation params (ignored if constructor rejects).
-        gen_kwargs: dict[str, Any] = {}
-        if kwargs.get("temperature") is not None:
-            gen_kwargs["temperature"] = float(kwargs["temperature"])
-        if kwargs.get("max_tokens") is not None:
-            # LangChain Ollama uses num_predict for completion length.
-            gen_kwargs["num_predict"] = int(kwargs["max_tokens"])
+        gen_kwargs = self._window_kwargs(prompt, kwargs)
+        started = time.perf_counter()
 
         def _make(cls: Any) -> Any:
             base = {
@@ -263,8 +287,8 @@ class OllamaProvider:
         messages: list[dict[str, Any]],
         **kwargs: Any,
     ) -> AsyncIterator[str]:
-        _ = kwargs
         prompt = flatten_messages(messages)
+        gen_kwargs = self._window_kwargs(prompt, kwargs)
 
         try:
             from langchain_ollama import (
@@ -276,6 +300,7 @@ class OllamaProvider:
                 timeout_sec=self._timeout_sec,
                 model=self.model_name,
                 base_url=self._base_url,
+                **gen_kwargs,
             )
         except ImportError:
             from langchain_community.llms import Ollama as community_ollama_cls
@@ -285,6 +310,7 @@ class OllamaProvider:
                 timeout_sec=self._timeout_sec,
                 model=self.model_name,
                 base_url=self._base_url,
+                **gen_kwargs,
             )
 
         async for chunk in llm.astream(prompt):

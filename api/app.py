@@ -89,9 +89,12 @@ async def _stream_ollama(
     prompt: str,
     model: str,
     base_url: str,
+    options: dict[str, Any] | None = None,
 ) -> AsyncGenerator[str, None]:
     """Стримит токены из Ollama /api/generate."""
-    payload = {"model": model, "prompt": prompt, "stream": True}
+    payload: dict[str, Any] = {"model": model, "prompt": prompt, "stream": True}
+    if options:
+        payload["options"] = options
     timeout = httpx.Timeout(120.0, connect=5.0)
     async with httpx.AsyncClient(timeout=timeout) as client:
         async with client.stream("POST", f"{base_url}/api/generate", json=payload) as resp:

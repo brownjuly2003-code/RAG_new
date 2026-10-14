@@ -343,6 +343,11 @@ class Settings:
     ollama_base_url: str = field(
         default_factory=lambda: os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
     )
+    # Input window sent to Ollama as num_ctx on every call. Prompts are fitted
+    # under it; a larger value costs memory for the model's KV cache.
+    ollama_context_window: int = field(
+        default_factory=lambda: int(os.getenv("OLLAMA_CONTEXT_WINDOW", "4096"))
+    )
     ollama_model_name: str = field(
         default_factory=lambda: os.getenv("OLLAMA_MODEL_NAME", "qwen2.5:7b")
     )

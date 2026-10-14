@@ -54,8 +54,11 @@ def test_streaming_endpoint_emits_tokens_and_final_result(
             sessions[key] = FakeSession(tenant_id)
         return normalized, sessions[key]
 
-    async def _fake_stream_ollama(prompt: str, model_name: str, base_url: str):
+    stream_options: list[dict | None] = []
+
+    async def _fake_stream_ollama(prompt: str, model_name: str, base_url: str, options=None):
         _ = prompt, model_name, base_url
+        stream_options.append(options)
         for token in ("Сброс ", "пароля"):
             yield token
 
@@ -74,6 +77,8 @@ def test_streaming_endpoint_emits_tokens_and_final_result(
     assert events[0] == {"type": "status", "node": "processing"}
     assert any(event == {"type": "token_start"} for event in events)
     assert [event["token"] for event in events if event.get("type") == "token"] == ["Сброс ", "пароля"]
+    # The raw Ollama fallback gets the window and the generate role's budget.
+    assert stream_options == [{"num_ctx": 4096, "num_predict": 1024, "temperature": 0.2}]
 
     result = next(event for event in events if event.get("type") == "result")
     assert result["answer"] == "Сброс пароля"

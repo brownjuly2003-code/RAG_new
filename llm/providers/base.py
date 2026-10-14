@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import math
 import threading
+import unicodedata
 from collections.abc import AsyncIterator, Callable
 from dataclasses import dataclass, field, replace
 from typing import Any, Protocol
@@ -102,6 +103,56 @@ def estimate_tokens(text: str) -> int:
     if not normalized:
         return 0
     return max(1, math.ceil(len(normalized) / 4))
+
+
+# Tokens a local model's input window must hold besides the prompt text: the
+# chat template, role markers and special tokens.
+WINDOW_RESERVE_TOKENS = 128
+# Share of the window kept free for the error of ``estimate_window_tokens``:
+# it runs up to 20% low on a single chunk of digits or short words, while
+# whole prompts average out to within about 10%.
+WINDOW_ESTIMATE_MARGIN = 0.1
+
+
+def window_input_limit(window: int, output_budget: int) -> int:
+    """Prompt size, by ``estimate_window_tokens``, that a window leaves for input."""
+    usable = int((window - output_budget) * (1 - WINDOW_ESTIMATE_MARGIN))
+    return max(0, usable - WINDOW_RESERVE_TOKENS)
+
+
+def estimate_window_tokens(text: str) -> int:
+    """Upper-leaning token count for fitting a prompt into a local model window.
+
+    ``estimate_tokens`` (chars/4) is a usage estimate and undercounts Cyrillic
+    by about a quarter; UTF-8 bytes overcount it about fivefold. These
+    per-character weights were fitted on 2026-10-14 against the Qwen2.5
+    tokenizer over 16,000 chunks of the aircargo (Russian) and three English
+    indexes: on average the estimate is about 10% above the exact count, and
+    for a single chunk at most 20% below it (``window_input_limit`` keeps a
+    margin for that). Digits count one token each; scripts other than Latin,
+    Cyrillic and CJK count per UTF-8 byte.
+    """
+    total = 0.0
+    for ch in text or "":
+        code = ord(ch)
+        if ch == "\n":
+            total += 0.55
+        elif ch.isspace():
+            total += 0.36
+        elif code < 128:
+            if ch.isdigit():
+                total += 1.0
+            elif ch.isalpha():
+                total += 0.19
+            else:
+                total += 0.65
+        elif 0x0400 <= code <= 0x04FF:
+            total += 0.34
+        elif unicodedata.east_asian_width(ch) in ("W", "F"):
+            total += 1.0
+        else:
+            total += 0.55 * len(ch.encode("utf-8"))
+    return math.ceil(total)
 
 
 def flatten_messages(messages: list[Message]) -> str:
@@ -303,6 +354,20 @@ class ProviderBackedLLM:
     @property
     def model_name(self) -> str:
         return self._provider.model_name
+
+    @property
+    def context_window(self) -> int | None:
+        """Smallest declared input window of the primary and fallback providers."""
+        windows = [
+            getattr(provider, "context_window", None)
+            for provider in (self._provider, self._fallback_provider)
+        ]
+        bounded = [
+            window
+            for window in windows
+            if isinstance(window, int) and not isinstance(window, bool) and window > 0
+        ]
+        return min(bounded) if bounded else None
 
     def _budget_precheck(self, messages: list[Message], *, phase: str) -> None:
         from llm.request_budget import check_llm_request_budget

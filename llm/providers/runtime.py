@@ -63,6 +63,7 @@ def _instantiate_provider(settings: Any, provider_id: str, model_name: str) -> A
             input_price_per_1m_tokens=input_price,
             output_price_per_1m_tokens=output_price,
             timeout_sec=timeout_sec,
+            context_window=int(getattr(settings, "ollama_context_window", 4096)),
         )
         ollama_provider.supports_tool_use = provider_config.capabilities.supports_tool_use
         ollama_provider.supports_structured_output = provider_config.capabilities.supports_structured_output

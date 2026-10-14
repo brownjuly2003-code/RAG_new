@@ -14,6 +14,7 @@ from collections.abc import AsyncGenerator
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
+from types import SimpleNamespace
 from typing import Any, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Request
@@ -661,6 +662,41 @@ def _chunk_text_for_sse(text: str, *, chunk_size: int = 48) -> list[str]:
         return []
     size = max(1, int(chunk_size))
     return [body[i : i + size] for i in range(0, len(body), size)]
+
+
+def _fit_stream_prompt(
+    window_owner: Any,
+    question: str,
+    docs: list[dict[str, Any]],
+    chat_history: list[dict[str, str]],
+) -> tuple[str, list[dict[str, Any]]]:
+    """Direct-stream prompt and the documents it holds, fitted to the model window.
+
+    Oldest history turns go first while the top document does not fit beside
+    them; then the leading documents are kept (see ``fit_context_docs``). A
+    model without a declared window gets the prompt unchanged.
+    """
+    from agent.context_window import (  # noqa: PLC0415
+        fit_context_docs,
+        prompt_input_limit,
+        prompt_input_tokens,
+    )
+    from agent.prompts import build_conversational_qa_prompt, build_qa_prompt  # noqa: PLC0415
+
+    history = list(chat_history or [])
+
+    def build(selected: list[dict[str, Any]]) -> str:
+        if history:
+            return build_conversational_qa_prompt(
+                question=question, context_docs=selected, chat_history=history
+            )
+        return build_qa_prompt(question=question, context_docs=selected)
+
+    limit = prompt_input_limit(window_owner, "generate")
+    while history and limit is not None and prompt_input_tokens(build(docs[:1])) > limit:
+        history = history[1:]
+    fitted = fit_context_docs(window_owner, question, docs, build, role="generate")
+    return build(fitted), fitted
 
 
 def _graph_result_sources_and_citations(
@@ -1682,6 +1718,7 @@ async def ask_stream(
 
         try:
             prompt = ""
+            stream_retrieved = False
             docs: list[Any] = []
             plain_docs: list[dict[str, Any]] = []
             chat_history: list[dict[str, str]] = []
@@ -2072,11 +2109,6 @@ async def ask_stream(
                 elif isinstance(session, dict):
                     chat_history = session.get("history", [])
 
-                from agent.prompts import (  # noqa: PLC0415
-                    build_conversational_qa_prompt,
-                    build_qa_prompt,
-                )
-
                 plain_docs = []
                 for doc in docs[:5]:
                     if hasattr(doc, "page_content"):
@@ -2088,18 +2120,7 @@ async def ask_stream(
                         )
                     elif isinstance(doc, dict):
                         plain_docs.append(doc)
-
-                if chat_history:
-                    prompt = build_conversational_qa_prompt(
-                        question=question,
-                        context_docs=plain_docs,
-                        chat_history=chat_history,
-                    )
-                else:
-                    prompt = build_qa_prompt(question=question, context_docs=plain_docs)
-
-            if not prompt:
-                raise RuntimeError("streaming prompt unavailable")
+                stream_retrieved = True
 
             settings = _app.get_settings()
             full_answer = ""
@@ -2121,6 +2142,30 @@ async def ask_stream(
                             streaming_llm = candidate
                             break
 
+            uses_provider_stream = streaming_llm is not None and callable(
+                getattr(streaming_llm, "generate_stream", None)
+            )
+            # The raw Ollama fallback sends num_ctx from settings.
+            window_owner = (
+                streaming_llm
+                if uses_provider_stream
+                else SimpleNamespace(
+                    context_window=int(getattr(settings, "ollama_context_window", 4096))
+                )
+            )
+            if stream_retrieved:
+                # The model sees only what fits its input window; the sources,
+                # citations and self-eval below describe that same view.
+                prompt, plain_docs = _fit_stream_prompt(
+                    window_owner, question, plain_docs, chat_history
+                )
+                docs = plain_docs
+            if not prompt:
+                raise RuntimeError("streaming prompt unavailable")
+            from llm.role_params import generation_kwargs_for_role  # noqa: PLC0415
+
+            stream_params = generation_kwargs_for_role("generate")
+
             # Wall-clock budget for the token loop: without it a wedged model
             # holds the SSE connection (and now a pipeline slot) forever.
             stream_deadline = time.monotonic() + float(
@@ -2129,11 +2174,10 @@ async def ask_stream(
             stream_truncated = False
             yield "data: " + _json.dumps({"type": "token_start"}) + "\n\n"
             try:
-                if streaming_llm is not None and callable(
-                    getattr(streaming_llm, "generate_stream", None)
-                ):
+                if uses_provider_stream:
                     async for token in streaming_llm.generate_stream(
                         [{"role": "user", "content": prompt}],
+                        **stream_params,
                     ):
                         full_answer += token
                         yield (
@@ -2154,6 +2198,11 @@ async def ask_stream(
                         prompt,
                         settings.ollama_model_name,
                         settings.ollama_base_url,
+                        options={
+                            "num_ctx": window_owner.context_window,
+                            "num_predict": int(stream_params["max_tokens"]),
+                            "temperature": float(stream_params["temperature"]),
+                        },
                     ):
                         full_answer += token
                         yield (
@@ -2236,7 +2285,11 @@ async def ask_stream(
             quality_source = "heuristic"
             if bool(getattr(settings, "streaming_quality_eval", True)):
                 try:
-                    from agent.graph import LocalOllamaLLM, _parse_int_score  # noqa: PLC0415
+                    from agent.graph import (  # noqa: PLC0415
+                        LocalOllamaLLM,
+                        _invoke_llm,
+                        _parse_int_score,
+                    )
                     from agent.prompts import build_self_eval_prompt  # noqa: PLC0415
 
                     eval_llm = getattr(session, "_llm", None)
@@ -2245,15 +2298,28 @@ async def ask_stream(
                     if eval_llm is None:
                         eval_llm = LocalOllamaLLM(model_name=settings.ollama_model_name)
 
+                    from agent.context_window import fit_context_docs  # noqa: PLC0415
+
                     answer_for_eval = re.sub(r"\s*\[\d+\]", "", full_answer)
                     answer_for_eval = re.sub(r"\s{2,}", " ", answer_for_eval).strip()
-                    eval_prompt = build_self_eval_prompt(
-                        question=question,
-                        answer=answer_for_eval,
-                        context_docs=plain_docs,
+
+                    def _eval_prompt(selected: list[dict[str, Any]]) -> str:
+                        return build_self_eval_prompt(
+                            question=question, answer=answer_for_eval, context_docs=selected
+                        )
+
+                    eval_prompt = _eval_prompt(
+                        fit_context_docs(
+                            eval_llm,
+                            question + " " + answer_for_eval,
+                            plain_docs,
+                            _eval_prompt,
+                            role="evaluate",
+                        )
                     )
+                    # Evaluate-role limits: the context above was fitted to them.
                     raw_eval = await asyncio.get_running_loop().run_in_executor(
-                        None, eval_llm.invoke, eval_prompt
+                        None, lambda: _invoke_llm(eval_llm, eval_prompt, role="evaluate")
                     )
                     # "llm" provenance only when the model actually returned a
                     # numeric score; an unparseable reply keeps the heuristic
