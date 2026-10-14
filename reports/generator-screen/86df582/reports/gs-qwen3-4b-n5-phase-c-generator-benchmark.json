@@ -1,0 +1,1108 @@
+{
+  "schema_version": 1,
+  "kind": "phase-c-generator-benchmark",
+  "created_at": "2026-10-14T17:25:10.435606+00:00",
+  "evidence_class": "not_evidence",
+  "evidence_reasons": [
+    "run 1 num_cases=5 != expected_cases=100"
+  ],
+  "required_runs": 1,
+  "expected_cases": 100,
+  "provenance": {
+    "code_sha": "86df58272ddaf8f89f7b5ed6c5209703564169b0",
+    "code_tree_clean": true,
+    "dataset_path": "/Users/julia/genscreen_86df582/evaluation/curated_cases_aircargo.jsonl",
+    "dataset_sha256": "3737d694362d1867ca3d5983e3765d02c01110d2409145ba7e0f05c021d9c720",
+    "contexts_path": "/Users/julia/genscreen_86df582/.tmp/ab_candidates_phase2_C.json",
+    "contexts_sha256": "91ce1745e13ce24cc1b69d0655412385700f5028b4e6b4ed4bf056cb6188ff10",
+    "ollama_model": "qwen3:4b",
+    "ollama_model_digest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+    "ollama_model_metadata": {
+      "name": "qwen3:4b",
+      "digest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+      "size_bytes": 2497293931,
+      "modified_at": "2026-10-14T18:24:33.599425177+03:00",
+      "details": {
+        "parent_model": "",
+        "format": "gguf",
+        "family": "qwen3",
+        "families": [
+          "qwen3"
+        ],
+        "parameter_size": "4.0B",
+        "quantization_level": "Q4_K_M",
+        "context_length": 262144,
+        "embedding_length": 2560
+      }
+    },
+    "ollama_think": false,
+    "nli_model": "MoritzLaurer/mDeBERTa-v3-base-mnli-xnli",
+    "nli_revision": "8adb042d524ecd5c26d3e3ba0e3fbcf7e2d0864c",
+    "host": {
+      "platform": "macOS-13.7.8-x86_64-i386-64bit",
+      "python": "3.11.15",
+      "machine": "x86_64"
+    },
+    "config": {
+      "prompt_version": "aircargo-context-only-ru-v1",
+      "runs": 1,
+      "required_runs": 1,
+      "llm_judge": false,
+      "expected_cases": 100,
+      "selected_cases": 5,
+      "top_k_override": null,
+      "context_chars": 6000,
+      "allow_short_contexts": false,
+      "seed_base": 42,
+      "temperature": 0.0,
+      "num_ctx": 4096,
+      "num_predict": 384,
+      "think": false,
+      "nli_batch_size": 4,
+      "nli_support_threshold": 0.5
+    },
+    "ollama_runtime": {
+      "size_bytes": 3184001022,
+      "size_vram_bytes": 0,
+      "expires_at": "2026-10-14T20:53:16.699757+03:00"
+    },
+    "nli_process_peak_rss_bytes": 2127822848
+  },
+  "aggregate": {
+    "llm_faithfulness": {
+      "mean": null,
+      "ci_low": null,
+      "ci_high": null,
+      "n": 0,
+      "ci_method": "student-t-95"
+    },
+    "answer_relevancy": {
+      "mean": null,
+      "ci_low": null,
+      "ci_high": null,
+      "n": 0,
+      "ci_method": "student-t-95"
+    },
+    "context_precision": {
+      "mean": 0.61396,
+      "ci_low": 0.61396,
+      "ci_high": 0.61396,
+      "n": 1,
+      "ci_method": "student-t-95"
+    },
+    "context_recall": {
+      "mean": 1.0,
+      "ci_low": 1.0,
+      "ci_high": 1.0,
+      "n": 1,
+      "ci_method": "student-t-95"
+    },
+    "nli_faithfulness": {
+      "mean": 0.6001788919307971,
+      "ci_low": 0.6001788919307971,
+      "ci_high": 0.6001788919307971,
+      "n": 1,
+      "ci_method": "student-t-95"
+    },
+    "nli_supported_claim_rate": {
+      "mean": 0.5894444444444444,
+      "ci_low": 0.5894444444444444,
+      "ci_high": 0.5894444444444444,
+      "n": 1,
+      "ci_method": "student-t-95"
+    },
+    "mean_latency_ms": {
+      "mean": 87390.6,
+      "ci_low": 87390.6,
+      "ci_high": 87390.6,
+      "n": 1,
+      "ci_method": "student-t-95"
+    }
+  },
+  "runs": [
+    {
+      "run_index": 1,
+      "seed": 42,
+      "cases": [
+        {
+          "case_id": "aircargo-probation-data",
+          "query": "Какие данные нужны для ответа по испытательному сроку?",
+          "answer": "Хорошо, мне нужно ответить на вопрос пользователя о том, какие данные нужны для ответа по испытательному сроку. Давай посмотрю на предоставленный контекст.\n\nСначала в разделе FAQ по испытательному сроку в документе 07_faq_probation.md, вопрос 1 говорит, что нужны: должность, дата приема, условие в трудовом договоре, длительность испытания и результаты оценки.\n\nПотом в других разделах есть типовые запросы и правила ответа RAG-ассистента. Например, в шаблоне отчета об испытательном сроке указано, что обязательные поля шаблона нужно проверять, но в вопросе пользователя спрашивается именно данные, которые нужны для ответа.\n\nВ контексте ответа на вопрос 1 из FAQ прямо указано, что нужны те данные: должность, дата приема, условие в трудовом договоре, длительность испытания и результаты оценки. Другие разделы, например, типовые запросы, говорят о том, что для отчета нужны недостающие даты, документы и т.д., но в данном случае вопрос именно о данных, необходимых для ответа по испытательному сроку.\n\nПроверяю правила ответа RAG-ассистента: если ключевых фактов нет, нужно вернуть уточняющие вопросы, но в данном случае контекст уже предоставляет ответ на вопрос 1. То есть по вопросу пользователя \"Какие данные нужны для ответа по испытательному сроку?\" ответ из FAQ 1: должность, дата приема, услов",
+          "latency_ms": 98757,
+          "generation_valid": true,
+          "llm_judge_valid": false,
+          "nli_valid": true,
+          "error": "",
+          "scores": {
+            "faithfulness": null,
+            "answer_relevancy": null,
+            "context_precision": 0.6285,
+            "context_recall": 1.0
+          },
+          "judge_requests": {
+            "faithfulness": {
+              "status": "absent",
+              "score": null,
+              "reason": "not_requested",
+              "raw_text": null,
+              "request_sha256": "589e05bf3a522e08d199a9c5d5bb71b41de2ea9005290c8b66a9af762da72c0d",
+              "truncated": {
+                "context": true,
+                "answer": false
+              },
+              "original_lengths": {
+                "context": 3805,
+                "answer": 1305
+              },
+              "kappa_eligible": false
+            },
+            "answer_relevancy": {
+              "status": "absent",
+              "score": null,
+              "reason": "not_requested",
+              "raw_text": null,
+              "request_sha256": "0a51a3a09bcabd5a056389897c0ede91a144c676ebee12035c8ddc4c4f307f7a",
+              "truncated": {
+                "context": false,
+                "answer": false
+              },
+              "original_lengths": {
+                "context": 0,
+                "answer": 1305
+              },
+              "kappa_eligible": false
+            }
+          },
+          "context_count": 5,
+          "ollama_timing": {
+            "total_duration": 98741185611,
+            "load_duration": 4363567415,
+            "prompt_eval_count": 1342,
+            "prompt_eval_duration": 31649632000,
+            "eval_count": 384,
+            "eval_duration": 62713116000
+          },
+          "nli": {
+            "n_claims": 9,
+            "n_supported_claims": 6,
+            "supported_claim_rate": 0.6666666666666666,
+            "nli_faithfulness": 0.6139205365228312,
+            "claims": [
+              {
+                "claim": "Хорошо, мне нужно ответить на вопрос пользователя о том, какие данные нужны для ответа по испытательному сроку.",
+                "entailment_scores": [
+                  0.998013,
+                  0.991946,
+                  0.998436,
+                  0.998406,
+                  0.994278
+                ],
+                "best_entailment": 0.998436,
+                "supported": true
+              },
+              {
+                "claim": "Давай посмотрю на предоставленный контекст.",
+                "entailment_scores": [
+                  0.998786,
+                  0.998811,
+                  0.998801,
+                  0.998651,
+                  0.999017
+                ],
+                "best_entailment": 0.999017,
+                "supported": true
+              },
+              {
+                "claim": "Сначала в разделе FAQ по испытательному сроку в документе 07_faq_probation.md, вопрос 1 говорит, что нужны: должность, дата приема, условие в трудовом договоре, длительность испытания и результаты оценки.",
+                "entailment_scores": [
+                  0.997549,
+                  0.001022,
+                  0.000672,
+                  0.002391,
+                  0.001265
+                ],
+                "best_entailment": 0.997549,
+                "supported": true
+              },
+              {
+                "claim": "Потом в других разделах есть типовые запросы и правила ответа RAG-ассистента.",
+                "entailment_scores": [
+                  0.000239,
+                  0.000598,
+                  0.000403,
+                  0.000239,
+                  0.000379
+                ],
+                "best_entailment": 0.000598,
+                "supported": false
+              },
+              {
+                "claim": "Например, в шаблоне отчета об испытательном сроке указано, что обязательные поля шаблона нужно проверять, но в вопросе пользователя спрашивается именно данные, которые нужны для ответа.",
+                "entailment_scores": [
+                  0.000175,
+                  0.000352,
+                  0.000241,
+                  0.000472,
+                  0.000408
+                ],
+                "best_entailment": 0.000472,
+                "supported": false
+              },
+              {
+                "claim": "В контексте ответа на вопрос 1 из FAQ прямо указано, что нужны те данные: должность, дата приема, условие в трудовом договоре, длительность испытания и результаты оценки.",
+                "entailment_scores": [
+                  0.992236,
+                  0.032422,
+                  0.001593,
+                  0.85331,
+                  0.184644
+                ],
+                "best_entailment": 0.992236,
+                "supported": true
+              },
+              {
+                "claim": "Другие разделы, например, типовые запросы, говорят о том, что для отчета нужны недостающие даты, документы и т.д., но в данном случае вопрос именно о данных, необходимых для ответа по испытательному сроку.",
+                "entailment_scores": [
+                  0.000208,
+                  0.000533,
+                  0.000417,
+                  0.000666,
+                  0.000532
+                ],
+                "best_entailment": 0.000666,
+                "supported": false
+              },
+              {
+                "claim": "Проверяю правила ответа RAG-ассистента: если ключевых фактов нет, нужно вернуть уточняющие вопросы, но в данном случае контекст уже предоставляет ответ на вопрос 1.",
+                "entailment_scores": [
+                  0.000627,
+                  0.003837,
+                  0.000749,
+                  0.538184,
+                  0.001567
+                ],
+                "best_entailment": 0.538184,
+                "supported": true
+              },
+              {
+                "claim": "То есть по вопросу пользователя \"Какие данные нужны для ответа по испытательному сроку?\" ответ из FAQ 1: должность, дата приема, услов",
+                "entailment_scores": [
+                  0.998126,
+                  0.005,
+                  0.00126,
+                  0.000448,
+                  0.000878
+                ],
+                "best_entailment": 0.998126,
+                "supported": true
+              }
+            ]
+          }
+        },
+        {
+          "case_id": "aircargo-probation-extend",
+          "query": "Можно ли продлить испытательный срок сотруднику?",
+          "answer": "Хорошо, мне нужно ответить на вопрос пользователя о том, можно ли продлить испытательный срок сотруднику. Давай посмотрю на предоставленный контекст.\n\nСначала в документе 07_faq_probation.md в разделе Вопрос 4 говорится, что продление испытательного срока не допускается. Срок устанавливается при заключении договора в пределах ст. 70 ТК РФ, и периоды отсутствия не включаются в срок, но это не продление.\n\nПотом в документе 01_hr_probation_procedure.md в разделе Этап 5. Принятие решения указано, что вариант В — Нельзя продлить испытательный срок. Там тоже говорится, что продление не допускается, срок устанавливается при заключении договора и не может превышать ст. 70 ТК РФ. Если работник отсутствовал, это не включается в срок, не считается продлением.\n\nНо в документе 01_hr_pol_adaptation.md в разделе Этап 5. Финальная оценка испытательного срока указано, что возможные решения включают продление испытательного срока (не более 1 раза, максимум на 3 месяца). Тут есть противоречие: в одном месте говорится, что нельзя продлить, а в другом — можно.\n\nНужно разобраться, какой из документов правильный. Возможно, в разных документах разные аспекты. В первом документе FAQ ответ на вопрос 4 — нельзя.",
+          "latency_ms": 86006,
+          "generation_valid": true,
+          "llm_judge_valid": false,
+          "nli_valid": true,
+          "error": "",
+          "scores": {
+            "faithfulness": null,
+            "answer_relevancy": null,
+            "context_precision": 0.6058,
+            "context_recall": 1.0
+          },
+          "judge_requests": {
+            "faithfulness": {
+              "status": "absent",
+              "score": null,
+              "reason": "not_requested",
+              "raw_text": null,
+              "request_sha256": "f1a60b37bcd42b4909b1f198fc13d553a2c3f9a7651019dffd41cc4b31460d64",
+              "truncated": {
+                "context": true,
+                "answer": false
+              },
+              "original_lengths": {
+                "context": 3233,
+                "answer": 1204
+              },
+              "kappa_eligible": false
+            },
+            "answer_relevancy": {
+              "status": "absent",
+              "score": null,
+              "reason": "not_requested",
+              "raw_text": null,
+              "request_sha256": "e0571a45fb06a0853f01d7c3954dbe52b768e10b2c18b085ffb367ef662509eb",
+              "truncated": {
+                "context": false,
+                "answer": false
+              },
+              "original_lengths": {
+                "context": 0,
+                "answer": 1204
+              },
+              "kappa_eligible": false
+            }
+          },
+          "context_count": 5,
+          "ollama_timing": {
+            "total_duration": 85975692507,
+            "load_duration": 1215111,
+            "prompt_eval_count": 1217,
+            "prompt_eval_duration": 26205698000,
+            "eval_count": 384,
+            "eval_duration": 59591879000
+          },
+          "nli": {
+            "n_claims": 16,
+            "n_supported_claims": 14,
+            "supported_claim_rate": 0.875,
+            "nli_faithfulness": 0.8456791268836241,
+            "claims": [
+              {
+                "claim": "Хорошо, мне нужно ответить на вопрос пользователя о том, можно ли продлить испытательный срок сотруднику.",
+                "entailment_scores": [
+                  0.998647,
+                  0.111499,
+                  0.084863,
+                  0.000484,
+                  0.023347
+                ],
+                "best_entailment": 0.998647,
+                "supported": true
+              },
+              {
+                "claim": "Давай посмотрю на предоставленный контекст.",
+                "entailment_scores": [
+                  0.9984,
+                  0.992287,
+                  0.998096,
+                  0.99751,
+                  0.997396
+                ],
+                "best_entailment": 0.9984,
+                "supported": true
+              },
+              {
+                "claim": "Сначала в документе 07_faq_probation.md в разделе Вопрос 4 говорится, что продление испытательного срока не допускается.",
+                "entailment_scores": [
+                  0.995172,
+                  0.000456,
+                  0.000364,
+                  0.000186,
+                  0.000166
+                ],
+                "best_entailment": 0.995172,
+                "supported": true
+              },
+              {
+                "claim": "Срок устанавливается при заключении договора в пределах ст.",
+                "entailment_scores": [
+                  0.996568,
+                  0.998631,
+                  0.99255,
+                  0.002527,
+                  0.990538
+                ],
+                "best_entailment": 0.998631,
+                "supported": true
+              },
+              {
+                "claim": "70 ТК РФ, и периоды отсутствия не включаются в срок, но это не продление.",
+                "entailment_scores": [
+                  0.998732,
+                  0.997539,
+                  0.000354,
+                  0.000305,
+                  0.000191
+                ],
+                "best_entailment": 0.998732,
+                "supported": true
+              },
+              {
+                "claim": "Потом в документе 01_hr_probation_procedure.md в разделе Этап 5.",
+                "entailment_scores": [
+                  0.000334,
+                  0.990456,
+                  0.317442,
+                  0.000251,
+                  0.009586
+                ],
+                "best_entailment": 0.990456,
+                "supported": true
+              },
+              {
+                "claim": "Принятие решения указано, что вариант В — Нельзя продлить испытательный срок.",
+                "entailment_scores": [
+                  0.957441,
+                  0.998876,
+                  8.5e-05,
+                  0.007096,
+                  0.000129
+                ],
+                "best_entailment": 0.998876,
+                "supported": true
+              },
+              {
+                "claim": "Там тоже говорится, что продление не допускается, срок устанавливается при заключении договора и не может превышать ст.",
+                "entailment_scores": [
+                  0.998502,
+                  0.99868,
+                  8.9e-05,
+                  0.00077,
+                  9.2e-05
+                ],
+                "best_entailment": 0.99868,
+                "supported": true
+              },
+              {
+                "claim": "70 ТК РФ.",
+                "entailment_scores": [
+                  0.029802,
+                  0.556579,
+                  0.003143,
+                  0.000258,
+                  0.00875
+                ],
+                "best_entailment": 0.556579,
+                "supported": true
+              },
+              {
+                "claim": "Если работник отсутствовал, это не включается в срок, не считается продлением.",
+                "entailment_scores": [
+                  0.998935,
+                  0.997542,
+                  0.000226,
+                  0.000478,
+                  0.000572
+                ],
+                "best_entailment": 0.998935,
+                "supported": true
+              },
+              {
+                "claim": "Но в документе 01_hr_pol_adaptation.md в разделе Этап 5.",
+                "entailment_scores": [
+                  0.001035,
+                  0.068045,
+                  0.972934,
+                  0.000302,
+                  0.006739
+                ],
+                "best_entailment": 0.972934,
+                "supported": true
+              },
+              {
+                "claim": "Финальная оценка испытательного срока указано, что возможные решения включают продление испытательного срока (не более 1 раза, максимум на 3 месяца).",
+                "entailment_scores": [
+                  0.000358,
+                  0.001165,
+                  0.998836,
+                  0.008334,
+                  0.068809
+                ],
+                "best_entailment": 0.998836,
+                "supported": true
+              },
+              {
+                "claim": "Тут есть противоречие: в одном месте говорится, что нельзя продлить, а в другом — можно.",
+                "entailment_scores": [
+                  0.995162,
+                  0.997414,
+                  0.257209,
+                  0.227878,
+                  0.333141
+                ],
+                "best_entailment": 0.997414,
+                "supported": true
+              },
+              {
+                "claim": "Нужно разобраться, какой из документов правильный.",
+                "entailment_scores": [
+                  0.000875,
+                  0.00083,
+                  0.000487,
+                  0.000399,
+                  0.002494
+                ],
+                "best_entailment": 0.002494,
+                "supported": false
+              },
+              {
+                "claim": "Возможно, в разных документах разные аспекты.",
+                "entailment_scores": [
+                  0.000768,
+                  0.007614,
+                  0.998538,
+                  0.002551,
+                  0.431837
+                ],
+                "best_entailment": 0.998538,
+                "supported": true
+              },
+              {
+                "claim": "В первом документе FAQ ответ на вопрос 4 — нельзя.",
+                "entailment_scores": [
+                  0.027542,
+                  0.000589,
+                  0.000342,
+                  0.000491,
+                  0.000229
+                ],
+                "best_entailment": 0.027542,
+                "supported": false
+              }
+            ]
+          }
+        },
+        {
+          "case_id": "aircargo-probation-dismissal",
+          "query": "Что важно для увольнения по результатам испытательного срока?",
+          "answer": "Хорошо, мне нужно ответить на вопрос пользователя о том, что важно для увольнения по результатам испытательного срока, строго на основе предоставленного контекста. Давай посмотрю на контекст.\n\nСначала в разделе FAQ по испытательному сроку (документ 07_faq_probation.md) в вопросе 3 говорится: Нужны документированные критерии, факты неудовлетворительной работы и соблюдение срока уведомления.\n\nПотом в документе 01_hr_probation_procedure.md раздел \"Риски и ограничения\" упоминается, что кадровое решение без письменного основания, согласия или фиксации ознакомления недопустимо. Также есть пункт о том, что увольнение должно быть без запрещенных периодов и без окончательного расчета.\n\nВ разделе \"Порядок действий\" в документе 01_hr_probation_procedure.md этап 5 говорит о том, что нужно организовать вручение под роспись, готовить приказ об увольнении и производить окончательный расчет в день увольнения.\n\nЕщё в документе 02_hr_tmp_probation_report.md в разделе \"Рассмотрение и согласование\" указано, что при отрицательной рекомендации оформляется приказ об увольнении по ст. 71 ТК РФ.\n\nТакже в разделе \"Порядок действий\" есть вариант В: Нельзя продлить испытательный срок, и упоминается, что",
+          "latency_ms": 83602,
+          "generation_valid": true,
+          "llm_judge_valid": false,
+          "nli_valid": true,
+          "error": "",
+          "scores": {
+            "faithfulness": null,
+            "answer_relevancy": null,
+            "context_precision": 0.5645,
+            "context_recall": 1.0
+          },
+          "judge_requests": {
+            "faithfulness": {
+              "status": "absent",
+              "score": null,
+              "reason": "not_requested",
+              "raw_text": null,
+              "request_sha256": "246fb966e0a64a9ed0a3953f5df49bffbdde4c3d1784f22ed02374cfffada20f",
+              "truncated": {
+                "context": true,
+                "answer": false
+              },
+              "original_lengths": {
+                "context": 3069,
+                "answer": 1194
+              },
+              "kappa_eligible": false
+            },
+            "answer_relevancy": {
+              "status": "absent",
+              "score": null,
+              "reason": "not_requested",
+              "raw_text": null,
+              "request_sha256": "4c85979de71816697508fb66212ac9f87709ca784cd44dcd8a91e47398b1a635",
+              "truncated": {
+                "context": false,
+                "answer": false
+              },
+              "original_lengths": {
+                "context": 0,
+                "answer": 1194
+              },
+              "kappa_eligible": false
+            }
+          },
+          "context_count": 5,
+          "ollama_timing": {
+            "total_duration": 83578149947,
+            "load_duration": 1470003,
+            "prompt_eval_count": 1158,
+            "prompt_eval_duration": 24560390000,
+            "eval_count": 384,
+            "eval_duration": 58832570000
+          },
+          "nli": {
+            "n_claims": 9,
+            "n_supported_claims": 5,
+            "supported_claim_rate": 0.5555555555555556,
+            "nli_faithfulness": 0.6188454125076532,
+            "claims": [
+              {
+                "claim": "Хорошо, мне нужно ответить на вопрос пользователя о том, что важно для увольнения по результатам испытательного срока, строго на основе предоставленного контекста.",
+                "entailment_scores": [
+                  0.437943,
+                  0.34991,
+                  0.021154,
+                  0.025279,
+                  0.011636
+                ],
+                "best_entailment": 0.437943,
+                "supported": false
+              },
+              {
+                "claim": "Давай посмотрю на контекст.",
+                "entailment_scores": [
+                  0.998472,
+                  0.998315,
+                  0.997428,
+                  0.997504,
+                  0.986056
+                ],
+                "best_entailment": 0.998472,
+                "supported": true
+              },
+              {
+                "claim": "Сначала в разделе FAQ по испытательному сроку (документ 07_faq_probation.md) в вопросе 3 говорится: Нужны документированные критерии, факты неудовлетворительной работы и соблюдение срока уведомления.",
+                "entailment_scores": [
+                  0.993089,
+                  0.000636,
+                  0.000257,
+                  0.00034,
+                  0.000419
+                ],
+                "best_entailment": 0.993089,
+                "supported": true
+              },
+              {
+                "claim": "Потом в документе 01_hr_probation_procedure.md раздел \"Риски и ограничения\" упоминается, что кадровое решение без письменного основания, согласия или фиксации ознакомления недопустимо.",
+                "entailment_scores": [
+                  0.000447,
+                  0.998356,
+                  0.000309,
+                  0.000321,
+                  0.013164
+                ],
+                "best_entailment": 0.998356,
+                "supported": true
+              },
+              {
+                "claim": "Также есть пункт о том, что увольнение должно быть без запрещенных периодов и без окончательного расчета.",
+                "entailment_scores": [
+                  0.000169,
+                  0.982596,
+                  0.000174,
+                  0.000194,
+                  0.000542
+                ],
+                "best_entailment": 0.982596,
+                "supported": true
+              },
+              {
+                "claim": "В разделе \"Порядок действий\" в документе 01_hr_probation_procedure.md этап 5 говорит о том, что нужно организовать вручение под роспись, готовить приказ об увольнении и производить окончательный расчет в день увольнения.",
+                "entailment_scores": [
+                  0.000135,
+                  0.000748,
+                  0.000419,
+                  0.000191,
+                  0.997521
+                ],
+                "best_entailment": 0.997521,
+                "supported": true
+              },
+              {
+                "claim": "Ещё в документе 02_hr_tmp_probation_report.md в разделе \"Рассмотрение и согласование\" указано, что при отрицательной рекомендации оформляется приказ об увольнении по ст.",
+                "entailment_scores": [
+                  0.000622,
+                  0.000704,
+                  0.000277,
+                  0.101522,
+                  0.000515
+                ],
+                "best_entailment": 0.101522,
+                "supported": false
+              },
+              {
+                "claim": "71 ТК РФ.",
+                "entailment_scores": [
+                  0.000312,
+                  0.035253,
+                  0.000584,
+                  0.006227,
+                  0.003596
+                ],
+                "best_entailment": 0.035253,
+                "supported": false
+              },
+              {
+                "claim": "Также в разделе \"Порядок действий\" есть вариант В: Нельзя продлить испытательный срок, и упоминается, что",
+                "entailment_scores": [
+                  0.000195,
+                  0.000488,
+                  0.000189,
+                  0.000298,
+                  0.024858
+                ],
+                "best_entailment": 0.024858,
+                "supported": false
+              }
+            ]
+          }
+        },
+        {
+          "case_id": "aircargo-dismissal-check",
+          "query": "Что проверить перед ответом об увольнении работника?",
+          "answer": "Хорошо, мне нужно ответить на вопрос пользователя о том, что проверить перед ответом об увольнении работника. Давай посмотрю на предоставленный контекст.\n\nСначала вижу, что в документе 07_faq_dismissal.md раздел \"Вопросы и ответы\" есть вопрос 1: \"Что проверить перед ответом об увольнении?\" Ответ там: Основание увольнения, дату последнего рабочего дня, заявления, соглашения, приказы и расчетные выплаты.\n\nПотом есть другие документы с правилами ответа RAG-ассистента, но в вопросе пользователя спрашивается именно то, что проверить перед ответом об увольнении. В первом контексте уже есть прямой ответ на этот вопрос из FAQ. То есть в разделе FAQ по увольнению в документе 07_faq_dismissal.md ответ на вопрос 1 уже указан.\n\nДругие документы (01_hr_dismissal_procedure.md, 02_hr_tmp_resignation_letter.md и т.д.) описывают правила ответа RAG-ассистента, но в данном случае вопрос пользователя касается конкретного списка проверок, который уже приведен в FAQ. Поскольку в контексте есть прямой ответ на вопрос, то нужно его использовать.\n\nВажно не добавлять дополнительную информацию, только кратко по делу на русском. В ответе из FAQ указано: Основание увольнения, дату последнего рабочего дня, заявления, соглашения, приказы и расчетные выплаты.",
+          "latency_ms": 99930,
+          "generation_valid": true,
+          "llm_judge_valid": false,
+          "nli_valid": true,
+          "error": "",
+          "scores": {
+            "faithfulness": null,
+            "answer_relevancy": null,
+            "context_precision": 0.7318,
+            "context_recall": 1.0
+          },
+          "judge_requests": {
+            "faithfulness": {
+              "status": "absent",
+              "score": null,
+              "reason": "not_requested",
+              "raw_text": null,
+              "request_sha256": "e7b5d3b2b15ea3e45f52a65728d6d80fea18a936ee29c1f8eca1b17989a6bfb9",
+              "truncated": {
+                "context": true,
+                "answer": false
+              },
+              "original_lengths": {
+                "context": 3979,
+                "answer": 1247
+              },
+              "kappa_eligible": false
+            },
+            "answer_relevancy": {
+              "status": "absent",
+              "score": null,
+              "reason": "not_requested",
+              "raw_text": null,
+              "request_sha256": "e964a867c33f222afa81af841d9d85eb490d8a7f06603558eaa7af74eaa78c70",
+              "truncated": {
+                "context": false,
+                "answer": false
+              },
+              "original_lengths": {
+                "context": 0,
+                "answer": 1247
+              },
+              "kappa_eligible": false
+            }
+          },
+          "context_count": 5,
+          "ollama_timing": {
+            "total_duration": 99915668121,
+            "load_duration": 1138208,
+            "prompt_eval_count": 1451,
+            "prompt_eval_duration": 33240737000,
+            "eval_count": 384,
+            "eval_duration": 66509755000
+          },
+          "nli": {
+            "n_claims": 10,
+            "n_supported_claims": 6,
+            "supported_claim_rate": 0.6,
+            "nli_faithfulness": 0.5988082381343702,
+            "claims": [
+              {
+                "claim": "Хорошо, мне нужно ответить на вопрос пользователя о том, что проверить перед ответом об увольнении работника.",
+                "entailment_scores": [
+                  0.997901,
+                  0.997975,
+                  0.997552,
+                  0.998765,
+                  0.997254
+                ],
+                "best_entailment": 0.998765,
+                "supported": true
+              },
+              {
+                "claim": "Давай посмотрю на предоставленный контекст.",
+                "entailment_scores": [
+                  0.998914,
+                  0.998956,
+                  0.999021,
+                  0.998839,
+                  0.999023
+                ],
+                "best_entailment": 0.999023,
+                "supported": true
+              },
+              {
+                "claim": "Сначала вижу, что в документе 07_faq_dismissal.md раздел \"Вопросы и ответы\" есть вопрос 1: \"Что проверить перед ответом об увольнении?\" Ответ там: Основание увольнения, дату последнего рабочего дня, заявления, соглашения, приказы и расчетные выплаты.",
+                "entailment_scores": [
+                  0.998443,
+                  0.005747,
+                  0.001367,
+                  0.002311,
+                  0.001363
+                ],
+                "best_entailment": 0.998443,
+                "supported": true
+              },
+              {
+                "claim": "Потом есть другие документы с правилами ответа RAG-ассистента, но в вопросе пользователя спрашивается именно то, что проверить перед ответом об увольнении.",
+                "entailment_scores": [
+                  0.000273,
+                  0.000961,
+                  0.000782,
+                  0.987488,
+                  0.000826
+                ],
+                "best_entailment": 0.987488,
+                "supported": true
+              },
+              {
+                "claim": "В первом контексте уже есть прямой ответ на этот вопрос из FAQ.",
+                "entailment_scores": [
+                  0.000334,
+                  8.5e-05,
+                  8.6e-05,
+                  0.000145,
+                  8.5e-05
+                ],
+                "best_entailment": 0.000334,
+                "supported": false
+              },
+              {
+                "claim": "То есть в разделе FAQ по увольнению в документе 07_faq_dismissal.md ответ на вопрос 1 уже указан.",
+                "entailment_scores": [
+                  0.994646,
+                  0.00038,
+                  0.001503,
+                  0.081477,
+                  0.00074
+                ],
+                "best_entailment": 0.994646,
+                "supported": true
+              },
+              {
+                "claim": "Другие документы (01_hr_dismissal_procedure.md, 02_hr_tmp_resignation_letter.md и т.д.) описывают правила ответа RAG-ассистента, но в данном случае вопрос пользователя касается конкретного списка проверок, который уже приведен в FAQ.",
+                "entailment_scores": [
+                  0.000226,
+                  0.000298,
+                  0.000318,
+                  0.000903,
+                  0.000292
+                ],
+                "best_entailment": 0.000903,
+                "supported": false
+              },
+              {
+                "claim": "Поскольку в контексте есть прямой ответ на вопрос, то нужно его использовать.",
+                "entailment_scores": [
+                  0.001789,
+                  0.000721,
+                  0.001062,
+                  0.000727,
+                  0.001181
+                ],
+                "best_entailment": 0.001789,
+                "supported": false
+              },
+              {
+                "claim": "Важно не добавлять дополнительную информацию, только кратко по делу на русском.",
+                "entailment_scores": [
+                  8.4e-05,
+                  0.002249,
+                  0.00043,
+                  0.007862,
+                  0.000433
+                ],
+                "best_entailment": 0.007862,
+                "supported": false
+              },
+              {
+                "claim": "В ответе из FAQ указано: Основание увольнения, дату последнего рабочего дня, заявления, соглашения, приказы и расчетные выплаты.",
+                "entailment_scores": [
+                  0.998262,
+                  0.997548,
+                  0.996325,
+                  0.998829,
+                  0.996804
+                ],
+                "best_entailment": 0.998829,
+                "supported": true
+              }
+            ]
+          }
+        },
+        {
+          "case_id": "aircargo-dismissal-lawyer",
+          "query": "В каких случаях при увольнении нужен юрист?",
+          "answer": "Хорошо, мне нужно ответить на вопрос пользователя о том, в каких случаях при увольнении нужен юрист, строго на основе предоставленного контекста. Давай посмотрю на контекст.\n\nВ первом контексте, из документа 07_faq_dismissal.md, раздел Вопрос 2: \"Когда нужен юрист?\" Ответ говорит, что при увольнении по инициативе работодателя, споре о дисциплине, сокращении, материальной ответственности или защищенной категории работника.\n\nДалее в других документах (02_hr_tmp_reference_letter_template.md, 02_hr_tmp_sick_leave_procedure.md, 02_hr_tmp_internship_agreement.md, 02_hr_tmp_material_liability_agreement.md) в разделе \"Область применения\" указано, что юрист подключается при увольнении, материальной ответственности, NDA, удалённой работе, спорных условиях или защищённой категории работника.\n\nНо в вопросе пользователя спрашивается именно о случаях при увольнении. То есть нужно выделить из контекста, когда при увольнении нужен юрист.\n\nВ первом контексте ответ на вопрос 2 прямо указывает: при увольнении по инициативе работодателя, споре о дисциплине, сокращении, материальной ответственности или защищенной категории работника.\n\nВ других документах также говорится, что юрист подключается при увольнении, но в контексте других разделов это часть общего списка",
+          "latency_ms": 68658,
+          "generation_valid": true,
+          "llm_judge_valid": false,
+          "nli_valid": true,
+          "error": "",
+          "scores": {
+            "faithfulness": null,
+            "answer_relevancy": null,
+            "context_precision": 0.5392,
+            "context_recall": 1.0
+          },
+          "judge_requests": {
+            "faithfulness": {
+              "status": "absent",
+              "score": null,
+              "reason": "not_requested",
+              "raw_text": null,
+              "request_sha256": "717368a71627b356af7cc8cfa10ff27a995b6ddf105e6bef3c90863c71325e81",
+              "truncated": {
+                "context": false,
+                "answer": false
+              },
+              "original_lengths": {
+                "context": 2012,
+                "answer": 1262
+              },
+              "kappa_eligible": false
+            },
+            "answer_relevancy": {
+              "status": "absent",
+              "score": null,
+              "reason": "not_requested",
+              "raw_text": null,
+              "request_sha256": "5e609e7f00b035c9c9597aecdca4fa1711e9db42930fa58f69bf238f47cbf932",
+              "truncated": {
+                "context": false,
+                "answer": false
+              },
+              "original_lengths": {
+                "context": 0,
+                "answer": 1262
+              },
+              "kappa_eligible": false
+            }
+          },
+          "context_count": 5,
+          "ollama_timing": {
+            "total_duration": 68645512016,
+            "load_duration": 1109317,
+            "prompt_eval_count": 786,
+            "prompt_eval_duration": 15683437000,
+            "eval_count": 384,
+            "eval_duration": 52783366000
+          },
+          "nli": {
+            "n_claims": 8,
+            "n_supported_claims": 2,
+            "supported_claim_rate": 0.25,
+            "nli_faithfulness": 0.3236411456055066,
+            "claims": [
+              {
+                "claim": "Хорошо, мне нужно ответить на вопрос пользователя о том, в каких случаях при увольнении нужен юрист, строго на основе предоставленного контекста.",
+                "entailment_scores": [
+                  0.225195,
+                  0.00252,
+                  0.003389,
+                  0.002909,
+                  0.002189
+                ],
+                "best_entailment": 0.225195,
+                "supported": false
+              },
+              {
+                "claim": "Давай посмотрю на контекст.",
+                "entailment_scores": [
+                  0.998716,
+                  0.998264,
+                  0.998304,
+                  0.998029,
+                  0.998204
+                ],
+                "best_entailment": 0.998716,
+                "supported": true
+              },
+              {
+                "claim": "В первом контексте, из документа 07_faq_dismissal.md, раздел Вопрос 2: \"Когда нужен юрист?\" Ответ говорит, что при увольнении по инициативе работодателя, споре о дисциплине, сокращении, материальной ответственности или защищенной категории работника.",
+                "entailment_scores": [
+                  0.36233,
+                  0.001058,
+                  0.000921,
+                  0.000815,
+                  0.001352
+                ],
+                "best_entailment": 0.36233,
+                "supported": false
+              },
+              {
+                "claim": "Далее в других документах (02_hr_tmp_reference_letter_template.md, 02_hr_tmp_sick_leave_procedure.md, 02_hr_tmp_internship_agreement.md, 02_hr_tmp_material_liability_agreement.md) в разделе \"Область применения\" указано, что юрист подключается при увольнении, материальной ответственности, NDA, удалённой работе, спорных условиях или защищённой категории работника.",
+                "entailment_scores": [
+                  0.000941,
+                  0.000399,
+                  0.000421,
+                  0.000451,
+                  0.000417
+                ],
+                "best_entailment": 0.000941,
+                "supported": false
+              },
+              {
+                "claim": "Но в вопросе пользователя спрашивается именно о случаях при увольнении.",
+                "entailment_scores": [
+                  0.000274,
+                  0.000156,
+                  0.000164,
+                  0.000163,
+                  0.000157
+                ],
+                "best_entailment": 0.000274,
+                "supported": false
+              },
+              {
+                "claim": "То есть нужно выделить из контекста, когда при увольнении нужен юрист.",
+                "entailment_scores": [
+                  0.996981,
+                  0.001275,
+                  0.002421,
+                  0.001967,
+                  0.001061
+                ],
+                "best_entailment": 0.996981,
+                "supported": true
+              },
+              {
+                "claim": "В первом контексте ответ на вопрос 2 прямо указывает: при увольнении по инициативе работодателя, споре о дисциплине, сокращении, материальной ответственности или защищенной категории работника.",
+                "entailment_scores": [
+                  0.004424,
+                  0.00089,
+                  0.000842,
+                  0.000745,
+                  0.000639
+                ],
+                "best_entailment": 0.004424,
+                "supported": false
+              },
+              {
+                "claim": "В других документах также говорится, что юрист подключается при увольнении, но в контексте других разделов это часть общего списка",
+                "entailment_scores": [
+                  0.00024,
+                  0.00026,
+                  0.000265,
+                  0.000268,
+                  0.000262
+                ],
+                "best_entailment": 0.000268,
+                "supported": false
+              }
+            ]
+          }
+        }
+      ],
+      "num_cases": 5,
+      "failed_cases": 0,
+      "case_ids": [
+        "aircargo-probation-data",
+        "aircargo-probation-extend",
+        "aircargo-probation-dismissal",
+        "aircargo-dismissal-check",
+        "aircargo-dismissal-lawyer"
+      ],
+      "aggregate": {
+        "llm_faithfulness": null,
+        "answer_relevancy": null,
+        "context_precision": 0.61396,
+        "context_recall": 1.0,
+        "nli_faithfulness": 0.6001788919307971,
+        "nli_supported_claim_rate": 0.5894444444444444,
+        "mean_latency_ms": 87390.6
+      },
+      "answer_metrics_evidence": "not_requested"
+    }
+  ]
+}

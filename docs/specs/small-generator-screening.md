@@ -1,6 +1,9 @@
 # Generators below 7B on the production Mac: pre-registration and plan
 
-Status 2026-10-14: **registered, running; one row replaced before its first answer**
+Status 2026-10-14: **generated and checked; the judge pending.** The three generators ran
+their 100 cases (record `reports/generator-screen/86df582/`, EVIDENCE_INDEX); the judge's
+plan is frozen, and 99 of its 165 requests were made before the stream was stopped when the
+laptop ran low on memory. One row was replaced before its first answer
 ([amendment](#amendment-2026-10-14)). This plan fixes the generators, the contract,
 the judge, the sample and the order of the runs before any answer of a generator below
 7B was produced or graded.
@@ -56,6 +59,10 @@ is what the row was registered to measure: a 4B Qwen3 answering with thinking of
 Ollama reports a thinking capability for it, so it runs with `--no-think` like the other
 Qwen3 row; the model itself does not think. The replacement and its runner
 (`run_screen2.sh`) were fixed before its download; the progress log times every step.
+Added after the runs: the amendment's commit `cfb78ee` is dated 17:31:22 UTC, about eight
+seconds after the replacement's first answer had come back and before it was read; the
+runner, which names the replacement, started its download at 17:25:14 and its 1-case step
+at 17:30:31, which took 42.5 s.
 The two steps of the thinking tag are published with the screening as a finding and are
 not graded; nothing else in this plan changes.
 

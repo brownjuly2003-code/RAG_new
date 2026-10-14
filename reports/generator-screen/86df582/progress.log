@@ -1,0 +1,26 @@
+2026-10-14T15:55:28Z START gs-qwen25-1p5b-n5
+  cases 5/5 runner exit 1 failed 0 []; median latency 23.7 s, read 112.8 tok/s, write 18.6 tok/s
+2026-10-14T15:58:25Z START gs-qwen25-1p5b-n100
+  cases 100/100 runner exit 0 failed 0 []; median latency 13.9 s, read 126.5 tok/s, write 20.4 tok/s
+2026-10-14T16:36:04Z START gs-qwen3-1p7b-n1
+  cases 1/1 runner exit 1 failed 0 []; median latency 32.9 s, read 102.7 tok/s, write 14.1 tok/s
+2026-10-14T16:36:45Z START gs-qwen3-1p7b-n5
+  cases 5/5 runner exit 1 failed 0 []; median latency 12.7 s, read 111.9 tok/s, write 14.8 tok/s
+2026-10-14T16:38:21Z START gs-qwen3-1p7b-n100
+  cases 100/100 runner exit 0 failed 0 []; median latency 15.8 s, read 108.9 tok/s, write 14.0 tok/s
+2026-10-14T17:13:06Z START gs-qwen3-4b-n1
+  cases 1/1 runner exit 1 failed 0 []; median latency 124.7 s, read 42.3 tok/s, write 6.2 tok/s
+2026-10-14T17:15:58Z START gs-qwen3-4b-n5
+2026-10-14T17:20:27Z HALT runner killed by the session: qwen3:4b is Qwen3-4B-Thinking-2507 and ignores think=false; its n5 step finishes, no n100
+  cases 5/5 runner exit -1 failed 0 []; median latency 86.0 s, read 46.4 tok/s, write 6.4 tok/s; at num_predict 5; first answer 'Хорошо, мне нужно ответить на вопрос пользователя о том, какие данные нужны для ответа по '
+2026-10-14T17:25:14Z END gs-qwen3-4b (thinking tag: no 100-case step)
+2026-10-14T17:25:14Z PULL qwen3:4b-instruct-2507-q4_K_M
+{"status":"success"}
+2026-10-14T17:30:31Z capabilities: tools thinking completion; think flag: --no-think
+2026-10-14T17:30:31Z START gs-qwen3-4b-instruct-n1
+  cases 1/1 runner exit 1 failed 0 []; median latency 42.5 s, read 42.7 tok/s, write 6.6 tok/s; at num_predict 0; first answer 'Для ответа по испытательному сроку нужны: должность, дата приема, условие в трудовом догов'
+2026-10-14T17:32:01Z START gs-qwen3-4b-instruct-n5
+  cases 5/5 runner exit 1 failed 0 []; median latency 40.7 s, read 46.6 tok/s, write 6.9 tok/s; at num_predict 0; first answer 'Для ответа по испытательному сроку нужны: должность, дата приема, условие в трудовом догов'
+2026-10-14T17:35:58Z START gs-qwen3-4b-instruct-n100
+  cases 100/100 runner exit 0 failed 0 []; median latency 36.7 s, read 45.3 tok/s, write 6.7 tok/s; at num_predict 0; first answer 'Для ответа по испытательному сроку нужны: должность, дата приема, условие в трудовом догов'
+2026-10-14T18:55:46Z ALL_DONE
