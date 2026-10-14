@@ -1,11 +1,11 @@
 # Session handoff — 2026-10-14 — generators below 7B on the production Mac
 
-Session `ef96201d` (continued after context compactions), 2026-10-14 13:15–21:00 UTC,
+Session `ef96201d` (continued after context compactions), 2026-10-14 13:15–20:50 UTC,
 Claude Opus 5.5 alone (D12). Commits: `86df582` (the screening registered), `cfb78ee` (its
-amendment), `f470f03` (the live chat record), the commit that adds this log (the screening
-record without the judge's verdicts, and these documents) and the one that fills its
-verification. **Nothing is pushed:** `origin/master` as last fetched is `f7416ca`; with the
-commit that adds this log master is 46 commits ahead of it, all of 2026-10-04…10-14. The
+amendment), `f470f03` (the live chat record), `40ad172` (the screening record without the
+judge's verdicts, and these documents) and the one that fills its verification.
+**Nothing is pushed:** `origin/master` as last fetched is `f7416ca`; with the commit that
+fills the verification master is 47 commits ahead of it, all of 2026-10-04…10-14. The
 session before this one, the same day, measured the web chat with qwen2.5:7b:
 [session log](session-handoff-2026-10-14-chat-on-mac.md).
 
@@ -181,10 +181,10 @@ progress.log`.
   4,288 s of requests, the file intact; the request in flight was lost.
 - 19:55–20:05 — the think probe (its first version printed a wrong line from a string search
   and was redone), analysis, export; `f470f03` committed at 20:02; Mac gate 37 passed.
-- 20:16–21:00 — the screening record without the verdicts (the reports, the steps of the
-  thinking tag, the frozen plan) with its test and evidence row, the spec's status, the
-  state and this log, in one commit; a cold read of this log; Mac gate below. The judge's
-  files and the drafts backed up to a local branch (State).
+- 20:16–20:50 — a cold read of this log and its fixes; the screening record without the
+  verdicts (the reports, the steps of the thinking tag, the frozen plan) with its test and
+  evidence row, the spec's status, the state and this log, in one commit (`40ad172`, 20:42);
+  Mac gate below. The judge's files and the drafts backed up to a local branch (State).
 
 ## State and next actions
 
@@ -351,7 +351,10 @@ Next, in order:
   7B record's.
 - The screening record: the reports' sha256 equal the `report_sha256` of the judge's plan;
   no CR byte and no laptop path in any published file.
-- The commit that adds this log: ⟨GATE2⟩
+- `40ad172`, the commit that adds this log, on the Mac gate (`sync_commit.py 40ad172`, then
+  `remote.py --site pytest`): `tests/test_generator_screen_artifact.py`,
+  `tests/test_chat_live_small_artifact.py`, `tests/test_chat_live_artifact.py` and the three
+  docs tests, 42 passed.
 - Cold read: a fresh subagent on the session's model (D12 allows no other) read the previous
   version of this log cold. It found: "Next" put Julia's choice of the model before the
   judge's classes that should inform it, and said the 4B answers were "close to the 7B" with
