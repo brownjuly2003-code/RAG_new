@@ -1,0 +1,10 @@
+langchain_ollama.llms: /Users/julia/RAG_new_mf_gate_site/langchain_ollama/llms.py
+OllamaLLM.reasoning default: None
+payload carries think from reasoning: True
+raw /api/generate, no think field: 10.3 s (load 2.1 s)
+  thinking chars: 617 | output tokens: 155 | <think> in response: False
+  answer: Испытательный срок по умолчанию составляет 15 дней.
+provider class OllamaLLM.generate: 6.5 s
+  thinking chars: 411 | output tokens: 130 | <think> in text: False
+  answer: Испытательный срок по умолчанию составляет 14 дней.
+unloaded
