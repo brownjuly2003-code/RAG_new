@@ -1,8 +1,9 @@
 # Generators below 7B on the production Mac: pre-registration and plan
 
-Status 2026-10-14: **registered, not run**. This plan fixes the generators, the
-contract, the judge, the sample and the order of the runs before any answer of a
-generator below 7B was produced or graded.
+Status 2026-10-14: **registered, running; one row replaced before its first answer**
+([amendment](#amendment-2026-10-14)). This plan fixes the generators, the contract,
+the judge, the sample and the order of the runs before any answer of a generator below
+7B was produced or graded.
 
 ## Why
 
@@ -28,7 +29,7 @@ by the context, completeness, defects — and how fast do they write on this Mac
 |---|---|---|---|
 | `qwen2.5-1.5b` | `qwen2.5:1.5b` | `65ec06548149…` | none |
 | `qwen3-1.7b` | `qwen3:1.7b` | `8f68893c685c…` | off (`--no-think`) |
-| `qwen3-4b` | `qwen3:4b` | `359d7dd4bcda…` | off (`--no-think`) |
+| `qwen3-4b-instruct` | `qwen3:4b-instruct-2507-q4_K_M` | `0edcdef34593…` | off (`--no-think`) |
 | `qwen2.5-7b` (C.1a) | `qwen2.5:7b` | `845dbda0ea48…` | none |
 | `qwen3-8b` (C.1b) | `qwen3:8b` | `500a1f067a9f…` | off |
 
@@ -38,6 +39,25 @@ published reports (`evaluation/c1a-qwen25-7b-c06bdf5-phase-c-generator-benchmark
 SHA-256 `ac8d9cc2…`; `evaluation/c1b-qwen3-8b-b8ecc8e-phase-c-generator-benchmark.json`,
 `1663ea59…`) give their seed-42 answers. They ran on an earlier Ollama build than
 0.33.2; the model digests are the ones installed now.
+
+### Amendment, 2026-10-14
+
+The row registered as `qwen3-4b` named the tag `qwen3:4b`, digest `359d7dd4bcda…`. In
+the Ollama registry that tag is the same manifest as `qwen3:4b-thinking-2507-q4_K_M`:
+Qwen3-4B-Thinking-2507, a model with no mode without thinking (`/api/show`: finetune
+`Thinking`, version `2507`). Sent `think: false`, it wrote its reasoning as the answer —
+«Хорошо, мне нужно ответить на вопрос пользователя…» — and stopped at the 384-token cap
+in all six cases of its 1- and 5-case steps, 69–125 s a case. A row that cannot answer
+under the contract measures nothing, so the runner was stopped before that row's
+100-case step, and the row was replaced, before the replacement produced any answer, by
+Qwen3-4B-Instruct-2507 (`qwen3:4b-instruct-2507-q4_K_M`, manifest `0edcdef34593…`,
+Apache 2.0) — the sibling of the same release trained to answer without thinking, which
+is what the row was registered to measure: a 4B Qwen3 answering with thinking off.
+Ollama reports a thinking capability for it, so it runs with `--no-think` like the other
+Qwen3 row; the model itself does not think. The replacement and its runner
+(`run_screen2.sh`) were fixed before its download; the progress log times every step.
+The two steps of the thinking tag are published with the screening as a finding and are
+not graded; nothing else in this plan changes.
 
 ## Contract
 
@@ -107,9 +127,9 @@ with itself is reported twice: the same class on retest, and the same
    minutes for the 4B model.
 3. The judge: `plan` over the five reports, then `run --limit 1`, `--limit 4`, then the
    rest, after one probe of the subscription windows.
-4. Publication under `reports/generator-screen/<code sha>/`: the three reports, the
-   judge's `plan.json`, `verdicts.jsonl` and `summary.json`, pinned by a test, with one
-   row in EVIDENCE_INDEX.
+4. Publication under `reports/generator-screen/<code sha>/`: the three 100-case reports,
+   the two steps of the thinking tag, the judge's `plan.json`, `verdicts.jsonl` and
+   `summary.json`, pinned by a test, with one row in EVIDENCE_INDEX.
 
 ## Reading
 
