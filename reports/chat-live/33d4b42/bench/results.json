@@ -1,0 +1,127 @@
+{
+  "options": {
+    "num_ctx": 4096,
+    "num_predict": 1024,
+    "temperature": 0.2
+  },
+  "chroma": "/Users/julia/RAG_new_ask100_20261012_7cad79f/.ask100-runtime/chroma/chroma.sqlite3",
+  "host_before": {
+    "load": "{ 1.24 1.77 1.81 }",
+    "swap": "total = 1536.00M  used = 68.00M  free = 1468.00M  (encrypted)"
+  },
+  "runs": [
+    {
+      "model": "qwen2.5:1.5b",
+      "preload": {
+        "wall_sec": 5.3,
+        "done_reason": "load"
+      },
+      "host_after_load": {
+        "load": "{ 1.38 1.79 1.82 }",
+        "swap": "total = 1536.00M  used = 451.00M  free = 1085.00M  (encrypted)"
+      },
+      "calls": [
+        {
+          "question": "Можно ли уволить беременную сотрудницу по инициативе работодателя?",
+          "n_docs": 5,
+          "wall_sec": 15.16,
+          "first_token_sec": 15.01,
+          "load_sec": 0.03,
+          "prompt_tokens": 1681,
+          "prompt_sec": 14.91,
+          "prompt_tok_per_sec": 112.8,
+          "output_tokens": 4,
+          "output_sec": 0.16,
+          "output_tok_per_sec": 25.55,
+          "prompt_chars": 5003,
+          "answer_head": "[1]"
+        },
+        {
+          "question": "Когда таможенный кейс нужно отправить на ручную проверку?",
+          "n_docs": 5,
+          "wall_sec": 11.7,
+          "first_token_sec": 11.57,
+          "load_sec": 0.0,
+          "prompt_tokens": 1447,
+          "prompt_sec": 11.49,
+          "prompt_tok_per_sec": 125.9,
+          "output_tokens": 4,
+          "output_sec": 0.16,
+          "output_tok_per_sec": 25.34,
+          "prompt_chars": 4530,
+          "answer_head": "[5]"
+        },
+        {
+          "question": "Кого нельзя привлекать к сверхурочной работе даже с согласия?",
+          "n_docs": 5,
+          "wall_sec": 12.54,
+          "first_token_sec": 10.85,
+          "load_sec": 0.0,
+          "prompt_tokens": 1379,
+          "prompt_sec": 10.79,
+          "prompt_tok_per_sec": 127.9,
+          "output_tokens": 35,
+          "output_sec": 1.71,
+          "output_tok_per_sec": 20.46,
+          "prompt_chars": 4034,
+          "answer_head": "Согласие работника не позволяет привлекать его к сверхурочной работе даже с письменного согласия. [4]"
+        }
+      ],
+      "host_after_calls": {
+        "load": "{ 5.03 2.70 2.15 }",
+        "swap": "total = 1536.00M  used = 419.00M  free = 1117.00M  (encrypted)"
+      }
+    },
+    {
+      "model": "qwen2.5:7b",
+      "preload": {
+        "wall_sec": 31.43,
+        "done_reason": "load"
+      },
+      "host_after_load": {
+        "load": "{ 3.76 2.60 2.13 }",
+        "swap": "total = 2048.00M  used = 1304.50M  free = 743.50M  (encrypted)"
+      },
+      "calls": [
+        {
+          "question": "Можно ли уволить беременную сотрудницу по инициативе работодателя?",
+          "n_docs": 5,
+          "wall_sec": 84.54,
+          "first_token_sec": 74.61,
+          "load_sec": 0.08,
+          "prompt_tokens": 1681,
+          "prompt_sec": 74.4,
+          "prompt_tok_per_sec": 22.6,
+          "output_tokens": 48,
+          "output_sec": 9.98,
+          "output_tok_per_sec": 4.81,
+          "prompt_chars": 5003,
+          "answer_head": "По контексту из документа [1], увольнение сотрудницы по инициативе работодателя невозможно, если она находится в отпуске по беременности и родам [1]."
+        },
+        {
+          "question": "Когда таможенный кейс нужно отправить на ручную проверку?",
+          "n_docs": 5,
+          "wall_sec": 100.06,
+          "first_token_sec": 86.0,
+          "load_sec": 0.01,
+          "prompt_tokens": 1447,
+          "prompt_sec": 85.08,
+          "prompt_tok_per_sec": 17.0,
+          "output_tokens": 56,
+          "output_sec": 14.02,
+          "output_tok_per_sec": 4.0,
+          "prompt_chars": 4530,
+          "answer_head": "По имеющимся данным ответить на вопрос о том, когда таможенный кейс нужно отправить на ручную проверку, нельзя. Пожалуйста, обратитесь к специалисту поддержки д"
+        }
+      ],
+      "host_after_calls": {
+        "load": "{ 7.79 5.42 3.43 }",
+        "swap": "total = 3072.00M  used = 1658.75M  free = 1413.25M  (encrypted)"
+      }
+    }
+  ],
+  "host_after": {
+    "load": "{ 7.79 5.42 3.43 }",
+    "swap": "total = 3072.00M  used = 1658.75M  free = 1413.25M  (encrypted)"
+  }
+}

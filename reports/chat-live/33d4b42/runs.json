@@ -1,0 +1,2909 @@
+{
+ "schema": "chat-live/v1",
+ "code_sha": "33d4b4236e74121c6e23412d40656cbdc8c5e2c9",
+ "dataset": {
+  "path": "evaluation/curated_cases_aircargo.jsonl",
+  "sha256": "3737d694362d1867ca3d5983e3765d02c01110d2409145ba7e0f05c021d9c720"
+ },
+ "host": {
+  "model": "iMac18,3",
+  "cpu": "Intel(R) Core(TM) i5-7500 CPU @ 3.40GHz",
+  "physical_cores": 4,
+  "memory_bytes": 8589934592,
+  "macos": "13.7.8"
+ },
+ "ollama": {
+  "version": "0.33.2",
+  "model": "qwen2.5:7b",
+  "digest": "845dbda0ea48ed749caafd9e6037047aa19acfcfd82e704d7ca97d631a0b697e"
+ },
+ "runs": [
+  {
+   "label": "live-b1-prod",
+   "mode": "prod",
+   "overrides": {
+    "REQUEST_TIMEOUT_SEC": "30",
+    "OLLAMA_REQUEST_TIMEOUT_SEC": "60",
+    "STREAMING_TIMEOUT_SEC": "120",
+    "RAG_DEVICE": "auto"
+   },
+   "started": "2026-10-14T11:14:05+00:00",
+   "finished": "2026-10-14T11:17:29+00:00",
+   "status": "complete",
+   "runner_exit": 0,
+   "ollama_load_sec": 31.614,
+   "settings": {
+    "llm_provider_profile": "local-first",
+    "ollama_model_name": "qwen2.5:7b",
+    "ollama_fast_model_name": "llama3.2:3b",
+    "model_routing_enabled": false,
+    "ollama_context_window": 4096,
+    "embedding_model": "BAAI/bge-m3",
+    "embedding_backend": "local",
+    "reranker_model": "BAAI/bge-reranker-v2-m3",
+    "rag_device": "auto",
+    "vector_backend": "chroma",
+    "hybrid_search": true,
+    "retrieval_strategy": "hybrid",
+    "retrieval_top_k": 20,
+    "rerank_top_k": 5,
+    "hyde": false,
+    "graph_retrieval": "off",
+    "parent_expansion": true,
+    "self_rag_max_iterations": 2,
+    "fact_verification_enabled": true,
+    "streaming_enabled": false,
+    "streaming_rag_parity": false,
+    "streaming_quality_eval": true,
+    "streaming_timeout_sec": 120.0,
+    "request_timeout_sec": 30.0,
+    "ollama_request_timeout_sec": 60.0,
+    "quality_threshold": 80,
+    "suggested_questions_enabled": true,
+    "llm_max_calls_per_request": 24,
+    "online_evaluators_enabled": true,
+    "max_concurrent_pipelines": 8,
+    "support_sink_backend": "local",
+    "tracing_db_path": "<workspace>/chatlive/runs/live-b1-prod/traces.db",
+    "vectordb_chroma_dir": "<runtime>/chroma"
+   },
+   "settings_off_default": {
+    "db_encryption_key": {
+     "default": "<empty>",
+     "run": "<set>"
+    },
+    "tracing_db_path": {
+     "default": "<workspace>/data/tracing/traces.db",
+     "run": "<workspace>/chatlive/runs/live-b1-prod/traces.db"
+    },
+    "vectordb_chroma_dir": {
+     "default": "<workspace>/data/vectordb/chroma",
+     "run": "<runtime>/chroma"
+    }
+   },
+   "tickets": [
+    "94",
+    "94"
+   ],
+   "memory": {
+    "samples": 66,
+    "swap_used_mb": [
+     541.75,
+     4482.0
+    ],
+    "free_mb_min": 4,
+    "max_rss_mb": {
+     "postgres": 10,
+     "ollama": 4444,
+     "python": 875
+    }
+   },
+   "api_warnings": {
+    "WARNING api.app: CORS_ORIGINS='*' - OK for development, but set explicit origins before deploying to production (RAG_ENV=production will refuse to start).": {
+     "count": 1,
+     "first": "CORS_ORIGINS='*' - OK for development, but set explicit origins before deploying to production (RAG_ENV=production will refuse to start)."
+    },
+    "WARNING vectordb.embedder_manifest: Tenant default loaded an unstamped index: NOT_EVIDENCE; rebuild it": {
+     "count": 1,
+     "first": "Tenant default loaded an unstamped index: NOT_EVIDENCE; rebuild it"
+    },
+    "WARNING vectordb.manager: Tenant default: retriever built WITHOUT BM# index while hybrid search is enabled — retrieval degraded to vector-only. Usually means the chunk cache is empty and": {
+     "count": 1,
+     "first": "Tenant default: retriever built WITHOUT BM25 index while hybrid search is enabled — retrieval degraded to vector-only. Usually means the chunk cache is empty and could not be restored."
+    },
+    "WARNING db.audit: Audit DB write failed: action=ask error=TimeoutError": {
+     "count": 1,
+     "first": "Audit DB write failed: action=ask error=TimeoutError"
+    },
+    "WARNING vectordb._base_manager: [HybridRetriever] Reranker error: MPS backend out of memory (MPS allocated: # GB, other allocations: # GB, max allowed: # GB). Tried to allocate # MB on private": {
+     "count": 2,
+     "first": "[HybridRetriever] Reranker error: MPS backend out of memory (MPS allocated: 4.71 GB, other allocations: 2.05 GB, max allowed: 6.80 GB). Tried to allocate 34.50 MB on private pool. Use PYTORCH_MPS_HIGH_WATERMARK_RATIO=0.0 to disable upper limit for memory allocations (may cause system failure)."
+    },
+    "WARNING utils.request_deadline: Request deadline exceeded phase=provider.generate_stream source=ask_stream budget_sec=#": {
+     "count": 1,
+     "first": "Request deadline exceeded phase=provider.generate_stream source=ask_stream budget_sec=30.000"
+    },
+    "WARNING api.routers.conversation: Streaming error in /ask/stream: Request deadline exceeded at phase=provider.generate_stream": {
+     "count": 1,
+     "first": "Streaming error in /ask/stream: Request deadline exceeded at phase=provider.generate_stream"
+    },
+    "WARNING api.routers.conversation: SSE streaming path failed, fallback to sync pipeline: Request deadline exceeded at phase=provider.generate_stream": {
+     "count": 1,
+     "first": "SSE streaming path failed, fallback to sync pipeline: Request deadline exceeded at phase=provider.generate_stream"
+    },
+    "WARNING utils.request_deadline: Request deadline exceeded phase=provider.generate source=ask_stream budget_sec=#": {
+     "count": 2,
+     "first": "Request deadline exceeded phase=provider.generate source=ask_stream budget_sec=30.000"
+    },
+    "WARNING agent.graph: [transform_query] LLM error: Request deadline exceeded at phase=provider.generate": {
+     "count": 2,
+     "first": "[transform_query] LLM error: Request deadline exceeded at phase=provider.generate"
+    },
+    "WARNING utils.request_deadline: Request deadline exceeded phase=retrieve source=ask_stream budget_sec=#": {
+     "count": 2,
+     "first": "Request deadline exceeded phase=retrieve source=ask_stream budget_sec=30.000"
+    },
+    "WARNING agent.graph: ConversationSession.ask hit cooperative deadline wall_sec=#s": {
+     "count": 2,
+     "first": "ConversationSession.ask hit cooperative deadline wall_sec=30.0s"
+    },
+    "WARNING api.routers.conversation: Streaming error in /ask/stream: ": {
+     "count": 1,
+     "first": "Streaming error in /ask/stream: "
+    },
+    "WARNING api.routers.conversation: SSE streaming path failed, fallback to sync pipeline: ": {
+     "count": 1,
+     "first": "SSE streaming path failed, fallback to sync pipeline: "
+    }
+   },
+   "notes": [],
+   "cases": [
+    {
+     "case": "warmup-1",
+     "question": "Какие документы нужны для перевозки опасного груза?",
+     "http": 200,
+     "first_token_sec": null,
+     "last_token_sec": null,
+     "tokens": 0,
+     "answer_tokens": 0,
+     "result_sec": 77.774,
+     "error_sec": null,
+     "total_sec": 77.776,
+     "drain_sec": 0.116,
+     "client_error": null,
+     "route": "timeout",
+     "quality": null,
+     "sources": 0,
+     "suggested": 0,
+     "events": [
+      {
+       "at": 0.222,
+       "type": "status"
+      },
+      {
+       "at": 76.284,
+       "type": "token_start"
+      },
+      {
+       "at": 77.774,
+       "type": "result",
+       "quality_source": "llm",
+       "route": "timeout"
+      }
+     ],
+     "answer": "",
+     "timeline": [
+      {
+       "stage": "vectordb._base_manager.get_embeddings",
+       "end_at": 0.62,
+       "wall": 0.0
+      },
+      {
+       "stage": "vectordb.manager.get_embeddings",
+       "end_at": 0.62,
+       "wall": 0.0
+      },
+      {
+       "stage": "vectordb._base_manager.get_reranker",
+       "end_at": 4.56,
+       "wall": 0.0
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 5.02,
+       "wall": 4.43
+      },
+      {
+       "stage": "hybrid._vector_search",
+       "end_at": 12.16,
+       "wall": 7.13
+      },
+      {
+       "stage": "hybrid._rerank_scored_with_status",
+       "end_at": 75.49,
+       "wall": 63.3
+      },
+      {
+       "stage": "hybrid._expand_parents",
+       "end_at": 75.54,
+       "wall": 0.04
+      },
+      {
+       "stage": "hybrid.get_relevant_documents_with_path",
+       "end_at": 75.57,
+       "wall": 70.54
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 77.98,
+       "wall": 0.0
+      }
+     ]
+    },
+    {
+     "case": "aircargo-probation-data",
+     "question": "Какие данные нужны для ответа по испытательному сроку?",
+     "http": 200,
+     "first_token_sec": null,
+     "last_token_sec": null,
+     "tokens": 0,
+     "answer_tokens": 0,
+     "result_sec": 30.907,
+     "error_sec": null,
+     "total_sec": 30.908,
+     "drain_sec": 0.515,
+     "client_error": null,
+     "route": "timeout",
+     "quality": null,
+     "sources": 0,
+     "suggested": 0,
+     "events": [
+      {
+       "at": 0.067,
+       "type": "status"
+      },
+      {
+       "at": 27.574,
+       "type": "token_start"
+      },
+      {
+       "at": 30.907,
+       "type": "result",
+       "quality_source": "llm",
+       "route": "timeout"
+      }
+     ],
+     "answer": "",
+     "timeline": [
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 0.08,
+       "wall": 0.0
+      },
+      {
+       "stage": "hybrid._vector_search",
+       "end_at": 5.59,
+       "wall": 5.51
+      },
+      {
+       "stage": "hybrid._rerank_scored_with_status",
+       "end_at": 25.45,
+       "wall": 19.65
+      },
+      {
+       "stage": "hybrid._expand_parents",
+       "end_at": 25.51,
+       "wall": 0.02
+      },
+      {
+       "stage": "hybrid.get_relevant_documents_with_path",
+       "end_at": 25.51,
+       "wall": 25.43
+      },
+      {
+       "stage": "ollama.generate_stream",
+       "end_at": 30.18,
+       "wall": 4.64,
+       "chunks": 0,
+       "output_chars": 0,
+       "error": "ReadTimeout: ",
+       "prompt_est_tokens": 2636,
+       "max_tokens": 1024,
+       "prompt_exact_tokens": 2322
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "label": "live-b2-floor",
+   "mode": "floor",
+   "overrides": {
+    "REQUEST_TIMEOUT_SEC": "1800",
+    "OLLAMA_REQUEST_TIMEOUT_SEC": "1800",
+    "STREAMING_TIMEOUT_SEC": "1800",
+    "RAG_DEVICE": "cpu"
+   },
+   "started": "2026-10-14T11:22:48+00:00",
+   "finished": "2026-10-14T12:07:41+00:00",
+   "status": "complete",
+   "runner_exit": 0,
+   "ollama_load_sec": 37.655,
+   "settings": {
+    "llm_provider_profile": "local-first",
+    "ollama_model_name": "qwen2.5:7b",
+    "ollama_fast_model_name": "llama3.2:3b",
+    "model_routing_enabled": false,
+    "ollama_context_window": 4096,
+    "embedding_model": "BAAI/bge-m3",
+    "embedding_backend": "local",
+    "reranker_model": "BAAI/bge-reranker-v2-m3",
+    "rag_device": "cpu",
+    "vector_backend": "chroma",
+    "hybrid_search": true,
+    "retrieval_strategy": "hybrid",
+    "retrieval_top_k": 20,
+    "rerank_top_k": 5,
+    "hyde": false,
+    "graph_retrieval": "off",
+    "parent_expansion": true,
+    "self_rag_max_iterations": 2,
+    "fact_verification_enabled": true,
+    "streaming_enabled": false,
+    "streaming_rag_parity": false,
+    "streaming_quality_eval": true,
+    "streaming_timeout_sec": 1800.0,
+    "request_timeout_sec": 1800.0,
+    "ollama_request_timeout_sec": 1800.0,
+    "quality_threshold": 80,
+    "suggested_questions_enabled": true,
+    "llm_max_calls_per_request": 24,
+    "online_evaluators_enabled": true,
+    "max_concurrent_pipelines": 8,
+    "support_sink_backend": "local",
+    "tracing_db_path": "<workspace>/chatlive/runs/live-b2-floor/traces.db",
+    "vectordb_chroma_dir": "<runtime>/chroma"
+   },
+   "settings_off_default": {
+    "db_encryption_key": {
+     "default": "<empty>",
+     "run": "<set>"
+    },
+    "ollama_request_timeout_sec": {
+     "default": 60.0,
+     "run": 1800.0
+    },
+    "rag_device": {
+     "default": "auto",
+     "run": "cpu"
+    },
+    "request_timeout_sec": {
+     "default": 30.0,
+     "run": 1800.0
+    },
+    "streaming_timeout_sec": {
+     "default": 120.0,
+     "run": 1800.0
+    },
+    "tracing_db_path": {
+     "default": "<workspace>/data/tracing/traces.db",
+     "run": "<workspace>/chatlive/runs/live-b2-floor/traces.db"
+    },
+    "vectordb_chroma_dir": {
+     "default": "<workspace>/data/vectordb/chroma",
+     "run": "<runtime>/chroma"
+    }
+   },
+   "tickets": [
+    "94",
+    "94"
+   ],
+   "memory": {
+    "samples": 875,
+    "swap_used_mb": [
+     574.5,
+     3982.25
+    ],
+    "free_mb_min": 3,
+    "max_rss_mb": {
+     "postgres": 10,
+     "ollama": 4873,
+     "python": 1808
+    }
+   },
+   "api_warnings": {
+    "WARNING api.app: CORS_ORIGINS='*' - OK for development, but set explicit origins before deploying to production (RAG_ENV=production will refuse to start).": {
+     "count": 1,
+     "first": "CORS_ORIGINS='*' - OK for development, but set explicit origins before deploying to production (RAG_ENV=production will refuse to start)."
+    },
+    "WARNING vectordb.embedder_manifest: Tenant default loaded an unstamped index: NOT_EVIDENCE; rebuild it": {
+     "count": 1,
+     "first": "Tenant default loaded an unstamped index: NOT_EVIDENCE; rebuild it"
+    },
+    "WARNING vectordb.manager: Tenant default: retriever built WITHOUT BM# index while hybrid search is enabled — retrieval degraded to vector-only. Usually means the chunk cache is empty and": {
+     "count": 1,
+     "first": "Tenant default: retriever built WITHOUT BM25 index while hybrid search is enabled — retrieval degraded to vector-only. Usually means the chunk cache is empty and could not be restored."
+    },
+    "WARNING db.audit: Audit DB write failed: action=ask error=TimeoutError": {
+     "count": 2,
+     "first": "Audit DB write failed: action=ask error=TimeoutError"
+    }
+   },
+   "notes": [
+    {
+     "at": "2026-10-14T11:22:00Z",
+     "by": "session",
+     "observed": "before the launch: load averages 0.88 1.62 2.06; Ollama held no model; ports 8002 and 55433 free"
+    },
+    {
+     "at": "2026-10-14T11:47:37Z",
+     "by": "session",
+     "observed": "Auto_try_v2 (main.py, PID 33002, not ours) started Google Chrome during case 3"
+    },
+    {
+     "at": "2026-10-14T11:49:25Z",
+     "by": "session",
+     "observed": "load averages 9.97 9.13 6.52 on 4 cores; swap used 2329.75 MB of 3584 MB"
+    },
+    {
+     "at": "2026-10-14T11:49:25Z",
+     "by": "session",
+     "observed": "the resource sampler of this run recorded neither load average nor foreign processes; cases 3-5 ran under foreign load of unknown size"
+    }
+   ],
+   "cases": [
+    {
+     "case": "aircargo-probation-data",
+     "question": "Какие данные нужны для ответа по испытательному сроку?",
+     "http": 200,
+     "first_token_sec": 285.151,
+     "last_token_sec": 300.273,
+     "tokens": 73,
+     "answer_tokens": 73,
+     "result_sec": 429.346,
+     "error_sec": null,
+     "total_sec": 429.356,
+     "drain_sec": 0.185,
+     "client_error": null,
+     "route": "auto",
+     "quality": null,
+     "sources": 3,
+     "suggested": 3,
+     "events": [
+      {
+       "at": 0.188,
+       "type": "status"
+      },
+      {
+       "at": 180.585,
+       "type": "token_start"
+      },
+      {
+       "at": 429.346,
+       "type": "result",
+       "quality_source": "llm",
+       "route": "auto"
+      }
+     ],
+     "answer": "Для ответа по испытательному сроку нужны:\n1. Должность\n2. Дата приема на работу\n3. Условия в трудовом договоре\n4. Длительность испытательного срока\n5. Результаты оценки\n\nИсточник: [1]",
+     "timeline": [
+      {
+       "stage": "vectordb._base_manager.get_embeddings",
+       "end_at": 0.56,
+       "wall": 0.0
+      },
+      {
+       "stage": "vectordb.manager.get_embeddings",
+       "end_at": 0.56,
+       "wall": 0.0
+      },
+      {
+       "stage": "vectordb._base_manager.get_reranker",
+       "end_at": 4.77,
+       "wall": 0.0
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 5.13,
+       "wall": 4.58
+      },
+      {
+       "stage": "hybrid._vector_search",
+       "end_at": 77.66,
+       "wall": 72.51
+      },
+      {
+       "stage": "hybrid._rerank_scored_with_status",
+       "end_at": 179.83,
+       "wall": 102.05
+      },
+      {
+       "stage": "hybrid._expand_parents",
+       "end_at": 179.83,
+       "wall": 0.0
+      },
+      {
+       "stage": "hybrid.get_relevant_documents_with_path",
+       "end_at": 179.83,
+       "wall": 174.68
+      },
+      {
+       "stage": "ollama.generate_stream",
+       "end_at": 301.31,
+       "wall": 121.27,
+       "first_chunk_sec": 104.78,
+       "chunks": 73,
+       "output_chars": 183,
+       "prompt_est_tokens": 2466,
+       "max_tokens": 1024,
+       "prompt_exact_tokens": 2101
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 408.33,
+       "wall": 106.99,
+       "output_chars": 2,
+       "prompt_est_tokens": 2680,
+       "max_tokens": 128,
+       "prompt_exact_tokens": 2314
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 429.7,
+       "wall": 0.0
+      }
+     ]
+    },
+    {
+     "case": "aircargo-probation-extend",
+     "question": "Можно ли продлить испытательный срок сотруднику?",
+     "http": 200,
+     "first_token_sec": 306.473,
+     "last_token_sec": 329.747,
+     "tokens": 95,
+     "answer_tokens": 95,
+     "result_sec": 476.359,
+     "error_sec": null,
+     "total_sec": 476.361,
+     "drain_sec": 0.513,
+     "client_error": null,
+     "route": "auto",
+     "quality": null,
+     "sources": 3,
+     "suggested": 3,
+     "events": [
+      {
+       "at": 0.119,
+       "type": "status"
+      },
+      {
+       "at": 192.451,
+       "type": "token_start"
+      },
+      {
+       "at": 476.359,
+       "type": "result",
+       "quality_source": "llm",
+       "route": "auto"
+      }
+     ],
+     "answer": "Продление испытательного срока не допускается. Срок испытания устанавливается при заключении трудового договора и не может превышать пределы ст. 70 ТК РФ. Если работник фактически отсутствовал на работе, этот период не включается в срок испытания и не является продлением сверх установленного срока.",
+     "timeline": [
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 0.15,
+       "wall": 0.0
+      },
+      {
+       "stage": "hybrid._vector_search",
+       "end_at": 59.9,
+       "wall": 59.72
+      },
+      {
+       "stage": "hybrid._rerank_scored_with_status",
+       "end_at": 190.46,
+       "wall": 130.15
+      },
+      {
+       "stage": "hybrid._expand_parents",
+       "end_at": 190.91,
+       "wall": 0.29
+      },
+      {
+       "stage": "hybrid.get_relevant_documents_with_path",
+       "end_at": 190.91,
+       "wall": 190.74
+      },
+      {
+       "stage": "ollama.generate_stream",
+       "end_at": 330.19,
+       "wall": 138.79,
+       "first_chunk_sec": 115.07,
+       "chunks": 95,
+       "output_chars": 299,
+       "prompt_est_tokens": 2587,
+       "max_tokens": 1024,
+       "prompt_exact_tokens": 2377
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 451.9,
+       "wall": 121.69,
+       "output_chars": 2,
+       "prompt_est_tokens": 2839,
+       "max_tokens": 128,
+       "prompt_exact_tokens": 2616
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 477.4,
+       "wall": 0.03
+      }
+     ]
+    },
+    {
+     "case": "aircargo-probation-dismissal",
+     "question": "Что важно для увольнения по результатам испытательного срока?",
+     "http": 200,
+     "first_token_sec": 422.956,
+     "last_token_sec": 435.567,
+     "tokens": 53,
+     "answer_tokens": 53,
+     "result_sec": 614.094,
+     "error_sec": null,
+     "total_sec": 614.095,
+     "drain_sec": 0.176,
+     "client_error": null,
+     "route": "auto",
+     "quality": null,
+     "sources": 4,
+     "suggested": 3,
+     "events": [
+      {
+       "at": 0.039,
+       "type": "status"
+      },
+      {
+       "at": 285.78,
+       "type": "token_start"
+      },
+      {
+       "at": 614.094,
+       "type": "result",
+       "quality_source": "llm",
+       "route": "auto"
+      }
+     ],
+     "answer": "Для увольнения по результатам испытательного срока важно наличие документированных критериев, фактов неудовлетворительной работы и соблюдение срока уведомления. [3]",
+     "timeline": [
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 0.41,
+       "wall": 0.03
+      },
+      {
+       "stage": "hybrid._vector_search",
+       "end_at": 57.69,
+       "wall": 57.14
+      },
+      {
+       "stage": "hybrid._rerank_scored_with_status",
+       "end_at": 285.07,
+       "wall": 226.91
+      },
+      {
+       "stage": "hybrid._expand_parents",
+       "end_at": 285.22,
+       "wall": 0.02
+      },
+      {
+       "stage": "hybrid.get_relevant_documents_with_path",
+       "end_at": 285.22,
+       "wall": 284.67
+      },
+      {
+       "stage": "ollama.generate_stream",
+       "end_at": 436.63,
+       "wall": 151.33,
+       "first_chunk_sec": 137.64,
+       "chunks": 53,
+       "output_chars": 164,
+       "prompt_est_tokens": 2631,
+       "max_tokens": 1024,
+       "prompt_exact_tokens": 2368
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 585.58,
+       "wall": 148.92,
+       "output_chars": 2,
+       "prompt_est_tokens": 2833,
+       "max_tokens": 128,
+       "prompt_exact_tokens": 2562
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 614.4,
+       "wall": 0.0
+      }
+     ]
+    },
+    {
+     "case": "aircargo-dismissal-check",
+     "question": "Что проверить перед ответом об увольнении работника?",
+     "http": 200,
+     "first_token_sec": 394.723,
+     "last_token_sec": 419.643,
+     "tokens": 82,
+     "answer_tokens": 83,
+     "result_sec": 611.26,
+     "error_sec": null,
+     "total_sec": 611.263,
+     "drain_sec": 0.211,
+     "client_error": null,
+     "route": "auto",
+     "quality": null,
+     "sources": 3,
+     "suggested": 3,
+     "events": [
+      {
+       "at": 0.1,
+       "type": "status"
+      },
+      {
+       "at": 252.531,
+       "type": "token_start"
+      },
+      {
+       "at": 611.26,
+       "type": "result",
+       "quality_source": "llm",
+       "route": "auto"
+      }
+     ],
+     "answer": "Перед ответом об увольнении работника необходимо проверить:\n- Основание увольнения [1]\n- Дату последнего рабочего дня [1]\n- Заявление работника [1]\n- Соглашение, если есть [1]\n- Приказ об увольнении [1]\n- Расчетные выплаты [1]",
+     "timeline": [
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 0.12,
+       "wall": 0.0
+      },
+      {
+       "stage": "hybrid._vector_search",
+       "end_at": 96.65,
+       "wall": 96.53
+      },
+      {
+       "stage": "hybrid._rerank_scored_with_status",
+       "end_at": 251.49,
+       "wall": 154.39
+      },
+      {
+       "stage": "hybrid._expand_parents",
+       "end_at": 251.66,
+       "wall": 0.1
+      },
+      {
+       "stage": "hybrid.get_relevant_documents_with_path",
+       "end_at": 251.66,
+       "wall": 251.53
+      },
+      {
+       "stage": "ollama.generate_stream",
+       "end_at": 421.52,
+       "wall": 169.76,
+       "first_chunk_sec": 142.87,
+       "chunks": 82,
+       "output_chars": 226,
+       "prompt_est_tokens": 2607,
+       "max_tokens": 1024,
+       "prompt_exact_tokens": 2258
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 577.93,
+       "wall": 156.31,
+       "output_chars": 2,
+       "prompt_est_tokens": 2827,
+       "max_tokens": 128,
+       "prompt_exact_tokens": 2473
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 611.74,
+       "wall": 0.0
+      }
+     ]
+    },
+    {
+     "case": "aircargo-dismissal-lawyer",
+     "question": "В каких случаях при увольнении нужен юрист?",
+     "http": 200,
+     "first_token_sec": 325.494,
+     "last_token_sec": 345.478,
+     "tokens": 78,
+     "answer_tokens": 79,
+     "result_sec": 486.191,
+     "error_sec": null,
+     "total_sec": 486.191,
+     "drain_sec": 0.087,
+     "client_error": null,
+     "route": "auto",
+     "quality": null,
+     "sources": 4,
+     "suggested": 3,
+     "events": [
+      {
+       "at": 0.182,
+       "type": "status"
+      },
+      {
+       "at": 215.028,
+       "type": "token_start"
+      },
+      {
+       "at": 486.191,
+       "type": "result",
+       "quality_source": "llm",
+       "route": "auto"
+      }
+     ],
+     "answer": "При увольнении нужен юрист в следующих случаях:\n- увольнение по инициативе работодателя [1];\n- споры о дисциплине [1];\n- сокращение [1];\n- материальная ответственность [1];\n- защищенная категория работника [1].",
+     "timeline": [
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 0.24,
+       "wall": 0.0
+      },
+      {
+       "stage": "hybrid._vector_search",
+       "end_at": 71.8,
+       "wall": 71.55
+      },
+      {
+       "stage": "hybrid._rerank_scored_with_status",
+       "end_at": 214.42,
+       "wall": 142.1
+      },
+      {
+       "stage": "hybrid._expand_parents",
+       "end_at": 214.47,
+       "wall": 0.03
+      },
+      {
+       "stage": "hybrid.get_relevant_documents_with_path",
+       "end_at": 214.47,
+       "wall": 214.23
+      },
+      {
+       "stage": "ollama.generate_stream",
+       "end_at": 345.98,
+       "wall": 131.42,
+       "first_chunk_sec": 110.89,
+       "chunks": 78,
+       "output_chars": 210,
+       "prompt_est_tokens": 2523,
+       "max_tokens": 1024,
+       "prompt_exact_tokens": 2238
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 454.17,
+       "wall": 108.14,
+       "output_chars": 2,
+       "prompt_est_tokens": 2739,
+       "max_tokens": 128,
+       "prompt_exact_tokens": 2451
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "retrieval_runs": [
+  {
+   "label": "live-r1-retrieval",
+   "mode": "retrieval",
+   "overrides": {
+    "REQUEST_TIMEOUT_SEC": "30",
+    "OLLAMA_REQUEST_TIMEOUT_SEC": "60",
+    "STREAMING_TIMEOUT_SEC": "120",
+    "RAG_DEVICE": "auto"
+   },
+   "started": "2026-10-14T12:08:27+00:00",
+   "finished": "2026-10-14T12:21:09+00:00",
+   "status": "complete",
+   "variant_order": null,
+   "variant_exits": {
+    "auto": 0,
+    "cpu": 0,
+    "rerank-mps": 0,
+    "embed-mps": 0
+   },
+   "ollama_models_before": [],
+   "ollama_models_after": [],
+   "settings": {
+    "llm_provider_profile": "local-first",
+    "ollama_model_name": "qwen2.5:7b",
+    "ollama_fast_model_name": "llama3.2:3b",
+    "model_routing_enabled": false,
+    "ollama_context_window": 4096,
+    "embedding_model": "BAAI/bge-m3",
+    "embedding_backend": "local",
+    "reranker_model": "BAAI/bge-reranker-v2-m3",
+    "rag_device": "auto",
+    "vector_backend": "chroma",
+    "hybrid_search": true,
+    "retrieval_strategy": "hybrid",
+    "retrieval_top_k": 20,
+    "rerank_top_k": 5,
+    "hyde": false,
+    "graph_retrieval": "off",
+    "parent_expansion": true,
+    "self_rag_max_iterations": 2,
+    "fact_verification_enabled": true,
+    "streaming_enabled": false,
+    "streaming_rag_parity": false,
+    "streaming_quality_eval": true,
+    "streaming_timeout_sec": 120.0,
+    "request_timeout_sec": 30.0,
+    "ollama_request_timeout_sec": 60.0,
+    "quality_threshold": 80,
+    "suggested_questions_enabled": true,
+    "llm_max_calls_per_request": 24,
+    "online_evaluators_enabled": true,
+    "max_concurrent_pipelines": 8,
+    "support_sink_backend": "local",
+    "tracing_db_path": "<workspace>/chatlive/runs/live-r1-retrieval/traces.db",
+    "vectordb_chroma_dir": "<runtime>/chroma"
+   },
+   "settings_off_default": {
+    "db_encryption_key": {
+     "default": "<empty>",
+     "run": "<set>"
+    },
+    "tracing_db_path": {
+     "default": "<workspace>/data/tracing/traces.db",
+     "run": "<workspace>/chatlive/runs/live-r1-retrieval/traces.db"
+    },
+    "vectordb_chroma_dir": {
+     "default": "<workspace>/data/vectordb/chroma",
+     "run": "<runtime>/chroma"
+    }
+   },
+   "memory": {
+    "samples": 250,
+    "swap_used_mb": [
+     495.75,
+     751.75
+    ],
+    "free_mb_min": 4
+   },
+   "load": {
+    "loadavg_1min_max": 5.22,
+    "loadavg_1min_median": 2.67,
+    "foreign_max_cpu": {
+     "swcd": 26.3,
+     "mds_stores": 21.7,
+     "mds": 21.1,
+     "ScreenTimeWidgetExtension": 19.0,
+     "WeatherWidget": 17.8,
+     "launchd": 13.8,
+     "airportd": 11.6,
+     "Finder": 8.4
+    }
+   },
+   "notes": [],
+   "variants": [
+    {
+     "variant": "auto",
+     "placement": {
+      "embedder": "auto",
+      "reranker": "auto"
+     },
+     "retriever_build_sec": 52.69,
+     "questions": [
+      {
+       "case": "warmup-1",
+       "retrieval_sec": 46.89,
+       "vector": 3.76,
+       "rerank": 43.12,
+       "reranker_ok": false,
+       "top": [
+        [
+         "05_tlog_contract_transport_air.md",
+         3942
+        ],
+        [
+         "07_faq_expedition.md",
+         5449
+        ],
+        [
+         "05_tlog_regulation_oversized.md",
+         4560
+        ],
+        [
+         "01_hr_pol_confidentiality_emp.md",
+         209
+        ],
+        [
+         "05_tlog_regulation_dangerous_goods.md",
+         4452
+        ]
+       ]
+      },
+      {
+       "case": "aircargo-probation-data",
+       "retrieval_sec": 27.97,
+       "vector": 0.49,
+       "rerank": 27.47,
+       "reranker_ok": false,
+       "top": [
+        [
+         "07_faq_probation.md",
+         5525
+        ],
+        [
+         "07_faq_probation.md",
+         5533
+        ],
+        [
+         "07_faq_probation.md",
+         5535
+        ],
+        [
+         "07_faq_probation.md",
+         5521
+        ],
+        [
+         "07_faq_probation.md",
+         5531
+        ]
+       ]
+      },
+      {
+       "case": "aircargo-probation-extend",
+       "retrieval_sec": 0.59,
+       "vector": 0.42,
+       "rerank": 0.16,
+       "reranker_ok": false,
+       "top": [
+        [
+         "07_faq_probation.md",
+         5528
+        ],
+        [
+         "01_hr_probation_procedure.md",
+         957
+        ],
+        [
+         "02_hr_tmp_probation_report.md",
+         1344
+        ],
+        [
+         "07_faq_probation.md",
+         5526
+        ],
+        [
+         "01_hr_internal_transfer.md",
+         33
+        ]
+       ]
+      },
+      {
+       "case": "aircargo-probation-dismissal",
+       "retrieval_sec": 0.09,
+       "vector": 0.03,
+       "rerank": 0.04,
+       "reranker_ok": false,
+       "top": [
+        [
+         "07_faq_probation.md",
+         5527
+        ],
+        [
+         "01_hr_probation_procedure.md",
+         951
+        ],
+        [
+         "01_hr_probation_procedure.md",
+         957
+        ],
+        [
+         "01_hr_probation_procedure.md",
+         956
+        ],
+        [
+         "01_hr_probation_procedure.md",
+         962
+        ]
+       ]
+      },
+      {
+       "case": "aircargo-dismissal-check",
+       "retrieval_sec": 0.09,
+       "vector": 0.03,
+       "rerank": 0.04,
+       "reranker_ok": false,
+       "top": [
+        [
+         "07_faq_dismissal.md",
+         5402
+        ],
+        [
+         "02_hr_tmp_dismissal_order.md",
+         1048
+        ],
+        [
+         "02_hr_tmp_resignation_letter.md",
+         1416
+        ],
+        [
+         "02_hr_tmp_dismissal_order.md",
+         1047
+        ],
+        [
+         "01_hr_pol_exit_interview.md",
+         324
+        ]
+       ]
+      },
+      {
+       "case": "aircargo-dismissal-lawyer",
+       "retrieval_sec": 0.15,
+       "vector": 0.03,
+       "rerank": 0.11,
+       "reranker_ok": false,
+       "top": [
+        [
+         "07_faq_dismissal.md",
+         5403
+        ],
+        [
+         "07_faq_claims_procedure.md",
+         5335
+        ],
+        [
+         "01_hr_pol_overtime.md",
+         643
+        ],
+        [
+         "02_hr_tmp_dismissal_order.md",
+         1040
+        ],
+        [
+         "01_hr_pol_salary.md",
+         810
+        ]
+       ]
+      }
+     ],
+     "devices": {
+      "get_embeddings": "mps",
+      "get_reranker": "mps"
+     },
+     "load_messages": [
+      "Embedding model loaded in 43.0s",
+      "Reranker loaded in 2.7s"
+     ]
+    },
+    {
+     "variant": "cpu",
+     "placement": {
+      "embedder": "cpu",
+      "reranker": "cpu"
+     },
+     "retriever_build_sec": 15.03,
+     "questions": [
+      {
+       "case": "warmup-1",
+       "retrieval_sec": 120.35,
+       "vector": 54.67,
+       "rerank": 65.67,
+       "reranker_ok": true,
+       "top": [
+        [
+         "07_faq_expedition.md",
+         5473
+        ],
+        [
+         "05_tlog_contract_transport_air.md",
+         3942
+        ],
+        [
+         "05_tlog_regulation_dangerous_goods.md",
+         4452
+        ],
+        [
+         "05_tlog_regulation_dangerous_goods.md",
+         4440
+        ],
+        [
+         "05_tlog_policy_transport_safety.md",
+         4304
+        ]
+       ]
+      },
+      {
+       "case": "aircargo-probation-data",
+       "retrieval_sec": 27.58,
+       "vector": 0.25,
+       "rerank": 27.31,
+       "reranker_ok": true,
+       "top": [
+        [
+         "07_faq_probation.md",
+         5525
+        ],
+        [
+         "02_hr_tmp_probation_report.md",
+         1352
+        ],
+        [
+         "07_faq_probation.md",
+         5533
+        ],
+        [
+         "07_faq_probation.md",
+         5531
+        ],
+        [
+         "02_hr_tmp_probation_report.md",
+         1350
+        ]
+       ]
+      },
+      {
+       "case": "aircargo-probation-extend",
+       "retrieval_sec": 37.64,
+       "vector": 0.15,
+       "rerank": 37.48,
+       "reranker_ok": true,
+       "top": [
+        [
+         "07_faq_probation.md",
+         5528
+        ],
+        [
+         "01_hr_probation_procedure.md",
+         957
+        ],
+        [
+         "01_hr_pol_adaptation.md",
+         54
+        ],
+        [
+         "01_hr_probation_procedure.md",
+         950
+        ],
+        [
+         "02_hr_tmp_probation_report.md",
+         1344
+        ]
+       ]
+      },
+      {
+       "case": "aircargo-probation-dismissal",
+       "retrieval_sec": 34.7,
+       "vector": 0.18,
+       "rerank": 34.5,
+       "reranker_ok": true,
+       "top": [
+        [
+         "07_faq_probation.md",
+         5527
+        ],
+        [
+         "01_hr_probation_procedure.md",
+         965
+        ],
+        [
+         "01_hr_probation_procedure.md",
+         951
+        ],
+        [
+         "02_hr_tmp_probation_report.md",
+         1347
+        ],
+        [
+         "01_hr_probation_procedure.md",
+         957
+        ]
+       ]
+      },
+      {
+       "case": "aircargo-dismissal-check",
+       "retrieval_sec": 22.27,
+       "vector": 0.21,
+       "rerank": 22.05,
+       "reranker_ok": true,
+       "top": [
+        [
+         "07_faq_dismissal.md",
+         5402
+        ],
+        [
+         "01_hr_dismissal_procedure.md",
+         13
+        ],
+        [
+         "02_hr_tmp_resignation_letter.md",
+         1416
+        ],
+        [
+         "07_faq_dismissal.md",
+         5407
+        ],
+        [
+         "02_hr_tmp_dismissal_order.md",
+         1048
+        ]
+       ]
+      },
+      {
+       "case": "aircargo-dismissal-lawyer",
+       "retrieval_sec": 22.63,
+       "vector": 0.19,
+       "rerank": 22.43,
+       "reranker_ok": true,
+       "top": [
+        [
+         "07_faq_dismissal.md",
+         5403
+        ],
+        [
+         "02_hr_tmp_reference_letter_template.md",
+         1362
+        ],
+        [
+         "02_hr_tmp_sick_leave_procedure.md",
+         1450
+        ],
+        [
+         "02_hr_tmp_internship_agreement.md",
+         1105
+        ],
+        [
+         "02_hr_tmp_material_liability_agreement.md",
+         1275
+        ]
+       ]
+      }
+     ],
+     "devices": {
+      "get_embeddings": "cpu",
+      "get_reranker": "cpu"
+     },
+     "load_messages": [
+      "Embedding model loaded in 8.2s",
+      "Reranker loaded in 1.6s"
+     ]
+    },
+    {
+     "variant": "embed-mps",
+     "placement": {
+      "embedder": "mps",
+      "reranker": "cpu"
+     },
+     "retriever_build_sec": 28.03,
+     "questions": [
+      {
+       "case": "warmup-1",
+       "retrieval_sec": 99.64,
+       "vector": 2.13,
+       "rerank": 97.49,
+       "reranker_ok": true,
+       "top": [
+        [
+         "07_faq_expedition.md",
+         5473
+        ],
+        [
+         "05_tlog_contract_transport_air.md",
+         3942
+        ],
+        [
+         "05_tlog_regulation_dangerous_goods.md",
+         4452
+        ],
+        [
+         "05_tlog_regulation_dangerous_goods.md",
+         4440
+        ],
+        [
+         "05_tlog_policy_transport_safety.md",
+         4304
+        ]
+       ]
+      },
+      {
+       "case": "aircargo-probation-data",
+       "retrieval_sec": 23.77,
+       "vector": 0.47,
+       "rerank": 23.28,
+       "reranker_ok": true,
+       "top": [
+        [
+         "07_faq_probation.md",
+         5525
+        ],
+        [
+         "02_hr_tmp_probation_report.md",
+         1352
+        ],
+        [
+         "07_faq_probation.md",
+         5533
+        ],
+        [
+         "07_faq_probation.md",
+         5531
+        ],
+        [
+         "02_hr_tmp_probation_report.md",
+         1350
+        ]
+       ]
+      },
+      {
+       "case": "aircargo-probation-extend",
+       "retrieval_sec": 34.77,
+       "vector": 0.24,
+       "rerank": 34.51,
+       "reranker_ok": true,
+       "top": [
+        [
+         "07_faq_probation.md",
+         5528
+        ],
+        [
+         "01_hr_probation_procedure.md",
+         957
+        ],
+        [
+         "01_hr_pol_adaptation.md",
+         54
+        ],
+        [
+         "01_hr_probation_procedure.md",
+         950
+        ],
+        [
+         "02_hr_tmp_probation_report.md",
+         1344
+        ]
+       ]
+      },
+      {
+       "case": "aircargo-probation-dismissal",
+       "retrieval_sec": 33.71,
+       "vector": 0.32,
+       "rerank": 33.38,
+       "reranker_ok": true,
+       "top": [
+        [
+         "07_faq_probation.md",
+         5527
+        ],
+        [
+         "01_hr_probation_procedure.md",
+         965
+        ],
+        [
+         "01_hr_probation_procedure.md",
+         951
+        ],
+        [
+         "02_hr_tmp_probation_report.md",
+         1347
+        ],
+        [
+         "01_hr_probation_procedure.md",
+         957
+        ]
+       ]
+      },
+      {
+       "case": "aircargo-dismissal-check",
+       "retrieval_sec": 21.84,
+       "vector": 0.33,
+       "rerank": 21.5,
+       "reranker_ok": true,
+       "top": [
+        [
+         "07_faq_dismissal.md",
+         5402
+        ],
+        [
+         "01_hr_dismissal_procedure.md",
+         13
+        ],
+        [
+         "02_hr_tmp_resignation_letter.md",
+         1416
+        ],
+        [
+         "07_faq_dismissal.md",
+         5407
+        ],
+        [
+         "02_hr_tmp_dismissal_order.md",
+         1048
+        ]
+       ]
+      },
+      {
+       "case": "aircargo-dismissal-lawyer",
+       "retrieval_sec": 21.82,
+       "vector": 0.33,
+       "rerank": 21.47,
+       "reranker_ok": true,
+       "top": [
+        [
+         "07_faq_dismissal.md",
+         5403
+        ],
+        [
+         "02_hr_tmp_reference_letter_template.md",
+         1362
+        ],
+        [
+         "02_hr_tmp_sick_leave_procedure.md",
+         1450
+        ],
+        [
+         "02_hr_tmp_internship_agreement.md",
+         1105
+        ],
+        [
+         "02_hr_tmp_material_liability_agreement.md",
+         1275
+        ]
+       ]
+      }
+     ],
+     "devices": {
+      "get_embeddings": "mps",
+      "get_reranker": "cpu"
+     },
+     "load_messages": [
+      "Embedding model loaded in 20.3s",
+      "Reranker loaded in 2.3s"
+     ]
+    },
+    {
+     "variant": "rerank-mps",
+     "placement": {
+      "embedder": "cpu",
+      "reranker": "mps"
+     },
+     "retriever_build_sec": 5.63,
+     "questions": [
+      {
+       "case": "warmup-1",
+       "retrieval_sec": 67.37,
+       "vector": 0.89,
+       "rerank": 66.47,
+       "reranker_ok": false,
+       "top": [
+        [
+         "05_tlog_contract_transport_air.md",
+         3942
+        ],
+        [
+         "07_faq_expedition.md",
+         5449
+        ],
+        [
+         "05_tlog_regulation_oversized.md",
+         4560
+        ],
+        [
+         "01_hr_pol_confidentiality_emp.md",
+         209
+        ],
+        [
+         "05_tlog_regulation_dangerous_goods.md",
+         4452
+        ]
+       ]
+      },
+      {
+       "case": "aircargo-probation-data",
+       "retrieval_sec": 0.71,
+       "vector": 0.27,
+       "rerank": 0.42,
+       "reranker_ok": false,
+       "top": [
+        [
+         "07_faq_probation.md",
+         5525
+        ],
+        [
+         "07_faq_probation.md",
+         5533
+        ],
+        [
+         "07_faq_probation.md",
+         5535
+        ],
+        [
+         "07_faq_probation.md",
+         5521
+        ],
+        [
+         "07_faq_probation.md",
+         5531
+        ]
+       ]
+      },
+      {
+       "case": "aircargo-probation-extend",
+       "retrieval_sec": 0.22,
+       "vector": 0.15,
+       "rerank": 0.06,
+       "reranker_ok": false,
+       "top": [
+        [
+         "07_faq_probation.md",
+         5528
+        ],
+        [
+         "01_hr_probation_procedure.md",
+         957
+        ],
+        [
+         "01_hr_internal_transfer.md",
+         33
+        ],
+        [
+         "02_hr_tmp_probation_report.md",
+         1344
+        ],
+        [
+         "01_hr_probation_procedure.md",
+         950
+        ]
+       ]
+      },
+      {
+       "case": "aircargo-probation-dismissal",
+       "retrieval_sec": 0.22,
+       "vector": 0.16,
+       "rerank": 0.05,
+       "reranker_ok": false,
+       "top": [
+        [
+         "07_faq_probation.md",
+         5527
+        ],
+        [
+         "01_hr_probation_procedure.md",
+         951
+        ],
+        [
+         "01_hr_probation_procedure.md",
+         957
+        ],
+        [
+         "01_hr_pol_adaptation.md",
+         54
+        ],
+        [
+         "01_hr_probation_procedure.md",
+         965
+        ]
+       ]
+      },
+      {
+       "case": "aircargo-dismissal-check",
+       "retrieval_sec": 0.19,
+       "vector": 0.12,
+       "rerank": 0.05,
+       "reranker_ok": false,
+       "top": [
+        [
+         "07_faq_dismissal.md",
+         5402
+        ],
+        [
+         "02_hr_tmp_resignation_letter.md",
+         1416
+        ],
+        [
+         "02_hr_tmp_dismissal_order.md",
+         1048
+        ],
+        [
+         "02_hr_tmp_resignation_letter.md",
+         1412
+        ],
+        [
+         "07_faq_probation.md",
+         5529
+        ]
+       ]
+      },
+      {
+       "case": "aircargo-dismissal-lawyer",
+       "retrieval_sec": 0.2,
+       "vector": 0.13,
+       "rerank": 0.05,
+       "reranker_ok": false,
+       "top": [
+        [
+         "07_faq_dismissal.md",
+         5403
+        ],
+        [
+         "02_hr_tmp_reference_letter_template.md",
+         1362
+        ],
+        [
+         "02_hr_tmp_sick_leave_procedure.md",
+         1450
+        ],
+        [
+         "02_hr_tmp_resignation_letter.md",
+         1419
+        ],
+        [
+         "02_hr_tmp_dismissal_order.md",
+         1051
+        ]
+       ]
+      }
+     ],
+     "devices": {
+      "get_embeddings": "cpu",
+      "get_reranker": "mps"
+     },
+     "load_messages": [
+      "Embedding model loaded in 3.4s",
+      "Reranker loaded in 0.7s"
+     ]
+    }
+   ]
+  },
+  {
+   "label": "live-r2-rerank-gpu",
+   "mode": "retrieval",
+   "overrides": {
+    "REQUEST_TIMEOUT_SEC": "30",
+    "OLLAMA_REQUEST_TIMEOUT_SEC": "60",
+    "STREAMING_TIMEOUT_SEC": "120",
+    "RAG_DEVICE": "auto"
+   },
+   "started": "2026-10-14T12:21:48+00:00",
+   "finished": "2026-10-14T12:49:37+00:00",
+   "status": "complete",
+   "variant_order": [
+    "rerank-mps",
+    "rerank-mps-b4",
+    "rerank-mps-b1",
+    "auto-b4",
+    "auto"
+   ],
+   "variant_exits": {
+    "rerank-mps": 0,
+    "rerank-mps-b4": 0,
+    "rerank-mps-b1": 0,
+    "auto-b4": 0,
+    "auto": 0
+   },
+   "ollama_models_before": [],
+   "ollama_models_after": [],
+   "settings": {
+    "llm_provider_profile": "local-first",
+    "ollama_model_name": "qwen2.5:7b",
+    "ollama_fast_model_name": "llama3.2:3b",
+    "model_routing_enabled": false,
+    "ollama_context_window": 4096,
+    "embedding_model": "BAAI/bge-m3",
+    "embedding_backend": "local",
+    "reranker_model": "BAAI/bge-reranker-v2-m3",
+    "rag_device": "auto",
+    "vector_backend": "chroma",
+    "hybrid_search": true,
+    "retrieval_strategy": "hybrid",
+    "retrieval_top_k": 20,
+    "rerank_top_k": 5,
+    "hyde": false,
+    "graph_retrieval": "off",
+    "parent_expansion": true,
+    "self_rag_max_iterations": 2,
+    "fact_verification_enabled": true,
+    "streaming_enabled": false,
+    "streaming_rag_parity": false,
+    "streaming_quality_eval": true,
+    "streaming_timeout_sec": 120.0,
+    "request_timeout_sec": 30.0,
+    "ollama_request_timeout_sec": 60.0,
+    "quality_threshold": 80,
+    "suggested_questions_enabled": true,
+    "llm_max_calls_per_request": 24,
+    "online_evaluators_enabled": true,
+    "max_concurrent_pipelines": 8,
+    "support_sink_backend": "local",
+    "tracing_db_path": "<workspace>/chatlive/runs/live-r2-rerank-gpu/traces.db",
+    "vectordb_chroma_dir": "<runtime>/chroma"
+   },
+   "settings_off_default": {
+    "db_encryption_key": {
+     "default": "<empty>",
+     "run": "<set>"
+    },
+    "tracing_db_path": {
+     "default": "<workspace>/data/tracing/traces.db",
+     "run": "<workspace>/chatlive/runs/live-r2-rerank-gpu/traces.db"
+    },
+    "vectordb_chroma_dir": {
+     "default": "<workspace>/data/vectordb/chroma",
+     "run": "<runtime>/chroma"
+    }
+   },
+   "memory": {
+    "samples": 548,
+    "swap_used_mb": [
+     463.75,
+     2299.75
+    ],
+    "free_mb_min": 3
+   },
+   "load": {
+    "loadavg_1min_max": 3.13,
+    "loadavg_1min_median": 1.505,
+    "foreign_max_cpu": {
+     "MTLCompilerService": 90.1,
+     "Yandex.Telemost": 46.3,
+     "mds_stores": 36.9,
+     "accountsd": 31.0,
+     "mobileassetd": 26.6,
+     "Finder": 23.5,
+     "Keychain Circle Notification": 22.8,
+     "ZoomUpdater": 22.4
+    }
+   },
+   "notes": [],
+   "variants": [
+    {
+     "variant": "auto-b4",
+     "placement": {
+      "embedder": "auto",
+      "reranker": "auto"
+     },
+     "rerank_batch_env": "4",
+     "retriever_build_sec": 26.69,
+     "questions": [
+      {
+       "case": "warmup-1",
+       "retrieval_sec": 79.62,
+       "vector": 2.37,
+       "rerank": 77.24,
+       "reranker_ok": true,
+       "rerank_batch_effective": 4,
+       "top": [
+        [
+         "07_faq_expedition.md",
+         5473
+        ],
+        [
+         "05_tlog_contract_transport_air.md",
+         3942
+        ],
+        [
+         "05_tlog_regulation_dangerous_goods.md",
+         4452
+        ],
+        [
+         "05_tlog_regulation_dangerous_goods.md",
+         4440
+        ],
+        [
+         "05_tlog_policy_transport_safety.md",
+         4304
+        ]
+       ]
+      },
+      {
+       "case": "aircargo-probation-data",
+       "retrieval_sec": 54.44,
+       "vector": 0.71,
+       "rerank": 53.55,
+       "reranker_ok": true,
+       "rerank_batch_effective": 4,
+       "top": [
+        [
+         "07_faq_probation.md",
+         5525
+        ],
+        [
+         "02_hr_tmp_probation_report.md",
+         1352
+        ],
+        [
+         "07_faq_probation.md",
+         5533
+        ],
+        [
+         "07_faq_probation.md",
+         5531
+        ],
+        [
+         "02_hr_tmp_probation_report.md",
+         1350
+        ]
+       ]
+      },
+      {
+       "case": "aircargo-probation-extend",
+       "retrieval_sec": 71.28,
+       "vector": 1.33,
+       "rerank": 69.9,
+       "reranker_ok": true,
+       "rerank_batch_effective": 4,
+       "top": [
+        [
+         "07_faq_probation.md",
+         5528
+        ],
+        [
+         "01_hr_probation_procedure.md",
+         957
+        ],
+        [
+         "01_hr_pol_adaptation.md",
+         54
+        ],
+        [
+         "01_hr_probation_procedure.md",
+         950
+        ],
+        [
+         "02_hr_tmp_probation_report.md",
+         1344
+        ]
+       ]
+      },
+      {
+       "case": "aircargo-probation-dismissal",
+       "retrieval_sec": 59.33,
+       "vector": 1.88,
+       "rerank": 57.34,
+       "reranker_ok": true,
+       "rerank_batch_effective": 4,
+       "top": [
+        [
+         "07_faq_probation.md",
+         5527
+        ],
+        [
+         "01_hr_probation_procedure.md",
+         965
+        ],
+        [
+         "01_hr_probation_procedure.md",
+         951
+        ],
+        [
+         "02_hr_tmp_probation_report.md",
+         1347
+        ],
+        [
+         "01_hr_probation_procedure.md",
+         957
+        ]
+       ]
+      },
+      {
+       "case": "aircargo-dismissal-check",
+       "retrieval_sec": 55.78,
+       "vector": 1.2,
+       "rerank": 54.49,
+       "reranker_ok": true,
+       "rerank_batch_effective": 4,
+       "top": [
+        [
+         "07_faq_dismissal.md",
+         5402
+        ],
+        [
+         "01_hr_dismissal_procedure.md",
+         13
+        ],
+        [
+         "02_hr_tmp_resignation_letter.md",
+         1416
+        ],
+        [
+         "07_faq_dismissal.md",
+         5407
+        ],
+        [
+         "02_hr_tmp_dismissal_order.md",
+         1048
+        ]
+       ]
+      },
+      {
+       "case": "aircargo-dismissal-lawyer",
+       "retrieval_sec": 47.84,
+       "vector": 0.62,
+       "rerank": 47.18,
+       "reranker_ok": true,
+       "rerank_batch_effective": 4,
+       "top": [
+        [
+         "07_faq_dismissal.md",
+         5403
+        ],
+        [
+         "02_hr_tmp_reference_letter_template.md",
+         1362
+        ],
+        [
+         "02_hr_tmp_sick_leave_procedure.md",
+         1450
+        ],
+        [
+         "02_hr_tmp_internship_agreement.md",
+         1105
+        ],
+        [
+         "02_hr_tmp_material_liability_agreement.md",
+         1275
+        ]
+       ]
+      }
+     ],
+     "devices": {
+      "get_embeddings": "mps",
+      "get_reranker": "mps"
+     },
+     "load_messages": [
+      "Embedding model loaded in 19.9s",
+      "Reranker loaded in 0.7s"
+     ]
+    },
+    {
+     "variant": "auto",
+     "placement": {
+      "embedder": "auto",
+      "reranker": "auto"
+     },
+     "rerank_batch_env": null,
+     "retriever_build_sec": 47.79,
+     "questions": [
+      {
+       "case": "warmup-1",
+       "retrieval_sec": 28.91,
+       "vector": 1.66,
+       "reranker_errors": [
+        "[HybridRetriever] Reranker error: MPS backend out of memory (MPS allocated: 4.75 GB, other allocations: 2.05 GB, max allowed: 6.80 GB). Tried to allocate 34.50 MB on private pool. Use PYTORCH_MPS_HIGH_WATERMARK_RATIO=0.0 to disable upper limit for memory allocations (may cause system failure)."
+       ],
+       "rerank": 27.24,
+       "reranker_ok": false,
+       "rerank_batch_effective": null,
+       "top": [
+        [
+         "05_tlog_contract_transport_air.md",
+         3942
+        ],
+        [
+         "07_faq_expedition.md",
+         5449
+        ],
+        [
+         "05_tlog_regulation_oversized.md",
+         4560
+        ],
+        [
+         "01_hr_pol_confidentiality_emp.md",
+         209
+        ],
+        [
+         "05_tlog_regulation_dangerous_goods.md",
+         4452
+        ]
+       ]
+      },
+      {
+       "case": "aircargo-probation-data",
+       "retrieval_sec": 30.56,
+       "vector": 0.5,
+       "reranker_errors": [
+        "[HybridRetriever] Reranker error: MPS backend out of memory (MPS allocated: 4.48 GB, other allocations: 2.28 GB, max allowed: 6.80 GB). Tried to allocate 134.07 MB on private pool. Use PYTORCH_MPS_HIGH_WATERMARK_RATIO=0.0 to disable upper limit for memory allocations (may cause system failure)."
+       ],
+       "rerank": 30.04,
+       "reranker_ok": false,
+       "rerank_batch_effective": null,
+       "top": [
+        [
+         "07_faq_probation.md",
+         5525
+        ],
+        [
+         "07_faq_probation.md",
+         5533
+        ],
+        [
+         "07_faq_probation.md",
+         5535
+        ],
+        [
+         "07_faq_probation.md",
+         5521
+        ],
+        [
+         "07_faq_probation.md",
+         5531
+        ]
+       ]
+      },
+      {
+       "case": "aircargo-probation-extend",
+       "retrieval_sec": 0.62,
+       "vector": 0.44,
+       "reranker_errors": [
+        "[HybridRetriever] Reranker error: MPS backend out of memory (MPS allocated: 4.25 GB, other allocations: 3.24 GB, max allowed: 6.80 GB). Tried to allocate 53.25 KB on private pool. Use PYTORCH_MPS_HIGH_WATERMARK_RATIO=0.0 to disable upper limit for memory allocations (may cause system failure)."
+       ],
+       "rerank": 0.16,
+       "reranker_ok": false,
+       "rerank_batch_effective": null,
+       "top": [
+        [
+         "07_faq_probation.md",
+         5528
+        ],
+        [
+         "01_hr_probation_procedure.md",
+         957
+        ],
+        [
+         "02_hr_tmp_probation_report.md",
+         1344
+        ],
+        [
+         "07_faq_probation.md",
+         5526
+        ],
+        [
+         "01_hr_internal_transfer.md",
+         33
+        ]
+       ]
+      },
+      {
+       "case": "aircargo-probation-dismissal",
+       "retrieval_sec": 0.09,
+       "vector": 0.03,
+       "reranker_errors": [
+        "[HybridRetriever] Reranker error: MPS backend out of memory (MPS allocated: 4.25 GB, other allocations: 3.24 GB, max allowed: 6.80 GB). Tried to allocate 38.75 KB on private pool. Use PYTORCH_MPS_HIGH_WATERMARK_RATIO=0.0 to disable upper limit for memory allocations (may cause system failure)."
+       ],
+       "rerank": 0.04,
+       "reranker_ok": false,
+       "rerank_batch_effective": null,
+       "top": [
+        [
+         "07_faq_probation.md",
+         5527
+        ],
+        [
+         "01_hr_probation_procedure.md",
+         951
+        ],
+        [
+         "01_hr_probation_procedure.md",
+         957
+        ],
+        [
+         "01_hr_probation_procedure.md",
+         956
+        ],
+        [
+         "01_hr_probation_procedure.md",
+         962
+        ]
+       ]
+      },
+      {
+       "case": "aircargo-dismissal-check",
+       "retrieval_sec": 0.09,
+       "vector": 0.03,
+       "reranker_errors": [
+        "[HybridRetriever] Reranker error: MPS backend out of memory (MPS allocated: 4.25 GB, other allocations: 3.24 GB, max allowed: 6.80 GB). Tried to allocate 39.50 KB on private pool. Use PYTORCH_MPS_HIGH_WATERMARK_RATIO=0.0 to disable upper limit for memory allocations (may cause system failure)."
+       ],
+       "rerank": 0.04,
+       "reranker_ok": false,
+       "rerank_batch_effective": null,
+       "top": [
+        [
+         "07_faq_dismissal.md",
+         5402
+        ],
+        [
+         "02_hr_tmp_dismissal_order.md",
+         1048
+        ],
+        [
+         "02_hr_tmp_resignation_letter.md",
+         1416
+        ],
+        [
+         "02_hr_tmp_dismissal_order.md",
+         1047
+        ],
+        [
+         "01_hr_pol_exit_interview.md",
+         324
+        ]
+       ]
+      },
+      {
+       "case": "aircargo-dismissal-lawyer",
+       "retrieval_sec": 0.09,
+       "vector": 0.03,
+       "reranker_errors": [
+        "[HybridRetriever] Reranker error: MPS backend out of memory (MPS allocated: 4.25 GB, other allocations: 3.24 GB, max allowed: 6.80 GB). Tried to allocate 35.25 KB on private pool. Use PYTORCH_MPS_HIGH_WATERMARK_RATIO=0.0 to disable upper limit for memory allocations (may cause system failure)."
+       ],
+       "rerank": 0.04,
+       "reranker_ok": false,
+       "rerank_batch_effective": null,
+       "top": [
+        [
+         "07_faq_dismissal.md",
+         5403
+        ],
+        [
+         "07_faq_claims_procedure.md",
+         5335
+        ],
+        [
+         "01_hr_pol_overtime.md",
+         643
+        ],
+        [
+         "02_hr_tmp_dismissal_order.md",
+         1040
+        ],
+        [
+         "01_hr_pol_salary.md",
+         810
+        ]
+       ]
+      }
+     ],
+     "devices": {
+      "get_embeddings": "mps",
+      "get_reranker": "mps"
+     },
+     "load_messages": [
+      "Embedding model loaded in 42.0s",
+      "Reranker loaded in 0.9s"
+     ]
+    },
+    {
+     "variant": "rerank-mps-b1",
+     "placement": {
+      "embedder": "cpu",
+      "reranker": "mps"
+     },
+     "rerank_batch_env": "1",
+     "retriever_build_sec": 12.42,
+     "questions": [
+      {
+       "case": "warmup-1",
+       "retrieval_sec": 137.55,
+       "vector": 1.61,
+       "rerank": 135.93,
+       "reranker_ok": true,
+       "rerank_batch_effective": 1,
+       "top": [
+        [
+         "07_faq_expedition.md",
+         5473
+        ],
+        [
+         "05_tlog_contract_transport_air.md",
+         3942
+        ],
+        [
+         "05_tlog_regulation_dangerous_goods.md",
+         4452
+        ],
+        [
+         "05_tlog_regulation_dangerous_goods.md",
+         4440
+        ],
+        [
+         "05_tlog_policy_transport_safety.md",
+         4304
+        ]
+       ]
+      },
+      {
+       "case": "aircargo-probation-data",
+       "retrieval_sec": 85.12,
+       "vector": 0.16,
+       "rerank": 84.95,
+       "reranker_ok": true,
+       "rerank_batch_effective": 1,
+       "top": [
+        [
+         "07_faq_probation.md",
+         5525
+        ],
+        [
+         "02_hr_tmp_probation_report.md",
+         1352
+        ],
+        [
+         "07_faq_probation.md",
+         5533
+        ],
+        [
+         "07_faq_probation.md",
+         5531
+        ],
+        [
+         "02_hr_tmp_probation_report.md",
+         1350
+        ]
+       ]
+      },
+      {
+       "case": "aircargo-probation-extend",
+       "retrieval_sec": 99.64,
+       "vector": 0.28,
+       "rerank": 99.35,
+       "reranker_ok": true,
+       "rerank_batch_effective": 1,
+       "top": [
+        [
+         "07_faq_probation.md",
+         5528
+        ],
+        [
+         "01_hr_probation_procedure.md",
+         957
+        ],
+        [
+         "01_hr_pol_adaptation.md",
+         54
+        ],
+        [
+         "01_hr_probation_procedure.md",
+         950
+        ],
+        [
+         "02_hr_tmp_probation_report.md",
+         1344
+        ]
+       ]
+      },
+      {
+       "case": "aircargo-probation-dismissal",
+       "retrieval_sec": 92.59,
+       "vector": 0.17,
+       "rerank": 92.41,
+       "reranker_ok": true,
+       "rerank_batch_effective": 1,
+       "top": [
+        [
+         "07_faq_probation.md",
+         5527
+        ],
+        [
+         "01_hr_probation_procedure.md",
+         965
+        ],
+        [
+         "01_hr_probation_procedure.md",
+         951
+        ],
+        [
+         "02_hr_tmp_probation_report.md",
+         1347
+        ],
+        [
+         "01_hr_probation_procedure.md",
+         957
+        ]
+       ]
+      },
+      {
+       "case": "aircargo-dismissal-check",
+       "retrieval_sec": 101.16,
+       "vector": 0.16,
+       "rerank": 100.99,
+       "reranker_ok": true,
+       "rerank_batch_effective": 1,
+       "top": [
+        [
+         "07_faq_dismissal.md",
+         5402
+        ],
+        [
+         "01_hr_dismissal_procedure.md",
+         13
+        ],
+        [
+         "02_hr_tmp_resignation_letter.md",
+         1416
+        ],
+        [
+         "07_faq_dismissal.md",
+         5407
+        ],
+        [
+         "02_hr_tmp_dismissal_order.md",
+         1048
+        ]
+       ]
+      },
+      {
+       "case": "aircargo-dismissal-lawyer",
+       "retrieval_sec": 88.86,
+       "vector": 0.16,
+       "rerank": 88.68,
+       "reranker_ok": true,
+       "rerank_batch_effective": 1,
+       "top": [
+        [
+         "07_faq_dismissal.md",
+         5403
+        ],
+        [
+         "02_hr_tmp_reference_letter_template.md",
+         1362
+        ],
+        [
+         "02_hr_tmp_sick_leave_procedure.md",
+         1450
+        ],
+        [
+         "02_hr_tmp_internship_agreement.md",
+         1105
+        ],
+        [
+         "02_hr_tmp_material_liability_agreement.md",
+         1275
+        ]
+       ]
+      }
+     ],
+     "devices": {
+      "get_embeddings": "cpu",
+      "get_reranker": "mps"
+     },
+     "load_messages": [
+      "Embedding model loaded in 6.3s",
+      "Reranker loaded in 0.9s"
+     ]
+    },
+    {
+     "variant": "rerank-mps-b4",
+     "placement": {
+      "embedder": "cpu",
+      "reranker": "mps"
+     },
+     "rerank_batch_env": "4",
+     "retriever_build_sec": 13.45,
+     "questions": [
+      {
+       "case": "warmup-1",
+       "retrieval_sec": 79.59,
+       "vector": 1.64,
+       "rerank": 77.93,
+       "reranker_ok": true,
+       "rerank_batch_effective": 4,
+       "top": [
+        [
+         "07_faq_expedition.md",
+         5473
+        ],
+        [
+         "05_tlog_contract_transport_air.md",
+         3942
+        ],
+        [
+         "05_tlog_regulation_dangerous_goods.md",
+         4452
+        ],
+        [
+         "05_tlog_regulation_dangerous_goods.md",
+         4440
+        ],
+        [
+         "05_tlog_policy_transport_safety.md",
+         4304
+        ]
+       ]
+      },
+      {
+       "case": "aircargo-probation-data",
+       "retrieval_sec": 47.9,
+       "vector": 1.75,
+       "rerank": 46.03,
+       "reranker_ok": true,
+       "rerank_batch_effective": 4,
+       "top": [
+        [
+         "07_faq_probation.md",
+         5525
+        ],
+        [
+         "02_hr_tmp_probation_report.md",
+         1352
+        ],
+        [
+         "07_faq_probation.md",
+         5533
+        ],
+        [
+         "07_faq_probation.md",
+         5531
+        ],
+        [
+         "02_hr_tmp_probation_report.md",
+         1350
+        ]
+       ]
+      },
+      {
+       "case": "aircargo-probation-extend",
+       "retrieval_sec": 63.91,
+       "vector": 0.22,
+       "rerank": 63.68,
+       "reranker_ok": true,
+       "rerank_batch_effective": 4,
+       "top": [
+        [
+         "07_faq_probation.md",
+         5528
+        ],
+        [
+         "01_hr_probation_procedure.md",
+         957
+        ],
+        [
+         "01_hr_pol_adaptation.md",
+         54
+        ],
+        [
+         "01_hr_probation_procedure.md",
+         950
+        ],
+        [
+         "02_hr_tmp_probation_report.md",
+         1344
+        ]
+       ]
+      },
+      {
+       "case": "aircargo-probation-dismissal",
+       "retrieval_sec": 57.78,
+       "vector": 0.19,
+       "rerank": 57.57,
+       "reranker_ok": true,
+       "rerank_batch_effective": 4,
+       "top": [
+        [
+         "07_faq_probation.md",
+         5527
+        ],
+        [
+         "01_hr_probation_procedure.md",
+         965
+        ],
+        [
+         "01_hr_probation_procedure.md",
+         951
+        ],
+        [
+         "02_hr_tmp_probation_report.md",
+         1347
+        ],
+        [
+         "01_hr_probation_procedure.md",
+         957
+        ]
+       ]
+      },
+      {
+       "case": "aircargo-dismissal-check",
+       "retrieval_sec": 57.15,
+       "vector": 0.15,
+       "rerank": 56.99,
+       "reranker_ok": true,
+       "rerank_batch_effective": 4,
+       "top": [
+        [
+         "07_faq_dismissal.md",
+         5402
+        ],
+        [
+         "01_hr_dismissal_procedure.md",
+         13
+        ],
+        [
+         "02_hr_tmp_resignation_letter.md",
+         1416
+        ],
+        [
+         "07_faq_dismissal.md",
+         5407
+        ],
+        [
+         "02_hr_tmp_dismissal_order.md",
+         1048
+        ]
+       ]
+      },
+      {
+       "case": "aircargo-dismissal-lawyer",
+       "retrieval_sec": 49.36,
+       "vector": 0.17,
+       "rerank": 49.17,
+       "reranker_ok": true,
+       "rerank_batch_effective": 4,
+       "top": [
+        [
+         "07_faq_dismissal.md",
+         5403
+        ],
+        [
+         "02_hr_tmp_reference_letter_template.md",
+         1362
+        ],
+        [
+         "02_hr_tmp_sick_leave_procedure.md",
+         1450
+        ],
+        [
+         "02_hr_tmp_internship_agreement.md",
+         1105
+        ],
+        [
+         "02_hr_tmp_material_liability_agreement.md",
+         1275
+        ]
+       ]
+      }
+     ],
+     "devices": {
+      "get_embeddings": "cpu",
+      "get_reranker": "mps"
+     },
+     "load_messages": [
+      "Embedding model loaded in 7.4s",
+      "Reranker loaded in 0.9s"
+     ]
+    },
+    {
+     "variant": "rerank-mps",
+     "placement": {
+      "embedder": "cpu",
+      "reranker": "mps"
+     },
+     "rerank_batch_env": null,
+     "retriever_build_sec": 13.29,
+     "questions": [
+      {
+       "case": "warmup-1",
+       "retrieval_sec": 71.52,
+       "vector": 22.49,
+       "reranker_errors": [
+        "[HybridRetriever] Reranker error: MPS backend out of memory (MPS allocated: 2.56 GB, other allocations: 4.14 GB, max allowed: 6.80 GB). Tried to allocate 148.78 MB on private pool. Use PYTORCH_MPS_HIGH_WATERMARK_RATIO=0.0 to disable upper limit for memory allocations (may cause system failure)."
+       ],
+       "rerank": 49.01,
+       "reranker_ok": false,
+       "rerank_batch_effective": null,
+       "top": [
+        [
+         "05_tlog_contract_transport_air.md",
+         3942
+        ],
+        [
+         "07_faq_expedition.md",
+         5449
+        ],
+        [
+         "05_tlog_regulation_oversized.md",
+         4560
+        ],
+        [
+         "01_hr_pol_confidentiality_emp.md",
+         209
+        ],
+        [
+         "05_tlog_regulation_dangerous_goods.md",
+         4452
+        ]
+       ]
+      },
+      {
+       "case": "aircargo-probation-data",
+       "retrieval_sec": 64.21,
+       "vector": 13.13,
+       "reranker_errors": [
+        "[HybridRetriever] Reranker error: MPS backend out of memory (MPS allocated: 2.54 GB, other allocations: 4.26 GB, max allowed: 6.80 GB). Tried to allocate 134.07 MB on private pool. Use PYTORCH_MPS_HIGH_WATERMARK_RATIO=0.0 to disable upper limit for memory allocations (may cause system failure)."
+       ],
+       "rerank": 51.06,
+       "reranker_ok": false,
+       "rerank_batch_effective": null,
+       "top": [
+        [
+         "07_faq_probation.md",
+         5525
+        ],
+        [
+         "07_faq_probation.md",
+         5533
+        ],
+        [
+         "07_faq_probation.md",
+         5535
+        ],
+        [
+         "07_faq_probation.md",
+         5521
+        ],
+        [
+         "07_faq_probation.md",
+         5531
+        ]
+       ]
+      },
+      {
+       "case": "aircargo-probation-extend",
+       "retrieval_sec": 1.1,
+       "vector": 0.37,
+       "reranker_errors": [
+        "[HybridRetriever] Reranker error: MPS backend out of memory (MPS allocated: 2.31 GB, other allocations: 5.26 GB, max allowed: 6.80 GB). Tried to allocate 85.00 KB on private pool. Use PYTORCH_MPS_HIGH_WATERMARK_RATIO=0.0 to disable upper limit for memory allocations (may cause system failure)."
+       ],
+       "rerank": 0.72,
+       "reranker_ok": false,
+       "rerank_batch_effective": null,
+       "top": [
+        [
+         "07_faq_probation.md",
+         5528
+        ],
+        [
+         "01_hr_probation_procedure.md",
+         957
+        ],
+        [
+         "01_hr_internal_transfer.md",
+         33
+        ],
+        [
+         "02_hr_tmp_probation_report.md",
+         1344
+        ],
+        [
+         "01_hr_probation_procedure.md",
+         950
+        ]
+       ]
+      },
+      {
+       "case": "aircargo-probation-dismissal",
+       "retrieval_sec": 0.33,
+       "vector": 0.26,
+       "reranker_errors": [
+        "[HybridRetriever] Reranker error: MPS backend out of memory (MPS allocated: 2.31 GB, other allocations: 5.26 GB, max allowed: 6.80 GB). Tried to allocate 85.50 KB on private pool. Use PYTORCH_MPS_HIGH_WATERMARK_RATIO=0.0 to disable upper limit for memory allocations (may cause system failure)."
+       ],
+       "rerank": 0.06,
+       "reranker_ok": false,
+       "rerank_batch_effective": null,
+       "top": [
+        [
+         "07_faq_probation.md",
+         5527
+        ],
+        [
+         "01_hr_probation_procedure.md",
+         951
+        ],
+        [
+         "01_hr_probation_procedure.md",
+         957
+        ],
+        [
+         "01_hr_pol_adaptation.md",
+         54
+        ],
+        [
+         "01_hr_probation_procedure.md",
+         965
+        ]
+       ]
+      },
+      {
+       "case": "aircargo-dismissal-check",
+       "retrieval_sec": 0.32,
+       "vector": 0.26,
+       "reranker_errors": [
+        "[HybridRetriever] Reranker error: MPS backend out of memory (MPS allocated: 2.31 GB, other allocations: 5.26 GB, max allowed: 6.80 GB). Tried to allocate 63.25 KB on private pool. Use PYTORCH_MPS_HIGH_WATERMARK_RATIO=0.0 to disable upper limit for memory allocations (may cause system failure)."
+       ],
+       "rerank": 0.05,
+       "reranker_ok": false,
+       "rerank_batch_effective": null,
+       "top": [
+        [
+         "07_faq_dismissal.md",
+         5402
+        ],
+        [
+         "02_hr_tmp_resignation_letter.md",
+         1416
+        ],
+        [
+         "02_hr_tmp_dismissal_order.md",
+         1048
+        ],
+        [
+         "02_hr_tmp_resignation_letter.md",
+         1412
+        ],
+        [
+         "07_faq_probation.md",
+         5529
+        ]
+       ]
+      },
+      {
+       "case": "aircargo-dismissal-lawyer",
+       "retrieval_sec": 0.31,
+       "vector": 0.25,
+       "reranker_errors": [
+        "[HybridRetriever] Reranker error: MPS backend out of memory (MPS allocated: 2.31 GB, other allocations: 5.26 GB, max allowed: 6.80 GB). Tried to allocate 63.00 KB on private pool. Use PYTORCH_MPS_HIGH_WATERMARK_RATIO=0.0 to disable upper limit for memory allocations (may cause system failure)."
+       ],
+       "rerank": 0.05,
+       "reranker_ok": false,
+       "rerank_batch_effective": null,
+       "top": [
+        [
+         "07_faq_dismissal.md",
+         5403
+        ],
+        [
+         "02_hr_tmp_reference_letter_template.md",
+         1362
+        ],
+        [
+         "02_hr_tmp_sick_leave_procedure.md",
+         1450
+        ],
+        [
+         "02_hr_tmp_resignation_letter.md",
+         1419
+        ],
+        [
+         "02_hr_tmp_dismissal_order.md",
+         1051
+        ]
+       ]
+      }
+     ],
+     "devices": {
+      "get_embeddings": "cpu",
+      "get_reranker": "mps"
+     },
+     "load_messages": [
+      "Embedding model loaded in 8.0s",
+      "Reranker loaded in 0.7s"
+     ]
+    }
+   ]
+  }
+ ],
+ "index": {
+  "rag_docs_aircargo": {
+   "chunks": 5589,
+   "sha256_sorted_texts": "b7cdcac13df472600c9cb4933325260dc3914da09f72ffcb98b2c8e3cfbe4b57"
+  }
+ }
+}
