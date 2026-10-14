@@ -5,6 +5,11 @@ The heavy path is intended for the project Mac, not the Windows laptop. Ollama
 generation/LLM judging finishes first and explicitly unloads the model before
 the multilingual NLI scorer is loaded, keeping the two model peaks separate on
 an 8 GiB host.
+
+`--no-llm-judge` drops the generator's grading of its own answers: under plan
+decision D12 one judge, the session's model, grades answers apart from this
+script, so such a run keeps the NLI scorer, the context metrics and the timing
+Ollama reports for every generation.
 """
 
 from __future__ import annotations
@@ -49,6 +54,16 @@ QUALITY_METRICS = (
     "nli_supported_claim_rate",
 )
 RUN_METRICS = (*QUALITY_METRICS, "mean_latency_ms")
+# Scored by the generator itself; absent from a run made with --no-llm-judge.
+LLM_JUDGE_METRICS = ("llm_faithfulness", "answer_relevancy")
+OLLAMA_TIMING_FIELDS = (
+    "total_duration",
+    "load_duration",
+    "prompt_eval_count",
+    "prompt_eval_duration",
+    "eval_count",
+    "eval_duration",
+)
 REQUIRED_PROVENANCE = (
     "code_sha",
     "dataset_sha256",
@@ -248,6 +263,8 @@ class OllamaLLM:
         self._request_json = request_json
         self.calls = 0
         self.failed_calls = 0
+        # Ollama's own durations (nanoseconds) and token counts of the last reply.
+        self.last_timing: dict[str, Any] = {}
 
     def invoke(self, prompt: str) -> str:
         payload = {
@@ -264,6 +281,7 @@ class OllamaLLM:
         }
         if self.think is not None:
             payload["think"] = self.think
+        self.last_timing = {}
         try:
             data = self._request_json(
                 "POST",
@@ -275,6 +293,7 @@ class OllamaLLM:
             if not isinstance(answer, str):
                 raise RuntimeError("Ollama response is missing string field 'response'")
             self.calls += 1
+            self.last_timing = {key: data[key] for key in OLLAMA_TIMING_FIELDS if key in data}
             return answer.strip()
         except Exception:
             self.failed_calls += 1
@@ -688,9 +707,13 @@ def build_final_report(
     provenance: Mapping[str, Any],
     expected_cases: int,
     required_runs: int,
+    llm_judge: bool = True,
 ) -> dict[str, Any]:
     """Build the report and fail closed unless the complete measured contract holds."""
     reasons: list[str] = []
+    required_metrics = [
+        metric for metric in RUN_METRICS if llm_judge or metric not in LLM_JUDGE_METRICS
+    ]
     for field in REQUIRED_PROVENANCE:
         if not str(provenance.get(field) or "").strip():
             reasons.append(f"missing provenance: {field}")
@@ -721,7 +744,7 @@ def build_final_report(
         if not isinstance(aggregate, Mapping):
             reasons.append(f"run {run_index} has no aggregate")
             continue
-        for metric in RUN_METRICS:
+        for metric in required_metrics:
             if not _finite_number(aggregate.get(metric)):
                 reasons.append(f"run {run_index} missing finite metric: {metric}")
 
@@ -752,7 +775,7 @@ def build_final_report(
     }
 
 
-def _aggregate_run(run: dict[str, Any]) -> None:
+def _aggregate_run(run: dict[str, Any], *, llm_judge: bool = True) -> None:
     rows = run.get("cases", [])
     modern = any("judge_requests" in row for row in rows)
     totals: dict[str, list[float]] = {metric: [] for metric in QUALITY_METRICS}
@@ -793,7 +816,9 @@ def _aggregate_run(run: dict[str, Any]) -> None:
         for metric, values in totals.items()
     }
     run["aggregate"]["mean_latency_ms"] = statistics.fmean(latencies) if latencies else 0.0
-    if modern:
+    if not llm_judge:
+        run["answer_metrics_evidence"] = "not_requested"
+    elif modern:
         summary: dict[str, Any] = {}
         for metric in ("faithfulness", "answer_relevancy"):
             counts: dict[str, Any] = {
@@ -991,6 +1016,7 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--model", default="qwen2.5:7b")
     parser.add_argument("--ollama-base-url", default="http://127.0.0.1:11434")
     parser.add_argument("--runs", type=int, default=3)
+    parser.add_argument("--required-runs", type=int, default=3)
     parser.add_argument("--expected-cases", type=int, default=100)
     parser.add_argument("--max-cases", type=int, default=0)
     parser.add_argument("--top-k", type=int, default=None)
@@ -1003,6 +1029,7 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--timeout-sec", type=float, default=600.0)
     parser.add_argument("--keep-alive", default="30m")
     parser.add_argument("--think", action=argparse.BooleanOptionalAction, default=None)
+    parser.add_argument("--llm-judge", action=argparse.BooleanOptionalAction, default=True)
     parser.add_argument("--nli-model", default=DEFAULT_NLI_MODEL)
     parser.add_argument("--nli-revision", default=DEFAULT_NLI_REVISION)
     parser.add_argument("--nli-device", default="cpu")
@@ -1016,8 +1043,8 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
 def main(argv: Sequence[str] | None = None) -> int:
     args = parse_args(argv)
     run_id = args.run_id or datetime.now(UTC).strftime("c1a-%Y%m%dT%H%M%SZ")
-    if args.runs <= 0 or args.expected_cases <= 0:
-        raise BenchmarkInputError("runs and expected_cases must be positive")
+    if args.runs <= 0 or args.required_runs <= 0 or args.expected_cases <= 0:
+        raise BenchmarkInputError("runs, required_runs and expected_cases must be positive")
     if args.nli_batch_size <= 0:
         raise BenchmarkInputError("nli_batch_size must be positive")
 
@@ -1050,6 +1077,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     config = {
         "prompt_version": PROMPT_VERSION,
         "runs": args.runs,
+        "required_runs": args.required_runs,
+        "llm_judge": args.llm_judge,
         "expected_cases": args.expected_cases,
         "selected_cases": len(cases),
         "top_k_override": args.top_k,
@@ -1145,17 +1174,21 @@ def main(argv: Sequence[str] | None = None) -> int:
             generation_valid = True
             llm_judge_valid = False
             error = ""
+            timing: dict[str, Any] = {}
             try:
                 answer = llm.invoke(_answer_prompt(case["query"], case["contexts"]))
+                # A client that reports no timing leaves it empty; it is no failed generation.
+                timing = dict(getattr(llm, "last_timing", None) or {})
                 if not answer:
                     raise RuntimeError("empty generated answer")
             except Exception as exc:
                 generation_valid = False
                 answer = ""
                 error = f"generation: {type(exc).__name__}: {exc}"
+            latency_ms = int((time.perf_counter() - started) * 1000)
 
             judged = _judge_scores(
-                llm if generation_valid else None,
+                llm if generation_valid and args.llm_judge else None,
                 question=case["query"],
                 answer=answer,
                 contexts=case["contexts"],
@@ -1167,9 +1200,11 @@ def main(argv: Sequence[str] | None = None) -> int:
                 outcome["status"] == "valid" for outcome in judge_requests.values()
             )
             for metric, outcome in judge_requests.items():
-                if outcome["status"] != "valid":
+                if outcome["status"] != "valid" and args.llm_judge:
                     error = (error + "; " if error else "") + f"judge {metric}: {outcome['reason']}"
-            latency_ms = int((time.perf_counter() - started) * 1000)
+            if args.llm_judge:
+                # As in C.1a/C.1b: the latency of a judged case includes both judging requests.
+                latency_ms = int((time.perf_counter() - started) * 1000)
             run["cases"].append(
                 {
                     "case_id": case["case_id"],
@@ -1183,6 +1218,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                     "scores": scores,
                     "judge_requests": judge_requests,
                     "context_count": len(case["contexts"]),
+                    "ollama_timing": timing,
                 }
             )
             save_checkpoint()
@@ -1233,14 +1269,15 @@ def main(argv: Sequence[str] | None = None) -> int:
                 f"{row['case_id']}",
                 flush=True,
             )
-        _aggregate_run(run)
+        _aggregate_run(run, llm_judge=args.llm_judge)
     provenance["nli_process_peak_rss_bytes"] = _max_rss_bytes() if scorer else None
 
     report = build_final_report(
         runs=runs,
         provenance=provenance,
         expected_cases=args.expected_cases,
-        required_runs=3,
+        required_runs=args.required_runs,
+        llm_judge=args.llm_judge,
     )
     json_path = args.results_dir / f"{run_id}-phase-c-generator-benchmark.json"
     markdown_path = args.results_dir / f"{run_id}-phase-c-generator-benchmark.md"

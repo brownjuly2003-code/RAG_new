@@ -148,6 +148,9 @@ SLO (first word or whole answer, at what share of questions). Both are Julia's.
   check; no other model in any role.
 - D11, 2026-10-03: «люди участвовать в процессе не будут».
 - 2026-10-14: «прод на маке»; «со всем согласна» (above).
+- 2026-10-14, later: «Модель для прода. Давай подвесим вопрос. И посмотрим, как на тестах
+  результаты на модели < 7B» — the production model is suspended; «согласна» to the
+  screening of generators below 7B ([plan](../specs/small-generator-screening.md)).
 - From 2026-10-13 (memory `chat-test-expectations`): a chat test uses the real path and the
   production limits; raising timeouts to minutes or cutting the pipeline to make a test
   look fast is «симуляция над симуляцией»; one question first, then five, before a hundred.
@@ -262,10 +265,13 @@ python`, called `$PY` here), in `/Users/julia/RAG_new_chat_33d4b42/chatlive/`:
 
 ## Next actions
 
+Under way, on Julia's «согласна»: the screening of the generators below 7B on the C.1
+contract, graded by the one judge ([plan](../specs/small-generator-screening.md)).
+
 Once Julia decides:
 
-1. **Which LLM serves production, and the SLO** — the open half of D5; the choices and what
-   each costs are in answer 3. The limits then follow her SLO, never the other way round:
+1. **Which LLM serves production, and the SLO** — the open half of D5, suspended by her
+   until the screening reports; the choices and what each costs are in answer 3. The limits then follow her SLO, never the other way round:
    raising them so that a test passes is what she called «симуляция над симуляцией». A
    hosted or smaller model is the model swap of the ROADMAP stop-list and needs her word.
 2. **Then the gate 1 → 5 → 100** in that configuration with her limits, on the web chat's
