@@ -487,25 +487,10 @@ def _budget_exhausted_state(
 _USE_DEFAULT_BREAKER = object()
 
 
-def _with_ollama_timeout_kwargs(model_name: str, timeout_sec: float) -> list[dict[str, Any]]:
-    return [
-        {"model": model_name, "timeout": timeout_sec},
-        {"model": model_name, "request_timeout": timeout_sec},
-        {"model": model_name, "client_kwargs": {"timeout": timeout_sec}},
-        {"model": model_name},
-    ]
-
-
 def _instantiate_local_ollama(cls: Any, model_name: str, timeout_sec: float) -> Any:
-    last_type_error: TypeError | None = None
-    for kwargs in _with_ollama_timeout_kwargs(model_name, timeout_sec):
-        try:
-            return cls(**kwargs)
-        except TypeError as exc:
-            last_type_error = exc
-    if last_type_error is not None:
-        raise last_type_error
-    return cls(model=model_name)
+    from llm.providers.ollama import _instantiate_with_timeout
+
+    return _instantiate_with_timeout(cls, model=model_name, timeout_sec=timeout_sec)
 
 
 def _create_local_ollama_llm(model_name: str, timeout_sec: float) -> Any:

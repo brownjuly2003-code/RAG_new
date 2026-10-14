@@ -15,17 +15,36 @@ from llm.providers.base import (
 
 
 def _with_timeout_kwargs(kwargs: dict[str, Any], timeout_sec: float) -> list[dict[str, Any]]:
+    client_kwargs = {**(kwargs.get("client_kwargs") or {}), "timeout": timeout_sec}
     return [
         {**kwargs, "timeout": timeout_sec},
         {**kwargs, "request_timeout": timeout_sec},
-        {**kwargs, "client_kwargs": {"timeout": timeout_sec}},
+        {**kwargs, "client_kwargs": client_kwargs},
         kwargs,
     ]
 
 
 def _instantiate_with_timeout(cls: Any, *, timeout_sec: float, **kwargs: Any) -> Any:
+    from utils.request_deadline import get_request_deadline
+
+    deadline = get_request_deadline()
+    if deadline is not None:
+        deadline.check("ollama.client")
+        timeout_sec = min(timeout_sec, deadline.remaining_sec())
+    candidates = _with_timeout_kwargs(kwargs, timeout_sec)
+    fields = getattr(cls, "model_fields", None)
+    if fields is None:
+        fields = getattr(cls, "__fields__", None)
+    if isinstance(fields, dict):
+        # Pydantic bindings can silently ignore unknown constructor arguments.
+        # Select a declared field instead of treating construction as acceptance.
+        for field, candidate in zip(
+            ("timeout", "request_timeout", "client_kwargs"), candidates[:3], strict=True
+        ):
+            if field in fields:
+                return cls(**candidate)
     last_type_error: TypeError | None = None
-    for candidate in _with_timeout_kwargs(kwargs, timeout_sec):
+    for candidate in candidates:
         try:
             return cls(**candidate)
         except TypeError as exc:
@@ -106,7 +125,26 @@ class OllamaProvider:
 
             llm = _make(community_ollama_cls)
 
-        text = str(llm.invoke(prompt))
+        from utils.request_deadline import check_request_deadline, get_request_deadline
+
+        if get_request_deadline() is None:
+            text = str(llm.invoke(prompt))
+        else:
+            # LangChain invoke aggregates a token stream. Socket read timeouts
+            # reset on each chunk, so periodic tokens alone can outlive the wall.
+            # Observe that same stream and close it when the request expires.
+            chunks: list[str] = []
+            stream = llm.stream(prompt)
+            try:
+                for chunk in stream:
+                    check_request_deadline("ollama.generate.chunk")
+                    chunks.append(str(chunk))
+                check_request_deadline("ollama.generate")
+                text = "".join(chunks)
+            finally:
+                close = getattr(stream, "close", None)
+                if callable(close):
+                    close()
         input_tokens = estimate_tokens(prompt)
         output_tokens = estimate_tokens(text)
         latency_ms = int((time.perf_counter() - started) * 1000)
