@@ -397,6 +397,22 @@ class EscalationService:
 
     def create_escalation_sync(self, **kwargs: Any) -> EscalationOutcome:
         """Sync wrapper for graph nodes and tools (thread-safe if loop already running)."""
+        from utils.event_loop import get_main_loop
+
+        main_loop = get_main_loop()
+        try:
+            running_loop = asyncio.get_running_loop()
+        except RuntimeError:
+            running_loop = None
+        if main_loop is not None and main_loop.is_running():
+            if main_loop is running_loop:
+                raise RuntimeError("Use await create_escalation() on the API event loop")
+            future = asyncio.run_coroutine_threadsafe(self.create_escalation(**kwargs), main_loop)
+            try:
+                return future.result(timeout=60)
+            except TimeoutError:
+                future.cancel()
+                raise
         try:
             asyncio.get_running_loop()
         except RuntimeError:
