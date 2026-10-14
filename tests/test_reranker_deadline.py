@@ -84,6 +84,65 @@ def test_rerank_runs_within_deadline() -> None:
     assert docs == [beta]
 
 
+def test_rerank_stops_between_configured_batches() -> None:
+    docs = [manager.Document(page_content=str(i), metadata={}) for i in range(3)]
+
+    class _ExpiringReranker:
+        def __init__(self):
+            self.calls: list[list[tuple[str, str]]] = []
+
+        def predict(self, pairs, batch_size=None):
+            self.calls.append(pairs)
+            rd.set_request_deadline(rd.RequestDeadline(expires_at=0, source="batch-test"))
+            return [float(text) for _, text in pairs]
+
+    reranker = _ExpiringReranker()
+    retriever = _hybrid(docs, reranker)
+    retriever._rerank_batch = 1
+    rd.bind_request_deadline(30, source="batch-test")
+
+    with pytest.raises(rd.RequestDeadlineExceeded):
+        retriever._rerank_scored_with_status("question", docs)
+
+    assert reranker.calls == [[("question", "0")]]
+
+
+def test_rerank_expiry_in_final_batch_cannot_return_success() -> None:
+    doc = manager.Document(page_content="one", metadata={})
+
+    class _ExpiringReranker:
+        def predict(self, pairs):
+            rd.set_request_deadline(rd.RequestDeadline(expires_at=0, source="final-batch"))
+            return [1.0]
+
+    retriever = _hybrid([doc], _ExpiringReranker())
+    rd.bind_request_deadline(30, source="final-batch")
+    with pytest.raises(rd.RequestDeadlineExceeded):
+        retriever._rerank_scored_with_status("question", [doc])
+
+
+def test_bounded_batches_preserve_global_ranking_and_document_identity() -> None:
+    docs = [manager.Document(page_content=str(i), metadata={}) for i in (2, 3, 1)]
+
+    class _Reranker:
+        def __init__(self):
+            self.calls: list[list[tuple[str, str]]] = []
+
+        def predict(self, pairs, batch_size=None):
+            self.calls.append(pairs)
+            return [float(text) for _, text in pairs]
+
+    reranker = _Reranker()
+    retriever = _hybrid(docs, reranker, rerank_k=3)
+    retriever._rerank_batch = 1
+    rd.bind_request_deadline(30, source="ranking-test")
+    ranked, ok = retriever._rerank_scored_with_status("question", docs)
+
+    assert ok is True
+    assert ranked == [(docs[1], 3.0), (docs[0], 2.0), (docs[2], 1.0)]
+    assert len(reranker.calls) == 3
+
+
 def test_rerank_deadline_not_swallowed_as_top_k_fallback() -> None:
     """Broken-reranker path degrades to top-k; deadline must not use that path."""
     alpha = manager.Document(page_content="alpha doc", metadata={})

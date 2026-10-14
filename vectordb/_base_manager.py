@@ -1001,16 +1001,34 @@ class HybridRetriever:
 
         # Cooperative deadline (plan §3.1h): refuse new reranker work after wall.
         # Fail-closed: do not degrade to top-k as silent success after expiry.
-        from utils.request_deadline import RequestDeadlineExceeded, check_request_deadline
+        from utils.request_deadline import (
+            RequestDeadlineExceeded,
+            check_request_deadline,
+            get_request_deadline,
+        )
 
         check_request_deadline("retriever.rerank")
 
         pairs = [(query, doc.page_content) for doc in docs]
         try:
-            if self._rerank_batch is not None:
+            if self._rerank_batch is not None and get_request_deadline() is not None:
+                # A single predict call otherwise processes every library batch
+                # even after the HTTP request stops waiting. Keep the configured
+                # inference batch and check the same wall budget between batches.
+                scores = []
+                for start in range(0, len(pairs), self._rerank_batch):
+                    check_request_deadline("retriever.rerank")
+                    batch = pairs[start : start + self._rerank_batch]
+                    batch_scores = self._reranker.predict(batch, batch_size=self._rerank_batch)
+                    check_request_deadline("retriever.rerank")
+                    if len(batch_scores) != len(batch):
+                        raise ValueError("Reranker must return one score per pair")
+                    scores.extend(batch_scores)
+            elif self._rerank_batch is not None:
                 scores = self._reranker.predict(pairs, batch_size=self._rerank_batch)
             else:
                 scores = self._reranker.predict(pairs)
+            check_request_deadline("retriever.rerank")
             # strict=True: predict returns exactly one score per (query, doc) pair.
             converted: list[float | None] = []
             for score in scores:
