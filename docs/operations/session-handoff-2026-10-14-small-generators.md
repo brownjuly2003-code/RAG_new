@@ -1,12 +1,13 @@
 # Session handoff — 2026-10-14 — generators below 7B on the production Mac
 
-Session `ef96201d` (continued after context compactions), 2026-10-14 13:15–20:50 UTC,
-Claude Opus 5.5 alone (D12). Commits: `86df582` (the screening registered), `cfb78ee` (its
-amendment), `f470f03` (the live chat record), `40ad172` (the screening record without the
-judge's verdicts, and these documents) and the one that fills its verification.
-**Nothing is pushed:** `origin/master` as last fetched is `f7416ca`; with the commit that
-fills the verification master is 47 commits ahead of it, all of 2026-10-04…10-14. The
-session before this one, the same day, measured the web chat with qwen2.5:7b:
+Session `ef96201d` (continued after context compactions), 2026-10-14 13:15–20:50 UTC and
+2026-10-15 08:40–10:00 UTC, Claude Opus 5.5 alone (D12). Commits: `86df582` (the screening
+registered), `cfb78ee` (its amendment), `f470f03` (the live chat record), `40ad172` (the
+screening record without the judge's verdicts, and these documents), `a7bf232` (its
+verification); on 2026-10-15 the commit that publishes the verdicts and the one that fills
+its verification. **Pushed on 2026-10-15 at Julia's word:** `f7416ca..a7bf232`, the 47
+commits of 2026-10-04…10-14; the commits after `a7bf232` are local. The session before this
+one, on 2026-10-14, measured the web chat with qwen2.5:7b:
 [session log](session-handoff-2026-10-14-chat-on-mac.md).
 
 ## What matters to understand
@@ -17,7 +18,10 @@ to the first word and ~8 min to the whole answer with the limits raised) she wro
 < 7B. Что думаешь?» — the choice of the production model is suspended, and she wants to see
 how models below 7B do in tests. The session proposed a plan (screen the Apache-2.0 Qwen
 generators below 7B against C.1a and C.1b on the C.1 contract, graded by the one judge, then
-time the chat with them); she answered «согласна».
+time the chat with them); she answered «согласна». On 2026-10-15, asked whether to restart
+the judge (stopped for low memory), whether to push, and about the model, she wrote «1. Да
+2. Да. 3. Давай решим это позже»: the judge finished, the 47 commits are pushed, and the
+choice of the model waits.
 
 **Two measurements, two questions.**
 
@@ -40,10 +44,12 @@ A model can do well in (1) and badly in (2): the chat prompt is not the benchmar
 qwen2.5:1.5b never answered with a bare reference in the screening, and did so in the chat
 ("[4]", routed `auto`).
 
-**The screening** — deterministic checks of all 100 answers; the judge's classes pending:
+**The screening** — the one judge on 30 shared cases; deterministic checks of all 100 answers:
 
 | | qwen2.5-1.5b | qwen3-1.7b | qwen3-4b-instruct | qwen2.5-7b (C.1a) | qwen3-8b (C.1b) |
 |---|---|---|---|---|---|
+| judge: good / partial_ok / bad of 30 | 16 / 5 / 9 | 20 / 5 / 5 | 23 / 5 / 2 | 20 / 6 / 4 | 21 / 8 / 1 |
+| judge: supported claims | 0.86 | 0.92 | 0.99 | 0.95 | 0.99 |
 | keyword recall, 100 answers | 0.645 | 0.575 | 0.730 | 0.705 | 0.705 |
 | NLI faithfulness (not ranked on) | 0.870 | 0.907 | 0.919 | 0.892 | 0.991 |
 | answers without Cyrillic | 0 | 0 | 1 | 0 | 8 |
@@ -56,11 +62,19 @@ latencies include two self-grading requests and are not comparable, and their re
 no Ollama timings (`ollama_timing` was added for this screening) — hence the dashes. The
 answers without Cyrillic are English lists: qwen3-8b's 8 name fields, a right answer to a
 field question; Qwen3-4B-Instruct's one names documents («AWB/HAWB, cargo manifest, …», case
-`aircargo-cargo-loss-evidence-bundle`). **The judge's classes — the plan's measure of
-quality — are pending**: 99 of its 165 requests were made when Claude Code stopped the
-stream because the laptop ran low on memory, and the restart waits for Julia's word (why:
-State, below). Without them no ranking is claimed; on keyword recall Qwen3-4B-Instruct is
-level with C.1a and C.1b, and the 1.5B and 1.7B models are below.
+`aircargo-cargo-loss-evidence-bundle`).
+
+**What the judge says.** It agreed with itself: the same class on 15 of 15 retests, the
+same `context_has_answer` for all five answers in 30 of 30 cases. Thirty cases tell apart
+only gaps of more than five good answers (at 25 of 30 the 95 % Wilson interval is about
+0.66–0.93): of all pairs only qwen2.5-1.5b and Qwen3-4B-Instruct are told apart. The 1.5B
+has the most bad answers (9) and 8 of its 30 hold an unsupported claim. Qwen3-4B-Instruct
+leads the small generators and is within five good answers of C.1a and C.1b, so the plan's
+reading extends the judge to all 100 cases of the generators concerned under a new plan
+(State, below). qwen3-1.7b, last on keyword recall, is level with C.1a on good answers: the
+keyword measure and the judge disagree on it, and the judge is the plan's measure. The
+stream was stopped once by low memory on the laptop (99 verdicts) and finished on
+2026-10-15; 165 requests, all valid at the first attempt, $17.41, 7,031 s.
 
 **The live chat** — run S3, the five B2 questions at the floor limits (1800 s) with
 `RAG_DEVICE=cpu`, unless the row says otherwise:
@@ -135,6 +149,9 @@ action=ask error=TimeoutError`) just as the first request restored the BM25 inde
 - 2026-10-14 «Модель для прода. Давай подвесим вопрос.» — the production model is suspended;
   the screening informs her choice and changes no default. A model swap stays on the ROADMAP
   stop-list until she decides; the same holds for the SLO.
+- 2026-10-15 «1. Да 2. Да. 3. Давай решим это позже» — restart the judge: done; push the 47
+  commits: done, up to `a7bf232` (the approval named those 47; later commits wait for her
+  word); the production model: later.
 - D12 (2026-10-04, «ты должен все делать сам»): the session does everything itself; no other
   model in any role. D11: no person in the quality process — the judge is a model and is
   never called human. No MyFlow unless she names it. Push only on her word.
@@ -150,6 +167,11 @@ action=ask error=TimeoutError`) just as the first request restored the BM25 inde
   than several at once (her global rule: no parallel work without asking). It ran on the
   laptop while the chat runs used the Mac — different machines.
 - Reporting the 503 inside the stream rather than fixing it.
+- Restarting the judge in foreground chunks of ten while the laptop had ~1.4 GB free (other
+  applications held most of the memory), with memory checked between chunks.
+- Not writing the 100-case extension plan before Julia's word on its run.
+- Deleting the backup branch `wip/genscreen-judge` once the verdicts were committed, and
+  keeping `red-genscreen`, whose commit this log cites as the red check.
 
 ## Log
 
@@ -185,27 +207,33 @@ progress.log`.
   verdicts (the reports, the steps of the thinking tag, the frozen plan) with its test and
   evidence row, the spec's status, the state and this log, in one commit (`40ad172`, 20:42);
   Mac gate below. The judge's files and the drafts backed up to a local branch (State).
+- 2026-10-15 08:44 — Julia's «1. Да 2. Да»: `git push` of `f7416ca..a7bf232` (origin had not
+  moved: 47 ahead, 0 behind). Probe of the windows: five-hour 0.01, weekly 0.21. Free memory
+  on the laptop 1.5 GB of 15.9.
+- 08:45–09:33 — the judge's remaining 66 requests in seven foreground chunks (`--limit 10`),
+  all valid at the first attempt, 2,744 s and $6.87; free memory stayed at 1.4–1.6 GB.
+  `summary`: missing 0.
+- 09:33–10:00 — the verdicts and the summary published into the record (LF; `plan.json`
+  unchanged), the test extended, the evidence row, the spec's status, CURRENT_STATE and this
+  log updated; commit and Mac gate below.
 
 ## State and next actions
 
-The chat record and the screening's generations are complete and pinned; the judge's
-verdicts are not. Its working files are git-ignored on the laptop: `.tmp/genscreen-judge/`
-(`plan.json`, `verdicts.jsonl` with 99 valid rows, `run-rest.log`). Nothing runs on the Mac
-(no model loaded, no live or screening process) or on the laptop. Untracked and not ours:
+The chat record and the screening record are complete and pinned, the judge's verdicts and
+summary included (`judge/`). The judge's working files stay git-ignored on the laptop
+(`.tmp/genscreen-judge/`); the record holds their LF copies. Nothing runs on the Mac (no model
+loaded, no live or screening process) or on the laptop. Untracked and not ours:
 `demo/phase-e-raw.webm`, `reports/ask100/`.
 
-**Why the judge waits for Julia.** When Claude Code stopped the stream for low memory it
-asked that the stream not be started again on the session's own initiative, since memory may
-still be short. The remaining 66 requests take about an hour; $10.54 so far is the sum of the
-`total_cost_usd` the CLI reports per request — the API price of those tokens — while the
-requests themselves run on Julia's subscription and count against its windows (about $7
-more). So the restart is hers to call.
+**Branches (local).** `red-genscreen` keeps `87c53f9`, the red check of `86df582` this log
+cites. `wip/genscreen-judge`, the backup of the judge's files and the drafts, was deleted once
+the verdicts were committed.
 
-**Branches (local, not pushed).** `wip/genscreen-judge` holds the judge's working files and
-the drafts (`.tmp/genscreen/`, `.tmp/chat-live/breakdown.py`, `.tmp/chat-live/notes_*.json`);
-restore with `git restore --source=wip/genscreen-judge --worktree -- .tmp/genscreen-judge
-.tmp/genscreen`. `red-genscreen` is the red check of `86df582`. Delete both
-(`git branch -D wip/genscreen-judge red-genscreen`) once the verdicts are committed.
+**What the judge costs.** The `total_cost_usd` the CLI reports per request is the API price
+of its tokens; the requests run on Julia's subscription and count against its windows. The
+whole judge: 165 requests, $17.41, 43 s a request on average (median 28 s, up to 4.5 min).
+Claude Code stops a background stream when the laptop runs low on memory while the session
+sits idle, and asks that it not be restarted unasked; the restart ran in foreground chunks.
 
 **The gate** for any commit: the laptop's git-ignored scripts make the Mac's gate tree that
 commit and run pytest there —
@@ -218,26 +246,20 @@ No pytest on the laptop.
 
 Next, in order:
 
-1. **On Julia's word, finish the judge.** `run` skips every item with a valid verdict and
-   appends each new one as it comes, so a killed command loses only the request in flight.
-   In the foreground, chunks of ten (43 s a request on average, up to 4.5 min):
-   `MSYS_NO_PATHCONV=1 timeout 1150 C:/Users/uedom/.venvs/rag_new-focused/Scripts/python.exe -X utf8 D:/RAG_new/scripts/generator_answer_judge.py run --out D:/RAG_new/.tmp/genscreen-judge --limit 10`,
-   repeated until nothing is left — or the 66 in one background command with the laptop's
-   memory free. Then `… generator_answer_judge.py summary --out D:/RAG_new/.tmp/genscreen-judge`
-   (missing 0); `.tmp/genscreen/publish_judge.py` copies plan, verdicts and summary into
-   `judge/` of the record with LF and prints their pins; the summary tests and the evidence
-   row's phrases are drafted in `.tmp/genscreen/test_generator_screen_artifact.py` (classes as
-   `` `name` good/partial_ok/bad ``, supported claims, `N of 15 retests`, `M of 30 cases`).
-   Then the row's class `measured`, the spec's status, CURRENT_STATE lines 10 and 128, this
-   log; commit and gate. If the leading small generator comes within five good answers of
-   C.1a or C.1b, the plan's reading asks for a new plan judging all 100 cases of the
-   generators concerned: the session writes it; its run, some hundreds of requests on her
-   subscription, waits for her word.
-2. **Julia** chooses the production model and the SLO, with the judge's classes in hand and
-   these numbers: on this Mac no local model answers within the code-default 30 s; with the
-   limits raised, the whole answer takes ~1.5 min (qwen2.5:1.5b, the lowest keyword recall
-   but one), ~5 min (Qwen3-4B-Instruct, keyword recall level with the 7B) or ~8 min
-   (qwen2.5:7b). A model swap and the limits are hers.
+1. **The 100-case extension, owed by the plan's reading** — Qwen3-4B-Instruct came within
+   five good answers of C.1a and C.1b. On Julia's word the session writes a new plan with the
+   same rules (judge, request rules, classes, retest), commits it with its tests before any
+   request, and runs it. The generators concerned: Qwen3-4B-Instruct, C.1a and C.1b, and
+   qwen3-1.7b, level with C.1a, is worth adding. About 70 more cases each: 225–295 requests
+   with a retest, ~$24–31 and ~3 h at the pace so far. `build_plan` takes the first 30 cases
+   by a salted hash (`judge.SAMPLE_SIZE`); the plan must say whether the 30 judged verdicts are
+   reused (their request hashes would match) or sent again.
+2. **Julia** chooses the production model and the SLO — later, by her word of 2026-10-15 —
+   with these numbers: on this Mac no local model answers within the code-default 30 s; with
+   the limits raised the whole answer takes ~1.5 min (qwen2.5:1.5b: 16 good of 30, the most bad
+   answers), ~5 min (Qwen3-4B-Instruct: 23 good, level with the 7B and the 8B on 30 cases) or
+   ~8 min (qwen2.5:7b: 20 good). qwen3-1.7b (20 good) is not timed in the chat (item 5). A
+   model swap and the limits are hers.
 3. If she wants it faster on this Mac, the levers beyond the model are hers too: the rerank
    (alternative rerankers are on the stop-list; switching the rerank off is a quality
    question), the self-eval call after the answer, the limits.
@@ -250,15 +272,17 @@ Next, in order:
    freezes durable HTTP semantics (its 503 among them) and "SSE as a projection of persisted
    events; removing the direct-stream path"; this fix keeps the direct path and adds no new
    status semantics — it makes the existing refusal visible. Say so in the commit.
-5. qwen3:1.7b in the chat is not planned: timing it needs the provider to send
-   `think: false` (`reasoning=False` for `OllamaLLM` in `llm/providers/ollama.py`, checked
-   against models without thinking) — a code change for the model with the lowest keyword
-   recall of the three; hers to ask for.
-6. Push on her word: `git -c credential.helper='!gh auth git-credential' push origin master`.
+5. **qwen3:1.7b in the chat, now worth asking Julia about**: level with C.1a on good answers
+   and 2.3× faster than the 4B a case in the benchmark (15.8 s against 36.7 s), but it thinks
+   on the chat path. Timing it needs the provider to send `think: false` (`reasoning=False`
+   for `OllamaLLM` in `llm/providers/ollama.py`, checked against models without thinking) —
+   a change to the production provider; hers to ask for.
+6. Push the commits after `a7bf232` on her word:
+   `git -c credential.helper='!gh auth git-credential' push origin master`.
 
 ## Do not
 
-- Push without Julia's word, or restart the judge without it.
+- Push without Julia's word, or run the 100-case extension without it.
 - Treat the screening's quality as the chat's: the chat prompt differs, and qwen2.5:1.5b
   answered "[4]" there.
 - Register a model by its short Ollama tag without reading `/api/show` (`general.finetune`,
@@ -354,7 +378,13 @@ Next, in order:
 - `40ad172`, the commit that adds this log, on the Mac gate (`sync_commit.py 40ad172`, then
   `remote.py --site pytest`): `tests/test_generator_screen_artifact.py`,
   `tests/test_chat_live_small_artifact.py`, `tests/test_chat_live_artifact.py` and the three
-  docs tests, 42 passed.
+  docs tests, 42 passed; `a7bf232` likewise, 42 passed.
+- The verdicts: no laptop path, user name, email or key in `verdicts.jsonl` or
+  `summary.json` (scanned before publication); every row valid at the first attempt, model
+  `claude-opus-5-5`, CLI 2.1.300. `summarize` re-reads each verdict from its raw reply and
+  refuses one without a clean session's record or with a request hash off the plan.
+- The commit that publishes the verdicts: ⟨GATE3⟩
+- Cold read of the 2026-10-15 version: ⟨COLD2⟩
 - Cold read: a fresh subagent on the session's model (D12 allows no other) read the previous
   version of this log cold. It found: "Next" put Julia's choice of the model before the
   judge's classes that should inform it, and said the 4B answers were "close to the 7B" with
@@ -363,7 +393,7 @@ Next, in order:
   58 s and 231 s under a 30-s limit unexplained; the red commit, the end of the thinking
   tag's 5-case step and the amendment's commit time stated loosely; "as registered" for the
   judge's single stream, which the plan does not say (`run` simply sends one request at a
-  time); the window probe, the meaning of
-  the dollars and the reason the restart waits for Julia missing; no definitions of idle
-  stop, B1/B2, arm C or the stand; no commands for the judge, the gate or the backup branch;
-  no files or test route for the 503 slice. All of it is fixed above.
+  time); the window probe, the meaning of the dollars and the reason the restart waited for
+  Julia missing; no definitions of idle stop, B1/B2, arm C or the stand; no commands for the
+  judge, the gate or the backup branch; no files or test route for the 503 slice. All of it
+  was fixed in `40ad172`.

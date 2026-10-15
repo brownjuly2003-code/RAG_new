@@ -4,17 +4,19 @@ On 2026-10-14 a clean clone of `86df582` on deproject-mac ran `scripts/generator
 on the C.1 contract — one run at seed 42, no self-grading — for qwen2.5:1.5b, qwen3:1.7b and
 Qwen3-4B-Instruct-2507, driven by the tools kept beside the record (`tools/`, the progress log
 times every step). The tag qwen3:4b, a thinking-only model, ran its 1- and 5-case steps and was
-replaced (`docs/specs/small-generator-screening.md`, amendment). The one judge's plan over the
-answers of these three and of C.1a and C.1b on 30 shared cases is frozen in `judge/plan.json`;
-its verdicts are pending. Nothing here needs a model, the network or the Mac: the test pins the
-bytes, rebuilds the judge's plan — with the checks of all 100 answers — from the tracked inputs,
-and finds the published numbers in the evidence row.
+replaced (`docs/specs/small-generator-screening.md`, amendment). The one judge then graded the
+answers of these three and of C.1a and C.1b on 30 shared cases (`judge/`; its stream, stopped
+once for low memory on the laptop, finished on 2026-10-15). Nothing here needs a model, the
+network or the Mac: the test pins the bytes, rebuilds the judge's plan — with the checks of all
+100 answers — from the tracked inputs and its summary from the verdicts, and finds the published
+numbers in the evidence row.
 """
 
 from __future__ import annotations
 
 import gzip
 import hashlib
+import itertools
 import json
 import shutil
 from pathlib import Path
@@ -26,6 +28,8 @@ RECORD = ROOT / "reports/generator-screen/86df582"
 # sha256, size and path of every published file, LF line endings (.gitattributes).
 PINS = """
 051aa629af4ca6cab9c2e8df3c2977b0bf6bcd86b0d59946d22d8a838bf95cc8 1366796 judge/plan.json
+f3eea3be82a0de4b8aeb9aadf8a8a242016831c1651e170beda752a1d1e1ca88 5058 judge/summary.json
+5defc76a4bba8d220c83935d2daa6809c738e73c77f32bbdf3c1d09d306af257 231764 judge/verdicts.jsonl
 120a8d430054ae42569abdc2481f1f46b555b5941c45997643b3f5dd68191e4a 2645 progress.log
 34ba5ebe50a71f44c3e07a50385ecdb9081f53663623364310f8d583bb227f3a 464023 reports/gs-qwen25-1p5b-n100-phase-c-generator-benchmark.json
 d943fb960363b521bfc0194bb54a810a2eabc7acc935cb34d7de74dab89bdfbb 373894 reports/gs-qwen3-1p7b-n100-phase-c-generator-benchmark.json
@@ -88,6 +92,11 @@ def sha256(path: Path) -> str:
 
 def report_paths() -> dict[str, Path]:
     return {**{name: RECORD / spec[0] for name, spec in SCREENED.items()}, **REFERENCE}
+
+
+def verdicts() -> list[dict]:
+    text = (RECORD / "judge/verdicts.jsonl").read_text(encoding="utf-8")
+    return [json.loads(line) for line in text.splitlines() if line]
 
 
 def evidence_row() -> str:
@@ -163,6 +172,23 @@ def test_the_judge_plan_is_rebuilt_from_the_tracked_inputs(tmp_path: Path) -> No
     assert not any(item.get("empty_answer") for item in plan["items"])
 
 
+def test_the_summary_is_derived_from_the_verdicts() -> None:
+    plan = load("judge/plan.json")
+    rows = verdicts()
+    # summarize() takes a verdict only from a clean session's record and for a planned request.
+    summary = judge.summarize(plan, rows)
+    assert summary == load("judge/summary.json")
+    assert summary["missing"] == 0 and summary["checks"] == plan["checks"]
+    planned = [item["item_id"] for item in plan["items"] if "message" in item]
+    assert sorted(row["item_id"] for row in rows) == sorted(planned), "one verdict per request"
+    assert all(row["status"] == "valid" and row["attempt"] == 1 for row in rows)
+    assert {row["model"] for row in rows} == {"claude-opus-5-5"}
+    assert set(summary["generators"]) == set(SCREENED) | set(REFERENCE)
+    for name, generator in summary["generators"].items():
+        assert generator["items"] == generator["graded"] == judge.SAMPLE_SIZE, name
+    assert summary["retest"]["pairs"] == judge.RETEST_SIZE
+
+
 def test_the_evidence_row_publishes_the_checks_of_all_answers() -> None:
     row = evidence_row()
     plan = load("judge/plan.json")
@@ -191,3 +217,38 @@ def test_the_evidence_row_publishes_the_checks_of_all_answers() -> None:
         f"reading {reading} tokens/s, writing {joined(small, 'median_output_tokens_per_s', '.1f')}"
         in row
     )
+
+
+def test_the_evidence_row_publishes_the_judge() -> None:
+    row = evidence_row()
+    summary = load("judge/summary.json")
+    generators = summary["generators"]
+    for name, generator in generators.items():
+        classes = generator["classes"]
+        assert f"`{name}` {classes['good']}/{classes['partial_ok']}/{classes['bad']}" in row, name
+
+    def rates(names: list[str]) -> str:
+        return " / ".join(f"{generators[name]['supported_claim_rate']:.2f}" for name in names)
+
+    assert f"supported claims {rates(list(SCREENED))} against {rates(list(REFERENCE))}" in row
+    retest, context = summary["retest"], summary["context_has_answer"]
+    assert f"the same class on {retest['same_class']} of {retest['pairs']} retests" in row
+    assert (
+        "the same `context_has_answer` for all five answers in "
+        f"{context['same_for_every_answer']} of {context['cases']} cases"
+    ) in row
+
+
+def test_the_row_reads_the_judge_as_the_plan_registered() -> None:
+    # Thirty cases tell apart only gaps of more than five good answers; if the leading small
+    # generator comes within five of C.1a or C.1b, the judge extends to all 100 cases.
+    row = evidence_row()
+    generators = load("judge/summary.json")["generators"]
+    good = {name: generator["classes"]["good"] for name, generator in generators.items()}
+    apart = [(a, b) for a, b in itertools.combinations(good, 2) if abs(good[a] - good[b]) > 5]
+    assert apart == [("qwen2.5-1.5b", "qwen3-4b-instruct")]
+    assert "here only `qwen2.5-1.5b` from `qwen3-4b-instruct`" in row
+    leader = max(SCREENED, key=lambda name: good[name])
+    assert leader == "qwen3-4b-instruct"
+    assert any(abs(good[leader] - good[name]) <= 5 for name in REFERENCE)
+    assert "extends the judge to all 100 cases of the generators concerned" in row

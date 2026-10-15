@@ -1,9 +1,13 @@
 # Generators below 7B on the production Mac: pre-registration and plan
 
-Status 2026-10-14: **generated and checked; the judge pending.** The three generators ran
-their 100 cases (record `reports/generator-screen/86df582/`, EVIDENCE_INDEX); the judge's
-plan is frozen, and 99 of its 165 requests were made before the stream was stopped when the
-laptop ran low on memory. One row was replaced before its first answer
+Status 2026-10-15: **measured.** The three generators ran their 100 cases, and the one
+judge graded the 30 shared cases of all five generators (record
+`reports/generator-screen/86df582/`, EVIDENCE_INDEX). Its stream was stopped once, when the
+laptop ran low on memory after 99 of the 165 verdicts, and finished on 2026-10-15; the
+request in flight at the stop left no verdict and was sent again. The leading small
+generator came within five good answers of C.1a and C.1b, so the [reading](#reading) asks
+for the judge's extension to all 100 cases under a new plan, not yet written; its run waits
+for the owner's word. One row was replaced before its first answer
 ([amendment](#amendment-2026-10-14)). This plan fixes the generators, the contract,
 the judge, the sample and the order of the runs before any answer of a generator below
 7B was produced or graded.
