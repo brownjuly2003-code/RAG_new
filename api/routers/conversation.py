@@ -2124,7 +2124,7 @@ async def ask_stream(
 
             settings = _app.get_settings()
             full_answer = ""
-            streaming_llm = getattr(session, "_llm", None)
+            streaming_llm: Any = getattr(session, "_llm", None)
             if (
                 not (
                     streaming_llm is not None

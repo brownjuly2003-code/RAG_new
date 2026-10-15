@@ -22,6 +22,34 @@ def read(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def mismatches(rebuilt: object, published: object, path: str = "") -> list[str]:
+    """Paths where two JSON values differ, floats compared to a relative 1e-12.
+
+    The power terms go through ``statistics.NormalDist`` (``math.erfc``,
+    ``math.log``), whose last bits differ between the Mac that published the
+    sizes and the Linux runners of CI.
+    """
+    if isinstance(rebuilt, float) and isinstance(published, float):
+        return [] if math.isclose(rebuilt, published, rel_tol=1e-12) else [path]
+    if isinstance(rebuilt, dict) and isinstance(published, dict):
+        if rebuilt.keys() != published.keys():
+            return [f"{path} keys"]
+        return [
+            gap
+            for key in published
+            for gap in mismatches(rebuilt[key], published[key], f"{path}/{key}")
+        ]
+    if isinstance(rebuilt, list) and isinstance(published, list):
+        if len(rebuilt) != len(published):
+            return [f"{path} length"]
+        return [
+            gap
+            for index, (left, right) in enumerate(zip(rebuilt, published, strict=True))
+            for gap in mismatches(left, right, f"{path}/{index}")
+        ]
+    return [] if rebuilt == published else [path]
+
+
 @pytest.fixture(scope="module")
 def aggregates() -> dict:
     return {base: read(RUN / f"{base}.aggregates.json") for base in BASES}
@@ -103,7 +131,7 @@ def test_sizes_replay_and_do_not_lower_the_registered_variance(aggregates):
     assert set(published_code) == set(pilot.CODE_FILES)
     for document in aggregates.values():
         assert published_code == document["provenance"]["measure_code"]
-    assert rebuilt == published
+    assert mismatches(rebuilt, published) == []
     assert len(published["rows"]) == 124
     for strata in published["variances"].values():
         for row in strata.values():

@@ -289,7 +289,8 @@ def front_matter(text: str) -> dict[str, Any]:
         return {}
     try:
         # BaseLoader keeps every scalar a string: a date or a version is sent as written.
-        fields = yaml.load(match.group(1), Loader=yaml.BaseLoader)
+        # It builds no Python objects, so bandit's B506 (unsafe yaml.load) does not apply.
+        fields = yaml.load(match.group(1), Loader=yaml.BaseLoader)  # nosec B506
     except yaml.YAMLError:
         raise ValueError("a source front matter is not YAML") from None
     return fields if isinstance(fields, dict) else {}
