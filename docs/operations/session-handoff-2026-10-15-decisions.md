@@ -1,11 +1,12 @@
 # Session handoff — 2026-10-15 — Julia's decisions on the chat, and the next session's order
 
-Session `ef96201d`, continued, 2026-10-15 15:59–17:05 UTC, Claude Opus 5.5 alone (D12). The
+Session `ef96201d`, continued, 2026-10-15 15:59–17:50 UTC, Claude Opus 5.5 alone (D12). The
 part before it, the same day: [the judge on all 100 cases](session-handoff-2026-10-15-judge-100.md).
 **Pushed at Julia's word at 16:17:40:** `c3f0fff..8850d6a` — the judge's extension, its record
 `judge-100/`, the 503 fix (`54ffdb2`) and the corrections of their records; CI on `8850d6a` is
-green (run 38767774555). This part changed no code and ran no measurement; its commit holds the
-documents listed under Log.
+green (run 38767774555). This part changed no code and ran no measurement. Its documents are in
+two commits: `9698e54`, pushed at her word at 17:19:06, and the one that records her answers of
+17:15, which waits for her word.
 
 ## What matters to understand
 
@@ -65,8 +66,8 @@ not come in time and offer «Передать оператору»; (4) the targ
 runs finished under it, the slowest in 614 s; in the 2026-10-13 `/api/ask` run 5 of 39 reached
 its 1,200-s limit. A ceiling makes a hung model call end and reach the operator offer of step 2.
 With the limits the reranker goes to the CPU (`RAG_DEVICE=cpu`): on the Mac's 4 GB GPU it fails
-on memory, and under `auto` the answer is then silently built on the unreranked order. Both are
-proposals put to her; unless she names other values, step 1 uses them. What lifting means on
+on memory, and under `auto` the answer is then silently built on the unreranked order. Both were
+proposals put to her; at 17:15 she agreed («2. да»). What lifting means on
 this Mac: with the default qwen2.5:7b an answer takes about 8 minutes, and questions asked
 together wait in one queue. It names no SLO, so the quality thread's rule — research acceptance
 on the Mac is not product acceptance, no default flip before deployment target and SLO — still
@@ -82,14 +83,20 @@ still ran before the push, and the docs tests after the documents, as `CLAUDE.md
 - 2026-10-15, 16:12: the time limits are to be lifted for now (step 1; the code still holds
   30 s) and no SLO is named; qwen3:1.7b is to be timed in the live chat with the provider change;
   on a timeout the chat is to offer the operator; no tests in that part of the session.
-- A push is hers, asked each time (plan 0′.3): her «1. да» covered the five commits up to
-  `8850d6a`; the commit with this log waits for her word.
+- 2026-10-15, 17:15, verbatim: «Ответы 1. да 2. да 3. показывать ту же кнопку. ** В следующей
+  сессии все будет понятно и по порядку действий?» — to the session's three questions: push
+  `9698e54` (done, 17:19:06); the 1,800-s ceiling with the reranker on the CPU: yes; a `human`
+  answer in the chat gets the same «Передать оператору» button as a timeout, not a ticket.
+- A push is hers, asked each time (plan 0′.3): her «1. да» of 16:12 covered the five commits up
+  to `8850d6a`, that of 17:15 the commit `9698e54`; the commit recording her 17:15 answers waits
+  for her word.
 - On the ROADMAP stop-list until she decides: a hosted LLM or another production model (model
   swap) and alternative rerankers.
 
 ## What was the session's choice, not hers
 
-- The 1,800-s ceiling instead of no limit, and `RAG_DEVICE=cpu` with it.
+- Proposing the 1,800-s ceiling instead of no limit, and `RAG_DEVICE=cpu` with it; since 17:15
+  both are hers.
 - The order below: she said yes to lifting the limits and to steps 2 and 3, not to an order.
 - Recommending the code defaults as the place of the new limits: the repository has no
   production environment of the Mac (only `deploy/helm`), and the Mac's stands start from the
@@ -100,13 +107,10 @@ still ran before the push, and the docs tests after the documents, as `CLAUDE.md
 
 ## Waiting on Julia
 
-- The ceiling (1,800 s) and the reranker on the CPU — put to her in the session's reply.
-- Whether a `human` answer in the chat gets the same «Передать оператору» as a timeout, or a
-  ticket as on `/api/ask`.
 - After step 3: the production model and the SLO. Later: the self-evaluation after the answer.
 - Whether production on `deproject-mac` is the "real deployment" that unfreezes the ROADMAP's
   conditional track; nothing unfreezes before her word.
-- The push of the commit with this log.
+- The push of the commit recording her answers of 17:15.
 
 ## The next session's order
 
@@ -116,25 +120,37 @@ needs:
 1. **Lift the time limits (rule (a)).** Recommended in the code defaults: in
    `config/settings.py` `REQUEST_TIMEOUT_SEC` (30, line 1201), `OLLAMA_REQUEST_TIMEOUT_SEC` (60,
    line 1183) and `STREAMING_TIMEOUT_SEC` (120, line 746); `.env.example` (lines 210–214); the
-   rows of `docs/CONFIGURATION.md` (lines 17, 125 and 126). `RAG_DEVICE` (`auto`, settings
-   line 469, `.env.example` line 71; `CONFIGURATION.md` has no row for it): `cpu`, or `auto`
-   taught to keep the reranker off MPS — the session picks and says why. Grep the tests that
-   pin the old defaults first (`tests/test_ollama_timeout.py` among them). The live tools put
-   the old values back in their `prod` mode (`STANDARD` in
-   `reports/chat-live/33d4b42/tools/live_supervisor.py`, line 51, and its small-model copy):
-   change it in the next run's tools. The Mac's `.ask100-runtime/env.json` may set these four;
-   never read it — check the values the API serves in the run's recorded `settings`. Proof: an
-   E2E test on the defaults, no environment set, red on `8850d6a`, in which an answer slower
-   than 30 s arrives instead of `timeout`.
-2. **Offer the operator on a timeout (rule (a)).** Handle the `result` whose route is `timeout`
-   — the apology above, rendered by `static/chat.inline.js` lines 546–579 — and the `error`
-   events (lines 490–494; the server sends them with `route: "timeout"` at lines 1816, 1950 and
-   2099 of `api/routers/conversation.py`): say that the answer did not come in time and offer
-   «Передать оператору» beside «Повторить». The browser test reaches a real deadline during
-   generation (a slow fake model), not an injected event, and runs with `-rs`:
+   rows of `docs/CONFIGURATION.md` (lines 17, 125 and 126). The `getattr` fallbacks that repeat
+   the old values (`api/routers/conversation.py` lines 459, 1096, 1105, 1652, 1733, 2176 and
+   2236; `agent/graph.py` line 519; `llm/providers/runtime.py` line 55) apply only when the
+   settings object lacks the field: bring them in step, so no reader takes them for the served
+   value. `RAG_DEVICE` (`auto`, settings line 469, `.env.example` line 71; `CONFIGURATION.md`
+   has no row for it): `cpu` is what the 2026-10-14 runs measured — the embedder and the
+   reranker both on the CPU, vector search 0.2 s; an `auto` that keeps only the reranker off
+   MPS is unmeasured. The session picks and says why. Grep the tests that pin the old defaults
+   first (`tests/test_ollama_timeout.py` pins 60). The live tools put the old values back in
+   their `prod` mode (`STANDARD` in `reports/chat-live/33d4b42/tools/live_supervisor.py`,
+   line 46, and in its small-model copy, line 51): change it in the next run's tools. The
+   Mac's `.ask100-runtime/env.json` may set these four; never read it — check the values the
+   API serves in the run's recorded `settings`. Proof, red on `8850d6a`, no environment set:
+   an E2E test through `/api/ask/stream`, the web chat's path, in which a fake model's answer
+   slower than the largest old limit (120 s, so about two minutes of test time) arrives
+   instead of `timeout` — or one test per limit — and a check that the reranker runs on the CPU
+   by default. One row in `EVIDENCE_INDEX.md`, as the 503 fix has.
+2. **Offer the operator on a timeout and on `human` (rule (a)).** Handle the `result` whose
+   route is `timeout` — the apology above, rendered by `static/chat.inline.js` lines 546–579 —
+   and the `error` events (lines 490–494; the server sends them with `route: "timeout"` at
+   lines 1816, 1950 and 2099 of `api/routers/conversation.py`): say that the answer did not
+   come in time and offer «Передать оператору» beside «Повторить». A `result` routed `human`
+   gets the same button and no ticket (Julia, 17:15). The button can reuse the operator flow
+   behind `escalateBtn` (`static/chat.html` line 998; `static/chat.inline.js` from line 363,
+   its request to `/escalate` at line 382). The browser test drives both through the real
+   stream — a slow fake model that reaches a deadline during generation under a short limit
+   the test sets (after step 1 the default is 1,800 s), not an injected event, and one that
+   scores its answer below 80 — and runs with `-rs`:
    `tests/test_widget_e2e_playwright.py`, the precedent, skips without Playwright or Chromium,
    and a skip is NOT_EVIDENCE. The widget (`static/widget.inline.js`, line 185) calls `/api/ask`,
-   not the stream: check what its timeout shows.
+   not the stream: check what its timeout shows. One row in `EVIDENCE_INDEX.md`.
 3. **Thinking off, then qwen3:1.7b in the live chat (rule (a), then (c)).** Pass
    `reasoning=False`, for models that can think, where every builder meets:
    `_instantiate_with_timeout` (`llm/providers/ollama.py`, line 29), used by the provider's whole
@@ -170,9 +186,11 @@ Mac's gate tree and run pytest there:
 then
 `MSYS_NO_PATHCONV=1 timeout 1100 C:/Users/uedom/.venvs/rag_new-focused/Scripts/python.exe -I -X utf8 D:/RAG_new/.tmp/mf-mac/remote.py --site pytest <tests> -q -p no:schemathesis -p no:cacheprovider --basetemp=.tmp/pytest-<name> --tb=short`.
 Before asking for a push: the whole unit suite (`tests/ --ignore=tests/integration`, about
-7 min, in the background), CI's two mypy commands (laptop), bandit (Mac), pip-audit (`uvx`) and
-the npm audit, as the [small-generators log](session-handoff-2026-10-14-small-generators.md)
-lists them under "The gate". No pytest on the laptop.
+7 min, in the background); CI's two mypy commands (laptop) and bandit (Mac) exactly as
+`.github/workflows/ci.yml` gives them (lines 136–137 and 278); pip-audit with its flags
+(lines 280–307; `uvx` on the laptop); the docs site's npm audit and DEP-01
+(`tests/test_docs_site_npm_audit.py`, `tests/test_npm_audit_floors.py`). No pytest on the
+laptop.
 
 ## Do not
 
@@ -229,13 +247,30 @@ All times UTC, 2026-10-15.
   `8850d6a`), BACKLOG (two stale lines: 1.3d with the external bases, and B.4's human grades,
   which D11 rules out), the D5 row and the judge's log (its ticket sentence). Then the docs
   tests on the Mac (Verification) and a local commit; no push.
+- Then the reply to her; 17:15 her answers (decisions above). 17:19:06 push `8850d6a..9698e54`.
+  Then her answers in ROADMAP, CURRENT_STATE, AGENT_STATE, BACKLOG, the D5 row and this log,
+  and a read of the documents as the next session would start them, by a subagent on the
+  session's model (Verification).
+- 17:29:11 CI on `9698e54` succeeded (run 38776325555; docs site run 38776325603, 17:20:24).
+- The read as the next session would start, on `92a088d` (about 11 minutes): nothing blocking —
+  it named the first action, the order and her decisions as written — and eight minor
+  findings, checked against the files. Applied: the `STANDARD` line, the `RAG_DEVICE` choice,
+  step 1's proof for all three limits with the `getattr` fallbacks, step 2's short test limit,
+  the evidence rows, the pre-push commands, and CURRENT_STATE's "read it first" on the
+  2026-10-06 log, now for the quality thread. Left: two wordings that change no work
+  (AGENT_STATE's paragraph on the plan of 2026-09-06; ROADMAP's two phrasings of the no-flip
+  rule). The fixes went into the same local commit.
 
 ## Verification
 
 - Before the push: CI's two mypy commands on `8850d6a`, no issues; the judge's log records the
   whole unit suite on its last revision: 5,794 passed, 121 skipped. CI on `8850d6a`: success.
-- This commit's tree, on the Mac: the three docs tests and every test that reads a changed file
+- `9698e54`'s tree, on the Mac: the three docs tests and every test that reads a changed file
   (`test_backlog_docs`, `test_gr2_artifact`, `test_gr_bucket_baseline`, `test_precommit_config`,
   `test_session_turn_wiring`, `test_transformers_cve_floor`, `test_autopilot_runner`): 110
   passed, 9 skipped — the nine are `autopilot.ps1` tests, which need Windows PowerShell 5.1.
-  Line caps: CURRENT_STATE 140 of 150, AGENT_STATE 119 of 120, BACKLOG 59 of 60.
+  Line caps: CURRENT_STATE 140 of 150, AGENT_STATE 119 of 120, BACKLOG 59 of 60. Before its
+  push, the 30 further test files that scan the docs folders: 936 passed, 3 skipped. CI on
+  `9698e54`: success.
+- The second commit's tree, on the Mac: the same 40 test files, 1046 passed, 12 skipped (the
+  nine `autopilot.ps1` tests and three of the 30).
