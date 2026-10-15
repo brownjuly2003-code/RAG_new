@@ -7,8 +7,10 @@ laptop ran low on memory after 99 of the 165 verdicts, and finished on 2026-10-1
 request in flight at the stop left no verdict and was sent again. The leading small
 generator came within five good answers of C.1a and C.1b, so the [reading](#reading) asks
 for the judge's extension to all 100 cases under a new plan; the owner approved its run, and
-it was [registered](#extension-to-100-cases-registered-2026-10-15) and measured on
-2026-10-15 (`judge-100/` in the record, EVIDENCE_INDEX). One row
+it was [registered](#extension-to-100-cases-registered-2026-10-15),
+[amended](#amendment-of-the-extension-2026-10-15) mid-run and measured on 2026-10-15
+(`judge-100/` in the record, EVIDENCE_INDEX); an [erratum](#erratum-of-the-extension-2026-10-15)
+written after the run corrects three of its sentences. One row
 was replaced before its first answer ([amendment](#amendment-2026-10-14)). This plan fixes
 the generators, the contract, the judge, the sample and the order of the runs before any
 answer of a generator below 7B was produced or graded.
@@ -213,3 +215,27 @@ the message of any refused reply in `refusals.log`. A probe with and without the
 the session it restores: the three registered built-ins and no plugin, tool, MCP server or
 skill — the session of every earlier verdict, which each verdict's record shows and
 `summarize` checks. Nothing else changes.
+
+### Erratum of the extension, 2026-10-15
+
+Written after the run, from a cold read of its record; the registered text above stays as it
+was, and no number of the plan or of the record changes.
+
+1. **"The smallest generator not told apart from the references"** ([Extension to 100
+   cases](#extension-to-100-cases-registered-2026-10-15), Generators) is wrong. `qwen2.5-1.5b`
+   is smaller and had 16 good answers of 30, within five of C.1a (20) and C.1b (21), so by
+   the [reading](#reading) it is not told apart from them either. It was left out for the
+   reasons the same paragraph gives — the most bad answers of the five, 9 of 30, and four of
+   its five questions in the live chat routed `human` — which are the session's choice, not
+   the reading's.
+2. **"The three registered built-ins"** ([amendment of the
+   extension](#amendment-of-the-extension-2026-10-15)) are the three built-in plugins the route
+   registers — `cc-plugin-agents-md`, `cc-plugin-plugin-authoring` and `cc-plugin-telemetry`
+   (`BUILTIN` in `evaluation/isolated_request.py`, beside four built-in agent types) — and "no
+   plugin" there means no other plugin. The settings file disables the two plugins the user
+   configuration held at 12:05, not every plugin a user may add.
+3. **"Whether its answers hold on 100 cases"** (Generators) was not made precise before the
+   run: the reading registers which pairs are apart, not what "hold" means. qwen3-1.7b is not
+   told apart from C.1a on 100 cases, with 6 fewer good answers and 8 more bad ones; that this
+   still makes its timing in the chat worth the provider change is the session's opinion, not
+   a result of this plan.
