@@ -10,6 +10,49 @@ parallel (A does not wait on Julia; B does).
 
 ## Active
 
+**Now: the chat on the production Mac — the one active thread (Julia, 2026-10-14/15).**
+Production is `deproject-mac` («прод на маке», 2026-10-14). There the web chat answers
+nothing under the code-default limits: every question ends with route `timeout` after 30 s;
+the client sees an apology badged «Качество: 0» and «Маршрут: timeout», with no button to an
+operator, and no ticket opens — the chat opens none on any route, only `/api/ask` does
+([measured](CURRENT_STATE.md#web-chat-on-the-production-mac--measured-2026-10-14)). On
+2026-10-15 Julia answered the session's four questions — push the five local commits: yes
+(done, `c3f0fff..8850d6a`); time qwen3:1.7b in the live chat: yes; offer the operator on a
+timeout: yes; the target answer time: «Пока стоит вообще снять ограничения» — and kept that
+session to decisions and documents, with no tests. She said yes to lifting the limits and to
+steps 2 and 3; the order, the ceiling and the reranker on the CPU are the session's, put to
+her. Each step is a slice of its own
+([why, files and traps](docs/operations/session-handoff-2026-10-15-decisions.md)):
+
+1. **Lift the time limits (rule (a)).** The request, Ollama and stream limits
+   (`REQUEST_TIMEOUT_SEC` 30, `OLLAMA_REQUEST_TIMEOUT_SEC` 60, `STREAMING_TIMEOUT_SEC` 120) go
+   to a ceiling of 1,800 s — every answer of the 2026-10-14 chat runs finished under it, the
+   slowest in 614 s — not to none: a hung model call must still end and reach step 2's
+   operator. The reranker goes to the CPU with them (`RAG_DEVICE=cpu`): on the Mac's 4 GB GPU
+   it fails on memory and the answer is silently built on the unreranked order. Recommended
+   in the code defaults: the repository holds no production environment of the Mac. Proof: an
+   E2E test on the defaults, no environment set, red on `8850d6a`, in which an answer slower
+   than the old 30 s arrives instead of `timeout`.
+2. **Offer the operator on a timeout (rule (a)).** On the apology whose route is `timeout`, and
+   on a stream `error`, the chat says the answer did not come in time and offers «Передать
+   оператору» beside «Повторить»; a browser test on the Mac that reaches a real deadline, run
+   with `-rs` — a skip is NOT_EVIDENCE. Whether a `human` answer in the chat gets the same
+   button or a ticket, as on `/api/ask`, is Julia's to say.
+3. **Thinking off on the chat path, then qwen3:1.7b in the live chat (rule (a), then (c)).**
+   The provider sends `think: false` to models that can think, with an E2E test; then the live
+   chat at the new limits, 1 → 5 → 30 questions, all named before the first, about 1.5–2 min a
+   question, the supervisor detached from ssh from its first launch: time, the rerank's status
+   and routes (`auto` / `human` / `timeout` / `error`), with provenance.
+4. **Julia decides on those numbers:** the production model (suspended since 2026-10-14) and
+   the SLO. Until an SLO is named, research acceptance on the Mac is not product acceptance
+   (phase Q below), and no quality default flips.
+5. **Then the speed levers, one at a time, each measured:** fewer rerank candidates (not
+   another reranker — the stop-list), a shorter prompt, and the self-evaluation after the
+   answer is shown, which changes what the client sees and is hers to decide.
+
+The quality thread (phase Q) waits behind this one under the WIP limit; its open items stand
+as `CURRENT_STATE.md` lists them.
+
 **Phase A is done.** A.1 + A.5 landed on 2026-08-25 and are the first
 slice this repository has had under rule (a): a shipment-status question
 through the real `/api/ask` leaves an evidence bundle in the trace, read back
@@ -242,7 +285,8 @@ from the lock with real models — the Mac environment is not built from the loc
 | **GR** | Graph retrieval: structure graph (0 LLM calls) → entity graph → A/B → wired behind flags. Unfrozen 2026-09-06; **required** under the plan the owner adopted on 2026-09-10 — the only stream that can move the precision gate (0.5067 → ≥ 0.63), which is computed over cached contexts (plan §2); GR-1a's cheap arm gave 0.5216, no better than plain top-4's 0.5214 ([capsule](docs/evidence/gr1a-section-coherence.md)) | rule (c): published context precision / multi-hop coverage with provenance per step; rule (a): graph lane behind `RAG_GRAPH_RETRIEVAL` with an E2E test; GR-3 measured 2026-09-18/19 — NO-SHIP-to-default, default stays `off` ([capsule](docs/evidence/gr3-graph-lane-ab.md)) |
 | **D** | pgvector spike, ADR 0007 — D.1–D.5 measured; accepted 2026-09-25: retain the current retrieval backend (a vector-DB swap stays on the stop-list) | a table of numbers in the ADR; no migration without it |
 | **E** | Public artefact: README-first, 3-minute demo, `resolution-contracts` sub-package; Q4 confirmed 2026-09-30: publish current `RAG_new` as **RAG assistant**, Pages base `/RAG_new/`; E.4 site prepared at `236f7c1`, pushed and unpublished; CI is green on `45a417a` (2026-10-03, run 37157492007, 11 of 11 jobs) and the Pages build passed on it (run 37157492017; deploy skipped, the repository is private and nothing is published), so the owner's order of 2026-10-03 — a green CI on HEAD before the quality thread's 2.5 chain — is met and that chain is next; making the repository public and deploying Pages are the owner's gate and do not hold that thread (plan D11) | E.5: Mac full suite and final [history scan](docs/evidence/e5-secret-scan.md); E.4: push, green CI, public repo, Pages deploy, links from the old repo and proof-pack; numbers in README |
-| **Q** | Quality thread after E ([plan](docs/specs/plan_03_10_26.md), adopted and ratified by delegation 2026-09-30, revised 2026-10-03): ruler cross-checked by model references (no human grades, D11) → observable route → ≤ 2 mechanisms chosen by the evidence-loss map (D8; default H1 in the graph lane, H5 as its budget) → locked-holdout acceptance. 2.1/2.2 implemented 2026-10-01 (T-59, rule (a)); 1.1 done 2026-10-04 (T-57) and 1.3b done 2026-10-04 (T-78: [30 pilot drafts verified by one model](docs/evidence/devset-pilot-label-verification.md), `single_model_verified`, preparation); 1.3c done 2026-10-06 ([variance pilot](docs/evidence/variance-pilot-gold-metrics.md), rule (c), no verdict: development 60 cases in 37 clusters, holdout 64 in 18; the registered MDE stays 0.17–0.30 — the corpus has no more independent families — so the campaign checks effects of that size and no smaller, and a neutral mechanism is expected to end `INCONCLUSIVE`; whether the grading filter, in part a draw, is changed before the campaign is undecided); since D12 (2026-10-04) one model, the session's Opus 5.5, does every job and check, and no other vendor's model is called | rule (c) per experiment with the [development ruler](docs/specs/semantic-precision-metrics.md): +0.05 in the mechanism's registered primary metric (sent-precision for selection, all-evidence coverage for coverage mechanisms) with CI95 lower bound > 0, non-inferiority −0.02 on the rest, no critical-fact loss on H/Hm, p95 delta ≤ 200 ms at equal budget; the lexical 0.63 gate stays on its own ruler; research acceptance on the Mac is not product acceptance (deployment target + SLO, D5); no default flip before both |
+| **Q** | Quality thread after E ([plan](docs/specs/plan_03_10_26.md), adopted and ratified by delegation 2026-09-30, revised 2026-10-03): ruler cross-checked by model references (no human grades, D11) → observable route → ≤ 2 mechanisms chosen by the evidence-loss map (D8; default H1 in the graph lane, H5 as its budget) → locked-holdout acceptance. 2.1/2.2 implemented 2026-10-01 (T-59, rule (a)); 1.1 done 2026-10-04 (T-57) and 1.3b done 2026-10-04 (T-78: [30 pilot drafts verified by one model](docs/evidence/devset-pilot-label-verification.md), `single_model_verified`, preparation); 1.3c done 2026-10-06 ([variance pilot](docs/evidence/variance-pilot-gold-metrics.md), rule (c), no verdict: development 60 cases in 37 clusters, holdout 64 in 18; the registered MDE stays 0.17–0.30 — the corpus has no more independent families — so the campaign checks effects of that size and no smaller, and a neutral mechanism is expected to end `INCONCLUSIVE`; whether the grading filter, in part a draw, is changed before the campaign is undecided); since D12 (2026-10-04) one model, the session's Opus 5.5, does every job and check, and no other vendor's model is called | rule (c) per experiment with the [development ruler](docs/specs/semantic-precision-metrics.md): +0.05 in the mechanism's registered primary metric (sent-precision for selection, all-evidence coverage for coverage mechanisms) with CI95 lower bound > 0, non-inferiority −0.02 on the rest, no critical-fact loss on H/Hm, p95 delta ≤ 200 ms at equal budget; the lexical 0.63 gate stays on its own ruler; research acceptance on the Mac is not product acceptance (deployment target + SLO, D5); no default flip before both — the target is named (`deproject-mac`, 2026-10-14), the SLO is not: on 2026-10-15 Julia decided to lift the time limits for now instead |
+| **M** | The chat on the production Mac (Julia, 2026-10-14/15), the active thread: lift the time limits (to a 1,800-s ceiling with the reranker on the CPU, the session's proposal), offer the operator on a timeout, turn thinking off on the chat path and time qwen3:1.7b in the live chat; then her production model and SLO, then the speed levers one at a time (order above) | rule (a) for each product change, with an E2E test; rule (c) for each live run — code SHA, index, model digest and the configuration actually served, its time and routes |
 
 Heavy runs (models, full suite, Docker) go to the Mac — never the Windows
 laptop. Do not install or launch WSL, Docker or VMs on Windows (owner direction,
@@ -267,7 +311,9 @@ laptop. Do not install or launch WSL, Docker or VMs on Windows (owner direction,
 
 Everything in the "frozen / conditional track" rows above becomes live **only**
 on an external trigger: a design partner, or a real deployment. Not on an
-agent's judgement that the system would be more complete with it.
+agent's judgement that the system would be more complete with it. Whether
+production on `deproject-mac` (Julia, 2026-10-14) is such a deployment is hers
+to say; until she does, nothing here unfreezes on it.
 
 ## How this file is used
 

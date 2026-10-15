@@ -7,7 +7,9 @@ reuse step), `5861ffb` (its amendment: two CLI plugins of the user's configurati
 started stream, fixed) and the commit with this revision (the cold read's corrections, the
 503's records). **Pushed at Julia's word at 10:53:52:** `a7bf232..c3f0fff` — `384f7df` (the
 30-case verdicts the extension reuses), the four CI fixes and the previous log; the five
-commits above are local. The same session before this part, the same day:
+commits above at 16:17:40 (`c3f0fff..8850d6a`). Julia's decisions after this log and the next
+session's order: [the next log](session-handoff-2026-10-15-decisions.md). The same session
+before this part, the same day:
 [session log](session-handoff-2026-10-14-small-generators.md) (the screening on 30 cases,
 the red CI and its fixes).
 
@@ -33,17 +35,20 @@ the record's row in [EVIDENCE_INDEX](../../EVIDENCE_INDEX.md) is the one linking
 
 **The escalation rate, as answered.** No reliable rate exists. Under the code-default limits
 (30 s a request) every question ends without an answer — route `timeout`, or, in the 4B's
-run, a stream cut by a 503 (fixed since, `54ffdb2`) — and a ticket opens only for the routes
-`human`, `error` and `error_escalation` (`_TERMINAL_ESCALATE_ROUTES`,
-`api/routers/conversation.py`): on `timeout` the user gets an error and no operator learns of
-it. The one sample above five questions is a run of 2026-10-13 that is not ours
+run, a stream cut by a 503 (fixed since, `54ffdb2`) — and a ticket opens only on `/api/ask`,
+for the routes `human`, `error` and `error_escalation` (`_TERMINAL_ESCALATE_ROUTES`,
+`api/routers/conversation.py`). The web chat opens none on any route, and on `timeout` it
+shows an apology with the route as a badge, so no operator learns of it (corrected after this
+log, [decisions log](session-handoff-2026-10-15-decisions.md#what-matters-to-understand)).
+The one sample above five questions is a run of 2026-10-13 that is not ours
 (`reports/ask100/fixed-20261013/`, untracked; qwen2.5:7b, limits 1,200 s, `/api/ask`, broken
 off at 39 of 100), its code a patched snapshot of `7cad79f`, the patched files known only by
 their hashes — no commit names what ran: NOT_EVIDENCE. It gave auto 23, human 11 and
 timeout 5: `human` 11 of 39, 28 %, 95 % Wilson 16.5–43.8 %. The live chat of 2026-10-14,
 five questions a model: qwen2.5:7b 0 of 5 to `human`, Qwen3-4B 0 of 5, qwen2.5:1.5b 4 of 5.
 The chat's route is the generator grading its own answer against `QUALITY_THRESHOLD` 80
-(`config/settings.py`), so a model swap moves it too.
+(`config/settings.py`) — `/api/ask` routes by the graph's node, another rule — so a model
+swap moves it too.
 
 **The opinion on question 3, given before the run:** decide after the judge on 100 cases;
 timing qwen3:1.7b in the chat is worth the provider change only if it stays at the 7B's level
@@ -117,7 +122,7 @@ red on `928c124` (4 of 4), green with the fix.
 - Production runs on `deproject-mac` (2026-10-14); the production model is suspended («Давай
   подвесим вопрос»), and a model swap and alternative rerankers stay on the ROADMAP stop-list.
 - A push is her decision, asked each time (plan 0′.3); her «1. Да» after the 10:45 report
-  covered the six commits up to `c3f0fff`; the commits after it wait for her word.
+  covered the six commits up to `c3f0fff`, and her «1. да» of 16:12 the five up to `8850d6a`.
 - The 100-case extension: her «2. Да».
 
 ## What was the session's choice, not hers
@@ -226,25 +231,13 @@ laptop). The scratch scripts `.tmp/genscreen/analyze100.py` (the registered read
 `.tmp/ask100-split/sync_commit.py <rev>` one commit) to the Mac's gate tree, then
 `.tmp/mf-mac/remote.py --site pytest <tests> …`.
 
-Next, in order:
+Next: superseded at 16:12 by Julia's answers — the push (done, 16:17:40), qwen3:1.7b in the
+chat with the provider change (yes), the operator on a timeout (yes), the time limits lifted
+for now; the order is in [the next log](session-handoff-2026-10-15-decisions.md) and in
+`ROADMAP.md`.
 
-1. **Julia's answers:** the push of `30b1469`, `5861ffb`, `928c124`, `54ffdb2` and the commit
-   with this revision (the checks before asking: Log and Verification); question 3, timing
-   qwen3:1.7b in the chat (the session's opinion: worth it, see above — a reading of its own).
-   Act on each only after her «да».
-2. If she says yes to question 3: send `think: false` for qwen3 models through the provider
-   (`reasoning=False` for `OllamaLLM` in `llm/providers/ollama.py`, and the chat's streaming
-   path), checked against qwen2.5, with an E2E test; then the chat on the Mac as on 2026-10-14
-   with 20–30 questions, to count the routes to `human` as well as the time.
-
-**Waiting on Julia** (no step until she speaks):
-
-- The production model and the SLO. Whole chat answer, limits raised: qwen2.5:1.5b 100 s,
-  Qwen3-4B 297 s, qwen2.5:7b 486 s; qwen3:1.7b untimed.
-- The levers beyond the model: the rerank (alternative rerankers are on the stop-list), the
-  self-eval call after the answer, the limits.
-- Optional, a slice of its own: make the isolated route disable the user's plugins itself,
-  so a plugin she installs cannot stop a judge again (Lessons, 1).
+**Still optional**, a slice of its own: make the isolated route disable the user's plugins
+itself, so a plugin she installs cannot stop a judge again (Lessons, 1).
 
 ## Do not
 
@@ -252,7 +245,8 @@ Next, in order:
   unblock a route: override per request and record it.
 - Run more than one chunk under one time budget: its `timeout` kills the request in flight.
 - Treat the benchmark's "good" as the chat's, or "not told apart" as "level".
-- Push, change the provider for qwen3:1.7b, or swap the default model without her word.
+- Push or swap the default model without her word (the provider change for qwen3:1.7b has
+  her «да» since 16:12).
 - Run tests on the laptop; read, print or copy `.ask100-runtime/env.json`; kill processes you
   did not start on the Mac; install anything there with brew; rebuild the 5,589-chunk index;
   touch `demo/phase-e-raw.webm` or `reports/ask100/`.
