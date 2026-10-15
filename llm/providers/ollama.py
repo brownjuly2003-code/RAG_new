@@ -33,10 +33,16 @@ def _instantiate_with_timeout(cls: Any, *, timeout_sec: float, **kwargs: Any) ->
     if deadline is not None:
         deadline.check("ollama.client")
         timeout_sec = min(timeout_sec, deadline.remaining_sec())
-    candidates = _with_timeout_kwargs(kwargs, timeout_sec)
     fields = getattr(cls, "model_fields", None)
     if fields is None:
         fields = getattr(cls, "__fields__", None)
+    if isinstance(fields, dict) and "reasoning" in fields:
+        # Thinking off on every model call (Julia, 2026-10-15): left unset, the
+        # binding sends `think: null` and qwen3:1.7b thinks for 130-155 tokens
+        # before a one-sentence answer. Ollama 0.33.2 answers `think: false` from
+        # a model that cannot think as it does without it.
+        kwargs = {"reasoning": False, **kwargs}
+    candidates = _with_timeout_kwargs(kwargs, timeout_sec)
     if isinstance(fields, dict):
         # Pydantic bindings can silently ignore unknown constructor arguments.
         # Select a declared field instead of treating construction as acceptance.

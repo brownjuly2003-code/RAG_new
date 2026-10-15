@@ -1,0 +1,18 @@
+langchain-ollama 1.1.0 /Users/julia/RAG_new_mf_gate_site/langchain_ollama/__init__.py
+qwen2.5:7b think=False: HTTP 200 in 110.4 s
+  thinking chars: 0 | output tokens: 20 | <think> in response: False
+  answer: Испытательный срок по умолчанию длится 30 дней.
+qwen2.5:7b think=True: HTTP 400 in 0.1 s
+  error: "qwen2.5:7b" does not support thinking
+qwen2.5:7b think=None: HTTP 200 in 4.4 s
+  thinking chars: 0 | output tokens: 20 | <think> in response: False
+  answer: Испытательный срок по умолчанию длится 30 дней.
+qwen3:1.7b think=False: HTTP 200 in 34.1 s
+  thinking chars: 0 | output tokens: 21 | <think> in response: False
+  answer: Испытательный срок по умолчанию длится 180 дней.
+OllamaLLM(reasoning=False) qwen3:1.7b: thinking chars 0 | output tokens: 21 | <think> in text: False
+ChatOllama(reasoning=False) qwen3:1.7b: reasoning_content 0 | <think> in content: False
+OllamaLLM(reasoning=False) qwen2.5:7b: thinking chars 0 | output tokens: 20 | <think> in text: False
+ChatOllama(reasoning=False) qwen2.5:7b: reasoning_content 0 | <think> in content: False
+unloaded
+{"models":[]}

@@ -94,7 +94,8 @@ async def _stream_ollama(
     """Стримит токены из Ollama /api/generate."""
     from config.settings import TIME_LIMIT_CEILING_SEC
 
-    payload: dict[str, Any] = {"model": model, "prompt": prompt, "stream": True}
+    # Thinking off, as on the provider's path (llm/providers/ollama.py).
+    payload: dict[str, Any] = {"model": model, "prompt": prompt, "stream": True, "think": False}
     if options:
         payload["options"] = options
     # The provider stream's limit (OLLAMA_REQUEST_TIMEOUT_SEC); httpx reads it as
