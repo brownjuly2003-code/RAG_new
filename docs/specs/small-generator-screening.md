@@ -197,3 +197,18 @@ retests and across the four answers of a case.
 **Publication:** `.tmp/genscreen-judge-100/` while it runs, then
 `reports/generator-screen/86df582/judge-100/` — `plan.json`, `verdicts.jsonl`,
 `summary.json` — pinned by the record's test, with one row in EVIDENCE_INDEX.
+
+### Amendment of the extension, 2026-10-15
+
+At 12:05:00 UTC, after 69 of the 292 requests had been sent, a plugin was installed and
+enabled in the user configuration of the Claude CLI (`figma@claude-plugins-official`), and
+the `--safe-mode` session loaded it: the route refused the reply to the 70th request twice —
+"the session loaded more than the request: plugins" — and the run stopped with no verdict
+for it. The configuration is the owner's and is left as it is. From that request on, each
+request also carries `--settings` with a file that disables the two plugins of that
+configuration (`judge-100/tools/no-user-plugins.json`), added by the run's wrapper
+(`judge-100/tools/run100_logged.py`), which calls the judge's `run_plan` unchanged and keeps
+the message of any refused reply in `refusals.log`. A probe with and without the file showed
+the session it restores: the three registered built-ins and no plugin, tool, MCP server or
+skill — the session of every earlier verdict, which each verdict's record shows and
+`summarize` checks. Nothing else changes.

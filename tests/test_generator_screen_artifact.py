@@ -28,6 +28,8 @@ ROOT = Path(__file__).resolve().parent.parent
 RECORD = ROOT / "reports/generator-screen/86df582"
 # sha256, size and path of every published file, LF line endings (.gitattributes).
 PINS = """
+a3ab8425a701299b40eccc6b732cc90e68aba624f2cf90b45a82200b854a287a 106 judge-100/tools/no-user-plugins.json
+1d629940b24e0450de04a95efcbaf7fc3b6d4a64c549fffca5fd15579d0d2c01 2129 judge-100/tools/run100_logged.py
 051aa629af4ca6cab9c2e8df3c2977b0bf6bcd86b0d59946d22d8a838bf95cc8 1366796 judge/plan.json
 f3eea3be82a0de4b8aeb9aadf8a8a242016831c1651e170beda752a1d1e1ca88 5058 judge/summary.json
 5defc76a4bba8d220c83935d2daa6809c738e73c77f32bbdf3c1d09d306af257 231764 judge/verdicts.jsonl
