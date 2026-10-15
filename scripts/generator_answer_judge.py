@@ -8,16 +8,19 @@ generator grading itself, so the screening of generators below 7B
 
 - `plan` takes the seed-42 run of each benchmark report, checks that every report sent the same
   prompt over the same dataset and cached contexts, counts the deterministic defects of all its
-  answers, and writes one request per answer of the 30 registered cases, plus a retest of 15 of
-  them, in a fixed shuffled order; a request never names the generator, and an empty answer is
-  graded bad without one;
+  answers, and writes one request per answer of the 30 registered cases (`--sample-size 100`
+  for the extension to all of them), plus a retest of 15 of them, in a fixed shuffled order; a
+  request never names the generator, and an empty answer is graded bad without one;
+- `reuse` copies, before the first request, the verdicts an earlier plan of the same route and
+  rules got for byte-identical requests, each marked with that plan's SHA-256;
 - `run` sends the requests one at a time and appends every reply to `verdicts.jsonl`, so a
   stopped run resumes where it stopped; it stops at the first reply the route refuses;
 - `summary` counts the verdicts per generator; a verdict counts only with the record of a clean
   session and the hash of its planned request.
 
 Usage:
-  python scripts/generator_answer_judge.py plan --report NAME=PATH ... --out DIR
+  python scripts/generator_answer_judge.py plan --report NAME=PATH ... --out DIR [--sample-size N]
+  python scripts/generator_answer_judge.py reuse --from EARLIER_DIR --out DIR
   python scripts/generator_answer_judge.py run --out DIR [--limit N]
   python scripts/generator_answer_judge.py summary --out DIR
 """
@@ -140,9 +143,13 @@ def _sha256_path(path: Path) -> str:
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
-def sample_case_ids(case_ids: Sequence[str]) -> list[str]:
-    """The registered cases: the first SAMPLE_SIZE by a salted hash, whatever the order given."""
-    return sorted(set(case_ids), key=lambda case_id: _digest(f"{SALT}:{case_id}"))[:SAMPLE_SIZE]
+def sample_case_ids(case_ids: Sequence[str], size: int = SAMPLE_SIZE) -> list[str]:
+    """The registered cases: the first `size` by a salted hash, whatever the order given.
+
+    A larger sample starts with the smaller one, so the extension to all 100 cases plans the
+    registered 30 cases' requests unchanged.
+    """
+    return sorted(set(case_ids), key=lambda case_id: _digest(f"{SALT}:{case_id}"))[:size]
 
 
 def build_message(question: str, contexts: Sequence[str], answer: str) -> str:
@@ -279,6 +286,7 @@ def build_plan(
     dataset_path: Path,
     contexts_path: Path,
     report_sha256: Mapping[str, str] | None = None,
+    sample_size: int = SAMPLE_SIZE,
 ) -> dict[str, Any]:
     """Freeze every request and every deterministic count before the first grade."""
     input_sha256 = (_sha256_path(dataset_path), _sha256_path(contexts_path))
@@ -291,7 +299,7 @@ def build_plan(
             context_chars=CONTEXT_CHARS,
         )
     }
-    sample = sample_case_ids(list(cases))
+    sample = sample_case_ids(list(cases), sample_size)
     items: list[dict[str, Any]] = []
     generators: dict[str, Any] = {}
     checks: dict[str, Any] = {}
@@ -409,6 +417,38 @@ def run_plan(plan: Mapping[str, Any], out: Path, send: Sender, *, limit: int = 0
     return graded
 
 
+def reuse_verdicts(plan: Mapping[str, Any], out: Path, source: Path) -> int:
+    """Copy the verdicts an earlier plan got for this plan's requests; return how many.
+
+    Only before the first request, only from a plan of the same route and rules, and only for
+    a request with the same item id and message hash: the first valid verdict, the one
+    `summarize` reads, from a record whose every verdict is vouched for. Each copy names the
+    earlier plan's SHA-256 in `reused_from`.
+    """
+    path = out / "verdicts.jsonl"
+    if path.exists():
+        raise ValueError(f"{path} exists: verdicts are reused before the first request")
+    earlier = json.loads((source / "plan.json").read_text(encoding="utf-8"))
+    for key in ("route", "instructions_sha256"):
+        if earlier.get(key) != plan.get(key):
+            raise ValueError(f"the earlier plan was asked by another {key}")
+    rows = _read_jsonl(source / "verdicts.jsonl")
+    _vouched(earlier, rows)
+    wanted = {
+        item["item_id"]: item["message_sha256"] for item in plan["items"] if "message" in item
+    }
+    origin = _sha256_path(source / "plan.json")
+    copied: set[str] = set()
+    for row in rows:
+        item_id = str(row.get("item_id"))
+        if row.get("status") != "valid" or item_id in copied:
+            continue
+        if wanted.get(item_id) == row.get("message_sha256"):
+            _append(path, {**row, "reused_from": origin})
+            copied.add(item_id)
+    return len(copied)
+
+
 def _vouched(
     plan: Mapping[str, Any], verdicts: Sequence[Mapping[str, Any]]
 ) -> dict[str, dict[str, Any]]:
@@ -473,7 +513,16 @@ def summarize(plan: Mapping[str, Any], verdicts: Sequence[Mapping[str, Any]]) ->
         for item_id, item in items.items()
         if "retest_of" in item and item_id in valid and item["retest_of"] in valid
     ]
-    sent = [row for row in verdicts if "usage" in row]
+    sent = [row for row in verdicts if "usage" in row and "reused_from" not in row]
+    requests: dict[str, Any] = {
+        "sent": len(sent),
+        "valid": len(valid),
+        "cost_usd": round(sum(float(row["usage"].get("total_cost_usd") or 0) for row in sent), 2),
+        "elapsed_s": round(sum(float(row.get("elapsed_s") or 0) for row in sent), 1),
+    }
+    # The 30-case record reused nothing, and its published summary has no such count.
+    if reused := sum("reused_from" in row for row in verdicts):
+        requests["reused"] = reused
     return {
         "missing": sum(
             "message" in item and item_id not in valid for item_id, item in items.items()
@@ -497,14 +546,7 @@ def summarize(plan: Mapping[str, Any], verdicts: Sequence[Mapping[str, Any]]) ->
         },
         "checks": plan["checks"],
         "context_keyword_recall": plan["context_keyword_recall"],
-        "requests": {
-            "sent": len(sent),
-            "valid": len(valid),
-            "cost_usd": round(
-                sum(float(row["usage"].get("total_cost_usd") or 0) for row in sent), 2
-            ),
-            "elapsed_s": round(sum(float(row.get("elapsed_s") or 0) for row in sent), 1),
-        },
+        "requests": requests,
     }
 
 
@@ -527,6 +569,10 @@ def main(argv: Sequence[str] | None = None) -> int:
     plan_parser.add_argument("--dataset", type=Path, default=DEFAULT_DATASET)
     plan_parser.add_argument("--contexts", type=Path, default=DEFAULT_CONTEXTS)
     plan_parser.add_argument("--out", type=Path, required=True)
+    plan_parser.add_argument("--sample-size", type=int, default=SAMPLE_SIZE)
+    reuse_parser = commands.add_parser("reuse")
+    reuse_parser.add_argument("--from", dest="source", type=Path, required=True)
+    reuse_parser.add_argument("--out", type=Path, required=True)
     run_parser = commands.add_parser("run")
     run_parser.add_argument("--out", type=Path, required=True)
     run_parser.add_argument("--limit", type=int, default=0)
@@ -539,6 +585,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     if args.command == "plan":
         if plan_path.exists():
             raise SystemExit(f"{plan_path} exists: a plan is frozen once written")
+        if not 0 < args.sample_size <= EXPECTED_CASES:
+            raise SystemExit(f"--sample-size {args.sample_size}: give 1 to {EXPECTED_CASES} cases")
         reports: dict[str, Any] = {}
         digests: dict[str, str] = {}
         for spec in args.report:
@@ -552,6 +600,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             dataset_path=args.dataset,
             contexts_path=args.contexts,
             report_sha256=digests,
+            sample_size=args.sample_size,
         )
         args.out.mkdir(parents=True, exist_ok=True)
         plan_path.write_text(json.dumps(plan, ensure_ascii=False, indent=1) + "\n", "utf-8")
@@ -559,6 +608,13 @@ def main(argv: Sequence[str] | None = None) -> int:
         print(f"{asked} requests planned in {plan_path}")
         return 0
     plan = json.loads(plan_path.read_text(encoding="utf-8"))
+    if args.command == "reuse":
+        try:
+            reused = reuse_verdicts(plan, args.out, args.source)
+        except ValueError as exc:
+            raise SystemExit(str(exc)) from None
+        print(f"{reused} verdicts reused from {args.source}")
+        return 0
     if args.command == "run":
         try:
             graded = run_plan(plan, args.out, _isolated_sender(args.timeout), limit=args.limit)

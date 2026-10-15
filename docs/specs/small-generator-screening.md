@@ -6,11 +6,11 @@ judge graded the 30 shared cases of all five generators (record
 laptop ran low on memory after 99 of the 165 verdicts, and finished on 2026-10-15; the
 request in flight at the stop left no verdict and was sent again. The leading small
 generator came within five good answers of C.1a and C.1b, so the [reading](#reading) asks
-for the judge's extension to all 100 cases under a new plan, not yet written; its run waits
-for the owner's word. One row was replaced before its first answer
-([amendment](#amendment-2026-10-14)). This plan fixes the generators, the contract,
-the judge, the sample and the order of the runs before any answer of a generator below
-7B was produced or graded.
+for the judge's extension to all 100 cases under a new plan; the owner approved its run, and
+it is [registered below](#extension-to-100-cases-registered-2026-10-15) and running. One row
+was replaced before its first answer ([amendment](#amendment-2026-10-14)). This plan fixes
+the generators, the contract, the judge, the sample and the order of the runs before any
+answer of a generator below 7B was produced or graded.
 
 ## Why
 
@@ -150,3 +150,50 @@ generators within five good answers of each other are not told apart. If the lea
 small generator comes that close to C.1a or C.1b, the judge is extended to all 100 cases
 of the generators concerned under a new plan with the same rules. The choice of the
 production model belongs to the owner and stays suspended; this screening informs it.
+
+## Extension to 100 cases, registered 2026-10-15
+
+Registered before the extension's first request; nothing above changes.
+
+**Why.** The leading small generator, `qwen3-4b-instruct` (23 good of 30), came within five
+good answers of C.1a (20) and C.1b (21), so the [reading](#reading) calls for the judge on
+all 100 cases. The owner approved the run on 2026-10-15 — «2. Да» to «Запускать расширение
+судьи до 100 кейсов? Минимальный набор — Qwen3-4B-Instruct, 7B, 8B; можно добавить
+qwen3-1.7b…».
+
+**Generators.** The reading does not define "the generators concerned"; they are read as the
+leading small generator and each reference within five of it — `qwen3-4b-instruct`,
+`qwen2.5-7b` (C.1a), `qwen3-8b` (C.1b) — and `qwen3-1.7b` (20 good, within five of all four)
+is added: the smallest generator not told apart from the references, and the one whose time
+in the live chat is still unmeasured (EVIDENCE_INDEX, the chat row of the generators below
+7B); whether its answers hold on 100 cases decides whether that measurement is worth the
+provider change it needs. `qwen2.5-1.5b` is left out: the most bad answers of the five, 9 of
+30, and four of its five questions in the live chat routed `human`. Each generator's report
+is the one the 30-case plan named, with the same SHA-256.
+
+**Sample and requests.** All 100 cases (`plan --sample-size 100`) in the same salted order,
+so the first 30 are the registered 30 and their requests are byte-identical. A new retest of
+15 is drawn by the same salted hash among the 400 requests: 415 in all, no answer empty.
+
+**Reuse.** Before the first request, `reuse --from reports/generator-screen/86df582/judge`
+copies the published verdicts of the requests both plans hold — the same item id and message
+hash, the same route and rules, every verdict of that record vouched for: the 120 answers of
+the four generators on the registered 30 cases and the 3 retests the first plan also sent.
+Each copy names that plan's SHA-256 (`051aa629…`) in `reused_from`; the summary counts the
+copies apart from the requests sent, and its cost covers only the latter. 292 requests are
+sent; at the first run's mean, $0.106 and 42.6 s a request, that is about $31 and 3.5 hours,
+in chunks of ten in the foreground.
+
+**Unchanged:** the judge, its route and system prompt, the request rules, the verdict form,
+the classes, three attempts for a reply of a wrong form, and the vouching of every verdict.
+
+**Reading.** Descriptive: no gate, no ship decision. Per generator, the classes on 100
+cases and the 95 % Wilson interval of its share of good answers — at 70 of 100 about
+0.60–0.78. Per pair of the four, six pairs, the cases where only one of the two is good and
+the exact two-sided sign test on them; a pair is called apart only below 0.05 / 6, and
+otherwise not told apart. The judge's agreement with itself is reported as before, on the 15
+retests and across the four answers of a case.
+
+**Publication:** `.tmp/genscreen-judge-100/` while it runs, then
+`reports/generator-screen/86df582/judge-100/` — `plan.json`, `verdicts.jsonl`,
+`summary.json` — pinned by the record's test, with one row in EVIDENCE_INDEX.

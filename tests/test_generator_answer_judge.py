@@ -140,6 +140,15 @@ def test_the_sample_is_thirty_cases_fixed_by_the_salt_whatever_the_order() -> No
     assert sample != ids[:30]
 
 
+def test_a_larger_sample_starts_with_the_registered_thirty() -> None:
+    ids = [f"case-{i:03d}" for i in range(CASES)]
+
+    everything = judge.sample_case_ids(ids, CASES)
+
+    assert sorted(everything) == ids
+    assert everything[: judge.SAMPLE_SIZE] == judge.sample_case_ids(ids)
+
+
 def test_a_verdict_must_have_the_registered_form() -> None:
     assert judge.parse_verdict(json.dumps(GOOD)) == GOOD
     assert judge.parse_verdict("```json\n" + json.dumps(GOOD) + "\n```") == GOOD
@@ -256,6 +265,28 @@ def test_the_plan_refuses_another_input_a_missing_case_or_another_seed(inputs) -
         _plan(inputs, alpha=count)
 
 
+def test_the_extended_plan_keeps_the_registered_requests_and_all_else(inputs) -> None:
+    dataset, contexts = inputs
+    reports = {"alpha": _report(inputs, "m"), "beta": _report(inputs, "n", answer="Пять дней [2].")}
+    first = _plan(inputs, **reports)
+
+    extended = judge.build_plan(
+        reports, dataset_path=dataset, contexts_path=contexts, sample_size=CASES
+    )
+
+    assert extended["sample"][: judge.SAMPLE_SIZE] == first["sample"]
+    assert len(set(extended["sample"])) == CASES
+    assert len(extended["items"]) == len(reports) * CASES + judge.RETEST_SIZE
+    requests = {item["item_id"]: item["message_sha256"] for item in extended["items"]}
+    for item in first["items"]:
+        if "retest_of" not in item:
+            assert requests[item["item_id"]] == item["message_sha256"]
+    rest = ("sample", "items")
+    assert {key: value for key, value in extended.items() if key not in rest} == {
+        key: value for key, value in first.items() if key not in rest
+    }
+
+
 def test_run_retries_a_wrong_form_resumes_and_stops_where_the_route_refuses(
     inputs, tmp_path: Path
 ) -> None:
@@ -331,6 +362,81 @@ def test_summary_refuses_a_verdict_without_a_clean_session_or_its_request(
     assert judge.summarize(plan, [row])["requests"]["valid"] == 1
 
 
+def test_reuse_copies_the_earlier_verdicts_of_identical_requests_only(
+    inputs, tmp_path: Path
+) -> None:
+    dataset, contexts = inputs
+    earlier, out = tmp_path / "earlier", tmp_path / "extended"
+    earlier.mkdir()
+    out.mkdir()
+    alpha = _report(inputs, "m")
+    first = _plan(inputs, alpha=alpha, beta=_report(inputs, "n", answer="Пять дней [2]."))
+    (earlier / "plan.json").write_text(json.dumps(first, ensure_ascii=False), "utf-8")
+    judge.run_plan(first, earlier, FakeSender("not json"))
+    # beta answers otherwise in the extension, so none of its earlier verdicts answers it.
+    extended = judge.build_plan(
+        {"alpha": alpha, "beta": _report(inputs, "n", answer="Другой ответ [1].")},
+        dataset_path=dataset,
+        contexts_path=contexts,
+        sample_size=CASES,
+    )
+
+    reused = judge.reuse_verdicts(extended, out, earlier)
+
+    rows = judge._read_jsonl(out / "verdicts.jsonl")
+    planned = {item["item_id"] for item in extended["items"]}
+    shared = {
+        item["item_id"]
+        for item in first["items"]
+        if item["generator"] == "alpha" and item["item_id"] in planned
+    }
+    assert reused == len(rows) == len(shared) >= judge.SAMPLE_SIZE
+    assert {row["item_id"] for row in rows} == shared
+    first_valid: dict[str, dict[str, Any]] = {}
+    for row in judge._read_jsonl(earlier / "verdicts.jsonl"):
+        if row["status"] == "valid":
+            first_valid.setdefault(row["item_id"], row)
+    origin = _sha(earlier / "plan.json")
+    assert rows == [{**first_valid[row["item_id"]], "reused_from": origin} for row in rows]
+    with pytest.raises(ValueError, match="before the first request"):
+        judge.reuse_verdicts(extended, out, earlier)
+
+    sender = FakeSender()
+    asked = [item for item in extended["items"] if "message" in item]
+    assert judge.run_plan(extended, out, sender) == len(sender.messages) == len(asked) - reused
+    summary = judge.summarize(extended, judge._read_jsonl(out / "verdicts.jsonl"))
+    assert summary["missing"] == 0
+    assert summary["requests"]["reused"] == reused
+    assert summary["requests"]["sent"] == len(asked) - reused
+    assert summary["requests"]["cost_usd"] == round(0.25 * (len(asked) - reused), 2)
+
+
+def test_reuse_refuses_another_route_other_rules_or_an_unvouched_record(
+    inputs, tmp_path: Path
+) -> None:
+    plan = _plan(inputs, alpha=_report(inputs, "m"))
+    out = tmp_path / "out"
+    for key, value in (
+        ("route", {**plan["route"], "changed": True}),
+        ("instructions_sha256", "0" * 64),
+    ):
+        earlier = tmp_path / key
+        earlier.mkdir()
+        (earlier / "plan.json").write_text(json.dumps({**plan, key: value}), "utf-8")
+        with pytest.raises(ValueError, match=f"another {key}"):
+            judge.reuse_verdicts(plan, out, earlier)
+    earlier = tmp_path / "loaded"
+    earlier.mkdir()
+    (earlier / "plan.json").write_text(json.dumps(plan), "utf-8")
+    judge.run_plan(plan, earlier, FakeSender(), limit=1)
+    row = judge._read_jsonl(earlier / "verdicts.jsonl")[0]
+    loaded = {**row, "session": {**SESSION, "loaded": {**SESSION["loaded"], "tools": ["Bash"]}}}
+    (earlier / "verdicts.jsonl").write_text(json.dumps(loaded) + "\n", "utf-8")
+    with pytest.raises(ValueError, match="not vouched for"):
+        judge.reuse_verdicts(plan, out, earlier)
+    assert not out.exists()
+
+
 def test_main_freezes_the_plan_once(inputs, tmp_path: Path) -> None:
     dataset, contexts = inputs
     report = tmp_path / "report.json"
@@ -353,3 +459,27 @@ def test_main_freezes_the_plan_once(inputs, tmp_path: Path) -> None:
     assert plan["generators"]["alpha"]["report_sha256"] == _sha(report)
     with pytest.raises(SystemExit, match="frozen"):
         judge.main(argv)
+
+
+def test_main_plans_a_larger_sample_and_reuses_the_earlier_verdicts(inputs, tmp_path: Path) -> None:
+    dataset, contexts = inputs
+    report = tmp_path / "report.json"
+    report.write_text(json.dumps(_report(inputs, "m"), ensure_ascii=False), "utf-8")
+    given = ["--report", f"alpha={report}", "--dataset", str(dataset), "--contexts", str(contexts)]
+    earlier, extended = tmp_path / "earlier", tmp_path / "extended"
+    assert judge.main(["plan", *given, "--out", str(earlier)]) == 0
+    first = json.loads((earlier / "plan.json").read_text(encoding="utf-8"))
+    judge.run_plan(first, earlier, FakeSender())
+    with pytest.raises(SystemExit, match="give 1 to 100 cases"):
+        judge.main(["plan", *given, "--out", str(extended), "--sample-size", "101"])
+    assert not extended.exists()
+
+    assert judge.main(["plan", *given, "--out", str(extended), "--sample-size", "100"]) == 0
+    assert judge.main(["reuse", "--from", str(earlier), "--out", str(extended)]) == 0
+
+    plan = json.loads((extended / "plan.json").read_text(encoding="utf-8"))
+    assert len(plan["sample"]) == CASES
+    reused = {row["item_id"] for row in judge._read_jsonl(extended / "verdicts.jsonl")}
+    assert reused >= {item["item_id"] for item in first["items"] if "retest_of" not in item}
+    with pytest.raises(SystemExit, match="before the first request"):
+        judge.main(["reuse", "--from", str(earlier), "--out", str(extended)])
