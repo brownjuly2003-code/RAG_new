@@ -1,4 +1,5 @@
-"""Guard the six pip-audit floors raised on 2026-10-03 and the unevaluated 6.x cap."""
+"""Guard the pip-audit floors (six raised on 2026-10-03, three on 2026-10-15) and the
+caps below major lines nothing here has run on."""
 
 from __future__ import annotations
 
@@ -20,7 +21,12 @@ FIXED_IN = {
     "sentence-transformers": (Version("5.6.0"), ("PYSEC-2026-4164",)),
     "anyio": (Version("4.14.2"), ("PYSEC-2026-4024/4025",)),
     "oauthlib": (Version("4.0.0"), ("PYSEC-2026-4114",)),
+    "fsspec": (Version("2026.6.0"), ("CVE-2026-104851",)),
+    "langgraph-sdk": (Version("0.4.4"), ("CVE-2026-104873",)),
+    "multidict": (Version("6.9.1"), ("CVE-2026-104874",)),
 }
+# Major lines kept out of the locks; requirements.txt says why beside each cap.
+CAPS = {"sentence-transformers": Version("6"), "multidict": Version("7")}
 
 
 def _assert_declared_floor(text: str, name: str) -> Requirement:
@@ -51,11 +57,10 @@ def _assert_locked_floor(text: str, name: str, source: str) -> Version:
     return version
 
 
-def _assert_sentence_transformers_cap(text: str, source: str) -> None:
+def _assert_cap(text: str, source: str, name: str) -> None:
     """Keep both the declared range and the resolved pins below the unevaluated line."""
-    name = "sentence-transformers"
-    ceiling = Version("6")
-    message = f"{source}: keep {name} below 6; see the comment in requirements.txt"
+    ceiling = CAPS[name]
+    message = f"{source}: keep {name} below {ceiling}; see the comment in requirements.txt"
     if source == "requirements.txt":
         requirement = _assert_declared_floor(text, name)
         assert any(
@@ -82,8 +87,9 @@ def test_both_locks_pin_each_package_at_or_above_its_fix(name: str, source: str)
 
 
 @pytest.mark.parametrize("source", ("requirements.txt", *LOCK_NAMES))
-def test_sentence_transformers_stays_below_the_unevaluated_6_line(source: str) -> None:
-    _assert_sentence_transformers_cap((PROJECT_ROOT / source).read_text(encoding="utf-8"), source)
+@pytest.mark.parametrize("name", CAPS)
+def test_capped_packages_stay_below_their_unevaluated_line(name: str, source: str) -> None:
+    _assert_cap((PROJECT_ROOT / source).read_text(encoding="utf-8"), source, name)
 
 
 @pytest.mark.parametrize(
@@ -128,27 +134,35 @@ def test_locked_floor_rejects_missing_or_below_fix_lines(name: str, text: str) -
 
 
 @pytest.mark.parametrize(
-    ("source", "text"),
+    ("name", "source", "text"),
     [
-        ("requirements.txt", "Sentence-Transformers>=5.7.0,<6\n"),
-        ("requirements.lock", "Sentence-Transformers==5.7.0 \\\n    --hash=sha256:abc\n"),
-        ("requirements-dev.lock", "sentence-transformers==5.8.0\n"),
+        ("sentence-transformers", "requirements.txt", "Sentence-Transformers>=5.7.0,<6\n"),
+        (
+            "sentence-transformers",
+            "requirements.lock",
+            "Sentence-Transformers==5.7.0 \\\n    --hash=sha256:abc\n",
+        ),
+        ("sentence-transformers", "requirements-dev.lock", "sentence-transformers==5.8.0\n"),
+        ("multidict", "requirements.txt", "multidict>=6.9.1,<7\n"),
+        ("multidict", "requirements.lock", "multidict==6.9.1 \\\n    --hash=sha256:abc\n"),
     ],
 )
-def test_sentence_transformers_cap_accepts_valid_reference_lines(source: str, text: str) -> None:
-    _assert_sentence_transformers_cap(text, source)
+def test_cap_accepts_valid_reference_lines(name: str, source: str, text: str) -> None:
+    _assert_cap(text, source, name)
 
 
 @pytest.mark.parametrize(
-    ("source", "text"),
+    ("name", "source", "text"),
     [
-        ("requirements.txt", "sentence-transformers>=5.6.0\n"),
-        ("requirements.txt", "sentence-transformers>=5.6.0,<=6\n"),
-        ("requirements.txt", "sentence-transformers>=5.6.0,<7\n"),
-        ("requirements.lock", "sentence-transformers==6.0.0\n"),
-        ("requirements-dev.lock", "sentence-transformers==6.1.0\n"),
+        ("sentence-transformers", "requirements.txt", "sentence-transformers>=5.6.0\n"),
+        ("sentence-transformers", "requirements.txt", "sentence-transformers>=5.6.0,<=6\n"),
+        ("sentence-transformers", "requirements.txt", "sentence-transformers>=5.6.0,<7\n"),
+        ("sentence-transformers", "requirements.lock", "sentence-transformers==6.0.0\n"),
+        ("sentence-transformers", "requirements-dev.lock", "sentence-transformers==6.1.0\n"),
+        ("multidict", "requirements.txt", "multidict>=6.9.1\n"),
+        ("multidict", "requirements.lock", "multidict==7.1.0\n"),
     ],
 )
-def test_sentence_transformers_cap_rejects_the_6_line(source: str, text: str) -> None:
+def test_cap_rejects_the_unevaluated_line(name: str, source: str, text: str) -> None:
     with pytest.raises(AssertionError, match=r"comment in requirements\.txt"):
-        _assert_sentence_transformers_cap(text, source)
+        _assert_cap(text, source, name)
