@@ -18,6 +18,7 @@ import gzip
 import hashlib
 import itertools
 import json
+import math
 import shutil
 from pathlib import Path
 
@@ -240,14 +241,34 @@ def test_the_evidence_row_publishes_the_judge() -> None:
 
 
 def test_the_row_reads_the_judge_as_the_plan_registered() -> None:
-    # Thirty cases tell apart only gaps of more than five good answers; if the leading small
+    # Thirty cases leave gaps of five good answers or fewer unresolved; if the leading small
     # generator comes within five of C.1a or C.1b, the judge extends to all 100 cases.
     row = evidence_row()
     generators = load("judge/summary.json")["generators"]
     good = {name: generator["classes"]["good"] for name, generator in generators.items()}
     apart = [(a, b) for a, b in itertools.combinations(good, 2) if abs(good[a] - good[b]) > 5]
     assert apart == [("qwen2.5-1.5b", "qwen3-4b-instruct")]
-    assert "here only `qwen2.5-1.5b` from `qwen3-4b-instruct`" in row
+    assert "the only wider one, `qwen2.5-1.5b` against `qwen3-4b-instruct` (16 vs 23)" in row
+    # Even that gap is a lead, not a settled order: the cases where only one of the two is good.
+    plan = load("judge/plan.json")
+    first: dict[str, dict] = {}
+    for verdict_row in verdicts():
+        first.setdefault(verdict_row["item_id"], judge.parse_verdict(verdict_row["raw_text"]))
+    is_good = {
+        (item["generator"], item["case_id"]): item["item_id"] in first
+        and judge.classify(first[item["item_id"]]) == "good"
+        for item in plan["items"]
+        if "retest_of" not in item
+    }
+    cases = {case for _, case in is_good}
+    only = [
+        sum(is_good[a, case] and not is_good[b, case] for case in cases)
+        for a, b in (apart[0], apart[0][::-1])
+    ]
+    assert only == [1, 8]
+    exact_p = 2 * sum(math.comb(9, k) for k in range(2)) / 2**9
+    assert round(exact_p, 2) == 0.04
+    assert "1 against 8 discordant cases, exact p ≈ 0.04 before correcting for ten pairs" in row
     leader = max(SCREENED, key=lambda name: good[name])
     assert leader == "qwen3-4b-instruct"
     assert any(abs(good[leader] - good[name]) <= 5 for name in REFERENCE)
