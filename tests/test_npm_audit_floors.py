@@ -1,4 +1,5 @@
-"""Guard: the docs-site npm floors raised by T-18 and T-74 cannot drift back down.
+"""Guard: the docs-site npm floors raised by T-18, T-74 and on 2026-10-15 cannot drift
+back down.
 
 Advisories against five packages published upstream between 2026-08-25 and
 2026-09-07 turned `Deploy docs site (Astro Starlight) to Pages` red without a
@@ -10,7 +11,7 @@ failure mode this file guards: the next lock
 refresh must not be free to resolve back under the fix, and the gate must not
 be quieted with an exception when a fixed release exists.
 
-**What this file owns:** every version constraint on the six fixed-release
+**What this file owns:** every version constraint on the fixed-release
 packages in `FIXED_IN` — the declared floor, the pin *format* that keeps that
 floor from drifting, the versions the lock resolves, and the exception
 register's silence about them. `tests/test_docs_site_npm_audit.py` owns the
@@ -20,6 +21,13 @@ files; a constraint on a `FIXED_IN` package belongs here.
 
 T-18 floors come from `npm audit` on run 34393111514; T-74 raises fast-uri
 to 3.1.8 and adds dompurify 3.4.16 for the 2026-10-03 advisories (ADR 0009).
+On 2026-10-15 (CI run 38707871632) sharp rises to 0.35.5, and katex,
+postcss-selector-parser, smol-toml and source-map-js get override floors for
+the advisories published 2026-09-18..10-06. katex (0.16 -> 0.18) and
+postcss-selector-parser (6 -> 7) cross a line their parents declare
+(mermaid-isomorphic ^0.16; postcss-nested ^6, which @expressive-code/core holds
+at ^6): the latest mermaid-isomorphic and @expressive-code/core still declare
+those lines, and both packages run only while the site builds.
 """
 
 from __future__ import annotations
@@ -35,13 +43,18 @@ from packaging.version import Version
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DOCS_SITE = PROJECT_ROOT / "docs-site"
 
-# package -> minimum fixed release for the advisories guarded by T-18 and T-74.
+# package -> minimum fixed release for the advisories guarded by T-18, T-74 and the
+# floors of 2026-10-15.
 FIXED_IN = {
     "astro": Version("7.2.8"),  # GHSA-26w7-cxv4-gfx2 (critical), GHSA-376h-93r7-7g6f
     "dompurify": Version("3.4.16"),  # GHSA-p98j-92pf-mc4p
     "fast-uri": Version("3.1.8"),  # T-18 advisories + GHSA-hrr3-gc8f-f4qj
     "js-yaml": Version("4.3.2"),  # GHSA-2883-xcg3-v3hh
-    "sharp": Version("0.35.4"),  # GHSA-rgj7-g3m4-5g8c (libheif)
+    "katex": Version("0.18.2"),  # GHSA-238p-pmpm-9mq7
+    "postcss-selector-parser": Version("7.1.6"),  # GHSA-rj75-hqrm-r3gf
+    "sharp": Version("0.35.5"),  # GHSA-rgj7-g3m4-5g8c (libheif), GHSA-wq5f-xc86-pv6w
+    "smol-toml": Version("1.9.0"),  # GHSA-r4xh-jqrq-34v2
+    "source-map-js": Version("1.2.2"),  # GHSA-68fv-2mgg-jv7q
     "svgo": Version("4.1.0"),  # GHSA-w27v-7q3p-w38r, GHSA-4vpr-x523-8j87
 }
 
@@ -110,7 +123,7 @@ def test_package_json_declares_a_floor_at_or_above_every_fix() -> None:
 
 @pytest.mark.parametrize(
     ("dependency", "override"),
-    [("^0.35.3", "^0.35.4"), ("^0.35.4", "^0.35.3")],
+    [("^0.35.4", "^0.35.5"), ("^0.35.5", "^0.35.4")],
     ids=["dependency-below-fix", "override-below-fix"],
 )
 def test_neither_manifest_source_can_shadow_a_below_fix_spec_in_the_other(
@@ -133,7 +146,7 @@ def test_neither_manifest_source_can_shadow_a_below_fix_spec_in_the_other(
         "dependencies": {"sharp": dependency},
         "overrides": {"sharp": override},
     }
-    with pytest.raises(AssertionError, match=r"allows sharp \^0\.35\.3"):
+    with pytest.raises(AssertionError, match=r"allows sharp \^0\.35\.4"):
         _assert_floors(shadowing, {"sharp": FIXED_IN["sharp"]})
 
 

@@ -5,8 +5,9 @@ audit script and npm-script wiring, and the manifest shape the Astro 7 upgrade
 requires of packages that carry no advisory (`@astrojs/starlight`,
 `@astrojs/markdown-remark`), plus the presence of a committed lock.
 
-Version constraints raised by T-18 and T-74 — `astro`, `dompurify`,
-`fast-uri`, `js-yaml`, `sharp`, `svgo` — live in
+Version constraints raised by T-18, T-74 and on 2026-10-15 — `astro`,
+`dompurify`, `fast-uri`, `js-yaml`, `katex`, `postcss-selector-parser`,
+`sharp`, `smol-toml`, `source-map-js`, `svgo` — live in
 `tests/test_npm_audit_floors.py` and only there, including their pin format.
 This file used to carry private copies (`astro` had to start with `^7.`,
 `sharp` with `^0.35`); the `astro` copy went stale the moment the security fix
