@@ -1606,11 +1606,15 @@ async def ask_stream(
     """SSE endpoint с реальным стримингом токенов из Ollama."""
     _app = _app_module()
 
+    # The session's refusals (404, 503) are HTTP errors and must come before the
+    # first byte: raised inside the generator they found the response already
+    # started, and the client got a stream that ended after ``status``.
+    tenant = get_current_tenant() or _user.get("tenant", "default")
+    session_id, session = await _app._get_or_create_session(body.session_id, tenant)
+
     async def event_generator() -> AsyncGenerator[str, None]:
         yield "data: " + _json.dumps({"type": "status", "node": "processing"}) + "\n\n"
 
-        tenant = get_current_tenant() or _user.get("tenant", "default")
-        session_id, session = await _app._get_or_create_session(body.session_id, tenant)
         question = (body.question or "").strip()
 
         if not question:
