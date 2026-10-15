@@ -1869,8 +1869,8 @@ def make_grade_docs_node(llm: SupportsInvoke) -> Callable[[GraphState], GraphSta
                 span.set_attribute("rag.tenant_id", str(state.get("tenant_id", "default")))
                 span.set_attribute("rag.input_docs", len(context_docs))
                 batch_grades: list[tuple[bool, str]] | None = None
+                batch_views: list[dict[str, Any]] | None = None
                 if len(context_docs) > 1:
-                    batch_prompt = ""
                     try:
                         # Every document stays in the batch under its index,
                         # cut to its share of the grader's input window.
@@ -1888,9 +1888,20 @@ def make_grade_docs_node(llm: SupportsInvoke) -> Callable[[GraphState], GraphSta
                                 else None
                             ),
                         )
-                        batch_prompt = build_doc_grade_batch_prompt(
-                            question=question, documents=batch_views
+                    except ValueError as exc:
+                        # More labels than the window holds: grade one by one.
+                        logger.warning(
+                            "[grade_docs] Batch prompt exceeds the window: %s",
+                            exc,
+                            extra={"trace_id": trace_id},
                         )
+                if batch_views is not None:
+                    # Built outside the fail-closed try below: a prompt that
+                    # cannot be built is a node error, not a grader error.
+                    batch_prompt = build_doc_grade_batch_prompt(
+                        question=question, documents=batch_views
+                    )
+                    try:
                         t0 = time.monotonic()
                         raw_verdict = ""
                         if _llm_supports_structured_output(llm):
@@ -1933,22 +1944,23 @@ def make_grade_docs_node(llm: SupportsInvoke) -> Callable[[GraphState], GraphSta
                             filtered_count += 1
                 else:
                     for doc in context_docs:
+                        # Outside the fail-closed try, like the batch prompt: a
+                        # prompt that cannot be built or fitted is a node error,
+                        # not a rejected document.
+                        (view,) = fit_all_context_docs(
+                            llm,
+                            question,
+                            [doc],
+                            lambda views: build_doc_grade_prompt(
+                                question=question, document=views[0]
+                            ),
+                            role="grade",
+                            schema=(
+                                _DOC_GRADE_SCHEMA if _llm_supports_structured_output(llm) else None
+                            ),
+                        )
+                        prompt = build_doc_grade_prompt(question=question, document=view)
                         try:
-                            (view,) = fit_all_context_docs(
-                                llm,
-                                question,
-                                [doc],
-                                lambda views: build_doc_grade_prompt(
-                                    question=question, document=views[0]
-                                ),
-                                role="grade",
-                                schema=(
-                                    _DOC_GRADE_SCHEMA
-                                    if _llm_supports_structured_output(llm)
-                                    else None
-                                ),
-                            )
-                            prompt = build_doc_grade_prompt(question=question, document=view)
                             t0 = time.monotonic()
                             if _llm_supports_structured_output(llm):
                                 try:

@@ -12,6 +12,7 @@ import pytest
 
 import agent.graph as graph
 from agent.context_window import prompt_input_tokens
+from agent.prompts import build_doc_grade_batch_prompt, build_doc_grade_prompt
 from agent.state import create_initial_state
 from llm.providers.base import LLMResponse, window_input_limit
 
@@ -158,6 +159,67 @@ def test_single_document_grading_fits_each_prompt():
     for prompt, kwargs in llm.calls:
         _assert_fits(prompt, kwargs)
     assert len(out["graded_docs"]) == 2
+
+
+def test_batch_over_the_window_is_graded_one_document_at_a_time():
+    docs = [_doc(i) for i in range(1, 31)]
+    empty = [{**doc, "page_content": ""} for doc in docs]
+    limit = window_input_limit(900, 256)
+    # The batch leaves less than a token per document; one document fits.
+    batch_floor = prompt_input_tokens(
+        build_doc_grade_batch_prompt(question=QUESTION, documents=empty)
+    )
+    assert limit - batch_floor < len(docs)
+    assert limit > prompt_input_tokens(build_doc_grade_prompt(question=QUESTION, document=empty[0]))
+    llm = _WindowedLLM()
+    llm.context_window = 900
+    state = create_initial_state(question=QUESTION, trace_id="window-grade-fallback")
+    state["context_docs"] = docs
+
+    out = graph.make_grade_docs_node(llm)(state)
+
+    assert len(llm.calls) == len(docs)
+    assert all(prompt_input_tokens(prompt) <= limit for prompt, _ in llm.calls)
+    assert out["graded_docs"] == docs
+    assert not out.get("error")
+
+
+def test_a_grading_prompt_that_cannot_fit_the_window_is_a_node_error():
+    doc = _doc(1)
+    assert window_input_limit(512, 256) < prompt_input_tokens(
+        build_doc_grade_prompt(question=QUESTION, document={**doc, "page_content": ""})
+    )
+    llm = _WindowedLLM()
+    llm.context_window = 512
+    state = create_initial_state(question=QUESTION, trace_id="window-grade-refused")
+    state["context_docs"] = [doc]
+
+    out = graph.make_grade_docs_node(llm)(state)
+
+    # Not a document rejected by fail-closed grading: the request escalates.
+    assert out["error"] is True and out["error_node"] == "grade_docs"
+    assert "input window" in out["error_message"]
+    assert llm.calls == []
+
+
+@pytest.mark.parametrize("window", [4096, None])
+def test_a_batch_prompt_that_cannot_be_built_is_a_node_error(
+    monkeypatch: pytest.MonkeyPatch, window: int | None
+):
+    def broken(**kwargs: Any) -> str:
+        raise RuntimeError("broken batch template")
+
+    monkeypatch.setattr(graph, "build_doc_grade_batch_prompt", broken)
+    llm = _WindowedLLM()
+    llm.context_window = window  # type: ignore[assignment]
+    state = create_initial_state(question=QUESTION, trace_id="window-grade-broken")
+    state["context_docs"] = [_doc(1), _doc(2)]
+
+    out = graph.make_grade_docs_node(llm)(state)
+
+    assert out["error"] is True and out["error_node"] == "grade_docs"
+    assert "broken batch template" in out["error_message"]
+    assert llm.calls == []
 
 
 def test_verify_facts_checks_claims_against_the_generator_view():
