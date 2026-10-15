@@ -512,11 +512,11 @@ class LocalOllamaLLM:
         model_name: str = "mistral",
         breaker: CircuitBreaker | None | object = _USE_DEFAULT_BREAKER,
     ):
-        from config.settings import get_settings
+        from config.settings import TIME_LIMIT_CEILING_SEC, get_settings
         from utils.retry import retry_with_backoff
 
         settings = get_settings()
-        timeout_sec = getattr(settings, "ollama_request_timeout_sec", 60.0)
+        timeout_sec = getattr(settings, "ollama_request_timeout_sec", TIME_LIMIT_CEILING_SEC)
         self._llm = _create_local_ollama_llm(model_name, timeout_sec)
         self._breaker = get_default_breaker() if breaker is _USE_DEFAULT_BREAKER else breaker
 

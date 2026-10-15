@@ -162,6 +162,37 @@ def test_resolve_device_auto_falls_back_to_cpu(monkeypatch: pytest.MonkeyPatch) 
     assert manager._resolve_device("auto") == "cpu"
 
 
+def test_default_device_is_cpu_where_mps_is_available(monkeypatch: pytest.MonkeyPatch) -> None:
+    # Production on the Mac: on its 4 GB GPU the reranker ran out of memory and
+    # every answer was built on the unreranked order (2026-10-14). With RAG_DEVICE
+    # unset, the embedder and the reranker load on the CPU even where MPS reports
+    # itself available.
+    monkeypatch.delenv("RAG_DEVICE", raising=False)
+    mps_torch = types.ModuleType("torch")
+    mps_torch.cuda = SimpleNamespace(is_available=lambda: False)
+    mps_torch.backends = SimpleNamespace(mps=SimpleNamespace(is_available=lambda: True))
+    monkeypatch.setitem(sys.modules, "torch", mps_torch)
+    monkeypatch.setattr(settings_module, "get_settings", settings_module.Settings)
+    created: list[str] = []
+
+    class _Model:
+        def __init__(self, model_name: str, device: str, **kwargs: object) -> None:
+            created.append(f"{model_name}:{device}")
+
+    module = types.ModuleType("sentence_transformers")
+    module.SentenceTransformer = _Model
+    monkeypatch.setitem(sys.modules, "sentence_transformers", module)
+    monkeypatch.setattr(manager, "_cached_embeddings", None)
+    monkeypatch.setattr(manager, "_cached_reranker", None)
+    monkeypatch.setattr(manager, "HAS_CROSS_ENCODER", True)
+    monkeypatch.setattr(manager, "CrossEncoder", _Model)
+
+    manager.get_embeddings("embedder")
+    manager.get_reranker("reranker")
+
+    assert created == ["embedder:cpu", "reranker:cpu"]
+
+
 def test_add_contextual_headers_uses_llm_truncates_and_falls_back() -> None:
     class _LLM:
         def __init__(self, response: str | Exception) -> None:

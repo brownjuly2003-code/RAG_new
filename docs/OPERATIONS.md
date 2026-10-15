@@ -243,9 +243,10 @@ indefinitely when no wall-clock budget is set. Two independent budgets bound
 this, and they cover different entry points:
 
 - **HTTP path** — already covered by `REQUEST_TIMEOUT_SEC` (`request_timeout_sec`,
-  default `30`). Every answer served through the API is capped here, so a stuck
-  provider surfaces as a timeout rather than a hung connection. SSE token streams
-  use the separate, intentionally longer `streaming_timeout_sec` budget.
+  default `3600`, a ceiling rather than an SLO). Every answer served through the
+  API is capped here, so a stuck provider surfaces as a timeout rather than a hung
+  connection. The SSE token loop has its own `streaming_timeout_sec` budget, which
+  cuts the answer short.
 - **Non-HTTP runners** — `RAG_ASK_BUDGET_SEC` (`ask_budget_sec`, default `0` =
   off) is the wall-clock budget for a single `ConversationSession.ask()` invoked
   outside the HTTP path: channel workers (Telegram/email), batch eval, and

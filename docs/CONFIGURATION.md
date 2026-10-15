@@ -14,7 +14,7 @@ Copy `.env.example` to `.env`, then adjust only what your deployment needs.
 | `OLLAMA_MODEL_NAME` | `qwen2.5:7b` | Primary Ollama model when `LLM_PROVIDER_PROFILE=local-first` |
 | `OLLAMA_FAST_MODEL_NAME` | `llama3.2:3b` | Faster Ollama model for local helper/tool flows |
 | `MODEL_ROUTING_ENABLED` | `false` | Enable structured query classification and simple/complex/global model routing |
-| `OLLAMA_REQUEST_TIMEOUT_SEC` | `60` | Timeout for a single Ollama HTTP request |
+| `OLLAMA_REQUEST_TIMEOUT_SEC` | `3600` | Timeout for a single Ollama HTTP request: the longest silence between bytes, not the call's total time |
 | `REQUIRE_OLLAMA` | `false` | Fail fast at startup if Ollama/fallback validation requires Ollama |
 | `LANGFUSE_PUBLIC_KEY` | `-` | Optional Langfuse public key |
 | `LANGFUSE_SECRET_KEY` | `-` | Optional Langfuse secret key |
@@ -50,6 +50,7 @@ Copy `.env.example` to `.env`, then adjust only what your deployment needs.
 | `RAG_EMBEDDING_REMOTE_BATCH` | `32` | Inputs per remote embeddings request |
 | `RAG_EMBEDDING_REMOTE_TIMEOUT_SEC` | `60` | Timeout for a single remote embeddings request |
 | `RAG_RERANKER_MODEL` | `BAAI/bge-reranker-v2-m3` | Multilingual cross-encoder reranker (pairs with BGE-M3); set to an empty value to disable it |
+| `RAG_DEVICE` | `cpu` | Device of the embedder and the reranker: `cpu`, `auto` (cuda → mps → cpu), `cuda`, `cuda:0` or `mps`. `cpu` by default: on the production Mac's 4 GB GPU the reranker runs out of memory and answers are built on the unreranked order |
 | `RAG_HYBRID_SEARCH` | `true` | Combine BM25 with vector retrieval |
 | `RAG_RETRIEVAL_STRATEGY` | `hybrid` | Retrieval strategy: `vector`, `hybrid`, `graph`, or `factcard`; `graph` and `factcard` fall back to `hybrid` when their store is absent. `factcard` (opt-in) serves whole fact-cards for enumeration queries (fields/documents/conditions) — closes the `customs-clearance-fields` recall gap; build the collection with `scripts/build_factcards.py`. Auto-routing into `factcard` is intentionally NOT default (NO-SHIP pending Phase-5 offline-delta — see `docs/operations/2026-06-14-adaptive-retrieval-closure.md`) |
 | `RAG_RETRIEVAL_TOP_K` | `20` | Candidate documents fetched before reranking |
@@ -122,8 +123,8 @@ Resilience layers apply in this order:
 | `CIRCUIT_BREAKER_ENABLED` | `true` | Enable circuit-breaker protection for Ollama |
 | `CIRCUIT_BREAKER_FAILURE_THRESHOLD` | `5` | Consecutive failures before the breaker opens |
 | `CIRCUIT_BREAKER_RESET_TIMEOUT_SEC` | `30` | Delay before half-open probing |
-| `REQUEST_TIMEOUT_SEC` | `30` | Wall-time limit for one `/api/ask` request |
-| `STREAMING_TIMEOUT_SEC` | `120` | Wall-clock budget for the SSE token loop in `/api/ask/stream` (separate from `REQUEST_TIMEOUT_SEC`) |
+| `REQUEST_TIMEOUT_SEC` | `3600` | Wall-time limit for one `/api/ask` or `/api/ask/stream` request. With `OLLAMA_REQUEST_TIMEOUT_SEC` and `STREAMING_TIMEOUT_SEC` it defaults to a ceiling of 3,600 s, not an SLO: a local model on the production Mac answers in minutes, and a hung model call must still end |
+| `STREAMING_TIMEOUT_SEC` | `3600` | Wall-clock budget for the SSE token loop in `/api/ask/stream` (separate from `REQUEST_TIMEOUT_SEC`); exceeded, it cuts the answer short |
 | `DB_PERSIST_TIMEOUT_SEC` | `2.0` | Timeout for persisting one conversation message to Postgres before the write is dropped and counted in `rag_message_persist_failures_total{operation}` |
 | `DB_COOLDOWN_SEC` | `60.0` | How long a tenant's database paths stay skipped after one of them fails. **Per tenant** since phase A.2: one process-wide deadline used to stop session lookups and message writes for every tenant |
 | `DB_COOLDOWN_MAX_TENANTS` | `512` | Upper bound on how many tenants that cooldown remembers at once. The key comes from a JWT claim, so the map is bounded; at the cap the entry closest to expiring is dropped |

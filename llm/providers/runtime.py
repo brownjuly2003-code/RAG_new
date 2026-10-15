@@ -11,6 +11,7 @@ from typing import Any
 import yaml  # type: ignore[import-untyped]
 
 from config.provider_schema import load_provider_registry
+from config.settings import TIME_LIMIT_CEILING_SEC
 from llm.providers.base import ProviderBackedLLM
 from llm.providers.gracekelly import GraceKellyProvider
 from llm.providers.mistral import MistralProvider
@@ -52,7 +53,7 @@ def _instantiate_provider(settings: Any, provider_id: str, model_name: str) -> A
     if model is None:
         raise KeyError(f"unknown model '{model_name}' for provider '{provider_id}'")
 
-    timeout_sec = float(getattr(settings, "ollama_request_timeout_sec", 60.0))
+    timeout_sec = float(getattr(settings, "ollama_request_timeout_sec", TIME_LIMIT_CEILING_SEC))
     model_pricing_name: str = str(model.name)
     input_price: float = float(model.input_price_per_1m_tokens)
     output_price: float = float(model.output_price_per_1m_tokens)

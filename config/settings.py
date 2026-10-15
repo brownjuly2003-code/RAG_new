@@ -41,6 +41,12 @@ from pydantic import SecretStr
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 EXPERIMENT_OVERRIDE_PATH = PROJECT_ROOT / "config" / "experiment_override.yaml"
 
+# Ceiling of the request, Ollama and stream time limits (owner's decision,
+# 2026-10-15): a local model on the production Mac answers in minutes, so the
+# limits are lifted, but a hung model call must still end. Code that reads these
+# settings from an object without the fields falls back to the same value.
+TIME_LIMIT_CEILING_SEC = 3600.0
+
 # Known insecure placeholders that must never pass production validation
 # (includes .env.example sample values and historical repo defaults).
 KNOWN_INSECURE_SECRETS: frozenset[str] = frozenset(
@@ -462,11 +468,13 @@ class Settings:
     )
 
     # --- Inference device for embedder + reranker (SentenceTransformers) ---
+    # "cpu" (default) — what production on the Mac measured: its 4 GB GPU runs out
+    # of memory on bge-reranker-v2-m3 (568M), and the answer is silently built on
+    # the unreranked order (2026-10-14).
     # "auto" — detect cuda → mps → cpu (safe fallback to cpu if torch is absent)
-    # "cpu" / "cuda" / "cuda:0" / "mps" — force a specific device
-    # Matters after the heavy multilingual bge-reranker-v2-m3 (568M): CPU rerank is slow.
+    # "cuda" / "cuda:0" / "mps" — force a specific device
     rag_device: str = field(
-        default_factory=lambda: os.getenv("RAG_DEVICE", "auto")
+        default_factory=lambda: os.getenv("RAG_DEVICE", "cpu")
     )
 
     # --- Hybrid Search ---
@@ -739,11 +747,11 @@ class Settings:
         default_factory=lambda: os.getenv("STREAMING_QUALITY_EVAL", "true").strip().lower()
         in ("1", "true", "yes")
     )
-    # Wall-clock budget for the SSE token loop. Separate from
-    # request_timeout_sec: local-model streams legitimately run far longer
-    # than the non-streaming pipeline budget.
+    # Wall-clock budget for the SSE token loop, separate from
+    # request_timeout_sec, which bounds the whole request. Exceeded, it cuts
+    # the answer short rather than ending the request with a timeout.
     streaming_timeout_sec: float = field(
-        default_factory=lambda: float(os.getenv("STREAMING_TIMEOUT_SEC", "120"))
+        default_factory=lambda: float(os.getenv("STREAMING_TIMEOUT_SEC", TIME_LIMIT_CEILING_SEC))
     )
 
     # --- Parent-Child Chunking ---
@@ -1180,7 +1188,9 @@ class Settings:
         ).strip().lower() in ("1", "true", "yes")
     )
     ollama_request_timeout_sec: float = field(
-        default_factory=lambda: float(os.getenv("OLLAMA_REQUEST_TIMEOUT_SEC", "60"))
+        default_factory=lambda: float(
+            os.getenv("OLLAMA_REQUEST_TIMEOUT_SEC", TIME_LIMIT_CEILING_SEC)
+        )
     )
     session_ttl_seconds: int = field(
         default_factory=lambda: int(os.getenv("SESSION_TTL_SECONDS", "7200"))
@@ -1198,7 +1208,7 @@ class Settings:
         default_factory=lambda: int(os.getenv("AUDIT_PURGE_INTERVAL_SEC", "86400"))
     )
     request_timeout_sec: float = field(
-        default_factory=lambda: float(os.getenv("REQUEST_TIMEOUT_SEC", "30"))
+        default_factory=lambda: float(os.getenv("REQUEST_TIMEOUT_SEC", TIME_LIMIT_CEILING_SEC))
     )
     max_concurrent_pipelines: int = field(
         default_factory=lambda: int(os.getenv("MAX_CONCURRENT_PIPELINES", "8"))

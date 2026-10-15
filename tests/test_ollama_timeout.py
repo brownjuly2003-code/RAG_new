@@ -16,7 +16,7 @@ def _reset_graph_state():
     graph._default_breaker = None
 
 
-def test_default_timeout_is_60_seconds(monkeypatch, _reset_graph_state) -> None:
+def test_default_timeout_is_the_ceiling(monkeypatch, _reset_graph_state) -> None:
     monkeypatch.delenv("OLLAMA_REQUEST_TIMEOUT_SEC", raising=False)
 
     import config.settings as settings_module
@@ -36,7 +36,7 @@ def test_default_timeout_is_60_seconds(monkeypatch, _reset_graph_state) -> None:
     graph.LocalOllamaLLM(model_name="test-model", breaker=None)
 
     timeout = captured_kwargs.get("timeout") or captured_kwargs.get("request_timeout")
-    assert timeout == pytest.approx(60.0)
+    assert timeout == pytest.approx(3600.0)
 
 
 def test_local_ollama_prefers_langchain_ollama(monkeypatch, _reset_graph_state) -> None:
@@ -69,7 +69,7 @@ def test_local_ollama_prefers_langchain_ollama(monkeypatch, _reset_graph_state) 
     graph.LocalOllamaLLM(model_name="test-model", breaker=None)
 
     assert captured_kwargs["model"] == "test-model"
-    assert captured_kwargs["timeout"] == pytest.approx(60.0)
+    assert captured_kwargs["timeout"] == pytest.approx(3600.0)
 
 
 def test_custom_timeout_from_env(monkeypatch, _reset_graph_state) -> None:

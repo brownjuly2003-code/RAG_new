@@ -25,6 +25,7 @@ from api._shared import app_module as _app_module
 from api.correlation import get_current_tenant, get_request_id
 from api.rate_limit import limiter
 from auth.dependencies import get_current_user
+from config.settings import TIME_LIMIT_CEILING_SEC
 from monitoring import prometheus as prometheus_metrics
 from services.pipeline import pipeline_runner
 from utils.background_tasks import spawn_tracked
@@ -456,7 +457,7 @@ async def _admit_durable_turn(
     settings = _app_module().get_settings()
     timeout = _durable_turn_timeout()
     deadline_at = datetime.now(UTC) + timedelta(
-        seconds=float(getattr(settings, "request_timeout_sec", 30.0))
+        seconds=float(getattr(settings, "request_timeout_sec", TIME_LIMIT_CEILING_SEC))
         + float(getattr(settings, "session_turn_deadline_margin_sec", 15.0))
     )
 
@@ -1093,7 +1094,7 @@ async def _answer_ask(
         raise HTTPException(status_code=400, detail="question is empty")
 
     settings = _app.get_settings()
-    timeout = float(getattr(settings, "request_timeout_sec", 30.0))
+    timeout = float(getattr(settings, "request_timeout_sec", TIME_LIMIT_CEILING_SEC))
     request_id = get_request_id()
     logger.info(
         "req_id=%s /api/ask effective_timeouts request=%.3fs "
@@ -1102,7 +1103,7 @@ async def _answer_ask(
         request_id or "-",
         timeout,
         float(getattr(settings, "ask_budget_sec", 0.0) or 0.0),
-        float(getattr(settings, "ollama_request_timeout_sec", 60.0)),
+        float(getattr(settings, "ollama_request_timeout_sec", TIME_LIMIT_CEILING_SEC)),
         float(getattr(settings, "gracekelly_request_timeout_sec", 30.0)),
         str(getattr(settings, "llm_provider_profile", "local-first")),
         extra={"trace_id": request_id},
@@ -1649,7 +1650,9 @@ async def ask_stream(
         graph_task: asyncio.Future | None = None
         request_id = get_request_id()
         settings_pre = _app.get_settings()
-        request_timeout = float(getattr(settings_pre, "request_timeout_sec", 60.0))
+        request_timeout = float(
+            getattr(settings_pre, "request_timeout_sec", TIME_LIMIT_CEILING_SEC)
+        )
         capacity_held_for_orphan = False
         loop = asyncio.get_running_loop()
 
@@ -1730,7 +1733,9 @@ async def ask_stream(
             # (session.ask only). SSE tokens are UX chunks of the graph answer —
             # not a second LLM stream. Off by default keeps legacy direct stream.
             graph_parity_enabled = bool(getattr(settings_pre, "streaming_rag_parity", False))
-            graph_parity_timeout = float(getattr(settings_pre, "request_timeout_sec", 60.0))
+            graph_parity_timeout = float(
+                getattr(settings_pre, "request_timeout_sec", TIME_LIMIT_CEILING_SEC)
+            )
             history_pre_len = (
                 len(getattr(session, "_history", [])) if hasattr(session, "_history") else None
             )
@@ -2173,7 +2178,7 @@ async def ask_stream(
             # Wall-clock budget for the token loop: without it a wedged model
             # holds the SSE connection (and now a pipeline slot) forever.
             stream_deadline = time.monotonic() + float(
-                getattr(settings, "streaming_timeout_sec", 120.0)
+                getattr(settings, "streaming_timeout_sec", TIME_LIMIT_CEILING_SEC)
             )
             stream_truncated = False
             yield "data: " + _json.dumps({"type": "token_start"}) + "\n\n"
@@ -2233,7 +2238,7 @@ async def ask_stream(
                     pass
                 logger.warning(
                     "Streaming exceeded %.0fs budget; answer truncated",
-                    float(getattr(settings, "streaming_timeout_sec", 120.0)),
+                    float(getattr(settings, "streaming_timeout_sec", TIME_LIMIT_CEILING_SEC)),
                 )
 
             if not full_answer:

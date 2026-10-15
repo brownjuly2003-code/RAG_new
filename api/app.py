@@ -92,10 +92,17 @@ async def _stream_ollama(
     options: dict[str, Any] | None = None,
 ) -> AsyncGenerator[str, None]:
     """Стримит токены из Ollama /api/generate."""
+    from config.settings import TIME_LIMIT_CEILING_SEC
+
     payload: dict[str, Any] = {"model": model, "prompt": prompt, "stream": True}
     if options:
         payload["options"] = options
-    timeout = httpx.Timeout(120.0, connect=5.0)
+    # The provider stream's limit (OLLAMA_REQUEST_TIMEOUT_SEC); httpx reads it as
+    # the longest silence between bytes, not the stream's total time.
+    read_timeout = float(
+        getattr(get_settings(), "ollama_request_timeout_sec", TIME_LIMIT_CEILING_SEC)
+    )
+    timeout = httpx.Timeout(read_timeout, connect=5.0)
     async with httpx.AsyncClient(timeout=timeout) as client:
         async with client.stream("POST", f"{base_url}/api/generate", json=payload) as resp:
             resp.raise_for_status()
