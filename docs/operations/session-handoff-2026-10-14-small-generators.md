@@ -7,7 +7,8 @@ documents), `a7bf232` (verification); on 2026-10-15 `384f7df` (the verdicts), `8
 `9eb93c9`, `d5328d3`, `af6b905` (fixes of the red CI on `a7bf232`) and the commit with this
 text. **Pushed on 2026-10-15 at Julia's word:** `f7416ca..a7bf232`, the 47 commits of
 2026-10-04…10-14; later commits are local. The session before, measuring the web chat
-with qwen2.5:7b: [session log](session-handoff-2026-10-14-chat-on-mac.md).
+with qwen2.5:7b: [session log](session-handoff-2026-10-14-chat-on-mac.md). Continued, the
+judge on 100 cases: [session log](session-handoff-2026-10-15-judge-100.md).
 
 ## What matters to understand
 

@@ -7,7 +7,8 @@ laptop ran low on memory after 99 of the 165 verdicts, and finished on 2026-10-1
 request in flight at the stop left no verdict and was sent again. The leading small
 generator came within five good answers of C.1a and C.1b, so the [reading](#reading) asks
 for the judge's extension to all 100 cases under a new plan; the owner approved its run, and
-it is [registered below](#extension-to-100-cases-registered-2026-10-15) and running. One row
+it was [registered](#extension-to-100-cases-registered-2026-10-15) and measured on
+2026-10-15 (`judge-100/` in the record, EVIDENCE_INDEX). One row
 was replaced before its first answer ([amendment](#amendment-2026-10-14)). This plan fixes
 the generators, the contract, the judge, the sample and the order of the runs before any
 answer of a generator below 7B was produced or graded.
