@@ -9,9 +9,9 @@ conditions, read [`ROADMAP.md`](ROADMAP.md). The active delivery plan is
 
 ## Current queue
 
-- **First, since Julia's decisions of 2026-10-15: the chat on the production Mac** — lift
-  the time limits to a 1,800-s ceiling with the reranker on the CPU, offer the operator on a
-  timeout and on `human`, turn thinking off on the chat path and time qwen3:1.7b in the live chat; order,
+- **First, since Julia's decisions of 2026-10-15: the chat on the production Mac** — the time
+  limits are lifted to a 3,600-s ceiling with the reranker on the CPU (`468224b`); next offer the
+  operator on a timeout and on `human`, turn thinking off on the chat path and time qwen3:1.7b in the live chat; order,
   acceptance and what still waits on her in [ROADMAP](ROADMAP.md#active).
 - Phase B remains blocked on real shipment-bound support data and the 40
   double-annotated calibration routes; the 100 labels were approved 2026-09-25.
