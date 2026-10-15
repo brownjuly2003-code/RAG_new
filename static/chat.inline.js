@@ -51,6 +51,9 @@
         const appToast = document.getElementById('appToast');
         let activeSourcePanelTrigger = null;
         let activeModalTrigger = null;
+        // Why the next escalation is sent: 'route=timeout' / 'route=human' / 'route=error'
+        // from a message's own button, as /api/ask names its tickets; else the user's request.
+        let pendingEscalationReason = null;
         let toastTimer = null;
 
         function getErrorMessage(error, context) {
@@ -76,6 +79,20 @@
                 return {
                     text: 'Не удалось передать запрос оператору. Попробуйте позже или повторите запрос.',
                     actions: ['retry', 'escalate'],
+                };
+            }
+            if (error && error.route === 'timeout') {
+                return {
+                    text: 'Ответ не пришёл вовремя. Повторите вопрос или передайте его оператору.',
+                    actions: ['retry', 'escalate'],
+                    escalationReason: 'route=timeout',
+                };
+            }
+            if (error && error.route === 'error') {
+                return {
+                    text: 'Не удалось получить ответ. Повторите вопрос или передайте его оператору.',
+                    actions: ['retry', 'escalate'],
+                    escalationReason: 'route=error',
                 };
             }
             if (context === 'stream' || (error && error.context === 'stream')) {
@@ -361,6 +378,7 @@
         }
 
         escalateBtn.addEventListener('click', function() {
+            pendingEscalationReason = null;
             activeModalTrigger = document.activeElement;
             escalateModal.classList.add('active');
             escalateCancel.focus();
@@ -378,6 +396,8 @@
             escalateModal.classList.remove('active');
             const typedQuestion = questionInput.value.trim();
             const questionToEscalate = typedQuestion || '(пользователь запросил оператора)';
+            const escalationReason = pendingEscalationReason || 'user_request';
+            pendingEscalationReason = null;
             try {
                 const resp = await fetch(API_BASE + '/escalate', {
                     method: 'POST',
@@ -385,7 +405,7 @@
                     body: JSON.stringify({
                         session_id: sessionId || 'manual-escalation',
                         question: questionToEscalate,
-                        reason: 'user_request',
+                        reason: escalationReason,
                     }),
                 });
                 if (!resp.ok) {
@@ -490,6 +510,8 @@
                             if (event.type === 'error') {
                                 const streamError = new Error(event.detail || 'Ошибка потоковой передачи');
                                 streamError.context = 'stream';
+                                // The server routes the request it gave up on: 'timeout' or 'error'.
+                                streamError.route = event.route || null;
                                 throw streamError;
                             }
                             if (event.type === 'token_start') {
@@ -567,8 +589,15 @@
                     localStorage.setItem('rag_session_id', sessionId);
                 }
 
-                // Add bot message
+                // Add bot message. The answer that did not come in time and the one the
+                // model routed to a human offer the operator; neither opens a ticket by itself.
+                let resultActions = [];
+                if (data.route === 'timeout') resultActions = ['retry', 'escalate'];
+                else if (data.route === 'human') resultActions = ['escalate'];
                 addMessage('bot', data.answer, {
+                    actions: resultActions,
+                    originalQuestion: question,
+                    escalationReason: 'route=' + data.route,
                     quality: data.quality_score,
                     route: data.route,
                     sources: data.sources,
@@ -583,7 +612,12 @@
                     streamingMsg.remove();
                 }
                 const errInfo = getErrorMessage(err, (err && err.context) || 'send');
-                addMessage('bot', errInfo.text, { error: true, actions: errInfo.actions, originalQuestion: question });
+                addMessage('bot', errInfo.text, {
+                    error: true,
+                    actions: errInfo.actions,
+                    originalQuestion: question,
+                    escalationReason: errInfo.escalationReason,
+                });
             } finally {
                 isLoading = false;
                 sendBtn.disabled = false;
@@ -665,6 +699,7 @@
                                 const questionToEscalate = (meta && meta.originalQuestion) || '';
                                 if (!questionToEscalate) return;
                                 questionInput.value = questionToEscalate;
+                                pendingEscalationReason = (meta && meta.escalationReason) || null;
                                 escalateModal.classList.add('active');
                             });
                             actionsDiv.appendChild(escalateActionBtn);
@@ -674,7 +709,8 @@
 
                 if (!actionsDiv.childElementCount) {
                     actionsDiv = null;
-                } else if (meta && meta.error) {
+                } else if (meta && (meta.error || (meta.actions && meta.actions.length))) {
+                    // Retry and the operator must not hide until hover.
                     actionsDiv.style.opacity = '1';
                 }
             }

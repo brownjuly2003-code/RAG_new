@@ -17,10 +17,8 @@ test waits about two minutes, by the owner's decision, in the regular suite.
 from __future__ import annotations
 
 import json
-import threading
 import time
 from collections.abc import Iterator
-from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from types import SimpleNamespace
 from typing import Any
 
@@ -28,6 +26,7 @@ import pytest
 
 from agent import graph
 from config.settings import Settings
+from tests import _fake_ollama
 
 QUESTION = "Как подать претензию о повреждении груза?"
 _WORDS = (
@@ -50,78 +49,19 @@ LIMIT_ENV = ("REQUEST_TIMEOUT_SEC", "OLLAMA_REQUEST_TIMEOUT_SEC", "STREAMING_TIM
 PATH_ENV = ("STREAMING_RAG_PARITY", "STREAMING_QUALITY_EVAL", "LLM_PROVIDER_PROFILE")
 
 
-class _FakeOllama(ThreadingHTTPServer):
-    daemon_threads = True
-
-    def __init__(self) -> None:
-        super().__init__(("127.0.0.1", 0), _Handler)
-        self.requests: list[dict[str, Any]] = []
-        self.answer_sent_after: list[float] = []
-
-    @property
-    def url(self) -> str:
-        return f"http://127.0.0.1:{self.server_address[1]}"
-
-
-class _Handler(BaseHTTPRequestHandler):
-    server: _FakeOllama
-
-    def log_message(self, format: str, *args: Any) -> None:  # noqa: A002
-        return
-
-    def do_POST(self) -> None:  # noqa: N802
-        received = time.monotonic()
-        length = int(self.headers.get("Content-Length") or 0)
-        payload = json.loads(self.rfile.read(length) or b"{}")
-        self.server.requests.append({"path": self.path, "payload": payload})
-        if self.path != "/api/generate":
-            self.send_error(404)
-            return
-        prompt = str(payload.get("prompt") or "")
-        try:
-            if SELF_EVAL_MARKER in prompt:
-                self._stream(payload, ["85"])
-            elif SUGGESTIONS_MARKER in prompt:
-                self._stream(payload, ["\n".join(SUGGESTIONS)])
-            else:
-                self._stream(payload, ANSWER_TOKENS, received=received)
-        except (BrokenPipeError, ConnectionResetError):
-            # The client gave up (the old limits): nothing left to answer.
-            return
-
-    def _stream(
-        self, payload: dict[str, Any], tokens: list[str], *, received: float | None = None
-    ) -> None:
-        def line(**fields: Any) -> None:
-            body = {"model": payload.get("model"), "created_at": "2026-10-15T00:00:00Z", **fields}
-            self.wfile.write(json.dumps(body, ensure_ascii=False).encode("utf-8") + b"\n")
-            self.wfile.flush()
-
-        for index, token in enumerate(tokens):
-            if received is not None:
-                due = received + FIRST_TOKEN_AFTER_SEC + index * TOKEN_GAP_SEC
-                time.sleep(max(0.0, due - time.monotonic()))
-            if index == 0:
-                # Like Ollama, nothing — not even the headers — before the first token.
-                self.send_response(200)
-                self.send_header("Content-Type", "application/x-ndjson")
-                self.end_headers()
-            line(response=token, done=False)
-            if received is not None:
-                self.server.answer_sent_after.append(time.monotonic() - received)
-        line(response="", done=True, done_reason="stop")
+def _reply(payload: dict[str, Any]) -> _fake_ollama.Reply:
+    prompt = str(payload.get("prompt") or "")
+    if SELF_EVAL_MARKER in prompt:
+        return _fake_ollama.Reply(["85"])
+    if SUGGESTIONS_MARKER in prompt:
+        return _fake_ollama.Reply(["\n".join(SUGGESTIONS)])
+    return _fake_ollama.Reply(ANSWER_TOKENS, FIRST_TOKEN_AFTER_SEC, TOKEN_GAP_SEC)
 
 
 @pytest.fixture
-def fake_ollama() -> Iterator[_FakeOllama]:
-    server = _FakeOllama()
-    thread = threading.Thread(target=server.serve_forever, daemon=True)
-    thread.start()
-    try:
+def fake_ollama() -> Iterator[_fake_ollama.FakeOllama]:
+    with _fake_ollama.running(_reply) as server:
         yield server
-    finally:
-        server.shutdown()
-        server.server_close()
 
 
 def _events(text: str) -> list[dict[str, Any]]:
@@ -196,16 +136,17 @@ def test_stream_answer_slower_than_the_old_limits_arrives(
     # One answer request, streamed, never retried: the client waited out the
     # model's silence and the whole stream.
     answer_requests = [
-        r["payload"]
+        r
         for r in fake_ollama.requests
         if QUESTION in str(r["payload"].get("prompt"))
         and SELF_EVAL_MARKER not in str(r["payload"].get("prompt"))
         and SUGGESTIONS_MARKER not in str(r["payload"].get("prompt"))
     ]
     assert len(answer_requests) == 1, fake_ollama.requests
-    assert answer_requests[0]["stream"] is True
+    assert answer_requests[0]["payload"]["stream"] is True
     assert {r["path"] for r in fake_ollama.requests} == {"/api/generate"}
-    assert len(fake_ollama.answer_sent_after) == len(ANSWER_TOKENS)
-    assert fake_ollama.answer_sent_after[0] > 60
-    assert fake_ollama.answer_sent_after[-1] > 125
+    sent_after = answer_requests[0]["sent_after"]
+    assert len(sent_after) == len(ANSWER_TOKENS)
+    assert sent_after[0] > 60
+    assert sent_after[-1] > 125
     assert elapsed > 125
