@@ -225,7 +225,7 @@ def test_resolve_model_identity_is_config_only(tmp_path: Path) -> None:
     )
     identity = namespace.resolve_model_identity(settings=settings)
     assert "ollama" in identity
-    assert "qwen2.5:7b" in identity
+    assert "qwen3:4b-instruct-2507-q4_K_M" in identity
     assert "local-first" in identity
 
 

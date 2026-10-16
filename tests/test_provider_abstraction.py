@@ -33,7 +33,7 @@ def test_build_provider_runtime_resolves_local_first_profile() -> None:
     assert runtime.profile_name == "local-first"
     assert runtime.fast.provider_id == "ollama"
     assert runtime.strong.provider_id == "ollama"
-    assert runtime.fast.model_name == "qwen2.5:7b"
+    assert runtime.fast.model_name == "qwen3:4b-instruct-2507-q4_K_M"
 
 
 def test_build_provider_runtime_resolves_opencode_zen_free_profile(

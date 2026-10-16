@@ -96,7 +96,7 @@ otel:
 
 ollama:
   enabled: true
-  model: "qwen2.5:7b"
+  model: "qwen3:4b-instruct-2507-q4_K_M"
   resources:
     limits:
       nvidia.com/gpu: 1

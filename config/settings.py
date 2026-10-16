@@ -355,7 +355,7 @@ class Settings:
         default_factory=lambda: int(os.getenv("OLLAMA_CONTEXT_WINDOW", "4096"))
     )
     ollama_model_name: str = field(
-        default_factory=lambda: os.getenv("OLLAMA_MODEL_NAME", "qwen2.5:7b")
+        default_factory=lambda: os.getenv("OLLAMA_MODEL_NAME", "qwen3:4b-instruct-2507-q4_K_M")
     )
     ollama_fast_model_name: str = field(
         default_factory=lambda: os.getenv(

@@ -7,8 +7,8 @@ providers:
     enabled: true
     api_key_env: null
     default_models:
-      fast: qwen2.5:7b
-      strong: qwen2.5:7b
+      fast: qwen3:4b-instruct-2507-q4_K_M
+      strong: qwen3:4b-instruct-2507-q4_K_M
     capabilities:
       supports_tool_use: true
       supports_structured_output: true
@@ -19,6 +19,10 @@ providers:
       requests_per_minute: 0
       tokens_per_minute: 0
     models:
+      - name: qwen3:4b-instruct-2507-q4_K_M
+        aliases: []
+        input_price_per_1m_tokens: 0.0
+        output_price_per_1m_tokens: 0.0
       - name: qwen2.5:7b
         aliases: [ollama-small, ollama-fast]
         input_price_per_1m_tokens: 0.0
@@ -129,10 +133,10 @@ routing_profiles:
     description: Explicit local-only Ollama routing, zero paid spend.
     fast:
       provider: ollama
-      model: qwen2.5:7b
+      model: qwen3:4b-instruct-2507-q4_K_M
     strong:
       provider: ollama
-      model: qwen2.5:7b
+      model: qwen3:4b-instruct-2507-q4_K_M
 
   gracekelly-primary:
     description: Optional GraceKelly orchestrator for both tiers, with explicit Ollama fallback on failure.
@@ -144,7 +148,7 @@ routing_profiles:
       model: claude-sonnet-5
     fallback:
       provider: ollama
-      model: qwen2.5:7b
+      model: qwen3:4b-instruct-2507-q4_K_M
 
   external-mistral:
     description: Direct Mistral API for external deployments without GraceKelly; cheap, dependable, no local orchestrator dependency.

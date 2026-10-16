@@ -46,7 +46,7 @@ Open `.env` and fill in the required values. Minimal scenarios:
 | Scenario | Required variables |
 | --- | --- |
 | **External user: Mistral + remote embeddings (no HF download)** | See **Scenario A** below |
-| **Local-only Ollama** (repo default for owner) | Start Ollama and pull `qwen2.5:7b`; `LLM_PROVIDER_PROFILE=local-first` is implied |
+| **Local-only Ollama** (repo default for owner) | Start Ollama and pull `qwen3:4b-instruct-2507-q4_K_M`; `LLM_PROVIDER_PROFILE=local-first` is implied |
 | **Direct Mistral (generation only)** | `MISTRAL_API_KEY=<your-key>` + `LLM_PROVIDER_PROFILE=external-mistral` (local embeddings/reranker still follow other defaults unless overridden) |
 | **OpenCode Zen trial/free** (non-sensitive test data only) | `OPENCODE_ZEN_API_KEY=<your-key>` + `LLM_PROVIDER_PROFILE=opencode-zen-free`; no paid-model fallback |
 | **GraceKelly primary** (owner/internal) | GraceKelly base URL + `LLM_PROVIDER_PROFILE=gracekelly-primary` |
@@ -133,7 +133,7 @@ ollama serve
 In terminal B:
 
 ```bash
-ollama pull qwen2.5:7b
+ollama pull qwen3:4b-instruct-2507-q4_K_M
 python main.py
 ```
 

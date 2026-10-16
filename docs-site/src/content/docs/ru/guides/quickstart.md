@@ -86,7 +86,7 @@ python main.py
 ```bash
 # Поднять Ollama и стянуть модели
 ollama serve &
-ollama pull qwen2.5:7b
+ollama pull qwen3:4b-instruct-2507-q4_K_M
 
 # Запуск с явным local-first profile
 LLM_PROVIDER_PROFILE=local-first python main.py

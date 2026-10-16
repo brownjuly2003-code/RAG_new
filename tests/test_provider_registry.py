@@ -22,7 +22,7 @@ def test_load_provider_registry_from_yaml() -> None:
         "opencode-zen",
     }
     assert registry.get_profile("gracekelly-primary").strong.provider == "gracekelly"
-    assert registry.get_provider("ollama").default_models.fast == "qwen2.5:7b"
+    assert registry.get_provider("ollama").default_models.fast == "qwen3:4b-instruct-2507-q4_K_M"
     assert registry.get_provider("mistral").default_models.fast == "ministral-3b-latest"
 
 

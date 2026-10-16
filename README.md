@@ -114,7 +114,7 @@ docker compose up -d
 ```
 
 Repository defaults use the owner-oriented `local-first` Ollama profile with
-`qwen2.5:7b`. External users can select `external-mistral`, remote embeddings,
+`qwen3:4b-instruct-2507-q4_K_M` (Qwen3-4B-Instruct-2507). External users can select `external-mistral`, remote embeddings,
 and an empty `RAG_RERANKER_MODEL` to avoid local model-hub downloads.
 Optional provider keys belong only in the local `.env`;
 no API keys ship in this repository.
