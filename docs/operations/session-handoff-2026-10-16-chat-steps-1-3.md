@@ -5,9 +5,13 @@ Session `0c7b3bb6`, 2026-10-15 21:56 UTC – 2026-10-16 about 02:40 UTC, Claude 
 It carried out steps 1–3 of the ROADMAP's active thread M — the chat on the production Mac — in
 commits `468224b..5dcdd5a`, and closed on Julia's choice of the production model.
 **Pushed at her word:** `f4818eb..147db65` (22:45, CI run 38819211605 green),
-`147db65..9e1fc9e` (00:08, CI run 38827775370 green) and, at her «1. Пуш» of 02:11, the rest up
-to this log's commit — its CI was watched before the session was declared closed; check it with
-`gh run list --branch master --limit 2`.
+`147db65..9e1fc9e` (00:08, CI run 38827775370 green) and, at her «1. Пуш» of 02:11,
+`9e1fc9e..e81f0c5` (02:41). **CI did not run on `e81f0c5`:** GitHub started no job — «The job
+was not started because recent account payments have failed or your spending limit needs to
+be increased» (CI run 38841686267, docs site run 38841686396, both "failure" in 3 s). That is
+Julia's account, not the code: the checks CI runs passed on `5dcdd5a` on the Mac and the
+laptop (Verification), and `e81f0c5` changes documents only. This note is a later local
+commit, pushed with the next push.
 
 ## What matters to understand
 
@@ -109,11 +113,14 @@ never brew, never the stand's venv.
 - Whether production on `deproject-mac` is the "real deployment" that unfreezes the ROADMAP's
   conditional track; nothing unfreezes before her word.
 - Every push: hers, asked each time.
+- GitHub Actions billing: no CI job starts until the account's payment or spending limit is
+  fixed; then `gh run rerun 38841686267` (and 38841686396) checks `e81f0c5`.
 
 ## The next session's order
 
-The steps, with acceptance, stand in [ROADMAP](../../ROADMAP.md#active). First check that CI on
-`origin/master` is green.
+The steps, with acceptance, stand in [ROADMAP](../../ROADMAP.md#active). First check CI on
+`origin/master` (`gh run list --branch master --limit 2`): if its jobs still do not start
+(billing, above), tell Julia and rely on the Mac gate and the laptop's checks meanwhile.
 
 1. **Serve Qwen3-4B-Instruct-2507 (step 4; rule (a), then (c)).** The tag
    `qwen3:4b-instruct-2507-q4_K_M` (digest `0edcdef34593…`, 2.33 GB) is already in the Mac's
@@ -251,7 +258,8 @@ All times UTC.
   BACKLOG. Before the question to her: the checks under Verification.
 - 02:11 her answer. Then her decision in ROADMAP (step 4, step 5, row M), CURRENT_STATE,
   AGENT_STATE, BACKLOG and the previous log; this log; a cold read of it by a subagent on the
-  session's model; the docs tests on the Mac; the commit; the push; CI watched.
+  session's model; the docs tests on the Mac; the commit `e81f0c5`; the push at 02:41; CI
+  started no job (billing, above).
 
 ## Verification
 
