@@ -7,6 +7,13 @@ profile or registry in the environment: the web chat's stream (the answer, the
 self-evaluation and the suggested questions) and ``/api/ask``, the widget's
 route (the provider runtime of ``config/providers.yml`` behind every node of
 the graph), each asks Ollama for that model and no other.
+
+A deployment that pins ``OLLAMA_MODEL_NAME`` to another model still gets one
+model per chat answer: the stream writes the answer with the provider profile's
+model, and the self-evaluation and the suggested questions follow it. Until
+2026-10-16 the suggestions read ``OLLAMA_MODEL_NAME``, and the live series of
+that day, on a stand whose environment pinned ``qwen2.5:7b``, loaded the 7B
+beside the 4B at the end of every answer on the 8-GB Mac.
 """
 
 from __future__ import annotations
@@ -23,6 +30,8 @@ from config.settings import Settings
 from tests import _fake_ollama
 
 PRODUCTION_MODEL = "qwen3:4b-instruct-2507-q4_K_M"
+# What the ask100 runtime's environment, the live stands' deployment, pins.
+PINNED_MODEL = "qwen2.5:7b"
 QUESTION = "Как подать претензию о повреждении груза?"
 ANSWER = "Претензию подают в письменной форме перевозчику [1]."
 SUGGESTIONS = ["Какие документы приложить?", "Сколько ждать ответа?", "Куда отправить акт?"]
@@ -72,6 +81,16 @@ def fake_ollama() -> Iterator[_fake_ollama.FakeOllama]:
 @pytest.fixture
 def served(monkeypatch, tmp_path, fake_ollama):
     """The API on a real ``Settings()`` whose only change is where Ollama listens."""
+    return _serve(monkeypatch, tmp_path, fake_ollama)
+
+
+@pytest.fixture
+def served_pinned(monkeypatch, tmp_path, fake_ollama):
+    """The same, in a deployment whose environment pins another model."""
+    return _serve(monkeypatch, tmp_path, fake_ollama, pinned=PINNED_MODEL)
+
+
+def _serve(monkeypatch, tmp_path, fake_ollama, pinned: str | None = None):
     import api.app as api_app
     import config.settings
     from api.routers import conversation
@@ -79,6 +98,8 @@ def served(monkeypatch, tmp_path, fake_ollama):
 
     for name in CHOICE_ENV:
         monkeypatch.delenv(name, raising=False)
+    if pinned is not None:
+        monkeypatch.setenv("OLLAMA_MODEL_NAME", pinned)
     # Suggested questions build their client from OLLAMA_HOST.
     monkeypatch.setenv("OLLAMA_HOST", fake_ollama.url)
     settings = Settings()
@@ -160,3 +181,20 @@ def test_api_ask_asks_ollama_for_the_production_model(client, served, fake_ollam
         assert any(template in p for p in prompts), (template, [p[:80] for p in prompts])
     assert {r["path"] for r in fake_ollama.requests} == {"/api/generate"}
     assert {r["payload"].get("model") for r in fake_ollama.requests} == {PRODUCTION_MODEL}
+
+
+def test_a_pinned_model_name_does_not_load_a_second_model_in_the_chat(
+    client, served_pinned, fake_ollama
+):
+    assert served_pinned.ollama_model_name == PINNED_MODEL
+    response = client.post("/api/ask/stream", json={"question": QUESTION})
+
+    assert response.status_code == 200, response.text
+    results = [e for e in _events(response.text) if e.get("type") == "result"]
+    assert len(results) == 1, response.text
+    assert results[0]["suggested_questions"] == SUGGESTIONS
+    prompts = [str(r["payload"].get("prompt")) for r in fake_ollama.requests]
+    assert len(prompts) == 3, prompts
+    assert sum(SUGGESTIONS_MARKER in p for p in prompts) == 1
+    # The answer's model (the provider profile's), for all three calls.
+    assert [r["payload"].get("model") for r in fake_ollama.requests] == [PRODUCTION_MODEL] * 3

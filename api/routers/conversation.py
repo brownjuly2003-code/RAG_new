@@ -2360,7 +2360,12 @@ async def ask_stream(
                 try:
                     from agent.prompts import build_suggested_questions_prompt  # noqa: PLC0415
 
+                    # The model that wrote the answer, as for the self-eval above:
+                    # OLLAMA_MODEL_NAME may name another, and loading a second
+                    # model per answer swaps an 8-GB host.
                     question_llm = getattr(session, "_llm", None)
+                    if question_llm is None and callable(getattr(streaming_llm, "invoke", None)):
+                        question_llm = streaming_llm
                     if question_llm is None:
                         from agent.graph import LocalOllamaLLM  # noqa: PLC0415
 
