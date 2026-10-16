@@ -1,0 +1,70 @@
+{
+  "named": "2026-10-16T21:26:32+00:00",
+  "model": "qwen3:4b-instruct-2507-q4_K_M",
+  "code_sha": "19beeb1e1e49188ac8ddb5188003e10562506ad8",
+  "mode": "prod",
+  "served_by": "the code defaults: series.sh passes no MODEL=, and the supervisor drops the model choice of env.json (OLLAMA_MODEL_NAME, OLLAMA_FAST_MODEL_NAME, MODEL_ROUTING_ENABLED, LLM_PROVIDER_PROFILE, PROVIDER_REGISTRY_PATH)",
+  "client": "each question as a new conversation's first question of the web chat: question and tenant, no session_id",
+  "forecast_sec": {
+    "first_question_of_a_fresh_api": 340,
+    "other_questions": 400
+  },
+  "forecast_basis": "the first 4B stand on 2026-10-16 (code 7a99c45; its series is not published: the 7B wrote every answer's suggested questions). The 4B's own part of each question, to the end of the self-evaluation: the first question of a fresh API 314, 347 and 268 s, median 314; the four others 440, 368, 356 and 389 s, median 379 s. Plus about 25 s for the suggested questions written by the 4B (a short prompt, about 60 tokens at the 4.8 tokens/s the 4B wrote its answers): 340 s for the first question of each step, 400 s for every other, questions 6-30 included",
+  "stop_rule": "Julia, 2026-10-15: the series stops once a question runs past 3x its forecast; the session investigates at once",
+  "client_cap_sec": "1020/1200",
+  "cases_source": "evaluation/curated_cases_aircargo.jsonl, the first 30 in file order (the first five are the five of 2026-10-14)",
+  "recorded_per_question": "route, the self-evaluation's score and its source, time to the first token and to the result, the memory while it ran",
+  "steps": [
+    {
+      "label": "qwen3-4b-instruct-q1",
+      "cases": [
+        "aircargo-probation-data"
+      ]
+    },
+    {
+      "label": "qwen3-4b-instruct-q5",
+      "cases": [
+        "aircargo-probation-data",
+        "aircargo-probation-extend",
+        "aircargo-probation-dismissal",
+        "aircargo-dismissal-check",
+        "aircargo-dismissal-lawyer"
+      ]
+    },
+    {
+      "label": "qwen3-4b-instruct-q30",
+      "cases": [
+        "aircargo-probation-data",
+        "aircargo-probation-extend",
+        "aircargo-probation-dismissal",
+        "aircargo-dismissal-check",
+        "aircargo-dismissal-lawyer",
+        "aircargo-dismissal-order",
+        "aircargo-leave-sources",
+        "aircargo-leave-compensation",
+        "aircargo-leave-risk",
+        "aircargo-matliab-check",
+        "aircargo-matliab-disputed",
+        "aircargo-templates-choose",
+        "aircargo-templates-checklist",
+        "aircargo-templates-insufficient",
+        "aircargo-secret-check",
+        "aircargo-secret-not-auto",
+        "aircargo-secret-disclosure",
+        "aircargo-pdp-scope",
+        "aircargo-pdp-data",
+        "aircargo-pdp-uncertain",
+        "aircargo-claims-delay",
+        "aircargo-claims-damage",
+        "aircargo-claims-lawyer",
+        "aircargo-claims-forbidden",
+        "aircargo-expedition-vs-carrier",
+        "aircargo-expedition-mawb-hawb",
+        "aircargo-expedition-risks",
+        "aircargo-road-cutoff",
+        "aircargo-road-penalty",
+        "aircargo-road-seal"
+      ]
+    }
+  ]
+}
