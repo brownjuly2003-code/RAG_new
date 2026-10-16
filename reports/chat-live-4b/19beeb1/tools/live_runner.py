@@ -128,13 +128,15 @@ def main():
         if line.strip():
             case = json.loads(line)
             cases[case["case_id"]] = case
-    token = create_access_token("chat-live", role="admin", tenant="aircargo")
     (RUN / "cases").mkdir(exist_ok=True)
     for index, case_id in enumerate(case_ids, start=1):
         question = cases[case_id]["query"] if case_id in cases else case_id.split(":", 1)[1]
         name = case_id if case_id in cases else f"warmup-{index}"
         cap_sec = caps[0] if index == 1 else caps[-1]
         print("BEGIN", index, name, "cap", cap_sec, flush=True)
+        # A token per question: one per run expired after JWT_ACCESS_TTL (3,600 s) and
+        # stopped the thirty of 2026-10-16 at question 16 with a 401.
+        token = create_access_token("chat-live", role="admin", tenant="aircargo")
         row = {"case_id": name, "question": question, **ask(question, cap_sec, token)}
         try:
             row["drain_sec"] = drain()
