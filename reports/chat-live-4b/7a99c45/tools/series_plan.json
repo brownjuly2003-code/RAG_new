@@ -1,0 +1,69 @@
+{
+  "named": "2026-10-16T19:11:22+00:00",
+  "model": "qwen3:4b-instruct-2507-q4_K_M",
+  "code_sha": "7a99c452491c141a6a0cab13303bcdf4d4055b41",
+  "mode": "prod",
+  "served_by": "the code defaults: series.sh passes no MODEL=, so the API gets no OLLAMA_MODEL_NAME and no PROVIDER_REGISTRY_PATH",
+  "forecast_sec": {
+    "first_question_of_a_fresh_api": 343,
+    "other_questions": 300
+  },
+  "forecast_basis": "the same model on this path on 2026-10-14 (reports/chat-live-small/33d4b42/runs.json, code 33d4b42, 1,800-s limits, the rerank on the CPU): live-s2-qwen3-4b-instruct-floor1, one question on a fresh API, 343 s; live-s3-qwen3-4b-instruct-floor, five on a fresh API, 258, 303, 322, 297 and 297 s (the first of them the same question as the 343 s). The first question of each step gets 343 s, every other one 300 s, questions 6-30 included",
+  "stop_rule": "Julia, 2026-10-15: the series stops once a question runs past 3x its forecast; the session investigates at once",
+  "client_cap_sec": "1029/900",
+  "cases_source": "evaluation/curated_cases_aircargo.jsonl, the first 30 in file order (the first five are the five of 2026-10-14)",
+  "recorded_per_question": "route, the self-evaluation's score and its source, time to the first token and to the result, the memory while it ran",
+  "steps": [
+    {
+      "label": "qwen3-4b-instruct-q1",
+      "cases": [
+        "aircargo-probation-data"
+      ]
+    },
+    {
+      "label": "qwen3-4b-instruct-q5",
+      "cases": [
+        "aircargo-probation-data",
+        "aircargo-probation-extend",
+        "aircargo-probation-dismissal",
+        "aircargo-dismissal-check",
+        "aircargo-dismissal-lawyer"
+      ]
+    },
+    {
+      "label": "qwen3-4b-instruct-q30",
+      "cases": [
+        "aircargo-probation-data",
+        "aircargo-probation-extend",
+        "aircargo-probation-dismissal",
+        "aircargo-dismissal-check",
+        "aircargo-dismissal-lawyer",
+        "aircargo-dismissal-order",
+        "aircargo-leave-sources",
+        "aircargo-leave-compensation",
+        "aircargo-leave-risk",
+        "aircargo-matliab-check",
+        "aircargo-matliab-disputed",
+        "aircargo-templates-choose",
+        "aircargo-templates-checklist",
+        "aircargo-templates-insufficient",
+        "aircargo-secret-check",
+        "aircargo-secret-not-auto",
+        "aircargo-secret-disclosure",
+        "aircargo-pdp-scope",
+        "aircargo-pdp-data",
+        "aircargo-pdp-uncertain",
+        "aircargo-claims-delay",
+        "aircargo-claims-damage",
+        "aircargo-claims-lawyer",
+        "aircargo-claims-forbidden",
+        "aircargo-expedition-vs-carrier",
+        "aircargo-expedition-mawb-hawb",
+        "aircargo-expedition-risks",
+        "aircargo-road-cutoff",
+        "aircargo-road-penalty",
+        "aircargo-road-seal"
+      ]
+    }
+  ]
+}
