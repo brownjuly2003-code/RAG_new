@@ -49,24 +49,37 @@ Each step is a slice of its own
    buttons; an answer scored 40 comes routed `human` with the button; on `147db65` no message
    had it; run with `-rs`, no skip ([evidence row](EVIDENCE_INDEX.md)). Python Playwright is in
    `/Users/julia/RAG_new_playwright_site` on the Mac, installed with pip — never brew, never
-   the stand's venv (Julia, 2026-10-15). **Waits on Julia:** the embeddable widget calls
-   `/api/ask` and has no operator at all — on that route's wall-time limit it gets a 504 and
-   says «Не удалось подключиться к сервису…», which is untrue; on the graph's own deadline it
-   shows the apology with no button, and `/api/ask` opens no ticket on `timeout`.
-3. **Thinking off on the chat path, then qwen3:1.7b in the live chat (rule (a), then (c)).**
+   the stand's venv (Julia, 2026-10-15). The embeddable widget, done 2026-10-15 (`4977582`, the
+   session's call on Julia's «Реши, как оптимальнее»): it calls `/api/ask`, which opens no
+   ticket on a timeout; on that route's wall-time limit (HTTP 504) it said «Не удалось
+   подключиться к сервису…», which was untrue, and on the graph's own deadline it showed the
+   apology with nothing to do. Now both say the answer did not come in time and offer
+   «Повторить» and «Передать оператору», and any other failure says the answer did not come;
+   the button sends `/api/escalate` the reason `route=timeout` / `route=error` and fetches a
+   new token once if the old one expired during the wait. Red on `30e97bd`, green with `-rs`,
+   no skip ([evidence row](EVIDENCE_INDEX.md)). Its subtitle «Обычно отвечаем в течение пары
+   секунд» stays untrue on this Mac until step 4 names an SLO.
+3. **Thinking off on the chat path, then qwen3:1.7b in the live chat (rule (a), then (c)) —
+   done.**
    Thinking off is done (2026-10-15, `c2739af`): every model call of the chat — the answer, the
    self-evaluation, the suggested questions, the tool calls and the raw stream fallback —
    sends `think: false`; on `8464732` they sent `think: null`, and qwen3:1.7b thought for
    130–155 tokens before a one-sentence answer. Ollama 0.33.2 answers `think: false` from
    qwen2.5:7b, which cannot think, as it does without it and refuses only `think: true`
-   ([evidence row](EVIDENCE_INDEX.md)). Next the live
-   chat at the new limits, 1 → 5 → 30 questions, all named before the first, about 1.5–2 min a
-   question, the supervisor detached from ssh from its first launch: time, the rerank's status
-   and routes (`auto` / `human` / `timeout` / `error`), with provenance. Julia's stop rule
-   (2026-10-15), in the run's tools, not the product: each question's forecast is named before
-   the launch, the supervisor stops the series once a question runs past 3× its forecast
-   (qwen3:1.7b: about 6 min), and the session investigates at once instead of waiting for the
-   ceiling.
+   ([evidence row](EVIDENCE_INDEX.md)). The live chat ran on 2026-10-16, 00:26–01:28 UTC, at
+   the code defaults and code `9e1fc9e`, every question and its forecast named before the
+   first launch (`reports/chat-live-qwen3/9e1fc9e/tools/series_plan.json`): one question took
+   185 s to the whole answer (first token 142 s); five, median 211 s (177–301 s); Julia's stop
+   rule ended the thirty at question 9, with no first token at 360 s, after eight answers of
+   median 200 s (139–352 s). All 14 answers routed `auto`, and the rerank succeeded on the
+   CPU in each. The time goes to the rerank — median 120 s (61–271 s), the same questions
+   slowest in both runs — while the model reads its prompt in about 28 s, writes 9 tokens/s
+   and evaluates the answer in 29 s. The stop was memory: over the thirty, swap grew from
+   764 MB to 4,117 MB, the API and the model were paged out, and question 9's vector search
+   alone took 147 s. Two findings for steps 4 and 5: the 8-GB Mac does not hold the API and a
+   model through a long series without swapping, and every live run on this stand logged a
+   retriever built without its BM25 index — retrieval vector-only
+   ([evidence row](EVIDENCE_INDEX.md)).
 4. **Julia decides on those numbers:** the production model (suspended since 2026-10-14) and
    the SLO. Until an SLO is named, research acceptance on the Mac is not product acceptance
    (phase Q below), and no quality default flips.
@@ -310,7 +323,7 @@ from the lock with real models — the Mac environment is not built from the loc
 | **D** | pgvector spike, ADR 0007 — D.1–D.5 measured; accepted 2026-09-25: retain the current retrieval backend (a vector-DB swap stays on the stop-list) | a table of numbers in the ADR; no migration without it |
 | **E** | Public artefact: README-first, 3-minute demo, `resolution-contracts` sub-package; Q4 confirmed 2026-09-30: publish current `RAG_new` as **RAG assistant**, Pages base `/RAG_new/`; E.4 site prepared at `236f7c1`, pushed and unpublished; CI is green on `45a417a` (2026-10-03, run 37157492007, 11 of 11 jobs) and the Pages build passed on it (run 37157492017; deploy skipped, the repository is private and nothing is published), so the owner's order of 2026-10-03 — a green CI on HEAD before the quality thread's 2.5 chain — is met and that chain is next; making the repository public and deploying Pages are the owner's gate and do not hold that thread (plan D11) | E.5: Mac full suite and final [history scan](docs/evidence/e5-secret-scan.md); E.4: push, green CI, public repo, Pages deploy, links from the old repo and proof-pack; numbers in README |
 | **Q** | Quality thread after E ([plan](docs/specs/plan_03_10_26.md), adopted and ratified by delegation 2026-09-30, revised 2026-10-03): ruler cross-checked by model references (no human grades, D11) → observable route → ≤ 2 mechanisms chosen by the evidence-loss map (D8; default H1 in the graph lane, H5 as its budget) → locked-holdout acceptance. 2.1/2.2 implemented 2026-10-01 (T-59, rule (a)); 1.1 done 2026-10-04 (T-57) and 1.3b done 2026-10-04 (T-78: [30 pilot drafts verified by one model](docs/evidence/devset-pilot-label-verification.md), `single_model_verified`, preparation); 1.3c done 2026-10-06 ([variance pilot](docs/evidence/variance-pilot-gold-metrics.md), rule (c), no verdict: development 60 cases in 37 clusters, holdout 64 in 18; the registered MDE stays 0.17–0.30 — the corpus has no more independent families — so the campaign checks effects of that size and no smaller, and a neutral mechanism is expected to end `INCONCLUSIVE`; whether the grading filter, in part a draw, is changed before the campaign is undecided); since D12 (2026-10-04) one model, the session's Opus 5.5, does every job and check, and no other vendor's model is called | rule (c) per experiment with the [development ruler](docs/specs/semantic-precision-metrics.md): +0.05 in the mechanism's registered primary metric (sent-precision for selection, all-evidence coverage for coverage mechanisms) with CI95 lower bound > 0, non-inferiority −0.02 on the rest, no critical-fact loss on H/Hm, p95 delta ≤ 200 ms at equal budget; the lexical 0.63 gate stays on its own ruler; research acceptance on the Mac is not product acceptance (deployment target + SLO, D5); no default flip before both — the target is named (`deproject-mac`, 2026-10-14), the SLO is not: on 2026-10-15 Julia decided to lift the time limits for now instead |
-| **M** | The chat on the production Mac (Julia, 2026-10-14/15), the active thread: lift the time limits (done 2026-10-15, `468224b`: a 3,600-s ceiling, the reranker on the CPU), offer the operator on a timeout and on a `human` answer (done 2026-10-15, `056844d`), turn thinking off on the chat path (done 2026-10-15, `c2739af`) and time qwen3:1.7b in the live chat; then her production model and SLO, then the speed levers one at a time (order above) | rule (a) for each product change, with an E2E test; rule (c) for each live run — code SHA, index, model digest and the configuration actually served, its time and routes |
+| **M** | The chat on the production Mac (Julia, 2026-10-14/15), the active thread: lift the time limits (done 2026-10-15, `468224b`: a 3,600-s ceiling, the reranker on the CPU), offer the operator on a timeout and on a `human` answer (done 2026-10-15, `056844d`), turn thinking off on the chat path (done 2026-10-15, `c2739af`) and time qwen3:1.7b in the live chat (done 2026-10-16: the whole answer 139–352 s, all `auto`, most of it the rerank on the CPU; the thirty stopped at question 9 as the Mac swapped); then her production model and SLO, then the speed levers one at a time (order above) | rule (a) for each product change, with an E2E test; rule (c) for each live run — code SHA, index, model digest and the configuration actually served, its time and routes |
 
 Heavy runs (models, full suite, Docker) go to the Mac — never the Windows
 laptop. Do not install or launch WSL, Docker or VMs on Windows (owner direction,

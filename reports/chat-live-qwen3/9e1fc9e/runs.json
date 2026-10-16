@@ -1,0 +1,1710 @@
+{
+ "schema": "chat-live/v1",
+ "code_sha": "9e1fc9eaa411e6e3aec89a8667bfa19bf7932e46",
+ "dataset": {
+  "path": "evaluation/curated_cases_aircargo.jsonl",
+  "sha256": "3737d694362d1867ca3d5983e3765d02c01110d2409145ba7e0f05c021d9c720"
+ },
+ "host": {
+  "model": "iMac18,3",
+  "cpu": "Intel(R) Core(TM) i5-7500 CPU @ 3.40GHz",
+  "physical_cores": 4,
+  "memory_bytes": 8589934592,
+  "macos": "13.7.8"
+ },
+ "ollama": {
+  "version": "0.33.2"
+ },
+ "runs": [
+  {
+   "label": "qwen3-1p7b-q1",
+   "mode": "prod",
+   "overrides": {
+    "REQUEST_TIMEOUT_SEC": "3600",
+    "OLLAMA_REQUEST_TIMEOUT_SEC": "3600",
+    "STREAMING_TIMEOUT_SEC": "3600",
+    "RAG_DEVICE": "cpu"
+   },
+   "started": "2026-10-16T00:26:48+00:00",
+   "finished": "2026-10-16T00:30:41+00:00",
+   "status": "complete",
+   "runner_exit": 0,
+   "model": "qwen3:1.7b",
+   "model_digest": "8f68893c685c3ddff2aa3fffce2aa60a30bb2da65ca488b61fff134a4d1730e7",
+   "ollama_models_before": [],
+   "ollama_models_after": [
+    "qwen3:1.7b"
+   ],
+   "ollama_load_sec": 21.135,
+   "settings": {
+    "llm_provider_profile": "local-first",
+    "ollama_model_name": "qwen3:1.7b",
+    "ollama_fast_model_name": "llama3.2:3b",
+    "model_routing_enabled": false,
+    "ollama_context_window": 4096,
+    "embedding_model": "BAAI/bge-m3",
+    "embedding_backend": "local",
+    "reranker_model": "BAAI/bge-reranker-v2-m3",
+    "rag_device": "cpu",
+    "vector_backend": "chroma",
+    "hybrid_search": true,
+    "retrieval_strategy": "hybrid",
+    "retrieval_top_k": 20,
+    "rerank_top_k": 5,
+    "hyde": false,
+    "graph_retrieval": "off",
+    "parent_expansion": true,
+    "self_rag_max_iterations": 2,
+    "fact_verification_enabled": true,
+    "streaming_enabled": false,
+    "streaming_rag_parity": false,
+    "streaming_quality_eval": true,
+    "streaming_timeout_sec": 3600.0,
+    "request_timeout_sec": 3600.0,
+    "ollama_request_timeout_sec": 3600.0,
+    "quality_threshold": 80,
+    "suggested_questions_enabled": true,
+    "llm_max_calls_per_request": 24,
+    "online_evaluators_enabled": true,
+    "max_concurrent_pipelines": 8,
+    "support_sink_backend": "local",
+    "tracing_db_path": "<workspace>/chatlive/runs/qwen3-1p7b-q1/traces.db",
+    "vectordb_chroma_dir": "<runtime>/chroma"
+   },
+   "settings_off_default": {
+    "db_encryption_key": {
+     "default": "<empty>",
+     "run": "<set>"
+    },
+    "ollama_model_name": {
+     "default": "qwen2.5:7b",
+     "run": "qwen3:1.7b"
+    },
+    "provider_registry_path": {
+     "default": "<workspace>/config/providers.yml",
+     "run": "<workspace>/chatlive/runs/qwen3-1p7b-q1/providers.yml"
+    },
+    "tracing_db_path": {
+     "default": "<workspace>/data/tracing/traces.db",
+     "run": "<workspace>/chatlive/runs/qwen3-1p7b-q1/traces.db"
+    },
+    "vectordb_chroma_dir": {
+     "default": "<workspace>/data/vectordb/chroma",
+     "run": "<runtime>/chroma"
+    }
+   },
+   "tickets": [
+    "94",
+    "94"
+   ],
+   "memory": {
+    "samples": 76,
+    "swap_used_mb": [
+     724.75,
+     756.75
+    ],
+    "free_mb_min": 4,
+    "max_rss_mb": {
+     "postgres": 10,
+     "ollama": 2014,
+     "python": 2967
+    }
+   },
+   "api_warnings": {
+    "WARNING api.app: CORS_ORIGINS='*' - OK for development, but set explicit origins before deploying to production (RAG_ENV=production will refuse to start).": {
+     "count": 1,
+     "first": "CORS_ORIGINS='*' - OK for development, but set explicit origins before deploying to production (RAG_ENV=production will refuse to start)."
+    },
+    "WARNING vectordb.embedder_manifest: Tenant default loaded an unstamped index: NOT_EVIDENCE; rebuild it": {
+     "count": 1,
+     "first": "Tenant default loaded an unstamped index: NOT_EVIDENCE; rebuild it"
+    },
+    "WARNING vectordb.manager: Tenant default: retriever built WITHOUT BM# index while hybrid search is enabled — retrieval degraded to vector-only. Usually means the chunk cache is empty and": {
+     "count": 1,
+     "first": "Tenant default: retriever built WITHOUT BM25 index while hybrid search is enabled — retrieval degraded to vector-only. Usually means the chunk cache is empty and could not be restored."
+    },
+    "WARNING db.audit: Audit DB write failed: action=ask error=TimeoutError": {
+     "count": 1,
+     "first": "Audit DB write failed: action=ask error=TimeoutError"
+    }
+   },
+   "notes": [],
+   "cases": [
+    {
+     "case": "aircargo-probation-data",
+     "question": "Какие данные нужны для ответа по испытательному сроку?",
+     "http": 200,
+     "first_token_sec": 142.433,
+     "last_token_sec": 150.583,
+     "tokens": 80,
+     "answer_tokens": 80,
+     "result_sec": 185.472,
+     "error_sec": null,
+     "total_sec": 185.472,
+     "drain_sec": 0.062,
+     "client_error": null,
+     "route": "auto",
+     "quality": null,
+     "sources": 3,
+     "suggested": 3,
+     "events": [
+      {
+       "at": 4.816,
+       "type": "status"
+      },
+      {
+       "at": 118.633,
+       "type": "token_start"
+      },
+      {
+       "at": 185.472,
+       "type": "result",
+       "quality_source": "llm",
+       "route": "auto"
+      }
+     ],
+     "answer": "Для ответа по испытательному сроку нужны:  \n- Должность,  \n- Дата приема,  \n- Условие в трудовом договоре,  \n- Длительность испытания,  \n- Результаты оценки.  \n\nСсылка: [Документ 1 | source=07_faq_probation.md]",
+     "timeline": [
+      {
+       "stage": "vectordb._base_manager.get_embeddings",
+       "end_at": 0.96,
+       "wall": 0.0
+      },
+      {
+       "stage": "vectordb.manager.get_embeddings",
+       "end_at": 0.96,
+       "wall": 0.0
+      },
+      {
+       "stage": "vectordb._base_manager.get_reranker",
+       "end_at": 4.44,
+       "wall": 0.0
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 4.77,
+       "wall": 3.82
+      },
+      {
+       "stage": "hybrid._vector_search",
+       "end_at": 12.41,
+       "wall": 7.6
+      },
+      {
+       "stage": "hybrid._rerank_scored_with_status",
+       "end_at": 118.15,
+       "wall": 105.72,
+       "reranker_ok": true,
+       "docs": 5
+      },
+      {
+       "stage": "hybrid._expand_parents",
+       "end_at": 118.15,
+       "wall": 0.0
+      },
+      {
+       "stage": "hybrid.get_relevant_documents_with_path",
+       "end_at": 118.15,
+       "wall": 113.34
+      },
+      {
+       "stage": "ollama.generate_stream",
+       "end_at": 150.83,
+       "wall": 32.64,
+       "first_chunk_sec": 24.23,
+       "chunks": 80,
+       "output_chars": 210,
+       "prompt_est_tokens": 2466,
+       "max_tokens": 1024,
+       "prompt_exact_tokens": 2101
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 178.54,
+       "wall": 27.69,
+       "output_chars": 2,
+       "prompt_est_tokens": 2685,
+       "max_tokens": 128,
+       "prompt_exact_tokens": 2319
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "label": "qwen3-1p7b-q5",
+   "mode": "prod",
+   "overrides": {
+    "REQUEST_TIMEOUT_SEC": "3600",
+    "OLLAMA_REQUEST_TIMEOUT_SEC": "3600",
+    "STREAMING_TIMEOUT_SEC": "3600",
+    "RAG_DEVICE": "cpu"
+   },
+   "started": "2026-10-16T00:31:07+00:00",
+   "finished": "2026-10-16T00:51:10+00:00",
+   "status": "complete",
+   "runner_exit": 0,
+   "model": "qwen3:1.7b",
+   "model_digest": "8f68893c685c3ddff2aa3fffce2aa60a30bb2da65ca488b61fff134a4d1730e7",
+   "ollama_models_before": [],
+   "ollama_models_after": [
+    "qwen3:1.7b"
+   ],
+   "ollama_load_sec": 19.632,
+   "settings": {
+    "llm_provider_profile": "local-first",
+    "ollama_model_name": "qwen3:1.7b",
+    "ollama_fast_model_name": "llama3.2:3b",
+    "model_routing_enabled": false,
+    "ollama_context_window": 4096,
+    "embedding_model": "BAAI/bge-m3",
+    "embedding_backend": "local",
+    "reranker_model": "BAAI/bge-reranker-v2-m3",
+    "rag_device": "cpu",
+    "vector_backend": "chroma",
+    "hybrid_search": true,
+    "retrieval_strategy": "hybrid",
+    "retrieval_top_k": 20,
+    "rerank_top_k": 5,
+    "hyde": false,
+    "graph_retrieval": "off",
+    "parent_expansion": true,
+    "self_rag_max_iterations": 2,
+    "fact_verification_enabled": true,
+    "streaming_enabled": false,
+    "streaming_rag_parity": false,
+    "streaming_quality_eval": true,
+    "streaming_timeout_sec": 3600.0,
+    "request_timeout_sec": 3600.0,
+    "ollama_request_timeout_sec": 3600.0,
+    "quality_threshold": 80,
+    "suggested_questions_enabled": true,
+    "llm_max_calls_per_request": 24,
+    "online_evaluators_enabled": true,
+    "max_concurrent_pipelines": 8,
+    "support_sink_backend": "local",
+    "tracing_db_path": "<workspace>/chatlive/runs/qwen3-1p7b-q5/traces.db",
+    "vectordb_chroma_dir": "<runtime>/chroma"
+   },
+   "settings_off_default": {
+    "db_encryption_key": {
+     "default": "<empty>",
+     "run": "<set>"
+    },
+    "ollama_model_name": {
+     "default": "qwen2.5:7b",
+     "run": "qwen3:1.7b"
+    },
+    "provider_registry_path": {
+     "default": "<workspace>/config/providers.yml",
+     "run": "<workspace>/chatlive/runs/qwen3-1p7b-q5/providers.yml"
+    },
+    "tracing_db_path": {
+     "default": "<workspace>/data/tracing/traces.db",
+     "run": "<workspace>/chatlive/runs/qwen3-1p7b-q5/traces.db"
+    },
+    "vectordb_chroma_dir": {
+     "default": "<workspace>/data/vectordb/chroma",
+     "run": "<runtime>/chroma"
+    }
+   },
+   "tickets": [
+    "94",
+    "94"
+   ],
+   "memory": {
+    "samples": 392,
+    "swap_used_mb": [
+     676.5,
+     1619.25
+    ],
+    "free_mb_min": 4,
+    "max_rss_mb": {
+     "postgres": 10,
+     "ollama": 2104,
+     "python": 2956
+    }
+   },
+   "api_warnings": {
+    "WARNING api.app: CORS_ORIGINS='*' - OK for development, but set explicit origins before deploying to production (RAG_ENV=production will refuse to start).": {
+     "count": 1,
+     "first": "CORS_ORIGINS='*' - OK for development, but set explicit origins before deploying to production (RAG_ENV=production will refuse to start)."
+    },
+    "WARNING vectordb.embedder_manifest: Tenant default loaded an unstamped index: NOT_EVIDENCE; rebuild it": {
+     "count": 1,
+     "first": "Tenant default loaded an unstamped index: NOT_EVIDENCE; rebuild it"
+    },
+    "WARNING vectordb.manager: Tenant default: retriever built WITHOUT BM# index while hybrid search is enabled — retrieval degraded to vector-only. Usually means the chunk cache is empty and": {
+     "count": 1,
+     "first": "Tenant default: retriever built WITHOUT BM25 index while hybrid search is enabled — retrieval degraded to vector-only. Usually means the chunk cache is empty and could not be restored."
+    },
+    "WARNING db.audit: Audit DB write failed: action=ask error=TimeoutError": {
+     "count": 1,
+     "first": "Audit DB write failed: action=ask error=TimeoutError"
+    }
+   },
+   "notes": [],
+   "cases": [
+    {
+     "case": "aircargo-probation-data",
+     "question": "Какие данные нужны для ответа по испытательному сроку?",
+     "http": 200,
+     "first_token_sec": 134.339,
+     "last_token_sec": 142.7,
+     "tokens": 80,
+     "answer_tokens": 80,
+     "result_sec": 176.511,
+     "error_sec": null,
+     "total_sec": 176.512,
+     "drain_sec": 0.03,
+     "client_error": null,
+     "route": "auto",
+     "quality": null,
+     "sources": 3,
+     "suggested": 3,
+     "events": [
+      {
+       "at": 4.07,
+       "type": "status"
+      },
+      {
+       "at": 111.016,
+       "type": "token_start"
+      },
+      {
+       "at": 176.511,
+       "type": "result",
+       "quality_source": "llm",
+       "route": "auto"
+      }
+     ],
+     "answer": "Для ответа по испытательному сроку нужны:  \n- Должность,  \n- Дата приема,  \n- Условие в трудовом договоре,  \n- Длительность испытания,  \n- Результаты оценки.  \n\nСсылка: [Документ 1 | source=07_faq_probation.md]",
+     "timeline": [
+      {
+       "stage": "vectordb._base_manager.get_embeddings",
+       "end_at": 0.4,
+       "wall": 0.0
+      },
+      {
+       "stage": "vectordb.manager.get_embeddings",
+       "end_at": 0.4,
+       "wall": 0.0
+      },
+      {
+       "stage": "vectordb._base_manager.get_reranker",
+       "end_at": 3.75,
+       "wall": 0.0
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 4.05,
+       "wall": 3.65
+      },
+      {
+       "stage": "hybrid._vector_search",
+       "end_at": 8.94,
+       "wall": 4.87
+      },
+      {
+       "stage": "hybrid._rerank_scored_with_status",
+       "end_at": 110.69,
+       "wall": 101.71,
+       "reranker_ok": true,
+       "docs": 5
+      },
+      {
+       "stage": "hybrid._expand_parents",
+       "end_at": 110.69,
+       "wall": 0.0
+      },
+      {
+       "stage": "hybrid.get_relevant_documents_with_path",
+       "end_at": 110.69,
+       "wall": 106.63
+      },
+      {
+       "stage": "ollama.generate_stream",
+       "end_at": 142.83,
+       "wall": 32.11,
+       "first_chunk_sec": 23.58,
+       "chunks": 80,
+       "output_chars": 210,
+       "prompt_est_tokens": 2466,
+       "max_tokens": 1024,
+       "prompt_exact_tokens": 2101
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 169.38,
+       "wall": 26.55,
+       "output_chars": 2,
+       "prompt_est_tokens": 2685,
+       "max_tokens": 128,
+       "prompt_exact_tokens": 2319
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 176.64,
+       "wall": 0.0
+      }
+     ]
+    },
+    {
+     "case": "aircargo-probation-extend",
+     "question": "Можно ли продлить испытательный срок сотруднику?",
+     "http": 200,
+     "first_token_sec": 145.281,
+     "last_token_sec": 157.794,
+     "tokens": 105,
+     "answer_tokens": 105,
+     "result_sec": 196.686,
+     "error_sec": null,
+     "total_sec": 196.686,
+     "drain_sec": 0.057,
+     "client_error": null,
+     "route": "auto",
+     "quality": null,
+     "sources": 3,
+     "suggested": 3,
+     "events": [
+      {
+       "at": 0.124,
+       "type": "status"
+      },
+      {
+       "at": 115.831,
+       "type": "token_start"
+      },
+      {
+       "at": 196.686,
+       "type": "result",
+       "quality_source": "llm",
+       "route": "auto"
+      }
+     ],
+     "answer": "Можно ли продлить испытательный срок сотруднику?  \n[4]  \nПродление испытательного срока не допускается. Срок устанавливается при заключении трудового договора в пределах ст. 70 ТК РФ; периоды фактического отсутствия работника не включаются в срок испытания, но это не продление сверх согласованного срока.",
+     "timeline": [
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 0.09,
+       "wall": 0.0
+      },
+      {
+       "stage": "hybrid._vector_search",
+       "end_at": 2.67,
+       "wall": 2.58
+      },
+      {
+       "stage": "hybrid._rerank_scored_with_status",
+       "end_at": 115.76,
+       "wall": 113.01,
+       "reranker_ok": true,
+       "docs": 5
+      },
+      {
+       "stage": "hybrid._expand_parents",
+       "end_at": 115.78,
+       "wall": 0.0
+      },
+      {
+       "stage": "hybrid.get_relevant_documents_with_path",
+       "end_at": 115.78,
+       "wall": 115.68
+      },
+      {
+       "stage": "ollama.generate_stream",
+       "end_at": 157.88,
+       "wall": 42.09,
+       "first_chunk_sec": 29.44,
+       "chunks": 105,
+       "output_chars": 305,
+       "prompt_est_tokens": 2587,
+       "max_tokens": 1024,
+       "prompt_exact_tokens": 2377
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 187.81,
+       "wall": 29.93,
+       "output_chars": 2,
+       "prompt_est_tokens": 2839,
+       "max_tokens": 128,
+       "prompt_exact_tokens": 2621
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 196.76,
+       "wall": 0.0
+      }
+     ]
+    },
+    {
+     "case": "aircargo-probation-dismissal",
+     "question": "Что важно для увольнения по результатам испытательного срока?",
+     "http": 200,
+     "first_token_sec": 165.869,
+     "last_token_sec": 172.218,
+     "tokens": 60,
+     "answer_tokens": 60,
+     "result_sec": 210.743,
+     "error_sec": null,
+     "total_sec": 210.744,
+     "drain_sec": 0.07,
+     "client_error": null,
+     "route": "auto",
+     "quality": null,
+     "sources": 4,
+     "suggested": 3,
+     "events": [
+      {
+       "at": 0.025,
+       "type": "status"
+      },
+      {
+       "at": 138.852,
+       "type": "token_start"
+      },
+      {
+       "at": 210.743,
+       "type": "result",
+       "quality_source": "llm",
+       "route": "auto"
+      }
+     ],
+     "answer": "[3] Что важно для увольнения по результатам испытательного срока?  \nОтвет: Нужны документированные критерии, факты неудовлетворительной работы и соблюдение срока уведомления.",
+     "timeline": [
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 0.01,
+       "wall": 0.0
+      },
+      {
+       "stage": "hybrid._vector_search",
+       "end_at": 7.93,
+       "wall": 7.91
+      },
+      {
+       "stage": "hybrid._rerank_scored_with_status",
+       "end_at": 138.75,
+       "wall": 130.75,
+       "reranker_ok": true,
+       "docs": 5
+      },
+      {
+       "stage": "hybrid._expand_parents",
+       "end_at": 138.77,
+       "wall": 0.0
+      },
+      {
+       "stage": "hybrid.get_relevant_documents_with_path",
+       "end_at": 138.77,
+       "wall": 138.76
+      },
+      {
+       "stage": "ollama.generate_stream",
+       "end_at": 172.52,
+       "wall": 33.72,
+       "first_chunk_sec": 27.03,
+       "chunks": 60,
+       "output_chars": 174,
+       "prompt_est_tokens": 2631,
+       "max_tokens": 1024,
+       "prompt_exact_tokens": 2368
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 202.1,
+       "wall": 29.58,
+       "output_chars": 2,
+       "prompt_est_tokens": 2836,
+       "max_tokens": 128,
+       "prompt_exact_tokens": 2569
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 210.84,
+       "wall": 0.0
+      }
+     ]
+    },
+    {
+     "case": "aircargo-dismissal-check",
+     "question": "Что проверить перед ответом об увольнении работника?",
+     "http": 200,
+     "first_token_sec": 253.673,
+     "last_token_sec": 259.775,
+     "tokens": 54,
+     "answer_tokens": 55,
+     "result_sec": 301.088,
+     "error_sec": null,
+     "total_sec": 301.098,
+     "drain_sec": 0.144,
+     "client_error": null,
+     "route": "auto",
+     "quality": null,
+     "sources": 3,
+     "suggested": 3,
+     "events": [
+      {
+       "at": 0.03,
+       "type": "status"
+      },
+      {
+       "at": 218.275,
+       "type": "token_start"
+      },
+      {
+       "at": 301.088,
+       "type": "result",
+       "quality_source": "llm",
+       "route": "auto"
+      }
+     ],
+     "answer": "Перед ответом об увольнении работника необходимо проверить: основание увольнения, дату последнего рабочего дня, заявления, соглашений, приказов и расчетные выплаты.  \n[1]",
+     "timeline": [
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 0.02,
+       "wall": 0.0
+      },
+      {
+       "stage": "hybrid._vector_search",
+       "end_at": 4.39,
+       "wall": 4.36
+      },
+      {
+       "stage": "hybrid._rerank_scored_with_status",
+       "end_at": 214.37,
+       "wall": 209.81,
+       "reranker_ok": true,
+       "docs": 5
+      },
+      {
+       "stage": "hybrid._expand_parents",
+       "end_at": 215.3,
+       "wall": 0.17
+      },
+      {
+       "stage": "hybrid.get_relevant_documents_with_path",
+       "end_at": 215.32,
+       "wall": 215.29
+      },
+      {
+       "stage": "ollama.generate_stream",
+       "end_at": 260.64,
+       "wall": 44.31,
+       "first_chunk_sec": 37.34,
+       "chunks": 54,
+       "output_chars": 170,
+       "prompt_est_tokens": 2607,
+       "max_tokens": 1024,
+       "prompt_exact_tokens": 2258
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 290.03,
+       "wall": 29.38,
+       "output_chars": 2,
+       "prompt_est_tokens": 2812,
+       "max_tokens": 128,
+       "prompt_exact_tokens": 2453
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 301.34,
+       "wall": 0.0
+      }
+     ]
+    },
+    {
+     "case": "aircargo-dismissal-lawyer",
+     "question": "В каких случаях при увольнении нужен юрист?",
+     "http": 200,
+     "first_token_sec": 234.334,
+     "last_token_sec": 240.598,
+     "tokens": 61,
+     "answer_tokens": 62,
+     "result_sec": 277.666,
+     "error_sec": null,
+     "total_sec": 277.667,
+     "drain_sec": 0.017,
+     "client_error": null,
+     "route": "auto",
+     "quality": null,
+     "sources": 4,
+     "suggested": 3,
+     "events": [
+      {
+       "at": 0.126,
+       "type": "status"
+      },
+      {
+       "at": 206.165,
+       "type": "token_start"
+      },
+      {
+       "at": 277.666,
+       "type": "result",
+       "quality_source": "llm",
+       "route": "auto"
+      }
+     ],
+     "answer": "В случае увольнения по инициативе работодателя, спору о дисциплине, сокращении, материальной ответственности или защищённой категории работника нужен юрист.  \n[Вопрос 2]",
+     "timeline": [
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 0.1,
+       "wall": 0.0
+      },
+      {
+       "stage": "hybrid._vector_search",
+       "end_at": 6.06,
+       "wall": 5.96
+      },
+      {
+       "stage": "hybrid._rerank_scored_with_status",
+       "end_at": 205.77,
+       "wall": 199.55,
+       "reranker_ok": true,
+       "docs": 5
+      },
+      {
+       "stage": "hybrid._expand_parents",
+       "end_at": 205.81,
+       "wall": 0.04
+      },
+      {
+       "stage": "hybrid.get_relevant_documents_with_path",
+       "end_at": 205.81,
+       "wall": 205.71
+      },
+      {
+       "stage": "ollama.generate_stream",
+       "end_at": 240.74,
+       "wall": 34.84,
+       "first_chunk_sec": 28.43,
+       "chunks": 61,
+       "output_chars": 169,
+       "prompt_est_tokens": 2523,
+       "max_tokens": 1024,
+       "prompt_exact_tokens": 2238
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 270.39,
+       "wall": 29.63,
+       "output_chars": 2,
+       "prompt_est_tokens": 2730,
+       "max_tokens": 128,
+       "prompt_exact_tokens": 2443
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "label": "qwen3-1p7b-q30",
+   "mode": "prod",
+   "overrides": {
+    "REQUEST_TIMEOUT_SEC": "3600",
+    "OLLAMA_REQUEST_TIMEOUT_SEC": "3600",
+    "STREAMING_TIMEOUT_SEC": "3600",
+    "RAG_DEVICE": "cpu"
+   },
+   "started": "2026-10-16T00:51:36+00:00",
+   "finished": "2026-10-16T01:27:56+00:00",
+   "status": "failed",
+   "runner_exit": 5,
+   "model": "qwen3:1.7b",
+   "model_digest": "8f68893c685c3ddff2aa3fffce2aa60a30bb2da65ca488b61fff134a4d1730e7",
+   "ollama_models_before": [],
+   "ollama_models_after": [
+    "qwen3:1.7b"
+   ],
+   "ollama_load_sec": 24.399,
+   "settings": {
+    "llm_provider_profile": "local-first",
+    "ollama_model_name": "qwen3:1.7b",
+    "ollama_fast_model_name": "llama3.2:3b",
+    "model_routing_enabled": false,
+    "ollama_context_window": 4096,
+    "embedding_model": "BAAI/bge-m3",
+    "embedding_backend": "local",
+    "reranker_model": "BAAI/bge-reranker-v2-m3",
+    "rag_device": "cpu",
+    "vector_backend": "chroma",
+    "hybrid_search": true,
+    "retrieval_strategy": "hybrid",
+    "retrieval_top_k": 20,
+    "rerank_top_k": 5,
+    "hyde": false,
+    "graph_retrieval": "off",
+    "parent_expansion": true,
+    "self_rag_max_iterations": 2,
+    "fact_verification_enabled": true,
+    "streaming_enabled": false,
+    "streaming_rag_parity": false,
+    "streaming_quality_eval": true,
+    "streaming_timeout_sec": 3600.0,
+    "request_timeout_sec": 3600.0,
+    "ollama_request_timeout_sec": 3600.0,
+    "quality_threshold": 80,
+    "suggested_questions_enabled": true,
+    "llm_max_calls_per_request": 24,
+    "online_evaluators_enabled": true,
+    "max_concurrent_pipelines": 8,
+    "support_sink_backend": "local",
+    "tracing_db_path": "<workspace>/chatlive/runs/qwen3-1p7b-q30/traces.db",
+    "vectordb_chroma_dir": "<runtime>/chroma"
+   },
+   "settings_off_default": {
+    "db_encryption_key": {
+     "default": "<empty>",
+     "run": "<set>"
+    },
+    "ollama_model_name": {
+     "default": "qwen2.5:7b",
+     "run": "qwen3:1.7b"
+    },
+    "provider_registry_path": {
+     "default": "<workspace>/config/providers.yml",
+     "run": "<workspace>/chatlive/runs/qwen3-1p7b-q30/providers.yml"
+    },
+    "tracing_db_path": {
+     "default": "<workspace>/data/tracing/traces.db",
+     "run": "<workspace>/chatlive/runs/qwen3-1p7b-q30/traces.db"
+    },
+    "vectordb_chroma_dir": {
+     "default": "<workspace>/data/vectordb/chroma",
+     "run": "<runtime>/chroma"
+    }
+   },
+   "tickets": [
+    "94",
+    "94"
+   ],
+   "memory": {
+    "samples": 712,
+    "swap_used_mb": [
+     764.25,
+     4116.75
+    ],
+    "free_mb_min": 4,
+    "max_rss_mb": {
+     "postgres": 10,
+     "ollama": 2424,
+     "python": 3640
+    }
+   },
+   "api_warnings": {
+    "WARNING api.app: CORS_ORIGINS='*' - OK for development, but set explicit origins before deploying to production (RAG_ENV=production will refuse to start).": {
+     "count": 1,
+     "first": "CORS_ORIGINS='*' - OK for development, but set explicit origins before deploying to production (RAG_ENV=production will refuse to start)."
+    },
+    "WARNING vectordb.embedder_manifest: Tenant default loaded an unstamped index: NOT_EVIDENCE; rebuild it": {
+     "count": 1,
+     "first": "Tenant default loaded an unstamped index: NOT_EVIDENCE; rebuild it"
+    },
+    "WARNING vectordb.manager: Tenant default: retriever built WITHOUT BM# index while hybrid search is enabled — retrieval degraded to vector-only. Usually means the chunk cache is empty and": {
+     "count": 1,
+     "first": "Tenant default: retriever built WITHOUT BM25 index while hybrid search is enabled — retrieval degraded to vector-only. Usually means the chunk cache is empty and could not be restored."
+    }
+   },
+   "notes": [
+    {
+     "at": "2026-10-16T01:30:51Z",
+     "by": "session",
+     "observed": "the stop rule (3x the named 120-s forecast, 360 s) ended the series at question 9, aircargo-leave-risk: no first token at the cap; the query's vector search alone took 146.9 s (0.3-33.5 s in questions 1-8) and the rerank had begun; from 01:21:50Z to the stop the API used a median 17.6% CPU over 118 samples (resources.jsonl), against 170-370% while it reranked"
+    },
+    {
+     "at": "2026-10-16T01:30:51Z",
+     "by": "session",
+     "observed": "memory on the 8-GB Mac: swap used grew from 764 MB at the run's start to 4,117 MB; the API's resident set was 3,167 MB at 00:55:01Z and 900 MB at 01:22:01Z, llama-server's 2,057 MB and 14 MB - both paged out, so question 9 waited on memory, not on computing. The sampler keeps only python, ollama, postgres and llama processes and the five busiest by CPU: what else held memory on the shared Mac is not recorded; busy by CPU during the run were chrome-headless-shell and node (00:54-01:07Z), then softwareupdated, mobileassetd and browser renderers"
+    },
+    {
+     "at": "2026-10-16T01:30:51Z",
+     "by": "session",
+     "observed": "the rerank on the CPU (RAG_DEVICE=cpu) is the slow and variable stage: 61-271 s in questions 1-8, the same two questions slowest here and in qwen3-1p7b-q5 (aircargo-dismissal-check 271 and 210 s, aircargo-dismissal-lawyer 201 and 200 s); the model read its prompt to the first token in 24-37 s and evaluated the answer in 25-33 s in every question of the series"
+    }
+   ],
+   "cases": [
+    {
+     "case": "aircargo-probation-data",
+     "question": "Какие данные нужны для ответа по испытательному сроку?",
+     "http": 200,
+     "first_token_sec": 123.27,
+     "last_token_sec": 131.598,
+     "tokens": 81,
+     "answer_tokens": 81,
+     "result_sec": 162.566,
+     "error_sec": null,
+     "total_sec": 162.566,
+     "drain_sec": 0.049,
+     "client_error": null,
+     "route": "auto",
+     "quality": null,
+     "sources": 3,
+     "suggested": 3,
+     "events": [
+      {
+       "at": 4.44,
+       "type": "status"
+      },
+      {
+       "at": 97.012,
+       "type": "token_start"
+      },
+      {
+       "at": 162.566,
+       "type": "result",
+       "quality_source": "llm",
+       "route": "auto"
+      }
+     ],
+     "answer": "Для ответа по испытательному сроку нужны:  \n- Должность,  \n- Дата приема,  \n- Условие в трудовом договоре,  \n- Длительность испытания,  \n- Результаты оценки.  \n\nИсточник: [Документ 1 | source=07_faq_probation.md]",
+     "timeline": [
+      {
+       "stage": "vectordb._base_manager.get_embeddings",
+       "end_at": 0.74,
+       "wall": 0.0
+      },
+      {
+       "stage": "vectordb.manager.get_embeddings",
+       "end_at": 0.74,
+       "wall": 0.0
+      },
+      {
+       "stage": "vectordb._base_manager.get_reranker",
+       "end_at": 4.1,
+       "wall": 0.0
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 4.4,
+       "wall": 3.67
+      },
+      {
+       "stage": "hybrid._vector_search",
+       "end_at": 9.77,
+       "wall": 5.34
+      },
+      {
+       "stage": "hybrid._rerank_scored_with_status",
+       "end_at": 96.66,
+       "wall": 86.82,
+       "reranker_ok": true,
+       "docs": 5
+      },
+      {
+       "stage": "hybrid._expand_parents",
+       "end_at": 96.68,
+       "wall": 0.0
+      },
+      {
+       "stage": "hybrid.get_relevant_documents_with_path",
+       "end_at": 96.68,
+       "wall": 92.24
+      },
+      {
+       "stage": "ollama.generate_stream",
+       "end_at": 131.69,
+       "wall": 34.98,
+       "first_chunk_sec": 26.56,
+       "chunks": 81,
+       "output_chars": 212,
+       "prompt_est_tokens": 2466,
+       "max_tokens": 1024,
+       "prompt_exact_tokens": 2101
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 156.88,
+       "wall": 25.19,
+       "output_chars": 2,
+       "prompt_est_tokens": 2685,
+       "max_tokens": 128,
+       "prompt_exact_tokens": 2320
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 162.63,
+       "wall": 0.0
+      },
+      {
+       "stage": "hybrid._vector_search",
+       "end_at": 162.93,
+       "wall": 0.29
+      }
+     ]
+    },
+    {
+     "case": "aircargo-probation-extend",
+     "question": "Можно ли продлить испытательный срок сотруднику?",
+     "http": 200,
+     "first_token_sec": 89.349,
+     "last_token_sec": 102.614,
+     "tokens": 105,
+     "answer_tokens": 105,
+     "result_sec": 138.87,
+     "error_sec": null,
+     "total_sec": 138.87,
+     "drain_sec": 0.036,
+     "client_error": null,
+     "route": "auto",
+     "quality": null,
+     "sources": 3,
+     "suggested": 3,
+     "events": [
+      {
+       "at": 0.024,
+       "type": "status"
+      },
+      {
+       "at": 61.002,
+       "type": "token_start"
+      },
+      {
+       "at": 138.87,
+       "type": "result",
+       "quality_source": "llm",
+       "route": "auto"
+      }
+     ],
+     "answer": "Можно ли продлить испытательный срок сотруднику?  \n[4]  \nПродление испытательного срока не допускается. Срок устанавливается при заключении трудового договора в пределах ст. 70 ТК РФ; периоды фактического отсутствия работника не включаются в срок испытания, но это не продление сверх согласованного срока.",
+     "timeline": [
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 0.01,
+       "wall": 0.0
+      },
+      {
+       "stage": "hybrid._vector_search",
+       "end_at": 0.31,
+       "wall": 0.29
+      },
+      {
+       "stage": "hybrid._rerank_scored_with_status",
+       "end_at": 60.95,
+       "wall": 60.63,
+       "reranker_ok": true,
+       "docs": 5
+      },
+      {
+       "stage": "hybrid._expand_parents",
+       "end_at": 60.97,
+       "wall": 0.0
+      },
+      {
+       "stage": "hybrid.get_relevant_documents_with_path",
+       "end_at": 60.97,
+       "wall": 60.95
+      },
+      {
+       "stage": "ollama.generate_stream",
+       "end_at": 102.7,
+       "wall": 41.73,
+       "first_chunk_sec": 28.37,
+       "chunks": 105,
+       "output_chars": 305,
+       "prompt_est_tokens": 2587,
+       "max_tokens": 1024,
+       "prompt_exact_tokens": 2377
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 131.82,
+       "wall": 29.11,
+       "output_chars": 2,
+       "prompt_est_tokens": 2839,
+       "max_tokens": 128,
+       "prompt_exact_tokens": 2621
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 138.94,
+       "wall": 0.0
+      }
+     ]
+    },
+    {
+     "case": "aircargo-probation-dismissal",
+     "question": "Что важно для увольнения по результатам испытательного срока?",
+     "http": 200,
+     "first_token_sec": 99.669,
+     "last_token_sec": 107.156,
+     "tokens": 60,
+     "answer_tokens": 60,
+     "result_sec": 148.521,
+     "error_sec": null,
+     "total_sec": 148.522,
+     "drain_sec": 0.092,
+     "client_error": null,
+     "route": "auto",
+     "quality": null,
+     "sources": 4,
+     "suggested": 3,
+     "events": [
+      {
+       "at": 0.041,
+       "type": "status"
+      },
+      {
+       "at": 70.723,
+       "type": "token_start"
+      },
+      {
+       "at": 148.521,
+       "type": "result",
+       "quality_source": "llm",
+       "route": "auto"
+      }
+     ],
+     "answer": "[3] Что важно для увольнения по результатам испытательного срока?  \nОтвет: Нужны документированные критерии, факты неудовлетворительной работы и соблюдение срока уведомления.",
+     "timeline": [
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 0.03,
+       "wall": 0.0
+      },
+      {
+       "stage": "hybrid._vector_search",
+       "end_at": 2.01,
+       "wall": 1.97
+      },
+      {
+       "stage": "hybrid._rerank_scored_with_status",
+       "end_at": 70.57,
+       "wall": 68.24,
+       "reranker_ok": true,
+       "docs": 5
+      },
+      {
+       "stage": "hybrid._expand_parents",
+       "end_at": 70.67,
+       "wall": 0.0
+      },
+      {
+       "stage": "hybrid.get_relevant_documents_with_path",
+       "end_at": 70.67,
+       "wall": 70.64
+      },
+      {
+       "stage": "ollama.generate_stream",
+       "end_at": 107.52,
+       "wall": 36.83,
+       "first_chunk_sec": 28.94,
+       "chunks": 60,
+       "output_chars": 174,
+       "prompt_est_tokens": 2631,
+       "max_tokens": 1024,
+       "prompt_exact_tokens": 2368
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 139.93,
+       "wall": 32.39,
+       "output_chars": 2,
+       "prompt_est_tokens": 2836,
+       "max_tokens": 128,
+       "prompt_exact_tokens": 2569
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 148.63,
+       "wall": 0.0
+      }
+     ]
+    },
+    {
+     "case": "aircargo-dismissal-check",
+     "question": "Что проверить перед ответом об увольнении работника?",
+     "http": 200,
+     "first_token_sec": 305.978,
+     "last_token_sec": 311.661,
+     "tokens": 54,
+     "answer_tokens": 55,
+     "result_sec": 351.687,
+     "error_sec": null,
+     "total_sec": 351.689,
+     "drain_sec": 0.167,
+     "client_error": null,
+     "route": "auto",
+     "quality": null,
+     "sources": 3,
+     "suggested": 3,
+     "events": [
+      {
+       "at": 0.126,
+       "type": "status"
+      },
+      {
+       "at": 276.502,
+       "type": "token_start"
+      },
+      {
+       "at": 351.687,
+       "type": "result",
+       "quality_source": "llm",
+       "route": "auto"
+      }
+     ],
+     "answer": "Перед ответом об увольнении работника необходимо проверить: основание увольнения, дату последнего рабочего дня, заявления, соглашений, приказов и расчетные выплаты.  \n[1]",
+     "timeline": [
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 0.02,
+       "wall": 0.0
+      },
+      {
+       "stage": "hybrid._vector_search",
+       "end_at": 5.37,
+       "wall": 5.35
+      },
+      {
+       "stage": "hybrid._rerank_scored_with_status",
+       "end_at": 275.99,
+       "wall": 270.51,
+       "reranker_ok": true,
+       "docs": 5
+      },
+      {
+       "stage": "hybrid._expand_parents",
+       "end_at": 276.08,
+       "wall": 0.06
+      },
+      {
+       "stage": "hybrid.get_relevant_documents_with_path",
+       "end_at": 276.08,
+       "wall": 276.06
+      },
+      {
+       "stage": "ollama.generate_stream",
+       "end_at": 311.81,
+       "wall": 35.69,
+       "first_chunk_sec": 29.86,
+       "chunks": 54,
+       "output_chars": 170,
+       "prompt_est_tokens": 2607,
+       "max_tokens": 1024,
+       "prompt_exact_tokens": 2258
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 344.36,
+       "wall": 32.45,
+       "output_chars": 2,
+       "prompt_est_tokens": 2812,
+       "max_tokens": 128,
+       "prompt_exact_tokens": 2453
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 351.88,
+       "wall": 0.0
+      }
+     ]
+    },
+    {
+     "case": "aircargo-dismissal-lawyer",
+     "question": "В каких случаях при увольнении нужен юрист?",
+     "http": 200,
+     "first_token_sec": 237.399,
+     "last_token_sec": 244.479,
+     "tokens": 61,
+     "answer_tokens": 62,
+     "result_sec": 278.938,
+     "error_sec": null,
+     "total_sec": 278.95,
+     "drain_sec": 0.163,
+     "client_error": null,
+     "route": "auto",
+     "quality": null,
+     "sources": 4,
+     "suggested": 3,
+     "events": [
+      {
+       "at": 0.051,
+       "type": "status"
+      },
+      {
+       "at": 207.937,
+       "type": "token_start"
+      },
+      {
+       "at": 278.938,
+       "type": "result",
+       "quality_source": "llm",
+       "route": "auto"
+      }
+     ],
+     "answer": "В случае увольнения по инициативе работодателя, спору о дисциплине, сокращении, материальной ответственности или защищённой категории работника нужен юрист.  \n[Вопрос 2]",
+     "timeline": [
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 0.02,
+       "wall": 0.0
+      },
+      {
+       "stage": "hybrid._vector_search",
+       "end_at": 6.46,
+       "wall": 6.44
+      },
+      {
+       "stage": "hybrid._rerank_scored_with_status",
+       "end_at": 207.34,
+       "wall": 200.72,
+       "reranker_ok": true,
+       "docs": 5
+      },
+      {
+       "stage": "hybrid._expand_parents",
+       "end_at": 207.47,
+       "wall": 0.06
+      },
+      {
+       "stage": "hybrid.get_relevant_documents_with_path",
+       "end_at": 207.47,
+       "wall": 207.46
+      },
+      {
+       "stage": "ollama.generate_stream",
+       "end_at": 244.62,
+       "wall": 37.06,
+       "first_chunk_sec": 29.84,
+       "chunks": 61,
+       "output_chars": 169,
+       "prompt_est_tokens": 2523,
+       "max_tokens": 1024,
+       "prompt_exact_tokens": 2238
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 272.06,
+       "wall": 27.42,
+       "output_chars": 2,
+       "prompt_est_tokens": 2730,
+       "max_tokens": 128,
+       "prompt_exact_tokens": 2443
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 279.19,
+       "wall": 0.0
+      }
+     ]
+    },
+    {
+     "case": "aircargo-dismissal-order",
+     "question": "Может ли ассистент подготовить приказ об увольнении?",
+     "http": 200,
+     "first_token_sec": 148.821,
+     "last_token_sec": 153.503,
+     "tokens": 44,
+     "answer_tokens": 44,
+     "result_sec": 185.866,
+     "error_sec": null,
+     "total_sec": 185.873,
+     "drain_sec": 0.154,
+     "client_error": null,
+     "route": "auto",
+     "quality": null,
+     "sources": 4,
+     "suggested": 1,
+     "events": [
+      {
+       "at": 0.108,
+       "type": "status"
+      },
+      {
+       "at": 119.987,
+       "type": "token_start"
+      },
+      {
+       "at": 185.866,
+       "type": "result",
+       "quality_source": "llm",
+       "route": "auto"
+      }
+     ],
+     "answer": "[3] Да, ассистент может подготовить черновик приказа об увольнении, но только по утвержденному шаблону и после заполнения обязательных полей.",
+     "timeline": [
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 0.08,
+       "wall": 0.0
+      },
+      {
+       "stage": "hybrid._vector_search",
+       "end_at": 5.33,
+       "wall": 5.25
+      },
+      {
+       "stage": "hybrid._rerank_scored_with_status",
+       "end_at": 119.9,
+       "wall": 114.42,
+       "reranker_ok": true,
+       "docs": 5
+      },
+      {
+       "stage": "hybrid._expand_parents",
+       "end_at": 119.93,
+       "wall": 0.01
+      },
+      {
+       "stage": "hybrid.get_relevant_documents_with_path",
+       "end_at": 119.93,
+       "wall": 119.85
+      },
+      {
+       "stage": "ollama.generate_stream",
+       "end_at": 153.6,
+       "wall": 33.65,
+       "first_chunk_sec": 28.83,
+       "chunks": 44,
+       "output_chars": 141,
+       "prompt_est_tokens": 2606,
+       "max_tokens": 1024,
+       "prompt_exact_tokens": 2308
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 181.1,
+       "wall": 27.47,
+       "output_chars": 2,
+       "prompt_est_tokens": 2801,
+       "max_tokens": 128,
+       "prompt_exact_tokens": 2494
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 186.15,
+       "wall": 0.0
+      }
+     ]
+    },
+    {
+     "case": "aircargo-leave-sources",
+     "question": "Какие источники проверять перед ответом по отпуску?",
+     "http": 200,
+     "first_token_sec": 179.211,
+     "last_token_sec": 184.17,
+     "tokens": 47,
+     "answer_tokens": 47,
+     "result_sec": 214.793,
+     "error_sec": null,
+     "total_sec": 214.794,
+     "drain_sec": 0.025,
+     "client_error": null,
+     "route": "auto",
+     "quality": null,
+     "sources": 3,
+     "suggested": 1,
+     "events": [
+      {
+       "at": 0.138,
+       "type": "status"
+      },
+      {
+       "at": 153.871,
+       "type": "token_start"
+      },
+      {
+       "at": 214.793,
+       "type": "result",
+       "quality_source": "llm",
+       "route": "auto"
+      }
+     ],
+     "answer": "[1] Проверяются политика отпусков, график отпусков, кадровые приказы и нормы ТК РФ о ежегодном, учебном и дополнительном отпуске.",
+     "timeline": [
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 0.12,
+       "wall": 0.0
+      },
+      {
+       "stage": "hybrid._vector_search",
+       "end_at": 21.99,
+       "wall": 21.86
+      },
+      {
+       "stage": "hybrid._rerank_scored_with_status",
+       "end_at": 153.79,
+       "wall": 131.66,
+       "reranker_ok": true,
+       "docs": 5
+      },
+      {
+       "stage": "hybrid._expand_parents",
+       "end_at": 153.82,
+       "wall": 0.02
+      },
+      {
+       "stage": "hybrid.get_relevant_documents_with_path",
+       "end_at": 153.82,
+       "wall": 153.7
+      },
+      {
+       "stage": "ollama.generate_stream",
+       "end_at": 184.29,
+       "wall": 30.45,
+       "first_chunk_sec": 25.33,
+       "chunks": 47,
+       "output_chars": 129,
+       "prompt_est_tokens": 2573,
+       "max_tokens": 1024,
+       "prompt_exact_tokens": 2270
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 210.95,
+       "wall": 26.65,
+       "output_chars": 2,
+       "prompt_est_tokens": 2763,
+       "max_tokens": 128,
+       "prompt_exact_tokens": 2458
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 214.85,
+       "wall": 0.0
+      }
+     ]
+    },
+    {
+     "case": "aircargo-leave-compensation",
+     "question": "Может ли ассистент рассчитать компенсацию за отпуск?",
+     "http": 200,
+     "first_token_sec": 187.386,
+     "last_token_sec": 192.788,
+     "tokens": 48,
+     "answer_tokens": 48,
+     "result_sec": 231.187,
+     "error_sec": null,
+     "total_sec": 231.187,
+     "drain_sec": 0.262,
+     "client_error": null,
+     "route": "auto",
+     "quality": null,
+     "sources": 4,
+     "suggested": 3,
+     "events": [
+      {
+       "at": 0.044,
+       "type": "status"
+      },
+      {
+       "at": 159.719,
+       "type": "token_start"
+      },
+      {
+       "at": 231.187,
+       "type": "result",
+       "quality_source": "llm",
+       "route": "auto"
+      }
+     ],
+     "answer": "Можно рассчитать компенсацию за отпуск, как указано в ответе к вопросу 3:  \n**[3]**.  \nРезультат расчета должен подтвердить бухгалтерия или HR.",
+     "timeline": [
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 0.03,
+       "wall": 0.0
+      },
+      {
+       "stage": "hybrid._vector_search",
+       "end_at": 33.55,
+       "wall": 33.51
+      },
+      {
+       "stage": "hybrid._rerank_scored_with_status",
+       "end_at": 159.64,
+       "wall": 125.98,
+       "reranker_ok": true,
+       "docs": 5
+      },
+      {
+       "stage": "hybrid._expand_parents",
+       "end_at": 159.67,
+       "wall": 0.01
+      },
+      {
+       "stage": "hybrid.get_relevant_documents_with_path",
+       "end_at": 159.67,
+       "wall": 159.63
+      },
+      {
+       "stage": "ollama.generate_stream",
+       "end_at": 192.95,
+       "wall": 33.27,
+       "first_chunk_sec": 27.7,
+       "chunks": 48,
+       "output_chars": 143,
+       "prompt_est_tokens": 2635,
+       "max_tokens": 1024,
+       "prompt_exact_tokens": 2339
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 222.89,
+       "wall": 29.9,
+       "output_chars": 2,
+       "prompt_est_tokens": 2831,
+       "max_tokens": 128,
+       "prompt_exact_tokens": 2526
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 231.8,
+       "wall": 0.0
+      }
+     ]
+    },
+    {
+     "case": "aircargo-leave-risk",
+     "question": "Что считать рисковым кейсом по отпуску?",
+     "http": 200,
+     "first_token_sec": null,
+     "last_token_sec": null,
+     "tokens": 0,
+     "answer_tokens": 0,
+     "result_sec": null,
+     "error_sec": null,
+     "total_sec": 360.301,
+     "drain_sec": null,
+     "client_error": "TimeoutError: timed out",
+     "route": null,
+     "quality": null,
+     "sources": 0,
+     "suggested": 0,
+     "events": [
+      {
+       "at": 0.42,
+       "type": "status"
+      }
+     ],
+     "answer": "",
+     "timeline": [
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 0.35,
+       "wall": 0.0
+      },
+      {
+       "stage": "hybrid._vector_search",
+       "end_at": 147.42,
+       "wall": 146.86
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "retrieval_runs": [],
+ "index": {
+  "rag_docs_aircargo": {
+   "chunks": 5589,
+   "sha256_sorted_texts": "b7cdcac13df472600c9cb4933325260dc3914da09f72ffcb98b2c8e3cfbe4b57"
+  }
+ }
+}
