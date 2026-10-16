@@ -12,7 +12,7 @@ conditions, read [`ROADMAP.md`](ROADMAP.md). The active delivery plan is
 - **First, since Julia's decisions of 2026-10-15: the chat on the production Mac** — the time
   limits are lifted to a 3,600-s ceiling with the reranker on the CPU (`468224b`) and the chat
   offers the operator on a timeout and on `human` (`056844d`; the widget `4977582`), thinking off
-  (`c2739af`), qwen3:1.7b timed live; next her model and SLO — [ROADMAP](ROADMAP.md#active).
+  (`c2739af`), qwen3:1.7b timed live; next her model Qwen3-4B-Instruct — [ROADMAP](ROADMAP.md#active).
 - Phase B remains blocked on real shipment-bound support data and the 40
   double-annotated calibration routes; the 100 labels were approved 2026-09-25.
   Do not manufacture more fixture cases to make the gate pass.

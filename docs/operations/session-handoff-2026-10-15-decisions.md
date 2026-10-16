@@ -8,6 +8,9 @@ green (run 38767774555). This part changed no code and ran no measurement. Its d
 two commits: `9698e54`, pushed at her word at 17:19:06, and the one that records her answers of
 17:15, which waits for her word.
 
+**Continued in** [the 2026-10-16 log](session-handoff-2026-10-16-chat-steps-1-3.md): steps
+1–3 done and pushed, and her production model, Qwen3-4B-Instruct-2507.
+
 ## What matters to understand
 
 **Where the product stands.** Production is `deproject-mac` (Julia, 2026-10-14: «прод на
