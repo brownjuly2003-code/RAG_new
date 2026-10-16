@@ -11,7 +11,7 @@ receives through the real path: HTTP -> the stream route -> a real
 langchain-ollama and the ollama client -> HTTP. So do the provider's tool calls
 and the raw stream fallback. Ollama 0.33.2 answers ``think: false`` from a model
 that cannot think (qwen2.5:7b) as it does without it and refuses only
-``think: true`` (``reports/chat-live-small/33d4b42/tools/think_false_probe.out``, 2026-10-15).
+``think: true`` (``reports/think-probe/2026-10-15/think_false_probe.out``).
 """
 
 from __future__ import annotations
