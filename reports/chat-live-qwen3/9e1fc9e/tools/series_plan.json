@@ -1,0 +1,67 @@
+{
+  "named": "2026-10-16T00:26:03+00:00",
+  "model": "qwen3:1.7b",
+  "code_sha": "9e1fc9eaa411e6e3aec89a8667bfa19bf7932e46",
+  "mode": "prod",
+  "forecast_sec": {
+    "first_question_of_a_fresh_api": 180,
+    "other_questions": 120
+  },
+  "forecast_basis": "qwen2.5:1.5b, a model of the same size, on this path on 2026-10-14 (reports/chat-live-small/33d4b42/runs.json): live-s2-qwen25-1p5b-floor1, one question on a fresh API, 170 s; live-s3-qwen25-1p5b-floor, five on a fresh API, 100, 93, 92, 118 and 168 s (median 100 s). The first question gets the slower of the two; qwen3:1.7b with thinking off (c2739af) wrote 21 tokens where qwen2.5:7b wrote 20 (reports/think-probe/2026-10-15)",
+  "stop_rule": "Julia, 2026-10-15: the series stops once a question runs past 3x its forecast; the session investigates at once",
+  "client_cap_sec": "540/360",
+  "cases_source": "evaluation/curated_cases_aircargo.jsonl, the first 30 in file order (the first five are the five of 2026-10-14)",
+  "steps": [
+    {
+      "label": "qwen3-1p7b-q1",
+      "cases": [
+        "aircargo-probation-data"
+      ]
+    },
+    {
+      "label": "qwen3-1p7b-q5",
+      "cases": [
+        "aircargo-probation-data",
+        "aircargo-probation-extend",
+        "aircargo-probation-dismissal",
+        "aircargo-dismissal-check",
+        "aircargo-dismissal-lawyer"
+      ]
+    },
+    {
+      "label": "qwen3-1p7b-q30",
+      "cases": [
+        "aircargo-probation-data",
+        "aircargo-probation-extend",
+        "aircargo-probation-dismissal",
+        "aircargo-dismissal-check",
+        "aircargo-dismissal-lawyer",
+        "aircargo-dismissal-order",
+        "aircargo-leave-sources",
+        "aircargo-leave-compensation",
+        "aircargo-leave-risk",
+        "aircargo-matliab-check",
+        "aircargo-matliab-disputed",
+        "aircargo-templates-choose",
+        "aircargo-templates-checklist",
+        "aircargo-templates-insufficient",
+        "aircargo-secret-check",
+        "aircargo-secret-not-auto",
+        "aircargo-secret-disclosure",
+        "aircargo-pdp-scope",
+        "aircargo-pdp-data",
+        "aircargo-pdp-uncertain",
+        "aircargo-claims-delay",
+        "aircargo-claims-damage",
+        "aircargo-claims-lawyer",
+        "aircargo-claims-forbidden",
+        "aircargo-expedition-vs-carrier",
+        "aircargo-expedition-mawb-hawb",
+        "aircargo-expedition-risks",
+        "aircargo-road-cutoff",
+        "aircargo-road-penalty",
+        "aircargo-road-seal"
+      ]
+    }
+  ]
+}
