@@ -19,6 +19,9 @@
             var closeBtn = document.getElementById('closeBtn');
             var typingNode = null;
             var isSending = false;
+            // As the web chat says it: the answer did not come in time, or did not come.
+            var TIMEOUT_TEXT = 'Ответ не пришёл вовремя. Повторите вопрос или передайте его оператору.';
+            var ERROR_TEXT = 'Не удалось получить ответ. Повторите вопрос или передайте его оператору.';
 
             function isValidOrigin(value) {
                 if (!value || value === 'null' || value === '*') {
@@ -89,6 +92,89 @@
                 messages.appendChild(node);
                 scrollMessages();
                 scheduleResize();
+                return node;
+            }
+
+            function addActionButton(row, className, label, onClick) {
+                var button = document.createElement('button');
+                button.type = 'button';
+                button.className = 'widget-action ' + className;
+                button.textContent = label;
+                button.addEventListener('click', onClick);
+                row.appendChild(button);
+                return button;
+            }
+
+            // Retry and the operator under an answer that did not come; reason is the
+            // ticket's, as /api/ask names its own: route=timeout or route=error.
+            function addReplyActions(node, question, reason, withRetry) {
+                var row = document.createElement('div');
+                row.className = 'widget-actions';
+                if (withRetry) {
+                    addActionButton(row, 'widget-retry', 'Повторить', function() {
+                        if (isSending) {
+                            return;
+                        }
+                        node.remove();
+                        input.value = question;
+                        send();
+                    });
+                }
+                if (reason) {
+                    var escalateBtn = addActionButton(row, 'widget-escalate', 'Передать оператору', function() {
+                        escalate(question, reason, row, escalateBtn);
+                    });
+                }
+                node.appendChild(row);
+                scrollMessages();
+                scheduleResize();
+            }
+
+            // A token expires (WIDGET_TOKEN_TTL_SEC) while a long answer runs: fetch a new
+            // one for the same session once, then repeat the request.
+            async function postWithToken(path, payload) {
+                await ensureBootstrap();
+                var response = await postJson(path, payload);
+                if (response.status === 401) {
+                    accessToken = '';
+                    await ensureBootstrap();
+                    response = await postJson(path, payload);
+                }
+                return response;
+            }
+
+            function postJson(path, payload) {
+                return fetch(apiBase + path, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + accessToken
+                    },
+                    body: JSON.stringify(payload)
+                });
+            }
+
+            async function escalate(question, reason, row, button) {
+                button.disabled = true;
+                setStatus('', false);
+                try {
+                    var response = await postWithToken('/api/escalate', {
+                        session_id: sessionId,
+                        question: question,
+                        reason: reason
+                    });
+                    var data = await response.json().catch(function() {
+                        return {};
+                    });
+                    if (!response.ok) {
+                        throw new Error('escalate ' + response.status);
+                    }
+                    row.remove();
+                    addMessage('assistant', data.message || 'Запрос передан оператору.');
+                } catch (err) {
+                    button.disabled = false;
+                    setStatus('Не удалось передать вопрос оператору. Попробуйте ещё раз.', true);
+                }
             }
 
             function setTyping(active) {
@@ -176,43 +262,61 @@
                 autoSizeInput();
                 setTyping(true);
 
+                var reply;
                 try {
-                    await ensureBootstrap();
-                    var headers = {
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Bearer ' + accessToken
-                    };
-                    var response = await fetch(apiBase + '/api/ask', {
-                        method: 'POST',
-                        headers: headers,
-                        body: JSON.stringify({
-                            question: question,
-                            session_id: sessionId || null
-                        })
-                    });
-
-                    var data = await response.json().catch(function() {
-                        return {};
-                    });
-
-                    if (!response.ok) {
-                        throw new Error(data.detail || 'Не удалось получить ответ.');
-                    }
-
-                    if (data.session_id) {
-                        sessionId = String(data.session_id);
-                    }
-
-                    addMessage('assistant', data.answer || 'Нет ответа');
-                } catch (err) {
-                    setStatus(err && err.message ? err.message : 'Ошибка подключения. Попробуйте позже.', true);
-                    addMessage('assistant', 'Не удалось подключиться к сервису. Попробуйте ещё раз чуть позже.');
+                    reply = await ask(question);
                 } finally {
                     setTyping(false);
                     isSending = false;
                     sendBtn.disabled = false;
                     input.focus();
                 }
+                var node = addMessage('assistant', reply.text);
+                if (reply.retry || reply.reason) {
+                    addReplyActions(node, question, reply.reason, reply.retry);
+                }
+            }
+
+            // What to show for a question: the answer, or what happened instead of it.
+            async function ask(question) {
+                try {
+                    await ensureBootstrap();
+                } catch (err) {
+                    // Without a token nothing reached the service, the operator included.
+                    setStatus(err && err.message ? err.message : 'Ошибка подключения. Попробуйте позже.', true);
+                    return {
+                        text: 'Не удалось подключиться к сервису. Попробуйте ещё раз чуть позже.',
+                        reason: '',
+                        retry: true
+                    };
+                }
+                var response;
+                try {
+                    response = await postWithToken('/api/ask', {
+                        question: question,
+                        session_id: sessionId || null
+                    });
+                } catch (err) {
+                    return { text: ERROR_TEXT, reason: 'route=error', retry: true };
+                }
+                var data = await response.json().catch(function() {
+                    return {};
+                });
+                if (response.status === 504) {
+                    // The request's wall-time limit (REQUEST_TIMEOUT_SEC) ran out.
+                    return { text: TIMEOUT_TEXT, reason: 'route=timeout', retry: true };
+                }
+                if (!response.ok) {
+                    return { text: ERROR_TEXT, reason: 'route=error', retry: true };
+                }
+                if (data.session_id) {
+                    sessionId = String(data.session_id);
+                }
+                if (data.route === 'timeout') {
+                    // The graph's own deadline: its apology, and /api/ask opens no ticket.
+                    return { text: data.answer || TIMEOUT_TEXT, reason: 'route=timeout', retry: true };
+                }
+                return { text: data.answer || 'Нет ответа', reason: '', retry: false };
             }
 
             closeBtn.addEventListener('click', function() {

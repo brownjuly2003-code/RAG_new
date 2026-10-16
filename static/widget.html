@@ -183,6 +183,34 @@
             color: #c2410c;
         }
 
+        .widget-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .widget-action {
+            padding: 5px 12px;
+            border: 1px solid rgba(25, 87, 194, 0.35);
+            border-radius: 999px;
+            background: #ffffff;
+            color: var(--brand-start);
+            font: inherit;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .widget-action:hover {
+            background: var(--brand-soft);
+        }
+
+        .widget-action:disabled {
+            cursor: default;
+            opacity: 0.6;
+        }
+
         .typing {
             display: inline-flex;
             align-items: center;
