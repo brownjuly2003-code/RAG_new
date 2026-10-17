@@ -4,8 +4,8 @@ Session `ef520894`, 2026-10-16 18:52 UTC – 2026-10-17 02:30 UTC, Claude Opus 5
 before it: [the chat's steps 1–3](session-handoff-2026-10-16-chat-steps-1-3.md). It carried out
 step 4 of the ROADMAP's active thread M — Julia's production model — in commits
 `7a99c45` to the one that adds this log, and answered her question of the session: how
-often answers go to an operator. **Nothing pushed:** `origin/master` is `e81f0c5`; the
-previous session's last log entry `26fcb4a` and this session's commits wait for her word. CI cannot run: GitHub starts no job on this account
+often answers go to an operator. **Pushed** at her word on 2026-10-17 (`e81f0c5..b351d29`),
+with the previous session's last log entry `26fcb4a`. CI cannot run: GitHub starts no job on this account
 («recent account payments have failed or your spending limit needs to be increased», CI run
 38841686267 on `e81f0c5`); the checks CI runs are run on the Mac instead (Verification).
 
@@ -121,6 +121,7 @@ Verbatim, times UTC.
   сначала замерим. Меня очень печалит, насколько проект непродуман. Ты не можешь написать
   грамотный план?» — so the handover signal is measured before anything changes, under
   [the plan](../specs/handover-signal.md) (ROADMAP thread M, step 5).
+- 2026-10-17, to the plan: «Решения. 1. давай так 2. пуш.» — the reading accepted; pushed.
 
 In force from before: D12 and D11; production is `deproject-mac`; the 3,600-s ceiling and the
 stop rule for every live run (3× each question's named forecast); a `human` answer gets the
@@ -142,11 +143,11 @@ operator button, not a ticket; her production model Qwen3-4B-Instruct-2507 (2026
 
 ## Waiting on Julia
 
-1. **The reading of the handover plan** — the session's proposal stands unless she changes it
-   before the pilot's `plan.json` is committed. Answered on 2026-10-17: measure first. The
+1. **Answered 2026-10-17:** measure first, and the plan's reading as proposed. The
    session's recommendation of 2026-10-16 — replay the widget's rule on the screening's
    answers — is withdrawn: those answers cite no `[N]`, so the claim check refuses them all.
-2. **The push** of `e81f0c5..` HEAD — `26fcb4a` and this session's commits.
+2. **The push — done 2026-10-17**, `e81f0c5..b351d29`; CI on `b351d29` started no job,
+   the billing again.
 3. **GitHub billing:** CI starts no job until the account's payment or spending limit is
    fixed; only she can.
 4. **An SLO** — none named and none proposed; the measured whole answer, median about

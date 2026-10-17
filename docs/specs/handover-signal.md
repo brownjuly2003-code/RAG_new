@@ -1,6 +1,7 @@
 # Which answers go to a person: the handover-signal plan
 
-Status 2026-10-17: **named, not run.** No answer, verdict or signal of this plan exists yet. A
+Status 2026-10-17: **named, not run;** Julia accepted the reading the same day («давай
+так»). No answer, verdict or signal of this plan exists yet. A
 cold read of the first draft by a fresh agent found nine problems; this text answers them
 (the corrections are listed [at the end](#what-the-cold-read-corrected)). Each stage's
 `plan.json` is committed before its first request, as in the records it follows
@@ -101,8 +102,7 @@ with them, and how much time does it add to an answer on the Mac?
 
 In the chat a marked answer is still shown, with the operator button; an unmarked bad answer
 reaches the client with no hint. A miss costs more than a needless button, so the reading puts
-catching first. The session's proposal, which Julia may change until the pilot's plan is
-committed:
+catching first. The session proposed it and Julia accepted it on 2026-10-17 («давай так»):
 
 - **no reading** if fewer than 15 of the 100 answers are target answers: stage 2 adds answers
   first;
@@ -215,6 +215,22 @@ nights.
   or a stronger checker on other hardware.
 - **R1 and R2, if confirmed,** are defects of the widget, fixed with a test on her word; the
   chat is the production surface, and the widget waits behind it.
+
+## Where this sits in the project plan
+
+- ROADMAP, thread M — the chat on the production Mac — step 5; step 6, the speed levers, waits
+  for it.
+- It takes over the routing part of phase B: B.4, «Judge calibration 10 → ≥40 double-annotated
+  routes», never started, and the calibration routes of open question Q2b. Both asked for routes
+  graded by people, which D11 (2026-10-03) closed; here the session's model judges. This is the
+  session's reading, said to Julia on 2026-10-17. B.2, B.3 and B.5 stay blocked on
+  shipment-bound data, which this plan does not touch.
+- Where a measured floor goes: the chat reads `QUALITY_THRESHOLD`; the widget can take its
+  floors from a calibration artifact (`RAG_CALIBRATION_ARTIFACT`, `agent/calibration.py:372`),
+  which no measurement has written yet. Outcome A writes its threshold where the wired surface
+  reads it, with the record's provenance.
+- The quality thread (phase Q, `docs/specs/plan_03_10_26.md`) measures retrieval, not routing;
+  it waits behind thread M under the WIP limit.
 
 ## What this plan does not do
 

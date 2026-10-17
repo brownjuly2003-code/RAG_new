@@ -106,7 +106,7 @@ T-03: (a). B.1: (b) since the 2026-09-25 approval, real labelled 0 → 100 (T-54
 | B.1 | Labels on all 100 cases | **done** (b), `real_labelled`: approved 2026-09-25 (T-54) |
 | B.2 | Fixture TMS covering the cases | **blocked** — three reasons, not one |
 | B.3 | First real numbers on the labelled cases | **blocked** — same |
-| B.4 | Judge calibration 10 → ≥40 double-annotated routes | not started |
+| B.4 | Judge calibration 10 → ≥40 double-annotated routes | **taken over** 2026-10-17 by the [handover plan](docs/specs/handover-signal.md), thread M step 5: routes judged by the session's model under D11 |
 | B.5 | Corpus v1.0 at `real_labelled` | labels approved; **blocked** on shipment-bound data (Q2b) |
 | GR-0.2 | Separate pinned bucket: 15 cases over 13 documents; 10 `multi_hop`, 5 `aggregation`; original phase-C dataset unchanged | **done as preparation**, not a measured slice |
 | GR-0.3 | [Baseline](docs/evidence/gr0-bucket-baseline.md), `91ce1745…`: top-5 0.5067 / 0.9050; 99 single-hop 0.5063 / 0.9091, one multi-hop | **done** (c) |
@@ -125,7 +125,7 @@ T-03: (a). B.1: (b) since the 2026-09-25 approval, real labelled 0 → 100 (T-54
 Q1, Q2a and Q4 answered, D2/D3 closed; the rest block their phase:
 
 - **Q2 (B):** label approval answered 2026-09-25 («Одобряю», all five batches). Open (Q2b):
-  40 double-annotated calibration routes and 100 real shipment-bound support requests;
+  100 real shipment-bound support requests (its calibration routes: the handover plan, D11);
   B.2/B.3/B.5 stay blocked without them, and resolution numbers stay synthetic.
 - **Q3 (phase C):** heavy runs on Colab or the iMac. **Q4 (phase E)** confirmed
   2026-09-30: publish current `brownjuly2003-code/RAG_new` as **RAG assistant**, Pages `/RAG_new/`.

@@ -14,8 +14,8 @@ conditions, read [`ROADMAP.md`](ROADMAP.md). The active delivery plan is
   a timeout and on `human` (`056844d`; widget `4977582`), thinking off (`c2739af`), qwen3:1.7b
   timed live, her Qwen3-4B-Instruct the default (`7a99c45`) and timed live (`19beeb1`); next the
   handover signal measured, then fewer rerank candidates — [ROADMAP](ROADMAP.md#active).
-- Phase B remains blocked on real shipment-bound support data and the 40
-  double-annotated calibration routes; the 100 labels were approved 2026-09-25.
+- Phase B remains blocked on real shipment-bound support data; its calibration routes (B.4)
+  are thread M step 5 under D11; the 100 labels were approved 2026-09-25.
   Do not manufacture more fixture cases to make the gate pass.
 - Phase C benchmark execution and resume instructions belong in
   `CURRENT_STATE.md`; do not launch a duplicate run from this file.
@@ -23,8 +23,8 @@ conditions, read [`ROADMAP.md`](ROADMAP.md). The active delivery plan is
   tab, proven by the ask → trace → admin HTTP test. This is a product-view slice,
   not a measured quality gain. The local judge can call the existing NLI scorer
   for disputed claims, but the live view does not run it. The pinned model has
-  not run on this judge; B.4 (≥ 40 double-annotated routes) is not started, and under D11 no
-  person grades them.
+  not run on this judge; B.4 (≥ 40 double-annotated routes) is taken over by the handover
+  plan, judged by the session's model under D11.
 - P2: the [blinded judgment](docs/evidence/p2-blinded-relevance-judgment.md) has complete GLM and Sonnet runs (115/115 cases each). H α is 0.8566; primary τ_b is 0.1561, CI95 [0.0197, 0.2880], giving the registered `RULER_DOES_NOT_TRACK` verdict. No human grades will be collected (plan D11): the consensus is `model-cross-checked` against the Astra and Opus references ([slice 1.1](docs/evidence/p2-model-reference-kappa.md): κ 0.9333 / 0.9604, both CI95 above 0.7; the sample's question classes and unexpanded top-5 contexts only);
   Mistral returned `zero_limit` and needs a changed account limit before a new attempt. Keep the official gate and retrieval defaults unchanged.
   P1 and P1b are both `NO_SHIP` ([P1b capsule](docs/evidence/p1b-expanded-cut.md)): H-relative exploratory verdicts on 100 agent-authored `agent_labelled` cases (0 approved at the time); neither changed product behaviour.
