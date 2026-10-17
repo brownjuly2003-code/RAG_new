@@ -530,9 +530,8 @@ def test_chunks_and_preserve_measure_the_product_ingestion(
     assert first["metadata"]["mtime"] == bases.registration()["registered"] + "T00:00:00"
     assert first["metadata"]["content_hash"] == bases.sha256(LEAVE_MARKDOWN.encode("utf-8"))
     assert (first["metadata"]["h1"], first["metadata"]["h2"]) == ("Leave and pay", "Overview")
-    assert first["page_content"].startswith(
-        f"[Контекст: Из документа {name}, раздел: Leave and pay › Overview]\n# Leave and pay"
-    )
+    # The title "Leave and pay" is the name without its hash: the header says it once.
+    assert first["page_content"].startswith(f"[{name} › Overview]\n# Leave and pay")
     # The non-breaking space of the page is a space in the chunk, not a lost character.
     assert "You can take leave." in first["page_content"]
     again = external_base.chunks_step("conditionalqa", host.out / "conditionalqa")

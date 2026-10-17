@@ -40,8 +40,9 @@ from evaluation import external_convert as convert
 from evaluation import external_gold as gold
 from evaluation import external_parts as parts
 from scripts import corpus_manifest
+from vectordb import contextual_header
 
-HEADER_LIMIT = 200  # vectordb._base_manager.add_contextual_headers cuts a header there
+HEADER_LIMIT = contextual_header.LIMIT  # add_contextual_headers shortens a header there
 _LEVELS = ("h1", "h2", "h3", "h4")
 
 
@@ -206,29 +207,28 @@ def _spread(values: list[int]) -> dict[str, float]:
 
 
 def _headers(chunks: list[dict[str, Any]]) -> dict[str, Any]:
-    """How the contextual headers carry the heading paths: whole, or cut at the limit."""
-    cut = unlike = 0
-    kept: list[int] = []
+    """How the contextual headers carry the heading paths: whole, or shortened at the limit.
+
+    A shortened header drops outer section levels and keeps the document and the heading
+    nearest to the text (``vectordb.contextual_header``); the count says how many lost a level.
+    """
+    shortened = unlike = 0
     for chunk in chunks:
         metadata = chunk["metadata"]
-        path = " › ".join(str(metadata[key]).strip() for key in _LEVELS if metadata.get(key))
-        opening = f"Из документа {metadata['source']}"
-        if path:
-            opening += ", раздел: "
-        header = (opening + path)[:HEADER_LIMIT]
+        header_parts = contextual_header.header_parts(
+            str(metadata["source"]), contextual_header.heading_path(metadata)
+        )
+        header = contextual_header.compose(header_parts, HEADER_LIMIT)
         unlike += metadata.get("contextual_header") != header or not chunk[
             "page_content"
-        ].startswith(f"[Контекст: {header}]\n")
-        if len(opening) + len(path) > HEADER_LIMIT:
-            cut += 1
-            kept.append(max(HEADER_LIMIT - len(opening), 0))
+        ].startswith(contextual_header.render(header) + "\n")
+        shortened += len(contextual_header.SEPARATOR.join(header_parts)) > HEADER_LIMIT
     return {
         "chunks_with_a_heading_path": sum(
             any(chunk["metadata"].get(key) for key in _LEVELS) for chunk in chunks
         ),
         "chunks_whose_header_is_not_the_source_and_the_heading_path": unlike,
-        "heading_paths_cut_by_the_header_limit": cut,
-        "fewest_path_characters_kept_in_a_cut_header": min(kept) if kept else None,
+        "heading_paths_cut_by_the_header_limit": shortened,
     }
 
 

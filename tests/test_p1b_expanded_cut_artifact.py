@@ -1,8 +1,10 @@
 """Offline replay of the committed P1b expanded-cut report.
 
-The pins run anywhere. The whole report is rebuilt from committed inputs and the
-manifest-checked corpus when its directory and langchain_core are present. Live-code
-file digests are pinned separately against the git blobs at CODE_COMMIT.
+The pins run anywhere. Live-code file digests are pinned separately against the git
+blobs at CODE_COMMIT. The whole-report rebuild ran against the live code until stage 1
+changed the chunk header (docs/specs/stage1-fixes.md row 5): the live chunker no longer
+writes the texts the record's pool holds, so the rebuild is a check of the record at its
+own commit, ``REPLAY_AT_COMMIT`` below, and the live replay skips with that reason.
 """
 
 import hashlib
@@ -30,6 +32,11 @@ CORPUS_SHA256 = "c8562a64f88f72172f29e30865091be79f08d00ce65fbf675f34de64dcebe34
 CORPUS_FILES = 201
 CHUNK_COUNT = 5589
 DECISION = "NO_SHIP"
+REPLAY_AT_COMMIT = (
+    f"the record is rebuilt by the code it was measured with: at {CODE_COMMIT[:7]} run the "
+    "capsule's reproduction commands; since stage 1 the live chunk header differs from the "
+    "pool's, so a rebuild with the live code cannot give the record's bytes"
+)
 
 
 @pytest.fixture(scope="module")
@@ -52,26 +59,8 @@ def _replay_corpus_dir() -> Path:
 
 @pytest.fixture(scope="module")
 def rebuilt(published):
-    """The whole report, rebuilt once from the corpus."""
-    pytest.importorskip("langchain_core")
-    corpus_dir = _replay_corpus_dir()
-
-    def code_digests(paths):
-        assert paths == p1b.CODE_PATHS
-        return dict(published["provenance"]["code"]["files"])
-
-    with pytest.MonkeyPatch.context() as mp:
-        mp.setattr(p1b, "_git_commit", lambda: {"commit": CODE_COMMIT, "tree_clean": True})
-        mp.setattr(p1b, "_code_digests", code_digests)
-        import config.settings as settings_module
-
-        mp.setattr(settings_module, "_settings", None)
-        for name in list(os.environ):
-            if name.startswith("RAG_"):
-                mp.delenv(name)
-        mp.setenv("RAG_SEMANTIC_CHUNKING", "false")
-        mp.setenv("RAG_STRUCTURAL_CHUNKING", "true")
-        return p1b.build_report(corpus_dir=corpus_dir)
+    """The whole report, rebuilt once from the corpus — at the record's commit only."""
+    pytest.skip(REPLAY_AT_COMMIT)
 
 
 def test_missing_corpus_skip_names_selected_path_and_source(monkeypatch, tmp_path):

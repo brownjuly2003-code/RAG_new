@@ -10,9 +10,10 @@ dropped rather than re-ranked.
 
 These tests are the gate for the arm in `scripts/ab_context_precision.py`:
 
-* the header parser agrees with the *producer* — the fixture is built by
-  calling `vectordb.manager.add_contextual_headers`, the function that wrote
-  the headers in the pool, so the parser cannot drift into measuring itself;
+* the header parser agrees with the *producer* that wrote the headers in the
+  pool — the metadata branch of `add_contextual_headers` before stage 1
+  replaced the header (`docs/specs/stage1-fixes.md` row 5), copied below from
+  commit 99cd15f — so the parser cannot drift into measuring itself;
 * a header the producer did not write is **counted**, never silently treated as
   a sectionless chunk, and never dropped (a parse failure must not reject a
   candidate the reranker admitted);
@@ -79,18 +80,21 @@ FAKE_COMMIT = "0" * 40
 
 
 def _produced(body: str, source: str, *headings: str, page: str = "") -> str:
-    """One chunk as the production ingest writes it, headers included."""
-    from vectordb._base_manager import Document
-    from vectordb.manager import add_contextual_headers
+    """One chunk as the ingest wrote it when the pool was taken, header included.
 
-    metadata: dict[str, Any] = {"source": source}
-    for level, heading in enumerate(headings, start=1):
-        metadata[f"h{level}"] = heading
+    Stage 1 replaced the live header with a language-free one; the pool and the arm keep
+    the old form. This is the old producer's metadata branch, as it stood at 99cd15f in
+    ``vectordb/_base_manager.py::add_contextual_headers``.
+    """
+    header = f"Из документа {source}"
+    heading_path = [str(heading).strip() for heading in headings if heading]
+    if heading_path:
+        header += ", раздел: " + " › ".join(heading_path)
     if page:
-        metadata["page"] = page
-    chunk = Document(page_content=body, metadata=metadata)
-    full = Document(page_content=body, metadata={"source": source})
-    return add_contextual_headers([chunk], [full], 4096)[0].page_content
+        header += f", стр. {page}"
+    if len(header) > 200:
+        header = header[:200]
+    return f"[Контекст: {header}]\n{body}"
 
 
 # ---------------------------------------------------------------------------
@@ -134,7 +138,7 @@ def test_a_heading_that_contains_the_page_marker_keeps_its_full_heading_path() -
     """``, стр. `` inside a heading is not the producer's page marker.
 
     The producer appends the marker last and only when the chunk's metadata
-    carries a page (``vectordb/_base_manager.py``: ``if page:``), so a heading
+    carries a page (``_produced`` above: ``if page:``), so a heading
     that contains the separator itself has to survive parsing. Stripping from the
     right on the separator alone loses it: the tail has to be something that can
     actually *be* a page number.

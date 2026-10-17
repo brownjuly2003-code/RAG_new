@@ -15,6 +15,7 @@ from typing import Any
 
 from llm.providers.base import estimate_window_tokens, flatten_messages, window_input_limit
 from llm.role_params import generation_kwargs_for_role
+from vectordb import contextual_header
 
 EXCERPT_GAP = "\n\n[…]\n\n"
 
@@ -63,7 +64,9 @@ def _cut_to_tokens(text: str, max_tokens: int) -> str:
     return text[:low]
 
 
-def _excerpt(text: str, question: str, max_tokens: int) -> str:
+def _excerpt(
+    text: str, question: str, max_tokens: int, metadata: dict[str, Any] | None = None
+) -> str:
     """Paragraphs of ``text`` that share the most terms with ``question``, in order."""
     if max_tokens <= 0:
         return ""
@@ -85,7 +88,7 @@ def _excerpt(text: str, question: str, max_tokens: int) -> str:
             candidates = [
                 i
                 for i, line in enumerate(lines)
-                if line.strip() and not line.lstrip().startswith("[Контекст:")
+                if line.strip() and not contextual_header.is_header_line(line, metadata)
             ]
             line_index = (
                 max(
@@ -132,7 +135,10 @@ def fit_all_context_docs(
             {
                 **doc,
                 "page_content": _excerpt(
-                    str(doc.get("page_content") or ""), question, share + (index < extra)
+                    str(doc.get("page_content") or ""),
+                    question,
+                    share + (index < extra),
+                    doc.get("metadata"),
                 ),
             }
             for index, doc in enumerate(docs)
@@ -181,7 +187,9 @@ def fit_context_docs(
             continue
         empty_doc = {**doc, "page_content": ""}
         remaining = limit - prompt_input_tokens(build_prompt([*packed, empty_doc]), schema)
-        text = _excerpt(str(doc.get("page_content") or ""), question, remaining)
+        text = _excerpt(
+            str(doc.get("page_content") or ""), question, remaining, doc.get("metadata")
+        )
         if text.strip():
             view = {**doc, "page_content": text}
             if prompt_input_tokens(build_prompt([*packed, view]), schema) <= limit:

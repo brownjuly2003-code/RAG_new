@@ -41,6 +41,7 @@ from evaluation.judge_contract import _validate_chunk_address
 from llm.providers.base import ProviderUnavailable
 from llm.providers.pinned_ollama import OllamaUnreachable
 from scripts import production_parity as parity
+from vectordb import contextual_header
 
 STAGES = ("prepare", "transform", "embed", "retrieve", "grade")
 ARCHIVE = "gr1b-4436d61-graph-chunks"
@@ -223,9 +224,7 @@ class AddressBook:
         if headings:
             address["section_path"] = headings
         else:
-            body = seed["page_content"]
-            if body.startswith("[Контекст:") and "\n" in body:
-                body = body.split("\n", 1)[1]
+            body = contextual_header.strip(seed["page_content"], metadata)
             header = metadata.get("contextual_header")
             if header and body.startswith(str(header) + "\n"):
                 body = body[len(str(header)) + 1 :]

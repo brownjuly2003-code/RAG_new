@@ -161,7 +161,8 @@ def test_build_vector_store_adds_contextual_headers_when_enabled(
         tenant_id="acme",
     )
 
-    assert chunks[0].page_content.startswith("[Контекст:")
+    header = chunks[0].metadata["contextual_header"]
+    assert chunks[0].page_content.startswith(f"[{header}]\n")
     assert chunks[0].metadata["has_context_header"] is True
 
 
@@ -248,7 +249,8 @@ def test_build_vector_store_skips_contextual_headers_when_disabled(
         tenant_id="acme",
     )
 
-    assert not chunks[0].page_content.startswith("[Контекст:")
+    assert "contextual_header" not in chunks[0].metadata
+    assert not chunks[0].page_content.startswith("[")
     assert "has_context_header" not in chunks[0].metadata
 
 
@@ -276,7 +278,10 @@ def test_add_contextual_headers_preserves_full_body_when_over_chunk_size() -> No
     enriched = tenant_manager.add_contextual_headers([chunk], [], chunk_size=len(body))
 
     out = enriched[0].page_content
-    assert out.startswith("[Контекст:")
+    assert out.startswith(
+        "[05_tlog_regulation_cross_border.md › Регламент: международные перевозки › "
+        "2. Обязательные поля]\n"
+    )
     assert body in out  # тело сохранено целиком
     assert out.endswith(tail_row)  # хвостовая строка таблицы не срезана
     assert len(out) > len(body)  # заголовок добавлен, а не вытеснил контент
@@ -286,7 +291,8 @@ def test_add_contextual_headers_preserves_full_body_when_over_chunk_size() -> No
 
 
 def test_contextual_header_fallback_clamps_pathological_heading_path() -> None:
-    """No-LLM fallback клампит заголовок до 200 символов, как LLM-путь."""
+    """No-LLM fallback держит заголовок в 200 символах: уходят внешние уровни разделов,
+    документ и ближайший к тексту раздел остаются."""
     chunk = tenant_manager.Document(
         page_content="x",
         metadata={
@@ -298,7 +304,9 @@ def test_contextual_header_fallback_clamps_pathological_heading_path() -> None:
 
     enriched = manager.add_contextual_headers([chunk], llm=None)
 
-    assert len(enriched[0].metadata["contextual_header"]) == 200
+    header = enriched[0].metadata["contextual_header"]
+    assert len(header) <= 200
+    assert header == "doc_" + "a" * 80 + ".md › … › Подраздел " + "в" * 90
 
 
 def test_ingest_pipeline_uses_provider_batch_for_contextual_headers(
@@ -352,7 +360,7 @@ def test_ingest_pipeline_uses_provider_batch_for_contextual_headers(
     pipeline.ingest(tmp_path, tenant_id="acme")
 
     assert captured["batches"]
-    assert captured["docs"][0].page_content.startswith("[Контекст: Batch header]")
+    assert captured["docs"][0].page_content.startswith("[Batch header]\n")
 
 
 def test_generate_headers_bounded_preserves_order_and_logs_progress(caplog) -> None:
@@ -441,4 +449,4 @@ def test_ingest_pipeline_falls_back_to_sequential_headers_when_batch_unsupported
     pipeline.ingest(tmp_path, tenant_id="acme")
 
     assert captured["calls"] == 1
-    assert captured["docs"][0].page_content.startswith("[Контекст: Sequential header]")
+    assert captured["docs"][0].page_content.startswith("[Sequential header]\n")

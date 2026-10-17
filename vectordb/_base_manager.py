@@ -1092,14 +1092,12 @@ class HybridRetriever:
         return scores_by_key, duplicate_drops, rerank_status
 
     @staticmethod
-    def _strip_contextual_header(text: str) -> str:
+    def _strip_contextual_header(text: str, metadata: dict[str, Any] | None = None) -> str:
         """Neighbour sections join an already-anchored core chunk — their own
-        "[Контекст: ...]" line would only add noise to the merged text."""
-        if text.startswith("[Контекст:"):
-            first_nl = text.find("\n")
-            if first_nl != -1:
-                return text[first_nl + 1:]
-        return text
+        header line would only add noise to the merged text."""
+        from vectordb import contextual_header
+
+        return contextual_header.strip(text, metadata)
 
     def _expand_parents(self, docs: list[Document]) -> list[Document]:
         """Parent-expansion: дополняет финальные top-k чанки соседними
@@ -1133,7 +1131,9 @@ class HybridRetriever:
                     nkey = _rrf_document_key(neighbor, self._doc_key_chars)
                     if nkey in used_keys:
                         continue
-                    text = self._strip_contextual_header(neighbor.page_content).strip()
+                    text = self._strip_contextual_header(
+                        neighbor.page_content, neighbor.metadata
+                    ).strip()
                     if not text or len(text) > budget:
                         continue
                     budget -= len(text)
@@ -1364,8 +1364,11 @@ def add_contextual_headers(
 
     Это повышает точность retrieval на ~49% (по данным Anthropic).
 
-    Если LLM недоступна, генерирует заголовок из metadata (source, page).
+    Если LLM недоступна, генерирует заголовок из metadata: документ и путь
+    разделов в формате ``vectordb.contextual_header`` — без слов какого-либо языка.
     """
+    from vectordb import contextual_header
+
     enriched: list[Document] = []
 
     # Группируем чанки по source документу для контекста
@@ -1382,21 +1385,20 @@ def add_contextual_headers(
             # LLM генерирует краткое описание контекста
             doc_preview = source_texts.get(source, "")[:500]
             prompt = (
-                "Дан фрагмент документа и начало этого документа для контекста.\n"
-                "Напиши ОДНО краткое предложение (до 30 слов), описывающее,\n"
-                "о чём этот фрагмент и откуда он.\n"
-                "Не повторяй содержимое фрагмента, просто опиши его место в документе.\n\n"
-                f"Документ: {source}\n"
-                f"Начало документа: {doc_preview}\n\n"
-                f"Фрагмент:\n{chunk.page_content}\n\n"
-                "Краткое описание контекста:"
+                "Here is a fragment of a document and the beginning of that document.\n"
+                "Write ONE short sentence (up to 30 words) on what the fragment is about\n"
+                "and where it stands in the document, in the language of the fragment.\n"
+                "Do not repeat the fragment's content; describe its place in the document.\n\n"
+                f"Document: {source}\n"
+                f"Beginning of the document: {doc_preview}\n\n"
+                f"Fragment:\n{chunk.page_content}\n\n"
+                "Short description of the context:"
             )
             try:
-                header = llm.invoke(prompt).strip()
-                if len(header) > 200:
-                    header = header[:200]
+                header = " ".join(str(llm.invoke(prompt)).split())
+                header = contextual_header.compose([header], contextual_header.LIMIT)
             except Exception:
-                header = f"Из документа {source}"
+                header = contextual_header.compose([str(source)], contextual_header.LIMIT)
         else:
             # Fallback: генерируем из metadata (без LLM).
             # Несём markdown heading-path (h1..h4, которые проставляет
@@ -1404,22 +1406,13 @@ def add_contextual_headers(
             # ("Обязательные поля") + тему дока, чего не хватало для запросов
             # класса "какие поля нужны для X" (см.
             # archive/docs/operations/2026-06-03-r7-llm-judged-baseline.md).
-            meta = chunk.metadata or {}
-            header = f"Из документа {source}"
-            heading_path = [str(meta[h]).strip() for h in ("h1", "h2", "h3", "h4") if meta.get(h)]
-            if heading_path:
-                header += ", раздел: " + " › ".join(heading_path)
-            page = meta.get("page", "")
-            if page:
-                header += f", стр. {page}"
-            # Та же граница, что у LLM-пути: заголовок — якорь, не контент,
-            # и его длина должна быть ограничена (см. manager.add_contextual_headers,
-            # который больше не режет тело чанка и полагается на эту границу).
-            if len(header) > 200:
-                header = header[:200]
+            # Длина ограничена (manager.add_contextual_headers не режет тело
+            # чанка и полагается на эту границу); при превышении уходят внешние
+            # уровни разделов, ближайший к тексту остаётся.
+            header = contextual_header.for_chunk(chunk.metadata, contextual_header.LIMIT)
 
         # Prepend header to chunk content
-        new_content = f"[Контекст: {header}]\n{chunk.page_content}"
+        new_content = f"{contextual_header.render(header)}\n{chunk.page_content}"
         enriched.append(Document(
             page_content=new_content,
             metadata={**(chunk.metadata or {}), "contextual_header": header},

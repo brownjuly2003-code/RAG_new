@@ -208,7 +208,7 @@ def test_add_contextual_headers_uses_llm_truncates_and_falls_back() -> None:
     full_doc = manager.Document(page_content="full source preview", metadata={"source": "Source A"})
 
     enriched = manager.add_contextual_headers([chunk], _LLM("x" * 250), [full_doc])
-    assert enriched[0].metadata["contextual_header"] == "x" * 200
+    assert enriched[0].metadata["contextual_header"] == "x" * 199 + "…"
     assert enriched[0].page_content.startswith("[Context:") is False
     assert enriched[0].page_content.startswith("[")
 
@@ -216,13 +216,15 @@ def test_add_contextual_headers_uses_llm_truncates_and_falls_back() -> None:
         [manager.Document(page_content="beta detail", metadata={"source": "Source B"})],
         _LLM(RuntimeError("boom")),
     )
-    assert fallback[0].metadata["contextual_header"].endswith("Source B")
+    assert fallback[0].metadata["contextual_header"] == "Source B"
 
     no_llm = manager.add_contextual_headers(
         [manager.Document(page_content="gamma detail", metadata={"source": "Source C", "page": 4})],
         None,
     )
-    assert "4" in no_llm[0].metadata["contextual_header"]
+    # The page is the chunk's metadata, not a word of its header.
+    assert no_llm[0].metadata["contextual_header"] == "Source C"
+    assert no_llm[0].metadata["page"] == 4
 
 
 def test_contextual_header_no_llm_carries_markdown_heading_path() -> None:
@@ -243,17 +245,18 @@ def test_contextual_header_no_llm_carries_markdown_heading_path() -> None:
     )
     enriched = manager.add_contextual_headers([chunk], None)
     header = enriched[0].metadata["contextual_header"]
-    assert "раздел:" in header
-    assert "Регламент: опасные грузы (dangerous goods)" in header
-    assert "2. Обязательные поля" in header
-    assert "›" in header
+    assert header == (
+        "05_tlog_regulation_dangerous_goods.md › "
+        "Регламент: опасные грузы (dangerous goods) › 2. Обязательные поля"
+    )
     # the anchor is prepended to the embedded text, not just stored in metadata
     assert header in enriched[0].page_content
-    # a chunk WITHOUT heading metadata must be unchanged in shape (no stray "раздел:")
+    # a chunk WITHOUT heading metadata carries its document alone
     plain = manager.add_contextual_headers(
         [manager.Document(page_content="x", metadata={"source": "S"})], None,
     )
-    assert "раздел:" not in plain[0].metadata["contextual_header"]
+    assert plain[0].metadata["contextual_header"] == "S"
+    assert plain[0].page_content == "[S]\nx"
 
 
 def test_hybrid_retriever_vector_paths_and_reranker_fallback(

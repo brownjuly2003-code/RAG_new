@@ -38,6 +38,7 @@ from ingestion.graph_activation import log_graph_activation
 from ingestion.loader import DocumentLoader
 from ingestion.structure_graph import build_structural_graph
 from vectordb import _base_manager as legacy_manager
+from vectordb import contextual_header
 
 if TYPE_CHECKING:
     from ingestion.structure_graph_repository import StructuralGraphRepository
@@ -249,8 +250,12 @@ class IngestPipeline:
                             header = str(getattr(response, "text", "") or "").strip()
                             if not header:
                                 continue
-                            header = header[:200]
-                            doc.page_content = f"[Контекст: {header}]\n{doc.page_content}"
+                            header = contextual_header.compose(
+                                [" ".join(header.split())], contextual_header.LIMIT
+                            )
+                            doc.page_content = (
+                                f"{contextual_header.render(header)}\n{doc.page_content}"
+                            )
                             metadata = getattr(doc, "metadata", None)
                             if not isinstance(metadata, dict):
                                 metadata = {}

@@ -161,7 +161,9 @@ def test_expansion_members_read_what_parent_expansion_joined() -> None:
             parts = [
                 chunks[member]["page_content"]
                 if member == seed
-                else gold.strip_header(chunks[member]["page_content"]).strip()
+                else gold.strip_header(
+                    chunks[member]["page_content"], chunks[member]["metadata"]
+                ).strip()
                 for member in members
             ]
             assert "\n\n".join(parts) == document.page_content

@@ -12,6 +12,8 @@ from __future__ import annotations
 from collections.abc import Mapping, Sequence
 from typing import Any, Literal
 
+from vectordb import contextual_header
+
 DocGradeOutcome = Literal[
     "ok",
     "empty_retrieval",
@@ -48,8 +50,8 @@ def _is_context_header_only(doc: Any) -> bool:
     if metadata.get("has_context_header") is not True:
         return False
     text = _doc_text(doc).strip()
-    first_line, separator, remainder = text.partition("\n")
-    return first_line.startswith("[Контекст:") and (not separator or not remainder.strip())
+    first_line, _, remainder = text.partition("\n")
+    return contextual_header.is_header_line(first_line, metadata) and not remainder.strip()
 
 
 def replace_relevant_context_headers(

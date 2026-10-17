@@ -42,7 +42,6 @@ from typing import Any
 
 MATCH_RULE = "external-gold/range-coverage-v1"
 STATES = ("whole", "split", "lost")
-_HEADER = "[Контекст:"
 
 Range = tuple[int, int]
 
@@ -59,13 +58,11 @@ def visible(text: str) -> tuple[str, list[int]]:
     return "".join(kept), before
 
 
-def strip_header(text: str) -> str:
+def strip_header(text: str, metadata: Mapping[str, Any] | None = None) -> str:
     """A chunk's text without its contextual header line, as parent expansion strips it."""
-    if text.startswith(_HEADER):
-        end = text.find("\n")
-        if end != -1:
-            return text[end + 1 :]
-    return text
+    from vectordb import contextual_header
+
+    return contextual_header.strip(text, metadata)
 
 
 @dataclass(frozen=True)
@@ -117,7 +114,7 @@ def locate_chunks(
     for chunk in chunks:
         name = str(chunk["metadata"].get("source") or "")
         source = sources.get(name)
-        needle = visible(strip_header(chunk["page_content"]))[0]
+        needle = visible(strip_header(chunk["page_content"], chunk["metadata"]))[0]
         if source is None or not needle:
             places.append(None)
             continue
@@ -195,7 +192,7 @@ def expansion_members(
         ]
 
     def body(position: int) -> str:
-        return strip_header(chunks[position]["page_content"]).strip()
+        return strip_header(chunks[position]["page_content"], chunks[position]["metadata"]).strip()
 
     before = side(range(seed - 1, seed - window - 1, -1))
     after = side(range(seed + 1, seed + window + 1))
