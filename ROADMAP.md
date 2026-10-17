@@ -12,9 +12,10 @@ WIP limit: **one measurement on the Mac at a time**; work without the Mac runs b
 
 **Now (2026-10-17): [`PLAN.md`](PLAN.md), the one plan — stage 0 done, stage 1 next at Julia's word.**
 Stages: 1 — the production model's 100 aircargo answers on the client's path, judged, with the
-handover signals; 2 — retrieval without generation on the four corpora (aircargo, ConditionalQA,
-WixQA, MultiHop-RAG), 300 judged answers on the three external bases on the current path
-(Julia's «Вариант B», 2026-10-17) and the graph lane on aircargo; 3 — the handover signal chosen
+handover signals; 2 — the code made ready for foreign corpora (an audit for Russian- and
+aircargo-bound spots, each fixed or recorded), then retrieval without generation on the four
+corpora (aircargo, ConditionalQA, WixQA, MultiHop-RAG), 300 judged answers on the three
+external bases on the current path (Julia's «Вариант B», 2026-10-17) and the graph lane on aircargo; 3 — the handover signal chosen
 and wired; 4 — speed and memory on the Mac, the final path, then Julia's SLO; 5 — the external
 answers again, only if stage 4 changed the path; 6 — production running as a service; 7 — retrieval
 mechanisms, the graph included, on end metrics; 8 — publication, Julia's gate. Each closed
