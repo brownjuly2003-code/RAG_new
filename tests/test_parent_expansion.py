@@ -104,7 +104,10 @@ def test_char_budget_skips_oversized_neighbors() -> None:
     core = manager.Document(page_content="core", metadata={"source": "a.md"})
     chunks = [big, core]
     retriever = _retriever(
-        chunks, hits=[core], rerank_k=1, parent_expansion_max_chars=100,
+        chunks,
+        hits=[core],
+        rerank_k=1,
+        parent_expansion_max_chars=100,
     )
 
     result = retriever.get_relevant_documents("вопрос")
@@ -127,6 +130,52 @@ def test_neighbor_contextual_header_is_stripped() -> None:
     assert result[0].page_content == "тело секции\n\ncore"
 
 
+def _fee_chunks() -> list[manager.Document]:
+    """Three pieces of one section, cut with their overlap and headed as stage 1 heads them."""
+    header = "a.md › Fees"
+    meta = {"source": "a.md", "h1": "Fees", "contextual_header": header}
+    seams = ["the fee is charged once a month", "on the day the plan started"]
+    bodies = [
+        f"Plans differ in price, and {seams[0]}",
+        f"{seams[0]} {seams[1]}",
+        f"{seams[1]}, and it is not refunded.",
+    ]
+    return [
+        manager.Document(
+            page_content=f"[{header}]\n{body}",
+            metadata={**meta, "seam_overlap": len(seams[index - 1]) if index else 0},
+        )
+        for index, body in enumerate(bodies)
+    ]
+
+
+def test_the_retrieved_header_stands_first_and_each_seam_is_read_once() -> None:
+    chunks = _fee_chunks()
+    retriever = _retriever(chunks, hits=[chunks[1]], rerank_k=1)
+
+    result = retriever.get_relevant_documents("вопрос")
+
+    assert result[0].page_content == (
+        "[a.md › Fees]\nPlans differ in price, and the fee is charged once a month "
+        "on the day the plan started, and it is not refunded."
+    )
+    assert result[0].metadata["parent_expanded"] is True
+
+
+def test_the_budget_counts_the_joined_text_not_the_seams_twice() -> None:
+    chunks = _fee_chunks()
+    core = len(chunks[1].page_content)
+    after = len(chunks[2].page_content.split("\n", 1)[1]) - chunks[2].metadata["seam_overlap"]
+    # Room for the new text of the next piece, not for its whole body.
+    retriever = _retriever(
+        chunks, hits=[chunks[1]], rerank_k=1, parent_expansion_max_chars=core + after
+    )
+
+    result = retriever.get_relevant_documents("вопрос")
+
+    assert result[0].page_content.endswith("on the day the plan started, and it is not refunded.")
+
+
 def test_unknown_chunk_and_disabled_flag_leave_docs_unchanged() -> None:
     chunks = _make_chunks()
     foreign = manager.Document(page_content="не из индекса", metadata={"source": "a.md"})
@@ -141,12 +190,12 @@ def test_unknown_chunk_and_disabled_flag_leave_docs_unchanged() -> None:
 
 
 def test_window_two_takes_two_sections_each_side() -> None:
-    chunks = [
-        manager.Document(page_content=f"s{i}", metadata={"source": "a.md"})
-        for i in range(5)
-    ]
+    chunks = [manager.Document(page_content=f"s{i}", metadata={"source": "a.md"}) for i in range(5)]
     retriever = _retriever(
-        chunks, hits=[chunks[2]], rerank_k=1, parent_expansion_window=2,
+        chunks,
+        hits=[chunks[2]],
+        rerank_k=1,
+        parent_expansion_window=2,
     )
 
     result = retriever.get_relevant_documents("вопрос")
@@ -160,6 +209,7 @@ def test_build_retriever_wires_parent_expansion_from_settings(monkeypatch) -> No
     monkeypatch.setenv("RAG_PARENT_EXPANSION_MAX_CHARS", "999")
 
     import config.settings as settings_module
+
     settings_module._settings = None  # singleton перечитает env
     settings = settings_module.get_settings()
     # reranker_model — import-time class default (НЕ default_factory): env-патч

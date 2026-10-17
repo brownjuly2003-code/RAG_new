@@ -168,17 +168,26 @@ def uncovered(length: int, places: Iterable[Range]) -> int:
 
 
 def expansion_members(
-    text: str, seed: int, chunks: Sequence[Mapping[str, Any]], window: int
+    text: str,
+    seed: int,
+    chunks: Sequence[Mapping[str, Any]],
+    window: int,
+    overlap: int = 200,
 ) -> list[int]:
     """The chunks a sent document was joined from: its seed and the neighbours added to it.
 
-    ``HybridRetriever._expand_parents`` joins, with an empty line between them, the stripped
-    bodies of neighbours that stand before the seed, the seed's own text and the stripped bodies
-    of neighbours after it. A neighbour inside the window may be left out — it was used by
-    another document of the context, or it did not fit the budget. The members are found by
-    trying the subsets of the window's neighbours, the smaller first: the first subset that
-    gives exactly the text. No subset gives it — the text is not an expansion of this seed.
+    Since stage 1 ``HybridRetriever._expand_parents`` puts the seed's header line first and
+    joins the stripped bodies in document order, two neighbouring pieces of one section over
+    their overlap (``vectordb.parent_join``; ``overlap`` is the ``chunk_overlap`` they were cut
+    with). Before it the expansion joined, with an empty line between them, the bodies of the
+    neighbours before the seed, the seed's own text and the bodies of the neighbours after it;
+    both forms are read. A neighbour inside the window may be left out — it was used by another
+    document of the context, or it did not fit the budget. The members are found by trying the
+    subsets of the window's neighbours, the smaller first: the first subset that gives exactly
+    the text. No subset gives it — the text is not an expansion of this seed.
     """
+    from vectordb import contextual_header, parent_join
+
     own = chunks[seed]["page_content"]
     if text == own:
         return [seed]
@@ -196,6 +205,20 @@ def expansion_members(
 
     before = side(range(seed - 1, seed - window - 1, -1))
     after = side(range(seed + 1, seed + window + 1))
+    header, own_body = contextual_header.split(own, chunks[seed]["metadata"])
+    for taken_before in _subsets(before):
+        for taken_after in _subsets(after):
+            members = sorted([*taken_before, seed, *taken_after])
+            pieces = [
+                (
+                    position,
+                    own_body.strip() if position == seed else body(position),
+                    chunks[position]["metadata"],
+                )
+                for position in members
+            ]
+            if parent_join.join(header, pieces, overlap) == text:
+                return members
     start = text.find(own)
     while start != -1:
         head, tail = text[:start], text[start + len(own) :]

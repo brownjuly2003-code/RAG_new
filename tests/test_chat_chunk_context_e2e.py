@@ -1,4 +1,4 @@
-"""What the chat's model reads of a chunk: its header (PLAN.md stage 1, docs/specs/stage1-fixes.md).
+"""What the chat's model reads of a chunk and its neighbours (PLAN.md stage 1, spec rows 5, 6, 9).
 
 The chunks are cut and headed by the product's own ingest steps (``select_chunks`` with
 section chunking, then ``vectordb.manager.add_contextual_headers``) from an English page, and
@@ -8,12 +8,16 @@ question goes through the real path: HTTP -> the stream route -> a real
 
 Before stage 1 every chunk began with «[Контекст: Из документа returns_policy.md, раздел:
 Returns policy › Damaged goods]»: Russian words before an English text, and the document's
-title twice. Now the header names the page and its section once, in no language.
+title twice. Now the header names the page and its section once, in no language. And parent
+expansion glued a long section's pieces with the 200 characters each repeats of the one before,
+the retrieved piece's header in the middle when neighbours came before it; now the header
+stands first and every seam is read once.
 """
 
 from __future__ import annotations
 
 import json
+import re
 from collections.abc import Iterator
 from types import SimpleNamespace
 from typing import Any
@@ -32,7 +36,7 @@ PATH_ENV = ("STREAMING_RAG_PARITY", "STREAMING_QUALITY_EVAL", "LLM_PROVIDER_PROF
 HEADER = "[Returns policy › Damaged goods]"
 CLAUSES = [
     f"Clause {i}: a damaged parcel is reported with photo number {i} and carton label {i * 7}."
-    for i in range(1, 21)
+    for i in range(1, 41)
 ]
 PAGE = (
     "# Returns policy\n\n## Damaged goods\n\n"
@@ -99,6 +103,8 @@ def test_the_chat_model_reads_a_language_free_header_naming_the_section_once(
         chunks=chunks,
         reranker=None,
         use_bm25=True,
+        # One document, so its neighbours are free to join it.
+        rerank_k=1,
         parent_expansion=True,
         parent_expansion_window=2,
         parent_expansion_max_chars=3600,
@@ -137,3 +143,12 @@ def test_the_chat_model_reads_a_language_free_header_naming_the_section_once(
     # No words of a language in the header, and the page's title is said once: the file
     # name returns_policy.md and the heading "Returns policy" are the same words.
     assert "Контекст" not in prompt and "Из документа" not in prompt
+    # The one document: the section's pieces joined around the retrieved one, the header
+    # first, each clause once although every piece repeats the end of the one before.
+    blocks = re.split(r"\[[^\]\n]*source=returns_policy\.md\]\n", prompt)[1:]
+    assert len(blocks) == 1, prompt
+    assert blocks[0].startswith(HEADER + "\n")
+    assert blocks[0].count(HEADER) == 1
+    held = [clause for clause in CLAUSES if clause in blocks[0]]
+    assert len(held) > 9  # more than one piece of 800 characters holds
+    assert all(blocks[0].count(clause) == 1 for clause in held)

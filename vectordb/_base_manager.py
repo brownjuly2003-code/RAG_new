@@ -33,6 +33,8 @@ from collections.abc import Sequence
 from pathlib import Path
 from typing import Any, Optional
 
+from vectordb.parent_join import SEAM_KEY
+
 logger = logging.getLogger(__name__)
 _BM25_TOKEN_RE = re.compile(r"[^\W_]+", re.UNICODE)
 
@@ -1107,7 +1109,15 @@ class HybridRetriever:
         BM25+RRF+reranker уже сделан и не меняется. Бьёт в кейсы, где
         retrieval находит правильный док, но не тем чанком
         (archive/docs/operations/2026-06-05-residual-miss-diagnosis.md, потенциал 8/8).
+
+        Соседние куски одного раздела склеиваются по их перекрытию, а заголовок
+        найденного чанка стоит первым (``vectordb.parent_join``); бюджет считает
+        текст без повтора.
         """
+        from config.settings import get_settings
+        from vectordb import contextual_header, parent_join
+
+        limit = int(getattr(get_settings(), "chunk_overlap", parent_join.MAX_OVERLAP))
         # Чанки, уже выбранные в top-k, и добавленные соседи не дублируются.
         used_keys = {_rrf_document_key(d, self._doc_key_chars) for d in docs}
         expanded: list[Document] = []
@@ -1117,37 +1127,58 @@ class HybridRetriever:
             if pos is None or source is None:
                 expanded.append(doc)
                 continue
-            before: list[str] = []
-            after: list[str] = []
+            header, core = contextual_header.split(doc.page_content, doc.metadata)
+            pieces: dict[int, tuple[str, dict[str, Any]]] = {
+                pos: (core.strip(), dict(doc.metadata or {}))
+            }
             budget = self._parent_max_chars - len(doc.page_content)
             # Ближайшие секции первыми — у них больше шансов влезть в бюджет.
             for dist in range(1, self._parent_window + 1):
-                for side, npos in ((before, pos - dist), (after, pos + dist)):
+                for npos in (pos - dist, pos + dist):
                     if npos < 0 or npos >= len(self._chunks):
                         continue
                     neighbor = self._chunks[npos]
-                    if (neighbor.metadata or {}).get("source") != source:
+                    neighbor_meta = dict(neighbor.metadata or {})
+                    if neighbor_meta.get("source") != source:
                         continue
                     nkey = _rrf_document_key(neighbor, self._doc_key_chars)
                     if nkey in used_keys:
                         continue
                     text = self._strip_contextual_header(
-                        neighbor.page_content, neighbor.metadata
+                        neighbor.page_content, neighbor_meta
                     ).strip()
-                    if not text or len(text) > budget:
+                    if not text:
                         continue
-                    budget -= len(text)
+                    cost = len(text)
+                    if npos - 1 in pieces and parent_join.same_section(
+                        pieces[npos - 1][1], neighbor_meta
+                    ):
+                        cost -= parent_join.seam(pieces[npos - 1][0], text, neighbor_meta, limit)
+                    if npos + 1 in pieces and parent_join.same_section(
+                        neighbor_meta, pieces[npos + 1][1]
+                    ):
+                        cost -= parent_join.seam(
+                            text, pieces[npos + 1][0], pieces[npos + 1][1], limit
+                        )
+                    if max(cost, 0) > budget:
+                        continue
+                    budget -= max(cost, 0)
                     used_keys.add(nkey)
-                    side.append(text)
-            if not before and not after:
+                    pieces[npos] = (text, neighbor_meta)
+            if len(pieces) == 1:
                 expanded.append(doc)
                 continue
-            # before собран от ближнего к дальнему — разворачиваем в порядок документа.
-            parts = list(reversed(before)) + [doc.page_content] + after
-            expanded.append(Document(
-                page_content="\n\n".join(parts),
-                metadata={**(doc.metadata or {}), "parent_expanded": True},
-            ))
+            joined = parent_join.join(
+                header,
+                [(position, text, meta) for position, (text, meta) in pieces.items()],
+                limit,
+            )
+            expanded.append(
+                Document(
+                    page_content=joined,
+                    metadata={**(doc.metadata or {}), "parent_expanded": True},
+                )
+            )
         return expanded
 
     def invoke(self, query: str) -> list[Document]:
@@ -1308,12 +1339,32 @@ def structural_split(
             meta = dict(doc.metadata or {})
             meta.update(getattr(section, "metadata", {}) or {})
             content = section.page_content
-            if len(content) > max_chunk_size:
-                for piece in char_splitter.split_text(content):
-                    out.append(Document(page_content=piece, metadata=dict(meta)))
-            else:
-                out.append(Document(page_content=content, metadata=dict(meta)))
+            pieces = (
+                char_splitter.split_text(content) if len(content) > max_chunk_size else [content]
+            )
+            for piece, seam in zip(pieces, _seams(content, pieces), strict=True):
+                out.append(Document(page_content=piece, metadata={**meta, SEAM_KEY: seam}))
     return out
+
+
+def _seams(content: str, pieces: list[str]) -> list[int]:
+    """For each piece of a section, how many of its first characters repeat the piece before.
+
+    The character splitter overlaps neighbouring pieces by up to ``chunk_overlap`` characters;
+    parent expansion joins them over this count instead of reading the seam twice
+    (``vectordb.parent_join``). A piece the section does not hold as it is gets 0.
+    """
+    seams: list[int] = []
+    previous_start = previous_end = -1
+    for piece in pieces:
+        start = content.find(piece, previous_start + 1)
+        if start < 0:
+            seams.append(0)
+            previous_start = previous_end = -1
+            continue
+        seams.append(max(previous_end - start, 0) if previous_end > 0 else 0)
+        previous_start, previous_end = start, start + len(piece)
+    return seams
 
 
 def select_chunks(

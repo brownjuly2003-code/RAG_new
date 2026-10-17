@@ -6,7 +6,7 @@ from evaluation import external_convert as convert
 from evaluation import external_gold as gold
 from evaluation.external_convert import Block
 from vectordb import _base_manager as base_manager
-from vectordb import manager
+from vectordb import manager, parent_join
 
 HEADER = "[Контекст: Из документа a.md, раздел: T]\n"
 
@@ -149,6 +149,7 @@ def test_expansion_members_read_what_parent_expansion_joined() -> None:
     for index, document in enumerate(documents):
         retriever._chunk_positions.setdefault(base_manager._rrf_document_key(document, 200), index)
     last = len(documents) - 1
+    seamed = 0
 
     for seeds in ([3], [0], [last], [2, 3], [1, 5], [0, last]):
         sent = retriever._expand_parents([documents[seed] for seed in seeds])
@@ -157,17 +158,28 @@ def test_expansion_members_read_what_parent_expansion_joined() -> None:
             members = gold.expansion_members(document.page_content, seed, chunks, window=2)
             assert seed in members and members == sorted(members)
             assert all(abs(member - seed) <= 2 for member in members)
-            # the members give the sent text back
-            parts = [
-                chunks[member]["page_content"]
-                if member == seed
-                else gold.strip_header(
-                    chunks[member]["page_content"], chunks[member]["metadata"]
-                ).strip()
+            # the members give the sent text back: the seed's header first, then the bodies
+            # in document order, each seam once
+            header = f"[{chunks[seed]['metadata']['contextual_header']}]"
+            pieces = [
+                (
+                    member,
+                    gold.strip_header(
+                        chunks[member]["page_content"], chunks[member]["metadata"]
+                    ).strip(),
+                    chunks[member]["metadata"],
+                )
                 for member in members
             ]
-            assert "\n\n".join(parts) == document.page_content
+            assert parent_join.join(header, pieces) == document.page_content
+            seamed += sum(
+                chunks[after]["metadata"][parent_join.SEAM_KEY]
+                for before, after in zip(members, members[1:], strict=False)
+                if after == before + 1
+            )
             # a chunk is joined into one sent document only
             assert not taken & set(members)
             taken |= set(members)
         assert len(taken) > len(seeds)
+    # The long section's pieces overlap: some joins above read a seam once.
+    assert seamed > 0
