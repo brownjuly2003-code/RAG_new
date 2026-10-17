@@ -37,8 +37,9 @@ retrieval — [evidence row](../../EVIDENCE_INDEX.md), record `reports/chat-rout
 against the context, a factuality floor; otherwise up to two retries, then `human`. The claim
 check is the signal the chat lacks. A run of 2026-10-13 on qwen2.5:7b marked 11 of 39 `human`
 (`reports/ask100/fixed-20261013/`, untracked, not this repository's: its code a patched
-snapshot no commit names — NOT_EVIDENCE; [session log](session-handoff-2026-10-15-judge-100.md)). Measuring it on the 4B's 100 answers, as the self-evaluation was, is the
-cheapest way to learn whether it catches the bad ones (Waiting on Julia).
+snapshot no commit names — NOT_EVIDENCE; [session log](session-handoff-2026-10-15-judge-100.md)). It cannot be replayed on the screening's 100 answers, which cite no `[N]`:
+the claim check would refuse them all. It is measured on answers in the chat's own form under
+[the handover plan](../specs/handover-signal.md) (Julia, 2026-10-17: «Давай сначала замерим»).
 
 **The 4B serves by default since `7a99c45`.** `config/settings.py`, `config/providers.yml`
 (listed — the runtime refuses an unlisted model — the Ollama defaults, `local-first`, the
@@ -116,6 +117,10 @@ Verbatim, times UTC.
 - 18:52: «продолжи работу. Что оцень важно понять - такущие метрики, в частности % передачи
   вопросов оператору».
 - 20:52: «что-то происходит?» — answered with the state of the series.
+- 2026-10-17, to the metrics report: «А не был настроен сигнал ответа человеку??? Давай
+  сначала замерим. Меня очень печалит, насколько проект непродуман. Ты не можешь написать
+  грамотный план?» — so the handover signal is measured before anything changes, under
+  [the plan](../specs/handover-signal.md) (ROADMAP thread M, step 5).
 
 In force from before: D12 and D11; production is `deproject-mac`; the 3,600-s ceiling and the
 stop rule for every live run (3× each question's named forecast); a `human` answer gets the
@@ -137,12 +142,10 @@ operator button, not a ticket; her production model Qwen3-4B-Instruct-2507 (2026
 
 ## Waiting on Julia
 
-1. **Which gate sends an answer to a person.** (1) Measure the widget's rule — the graph's claim
-   check — on the 4B's 100 judged answers, as the self-evaluation was (a few hours of the Mac);
-   the session's recommendation, before changing anything. (2) Use the graph's rule in the chat
-   (`STREAMING_RAG_PARITY`: the stream shows the graph's one answer, routed by the graph —
-   the claim check and up to two retries, time per answer unmeasured on the Mac). (3) Another
-   signal.
+1. **The reading of the handover plan** — the session's proposal stands unless she changes it
+   before the pilot's `plan.json` is committed. Answered on 2026-10-17: measure first. The
+   session's recommendation of 2026-10-16 — replay the widget's rule on the screening's
+   answers — is withdrawn: those answers cite no `[N]`, so the claim check refuses them all.
 2. **The push** of `e81f0c5..` HEAD — `26fcb4a` and this session's commits.
 3. **GitHub billing:** CI starts no job until the account's payment or spending limit is
    fixed; only she can.
@@ -151,17 +154,13 @@ operator button, not a ticket; her production model Qwen3-4B-Instruct-2507 (2026
 
 ## The next session's order
 
-1. Julia's answer to the gate question; with (1), the replay of the graph's rule on the 100
-   answers — the `evaluate` node's quality score, `measure_retrieval_relevance`'s relevance,
-   `verify_facts`'s claims — plan and forecast named before the first request, as in
-   `reports/chat-route-replay/7a99c45/tools/`. A replay sees the first pass only: an answer
-   not `auto` there counts as not `auto` (a retry writes a new answer, which no judge has
-   graded). Time: the self-evaluation replay took 60 min for 100; the claim check makes a
-   call per claim, so several times that — the forecast is named from a first ten.
-2. Step 5 of the ROADMAP: fewer rerank candidates (20 reranked to 5 today), measured live
-   as in this record and for quality as phase Q measures it; the count and the quality
-   measure named in its plan. Julia agreed to this lever on 2026-10-16; it does not wait
-   on her gate answer.
+1. Step 5 of the ROADMAP, [the handover plan](../specs/handover-signal.md): the pilot on
+   the rerun's 30 answers (the judge's adapter, the signal tool, the reading frozen in its
+   `plan.json`), then the other 70 answers, their verdicts and signals, the result on 100.
+2. Step 6: fewer rerank candidates (20 reranked to 5 today), measured live as in this
+   record and for quality as phase Q measures it; the count and the quality measure named
+   in its plan. Julia agreed to this lever on 2026-10-16; it waits for the Mac, which
+   takes one measurement at a time.
 3. Before any series longer than thirty, or a day of traffic: why Ollama's model runner
    grows about 312 MB a request. `tools/runner_memory.py` of the record repeats the check
    in ten minutes on an idle Mac, stdlib only, reading its prompts from the stand

@@ -98,8 +98,8 @@ Each step is a slice of its own
    at 80 — replayed on the 4B's 100 judged answers sends 2 of 100 to `human` (Wilson
    0.6–7.0 %), both declines; 10 of the judge's 12 bad answers go `auto`: the model scores 89
    of its answers 100. An estimate of the rule on the test set, not a chat run, and not the
-   widget's rule ([evidence row](EVIDENCE_INDEX.md)). What gate should send an answer to a
-   person is Julia's decision. **The first live series (2026-10-16, 20:12–21:12 UTC, stand
+   widget's rule ([evidence row](EVIDENCE_INDEX.md)). Which signal should send an answer to a
+   person is measured first — step 5. **The first live series (2026-10-16, 20:12–21:12 UTC, stand
    `7a99c45`) is not the 4B's:** the stand's deployment environment pins
    `OLLAMA_MODEL_NAME=qwen2.5:7b`, and the stream's suggested questions, which read that
    setting, loaded the 7B (about 4.7 GB) beside the 4B after every answer; its thirty stopped
@@ -117,7 +117,16 @@ Each step is a slice of its own
    a request ([evidence row](EVIDENCE_INDEX.md)).
    Her answer is the explicit decision the stop-list asks of a model swap, for this one model;
    the no-flip rule is about phase Q's retrieval and generation defaults, not this one.
-5. **Then the speed levers, one at a time, each measured:** fewer rerank candidates first
+5. **Which answers go to a person — measured first (Julia, 2026-10-17: «Давай сначала
+   замерим»).** Two signals are configured — the chat's self-score at 80, the widget's
+   self-score, relevance and claim check — and neither was ever checked against answers
+   known to be bad; the chat's misses 10 of the judge's 12. [The plan](docs/specs/handover-signal.md):
+   100 answers in the chat's own form (the 30 of the rerun, 70 new on `19beeb1`), judged, and
+   seven signals computed on them through the repository's code; a pilot on the 30 first
+   (preparation), then the 70 (rule (b)) and the result (rule (c)); WixQA only if a signal
+   lands in between. It withdraws the session's 2026-10-16 proposal to replay the widget's
+   rule on the screening's answers, which cite no `[N]`.
+6. **Then the speed levers, one at a time, each measured:** fewer rerank candidates first
    (Julia agreed 2026-10-16; `RAG_RETRIEVAL_TOP_K`, 20 candidates reranked to 5 today; time
    and quality, rule (c)) — not another reranker, the stop-list — then a shorter prompt, and
    the self-evaluation after the answer is shown, which changes what the client sees and is
