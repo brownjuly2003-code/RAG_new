@@ -166,8 +166,9 @@ Julia accepts it.
 
 1. Its stage 1, with [the handover plan](../specs/handover-signal.md): the other 70 answers
    first, then the judge on all 100 and the signals on all 100 — no separate pilot.
-2. Its stage 2: retrieval without generation on the four corpora, the graph lane on
-   aircargo. Fewer rerank candidates — Julia's lever of 2026-10-16 — is its stage 4, read
+2. Its stage 2: retrieval without generation on the four corpora, 300 judged answers on
+   the three external bases on the current path (Julia's «Вариант B», 2026-10-17), the
+   graph lane on aircargo. Fewer rerank candidates — Julia's lever of 2026-10-16 — is its stage 4, read
    from stage 2's saved rerank scores and timed live.
 3. Before any series longer than thirty, or a day of traffic: why Ollama's model runner
    grows about 312 MB a request. `tools/runner_memory.py` of the record repeats the check

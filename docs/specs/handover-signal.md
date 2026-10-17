@@ -202,11 +202,11 @@ refuted with their counts; the reading applied as frozen.
 ### 2 WixQA — when stage 1 gives no reading, a signal in between, or a chosen threshold
 
 The open part of WixQA — its 142 `tuning` questions, answered in [`PLAN.md`](../../PLAN.md)
-stage 5; the 200 ExpertWritten questions are the locked part (`evaluation/external_parts.json`),
+stage 2; the 200 ExpertWritten questions are the locked part (`evaluation/external_parts.json`),
 opened once in stage 7 and never used to choose a threshold — under a plan of its own, named
 before its first request. Not the same protocol: the judge's instructions name an air-cargo
 assistant answering in Russian, and S5's phrases are Russian, so stage 2 brings an English
-judge prompt with its own retest and English decline wording. The answers come from stage 5; the expensive signals on them about
+judge prompt with its own retest and English decline wording. The answers come from stage 2; the expensive signals on them about
 4–12 h of the Mac per hundred.
 
 ## What each outcome means, and what Julia is told
