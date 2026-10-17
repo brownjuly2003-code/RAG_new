@@ -21,7 +21,7 @@
   - `resources.requests/limits` — присутствуют для всех контейнеров.
   - labels `app.kubernetes.io/*` — стандартные chart labels везде где применимо.
 - `docs/operations/helm-lint.md` — короткая страница: как локально прогнать `helm lint deploy/helm/` + пример вывода + список ожидаемых warnings (если есть acceptable-by-design).
-- `docs/CHANGELOG.md` — запись про helm lint gate.
+- `archive/docs/CHANGELOG.md` — запись про helm lint gate.
 
 ## Acceptance criteria
 - [ ] Локально `helm lint deploy/helm/ --strict` завершается exit 0, без warnings.

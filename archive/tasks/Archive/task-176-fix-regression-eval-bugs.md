@@ -76,7 +76,7 @@ Pick (a) unless you find that `run_qa_pipeline` finalises the trace only after e
 - Skip cleanly if Docker is unavailable (use `pytest.importorskip("docker")` or `shutil.which("docker") is None` → `pytest.skip`).
 
 ### Cross-cutting
-- `docs/CHANGELOG.md`: append entry `task-176 continuation: close bug 2 (asyncpg race) + bug 4 (FK ordering)` under the existing partial entry from `324305c`.
+- `archive/docs/CHANGELOG.md`: append entry `task-176 continuation: close bug 2 (asyncpg race) + bug 4 (FK ordering)` under the existing partial entry from `324305c`.
 
 ## Acceptance criteria
 - [ ] Live `scripts/regression_eval.py --baseline ministral-3b-latest --candidate mistral-small-latest --allow-paid-apis --max-cases 3` against disposable Postgres 16 + ingested seed docs emits **zero** `Online evaluators failed: InterfaceError: another operation is in progress` warnings.

@@ -2,7 +2,7 @@
 
 Финальные top-k чанки дополняются соседними structural-секциями своего
 source-документа (текст-lookup по порядку ингеста); отбор BM25+RRF+reranker
-не меняется. Дизайн: docs/operations/2026-06-05-residual-miss-diagnosis.md.
+не меняется. Дизайн: archive/docs/operations/2026-06-05-residual-miss-diagnosis.md.
 """
 
 from __future__ import annotations

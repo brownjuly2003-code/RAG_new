@@ -2,7 +2,8 @@
 
 Read exactly three files to start: [`CURRENT_STATE.md`](CURRENT_STATE.md), then
 [`PLAN.md`](PLAN.md) — the one plan, the order of work — then [`ROADMAP.md`](ROADMAP.md),
-progress against it. Everything else is reached by link, on demand.
+progress against it. Everything else is reached by link, on demand; the map of every
+other document is [`docs/README.md`](docs/README.md).
 Do not read `archive/` for routing — it is history, and planning from it is
 how this repository accumulated seven layers of release machinery on
 synthetic fixtures.
@@ -26,7 +27,7 @@ binds autopilot too.
   model in any role — executor, reviewer, verifier, judge, reference, repair
   author: not another vendor's, and a subagent runs on the session's model.
   A rule or runbook that names another model predates D12 and is not in
-  force, the [direct GLM 5.3 runbook](docs/operations/direct-glm-5.3.md) and
+  force, the [direct GLM 5.3 runbook](archive/docs/operations/direct-glm-5.3.md) and
   its Codex fallback included; they come back only on the owner's word.
 - **No MyFlow unless the owner names it in the current session**: neither the
   `myflow_new` skill nor a `$MF` command. `$MF` steps in a handoff give the

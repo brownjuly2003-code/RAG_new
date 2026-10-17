@@ -2,7 +2,7 @@
 
 - Дата: 2026-05-30
 - Автор: Claude (Opus 4.8)
-- Опирается на: `docs/audits/audit_claude_30_05_26.md` (R1–R7), `docs/audits/audit_codex_30_05_26.md`,
+- Опирается на: `archive/docs/audits/audit_claude_30_05_26.md` (R1–R7), `archive/docs/audits/audit_codex_30_05_26.md`,
   `docs/research/rag-landscape-2026.md`, ADR `docs/adr/0001-graphrag-deferral-and-trigger.md`
 - Жёсткое ограничение среды: на Windows-ноуте и Mac **нельзя запускать процессы > ~1 ГБ RAM**.
   Любой шаг с эмбеддером (BGE-M3 ~2.3 ГБ), реранкером, Docker, RAGAS — **только Colab/remote**.
@@ -35,7 +35,7 @@ multi-tenancy. Ingestion (тяжёлый) — на Colab/Mac, см. §5.
 
 Прогон на iMac `julia@192.168.1.133` (8 ГБ Intel): ingest 10 FAQ-доков (BGE-M3, 194 чанка) +
 retrieval keyword-coverage @ top-5 на 31 кейсе из `curated_cases_aircargo.jsonl` (LLM-free).
-Полный отчёт: **`docs/operations/2026-05-30-mac-rag-retrieval-baseline.md`**.
+Полный отчёт: **`archive/docs/operations/2026-05-30-mac-rag-retrieval-baseline.md`**.
 
 | Конфиг top-5 | FULL coverage |
 |---|---|
@@ -165,7 +165,7 @@ R1 уже требует `bge-reranker-v2-m3`. Сверх него на остр
 
 ## 5. Mac/Colab runbook (тяжёлые шаги — НЕ на Windows)
 
-Ноутбук уже есть: `notebooks/rag_support_colab_remote_benchmark.ipynb`
+Ноутбук уже есть: `archive/notebooks/rag_support_colab_remote_benchmark.ipynb`
 (URL в `AGENT_STATE.md`). Все шаги ниже — Colab (GPU, бесплатно) или Mac, **не локальный
 Windows** (RAM-лимит, thin-client boundary).
 
@@ -215,8 +215,8 @@ Windows** (RAM-лимит, thin-client boundary).
    мультиязычным эмбеддером). **Full-corpus 3-arm A/B (OFF / ms-marco / bge-v2-m3)
    на 201 docs / 100 кейсов сейчас считается на Mac** (не Colab — single-config влезает
    в 8GB через two-phase), результат → `~/RAG_Support_Assistant/.tmp/ab_result_20260602.txt`,
-   отчёт будет `docs/operations/2026-06-02-mac-fullcorpus-reranker-ab.md`. См. RESUME-блок
-   в `docs/operations/autonomous-session-kickoff.md`.
+   отчёт будет `archive/docs/operations/2026-06-02-mac-fullcorpus-reranker-ab.md`. См. RESUME-блок
+   в `archive/docs/operations/autonomous-session-kickoff.md`.
 2. R7 baseline на полном корпусе (Colab) — 100-case seed готов; дальше RAGAS
    baseline и, при необходимости, расширение к 150 кейсам.
 3. chunk-size A/B + structural/late chunking (Colab) — ответ на «800 по привычке».

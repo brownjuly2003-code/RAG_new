@@ -838,7 +838,7 @@
 ### 224D. Следующий slice
 
 - Следующий один named atomic slice — **F: governed ticket/escalation action**
-  по `docs/architecture/migration-plan.md`. Этот turn его не начинает.
+  по `archive/docs/architecture/migration-plan.md`. Этот turn его не начинает.
 - Production grants для новых knowledge tables, Mac migration, live source,
   runtime route switch, shadow/canary/release остаются отдельными явно
   авторизуемыми gates. Не возвращаться автоматически к inherited Trust
@@ -1496,7 +1496,7 @@ encryption/restore или runtime/API routing в тот же slice.
    отсутствие remote. Docs-only commit поверх C3 допустим.
 2. Прочитать только верхнюю CURRENT-капсулу `docs/SESSION_HANDOFF.md`, затем
    актуальные Slice C sections в `rag-new-architecture.md` и
-   `docs/architecture/migration-plan.md`. Старую Trust Foundation историю и
+   `archive/docs/architecture/migration-plan.md`. Старую Trust Foundation историю и
    старый backlog не выбирать автоматически.
 3. Начать только C4 tests-first. Ожидаемая следующая Alembic revision — `026`
    поверх `025`, если Actual Git не показывает уже добавленную revision.
@@ -1606,7 +1606,7 @@ runtime/API routing в тот же slice.
 - focused contracts: `tests/test_resolution_contract_schema.py` и
   `tests/test_resolution_case_domain.py`;
 - решения и статус: `rag-new-architecture.md`,
-  `docs/architecture/migration-plan.md` и
+  `archive/docs/architecture/migration-plan.md` и
   `docs/architecture/resolution-contract-schema-v0.1.md`.
 
 ### 211B. Последняя зелёная проверка
@@ -1646,7 +1646,7 @@ plan. Любой незелёный пункт сохраняет slice откр
 1. Сначала `git status --short --branch` и `git log -5 --oneline`.
 2. Затем этот блок и верхняя капсула `docs/SESSION_HANDOFF.md`.
 3. Очередь продукта: `rag-new-architecture.md`; точный slice/DoD:
-   `docs/architecture/migration-plan.md`.
+   `archive/docs/architecture/migration-plan.md`.
 4. Архитектурные детали: `docs/architecture/README.md` и связанные ADR.
 5. Update-210 и старый backlog ниже — контекст Trust Foundation, а не текущая
    очередь Resolution Product.
@@ -1711,7 +1711,7 @@ gates.
 >
 > **Mandate this session:** deep analysis of why tests were failing, then
 > close the current development stage with healthy compromises. Full analysis
-> and decisions: `docs/operations/2026-08-18-test-failure-analysis.md`.
+> and decisions: `archive/docs/operations/2026-08-18-test-failure-analysis.md`.
 >
 > **Unit suite (ground truth, Python 3.13, `RAG_RERANKER_MODEL=""`):** run 1
 > hung 300 s in `tests/test_csp.py` (raw `with TestClient(app)` → lifespan →
@@ -12095,7 +12095,7 @@ gates.
 >
 > **Гейты Update-7 без изменений:** N4 hybrid · Q1b DEFER · multi-replica DEFER ·
 > C1 DEFER · L1 opportunistic · fastapi SHIP. Полный текст:
-> `docs/operations/2026-07-21-gate-decisions.md`.
+> `archive/docs/operations/2026-07-21-gate-decisions.md`.
 >
 > **Untracked presentation WIP (не продукт, не в git):**
 > - `presentation.html` + `plan_for_pres.md` + `_ref_presentation3.html`
@@ -12124,7 +12124,7 @@ gates.
 
 > **SUPERSEDED.** Заход: «все гейты — на твоё решение».
 >
-> **Полный текст решений:** `docs/operations/2026-07-21-gate-decisions.md`
+> **Полный текст решений:** `archive/docs/operations/2026-07-21-gate-decisions.md`
 > (kitchen — не на Pages).
 >
 > | Gate | Решение |
@@ -12244,7 +12244,7 @@ gates.
 > **START HERE.** Заход: «продолжи» после волны-2. Mac освободился от DE-soak → выполнен гейтованный остаток.
 >
 > **Сделано:**
-> 1. **Q1 heavy-прогон ПРОГНАН на Mac** (run `20260718T173221Z-8c2fd13e`, полная форма `--build-pool --with-grade --with-judge`, external-mistral, ~7 ч). **Вердикт NO-SHIP по всем 7 плечам** — лучшее по precision плечо k3-grade (+0.071) роняет FULL 97→92 / MISS 1→3; no-expand роняет обе оси (−0.070 precision, FULL 87). Прод-дефолты не тронуты. Evidence: `docs/operations/2026-07-18-q1-context-precision-ab-results.md`; сырые отчёты в `reports/ragas/` (untracked по конвенции); rerank-пул `.tmp/ab_candidates_phase2_C.json` остался на Mac — детерминированный пересчёт из него за минуты. Каверзы: 25/~200 batch-вызовов grade_docs упали transport-ошибками Mistral, но per-doc fallback отработал на всех (0 per-doc ошибок в логе) — grade применён на 100% кейсов, данные чистые, ошибки стоили только времени; embed реально ~2.2 ч (5589 чанков, оценка плана «3–6 мин» была занижена). Mac вычищен: `/tmp/mk.env` + `/tmp/q1_run.sh` удалены.
+> 1. **Q1 heavy-прогон ПРОГНАН на Mac** (run `20260718T173221Z-8c2fd13e`, полная форма `--build-pool --with-grade --with-judge`, external-mistral, ~7 ч). **Вердикт NO-SHIP по всем 7 плечам** — лучшее по precision плечо k3-grade (+0.071) роняет FULL 97→92 / MISS 1→3; no-expand роняет обе оси (−0.070 precision, FULL 87). Прод-дефолты не тронуты. Evidence: `archive/docs/operations/2026-07-18-q1-context-precision-ab-results.md`; сырые отчёты в `reports/ragas/` (untracked по конвенции); rerank-пул `.tmp/ab_candidates_phase2_C.json` остался на Mac — детерминированный пересчёт из него за минуты. Каверзы: 25/~200 batch-вызовов grade_docs упали transport-ошибками Mistral, но per-doc fallback отработал на всех (0 per-doc ошибок в логе) — grade применён на 100% кейсов, данные чистые, ошибки стоили только времени; embed реально ~2.2 ч (5589 чанков, оценка плана «3–6 мин» была занижена). Mac вычищен: `/tmp/mk.env` + `/tmp/q1_run.sh` удалены.
 > 2. **UX-хвост закрыт** (`b5978f0`): logout-кнопки в admin («Logout») и agent («Выйти») → существующий `POST /api/auth/logout`; `test_admin_js_served` ретаргетирован со стейл-`localStorage` на cookie-ассерты (`/api/auth/session`, `/api/auth/logout`, отсутствие `localStorage.setItem`). Верификация: 63 passed (admin_ui/session_auth_cookie/agent_endpoints/a11y/csp), ruff clean.
 >
 > **Остаток (только гейтованное, Windows-backlog ПУСТ):** Q1b (nightly RAGAS drift + CI floor) — гейт «precision сдвинулся» НЕ выполнен; multi-replica impl (по SLA, план готов); C1 распил `agent/graph.py` — только по явному решению Юли.
@@ -12256,7 +12256,7 @@ gates.
 > **Сделано:**
 > 1. **D1-коммит `2263a8c` перепроверен и запушен** (pip-audit обоих lock на СВЕЖИХ advisories — чисто; 44 целевых теста; ruff). CI поймал trailing whitespace в `audit_grok_16_07_26.md` (только pre-commit job) → фикс `c15a5a9`, CI на нём **success целиком**.
 > 2. **S1 закрыт** (`3cac073`): httpOnly cookie auth для admin/agent/analytics UI — токенов в localStorage больше нет. `/auth/login|refresh` зеркалируют JWT в httpOnly SameSite=Strict cookie; новые `POST /api/auth/session` (paste-токен → cookie) и `/api/auth/logout`; JS-чтения/записи токенов удалены; header-auth и JSON-контракт не тронуты. **Адверсариальный opus-ревью нашёл 2 SHOULD-FIX, оба закрыты:** (а) SSO пишет одноимённый `access_token` cookie с SameSite=**Lax** → «Strict решает CSRF» неполно → в `_cookie_auth_bridge` добавлен **Origin-гейт** на state-changing методы (`api/app.py::_cookie_auth_origin_ok`); (б) cookie-тесты были вакуумны (анонимный admin-фолбэк фикстуры) → переведены на `client_with_key` + негативные ассерты + тест cross-site-отказа. `/auth/session` получил лимит 5/minute. Верификация: auth-батч 32 + UI-батч 58 + cookie 9 passed; mypy skip-gate Success 23 files; ruff. Известные границы (осознанно, в CHANGELOG): logout не отзывает JWT server-side; analytics.html зависит от cookie с admin-страницы.
-> 3. **Q1 харнесс готов** (`5b6c157`): `scripts/ab_context_precision.py` — 8 плеч (rerank top-k / parent-window / grade_docs on-off) вокруг D2-базлайна, ОДНА тяжёлая embed+rerank-стадия, остальное — дешёвая пост-обработка; метрики через существующий `evaluation.ragas_eval` + `_kw_status` FULL/PART/MISS как гард; SHIP-критерии вшиты (Δprecision ≥ +0.05, recall ≥ 0.90, FULL/MISS без регрессий), NO-SHIP валиден. Smoke на моках (без моделей/сети), 7 тестов. **Heavy-прогон на Mac НЕ запускался** — Mac занят DE_project soak; one-command рецепт в `docs/operations/2026-07-18-q1-context-precision-ab-plan.md`.
+> 3. **Q1 харнесс готов** (`5b6c157`): `scripts/ab_context_precision.py` — 8 плеч (rerank top-k / parent-window / grade_docs on-off) вокруг D2-базлайна, ОДНА тяжёлая embed+rerank-стадия, остальное — дешёвая пост-обработка; метрики через существующий `evaluation.ragas_eval` + `_kw_status` FULL/PART/MISS как гард; SHIP-критерии вшиты (Δprecision ≥ +0.05, recall ≥ 0.90, FULL/MISS без регрессий), NO-SHIP валиден. Smoke на моках (без моделей/сети), 7 тестов. **Heavy-прогон на Mac НЕ запускался** — Mac занят DE_project soak; one-command рецепт в `archive/docs/operations/2026-07-18-q1-context-precision-ab-plan.md`.
 > 4. **A1 закрыт design-doc'ом** (`ee82fea`): `docs/plans/2026-07-18-multi-replica-design.md` — 22 позиции process-local state (file:line). Поправки к аудиту: сессии УЖЕ Postgres-backed, LLM-кэш УЖЕ Redis; настоящих блокеров два — rate limiter без `storage_uri` и in-memory confirm-actions (+ гоча: `channels/telegram_bot.py` держит свой `_sessions` — остаётся single-instance). Рекомендация: не начинать без реального SLA.
 > 5. **Q2 закрыт** (`694dbc0`): `docs/OPERATIONS.md` «Latency budgets & timeouts» — рекомендация `RAG_ASK_BUDGET_SEC=300` для prod (дожфуд-медиана ~190s), дефолт `0` не тронут. F3 (ruff ASYNC, 5 в `scripts/`) осознанно оставлен: реальный блок — синхронный sqlite-скан на admin-only пути, точечный `to_thread` — линтерная косметика. RUF100: подлинно stale noqa = 0.
 >

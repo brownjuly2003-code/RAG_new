@@ -187,8 +187,8 @@ Resolution Product G8 остаётся локально завершённым �
 ## Paused routing — Resolution Product
 
 Текущая выбранная владельцем очередь находится в
-[`docs/architecture/rag-new-architecture.md`](docs/architecture/rag-new-architecture.md), а точный scope и DoD — в
-[`docs/architecture/migration-plan.md`](docs/architecture/migration-plan.md).
+[`archive/docs/architecture/rag-new-architecture.md`](../architecture/rag-new-architecture.md), а точный scope и DoD — в
+[`archive/docs/architecture/migration-plan.md`](../architecture/migration-plan.md).
 Срезы C1–C8, D, E1, E2, F и G1–G8 завершены локально. G8 deterministic
 synthetic release-safety gate implementation, canonical artifact, tests и docs
 доставляются scoped commit, содержащим этот update; точный SHA определяет

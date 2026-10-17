@@ -1,7 +1,7 @@
 # План: преодоление барьера для retrieval-фикса (7 deep-miss `*-required-fields`)
 
 - Дата: 2026-06-03
-- Контекст: `docs/operations/2026-06-03-r7-llm-judged-baseline.md`. R7 LLM-judged измерен
+- Контекст: `archive/docs/operations/2026-06-03-r7-llm-judged-baseline.md`. R7 LLM-judged измерен
   (faithfulness 0.833 / relevancy 0.838). Бутылочное горло — retrieval. Цель фикса:
   **7 deep-miss** (+1 near-deep, +5 uncertain) — запросы класса «какие поля нужны для X»
   не достают чанк с таблицей полей под `## Обязательные поля`, т.к. NL-запрос не пересекается
@@ -35,7 +35,7 @@ embedder-агностичен (добавление текста «обязат�
 > поднимает **12/13 диагноз-целей, 0 регрессий** (без обрезки тела), top-5 FULL 65%→73%.
 > Попутно ДОКАЗАН вред production-обрезки `[:chunk_size]` в `manager.add_contextual_headers`
 > (3/13 регрессий: хвостовые строки field-таблиц вырезались из пула целиком) — починено
-> `4844094` до Phase 2. Отчёт: `docs/operations/2026-06-04-phase1-proxy-ab-contextual-header.md`.
+> `4844094` до Phase 2. Отчёт: `archive/docs/operations/2026-06-04-phase1-proxy-ab-contextual-header.md`.
 > **Следующий шаг = Phase 2** (BGE-M3+реранк на Colab/iMac, плечи A vs C-конфиг).
 >
 > **СТАТУС 2026-06-05:** Phase 2 ✅ DONE (третий путь — Kaggle CPU-kernel, код private-датасетом
@@ -43,7 +43,7 @@ embedder-агностичен (добавление текста «обязат�
 > top-5 FULL **82%→87% (8 gains / 4 regressions, нетто +5), MISS 11→6**; R7 LLM-judged
 > A vs C: recall **0.855→0.905**, faithfulness **0.875→0.909**. Реранкер фактически поднял
 > 6/10 rerank-recoverable (совпало с rank-grade прогнозом). **`RAG_STRUCTURAL_CHUNKING`
-> включён дефолтом** + пин-тест. Отчёт: `docs/operations/2026-06-05-phase2-contextual-ab-production.md`.
+> включён дефолтом** + пин-тест. Отчёт: `archive/docs/operations/2026-06-05-phase2-contextual-ab-production.md`.
 > Остаток (не блокер): 4 deep-цели (query-side → query-expansion / BM25-вес) + 4 регрессии
 > (1 жёсткая out-of-pool, 3 мягких in-pool → parent-child / реранк-тюнинг).
 >
@@ -52,7 +52,7 @@ embedder-агностичен (добавление текста «обязат�
 > default ON (window=2/3600). FULL 87→96 @ top-5, MISS 6→1, recall 0.905→0.975;
 > обе жёсткие регрессии восстановлены. Замер ЛОКАЛЬНЫЙ и точный (отбор идентичен C,
 > меняется только текст) + R7-judge ×2 с снятой полосой шума судьи. Отчёт:
-> `docs/operations/2026-06-05-parent-expansion-arm-d.md`. Остаточный MISS 1
+> `archive/docs/operations/2026-06-05-parent-expansion-arm-d.md`. Остаточный MISS 1
 > (customs-clearance-fields) → query-expansion. Дальше: планы
 > `2026-06-05-chunk-size-justification.md` и `2026-06-05-graph-retrieval-activation.md`.
 
@@ -88,7 +88,7 @@ embedder-агностичен (добавление текста «обязат�
 - **A. Colab (приоритет — free, без карты).** Self-contained cell: pinned deps, upload
   corpus.zip, ингест обоих рукавов BGE-M3, реранк bge-v2-m3 top-5, пересчёт recall на 100
   кейсах + re-run R7 LLM-judged через Mistral (`getpass MISTRAL_API_KEY`). Заодно закрывает
-  **5 uncertain** (top-5-С-реранком). Основа есть: `notebooks/rag_support_colab_remote_benchmark.ipynb`
+  **5 uncertain** (top-5-С-реранком). Основа есть: `archive/notebooks/rag_support_colab_remote_benchmark.ipynb`
   + `scripts/aircargo_ragas_eval.py`. **Owner: Julia интерактивно; CC готовит cell + corpus.zip
   и синтаксически проверяет.**
 - **B. iMac two-phase (если свободен/доступен).** Тот же паттерн, что собрал full-corpus A/B

@@ -66,7 +66,7 @@ Codex-спеку; закрытые пункты сюда **не включены
 - [task-125] — arc-6 proposal → `arc-6-proposal.md` ✅
 - [task-126] — hygiene & consistency audit → `cleanup-report.md` ✅
 - [task-127] — CI pipeline (.pre-commit + GitHub Actions ci.yml) ✅
-- [task-128] — `docs/CHANGELOG.md` ✅
+- [task-128] — `archive/docs/CHANGELOG.md` ✅
 - [task-129] — `docs/operations/backup-restore.md` ✅
 
 ## Closed follow-up fixes

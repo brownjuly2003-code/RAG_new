@@ -328,10 +328,20 @@ def test_phase_c_g1_matches_published_gr1b_pool_case_by_case() -> None:
 
 
 def test_agent_state_records_finished_gr2_measurement() -> None:
+    """AGENT_STATE.md never reports GR-2 extraction as still running.
+
+    Until 2026-10-17 the digest itself carried the finished state; since the tidy-up of that
+    day it holds working conventions only, the measurement is a row of EVIDENCE_INDEX.md, and
+    the digest as it stood is archived with the finished state in it.
+    """
     text = (ROOT / "AGENT_STATE.md").read_text(encoding="utf-8")
     assert "1159/5589" not in text
     assert "about 22 h left" not in text
     assert "once extraction is done" not in text
-    assert "5589/5589" in text
-    assert "0 rejected" in text
-    assert "docs/evidence/gr2-entity-graph-lane.md" in text
+    index = (ROOT / "EVIDENCE_INDEX.md").read_text(encoding="utf-8")
+    assert "docs/evidence/gr2-entity-graph-lane.md" in index
+    archived = (ROOT / "archive/docs/state/agent-state-through-2026-10-17.md").read_text(
+        encoding="utf-8"
+    )
+    assert "5589/5589" in archived
+    assert "0 rejected" in archived

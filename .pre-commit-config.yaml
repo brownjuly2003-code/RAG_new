@@ -12,7 +12,7 @@ repos:
         # artifact tests (reports/p2/human-sample.html by SHA-256 in
         # tests/test_p2_blinded_judge_artifact.py), so a formatter must not
         # rewrite them. The end-of-file-fixer below skips them for the same reason.
-        exclude: ^(?:archive/|reports/|docs/audits/audit_opus_.*\.md$)
+        exclude: ^(?:archive/|reports/)
       - id: end-of-file-fixer
         exclude: ^(?:archive/|reports/|vectordb/__init__\.py$)
       - id: check-yaml

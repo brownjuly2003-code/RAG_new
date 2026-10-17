@@ -40,7 +40,7 @@ Snapshot-файлы (`postgres.dump`, `uploads.tar.gz`, `chroma.tar.gz`), кот
 - Документация:
   - `docs/operations/backup-encryption.md` — полное покрытие: как сгенерировать `age-keygen` identity (private + public), где хранить private key (offline vault, **не** в cluster), пример `.env`, пример `helm upgrade --set backup.encryption.enabled=true --set-file backup.encryption.recipientPub=./recipient.pub`, rotation story (re-encrypt старые снапшоты при смене ключа), recovery runbook (чем расшифровать если k8s secret потерян).
   - `docs/disaster-recovery.md` — новый scenario F "backup tarball leaked" с mitigation = age encryption gate.
-  - `docs/CHANGELOG.md` запись.
+  - `archive/docs/CHANGELOG.md` запись.
 - Тесты:
   - `tests/test_backup_snapshot_encryption.py` — end-to-end: tmp dir → snapshot с `BACKUP_ENCRYPTION_ENABLED=true` и тестовым recipient → файлы `*.age` существуют, plaintext отсутствует, manifest отражает encrypted.
   - `tests/test_restore_verify_encryption.py` — encrypted snapshot → restore с identity → exit 0; wrong identity → exit 5.
@@ -53,7 +53,7 @@ Snapshot-файлы (`postgres.dump`, `uploads.tar.gz`, `chroma.tar.gz`), кот
 - [ ] `scripts/backup_integrity.py` на encrypted snapshot возвращает Valid; SHA считается по `.age` файлу.
 - [ ] `ruff check scripts/ tests/` clean.
 - [ ] `helm lint deploy/helm/ --strict` clean, `helm template` с `backup.encryption.enabled=true` рендерит CronJob с mount'ом `/secrets/recipient.pub`; с `enabled=false` mount отсутствует (clean diff).
-- [ ] `docs/operations/backup-encryption.md` и обновлённый DR checklist landed; `docs/CHANGELOG.md` entry есть.
+- [ ] `docs/operations/backup-encryption.md` и обновлённый DR checklist landed; `archive/docs/CHANGELOG.md` entry есть.
 
 ## Notes
 - Не требовать `age` в runtime-зависимостях Python (нет хорошего pure-python аналога с identical cli compat). Вызов через `subprocess.run(["age", ...])`; в CI image install `age` через `apt-get install -y age` (Ubuntu 23.04+) или precompiled release tarball.

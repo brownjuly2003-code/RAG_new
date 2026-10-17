@@ -1,7 +1,7 @@
 # Session handoff — 2026-10-16 — the production model served, the operator share measured
 
 Session `ef520894`, 2026-10-16 18:52 UTC – 2026-10-17 02:30 UTC, Claude Opus 5.5 alone (D12). The session
-before it: [the chat's steps 1–3](session-handoff-2026-10-16-chat-steps-1-3.md). It carried out
+before it: [the chat's steps 1–3](../../archive/docs/operations/session-handoff-2026-10-16-chat-steps-1-3.md). It carried out
 step 4 of the ROADMAP's active thread M — Julia's production model — in commits
 `7a99c45` to the one that adds this log, and answered her question of the session: how
 often answers go to an operator. **Pushed** at her word on 2026-10-17 (`e81f0c5..b351d29`),
@@ -37,7 +37,7 @@ retrieval — [evidence row](../../EVIDENCE_INDEX.md), record `reports/chat-rout
 against the context, a factuality floor; otherwise up to two retries, then `human`. The claim
 check is the signal the chat lacks. A run of 2026-10-13 on qwen2.5:7b marked 11 of 39 `human`
 (`reports/ask100/fixed-20261013/`, untracked, not this repository's: its code a patched
-snapshot no commit names — NOT_EVIDENCE; [session log](session-handoff-2026-10-15-judge-100.md)). It cannot be replayed on the screening's 100 answers, which cite no `[N]`:
+snapshot no commit names — NOT_EVIDENCE; [session log](../../archive/docs/operations/session-handoff-2026-10-15-judge-100.md)). It cannot be replayed on the screening's 100 answers, which cite no `[N]`:
 the claim check would refuse them all. It is measured on answers in the chat's own form under
 [the handover plan](../specs/handover-signal.md) (Julia, 2026-10-17: «Давай сначала замерим»).
 

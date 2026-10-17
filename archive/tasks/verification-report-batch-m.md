@@ -17,7 +17,7 @@ top of `76b8cdb` (the spec-queue commit).
 - [x] `helm lint --strict` clean (Codex-side).
 - [x] `helm template` on `backup.encryption.enabled=true` adds the mount; on `false` leaves the CronJob unchanged — verified by Codex.
 - [x] `docs/operations/backup-encryption.md` is the runbook (age-keygen flow, Helm Secret wiring, rotation caveat).
-- [x] `docs/disaster-recovery.md` gains Scenario F (backup tarball leaked vs age private key lost); `docs/CHANGELOG.md` entry added.
+- [x] `docs/disaster-recovery.md` gains Scenario F (backup tarball leaked vs age private key lost); `archive/docs/CHANGELOG.md` entry added.
 - [x] `tests/test_backup_snapshot_encryption.py` + `tests/test_restore_verify_encryption.py` skip cleanly when `age` is not on PATH.
 - [x] `ruff check scripts/ tests/ deploy/` → clean.
 

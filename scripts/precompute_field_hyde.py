@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Precompute field-aware HyDE query expansions for the 100 aircargo cases.
 
-Arm E of the Phase 2 series (docs/operations/2026-06-05-query-expansion-probe.md):
+Arm E of the Phase 2 series (archive/docs/operations/2026-06-05-query-expansion-probe.md):
 the probe showed the field-aware HyDE prompt bridges the NL-RU <-> snake_case
 lexical gap (BM25 rank of the kw chunk 159->13 / 305->2 / 89->5 / 1021->99 on the
 4 deep cases). This script precomputes the expansions LOCALLY (mistral-small,
@@ -30,7 +30,7 @@ if str(PROJECT_ROOT) not in sys.path:
 
 from scripts.aircargo_ragas_free import FreeChatLLM  # noqa: E402
 
-# Exact probe prompt — docs/operations/2026-06-05-query-expansion-probe.md.
+# Exact probe prompt — archive/docs/operations/2026-06-05-query-expansion-probe.md.
 FIELD_HYDE_PROMPT = (
     "Корпоративная база знаний хранит регламенты с шаблонами, где поля записаны\n"
     "в snake_case на английском (например booking_number, flight_date).\n"

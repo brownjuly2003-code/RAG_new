@@ -229,7 +229,7 @@ def test_contextual_header_no_llm_carries_markdown_heading_path() -> None:
     """No-LLM fallback prepends the structural heading path (h1..h4).
 
     This is the anchor that lets '*-required-fields' NL queries reach the
-    field-table chunk (see docs/operations/2026-06-03-r7-llm-judged-baseline.md):
+    field-table chunk (see archive/docs/operations/2026-06-03-r7-llm-judged-baseline.md):
     the table chunk's own heading is just 'Обязательные поля', so it must carry
     the doc topic (h1) + section (h2) for the query to match.
     """

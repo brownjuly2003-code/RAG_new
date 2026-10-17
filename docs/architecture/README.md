@@ -72,7 +72,7 @@ flowchart LR
 | D-06 | Model business-valid and system-known time separately. | Similarity search cannot reliably choose the policy effective for a case date. | [Domain and data model](domain-data-model.md) |
 | D-07 | Keep the policy engine behind `PolicyDecisionPoint`. | Typed Python rules fit the MVP; OPA remains an adapter when independent policy distribution is justified. | [System architecture](system-architecture.md#11-policy-decision-point) |
 | D-08 | Grade state and postconditions before language quality. | A fluent answer is not evidence that the business outcome occurred. | [Security and reliability](security-reliability.md#9-promotion-gates) |
-| D-09 | Migrate by strangler/shadow, preserving existing APIs. | The inherited remediation stream and new product stream can advance without masking each other. | [Migration plan](migration-plan.md) |
+| D-09 | Migrate by strangler/shadow, preserving existing APIs. | The inherited remediation stream and new product stream can advance without masking each other. | [Migration plan](../../archive/docs/architecture/migration-plan.md) |
 | D-10 | Fence same-session turns in PostgreSQL before multi-replica rollout. | Process locks and sticky routing cannot reject stale workers after timeout or replica failover. | [ADR 0006](../adr/0006-durable-multi-replica-session-turns.md) |
 
 ## Non-negotiable runtime invariants
@@ -90,9 +90,9 @@ flowchart LR
 - [System architecture](system-architecture.md): containers, components, ports, state machine, APIs, runtime flows, and observability.
 - [Domain and data model](domain-data-model.md): aggregates, relational model, bitemporal knowledge, ledger, outbox, and concurrency invariants.
 - [Security and reliability](security-reliability.md): trust boundaries, connector controls, threat model, failure semantics, SLOs, and promotion gates.
-- [Migration plan](migration-plan.md): source-to-target seams, staged delivery, compatibility, rollback, and the first milestone.
+- [Migration plan](../../archive/docs/architecture/migration-plan.md): source-to-target seams, staged delivery, compatibility, rollback, and the first milestone.
 - [Resolution Contract schema v0.1](resolution-contract-schema-v0.1.md): strict authoring model, canonical identity, fixtures, and compatibility policy.
-- [Implementation plan](rag-new-architecture.md): short ordered backlog with verification.
+- [Implementation plan](../../archive/docs/architecture/rag-new-architecture.md): short ordered backlog with verification.
 - [Graph search explained](graph-search.md): in Russian and in plain words — the structural graph (GR-1), the entity graph (GR-2), when the graph lane runs, why it is off by default, and how it is measured.
 
 ## Research basis

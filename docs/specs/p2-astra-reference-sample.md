@@ -6,7 +6,7 @@ earlier Astra request from the work profile in this context was the synthetic
 empty directory, `xhigh`, read-only sandbox). Requested by the owner the same
 night («про разметку — проверь на кодекс astra xhigh») as a third model family
 next to the [Opus reference](p2-opus-reference-sample.md); it does not replace
-step 1.1 of the [quality plan](plan_final_30_09_26.md).
+step 1.1 of the [quality plan](../../archive/docs/specs/plan_final_30_09_26.md).
 
 ## Scope
 
@@ -14,7 +14,7 @@ step 1.1 of the [quality plan](plan_final_30_09_26.md).
   `evaluation.blinded_judge.draw_human_sample`: two cases from each of five
   ruler strata, the exact sample in `reports/p2/human-sample.html`
   (10 cases, 50 documents). Hm and the other 90 H cases are outside this run.
-- Use `build_request` from the registered [P2 plan](p2-blinded-judge-plan.md)
+- Use `build_request` from the registered [P2 plan](../../archive/docs/specs/p2-blinded-judge-plan.md)
   unchanged: each request holds only its question and five shuffled D1–D5
   document texts. No case id, rank, arm, keyword, ruler score, prior judge
   grade or the Opus grades is supplied. One independent request per case.

@@ -1,57 +1,101 @@
 # RAG_new documentation
 
-This directory contains maintained product and engineering documentation.
-Start with the smallest document that answers the question; do not use session
-logs or superseded plans for routing.
+The map of every maintained document. Start with the smallest one that answers the question.
+History — superseded plans, audits, session handoffs, dated experiment logs — is in
+[`../archive/`](../archive/README.md) and never drives current work.
 
-## Start here
+## Where the project stands — the repository root
+
+| File | What it answers |
+|---|---|
+| [`CLAUDE.md`](../CLAUDE.md) | How an agent works here: who does what, machines, the slice rule |
+| [`CURRENT_STATE.md`](../CURRENT_STATE.md) | What is true now: the product, its numbers, known defects, the next step |
+| [`PLAN.md`](../PLAN.md) | The one plan (accepted 2026-10-17): stages, the measuring method, Julia's decisions |
+| [`ROADMAP.md`](../ROADMAP.md) | Progress by stage of the plan; frozen streams and their unfreeze conditions |
+| [`EVIDENCE_INDEX.md`](../EVIDENCE_INDEX.md) | Every published record with its provenance, one row each |
+| [`AGENT_STATE.md`](../AGENT_STATE.md) | Working conventions and traps (read by the autopilot) |
+| [`BACKLOG.md`](../BACKLOG.md) | The short queue and dated reviews (read by the autopilot) |
+| [`README.md`](../README.md) | The project's front page: features, API, web UI |
+| [`DEPRECATIONS.md`](../DEPRECATIONS.md) | Module layout and deprecated import paths |
+
+## Running the service
 
 | Need | Document |
 |---|---|
-| Run the service locally | [Quickstart](QUICKSTART.md) |
-| Understand the current implementation | [Project README](../README.md) and [current state](../CURRENT_STATE.md) |
-| Understand the target architecture | [Architecture baseline](architecture/README.md) |
-| Configure providers, storage, auth, and feature flags | [Configuration](CONFIGURATION.md) |
-| Deploy or package the service | [Deployment](DEPLOYMENT.md) |
-| Operate and troubleshoot it | [Operations](OPERATIONS.md), [runbook](runbook.md), and [disaster recovery](disaster-recovery.md) |
-| Run local verification | [Local gate](local-gate.md) and [Windows test workflow](windows-test-workflow.md) |
+| Run it locally | [Quickstart](QUICKSTART.md) |
+| Providers, storage, auth, feature flags | [Configuration](CONFIGURATION.md) |
+| Deploy or package it | [Deployment](DEPLOYMENT.md) |
+| Evaluation commands and operating it | [Operations & evaluation](OPERATIONS.md) |
+| Troubleshoot | [Runbook](runbook.md), [disaster recovery](disaster-recovery.md) |
+| Backups | [Backup & restore](operations/backup-restore.md), [encryption at rest](operations/backup-encryption.md) |
+| Resolution database roles | [PostgreSQL roles](operations/resolution-postgres-roles.md) |
+| Helm chart | [Helm lint](operations/helm-lint.md) |
+| A live GraceKelly smoke (explicit opt-in only) | [GraceKelly smoke](operations/gracekelly-smoke.md) |
 
-## Project control and evidence
+## How it is built — `architecture/` and `adr/`
 
-The live routing documents intentionally remain in the repository root because
-automation and agent onboarding depend on those paths:
+The architecture set is the design baseline of 2026-08-21, written before the code: read it for
+intent, and the code and [`CURRENT_STATE.md`](../CURRENT_STATE.md) for what runs.
 
-- [`CURRENT_STATE.md`](../CURRENT_STATE.md) — one current status and next-action capsule;
-- [`ROADMAP.md`](../ROADMAP.md) — active, frozen, and conditional streams;
-- [`BACKLOG.md`](../BACKLOG.md) — short list of actionable residuals;
-- [`PLAN.md`](../PLAN.md) — the one plan, since 2026-10-17;
-- [`EVIDENCE_INDEX.md`](../EVIDENCE_INDEX.md) — index of accepted slices and corrections.
+| Document | What it describes |
+|---|---|
+| [Architecture baseline](architecture/README.md) | Entry to the architecture set |
+| [System architecture](architecture/system-architecture.md) | Components and request paths |
+| [Domain and data model](architecture/domain-data-model.md) | Entities of the resolution kernel and their storage |
+| [Resolution contract v0.1](architecture/resolution-contract-schema-v0.1.md) | The schema of a resolution answer |
+| [Security and reliability](architecture/security-reliability.md) | Tenancy, auth, failure handling |
+| [Graph search, in plain words](architecture/graph-search.md) | The structure and entity graphs and what was measured (in Russian) |
+| [`adr/`](adr/) 0001–0009 | Decisions: graph deferral (0001), modular monolith (0002), PostgreSQL authority (0003), governed actions (0004), LangGraph boundary (0005), durable turns (0006), retrieval storage stays (0007), inherited CI red jobs and the Chroma CVE ignores (0008), the npm advisory exception (0009) |
 
-Supporting records live under:
+## Specs — `specs/`
 
-- [`evidence/`](evidence/) — slice-level verification capsules;
-- [`adr/`](adr/) — architecture decisions;
-- [`audits/`](audits/) — product audits, including the audit of record;
-- [`operations/`](operations/) — runbooks and dated experiment reports;
-- [`a11y/`](a11y/) — accessibility verification.
+**In use by the plan:** [handover signal](specs/handover-signal.md) — which answers go to a
+person; run as [`PLAN.md`](../PLAN.md) stages 2 and 3.
 
-## Runtime samples
+**Contracts the code keeps** — what the code must do, with tests behind each:
 
-The warranty, returns, and E10–E30 files are demo knowledge-base inputs, not
-project documentation. They live in [`../demo/docs/`](../demo/docs/) and are
-also generated by `python -m demo.seed_docs`.
+| Spec | Contract |
+|---|---|
+| [Corpus provenance](specs/corpus-provenance.md) | A corpus is pinned by its SHA; a number over an unidentified corpus is not evidence |
+| [Embedder manifest](specs/embedder-manifest.md) | A Chroma collection records the embedder that made its vectors |
+| [Chroma index persistence](specs/chroma-index-persistence.md) | A new collection persists its whole index, so a restarted process answers as the ingesting one did |
+| [Request context isolation](specs/request-context-isolation.md) | Deadline and LLM budget do not leak between requests on the shared executor |
 
-## Archive boundary
+**Pre-registrations of finished or stopped measurements** — kept beside their records, which
+link them and whose tests read them; stage 7 of the plan may reuse the graph rule:
+[graph enablement policy](specs/graph-enablement-policy.md) and
+[semantic precision metrics](specs/semantic-precision-metrics.md) (both of the stopped
+`plan_03_10_26` campaign); [Chroma restart stability](specs/chroma-restart-stability.md);
+pgvector [cold start](specs/pgvector-cold-start.md) and
+[graph evidence](specs/pgvector-graph-evidence.md);
+[entity-graph retrieval](specs/entity-graph-retrieval.md) and the
+[GR-3 A/B](specs/graph-lane-ab.md); [retrieval buckets](specs/retrieval-buckets.md);
+[production parity](specs/production-parity.md) (Chroma against exact search on 30 cases);
+[evidence loss map](specs/evidence-loss-map.md);
+[expanded cut overlay](specs/expanded-cut-overlay.md) and the
+[P1b plan](specs/p1b-expanded-cut-plan.md); [label verification](specs/label-verification.md);
+P2 reference samples ([Astra](specs/p2-astra-reference-sample.md),
+[Opus](specs/p2-opus-reference-sample.md)); [small generators](specs/small-generator-screening.md).
 
-Superseded plans, old handoffs, session notes, research snapshots, completed
-task specifications, and legacy code live under [`../archive/`](../archive/).
-Archived files preserve historical evidence but must not drive current work or
-be published as maintained documentation.
+## Evidence and sessions
+
+- [`evidence/`](evidence/) — one write-up per measured slice; the register with provenance is
+  [`EVIDENCE_INDEX.md`](../EVIDENCE_INDEX.md). The records themselves are in `../reports/`.
+- [`operations/`](operations/) — besides the runbooks above: the
+  [GR-2 entity builder preparation](operations/gr2-entity-builder-preparation.md) and the last
+  session handoffs (the newest is linked from [`CURRENT_STATE.md`](../CURRENT_STATE.md)). Older
+  handoffs move to `archive/docs/operations/`.
+- [`a11y/`](a11y/) — the accessibility audit of the web UI.
+
+Demo knowledge-base inputs (warranty, returns, E10–E30) are not documentation: they live in
+[`../demo/docs/`](../demo/docs/) and are generated by `python -m demo.seed_docs`.
 
 ## Maintenance rules
 
-- Update an existing maintained document before adding another status file.
-- Put durable proof in `docs/evidence/` and add it to `EVIDENCE_INDEX.md`.
-- Keep volatile status in `CURRENT_STATE.md`; keep history in `archive/`.
-- Use relative links and verify them after moving documentation.
-- Do not copy secrets, host credentials, or private runtime logs into docs.
+- Update a maintained document before adding another status file; the root holds at most 9.
+- Durable proof: a record in `reports/`, a test, a row in `EVIDENCE_INDEX.md`, and a write-up
+  in `docs/evidence/` if it needs prose.
+- Volatile status lives in `CURRENT_STATE.md`; anything superseded moves to `archive/` with its
+  links rewritten, and gets a line in [`archive/README.md`](../archive/README.md).
+- Relative links only; check them after any move.
+- No secrets, host credentials or private runtime logs in docs.

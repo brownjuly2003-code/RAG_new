@@ -7,7 +7,7 @@
 - Related: [ADR 0008](0008-inherited-ci-red-disposition.md) (CI-RED-2, the same
   question for `pip-audit`), `docs-site/npm-audit-exceptions.json`,
   `docs-site/scripts/check-npm-audit.mjs`, `.github/workflows/docs-site.yml`,
-  `docs/specs/plan_03_10_26.md` slice 0.1b
+  `archive/docs/specs/plan_03_10_26.md` slice 0.1b
 
 ## Context
 

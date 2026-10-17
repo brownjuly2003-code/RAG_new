@@ -154,9 +154,10 @@ entry points are:
 - [Operations and evaluation](docs/OPERATIONS.md)
 - [Runbook](docs/runbook.md)
 - [Evidence index](EVIDENCE_INDEX.md)
+- [Current state](CURRENT_STATE.md) and [the plan](PLAN.md) (in Russian)
 
-Superseded plans, task specifications, session handoffs, research snapshots,
-and legacy code are retained under [`archive/`](archive/README.md). They are
+Superseded plans, audits, task specifications, session handoffs, research
+snapshots and legacy code are retained under [`archive/`](archive/README.md). They are
 historical evidence, not current guidance. Demo knowledge-base inputs live in
 [`demo/docs/`](demo/docs/).
 

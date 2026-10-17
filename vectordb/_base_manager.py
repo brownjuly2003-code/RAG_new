@@ -1108,7 +1108,7 @@ class HybridRetriever:
         Чистый текст-lookup по порядку ингеста (self._chunks) — отбор
         BM25+RRF+reranker уже сделан и не меняется. Бьёт в кейсы, где
         retrieval находит правильный док, но не тем чанком
-        (docs/operations/2026-06-05-residual-miss-diagnosis.md, потенциал 8/8).
+        (archive/docs/operations/2026-06-05-residual-miss-diagnosis.md, потенциал 8/8).
         """
         # Чанки, уже выбранные в top-k, и добавленные соседи не дублируются.
         used_keys = {_rrf_document_key(d, self._doc_key_chars) for d in docs}
@@ -1403,7 +1403,7 @@ def add_contextual_headers(
             # structural_split) — это даёт чанку-таблице якорь раздела
             # ("Обязательные поля") + тему дока, чего не хватало для запросов
             # класса "какие поля нужны для X" (см.
-            # docs/operations/2026-06-03-r7-llm-judged-baseline.md).
+            # archive/docs/operations/2026-06-03-r7-llm-judged-baseline.md).
             meta = chunk.metadata or {}
             header = f"Из документа {source}"
             heading_path = [str(meta[h]).strip() for h in ("h1", "h2", "h3", "h4") if meta.get(h)]

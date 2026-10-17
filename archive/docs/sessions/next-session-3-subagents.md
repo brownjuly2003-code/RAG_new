@@ -168,7 +168,7 @@ opts into planning or running a live benchmark.
 ## Next Session Plan
 - Start with `git status --short --branch` and confirm any dirty state is expected
   before changing files.
-- Read `AGENT_STATE.md`, `docs/operations/colab-remote-benchmark.md`,
+- Read `AGENT_STATE.md`, `archive/docs/operations/colab-remote-benchmark.md`,
   `docs/plans/2026-05-01-backlog.md`, and this handoff before changing files.
 - If opening the notebook manually, use:
   `https://colab.research.google.com/github/brownjuly2003-code/RAG_Support_Assistant/blob/master/notebooks/rag_support_colab_remote_benchmark.ipynb`

@@ -4,7 +4,7 @@ Measured 2026-09-24 in a clean clone at
 `4999ea3a5665155648858ce226ff18d5b27ab0c5`, using fresh
 `BAAI/bge-reranker-v2-m3` scores captured at
 `511f3f90d9bef29d8f1b393b94ba12324eef9937`. The
-[plan](../specs/p1-adaptive-k-plan.md) records the grid, the ruler, the
+[plan](../../archive/docs/specs/p1-adaptive-k-plan.md) records the grid, the ruler, the
 cross-validated selection rule and the verdict thresholds as
 pre-registered on 2026-09-23, before any score was seen. The report's
 `config.preregistered` records the grid, the CV rule and the verdict as fixed

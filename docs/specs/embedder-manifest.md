@@ -1,6 +1,6 @@
 # Capability: embedder-manifest
 
-The mandatory part of quality-plan 2.3 ([plan](plan_final_30_09_26.md), G25)
+The mandatory part of quality-plan 2.3 ([plan](../../archive/docs/specs/plan_final_30_09_26.md), G25)
 binds a Chroma collection to the embedder that produced its vectors. Equal
 vector dimensions alone do not establish that identity. The contract applies
 to vector, hybrid and graph retrieval, and to collection writes.

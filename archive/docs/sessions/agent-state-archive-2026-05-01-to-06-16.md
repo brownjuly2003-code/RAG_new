@@ -30,7 +30,7 @@
 > 2. **Робастность:** добавил resumable card-cache в `scripts/build_factcards.py` (коммит `3c757e9`, PUSHED) — извлечение (paid Mistral ~45мин) больше не теряется при сбое embed (`--cards-json`/дефолт `.tmp/factcards_<tenant>_cards.json`). Ruff+compile+pure-helper тест зелёные.
 > 3. **Перезапуск стадий 4+5 на Mac с `RAG_DEVICE=cpu`** (новый драйвер `/tmp/phase5_cpu.sh`, лог `.tmp/phase5_cpu.log`, маркеры `.tmp/phase5_cpu_{DONE,FAIL}`). Прошёл чисто: 747 карт из 201 док → коллекция `rag_docs_aircargo_factcards`, verification PASS; стадия 5 (CPU query-embed) → дельта. Прогон 23:49→00:45 MSK (~57мин).
 >
-> **📊 РЕЗУЛЬТАТ (`.tmp/phase5_factcard_delta.md` на Mac → закоммичен как `docs/operations/2026-06-15-phase5-factcard-delta.md`):** на потолке идеального gold-роутера композит «needs_factcard→factcard, иначе D2» = **FULL 79 vs D2 97 (Δ FULL −18)**; needs-срез (44): D2 **42/44 (95%)** vs factcard **24/44 (55%)** — **1 улучшение / 19 регрессий**; целевой `customs-clearance-fields` лишь **MISS→PART** (не закрыт до FULL); all-factcard без роутера Δ −56. **ВЕРДИКТ: NO-SHIP** — дистиллированные карты теряют точные `answer_contains`-формы, которые D2-чанки несут дословно → как **замена** D2 полоса строго хуже.
+> **📊 РЕЗУЛЬТАТ (`.tmp/phase5_factcard_delta.md` на Mac → закоммичен как `archive/docs/operations/2026-06-15-phase5-factcard-delta.md`):** на потолке идеального gold-роутера композит «needs_factcard→factcard, иначе D2» = **FULL 79 vs D2 97 (Δ FULL −18)**; needs-срез (44): D2 **42/44 (95%)** vs factcard **24/44 (55%)** — **1 улучшение / 19 регрессий**; целевой `customs-clearance-fields` лишь **MISS→PART** (не закрыт до FULL); all-factcard без роутера Δ −56. **ВЕРДИКТ: NO-SHIP** — дистиллированные карты теряют точные `answer_contains`-формы, которые D2-чанки несут дословно → как **замена** D2 полоса строго хуже.
 >
 > **✅ Что обновлено (docs-only, код/рантайм НЕ тронут кроме cache-коммита `3c757e9`):** новый evidence-doc `2026-06-15-phase5-factcard-delta.md` · closure-doc (баннер + п.2 + п.4 + TL;DR + Done When исправлены: NO-SHIP теперь по ДАННЫМ, прежнее «harness отсутствует» помечено неверным) · план (статус-шапка + T5.1 `[x]` ПРОГНАН + R2/T3.1/T4 + Done When). `docs_quality` guard 12 passed. **Mac вычищен: `/tmp/mk.env` + `/tmp/phase5_*.sh` удалены (Mistral-ключ не остался).**
 >
@@ -54,7 +54,7 @@
 > 1. Проверить вручную: `ssh deproject-mac 'cd ~/RAG_Support_Assistant && cat .tmp/phase5_factcard_delta.md'` (+ `.tmp/phase5_run.log` если FAIL).
 > 2. **SHIP** (ΔFULL(needs)>0, MISS закрыт, 0 регрессий) → реализовать Phase 3 (авто-роутинг needs_factcard→factcard в `_select_retrieval_strategy`) + R2 + дисконтировать на R1 F1≈0.871; обновить план/closure/README на SHIP.
 > 3. **NO-SHIP / BORDERLINE** → оставить opt-in lane как есть, обновить closure-док реальными числами (вердикт NO-SHIP теперь обоснован ДАННЫМИ, а не ошибочным «harness отсутствует»).
-> 4. В ОБОИХ случаях: `ssh deproject-mac 'rm -f /tmp/mk.env /tmp/phase5_run*.sh'` (вычистить Mistral-ключ); обновить `docs/operations/2026-06-14-adaptive-retrieval-closure.md` (убрать неверный пункт #4 «harness отсутствует» → заменить реальным Phase-5-исходом).
+> 4. В ОБОИХ случаях: `ssh deproject-mac 'rm -f /tmp/mk.env /tmp/phase5_run*.sh'` (вычистить Mistral-ключ); обновить `archive/docs/operations/2026-06-14-adaptive-retrieval-closure.md` (убрать неверный пункт #4 «harness отсутствует» → заменить реальным Phase-5-исходом).
 > - Если Mac-прогон провалился/слишком долгий → **Kaggle**: `pip install kaggle` в venv, обновить private-датасет `rag-phase2-ab-bundle` снапшотом репо, авторить кернел с factcard-плечом (тяжелее, но штатный путь проекта).
 >
 > **⚠️ closure-коммит `2fe2d16` («NO-SHIP, harness отсутствует») — ЧАСТИЧНО УСТАРЕЛ:** lane-факты верны (F1–F4 opt-in), но пункт «Phase-5 автономно не исполним / harness отсутствует» неверен — Phase-5 ИСПОЛНЯЕТСЯ. Финальный вердикт заменит этот док по результату.
@@ -63,7 +63,7 @@
 
 > **START HERE.** Заход `/auto RAG_Support_Assistant продолжи` → владелец: «закрывай все задачи, у тебя права админа». Все остальные линии уже закрыты (type-hardening исчерпан, Fable-hardening пуст). Оставался только adaptive-retrieval с гейченым остатком (Phase 3/R2/Phase 5). **Закрыт решением с правами админа.**
 >
-> **Решение (data-backed, дисциплина arms E/F):** **NO-SHIP-to-default** для Phase 3 (авто-роутинг), R2 (router в дефолт), Phase 4 (каскад). Fact-card lane (F1–F4) + R1 остаются **shipped opt-in** (`RAG_RETRIEVAL_STRATEGY=factcard`). Полное обоснование — `docs/operations/2026-06-14-adaptive-retrieval-closure.md`.
+> **Решение (data-backed, дисциплина arms E/F):** **NO-SHIP-to-default** для Phase 3 (авто-роутинг), R2 (router в дефолт), Phase 4 (каскад). Fact-card lane (F1–F4) + R1 остаются **shipped opt-in** (`RAG_RETRIEVAL_STRATEGY=factcard`). Полное обоснование — `archive/docs/operations/2026-06-14-adaptive-retrieval-closure.md`.
 >
 > **Почему не флипнул в дефолт (а не «забыл»):**
 > 1. D2 уже FULL 96/PART 3/MISS 1 — headroom 1–4 кейса; мисроутинг на работающей системе = тихая регрессия.
@@ -180,7 +180,7 @@
 >
 > **🔴 Главный caveat (в отчёте):** `model_routing_enabled=false` + `retrieval_strategy=hybrid` в дефолте → `classify_complexity` short-circuit'ит на `unknown` БЕЗ вызова LLM, router всегда hybrid (D2). Т.е. **per-query LLM-стоимости в текущем проде НЕТ** — экономия ~191 ток/query *потенциальная*, реализуется только если включить роутинг. R1 = делает включение бесплатным.
 >
-> **Верификация:** офлайн CV-прогон + live ministral-прогон сошлись (выше); ruff All passed; mypy strict (evaluation в gated-scope) Success; docs-quality/precommit guard зелёные. Артефакт `r1_router_results.json` + отчёт `docs/operations/2026-06-14-adaptive-retrieval-r1.md` + план обновлён (R1 [x]).
+> **Верификация:** офлайн CV-прогон + live ministral-прогон сошлись (выше); ruff All passed; mypy strict (evaluation в gated-scope) Success; docs-quality/precommit guard зелёные. Артефакт `r1_router_results.json` + отчёт `archive/docs/operations/2026-06-14-adaptive-retrieval-r1.md` + план обновлён (R1 [x]).
 >
 > **Следующий шаг (НЕ начато, GATED):** **R2** = врезать классификатор перед `_select_retrieval_strategy` — но только после **Phase-5** офлайн-дельты D2 vs D2+router (headroom мал, D2 уже FULL 96/100, мисроутинг = тихая регрессия; route-gold *выведен* из query_class, не из измеренного retrieval-выигрыша). NO-SHIP — допустимый исход. **F2** (Track F, fact-card коллекция+ingest) — тяжёлый embed, **только Mac**, за владельцем. Решение что запускать — за владельцем.
 
@@ -202,7 +202,7 @@
 
 ## 2026-06-13 Update (adaptive-retrieval Phase 0) — разметка+baseline+ГЕЙТ; ГЕЙТ PASS обоими треками; PUSHED, CI зелёный (origin=`7c31904`+этот sync)
 
-> **START HERE (этот workstream).** Заход по `/auto` «RAG_Support_Assistant — adaptive-retrieval: выполни Phase 0 из docs/plans/2026-06-13-adaptive-retrieval-factcard-plan.md». **Отдельный workstream, НЕ связан с mypy-strict-линией (cont.1-3 ниже).** Phase 0 закрыт целиком: T0.1 разметка + T0.2 baseline + ГЕЙТ. **PUSHED по «все решения за тобой, про коммиты и пуши тоже»: master FF `176335d→7c31904` (Phase 0) + plan-коммит `176335d` уехал заодно; origin синхронизирован. Основной CI run `27477349393` = success полностью** (type-check со свежим `evaluation.adaptive_retrieval` / unit×2 / integration×2 / lint / security / pre-commit / migrations / helm; regression-eval запустился — eval-path тронут). **Pages-deploy = failure pre-existing** (docs-site esbuild npm-audit через astro — cont.2/cont.3, вне scope, не моя регрессия). Отчёт: `docs/operations/2026-06-13-adaptive-retrieval-phase0.md`.
+> **START HERE (этот workstream).** Заход по `/auto` «RAG_Support_Assistant — adaptive-retrieval: выполни Phase 0 из docs/plans/2026-06-13-adaptive-retrieval-factcard-plan.md». **Отдельный workstream, НЕ связан с mypy-strict-линией (cont.1-3 ниже).** Phase 0 закрыт целиком: T0.1 разметка + T0.2 baseline + ГЕЙТ. **PUSHED по «все решения за тобой, про коммиты и пуши тоже»: master FF `176335d→7c31904` (Phase 0) + plan-коммит `176335d` уехал заодно; origin синхронизирован. Основной CI run `27477349393` = success полностью** (type-check со свежим `evaluation.adaptive_retrieval` / unit×2 / integration×2 / lint / security / pre-commit / migrations / helm; regression-eval запустился — eval-path тронут). **Pages-deploy = failure pre-existing** (docs-site esbuild npm-audit через astro — cont.2/cont.3, вне scope, не моя регрессия). Отчёт: `archive/docs/operations/2026-06-13-adaptive-retrieval-phase0.md`.
 >
 > **Сделано:**
 > - **T0.1** — размечены 135 кейсов (aircargo 100 + curated 35): `query_class` (simple/factual/enumeration/multi-condition) + `needs_factcard`. Источник истины = `evaluation/adaptive_retrieval/build_phase0_labels.py` (ручные метки запинены, идемпотентно валидирует+печатает доли), материализация = `evaluation/adaptive_retrieval/phase0_labels.jsonl`. `needs_factcard`=TRUE только для перечня полей/документов/данных/доказательств/условий-эскалации (шаги/причины/действия → enumeration, но FALSE). **Доли: aircargo needs_factcard 44%** (enum 44/multi-cond 41/factual 9/simple 6); curated 6%; ALL 34%.
@@ -319,7 +319,7 @@
 1. **Верификация перед коммитом** (свежая сессия, evidence-before-commit): §2 стрим/кэш/analytics/graph **49 passed** (прошлый 47/1 — фейл был намеренный pin-тест, после отката чисто), F-2+routing **13 passed**, ruff clean.
 2. **Закоммичен готовый батч** — 7 локальных коммитов на `master` (нарезка файлово-когерентная, т.к. `git add -p` интерактивен и недоступен): `2ee78a8` metrics · `544c3fc` F-2 restore BM25 chunks · `5f9194f` F-1a/F-11 event-loop unblock · `defe216` F-9a/F-12 graph+settings · `f8cc015` F-3/F-8/F-7/F-17/F-6 streaming/cache/persist · `59df7c9` **F-5/F-18**.
 3. **F-5/F-18 ДОДЕЛАНЫ** (была in-flight): `utils/event_loop.py` подключён — loop регистрируется в `api/app.py` `_lifespan` (старт/finally), `run_qa_pipeline` шлёт персист online-eval через `run_coroutine_threadsafe` на main loop без per-request `engine.dispose()`; sync-скрипты → legacy `asyncio.run`+dispose. F-18: timeout из `online_evaluators_timeout_sec`, counter `rag_online_evaluators_dropped_total{reason=timeout|error}`. Тест threadsafe-пути добавлен — online-eval **19 passed**, graph/routing/conversation **17 passed**, импорт `api.app`/`agent.graph` OK.
-4. **Docs + гигиена закрыты** (после батча): `1ed8efc` — README/`.env.example`/`docs/CHANGELOG.md` для 6 новых переменных (+`STREAMING_QUALITY_EVAL` rollback, [Fable-Hardening] блок); `84de8e2` — мёртвый корневой `cache.py` (затенён пакетом `cache/`) + тест → `archive-legacy/` (F-14); `.gitignore` уже содержал temp/coverage; 76× `pytest-cache-files-*` + 7× `.pytest-tmp-*` удалены.
+4. **Docs + гигиена закрыты** (после батча): `1ed8efc` — README/`.env.example`/`archive/docs/CHANGELOG.md` для 6 новых переменных (+`STREAMING_QUALITY_EVAL` rollback, [Fable-Hardening] блок); `84de8e2` — мёртвый корневой `cache.py` (затенён пакетом `cache/`) + тест → `archive-legacy/` (F-14); `.gitignore` уже содержал temp/coverage; 76× `pytest-cache-files-*` + 7× `.pytest-tmp-*` удалены.
 5. **Multi-worker инвариант ЗАКРЫТ** (`d805292`): дефолты выровнены на 1 worker / 1 replica (`Dockerfile --workers 1`, helm `replicaCount:1` + autoscaling off), claim в `_base_trace.py` починен, startup-warning на `WEB_CONCURRENCY>1`, README «Deployment topology». Прошлый дефолт = 2 worker × 2–8 replica (ломал confirm-actions/сессии).
 6. **F-4 де-скоуплено → спека `codex-tasks/task-F4-cache-runtime-graph.md`**: при разборе найдена 4-я ловушка (помимо `last_response`) — `_enforce_daily_cost_limit` per-request, наивный кэш runtime молча отключит `DAILY_COST_LIMIT_USD` (money-safety). Оптимизация, не баг; concurrency+money-sensitive → Codex или отдельный аккуратный заход. НЕ шипить вслепую.
 7. **Push — GATED, спрашивать явно.** Полный suite на этой машине только с `RAG_RERANKER_MODEL=""` (cont.14).
@@ -348,7 +348,7 @@
 2. **Expand обоих плеч** (`--window 2 --max-chars 3600`; гоча: короткого `-w` у скрипта НЕТ): **регенерированный D2 = FULL 96/PART 3/MISS 1, остаточный MISS тот же — baseline воспроизведён 1-в-1 (cont.15 валиден)**; F-pre 92 → **F 95/100 FULL** (PART 3, MISS 2).
 3. **Матрица D2→F (все 100): 1 gain / 2 регрессии, нетто −1 FULL (96→95).** Gain `customs-special-cargo-manual-check`; регрессии `customs-broker-escalation` FULL→MISS (rerank-anchor shift: co-occur В пуле r20, original-реранк выбирает якоря без kw-соседей) + `waybill-escalation-events` FULL→PART (pool-выпадение — детерминированное наследство E-пулов, было предсказано). Gain E (`customs-clearance-fields`) НЕ сохранился: его закрывал expanded-РЕРАНК, не пулы → MISS опять.
 4. **R7-judge SKIPPED обоснованно**: конъюнктивный критерий упал на ноге 1 (FULL 95 < 96), дельта 3 кейса внутри полосы шума судьи (гоча cont.15 re-judge C) — 300 вызовов сигнала не добавят.
-5. **РЕШЕНИЕ: NO-SHIP** split-query параметра retriever'а. F-pre 92 > D2-pre 87 — split-query реально лучше БЕЗ экспансии, но parent-expansion (default ON) поглощает выигрыш (D2 +9 экспансией, F +3). **Цикл probe → E → F закрыт; production-стек = D2** (structural + parent-expansion w=2/3600). Отчёт: `docs/operations/2026-06-06-arm-f-split-query-results.md` (+ итог-блок в E-отчёте).
+5. **РЕШЕНИЕ: NO-SHIP** split-query параметра retriever'а. F-pre 92 > D2-pre 87 — split-query реально лучше БЕЗ экспансии, но parent-expansion (default ON) поглощает выигрыш (D2 +9 экспансией, F +3). **Цикл probe → E → F закрыт; production-стек = D2** (structural + parent-expansion w=2/3600). Отчёт: `archive/docs/operations/2026-06-06-arm-f-split-query-results.md` (+ итог-блок в E-отчёте).
 
 **ДОПОЛНЕНО той же сессией (после push, по явному «продолжи» Юли). АКТУАЛЬНОЕ СОСТОЯНИЕ: origin = `51628e2` (CI ЗЕЛЁНЫЙ), unpushed только этот addendum-коммит.**
 - **PUSHED `eeb7cd0..3576410` + CI-fix `51628e2`** (6 коммитов суммарно). Первый CI-прогон упал на pre-commit `end-of-file-fixer`: notebook `62a54cd` был без trailing newline (единственный фейл, остальные 9 джобов зелёные) — фикс `51628e2`, второй прогон **success полностью**. Docs-deploy зелёный с первого раза. Гоча сети: github.com с этой машины флапает (DNS-фейл + wsarecv reset) — лечится простым retry через 10-20s.
@@ -362,14 +362,14 @@
 
 **HEAD = этот handoff-коммит (master). Origin = `eaf8dd9` — unpushed: `584ecae`+`26587ab` (cont.16 хвост) + docs этой сессии + этот. Push GATED.**
 
-Шаги 3-5 плана плеча E (`docs/operations/2026-06-05-query-expansion-probe.md`) выполнены, цикл закрыт:
+Шаги 3-5 плана плеча E (`archive/docs/operations/2026-06-05-query-expansion-probe.md`) выполнены, цикл закрыт:
 
 1. **Kernel v6 чистый** (`[kaggle-phase2-E] DONE`, 5.7h CPU): скачан в `.tmp/kaggle_phase2/out_E/` (candidates 8MB + pool 4MB + log). Гоча: первый `kaggle kernels output` оборвался `IncompleteRead` 2.5MB/8MB и оставил **пустой** `ab_candidates_phase2_E.json` — удалить перед retry (retry прошёл). Контракт judge в данных верен: `expanded_query` у 100/100, `query` = оригинал.
 2. **Expand** (`--stage expand --label E -w 2 --max-chars 3600`): E-pre 79 → **E 89/100 FULL** (PART 6, MISS 5); summary в `out_E/ab_phase2_E_summary.md`.
 3. **Матрица D2→E (пересчёт `_kw_status` по обоим файлам): 1 gain / 8 регрессий, нетто −7 FULL (96→89).** Gain — ровно целевой `customs-clearance-fields` (последний MISS D2 закрыт: query-side гэп мостится). Регрессии: 5 FULL→MISS + 3 FULL→PART.
 4. **Диагноз по прерank-пулам E: 7/8 регрессий — rerank-демоция** (kw-чанки В пуле на RRF rank 1-9, cross-encoder против длинного расширенного запроса, медиана 574 chars, не поднимает в top-5; 1/8 — pool-выпадение). Риск из «Ограничений пробы» реализовался.
 5. **R7-judge** (mistral-small, 300 вызовов, `20260605T214926Z-e728353a`): E recall **0.920** prec **0.509** rel 0.833 faith 0.766 (zeros 19) vs D2 0.975/0.576/0.895/0.864 (z7) — проигрыш по всем и в agg, и в mean-без-нулей. **Перекрёстная валидация: judge recall-zeros E = ровно те же 5 FULL→MISS кейсов kw-матрицы, 1-в-1** — два независимых замера сошлись.
-6. **РЕШЕНИЕ: NO-SHIP** — field-aware промпт в `_build_hyde_prompt` не внедряем. D2-стек (structural + parent-expansion w=2/3600, оба default ON) остаётся production; остаточный MISS один (`customs-clearance-fields`). Отчёт: `docs/operations/2026-06-06-arm-e-field-hyde-results.md` (+ итог в план-доке пробы).
+6. **РЕШЕНИЕ: NO-SHIP** — field-aware промпт в `_build_hyde_prompt` не внедряем. D2-стек (structural + parent-expansion w=2/3600, оба default ON) остаётся production; остаточный MISS один (`customs-clearance-fields`). Отчёт: `archive/docs/operations/2026-06-06-arm-e-field-hyde-results.md` (+ итог в план-доке пробы).
 
 **ДОПОЛНЕНО той же сессией (после push, по явному «продолжай» Юли). АКТУАЛЬНОЕ СОСТОЯНИЕ: origin = `9d80814` (CI ЗЕЛЁНЫЙ), unpushed только этот addendum-коммит.**
 - **PUSHED `eaf8dd9..9d80814`** (5 коммитов). CI: первый прогон — `test-unit (3.11)` упал на HF `429 Too Many Requests` (скачивание `bge-reranker-v2-m3` per-tenant тестами — ровно гоча cont.15, transient), `gh run rerun --failed` → **зелёный 11/11**. Docs-deploy зелёный с первого раза.
@@ -678,8 +678,8 @@ when current evidence is needed.
 All `docs/plans/2026-05-01-backlog.md` items remain closed. The Colab remote
 benchmark PR is merged into `master`:
 
-- `905a65e` adds `docs/operations/colab-remote-benchmark.md` and
-  `notebooks/rag_support_colab_remote_benchmark.ipynb`.
+- `905a65e` adds `archive/docs/operations/colab-remote-benchmark.md` and
+  `archive/notebooks/rag_support_colab_remote_benchmark.ipynb`.
 - `b5eb848` records the Windows laptop thin-client boundary.
 - `a461fba` aligns the notebook to clone `colab-remote-benchmark` and ignores
   `.pytest-tmp*/` local pytest basetemp directories.
@@ -784,14 +784,14 @@ commit `f8ffb0f` is on `origin/master`.
   GitHub Actions ran `python scripts/weekly_report.py --dry-run`. Commit
   `a86b44c` adds `PYTHONPATH: ${{ github.workspace }}` and a regression guard;
   manual dispatch run `26671836799` passed.
-- 2026-05-30 Codex audit remediation follow-up: `docs/audits/audit_codex_30_05_26.md`
+- 2026-05-30 Codex audit remediation follow-up: `archive/docs/audits/audit_codex_30_05_26.md`
   records the audit. Closed local items include Agent UI API-data text
   rendering, docs-site `devalue` audit fix plus CI audit guard, production
   security headers/docs route controls, local-dev-only default Compose
   bindings, production auto-migration fail-closed behavior with explicit
   fail-open override, safe tar extraction in restore verification, and the
   docs-site 404 route warning.
-- 2026-05-30 Claude audit follow-up: `docs/audits/audit_claude_30_05_26.md` records a
+- 2026-05-30 Claude audit follow-up: `archive/docs/audits/audit_claude_30_05_26.md` records a
   Claude Opus 4.8 audit focused on the RAG pipeline and current
   implementation. It identifies R7/R1/R2/R3/R4/R5 follow-up work: measure RAG
   quality on a larger RU eval set, switch the default reranker after A/B,
@@ -848,7 +848,7 @@ commit `f8ffb0f` is on `origin/master`.
   `claude ultrareview --timeout 30` returned "Ultrareview is currently
   unavailable." No token or safeguard adjustment URL from the CLI error was
   copied into project files. The actual Claude audit exists in
-  `docs/audits/audit_claude_30_05_26.md`.
+  `archive/docs/audits/audit_claude_30_05_26.md`.
 - Ripgrep search hygiene follow-up: commit `bd4c25a` adds a repo-local
   `.ignore` for `pytest-cache-files-*` so broad `rg` searches over explicit
   paths skip pytest temp directories before Windows denies access. The broad

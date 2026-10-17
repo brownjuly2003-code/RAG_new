@@ -16,7 +16,7 @@ Code landed in commit `8043440` on top of `d163942`.
 - [x] No additional broken migrations beyond the already-fixed 012.
 
 ### Notes
-- `docs/CHANGELOG.md` gained an entry covering the 012 fix and the round-trip gate.
+- `archive/docs/CHANGELOG.md` gained an entry covering the 012 fix and the round-trip gate.
 - `scripts/restore_verify*.py` received `# noqa: E402` annotations to keep `ruff check` green under the project's existing import-order conventions.
 
 ## task-172 — Helm chart lint & server-side dry-run
@@ -47,7 +47,7 @@ Code landed in commit `8043440` on top of `d163942`.
 - [x] `tests/test_restore_verify_postgres.py` — 1 passed, 1 skipped (skips cleanly without docker/pg_restore on PATH, as designed).
 - [x] `scripts/restore_verify.py` legacy surface: 15 passed on `tests/test_restore_verify.py`.
 - [x] `ruff check scripts/ tests/` — clean.
-- [x] `docs/operations/backup-restore.md` gained a "Full-restore verification" section; `docs/CHANGELOG.md` entry added.
+- [x] `docs/operations/backup-restore.md` gained a "Full-restore verification" section; `archive/docs/CHANGELOG.md` entry added.
 
 ### Notes
 - Live `backup_snapshot → restore_verify_integration → exit 0` end-to-end was not replayed in this verification pass because it requires an existing backup snapshot; all in-script contracts are exercised by the unit/integration tests.
@@ -62,7 +62,7 @@ Code landed in commit `8043440` on top of `d163942`.
 - [x] Fail-fast path confirmed: `python scripts/gracekelly_smoke.py --verbose` with nothing listening on 8011 exits 1 with `GraceKelly not reachable at http://127.0.0.1:8011, start D:\GraceKelly\ first`.
 - [x] Related integration surface (`tests/test_post_deploy_smoke.py tests/integration/test_streaming.py`) — 7 passed, 1 warning.
 - [x] `docs/operations/gracekelly-smoke.md` is the runbook (preconditions, auth/env notes, healthy-path + failover-only, example output, troubleshooting).
-- [x] `docs/CHANGELOG.md:253` entry added.
+- [x] `archive/docs/CHANGELOG.md:253` entry added.
 
 ### Notes
 - Full live e2e (exit 0 with real GraceKelly on 8011 + RAG on 8000) is explicitly deferred — both services must be up; not blocking closure per task spec.

@@ -299,7 +299,7 @@ def test_precommit_repo_wide_hooks_skip_tracked_legacy_outputs() -> None:
     excluded_paths = {
         "trailing-whitespace": [
             "archive/legacy-code/rag_poc_architecture.md",
-            "docs/audits/audit_opus_27_04_26.md",
+            "archive/docs/audits/audit_opus_27_04_26.md",
             # Pinned by SHA-256 in tests/test_p2_blinded_judge_artifact.py; the
             # hook rewrote it in CI run 37137697604 (2026-10-03).
             "reports/p2/human-sample.html",
@@ -324,7 +324,7 @@ def test_precommit_repo_wide_hooks_skip_tracked_legacy_outputs() -> None:
         "api/app.py",
         "tests/test_precommit_config.py",
         "CURRENT_STATE.md",
-        "docs/specs/plan_03_10_26.md",
+        "PLAN.md",
         "docs/evidence/c4-generator-model-decision.md",
     ]
     for hook_id in ("trailing-whitespace", "end-of-file-fixer"):

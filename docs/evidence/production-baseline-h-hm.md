@@ -50,7 +50,7 @@ Words used below:
 - **The working session** is the Claude Code session that ran the
   collection, the judge passes and the tests on the host, and wrote this
   capsule. A **CLI session** is one isolated request to the judge.
-- **The plan** is [`plan_03_10_26.md`](../specs/plan_03_10_26.md). Its labels
+- **The plan** is [`plan_03_10_26.md`](../../archive/docs/specs/plan_03_10_26.md). Its labels
   used here: slices and steps by number — 2.5 this baseline, 1.3d the
   development set with gold spans, 3.1–3.6 the mechanism experiments of
   track 3, 2.8 and 4.1 the checks of answers and the acceptance; H1–H11, the
@@ -628,4 +628,4 @@ that carry gold spans.
 - **Rules.** [The development ruler](../specs/semantic-precision-metrics.md),
   sections «Relevance grades» and «Baseline of plan slice 2.5»;
   [the loss map](../specs/evidence-loss-map.md); the collection and the
-  judging are told in [the handoff](../operations/t65-baseline-handoff.md).
+  judging are told in [the handoff](../../archive/docs/operations/t65-baseline-handoff.md).

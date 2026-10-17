@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Q1 offline A/B: context_precision knob grid on the 100-case aircargo harness.
 
-Audit `docs/audits/audit_grok_16_07_26.md` (Q1 / §7.2 / §7.3): the free-RAGAS baseline
+Audit `archive/docs/audits/audit_grok_16_07_26.md` (Q1 / §7.2 / §7.3): the free-RAGAS baseline
 (`reports/ragas/20260605T214926Z-e728353a-aircargo-ragas.md`) measures
 context_precision ~0.51 (weak звено — top-k шумит) while context_recall ~0.92
 (отлично). The audit's product bet is a *measured* A/B over the three retrieval
@@ -46,7 +46,7 @@ Smoke (Windows, no models):
       --results-dir .tmp/q1_smoke
 
 Heavy run — ONE command on Mac (see the run-doc
-`docs/operations/2026-07-18-q1-context-precision-ab-plan.md`):
+`archive/docs/operations/2026-07-18-q1-context-precision-ab-plan.md`):
   set -a && . /tmp/mk.env && set +a && \
   RAG_DEVICE=mps RAG_EMBED_BATCH=8 RAG_RERANK_BATCH=8 \
   LLM_PROVIDER_PROFILE=external-mistral OLLAMA_REQUEST_TIMEOUT_SEC=120 \

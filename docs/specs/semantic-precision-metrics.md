@@ -1,6 +1,6 @@
 # Semantic precision metrics — pre-registered development ruler
 
-Registered 2026-09-30 under [`plan_final_30_09_26.md`](plan_final_30_09_26.md)
+Registered 2026-09-30 under [`plan_final_30_09_26.md`](../../archive/docs/specs/plan_final_30_09_26.md)
 step 1.2, on the owner's delegation (decision D2). Applies to the
 first-campaign experiments of track 3 (at most two mechanisms chosen by the
 evidence-loss map of slice 2.5; 3.6 and the combination 3.7 are frozen,
@@ -9,23 +9,23 @@ retrieval mechanisms on a development set. It is not a product gate. The
 official phase-C gate (lexical `context_precision` ≥ 0.63 over cached
 contexts, [`evaluation/ragas_eval.py`](../../evaluation/ragas_eval.py))
 stays defined on its own ruler and is reported beside every number below.
-Revised 2026-09-30 after the [GLM 5.3 audit](../audits/audit_glm_30_09_26_plan.md)
+Revised 2026-09-30 after the [GLM 5.3 audit](../../archive/docs/audits/audit_glm_30_09_26_plan.md)
 (GLM-1..4): κ confidence rule, primary metric per mechanism, power from the
 pilot, recall pool defined after caps; and again after the
-[Astra audit](../audits/audit_astra_30_09_26_plan.md) (A1–A6, A10): unit of
+[Astra audit](../../archive/docs/audits/audit_astra_30_09_26_plan.md) (A1–A6, A10): unit of
 grading, judge protocol, evidence operationalisation, applicability, numeric
 fact coverage, clustering, acceptance contract; and a third time on
-2026-09-30 after the [Astra gap consultation](../audits/astra_gaps_30_09_26.md)
+2026-09-30 after the [Astra gap consultation](../../archive/docs/audits/astra_gaps_30_09_26.md)
 (G7, G8, G13, G15–G20 and the Sol/GLM proposals decided in its §5), applied
 on the owner's delegation: calibration protocol, chunk address and label
 migration, three outcomes with MDE, screening tier, one-shot holdout and
 ledger, action and critical-error checks, generator fingerprint,
 single-turn scope. Fourth revision the same night after the two audits of
-the final plan ([GLM](../audits/audit_glm_final_30_09_26.md),
-[Astra](../audits/audit_astra_final_30_09_26.md)): third verdict, corpus
+the final plan ([GLM](../../archive/docs/audits/audit_glm_final_30_09_26.md),
+[Astra](../../archive/docs/audits/audit_astra_final_30_09_26.md)): third verdict, corpus
 snapshot, interval validity, closed table of deciding metrics, scenario
 power, common pair mask, joint-grading cache, claim-level facts and citations.
-Fifth revision 2026-10-03 under [`plan_03_10_26.md`](plan_03_10_26.md),
+Fifth revision 2026-10-03 under [`plan_03_10_26.md`](../../archive/docs/specs/plan_03_10_26.md),
 decision D11 — the owner's «люди участвовать в процессе не будут» (no person
 takes part in the process): wherever a person graded, approved or checked,
 reference and verifier models from a vendor other than the checked side's do
@@ -50,7 +50,7 @@ repair, and a wide scan of the whole index in place of the control's pool;
 the acceptance contract gets the `gold_error` outcome; the family map and the
 holdout reserve are registered. The draft of this revision was audited by
 GPT-6-Astra before any code was written from it
-([audit](../audits/audit_astra_04_10_26_label_verification.md), 22 findings,
+([audit](../../archive/docs/audits/audit_astra_04_10_26_label_verification.md), 22 findings,
 all applied). What the tool that runs the protocol must do:
 [label-verification.md](label-verification.md).
 Seventh revision 2026-10-04 under plan decision D12 — the owner's «ты должен
@@ -228,7 +228,7 @@ against blinded LLM relevance grades: Krippendorff α 0.8566 between judges,
 per-case Kendall τ_b 0.1561 (CI95 [0.0197, 0.2880]) against the ruler —
 `RULER_DOES_NOT_TRACK`. Optimising the lexical ruler further can raise it by
 adding matching text or by dropping documents that carry required facts
-([audit](../audits/audit_asta_30_09_26.md) §3.1).
+([audit](../../archive/docs/audits/audit_asta_30_09_26.md) §3.1).
 
 ## Relevance grades
 
@@ -1057,7 +1057,7 @@ text hash — one population per metric (№6).
   `all_evidence_coverage` for coverage mechanisms (the second item). Why the
   pointer: a comparison on the reranked seeds and the same comparison on the
   expanded context can diverge. In the exploratory lexical-lane study (gap G36
-  of the [quality plan](plan_03_10_26.md); its files stay outside this
+  of the [quality plan](../../archive/docs/specs/plan_03_10_26.md); its files stay outside this
   repository) Snowball-stemmed
   BM25 against the study's control had all answer keywords present in 92 vs
   87 of 100 cases on the five reranked seeds and in 96 vs 97 after production
@@ -2860,7 +2860,7 @@ checker of a one-shot holdout is not chosen after its answers exist.
 
 **Reference of the NLI validation (slice 2.8; question е).** The reference
 label of an assertion is the label of this one model under the four-label
-rubric of the [NLI research](research-nli-judges.md) (§3.3). A request holds
+rubric of the [NLI research](../../archive/docs/specs/research-nli-judges.md) (§3.3). A request holds
 what the research shows a labeller — the question, the whole answer with the
 unit marked, the five contexts numbered and cut as the judge cuts them — and
 no score, no source and no output of a judge. The second pass presents the

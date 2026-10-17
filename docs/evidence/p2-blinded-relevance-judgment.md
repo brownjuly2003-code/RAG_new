@@ -1,6 +1,6 @@
 # P2 — blinded relevance judgment of the retrieval ruler
 
-Measured under the [pre-registered plan](../specs/p2-blinded-judge-plan.md) of
+Measured under the [pre-registered plan](../../archive/docs/specs/p2-blinded-judge-plan.md) of
 2026-09-25. GLM 5.3 and Sonnet 5 with thinking each graded all 115 cases: 100 H
 cases (500 documents) and 15 separate Hm cases (75 documents). Both judges saw
 the same shuffled, blinded documents. Mistral returned `zero_limit` and supplied

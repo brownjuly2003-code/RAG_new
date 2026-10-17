@@ -1670,7 +1670,7 @@ async def ask_stream(
 
         # Streaming consumes the same retriever/LLM resources as /api/ask —
         # it must respect the same bounded-concurrency pool instead of
-        # bypassing it (docs/audits/fable_com.md F-3).
+        # bypassing it (archive/docs/audits/fable_com.md F-3).
         semaphore = _app._get_pipeline_semaphore()
         acquire_timeout = float(getattr(settings_pre, "pipeline_acquire_timeout_sec", 0.5))
         try:
@@ -2286,7 +2286,7 @@ async def ask_stream(
                     }
                 )
 
-            # Cheap RAG parity (docs/audits/fable_com.md F-3): one self-eval call over the
+            # Cheap RAG parity (archive/docs/audits/fable_com.md F-3): one self-eval call over the
             # docs the stream actually used replaces the length heuristic, so
             # streamed answers stop reporting a synthetic quality of 70/40.
             heuristic_quality = 70 if len(full_answer.strip()) > 20 or sources else 40

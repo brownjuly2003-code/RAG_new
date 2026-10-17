@@ -80,7 +80,7 @@ Words used below:
   `fact_coverage` — the share of the case's required facts that the sent
   context holds. A *critical fact* is a required fact whose loss blocks a
   mechanism.
-- **The plan** is [`plan_03_10_26.md`](../specs/plan_03_10_26.md); the rules
+- **The plan** is [`plan_03_10_26.md`](../../archive/docs/specs/plan_03_10_26.md); the rules
   of this pilot are in
   [the development ruler](../specs/semantic-precision-metrics.md), sections
   «The pilot» to «What the sizes cannot show».

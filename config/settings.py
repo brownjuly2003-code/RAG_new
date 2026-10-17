@@ -461,7 +461,7 @@ class Settings:
     # "BAAI/bge-reranker-v2-m3"               — multilingual (pairs с дефолтным BGE-M3); дефолт
     # "cross-encoder/ms-marco-MiniLM-L-6-v2"  — быстрый на CPU (22M), но English-only:
     #                                           на RU-корпусе портит retrieval (Mac A/B: 100%→61%
-    #                                           top-5 coverage, см. docs/operations/2026-05-30-mac-rag-retrieval-baseline.md)
+    #                                           top-5 coverage, см. archive/docs/operations/2026-05-30-mac-rag-retrieval-baseline.md)
     # ""                                      — отключить reranker
     reranker_model: str = field(
         default_factory=lambda: os.getenv("RAG_RERANKER_MODEL", "BAAI/bge-reranker-v2-m3")
@@ -594,7 +594,7 @@ class Settings:
         )
     )
     # 800/200 are MEASURED for this corpus, not arbitrary (Phase-0 co-occur gate,
-    # docs/operations/2026-06-05-chunk-size-phase0-justification.md): cap=800 keeps
+    # archive/docs/operations/2026-06-05-chunk-size-phase0-justification.md): cap=800 keeps
     # 98/100 curated kw-bundles within a single chunk; cap=1200/1600 recover exactly
     # one bundle that is already FULL in the production stack (a ranking case, not a
     # splitting case), so the sweep was cancelled. The known weakness of a small cap
@@ -767,7 +767,7 @@ class Settings:
     # 0.905->0.975, both hard Phase-2 regressions recovered; the residual
     # faithfulness cost is ~-0.02..-0.04 on a minority of cases (judge-flip
     # artifact excluded). Report:
-    # docs/operations/2026-06-05-parent-expansion-arm-d.md. Rollback:
+    # archive/docs/operations/2026-06-05-parent-expansion-arm-d.md. Rollback:
     # RAG_PARENT_EXPANSION=false; conservative config: window=1/max_chars=2400.
     parent_expansion: bool = field(
         default_factory=lambda: os.getenv("RAG_PARENT_EXPANSION", "true").strip().lower() in ("1", "true", "yes")

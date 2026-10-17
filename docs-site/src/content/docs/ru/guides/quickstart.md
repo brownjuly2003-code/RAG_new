@@ -214,4 +214,4 @@ Perplexity server-side auto-router подменил модель. Это externa
 - `docs/runbook.md` — оперативный runbook для дежурного (алерты, диагностика, действия).
 - `docs/disaster-recovery.md` — DR сценарии A-F (потеря данных, шифрование, encryption-key).
 - `docs/operations/` — runbook'и по backup, helm, gracekelly smoke.
-- `docs/CHANGELOG.md` — история изменений по аркам.
+- `archive/docs/CHANGELOG.md` — история изменений по аркам.

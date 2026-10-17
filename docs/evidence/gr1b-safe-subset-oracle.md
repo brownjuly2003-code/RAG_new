@@ -1,7 +1,7 @@
 # GR-1b — bounded safe-subset oracle
 
 Measured 2026-09-12; diagnostic only, **not deployable**. This completes the
-bounded subset step of the [Astra/Fable review](../specs/precision-improvement-review.md).
+bounded subset step of the [Astra/Fable review](../../archive/docs/specs/precision-improvement-review.md).
 The [ordinary top-k controls](gr1b-same-pool-controls.md) failed joint coverage
 and precision acceptance. Label-informed selection has room to improve them:
 

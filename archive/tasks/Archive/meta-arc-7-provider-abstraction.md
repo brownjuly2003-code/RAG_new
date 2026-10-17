@@ -52,7 +52,7 @@
 - Verification sweep per task (acceptance criteria → реальные проверки).
 - Per-task commit (НЕ batch-mega-коммит — легче bisect, особенно если что-то сломается).
 - Archive specs в `codex-tasks/Archive/` после merge.
-- `docs/CHANGELOG.md` — новая секция "Arc 7 / Batch G — YYYY-MM-DD — Provider abstraction".
+- `archive/docs/CHANGELOG.md` — новая секция "Arc 7 / Batch G — YYYY-MM-DD — Provider abstraction".
 - Update `codex-tasks/ROADMAP.md` статуса (или создай новый `roadmap-arc-7.md`).
 
 ## Acceptance
@@ -80,7 +80,7 @@
 - UI redesign — не трогать chat.html / help.html.
 
 ## How to start
-1. Прочитай `docs/CHANGELOG.md` для понимания контекста arc 6.
+1. Прочитай `archive/docs/CHANGELOG.md` для понимания контекста arc 6.
 2. Прочитай `codex-tasks/arc-6-proposal.md` — там была секция с 3 кандидатами, provider abstraction был одним из них. Используй как начальную точку для `arc-7-proposal.md`.
 3. Прочитай `codex-tasks/verification-report-batch-f.md` — образец формата отчёта.
 4. Прочитай `codex-tasks/Archive/orchestrator-batch-f-continuous-learning.md` — образец orchestrator'а.

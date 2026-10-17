@@ -9,7 +9,7 @@ afterwards. P1b is an offline evaluator; no product behaviour changed.
 
 ## Question
 
-P1 ([plan](p1-adaptive-k-plan.md), [capsule](../evidence/p1-adaptive-k.md)) measured its
+P1 ([plan](../../archive/docs/specs/p1-adaptive-k-plan.md), [capsule](../evidence/p1-adaptive-k.md)) measured its
 cuts on the phase-C harness, which slices cached chunks and skips the parent-window
 expansion that production applies to every selected chunk. Under that expansion, does
 the frozen P1 rule `rel_0.2` beat the expanded top-5 control on H: context precision at
@@ -17,7 +17,7 @@ or above the 0.63 gate, with coverage and every individual fact kept?
 
 `NO_SHIP` is the expected outcome. On a pool whose unexpanded top-5 row equals H's
 control (0.5067 / 0.905 / 87-7-6), Q1 measured expanded top-5 at 0.5768 and expanded
-top-3 at 0.6179 ([results](../operations/2026-07-18-q1-context-precision-ab-results.md));
+top-3 at 0.6179 ([results](../../archive/docs/operations/2026-07-18-q1-context-precision-ab-results.md));
 `rel_0.2` keeps 4.49 chunks on average, so its expanded precision is expected between
 the two. The slice closes adaptive-k against production and leaves a fail-closed
 expanded evaluator, since every later candidate has to be judged against expanded
@@ -100,7 +100,7 @@ arm is chosen, tuned or added on the expanded results.
   1. `rel_0.2+exp` precision on H ≥ 0.63;
   2. its recall, FULL and MISS on H no worse than `top_k_5+exp`, and no named fact loss;
   3. it meets the review floor on H: recall ≥ 0.92, FULL ≥ 88, MISS ≤ 4
-     ([review](precision-improvement-review.md));
+     ([review](../../archive/docs/specs/precision-improvement-review.md));
   4. `p1_cv+exp` meets 1–3 too, so the result does not rest on `rel_0.2` having been
      chosen on these cases;
   5. on Hm, `rel_0.2+exp` recall, FULL and MISS no worse than Hm's `top_k_5+exp`, and no
@@ -153,5 +153,5 @@ arm is chosen, tuned or added on the expanded results.
    `d1adbbb`.
 2. **Done:** report `reports/p1b/p1b-expanded-cut.json` at `c5f1d31`,
    [capsule](../evidence/p1b-expanded-cut.md), **NO_SHIP**.
-3. P2, the blinded relevance judgment ([P1 plan](p1-adaptive-k-plan.md) § Next item 3);
+3. P2, the blinded relevance judgment ([P1 plan](../../archive/docs/specs/p1-adaptive-k-plan.md) § Next item 3);
    the judge is Julia's data-governance call.

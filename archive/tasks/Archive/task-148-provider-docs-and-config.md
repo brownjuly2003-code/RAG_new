@@ -21,7 +21,7 @@ runtime, guardrails и admin surface.
    - env vars и API-key setup
    - `GET /api/admin/providers`
    - `llm_cost_usd_total{provider,model,tenant}`
-3. `docs/CHANGELOG.md`
+3. `archive/docs/CHANGELOG.md`
    - новая секция `Arc 7 / Batch G - Provider abstraction`
 4. `codex-tasks/ROADMAP.md`
    - next-arc status для Arc 7 / Batch G

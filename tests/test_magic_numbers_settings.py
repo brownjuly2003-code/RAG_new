@@ -40,7 +40,7 @@ def test_ingest_pipeline_uses_settings_chunk_defaults(
 
 def test_chunk_defaults_pinned_to_measured_values(monkeypatch) -> None:
     # 800/200 are corpus-measured (Phase-0 co-occur gate,
-    # docs/operations/2026-06-05-chunk-size-phase0-justification.md):
+    # archive/docs/operations/2026-06-05-chunk-size-phase0-justification.md):
     # 98/100 kw-bundles live inside a single chunk at cap=800 and larger caps
     # buy nothing the production stack hasn't already closed. Changing the
     # defaults invalidates that measurement AND the graph-lane chunk threshold

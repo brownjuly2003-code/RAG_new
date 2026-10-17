@@ -2,13 +2,17 @@
 
 Status 2026-10-17: **named, not run;** Julia accepted the reading the same day («давай
 так»). No answer, verdict or signal of this plan exists yet. Since 2026-10-17 it runs as
-[`PLAN.md`](../../PLAN.md) stages 2 and 3: after stage 1's fixes all 100 answers anew on the
+[`PLAN.md`](../../PLAN.md) stages 2 and 3: after `PLAN.md` stage 1's fixes all 100 answers anew on the
 fixed code (the 30 of 2026-10-16 become history, the 70 on `19beeb1` are cancelled), then the
 judge and the signals on all 100 — no separate pilot. A
 cold read of the first draft by a fresh agent found nine problems; this text answers them
 (the corrections are listed [at the end](#what-the-cold-read-corrected)). Each stage's
 `plan.json` is committed before its first request, as in the records it follows
 (`reports/chat-route-replay/7a99c45/`, `reports/chat-live-4b/19beeb1/`).
+
+**Numbering.** Stages 1.0–1.4 and stage 2 below are this plan's own («signal stages»):
+signal stage 1 runs inside `PLAN.md` stages 2 and 3, signal stage 2 on WixQA. A stage of
+the project plan is always named with the file, «`PLAN.md` stage N».
 
 ## Why
 
@@ -238,7 +242,7 @@ judge prompt with its own retest and English decline wording. The answers come f
   floors from a calibration artifact (`RAG_CALIBRATION_ARTIFACT`, `agent/calibration.py:372`),
   which no measurement has written yet. Outcome A writes its threshold where the wired surface
   reads it, with the record's provenance.
-- The quality thread's campaign (`docs/specs/plan_03_10_26.md`) is stopped by `PLAN.md` §7;
+- The quality thread's campaign (`archive/docs/specs/plan_03_10_26.md`) is stopped by `PLAN.md` §7;
   retrieval mechanisms are its stage 7.
 
 ## What this plan does not do

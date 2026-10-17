@@ -279,4 +279,4 @@ Migration 012 is sensitive to duplicate `CREATE TYPE`. Fixed in `d163942`; if yo
 - `docs/runbook.md` — operational runbook for on-call (alerts, diagnostics, actions).
 - `docs/disaster-recovery.md` — DR scenarios A-F (data loss, encryption, encryption-key).
 - `docs/operations/` — runbooks for backup, helm, gracekelly smoke.
-- `docs/CHANGELOG.md` — change history by arcs.
+- `archive/docs/CHANGELOG.md` — change history by arcs.

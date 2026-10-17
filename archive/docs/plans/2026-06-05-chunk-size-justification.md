@@ -5,7 +5,7 @@
   Phase 0 co-occur гейт: cap=1200/1600 возвращают 1 связку (уже FULL в
   production), потерь 0, остаточный MISS — ранжирование. Phase 2 skipped по
   критерию (<10 затронутых). Обоснование:
-  `docs/operations/2026-06-05-chunk-size-phase0-justification.md`.
+  `archive/docs/operations/2026-06-05-chunk-size-phase0-justification.md`.
 - Проблема: 800/200 — унаследованные дефолты (типовые для LangChain), ни разу
   не проверенные A/B на этом корпусе. При этом на них завязаны связанные
   параметры (`parent_expansion_max_chars`=3×cap, нормировка порога графового

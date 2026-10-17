@@ -4,7 +4,7 @@
     "mistral": {
       "snapshot_date": "2026-08-24",
       "source": "https://mistral.ai/pricing (la Plateforme, pay-as-you-go)",
-      "verified_by": "docs/audits/audit_final_23_08_2026.md FIN-08, independent web check 2026-08-24",
+      "verified_by": "archive/docs/audits/audit_final_23_08_2026.md FIN-08, independent web check 2026-08-24",
       "models": {
         "ministral-3b-latest": {"input": 0.10, "output": 0.10},
         "ministral-8b-latest": {"input": 0.15, "output": 0.15},

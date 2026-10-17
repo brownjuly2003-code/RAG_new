@@ -56,7 +56,7 @@ quality campaigns и refactors требуют отдельного проект�
 
 ## Final disposition
 
-Решения из `docs/operations/2026-07-21-gate-decisions.md` становятся финальными:
+Решения из `archive/docs/operations/2026-07-21-gate-decisions.md` становятся финальными:
 
 - Q1b nightly/CI floor — `retired` для текущего scope: нет shippable arm;
 - multi-replica implementation — `future`: нет принятого SLA;

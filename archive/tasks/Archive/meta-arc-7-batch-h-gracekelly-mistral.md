@@ -241,7 +241,7 @@ Request/response format идентичен OpenAI — можно клониро�
 3. **Тесты** — удалить/обновить тесты которые assert'ят на Claude/OpenAI/Gemini в `tests/test_provider_registry.py`, `tests/test_provider_abstraction.py`, `tests/test_provider_benchmark.py`, `tests/test_provider_graph_integration.py`. Заменить на Mistral/GraceKelly assertions где нужно.
 4. **Scripts/regression_eval.py** — если упоминал claude/openai/gemini aliases, заменить на mistral/ollama/gracekelly.
 5. **Admin surface (api/app.py + static/admin.html)** — если Providers tab hard-code'ит Claude/OpenAI/Gemini labels, сделать generic (читать из registry).
-6. **README + .env.example + docs/CHANGELOG.md** — вычистить упоминания Claude/OpenAI/Gemini, заменить на Mistral/GraceKelly где релевантно. ROADMAP обновить статус.
+6. **README + .env.example + archive/docs/CHANGELOG.md** — вычистить упоминания Claude/OpenAI/Gemini, заменить на Mistral/GraceKelly где релевантно. ROADMAP обновить статус.
 7. **CHANGELOG** — новая секция `## [Arc 7 / Batch H] — YYYY-MM-DD — GraceKelly + Mistral providers`.
 
 **Acceptance**: полный `pytest tests/ -q` зелёный (включая все тесты из batch G которые не удалены); ruff clean; `default_profile=local-first` работает с Ollama без API keys; `external-mistral` профиль с `MISTRAL_API_KEY` set — работает против real Mistral API (но тестировать без paid calls через mock).

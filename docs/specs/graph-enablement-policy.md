@@ -1,6 +1,6 @@
 # Graph enablement policy — the pre-registered rule for the graph retrieval branch
 
-Registered 2026-10-05 under [`plan_03_10_26.md`](plan_03_10_26.md) step 3.0
+Registered 2026-10-05 under [`plan_03_10_26.md`](../../archive/docs/specs/plan_03_10_26.md) step 3.0
 (the owner's request of 2026-09-30), by the agent of the session on the plan's
 delegation, **before any graph experiment of track 3**. It is a rule, not a
 hypothesis. It says when the graph branch may answer a question, what the

@@ -1744,7 +1744,7 @@ execution к ним не подключён. Это baseline для tests-first 
 | Lock gate | root cause = WSL2 idle-shutdown; keepalive → `first_acquired=true, second_acquired_while_held=false, released=true, reacquired=true` |
 | INDEX-DIM | activated: fingerprints verified, snapshot verified (627/55,885,536/`5c9eff00…`), install verified (`1ce87531…`), child validation 3×1024 + sources + E20 top-1 (remote `mistral-embed`), `publish_active_collection` gen 1 previous `rag_docs_default`, app `initialize_vector_store()` грузит кандидата, retriever E20 top-1 |
 | Compromises | без publish→rollback→reinstall loop на Windows (proven on Mac + unit contracts); retention inventory не писался; §5 остаётся OPEN; `gracekelly-mixed` unfit as candidate |
-| Docs | analysis `docs/operations/2026-08-18-test-failure-analysis.md`; runbook `index-dim-windows-activation.md` обновлён; `_NEXT_SESSION.md` → pointer на Update-209 |
+| Docs | analysis `archive/docs/operations/2026-08-18-test-failure-analysis.md`; runbook `index-dim-windows-activation.md` обновлён; `_NEXT_SESSION.md` → pointer на Update-209 |
 
 ### 0B5. Update-208 dpkg/PostgreSQL green, Windows lock still red — исторический факт (superseded by Update-209)
 

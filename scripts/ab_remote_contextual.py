@@ -2,7 +2,7 @@
 """Phase 2 remote A/B: baseline vs structural+contextual-header on the production stack.
 
 Confirms (or refutes) the Phase-1 proxy signal
-(docs/operations/2026-06-04-phase1-proxy-ab-contextual-header.md) with the real
+(archive/docs/operations/2026-06-04-phase1-proxy-ab-contextual-header.md) with the real
 models: BGE-M3 embeddings + the default multilingual reranker (bge-reranker-v2-m3).
 Designed for Colab (GPU or CPU) or the iMac two-phase pattern — each stage is a
 separate process so the embedder and the reranker are never resident together.
@@ -19,7 +19,7 @@ Arms:
      the E regressions sit at RRF rank 1-9 there) + rerank against the
      ORIGINAL query (as in C/D2, where those cases are FULL). Pools are NOT
      recomputed: copy ab_phase2_E_pool.json -> ab_phase2_F_pool.json and run
-     rerank F. Rationale: docs/operations/2026-06-06-arm-e-field-hyde-results.md.
+     rerank F. Rationale: archive/docs/operations/2026-06-06-arm-e-field-hyde-results.md.
   G1 structural graph: arm-C chunking plus exact available-category prefilter,
      then graph section coherence and same-section expansion after reranking.
   G2 entity graph: G1 plus the product entity lane (third RRF list) for cases
@@ -83,7 +83,7 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-# Diagnosis targets from docs/operations/2026-06-03-r7-llm-judged-baseline.md.
+# Diagnosis targets from archive/docs/operations/2026-06-03-r7-llm-judged-baseline.md.
 DEEP_7 = [
     "aircargo-dangerous-goods-fields",
     "aircargo-customs-clearance-fields",
@@ -112,7 +112,7 @@ RECOVERABLE_10 = NEAR_DEEP_1 + UNCERTAIN_5 + COVERED_4
 
 # Residual problem cases after Phase 2 (4 regressions + 4 deep MISS) with the
 # measured parent-context potential 8/8
-# (docs/operations/2026-06-05-residual-miss-diagnosis.md).
+# (archive/docs/operations/2026-06-05-residual-miss-diagnosis.md).
 PROBLEM_8 = [
     "aircargo-customs-broker-escalation",
     "aircargo-dangerous-goods-clearance",

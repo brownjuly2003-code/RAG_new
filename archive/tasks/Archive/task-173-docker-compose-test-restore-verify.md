@@ -39,7 +39,7 @@
   - интеграция end-to-end: make tiny backup snapshot → run `restore_verify_integration` → assert exit 0.
   - cleanup в fixture teardown гарантирован.
 - `docs/operations/backup-restore.md` — раздел «Full-restore verification» с описанием `docker-compose.test.yml` и `scripts/restore_verify_integration.py` flow.
-- `docs/CHANGELOG.md` — запись.
+- `archive/docs/CHANGELOG.md` — запись.
 
 ## Acceptance criteria
 - [ ] Прогон: сделать snapshot (`python scripts/backup_snapshot.py --output-dir /tmp/test-snap/`) на live dev Postgres (`postgres:16-alpine` из `docker-compose.test.yml`) → `python scripts/restore_verify_integration.py --snapshot /tmp/test-snap/<ts>/` → exit 0.

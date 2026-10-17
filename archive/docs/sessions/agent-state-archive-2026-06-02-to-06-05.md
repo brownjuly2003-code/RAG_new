@@ -8,7 +8,7 @@
 
 **HEAD = этот handoff-коммит (master). Origin = `7aeb3b5` (CI зелёный) — unpushed: docs cont.15 + `e810867` (arm E) + этот. Push GATED.**
 
-Шаги 1-2 плана плеча E (`docs/operations/2026-06-05-query-expansion-probe.md`) выполнены:
+Шаги 1-2 плана плеча E (`archive/docs/operations/2026-06-05-query-expansion-probe.md`) выполнены:
 
 1. **`e810867` feat(eval):** arm E в `ab_remote_contextual.py` — C-конфиг чанкинга + field-aware HyDE расширенные запросы для dense+BM25+rerank (зеркалит production retrieve node: hyde_query → get_relevant_documents). **Контракт judge сохранён: в rows `query` = оригинальный вопрос (генерация), `expanded_query` — отдельным полем (retrieval/rerank).** `--stage expand --label E` = parent-expansion поверх E-кандидатов (полный стек). Новый `scripts/precompute_field_hyde.py` — прекомпьют расширений локально (mistral-small, t=0, точный промпт пробы), ключ на Kaggle НЕ уезжает.
 2. **Expansions готовы:** `.tmp/query_expansions_field_hyde.json` — 100/100, все со snake_case-лексикой, длины 403-987 (медиана 574). Smoke локально (лёгкие модели): pools E + rerank E на 5-doc корпусе — контракт верен; pools C — регрессий нет.
@@ -36,10 +36,10 @@
 
 **Следующая сессия (кандидаты, НЕ блокеры):** query-expansion для customs-clearance-fields (последний MISS) · Phase 0 chunk-size плана (локально, без моделей) · push 6 коммитов — GATED, спрашивать явно.
 
-**ДОПОЛНЕНО той же сессией (после push). АКТУАЛЬНОЕ СОСТОЯНИЕ: HEAD = этот коммит (после `5cb3dc5`), origin = `7aeb3b5` (CI ЗЕЛЁНЫЙ), unpushed только docs-коммиты этой секции. Следующая задача = плечо E (шаги в `docs/operations/2026-06-05-query-expansion-probe.md`, там же точный промпт).**
+**ДОПОЛНЕНО той же сессией (после push). АКТУАЛЬНОЕ СОСТОЯНИЕ: HEAD = этот коммит (после `5cb3dc5`), origin = `7aeb3b5` (CI ЗЕЛЁНЫЙ), unpushed только docs-коммиты этой секции. Следующая задача = плечо E (шаги в `archive/docs/operations/2026-06-05-query-expansion-probe.md`, там же точный промпт).**
 - **PUSHED**: `e429399` + CI-fix `7aeb3b5` — **CI зелёный**. Гоча моего теста: `reranker_model` в Settings — import-time default (НЕ default_factory) → `monkeypatch.setenv` бессилен, гасить `monkeypatch.setattr` на singleton'е; локально маскируется shell-env. CI-фейл 3 per-tenant тестов = HF-outage на раннере (transient, прошёл на re-run).
-- **`5d91d87`**: chunk-size план ЗАКРЫТ Phase 0 гейтом — 800/200 обоснован (cap=1200/1600 возвращают 1 связку, уже FULL; потерь 0). Sweep отменён. `docs/operations/2026-06-05-chunk-size-phase0-justification.md`.
-- **Query-expansion probe СДЕЛАН** (`docs/operations/2026-06-05-query-expansion-probe.md`): field-aware HyDE (промпт со snake_case-полями) — BM25-ранг kw-чанка 159→13 / 305→2 / 89→5 / 1021→99 на 4 deep-кейсах. GO на плечо E: прекомпьют расширений локально → Kaggle pools+rerank (~3h, шаблон есть) → expand → judge. Стандартный HyDE-промпт недостаточен (159→46).
+- **`5d91d87`**: chunk-size план ЗАКРЫТ Phase 0 гейтом — 800/200 обоснован (cap=1200/1600 возвращают 1 связку, уже FULL; потерь 0). Sweep отменён. `archive/docs/operations/2026-06-05-chunk-size-phase0-justification.md`.
+- **Query-expansion probe СДЕЛАН** (`archive/docs/operations/2026-06-05-query-expansion-probe.md`): field-aware HyDE (промпт со snake_case-полями) — BM25-ранг kw-чанка 159→13 / 305→2 / 89→5 / 1021→99 на 4 deep-кейсах. GO на плечо E: прекомпьют расширений локально → Kaggle pools+rerank (~3h, шаблон есть) → expand → judge. Стандартный HyDE-промпт недостаточен (159→46).
 
 **Judge-прогоны:** C2 `20260605T104909Z`, D1 `20260605T101506Z`, D2 `20260605T103014Z`; артефакты D в `.tmp/kaggle_phase2/out_final/ab_candidates_phase2_D{1,2}.json` + `ab_phase2_D{1,2}_summary.md`.
 
@@ -55,12 +55,12 @@
    - Δ C−A: recall **+0.050**, faithfulness **+0.034**; vs старый no-reranker baseline 0.833/0.785 — C даёт +0.076/+0.120.
    - Гоча: первый прогон A умер на 16/100 БЕЗ traceback (transient kill процесса; вероятно, шатдаун параллельной утренней сессии — см. её cont.13 про «kill-итерации»), re-run чистый 100/100.
 2. **Матрица переходов из cont.13 ВЕРИФИЦИРОВАНА по сырым candidates** (мой независимый пересчёт той же `_kw_status`-логикой, совпало 1-в-1): 8 gains / 4 regressions, нетто +5 FULL. Регрессии по характеру: 1 жёсткая (customs-broker-escalation — kws выпали из всего top-40 пула C; в A co-occur rank 9) + 3 мягких (в пуле C: dangerous-goods-clearance r26, breach-notification-participants r16, perishable-special-cargo-evidence union-FULL — реранкер не поднял в top-5).
-3. **Phase 3 LANDED** (`3e1b088`): `RAG_STRUCTURAL_CHUNKING` default **true** (`config/settings.py`) + пин-тест `test_structural_chunking_enabled_by_default`. Отчёт: `docs/operations/2026-06-05-phase2-contextual-ab-production.md` (8/4-матрица и характер регрессий — обязательная часть). План-дока обновлена (Phase 2+3 ✅). Откат: `RAG_RERANKER_MODEL`-стиль — `RAG_STRUCTURAL_CHUNKING=false` в env. Существующие индексы не мигрируются — новый чанкинг с следующего ингеста.
+3. **Phase 3 LANDED** (`3e1b088`): `RAG_STRUCTURAL_CHUNKING` default **true** (`config/settings.py`) + пин-тест `test_structural_chunking_enabled_by_default`. Отчёт: `archive/docs/operations/2026-06-05-phase2-contextual-ab-production.md` (8/4-матрица и характер регрессий — обязательная часть). План-дока обновлена (Phase 2+3 ✅). Откат: `RAG_RERANKER_MODEL`-стиль — `RAG_STRUCTURAL_CHUNKING=false` в env. Существующие индексы не мигрируются — новый чанкинг с следующего ингеста.
 4. **Полный suite: 838 passed, 5 skipped** (`RAG_RERANKER_MODEL="" python -m pytest tests/ -q -p no:schemathesis -p no:cacheprovider --timeout=300`). Гоча: без `RAG_RERANKER_MODEL=""` full-suite на этой машине НЕ гонять — `test_per_tenant_vectorstore::test_two_tenants_get_different_retrievers` мокает Chroma/embeddings, но НЕ реранкер → `get_retriever` тянет реальный CrossEncoder bge-reranker-v2-m3 (~2.3GB) с HF через xet → таймаут/повис (в CI проходит — там сеть). Таргетные прогоны это не задевало 11 сессий.
 
 **Незакрытые хвосты (кандидаты следующей сессии, НЕ блокеры):**
 - 6 MISS @ top-5 в C: 4 deep diagnosis-цели (query-side: NL RU ↔ snake_case → query-expansion / BM25-вес) + 2 регрессии (выше). Рычаги: parent-child (`RAG_PARENT_CHILD` wired), реранк-тюнинг.
-- **Диагноз остаточных MISS СДЕЛАН в этой же сессии** (`docs/operations/2026-06-05-residual-miss-diagnosis.md`, текст-анализ без моделей): co-occur связки по 100 кейсам = 97 both / **0 fixed_only** / 1 struct_only / 2 neither → **нарезка НЕ виновата, structural_split чинить не нужно** (merge-секций гипотеза отменена данными). Все 4 регрессии = ранжирование (чанки со связкой в C-нарезке существуют, но узкие секции потеряли тематический dense-контекст).
+- **Диагноз остаточных MISS СДЕЛАН в этой же сессии** (`archive/docs/operations/2026-06-05-residual-miss-diagnosis.md`, текст-анализ без моделей): co-occur связки по 100 кейсам = 97 both / **0 fixed_only** / 1 struct_only / 2 neither → **нарезка НЕ виновата, structural_split чинить не нужно** (merge-секций гипотеза отменена данными). Все 4 регрессии = ранжирование (чанки со связкой в C-нарезке существуют, но узкие секции потеряли тематический dense-контекст).
 - **Потенциал parent-контекста = 8/8 (измерен по Kaggle C-пулу):** у всех 8 проблемных кейсов правильный док уже в top-40 на ранге 1-7 (deep-цели: 18-24 чанка дока в пуле!). **НО `RAG_PARENT_CHILD` as-is НЕ ВКЛЮЧАТЬ** — `ParentDocumentStore` (`_base_manager.py:656`) подменяет HybridRetriever целиком (теряется BM25+RRF+reranker), in-memory без персистентности, children fixed 300/50. **Скоуп следующего цикла: parent-expansion ПОСЛЕ реранка в HybridRetriever** (top-k чанки дополняются соседними секциями своего source; текст-lookup, hybrid не трогается) → Kaggle-плечо «C+parent-expansion» → judge. Для 4 deep при недоборе — query-expansion.
 - Kaggle-артефакты `.tmp/kaggle_phase2/` (24MB) можно чистить после push; датасет/kernel на Kaggle private — живут.
 - Colab-ячейки Phase 2 в notebook устарели по смыслу (Kaggle-путь их заменил) — решить при следующем заходе в notebook.
@@ -141,7 +141,7 @@ A=baseline-зеркало / B=фикс с production-обрезкой / C=фик
 - `4844094` **fix(retrieval)**: тело чанка больше не режется; header клампится до 200 в
   обоих путях `_base_manager`; warning-спам (1443/ингест) → один summary-INFO. 25 тестов,
   ruff clean. После фикса production-путь ≡ плечо C — re-run B′ не нужен.
-- Отчёт: `docs/operations/2026-06-04-phase1-proxy-ab-contextual-header.md` (там же
+- Отчёт: `archive/docs/operations/2026-06-04-phase1-proxy-ab-contextual-header.md` (там же
   честные границы прокси: max_seq=128 смещение в пользу якоря — поэтому Phase 2 обязателен).
 - **Поправка cont.10:** `contextual_headers` default **ON** (пинован
   `test_contextual_headers_enabled_by_default`; и Mac-baseline кэш нёс header на 300/300
@@ -234,7 +234,7 @@ OpenAI-compatible endpoint is reachable from RU without a VPN.
   `scripts/aircargo_ragas_free.py` (same `FreeChatLLM` OpenAI-compat client, key from
   `.env`, never printed). Full 100-case aircargo run, `mistral-small-latest` as
   generator+judge, 300 LLM calls, 0 errors, sub-dollar cost. Report:
-  `docs/operations/2026-06-03-r7-llm-judged-baseline.md`; run
+  `archive/docs/operations/2026-06-03-r7-llm-judged-baseline.md`; run
   `20260603T031646Z-e437ad07` (reports/ragas is gitignored).
 
 **Numbers (first-ever LLM-judged generation):** faithfulness **0.833**,
@@ -267,7 +267,7 @@ the 10 are already covered by a top-5-with-reranker run. LLM-judging itself is l
 **HEAD = handoff commit (master), worktree clean apart from untracked audits (now
 committed — see below). 26+ commits AHEAD of origin — NOT pushed (push gated).**
 
-`docs/audits/audit_mm_03_06_26.md` (MiniMax, dropped mid-session) reviewed and acted on:
+`archive/docs/audits/audit_mm_03_06_26.md` (MiniMax, dropped mid-session) reviewed and acted on:
 
 - `9ab9782` **F1 completed 4/4** — MiniMax §5.1 caught the site the original F1 commit
   missed: `api/routers/admin_kb.py:68` curated-dataset rebuild used
@@ -289,13 +289,13 @@ committed — see below). 26+ commits AHEAD of origin — NOT pushed (push gated
   could DROP coverage below `fail_under=70` and break CI; can't measure locally (env
   divergent). Not shipping blind — deferred.
 
-Both audits (`docs/audits/audit_claude_03_06_26.md`, `docs/audits/audit_mm_03_06_26.md`) committed to the repo
+Both audits (`archive/docs/audits/audit_claude_03_06_26.md`, `archive/docs/audits/audit_mm_03_06_26.md`) committed to the repo
 (it tracks audits historically).
 
 ## 2026-06-03 Update (cont. 7) — backlog floor reached; decomposition scoped
 
 **HEAD = handoff commit (master), worktree clean apart from untracked
-`docs/audits/audit_claude_03_06_26.md`. 23 commits AHEAD of origin — NOT pushed (push gated;
+`archive/docs/audits/audit_claude_03_06_26.md`. 23 commits AHEAD of origin — NOT pushed (push gated;
 needs explicit go). Everything verified green; nothing in flight.**
 
 **Clean, bounded, free/local backlog is EXHAUSTED — verified, not punted.** Findings
@@ -324,7 +324,7 @@ exists (`scripts/aircargo_ragas_free.py`, contexts cached).
 ## 2026-06-03 Update (cont. 6) — F6 slice 5 (isort / ruff I) + I/RUF100 finding
 
 **HEAD `51ffd2f` (master), worktree clean apart from untracked
-`docs/audits/audit_claude_03_06_26.md`. 22 commits AHEAD of origin — NOT pushed (push gated).**
+`archive/docs/audits/audit_claude_03_06_26.md`. 22 commits AHEAD of origin — NOT pushed (push gated).**
 
 - `51ffd2f` **F6 slice — `I` (isort)** — ruff autofix sorted imports across 118 files
   (also tidies the typing/collections.abc ordering UP006/UP035 introduced); added `I`
@@ -351,7 +351,7 @@ sweep. The audit's "autofix RUF100/I001" optimism does not hold for this repo.
 ## 2026-06-03 Update (cont. 5) — F6 slice 4 (UP006/UP035 PEP 585)
 
 **HEAD `c62d28b` (master), worktree clean apart from untracked
-`docs/audits/audit_claude_03_06_26.md`. 19 commits AHEAD of origin — NOT pushed (push gated).**
+`archive/docs/audits/audit_claude_03_06_26.md`. 19 commits AHEAD of origin — NOT pushed (push gated).**
 
 - `c62d28b` **F6 slice — UP006/UP035** — ruff autofix `typing.Dict/List`→`dict/list`
   (UP006, 245 annotation sites) + dropped the now-unused `typing` imports
@@ -380,7 +380,7 @@ unreachable from RU IP, no card).
 ## 2026-06-03 Update (cont. 4) — F6 slice 3 (RUF012 ClassVar)
 
 **HEAD `d7661ac` (master), worktree clean apart from untracked
-`docs/audits/audit_claude_03_06_26.md`. 17 commits AHEAD of origin — NOT pushed (push gated).**
+`archive/docs/audits/audit_claude_03_06_26.md`. 17 commits AHEAD of origin — NOT pushed (push gated).**
 
 - `d7661ac` **F6 slice — RUF012** — annotated all 13 mutable class-attribute defaults
   as `typing.ClassVar`, then added `RUF012` to ruff `select` (now
@@ -401,7 +401,7 @@ app.py/graph.py decomposition (quarter-tier), R7 LLM-RAGAS (env-gated).
 ## 2026-06-03 Update (cont. 3) — F6 slice 2 (B905 zip strict=)
 
 **HEAD `cb59f7e` (master), worktree clean apart from untracked
-`docs/audits/audit_claude_03_06_26.md`. 15 commits AHEAD of origin — NOT pushed (push gated).**
+`archive/docs/audits/audit_claude_03_06_26.md`. 15 commits AHEAD of origin — NOT pushed (push gated).**
 
 - `cb59f7e` **F6 slice — B905** — made every `zip()` length contract explicit, then
   added `B905` to ruff `select` (now `E,F,W,B904,B905`). `strict=True` where lengths
@@ -423,7 +423,7 @@ ready once VPN/billing).
 ## 2026-06-03 Update (cont. 2) — F6 slice (B904) + 2 latent F2 test regressions
 
 **HEAD `e5be9a0` (master), worktree clean apart from untracked
-`docs/audits/audit_claude_03_06_26.md`. 13 commits AHEAD of origin — NOT pushed (push gated).**
+`archive/docs/audits/audit_claude_03_06_26.md`. 13 commits AHEAD of origin — NOT pushed (push gated).**
 
 Commits (newest first):
 - `e5be9a0` **F2 regression fix** — the CSP commit `67dc286` moved inline page
@@ -447,7 +447,7 @@ pass; admin_ui/csp/mobile 23 pass; router B904 paths via earlier 8-pass run).
 ## 2026-06-03 Update (cont.) — R6 + F5 (audit §11 free/local)
 
 **HEAD `89aa23d` (master, = this handoff commit), worktree clean apart from
-untracked `docs/audits/audit_claude_03_06_26.md`. 11 commits AHEAD of origin — NOT pushed
+untracked `archive/docs/audits/audit_claude_03_06_26.md`. 11 commits AHEAD of origin — NOT pushed
 (push gated; needs explicit go).**
 
 This continuation's commits (newest first):
@@ -475,7 +475,7 @@ truth.
 
 **HEAD `c1b6168` (master), worktree clean, 7 commits AHEAD of origin (`a73687b`,
 `3f0f062` + this session's 5) — NOT pushed (push is gated; needs explicit go).**
-`docs/audits/audit_claude_03_06_26.md` is the fresh audit driving this work; it is **untracked**
+`archive/docs/audits/audit_claude_03_06_26.md` is the fresh audit driving this work; it is **untracked**
 (commit on request — the repo tracks audits historically).
 
 This session's commits (newest first):
@@ -486,7 +486,7 @@ This session's commits (newest first):
   (`script-src 'self' https://cdn.jsdelivr.net`, no `unsafe-inline`). Browser-verified
   via Playwright: 0 CSP violations, chart.js CDN loads, scripts run. test_csp added.
 - `3c62ce5` **R7 (free, partial)** — `scripts/aircargo_ragas_free.py` + report
-  `docs/operations/2026-06-03-free-r7-retrieval-baseline.md`. Free retrieval baseline on
+  `archive/docs/operations/2026-06-03-free-r7-retrieval-baseline.md`. Free retrieval baseline on
   100 cached-context cases: **context_precision 0.488, context_recall 0.785** (74/100 full,
   17/100 zero — systematic recall gap on `*-required-fields`/escalation queries).
 - `0d431a1` **F1** — fire-and-forget `asyncio.create_task` ×3 → `utils.background_tasks.spawn_tracked`.
@@ -531,6 +531,6 @@ needs VPN/billing (gated). No money budget — paid Mistral/Colab are permanentl
   bge-reranker-v2-m3 80%**. The multilingual default beats no-reranker by +6pp
   (vs a ceiling-capped tie on the 10-FAQ subsample) and the English ms-marco
   drops -32pp — so the `90891e5` default flip is validated and justified beyond
-  "restore to baseline". Report: `docs/operations/2026-06-02-mac-fullcorpus-reranker-ab.md`.
+  "restore to baseline". Report: `archive/docs/operations/2026-06-02-mac-fullcorpus-reranker-ab.md`.
   Next RAG step is RAGAS (Mistral, Colab) + chunk-size/structural A/B for the
   remaining recall MISS (12-17 cases where the needed chunk never reaches RRF top-20).

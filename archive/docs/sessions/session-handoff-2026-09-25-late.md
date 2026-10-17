@@ -29,7 +29,7 @@ Files:
 - ?? `evaluation/curated_cases_aircargo.approvals.json` (batches 1–5, approver julia,
   2026-09-25)
 - ?? `tests/test_aircargo_label_approvals.py`
-- ?? `docs/specs/aircargo-label-approval.md`
+- ?? `archive/docs/specs/aircargo-label-approval.md`
 
 How the approvals were recorded: with the tool, through `.tmp/b-approve/record_julia_approval.py`.
 The dataset bytes are unchanged, and 60 tests pass on the Mac.
@@ -101,7 +101,7 @@ judgment.
   Mac under AdGuard VPN, which only she can switch. atv2 (`/Users/julia/atv2`, HH) runs there
   and needs the VPN off.
 - **glm:** weekly cap 1310 until **2026-09-28 05:56 UTC+8**. After that, use direct GLM 5.3
-  xhigh per `docs/operations/direct-glm-5.3.md`.
+  xhigh per `archive/docs/operations/direct-glm-5.3.md`.
 
 The P2 runner itself is a code task for the writer and does not exist yet. It uses fake-judge
 tests, and needs no judge to build.

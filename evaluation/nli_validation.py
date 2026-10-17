@@ -3,7 +3,7 @@
 The slice asks whether the NLI judge of the answer metrics can be trusted. Its material is the
 assertions of the two phase C generator benchmarks, C.1a and C.1b: every line the splitter of
 the benchmark cut an answer into, with the five contexts the judge scored it against. The NLI
-research (`docs/specs/research-nli-judges.md`, section 3) fixed the pool, the strata, the
+research (`archive/docs/specs/research-nli-judges.md`, section 3) fixed the pool, the strata, the
 sample sizes and the quotas; the specification (`docs/specs/semantic-precision-metrics.md`,
 «Checks by one model in slices 2.8 and 4.1») gave the reference label of an assertion to one
 model, asked twice in requests that share nothing.

@@ -260,7 +260,7 @@ def test_add_contextual_headers_preserves_full_body_when_over_chunk_size() -> No
     Прокси-A/B 2026-06-04 показал, что так теряются хвостовые строки
     field-таблиц (`vehicle_tir_carnet`, `escort_vehicle_count`, ...) и
     contextual-header из выигрыша превращается в регрессию
-    (docs/operations/2026-06-04-phase1-proxy-ab-contextual-header.md).
+    (archive/docs/operations/2026-06-04-phase1-proxy-ab-contextual-header.md).
     """
     tail_row = "| `vehicle_tir_carnet` | Карнет TIR | `{{vehicle_tir_carnet}}` |"
     body = ("Регламент перевозки. " * 40).strip() + "\n" + tail_row

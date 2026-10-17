@@ -58,7 +58,7 @@ Keyword retrieval baseline (D2 structural + parent-expansion + reranker) on the
 same family of cases is approximately **FULL 96–97 / PART 2–3 / MISS 1**
 (`customs-clearance-fields`). Fact-card lane remains **opt-in only** after a
 data-backed Phase-5 NO-SHIP (see
-`docs/operations/2026-06-14-adaptive-retrieval-closure.md`).
+`archive/docs/operations/2026-06-14-adaptive-retrieval-closure.md`).
 
 CI `regression-eval` is still **informational / path-filtered** — it does not
 block merge on RAGAS floors. Prefer offline A/B against this baseline before

@@ -1,7 +1,7 @@
 # GR-1b — same-pool top-k controls
 
 Measured 2026-09-12 following the
-[Astra/Fable review](../specs/precision-improvement-review.md).
+[Astra/Fable review](../../archive/docs/specs/precision-improvement-review.md).
 **NO-SHIP:** none of the ordinary top-k controls reaches precision 0.63 while
 preserving current G1 recall 0.9200 and FULL/PART/MISS 88/8/4.
 

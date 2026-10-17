@@ -1,4 +1,4 @@
-"""Chunk restore after process restart (docs/audits/fable_com.md F-2).
+"""Chunk restore after process restart (archive/docs/audits/fable_com.md F-2).
 
 The BM25 corpus and parent-expansion neighbour order live in
 ``vectordb.manager._chunks_cache``. Before the F-2 fix, a process restart left

@@ -23,7 +23,7 @@
   - env: `DATABASE_URL=postgresql://rag:rag_dev_password@localhost:5432/rag_assistant`, `DB_ENCRYPTION_KEY=ci-test-key-32-characters-long-xyz`.
   - steps: checkout → setup-python → `pip install -r requirements.txt` → `python scripts/migration_round_trip.py`.
   - job должна запускаться на `pull_request` и `push` в `master`.
-- `docs/CHANGELOG.md` — запись под новым разделом про migration-012 fix и round-trip gate.
+- `archive/docs/CHANGELOG.md` — запись под новым разделом про migration-012 fix и round-trip gate.
 
 ## Acceptance criteria
 - [ ] Локально: `python scripts/migration_round_trip.py --database-url postgresql://rag:rag_dev_password@localhost:55432/rag_assistant` на disposable `postgres:16-alpine` контейнере завершает с exit 0, логи показывают 17 миграций upgrade + 17 downgrade + 17 upgrade.

@@ -2,7 +2,7 @@
 
 > Current status note — 2026-04-30: this file is a historical hygiene report.
 > The canonical current state lives in `README.md`, `DEPRECATIONS.md`, and
-> `docs/CHANGELOG.md`. Since this report was written, root shim modules
+> `archive/docs/CHANGELOG.md`. Since this report was written, root shim modules
 > `loader.py`, `manager.py`, and `sqlite_trace.py` were fully removed, Alembic
 > has advanced through migration `017`, and router app-shell cleanup now uses
 > `api._shared.app_module()` for all extracted routers that need `api.app`
@@ -146,7 +146,7 @@ Grep по коду (кроме архивных/spec-файлов): `from prompt
 Method: для каждого untracked path был сделан exact search по basename/path во всех spec-файлах `task-102..122`; items ниже дали 0 hits.
 
 - `.pre-commit-config.yaml`, `requirements-dev.txt` — не найдены в arc-specs; вероятная причина: подготовка task-127 (`ci pipeline` / pre-commit). Действие: `separate commit` или не включать в merge arc 102-122.
-- `docs/CHANGELOG.md` — не найден в arc-specs; вероятная причина: task-128 (`changelog`). Действие: `separate commit`.
+- `archive/docs/CHANGELOG.md` — не найден в arc-specs; вероятная причина: task-128 (`changelog`). Действие: `separate commit`.
 - `codex-tasks/task-123-arc-102-122-verification-sweep.md`, `task-124-readme-arc-102-122-update.md`, `task-125-arc-6-proposal.md`, `task-126-hygiene-consistency-audit.md`, `task-127-ci-pipeline.md`, `task-128-changelog.md`, `task-129-backup-restore-runbook.md`, `codex-tasks/verification-report.md`, `codex-tasks/arc-6-proposal.md` — follow-up/post-arc planning artifacts. Действие: `keep out of arc feature commit`; оформлять отдельным docs/planning commit.
 - `codex-tasks/Archive/ROADMAP.md`, `codex-tasks/Archive/orchestrator-batch-a-ux.md`, `...-b-rag.md`, `...-c-enterprise.md`, `...-d-differentiation.md`, `...-e-polish.md` — orchestration/meta docs, не referenced individual arc-specs. Действие: `separate planning archive` или не включать в feature merge.
 - `codex-tasks/Archive/task-102-inline-citations.md` ... `codex-tasks/Archive/task-122-integration-tests.md` — 21 untracked archived copies spec-файлов самих задач. Это не runtime deliverables, а meta-archive. Действие: либо `commit separately as docs-only archive`, либо убрать из рабочего дерева перед feature commit.

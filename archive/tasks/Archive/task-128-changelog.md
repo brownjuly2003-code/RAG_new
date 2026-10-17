@@ -1,7 +1,7 @@
 # Task 128 — CHANGELOG.md
 
 ## Goal
-Создать `docs/CHANGELOG.md` с полной историей развития проекта от arc 68 (production hardening) до arc 122 (code quality polish). Цель — чтобы через 6 месяцев можно было вспомнить, что и когда появилось, без чтения 100+ коммитов.
+Создать `archive/docs/CHANGELOG.md` с полной историей развития проекта от arc 68 (production hardening) до arc 122 (code quality polish). Цель — чтобы через 6 месяцев можно было вспомнить, что и когда появилось, без чтения 100+ коммитов.
 
 ## Context
 - Repo: `D:\RAG_Support_Assistant` (FastAPI + LangGraph + ChromaDB + Ollama).
@@ -21,7 +21,7 @@
 - Дата закрытия arc 101: 2026-04-20. Дата закрытия arc 102-122: ~2026-04-21.
 
 ## Deliverables
-`docs/CHANGELOG.md` по адаптированному Keep-a-Changelog формату:
+`archive/docs/CHANGELOG.md` по адаптированному Keep-a-Changelog формату:
 
 ```markdown
 # Changelog

@@ -9,7 +9,7 @@ request was the synthetic `Reply with exactly OK.` model and effort probe.
   `evaluation.blinded_judge.draw_human_sample`: two cases from each of five
   ruler strata. This is the exact sample in `reports/p2/human-sample.html`:
   10 cases, 50 documents. Hm and the other 90 H cases are outside this run.
-- Use `build_request` from the registered [P2 plan](p2-blinded-judge-plan.md).
+- Use `build_request` from the registered [P2 plan](../../archive/docs/specs/p2-blinded-judge-plan.md).
   Each request contains only its question and five shuffled D1–D5 document
   texts. No case id, rank, arm, keyword, ruler score, or prior judge grade is
   supplied. Send one independent request per case.

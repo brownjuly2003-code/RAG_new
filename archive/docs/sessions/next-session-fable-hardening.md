@@ -10,7 +10,7 @@
 |---|---|
 | `pyproject.toml` | новый `[[overrides]]` `module = ["vectordb.*"]` (disallow_untyped_defs + disallow_incomplete_defs + no_implicit_optional; БЕЗ warn_return_any — langchain-возвраты под skip = Any) |
 | `.github/workflows/ci.yml`, `scripts/local-gate.ps1`, `scripts/autopilot.ps1` | skip-команда +`vectordb` (`…api/routers vectordb --follow-imports=skip`); ci.yml-комментарий +heavy-graph причина |
-| `README.md`, `docs/CHANGELOG.md` | `vectordb/` → mypy --strict clean + [Type-Hardening] cont. блок |
+| `README.md`, `archive/docs/CHANGELOG.md` | `vectordb/` → mypy --strict clean + [Type-Hardening] cont. блок |
 
 **🟢 Решение — vectordb в skip-команду, НЕ в основную.** vectordb тянет langchain/sentence-transformers → полный граф раздувает память mypy (~2GB+, виснет Windows — ровно риск, которым флагали «без явной просьбы / на Mac»). `--follow-imports=skip` НЕ грузит эти импорты (memory-safe на Windows), проверяет аннотации самого vectordb. Тот же heavy-graph-приём, что у `api.app` (там таймаут, здесь память). Windows-риск снят.
 
@@ -57,7 +57,7 @@
 | `pyproject.toml` | `[[overrides]]` блок `tracing.*`/`ingestion.*` |
 | `.github/workflows/ci.yml`, `scripts/local-gate.ps1`, `scripts/autopilot.ps1` | strict-команда +`tracing ingestion` |
 | `tests/test_precommit_config.py` | `EXPECTED_MYPY_STRICT_PATHS` +`tracing`/`ingestion` |
-| `README.md`, `docs/CHANGELOG.md` | strict-clean пометки + [Type-Hardening] cont.2 блок |
+| `README.md`, `archive/docs/CHANGELOG.md` | strict-clean пометки + [Type-Hardening] cont.2 блок |
 
 **Верификация:** gated strict-mypy — **Success, 46 source files** (21→0); целевые тесты **52 passed**; docs-guards 20; ruff clean. **Гоча:** `[no-redef]` в langfuse_trace показался ТОЛЬКО в полной gated-команде (с agent.graph в графе), не в `mypy tracing` изолированно → верифицировать полной командой. **Pages-deploy = failure pre-existing** (docs-site esbuild npm-audit, транзитивно astro; падал и на `be85be3`; вне scope).
 
@@ -80,7 +80,7 @@
 | `tasks/ingest_task.py` | `ingest_document(self: Task, …)` + `from celery import Task` |
 | `tests/test_precommit_config.py` | guard-тест `test_mypy_strict_scope_is_synced_across_gates` — идентичность strict-путей mypy в ci.yml/local-gate.ps1/autopilot.ps1 + пин модулей |
 | `.github/workflows/ci.yml`, `scripts/local-gate.ps1`, `scripts/autopilot.ps1` | strict-команда синхронно: `db/models.py db/engine.py` → `db`, +`tasks utils` |
-| `README.md`, `docs/CHANGELOG.md` | `db/` → «mypy --strict clean»; [Type-Hardening] + [Security] CHANGELOG-блоки |
+| `README.md`, `archive/docs/CHANGELOG.md` | `db/` → «mypy --strict clean»; [Type-Hardening] + [Security] CHANGELOG-блоки |
 | `requirements.txt`, `requirements.lock`, `requirements-dev.lock` | security-фикс (2-й коммит): `pypdf` 6.10.2→**6.13.2** (CVE-2026-48155/48156, fix 6.12.0) + floor `>=6.12.0`; uv `--upgrade-package pypdf --generate-hashes`, diff только pypdf |
 
 **Верификация:** gated strict-mypy (новый scope) — **Success: no issues found in 30 source files, exit 0**; затронутые модули **66 passed / 3 skipped**; ruff clean; pip-audit на обновлённом lock — «No known vulnerabilities found, 2 ignored»; loader/ingest/governance **30 passed**. Гоча: `| tail` маскирует exit code mypy (первый «exit 0» был ложным) — гонять без `| tail`, читать `Found N errors`/`Success`. Гоча CI: type-правки не трогали security, но push словил свежую diff-независимую `pypdf`-CVE (security+pre-commit job = один pip-audit hook) — чинить bump'ом, не ignore (fix есть).
@@ -155,7 +155,7 @@
 **Состояние дерева сейчас:** чисто, кроме чужих untracked (`docs/architecture-data-flow.html`, `scripts/check_architecture_diagram.py`) — НЕ трогать.
 
 ### Сделано дополнительно в сессии 2 (после батча):
-- **README + `.env.example` + `docs/CHANGELOG.md`** — 6 новых переменных задокументированы (+`STREAMING_QUALITY_EVAL` rollback-нота), [Fable-Hardening] CHANGELOG-блок. Коммит `1ed8efc`.
+- **README + `.env.example` + `archive/docs/CHANGELOG.md`** — 6 новых переменных задокументированы (+`STREAMING_QUALITY_EVAL` rollback-нота), [Fable-Hardening] CHANGELOG-блок. Коммит `1ed8efc`.
 - **Гигиена #11 ЗАКРЫТА:** `.gitignore` уже содержал temp/coverage-паттерны; мёртвый корневой `cache.py` (затенён пакетом `cache/`) + тест → `archive-legacy/` (коммит `84de8e2`, тест 7/7 при прямом запуске); 76× `tests/pytest-cache-files-*` + 7× `.pytest-tmp-*` удалены (untracked).
 - **Multi-worker инвариант ЗАКРЫТ** (`d805292`): выбрана опция 1 аудита — выровнял дефолты на 1 worker / 1 replica (`Dockerfile --workers 1`; helm `replicaCount: 1` + `autoscaling.enabled: false`), починил вводящий в заблуждение claim в `tracing/_base_trace.py`, добавил best-effort startup-warning на `WEB_CONCURRENCY>1` (срабатывает, старт не ломается) и секцию README «Deployment topology». Прошлый дефолт реально гонял 2 worker × 2–8 replica → ломал confirm-actions/сессии.
 
@@ -233,7 +233,7 @@ RAG_RERANKER_MODEL="" python -m pytest tests/test_chat_streaming.py tests/test_s
 
 - **F-4** кэш provider runtime + compiled graph. **ЛОВУШКА:** `ProviderBackedLLM.last_response` — мутируемое per-instance состояние; при глобальном кэше runtime конкурирующие запросы перепутают usage. Сначала `threading.local` для `last_response` в `llm/providers/base.py`, потом кэш по (resolved profile, mtime providers.yml), потом кэш compiled graph по `(id(retriever), id(llm_fast), id(llm_strong), min_quality)`.
 - **Гигиена** (#11): `.gitignore` += `.pytest-tmp-*/`, `tests/pytest-cache-files-*/`, `.coverage`; корневой `cache.py` (мёртвый, затенён пакетом `cache/`) → `archive-legacy/` вместе с `tests/test_rag_cache.py`; 76 каталогов `tests/pytest-cache-files-*` удалить.
-- README: env-таблица для 6 новых переменных + `STREAMING_QUALITY_EVAL` rollback; `docs/CHANGELOG.md`.
+- README: env-таблица для 6 новых переменных + `STREAMING_QUALITY_EVAL` rollback; `archive/docs/CHANGELOG.md`.
 - fable_com.md §5 пп. 7-8 (multi-worker инвариант, F-13/F-15) — отдельные циклы.
 
 ## 5. Коммиты (после зелёной верификации §2; push — только по явному запросу Юли)

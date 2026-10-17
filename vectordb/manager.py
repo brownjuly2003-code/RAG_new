@@ -206,7 +206,7 @@ def add_contextual_headers(
         # тела на длину заголовка (~28-33% чанков корпуса) — прокси-A/B
         # 2026-06-04 показал, что это вырезает хвостовые строки field-таблиц и
         # превращает выигрыш contextual-header в регрессию (3/13 целевых кейсов;
-        # docs/operations/2026-06-04-phase1-proxy-ab-contextual-header.md).
+        # archive/docs/operations/2026-06-04-phase1-proxy-ab-contextual-header.md).
         # Превышение chunk_size ограничено длиной заголовка: оба пути
         # (_base_manager LLM и no-LLM fallback) клампят его до 200 символов.
         if len(chunk.page_content) > chunk_size:

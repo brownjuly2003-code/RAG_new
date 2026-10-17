@@ -28,7 +28,7 @@
   - preconditions: `D:\GraceKelly\` запущен и слушает 8011; RAG запущен с `LLM_PROVIDER_PROFILE=gracekelly-primary`; `.env` содержит `GRACEKELLY_URL=http://127.0.0.1:8011`; baseline Prometheus scrape сделан.
   - пример вывода smoke-скрипта.
   - troubleshooting: GraceKelly 503 → проверить `D:\GraceKelly\` logs; RAG на ollama вместо gracekelly → проверить `/api/admin/providers`; failover не триггерится → проверить `--simulate-down` path.
-- `docs/CHANGELOG.md` — запись про smoke harness.
+- `archive/docs/CHANGELOG.md` — запись про smoke harness.
 
 ## Acceptance criteria
 - [ ] `python scripts/gracekelly_smoke.py --verbose` завершается exit 0 при работающем GraceKelly на 8011 и RAG на 8000 с `LLM_PROVIDER_PROFILE=gracekelly-primary`.
