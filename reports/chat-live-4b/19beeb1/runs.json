@@ -1,0 +1,6625 @@
+{
+ "schema": "chat-live/v1",
+ "code_sha": "19beeb1e1e49188ac8ddb5188003e10562506ad8",
+ "dataset": {
+  "path": "evaluation/curated_cases_aircargo.jsonl",
+  "sha256": "3737d694362d1867ca3d5983e3765d02c01110d2409145ba7e0f05c021d9c720"
+ },
+ "host": {
+  "model": "iMac18,3",
+  "cpu": "Intel(R) Core(TM) i5-7500 CPU @ 3.40GHz",
+  "physical_cores": 4,
+  "memory_bytes": 8589934592,
+  "macos": "13.7.8"
+ },
+ "ollama": {
+  "version": "0.33.2"
+ },
+ "runs": [
+  {
+   "label": "qwen3-4b-instruct-q1",
+   "mode": "prod",
+   "overrides": {
+    "REQUEST_TIMEOUT_SEC": "3600",
+    "OLLAMA_REQUEST_TIMEOUT_SEC": "3600",
+    "STREAMING_TIMEOUT_SEC": "3600",
+    "RAG_DEVICE": "cpu"
+   },
+   "started": "2026-10-16T21:27:29+00:00",
+   "finished": "2026-10-16T21:33:16+00:00",
+   "status": "complete",
+   "runner_exit": 0,
+   "model": "qwen3:4b-instruct-2507-q4_K_M",
+   "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+   "ollama_models_before": [],
+   "ollama_models_after": [
+    "qwen3:4b-instruct-2507-q4_K_M"
+   ],
+   "ollama_load_sec": 36.554,
+   "settings": {
+    "llm_provider_profile": "local-first",
+    "ollama_model_name": "qwen3:4b-instruct-2507-q4_K_M",
+    "ollama_fast_model_name": "llama3.2:3b",
+    "model_routing_enabled": false,
+    "ollama_context_window": 4096,
+    "embedding_model": "BAAI/bge-m3",
+    "embedding_backend": "local",
+    "reranker_model": "BAAI/bge-reranker-v2-m3",
+    "rag_device": "cpu",
+    "vector_backend": "chroma",
+    "hybrid_search": true,
+    "retrieval_strategy": "hybrid",
+    "retrieval_top_k": 20,
+    "rerank_top_k": 5,
+    "hyde": false,
+    "graph_retrieval": "off",
+    "parent_expansion": true,
+    "self_rag_max_iterations": 2,
+    "fact_verification_enabled": true,
+    "streaming_enabled": false,
+    "streaming_rag_parity": false,
+    "streaming_quality_eval": true,
+    "streaming_timeout_sec": 3600.0,
+    "request_timeout_sec": 3600.0,
+    "ollama_request_timeout_sec": 3600.0,
+    "quality_threshold": 80,
+    "suggested_questions_enabled": true,
+    "llm_max_calls_per_request": 24,
+    "online_evaluators_enabled": true,
+    "max_concurrent_pipelines": 8,
+    "support_sink_backend": "local",
+    "tracing_db_path": "<workspace>/chatlive/runs/qwen3-4b-instruct-q1/traces.db",
+    "vectordb_chroma_dir": "<runtime>/chroma"
+   },
+   "settings_off_default": {
+    "db_encryption_key": {
+     "default": "<empty>",
+     "run": "<set>"
+    },
+    "tracing_db_path": {
+     "default": "<workspace>/data/tracing/traces.db",
+     "run": "<workspace>/chatlive/runs/qwen3-4b-instruct-q1/traces.db"
+    },
+    "vectordb_chroma_dir": {
+     "default": "<workspace>/data/vectordb/chroma",
+     "run": "<runtime>/chroma"
+    }
+   },
+   "tickets": [
+    "94",
+    "94"
+   ],
+   "memory": {
+    "samples": 114,
+    "swap_used_mb": [
+     732.0,
+     1317.5
+    ],
+    "free_mb_min": 4,
+    "max_rss_mb": {
+     "postgres": 10,
+     "ollama": 3481,
+     "python": 2569
+    }
+   },
+   "api_warnings": {
+    "WARNING api.app: CORS_ORIGINS='*' - OK for development, but set explicit origins before deploying to production (RAG_ENV=production will refuse to start).": {
+     "count": 1,
+     "first": "CORS_ORIGINS='*' - OK for development, but set explicit origins before deploying to production (RAG_ENV=production will refuse to start)."
+    },
+    "WARNING vectordb.embedder_manifest: Tenant default loaded an unstamped index: NOT_EVIDENCE; rebuild it": {
+     "count": 1,
+     "first": "Tenant default loaded an unstamped index: NOT_EVIDENCE; rebuild it"
+    },
+    "WARNING vectordb.manager: Tenant default: retriever built WITHOUT BM# index while hybrid search is enabled — retrieval degraded to vector-only. Usually means the chunk cache is empty and": {
+     "count": 1,
+     "first": "Tenant default: retriever built WITHOUT BM25 index while hybrid search is enabled — retrieval degraded to vector-only. Usually means the chunk cache is empty and could not be restored."
+    }
+   },
+   "notes": [
+    {
+     "at": "2026-10-17T01:59:34Z",
+     "by": "session",
+     "observed": "retrieval was hybrid: the API logged 'Restored 5589 chunks for tenant aircargo from the persisted collection (BM25 + parent-expansion re-enabled)' at 21:28:32.763Z, 0.3 s before the first question's request line; the run's one 'retriever built WITHOUT BM25 index' warning names the tenant default, built at startup, which no question uses"
+    }
+   ],
+   "cases": [
+    {
+     "case": "aircargo-probation-data",
+     "question": "Какие данные нужны для ответа по испытательному сроку?",
+     "http": 200,
+     "first_token_sec": 197.655,
+     "last_token_sec": 207.37,
+     "tokens": 47,
+     "answer_tokens": 47,
+     "result_sec": 281.133,
+     "error_sec": null,
+     "total_sec": 281.137,
+     "drain_sec": 0.052,
+     "client_error": null,
+     "route": "auto",
+     "quality": 100,
+     "quality_source": "llm",
+     "sources": 3,
+     "suggested": 3,
+     "memory": {
+      "samples": 91,
+      "swap_used_mb": [
+       911.5,
+       1317.5
+      ],
+      "free_mb_min": 4,
+      "max_rss_mb": {
+       "postgres": 9,
+       "ollama": 3481,
+       "python": 2569
+      }
+     },
+     "events": [
+      {
+       "at": 4.098,
+       "type": "status"
+      },
+      {
+       "at": 124.225,
+       "type": "token_start"
+      },
+      {
+       "at": 281.133,
+       "type": "result",
+       "quality_score": 100,
+       "quality_source": "llm",
+       "route": "auto"
+      }
+     ],
+     "answer": "Для ответа по испытательному сроку нужны: должность, дата приема, условие в трудовом договоре, длительность испытания и результаты оценки [1].",
+     "timeline": [
+      {
+       "stage": "vectordb._base_manager.get_embeddings",
+       "end_at": 0.37,
+       "wall": 0.0
+      },
+      {
+       "stage": "vectordb.manager.get_embeddings",
+       "end_at": 0.37,
+       "wall": 0.0
+      },
+      {
+       "stage": "vectordb._base_manager.get_reranker",
+       "end_at": 3.77,
+       "wall": 0.0
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 4.08,
+       "wall": 3.73
+      },
+      {
+       "stage": "hybrid._vector_search",
+       "end_at": 19.64,
+       "wall": 15.54
+      },
+      {
+       "stage": "hybrid._rerank_scored_with_status",
+       "end_at": 123.83,
+       "wall": 104.18,
+       "reranker_ok": true,
+       "docs": 5
+      },
+      {
+       "stage": "hybrid._expand_parents",
+       "end_at": 123.83,
+       "wall": 0.0
+      },
+      {
+       "stage": "hybrid.get_relevant_documents_with_path",
+       "end_at": 123.83,
+       "wall": 119.74
+      },
+      {
+       "stage": "ollama.generate_stream",
+       "end_at": 207.57,
+       "wall": 83.71,
+       "first_chunk_sec": 73.75,
+       "chunks": 47,
+       "output_chars": 142,
+       "prompt_est_tokens": 2466,
+       "max_tokens": 1024,
+       "prompt_exact_tokens": 2101
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 268.39,
+       "wall": 60.81,
+       "output_chars": 3,
+       "prompt_est_tokens": 2661,
+       "max_tokens": 128,
+       "prompt_exact_tokens": 2290
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 280.9,
+       "wall": 12.5,
+       "output_chars": 120,
+       "prompt_est_tokens": 339,
+       "prompt_exact_tokens": 278
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "label": "qwen3-4b-instruct-q5",
+   "mode": "prod",
+   "overrides": {
+    "REQUEST_TIMEOUT_SEC": "3600",
+    "OLLAMA_REQUEST_TIMEOUT_SEC": "3600",
+    "STREAMING_TIMEOUT_SEC": "3600",
+    "RAG_DEVICE": "cpu"
+   },
+   "started": "2026-10-16T21:33:42+00:00",
+   "finished": "2026-10-16T22:02:17+00:00",
+   "status": "complete",
+   "runner_exit": 0,
+   "model": "qwen3:4b-instruct-2507-q4_K_M",
+   "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+   "ollama_models_before": [],
+   "ollama_models_after": [
+    "qwen3:4b-instruct-2507-q4_K_M"
+   ],
+   "ollama_load_sec": 34.795,
+   "settings": {
+    "llm_provider_profile": "local-first",
+    "ollama_model_name": "qwen3:4b-instruct-2507-q4_K_M",
+    "ollama_fast_model_name": "llama3.2:3b",
+    "model_routing_enabled": false,
+    "ollama_context_window": 4096,
+    "embedding_model": "BAAI/bge-m3",
+    "embedding_backend": "local",
+    "reranker_model": "BAAI/bge-reranker-v2-m3",
+    "rag_device": "cpu",
+    "vector_backend": "chroma",
+    "hybrid_search": true,
+    "retrieval_strategy": "hybrid",
+    "retrieval_top_k": 20,
+    "rerank_top_k": 5,
+    "hyde": false,
+    "graph_retrieval": "off",
+    "parent_expansion": true,
+    "self_rag_max_iterations": 2,
+    "fact_verification_enabled": true,
+    "streaming_enabled": false,
+    "streaming_rag_parity": false,
+    "streaming_quality_eval": true,
+    "streaming_timeout_sec": 3600.0,
+    "request_timeout_sec": 3600.0,
+    "ollama_request_timeout_sec": 3600.0,
+    "quality_threshold": 80,
+    "suggested_questions_enabled": true,
+    "llm_max_calls_per_request": 24,
+    "online_evaluators_enabled": true,
+    "max_concurrent_pipelines": 8,
+    "support_sink_backend": "local",
+    "tracing_db_path": "<workspace>/chatlive/runs/qwen3-4b-instruct-q5/traces.db",
+    "vectordb_chroma_dir": "<runtime>/chroma"
+   },
+   "settings_off_default": {
+    "db_encryption_key": {
+     "default": "<empty>",
+     "run": "<set>"
+    },
+    "tracing_db_path": {
+     "default": "<workspace>/data/tracing/traces.db",
+     "run": "<workspace>/chatlive/runs/qwen3-4b-instruct-q5/traces.db"
+    },
+    "vectordb_chroma_dir": {
+     "default": "<workspace>/data/vectordb/chroma",
+     "run": "<runtime>/chroma"
+    }
+   },
+   "tickets": [
+    "94",
+    "94"
+   ],
+   "memory": {
+    "samples": 557,
+    "swap_used_mb": [
+     983.75,
+     4086.75
+    ],
+    "free_mb_min": 4,
+    "max_rss_mb": {
+     "postgres": 10,
+     "ollama": 3691,
+     "python": 2627
+    }
+   },
+   "api_warnings": {
+    "WARNING api.app: CORS_ORIGINS='*' - OK for development, but set explicit origins before deploying to production (RAG_ENV=production will refuse to start).": {
+     "count": 1,
+     "first": "CORS_ORIGINS='*' - OK for development, but set explicit origins before deploying to production (RAG_ENV=production will refuse to start)."
+    },
+    "WARNING vectordb.embedder_manifest: Tenant default loaded an unstamped index: NOT_EVIDENCE; rebuild it": {
+     "count": 1,
+     "first": "Tenant default loaded an unstamped index: NOT_EVIDENCE; rebuild it"
+    },
+    "WARNING vectordb.manager: Tenant default: retriever built WITHOUT BM# index while hybrid search is enabled — retrieval degraded to vector-only. Usually means the chunk cache is empty and": {
+     "count": 1,
+     "first": "Tenant default: retriever built WITHOUT BM25 index while hybrid search is enabled — retrieval degraded to vector-only. Usually means the chunk cache is empty and could not be restored."
+    }
+   },
+   "notes": [
+    {
+     "at": "2026-10-17T01:59:34Z",
+     "by": "session",
+     "observed": "retrieval was hybrid: the API logged 'Restored 5589 chunks for tenant aircargo from the persisted collection (BM25 + parent-expansion re-enabled)' at 21:34:36.257Z, 0.3 s before the first question's request line; the run's one 'retriever built WITHOUT BM25 index' warning names the tenant default, built at startup, which no question uses"
+    }
+   ],
+   "cases": [
+    {
+     "case": "aircargo-probation-data",
+     "question": "Какие данные нужны для ответа по испытательному сроку?",
+     "http": 200,
+     "first_token_sec": 182.591,
+     "last_token_sec": 192.509,
+     "tokens": 47,
+     "answer_tokens": 47,
+     "result_sec": 267.126,
+     "error_sec": null,
+     "total_sec": 267.131,
+     "drain_sec": 0.039,
+     "client_error": null,
+     "route": "auto",
+     "quality": 100,
+     "quality_source": "llm",
+     "sources": 3,
+     "suggested": 3,
+     "memory": {
+      "samples": 87,
+      "swap_used_mb": [
+       1048.0,
+       1500.5
+      ],
+      "free_mb_min": 5,
+      "max_rss_mb": {
+       "postgres": 9,
+       "ollama": 3526,
+       "python": 2627
+      }
+     },
+     "events": [
+      {
+       "at": 4.343,
+       "type": "status"
+      },
+      {
+       "at": 121.423,
+       "type": "token_start"
+      },
+      {
+       "at": 267.126,
+       "type": "result",
+       "quality_score": 100,
+       "quality_source": "llm",
+       "route": "auto"
+      }
+     ],
+     "answer": "Для ответа по испытательному сроку нужны: должность, дата приема, условие в трудовом договоре, длительность испытания и результаты оценки [1].",
+     "timeline": [
+      {
+       "stage": "vectordb._base_manager.get_embeddings",
+       "end_at": 0.35,
+       "wall": 0.0
+      },
+      {
+       "stage": "vectordb.manager.get_embeddings",
+       "end_at": 0.35,
+       "wall": 0.0
+      },
+      {
+       "stage": "vectordb._base_manager.get_reranker",
+       "end_at": 4.02,
+       "wall": 0.0
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 4.33,
+       "wall": 3.99
+      },
+      {
+       "stage": "hybrid._vector_search",
+       "end_at": 19.1,
+       "wall": 14.76
+      },
+      {
+       "stage": "hybrid._rerank_scored_with_status",
+       "end_at": 121.01,
+       "wall": 101.9,
+       "reranker_ok": true,
+       "docs": 5
+      },
+      {
+       "stage": "hybrid._expand_parents",
+       "end_at": 121.02,
+       "wall": 0.0
+      },
+      {
+       "stage": "hybrid.get_relevant_documents_with_path",
+       "end_at": 121.02,
+       "wall": 116.68
+      },
+      {
+       "stage": "ollama.generate_stream",
+       "end_at": 192.88,
+       "wall": 71.84,
+       "first_chunk_sec": 61.54,
+       "chunks": 47,
+       "output_chars": 142,
+       "prompt_est_tokens": 2466,
+       "max_tokens": 1024,
+       "prompt_exact_tokens": 2101
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 253.65,
+       "wall": 60.76,
+       "output_chars": 3,
+       "prompt_est_tokens": 2661,
+       "max_tokens": 128,
+       "prompt_exact_tokens": 2290
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 266.99,
+       "wall": 13.33,
+       "output_chars": 134,
+       "prompt_est_tokens": 339,
+       "prompt_exact_tokens": 278
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 267.21,
+       "wall": 0.0
+      }
+     ]
+    },
+    {
+     "case": "aircargo-probation-extend",
+     "question": "Можно ли продлить испытательный срок сотруднику?",
+     "http": 200,
+     "first_token_sec": 212.269,
+     "last_token_sec": 229.499,
+     "tokens": 72,
+     "answer_tokens": 72,
+     "result_sec": 322.01,
+     "error_sec": null,
+     "total_sec": 322.01,
+     "drain_sec": 0.035,
+     "client_error": null,
+     "route": "auto",
+     "quality": 100,
+     "quality_source": "llm",
+     "sources": 3,
+     "suggested": 3,
+     "memory": {
+      "samples": 104,
+      "swap_used_mb": [
+       983.75,
+       1580.0
+      ],
+      "free_mb_min": 6,
+      "max_rss_mb": {
+       "postgres": 3,
+       "ollama": 3512,
+       "python": 2033
+      }
+     },
+     "events": [
+      {
+       "at": 0.052,
+       "type": "status"
+      },
+      {
+       "at": 144.415,
+       "type": "token_start"
+      },
+      {
+       "at": 322.01,
+       "type": "result",
+       "quality_score": 100,
+       "quality_source": "llm",
+       "route": "auto"
+      }
+     ],
+     "answer": "Нет, испытательный срок не может быть продлен. Продление испытательного срока не допускается. Срок испытания устанавливается при заключении трудового договора и не может превышать пределы ст. 70 ТК РФ. [2]",
+     "timeline": [
+      {
+       "stage": "ollama.generate",
+       "end_at": -0.18,
+       "wall": 13.33,
+       "output_chars": 134,
+       "prompt_est_tokens": 339,
+       "prompt_exact_tokens": 278
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 0.04,
+       "wall": 0.0
+      },
+      {
+       "stage": "hybrid._vector_search",
+       "end_at": 13.59,
+       "wall": 13.55
+      },
+      {
+       "stage": "hybrid._rerank_scored_with_status",
+       "end_at": 144.29,
+       "wall": 130.6,
+       "reranker_ok": true,
+       "docs": 5
+      },
+      {
+       "stage": "hybrid._expand_parents",
+       "end_at": 144.33,
+       "wall": 0.02
+      },
+      {
+       "stage": "hybrid.get_relevant_documents_with_path",
+       "end_at": 144.33,
+       "wall": 144.29
+      },
+      {
+       "stage": "ollama.generate_stream",
+       "end_at": 229.78,
+       "wall": 85.43,
+       "first_chunk_sec": 67.91,
+       "chunks": 72,
+       "output_chars": 205,
+       "prompt_est_tokens": 2587,
+       "max_tokens": 1024,
+       "prompt_exact_tokens": 2377
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 304.47,
+       "wall": 74.68,
+       "output_chars": 3,
+       "prompt_est_tokens": 2806,
+       "max_tokens": 128,
+       "prompt_exact_tokens": 2590
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 321.82,
+       "wall": 17.31,
+       "output_chars": 176,
+       "prompt_est_tokens": 357,
+       "prompt_exact_tokens": 330
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 322.22,
+       "wall": 0.0
+      }
+     ]
+    },
+    {
+     "case": "aircargo-probation-dismissal",
+     "question": "Что важно для увольнения по результатам испытательного срока?",
+     "http": 200,
+     "first_token_sec": 246.919,
+     "last_token_sec": 259.364,
+     "tokens": 53,
+     "answer_tokens": 53,
+     "result_sec": 349.865,
+     "error_sec": null,
+     "total_sec": 349.866,
+     "drain_sec": 0.85,
+     "client_error": null,
+     "route": "auto",
+     "quality": 100,
+     "quality_source": "llm",
+     "sources": 4,
+     "suggested": 3,
+     "memory": {
+      "samples": 113,
+      "swap_used_mb": [
+       1455.5,
+       2311.25
+      ],
+      "free_mb_min": 4,
+      "max_rss_mb": {
+       "postgres": 3,
+       "ollama": 3691,
+       "python": 1713
+      }
+     },
+     "events": [
+      {
+       "at": 0.191,
+       "type": "status"
+      },
+      {
+       "at": 180.441,
+       "type": "token_start"
+      },
+      {
+       "at": 349.865,
+       "type": "result",
+       "quality_score": 100,
+       "quality_source": "llm",
+       "route": "auto"
+      }
+     ],
+     "answer": "Что важно для увольнения по результатам испытательного срока: документированные критерии, факты неудовлетворительной работы и соблюдение срока уведомления [3].",
+     "timeline": [
+      {
+       "stage": "ollama.generate",
+       "end_at": -0.23,
+       "wall": 17.31,
+       "output_chars": 176,
+       "prompt_est_tokens": 357,
+       "prompt_exact_tokens": 330
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 0.18,
+       "wall": 0.0
+      },
+      {
+       "stage": "hybrid._vector_search",
+       "end_at": 16.85,
+       "wall": 16.67
+      },
+      {
+       "stage": "hybrid._rerank_scored_with_status",
+       "end_at": 179.76,
+       "wall": 162.73,
+       "reranker_ok": true,
+       "docs": 5
+      },
+      {
+       "stage": "hybrid._expand_parents",
+       "end_at": 179.8,
+       "wall": 0.03
+      },
+      {
+       "stage": "hybrid.get_relevant_documents_with_path",
+       "end_at": 179.81,
+       "wall": 179.63
+      },
+      {
+       "stage": "ollama.generate_stream",
+       "end_at": 259.69,
+       "wall": 79.76,
+       "first_chunk_sec": 66.98,
+       "chunks": 53,
+       "output_chars": 159,
+       "prompt_est_tokens": 2631,
+       "max_tokens": 1024,
+       "prompt_exact_tokens": 2368
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 330.5,
+       "wall": 70.78,
+       "output_chars": 3,
+       "prompt_est_tokens": 2832,
+       "max_tokens": 128,
+       "prompt_exact_tokens": 2563
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 347.91,
+       "wall": 17.41,
+       "output_chars": 149,
+       "prompt_est_tokens": 343,
+       "prompt_exact_tokens": 311
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 351.45,
+       "wall": 0.0
+      }
+     ]
+    },
+    {
+     "case": "aircargo-dismissal-check",
+     "question": "Что проверить перед ответом об увольнении работника?",
+     "http": 200,
+     "first_token_sec": 320.58,
+     "last_token_sec": 332.111,
+     "tokens": 50,
+     "answer_tokens": 51,
+     "result_sec": 413.164,
+     "error_sec": null,
+     "total_sec": 413.165,
+     "drain_sec": 0.077,
+     "client_error": null,
+     "route": "auto",
+     "quality": 100,
+     "quality_source": "llm",
+     "sources": 3,
+     "suggested": 3,
+     "memory": {
+      "samples": 134,
+      "swap_used_mb": [
+       2197.75,
+       3082.75
+      ],
+      "free_mb_min": 5,
+      "max_rss_mb": {
+       "postgres": 3,
+       "ollama": 3653,
+       "python": 1467
+      }
+     },
+     "events": [
+      {
+       "at": 0.806,
+       "type": "status"
+      },
+      {
+       "at": 257.819,
+       "type": "token_start"
+      },
+      {
+       "at": 413.164,
+       "type": "result",
+       "quality_score": 100,
+       "quality_source": "llm",
+       "route": "auto"
+      }
+     ],
+     "answer": "Перед ответом об увольнении нужно проверить: основание увольнения, дату последнего рабочего дня, заявления, соглашения, приказы и расчетные выплаты [1].",
+     "timeline": [
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 0.71,
+       "wall": 0.0
+      },
+      {
+       "stage": "hybrid._vector_search",
+       "end_at": 47.99,
+       "wall": 47.02
+      },
+      {
+       "stage": "hybrid._rerank_scored_with_status",
+       "end_at": 257.2,
+       "wall": 209.0,
+       "reranker_ok": true,
+       "docs": 5
+      },
+      {
+       "stage": "hybrid._expand_parents",
+       "end_at": 257.25,
+       "wall": 0.04
+      },
+      {
+       "stage": "hybrid.get_relevant_documents_with_path",
+       "end_at": 257.26,
+       "wall": 256.45
+      },
+      {
+       "stage": "ollama.generate_stream",
+       "end_at": 332.4,
+       "wall": 75.08,
+       "first_chunk_sec": 63.25,
+       "chunks": 50,
+       "output_chars": 152,
+       "prompt_est_tokens": 2607,
+       "max_tokens": 1024,
+       "prompt_exact_tokens": 2258
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 399.4,
+       "wall": 66.97,
+       "output_chars": 3,
+       "prompt_est_tokens": 2806,
+       "max_tokens": 128,
+       "prompt_exact_tokens": 2451
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 413.12,
+       "wall": 13.71,
+       "output_chars": 122,
+       "prompt_est_tokens": 341,
+       "prompt_exact_tokens": 281
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 413.26,
+       "wall": 0.0
+      }
+     ]
+    },
+    {
+     "case": "aircargo-dismissal-lawyer",
+     "question": "В каких случаях при увольнении нужен юрист?",
+     "http": 200,
+     "first_token_sec": 202.057,
+     "last_token_sec": 218.789,
+     "tokens": 71,
+     "answer_tokens": 72,
+     "result_sec": 302.17,
+     "error_sec": null,
+     "total_sec": 302.17,
+     "drain_sec": 0.083,
+     "client_error": null,
+     "route": "auto",
+     "quality": 100,
+     "quality_source": "llm",
+     "sources": 4,
+     "suggested": 3,
+     "memory": {
+      "samples": 98,
+      "swap_used_mb": [
+       2981.5,
+       4086.75
+      ],
+      "free_mb_min": 6,
+      "max_rss_mb": {
+       "postgres": 3,
+       "ollama": 3606,
+       "python": 1667
+      }
+     },
+     "events": [
+      {
+       "at": 0.04,
+       "type": "status"
+      },
+      {
+       "at": 139.989,
+       "type": "token_start"
+      },
+      {
+       "at": 302.17,
+       "type": "result",
+       "quality_score": 100,
+       "quality_source": "llm",
+       "route": "auto"
+      }
+     ],
+     "answer": "При увольнении нужен юрист в следующих случаях: по инициативе работодателя, в споре о дисциплине, при сокращении, в вопросах материальной ответственности или при увольнении защищённой категории работника [2].",
+     "timeline": [
+      {
+       "stage": "ollama.generate",
+       "end_at": -0.13,
+       "wall": 13.71,
+       "output_chars": 122,
+       "prompt_est_tokens": 341,
+       "prompt_exact_tokens": 281
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 0.02,
+       "wall": 0.0
+      },
+      {
+       "stage": "hybrid._vector_search",
+       "end_at": 17.42,
+       "wall": 17.41
+      },
+      {
+       "stage": "hybrid._rerank_scored_with_status",
+       "end_at": 139.89,
+       "wall": 122.27,
+       "reranker_ok": true,
+       "docs": 5
+      },
+      {
+       "stage": "hybrid._expand_parents",
+       "end_at": 139.93,
+       "wall": 0.03
+      },
+      {
+       "stage": "hybrid.get_relevant_documents_with_path",
+       "end_at": 139.93,
+       "wall": 139.91
+      },
+      {
+       "stage": "ollama.generate_stream",
+       "end_at": 219.21,
+       "wall": 79.26,
+       "first_chunk_sec": 62.11,
+       "chunks": 71,
+       "output_chars": 208,
+       "prompt_est_tokens": 2523,
+       "max_tokens": 1024,
+       "prompt_exact_tokens": 2238
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 286.64,
+       "wall": 67.42,
+       "output_chars": 3,
+       "prompt_est_tokens": 2741,
+       "max_tokens": 128,
+       "prompt_exact_tokens": 2452
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 302.14,
+       "wall": 15.49,
+       "output_chars": 137,
+       "prompt_est_tokens": 355,
+       "prompt_exact_tokens": 324
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "label": "qwen3-4b-instruct-q30",
+   "mode": "prod",
+   "overrides": {
+    "REQUEST_TIMEOUT_SEC": "3600",
+    "OLLAMA_REQUEST_TIMEOUT_SEC": "3600",
+    "STREAMING_TIMEOUT_SEC": "3600",
+    "RAG_DEVICE": "cpu"
+   },
+   "started": "2026-10-16T22:02:39+00:00",
+   "finished": "2026-10-16T23:06:59+00:00",
+   "status": "failed",
+   "runner_exit": 4,
+   "model": "qwen3:4b-instruct-2507-q4_K_M",
+   "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+   "ollama_models_before": [],
+   "ollama_models_after": [
+    "qwen3:4b-instruct-2507-q4_K_M"
+   ],
+   "ollama_load_sec": 39.21,
+   "settings": {
+    "llm_provider_profile": "local-first",
+    "ollama_model_name": "qwen3:4b-instruct-2507-q4_K_M",
+    "ollama_fast_model_name": "llama3.2:3b",
+    "model_routing_enabled": false,
+    "ollama_context_window": 4096,
+    "embedding_model": "BAAI/bge-m3",
+    "embedding_backend": "local",
+    "reranker_model": "BAAI/bge-reranker-v2-m3",
+    "rag_device": "cpu",
+    "vector_backend": "chroma",
+    "hybrid_search": true,
+    "retrieval_strategy": "hybrid",
+    "retrieval_top_k": 20,
+    "rerank_top_k": 5,
+    "hyde": false,
+    "graph_retrieval": "off",
+    "parent_expansion": true,
+    "self_rag_max_iterations": 2,
+    "fact_verification_enabled": true,
+    "streaming_enabled": false,
+    "streaming_rag_parity": false,
+    "streaming_quality_eval": true,
+    "streaming_timeout_sec": 3600.0,
+    "request_timeout_sec": 3600.0,
+    "ollama_request_timeout_sec": 3600.0,
+    "quality_threshold": 80,
+    "suggested_questions_enabled": true,
+    "llm_max_calls_per_request": 24,
+    "online_evaluators_enabled": true,
+    "max_concurrent_pipelines": 8,
+    "support_sink_backend": "local",
+    "tracing_db_path": "<workspace>/chatlive/runs/qwen3-4b-instruct-q30/traces.db",
+    "vectordb_chroma_dir": "<runtime>/chroma"
+   },
+   "settings_off_default": {
+    "db_encryption_key": {
+     "default": "<empty>",
+     "run": "<set>"
+    },
+    "tracing_db_path": {
+     "default": "<workspace>/data/tracing/traces.db",
+     "run": "<workspace>/chatlive/runs/qwen3-4b-instruct-q30/traces.db"
+    },
+    "vectordb_chroma_dir": {
+     "default": "<workspace>/data/vectordb/chroma",
+     "run": "<runtime>/chroma"
+    }
+   },
+   "tickets": [
+    "94",
+    "94"
+   ],
+   "memory": {
+    "samples": 1255,
+    "swap_used_mb": [
+     923.5,
+     10970.75
+    ],
+    "free_mb_min": 3,
+    "max_rss_mb": {
+     "postgres": 10,
+     "ollama": 3677,
+     "python": 2707
+    }
+   },
+   "api_warnings": {
+    "WARNING api.app: CORS_ORIGINS='*' - OK for development, but set explicit origins before deploying to production (RAG_ENV=production will refuse to start).": {
+     "count": 1,
+     "first": "CORS_ORIGINS='*' - OK for development, but set explicit origins before deploying to production (RAG_ENV=production will refuse to start)."
+    },
+    "WARNING vectordb.embedder_manifest: Tenant default loaded an unstamped index: NOT_EVIDENCE; rebuild it": {
+     "count": 1,
+     "first": "Tenant default loaded an unstamped index: NOT_EVIDENCE; rebuild it"
+    },
+    "WARNING vectordb.manager: Tenant default: retriever built WITHOUT BM# index while hybrid search is enabled — retrieval degraded to vector-only. Usually means the chunk cache is empty and": {
+     "count": 1,
+     "first": "Tenant default: retriever built WITHOUT BM25 index while hybrid search is enabled — retrieval degraded to vector-only. Usually means the chunk cache is empty and could not be restored."
+    }
+   },
+   "notes": [
+    {
+     "at": "2026-10-17T01:59:34Z",
+     "by": "session",
+     "observed": "retrieval was hybrid: the API logged 'Restored 5589 chunks for tenant aircargo from the persisted collection (BM25 + parent-expansion re-enabled)' at 22:03:46.464Z, 0.3 s before the first question's request line; the run's one 'retriever built WITHOUT BM25 index' warning names the tenant default, built at startup, which no question uses"
+    },
+    {
+     "at": "2026-10-17T01:59:34Z",
+     "by": "session",
+     "observed": "the thirty stopped at question 16, aircargo-secret-not-auto, on HTTP 401 at 23:06:52Z: live_runner.py of cf25593 minted one access token at the run's start, valid JWT_ACCESS_TTL = 3,600 s, and question 16 went 63 min after the run began (22:02:39Z); the 15 answers before it came without an error. A defect of the test client, not of the API: qwen3-4b-instruct-q30-r2 reran the thirty with a token per question (25ed888)"
+    }
+   ],
+   "cases": [
+    {
+     "case": "aircargo-probation-data",
+     "question": "Какие данные нужны для ответа по испытательному сроку?",
+     "http": 200,
+     "first_token_sec": 115.794,
+     "last_token_sec": 125.573,
+     "tokens": 47,
+     "answer_tokens": 47,
+     "result_sec": 199.565,
+     "error_sec": null,
+     "total_sec": 199.567,
+     "drain_sec": 0.095,
+     "client_error": null,
+     "route": "auto",
+     "quality": 100,
+     "quality_source": "llm",
+     "sources": 3,
+     "suggested": 3,
+     "memory": {
+      "samples": 64,
+      "swap_used_mb": [
+       923.5,
+       1313.5
+      ],
+      "free_mb_min": 4,
+      "max_rss_mb": {
+       "postgres": 9,
+       "ollama": 3368,
+       "python": 2707
+      }
+     },
+     "events": [
+      {
+       "at": 5.438,
+       "type": "status"
+      },
+      {
+       "at": 54.076,
+       "type": "token_start"
+      },
+      {
+       "at": 199.565,
+       "type": "result",
+       "quality_score": 100,
+       "quality_source": "llm",
+       "route": "auto"
+      }
+     ],
+     "answer": "Для ответа по испытательному сроку нужны: должность, дата приема, условие в трудовом договоре, длительность испытания и результаты оценки [1].",
+     "timeline": [
+      {
+       "stage": "vectordb._base_manager.get_embeddings",
+       "end_at": 1.28,
+       "wall": 0.0
+      },
+      {
+       "stage": "vectordb.manager.get_embeddings",
+       "end_at": 1.28,
+       "wall": 0.04
+      },
+      {
+       "stage": "vectordb._base_manager.get_reranker",
+       "end_at": 5.09,
+       "wall": 0.0
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 5.42,
+       "wall": 4.22
+      },
+      {
+       "stage": "hybrid._vector_search",
+       "end_at": 21.04,
+       "wall": 15.6
+      },
+      {
+       "stage": "hybrid._rerank_scored_with_status",
+       "end_at": 53.01,
+       "wall": 31.95,
+       "reranker_ok": true,
+       "docs": 5
+      },
+      {
+       "stage": "hybrid._expand_parents",
+       "end_at": 53.06,
+       "wall": 0.02
+      },
+      {
+       "stage": "hybrid.get_relevant_documents_with_path",
+       "end_at": 53.06,
+       "wall": 47.63
+      },
+      {
+       "stage": "ollama.generate_stream",
+       "end_at": 125.81,
+       "wall": 72.63,
+       "first_chunk_sec": 62.61,
+       "chunks": 47,
+       "output_chars": 142,
+       "prompt_est_tokens": 2466,
+       "max_tokens": 1024,
+       "prompt_exact_tokens": 2101
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 186.56,
+       "wall": 60.75,
+       "output_chars": 3,
+       "prompt_est_tokens": 2661,
+       "max_tokens": 128,
+       "prompt_exact_tokens": 2290
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 199.14,
+       "wall": 12.54,
+       "output_chars": 136,
+       "prompt_est_tokens": 339,
+       "prompt_exact_tokens": 278
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 199.75,
+       "wall": 0.0
+      }
+     ]
+    },
+    {
+     "case": "aircargo-probation-extend",
+     "question": "Можно ли продлить испытательный срок сотруднику?",
+     "http": 200,
+     "first_token_sec": 124.527,
+     "last_token_sec": 141.238,
+     "tokens": 72,
+     "answer_tokens": 72,
+     "result_sec": 231.521,
+     "error_sec": null,
+     "total_sec": 231.521,
+     "drain_sec": 0.057,
+     "client_error": null,
+     "route": "auto",
+     "quality": 100,
+     "quality_source": "llm",
+     "sources": 3,
+     "suggested": 3,
+     "memory": {
+      "samples": 75,
+      "swap_used_mb": [
+       1168.0,
+       1548.75
+      ],
+      "free_mb_min": 5,
+      "max_rss_mb": {
+       "postgres": 3,
+       "ollama": 3368,
+       "python": 2039
+      }
+     },
+     "events": [
+      {
+       "at": 0.097,
+       "type": "status"
+      },
+      {
+       "at": 59.407,
+       "type": "token_start"
+      },
+      {
+       "at": 231.521,
+       "type": "result",
+       "quality_score": 100,
+       "quality_source": "llm",
+       "route": "auto"
+      }
+     ],
+     "answer": "Нет, испытательный срок не может быть продлен. Продление испытательного срока не допускается. Срок испытания устанавливается при заключении трудового договора и не может превышать пределы ст. 70 ТК РФ. [2]",
+     "timeline": [
+      {
+       "stage": "ollama.generate",
+       "end_at": -0.52,
+       "wall": 12.54,
+       "output_chars": 136,
+       "prompt_est_tokens": 339,
+       "prompt_exact_tokens": 278
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 0.09,
+       "wall": 0.0
+      },
+      {
+       "stage": "hybrid._vector_search",
+       "end_at": 14.93,
+       "wall": 14.83
+      },
+      {
+       "stage": "hybrid._rerank_scored_with_status",
+       "end_at": 59.29,
+       "wall": 44.14,
+       "reranker_ok": true,
+       "docs": 5
+      },
+      {
+       "stage": "hybrid._expand_parents",
+       "end_at": 59.31,
+       "wall": 0.01
+      },
+      {
+       "stage": "hybrid.get_relevant_documents_with_path",
+       "end_at": 59.31,
+       "wall": 59.22
+      },
+      {
+       "stage": "ollama.generate_stream",
+       "end_at": 141.52,
+       "wall": 82.18,
+       "first_chunk_sec": 65.15,
+       "chunks": 72,
+       "output_chars": 205,
+       "prompt_est_tokens": 2587,
+       "max_tokens": 1024,
+       "prompt_exact_tokens": 2377
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 215.72,
+       "wall": 74.19,
+       "output_chars": 3,
+       "prompt_est_tokens": 2806,
+       "max_tokens": 128,
+       "prompt_exact_tokens": 2590
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 231.46,
+       "wall": 15.73,
+       "output_chars": 161,
+       "prompt_est_tokens": 357,
+       "prompt_exact_tokens": 330
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 231.64,
+       "wall": 0.0
+      }
+     ]
+    },
+    {
+     "case": "aircargo-probation-dismissal",
+     "question": "Что важно для увольнения по результатам испытательного срока?",
+     "http": 200,
+     "first_token_sec": 128.649,
+     "last_token_sec": 140.646,
+     "tokens": 53,
+     "answer_tokens": 53,
+     "result_sec": 227.375,
+     "error_sec": null,
+     "total_sec": 227.376,
+     "drain_sec": 0.136,
+     "client_error": null,
+     "route": "auto",
+     "quality": 100,
+     "quality_source": "llm",
+     "sources": 4,
+     "suggested": 3,
+     "memory": {
+      "samples": 74,
+      "swap_used_mb": [
+       1516.75,
+       2495.5
+      ],
+      "free_mb_min": 6,
+      "max_rss_mb": {
+       "postgres": 2,
+       "ollama": 3677,
+       "python": 1655
+      }
+     },
+     "events": [
+      {
+       "at": 0.098,
+       "type": "status"
+      },
+      {
+       "at": 61.615,
+       "type": "token_start"
+      },
+      {
+       "at": 227.375,
+       "type": "result",
+       "quality_score": 100,
+       "quality_source": "llm",
+       "route": "auto"
+      }
+     ],
+     "answer": "Что важно для увольнения по результатам испытательного срока: документированные критерии, факты неудовлетворительной работы и соблюдение срока уведомления [3].",
+     "timeline": [
+      {
+       "stage": "ollama.generate",
+       "end_at": -0.13,
+       "wall": 15.73,
+       "output_chars": 161,
+       "prompt_est_tokens": 357,
+       "prompt_exact_tokens": 330
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 0.06,
+       "wall": 0.0
+      },
+      {
+       "stage": "hybrid._vector_search",
+       "end_at": 19.96,
+       "wall": 19.9
+      },
+      {
+       "stage": "hybrid._rerank_scored_with_status",
+       "end_at": 61.01,
+       "wall": 40.83,
+       "reranker_ok": true,
+       "docs": 5
+      },
+      {
+       "stage": "hybrid._expand_parents",
+       "end_at": 61.04,
+       "wall": 0.02
+      },
+      {
+       "stage": "hybrid.get_relevant_documents_with_path",
+       "end_at": 61.04,
+       "wall": 60.98
+      },
+      {
+       "stage": "ollama.generate_stream",
+       "end_at": 140.99,
+       "wall": 79.87,
+       "first_chunk_sec": 67.52,
+       "chunks": 53,
+       "output_chars": 159,
+       "prompt_est_tokens": 2631,
+       "max_tokens": 1024,
+       "prompt_exact_tokens": 2368
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 211.78,
+       "wall": 70.79,
+       "output_chars": 3,
+       "prompt_est_tokens": 2832,
+       "max_tokens": 128,
+       "prompt_exact_tokens": 2563
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 227.33,
+       "wall": 15.54,
+       "output_chars": 187,
+       "prompt_est_tokens": 343,
+       "prompt_exact_tokens": 311
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 227.54,
+       "wall": 0.0
+      }
+     ]
+    },
+    {
+     "case": "aircargo-dismissal-check",
+     "question": "Что проверить перед ответом об увольнении работника?",
+     "http": 200,
+     "first_token_sec": 111.576,
+     "last_token_sec": 123.144,
+     "tokens": 50,
+     "answer_tokens": 51,
+     "result_sec": 204.411,
+     "error_sec": null,
+     "total_sec": 204.412,
+     "drain_sec": 0.108,
+     "client_error": null,
+     "route": "auto",
+     "quality": 100,
+     "quality_source": "llm",
+     "sources": 3,
+     "suggested": 3,
+     "memory": {
+      "samples": 67,
+      "swap_used_mb": [
+       2463.5,
+       3300.25
+      ],
+      "free_mb_min": 4,
+      "max_rss_mb": {
+       "postgres": 2,
+       "ollama": 3677,
+       "python": 1877
+      }
+     },
+     "events": [
+      {
+       "at": 0.036,
+       "type": "status"
+      },
+      {
+       "at": 48.252,
+       "type": "token_start"
+      },
+      {
+       "at": 204.411,
+       "type": "result",
+       "quality_score": 100,
+       "quality_source": "llm",
+       "route": "auto"
+      }
+     ],
+     "answer": "Перед ответом об увольнении нужно проверить: основание увольнения, дату последнего рабочего дня, заявления, соглашения, приказы и расчетные выплаты [1].",
+     "timeline": [
+      {
+       "stage": "ollama.generate",
+       "end_at": -0.19,
+       "wall": 15.54,
+       "output_chars": 187,
+       "prompt_est_tokens": 343,
+       "prompt_exact_tokens": 311
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 0.02,
+       "wall": 0.0
+      },
+      {
+       "stage": "hybrid._vector_search",
+       "end_at": 17.56,
+       "wall": 17.54
+      },
+      {
+       "stage": "hybrid._rerank_scored_with_status",
+       "end_at": 48.11,
+       "wall": 30.37,
+       "reranker_ok": true,
+       "docs": 5
+      },
+      {
+       "stage": "hybrid._expand_parents",
+       "end_at": 48.17,
+       "wall": 0.04
+      },
+      {
+       "stage": "hybrid.get_relevant_documents_with_path",
+       "end_at": 48.17,
+       "wall": 48.15
+      },
+      {
+       "stage": "ollama.generate_stream",
+       "end_at": 123.41,
+       "wall": 75.21,
+       "first_chunk_sec": 63.38,
+       "chunks": 50,
+       "output_chars": 152,
+       "prompt_est_tokens": 2607,
+       "max_tokens": 1024,
+       "prompt_exact_tokens": 2258
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 190.7,
+       "wall": 67.28,
+       "output_chars": 3,
+       "prompt_est_tokens": 2806,
+       "max_tokens": 128,
+       "prompt_exact_tokens": 2451
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 204.17,
+       "wall": 13.44,
+       "output_chars": 132,
+       "prompt_est_tokens": 341,
+       "prompt_exact_tokens": 281
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 204.65,
+       "wall": 0.0
+      }
+     ]
+    },
+    {
+     "case": "aircargo-dismissal-lawyer",
+     "question": "В каких случаях при увольнении нужен юрист?",
+     "http": 200,
+     "first_token_sec": 108.951,
+     "last_token_sec": 125.311,
+     "tokens": 71,
+     "answer_tokens": 72,
+     "result_sec": 208.954,
+     "error_sec": null,
+     "total_sec": 208.954,
+     "drain_sec": 0.074,
+     "client_error": null,
+     "route": "auto",
+     "quality": 100,
+     "quality_source": "llm",
+     "sources": 4,
+     "suggested": 3,
+     "memory": {
+      "samples": 68,
+      "swap_used_mb": [
+       3185.0,
+       3802.5
+      ],
+      "free_mb_min": 7,
+      "max_rss_mb": {
+       "postgres": 2,
+       "ollama": 3639,
+       "python": 1923
+      }
+     },
+     "events": [
+      {
+       "at": 0.124,
+       "type": "status"
+      },
+      {
+       "at": 46.93,
+       "type": "token_start"
+      },
+      {
+       "at": 208.954,
+       "type": "result",
+       "quality_score": 100,
+       "quality_source": "llm",
+       "route": "auto"
+      }
+     ],
+     "answer": "При увольнении нужен юрист в следующих случаях: по инициативе работодателя, в споре о дисциплине, при сокращении, в вопросах материальной ответственности или при увольнении защищённой категории работника [2].",
+     "timeline": [
+      {
+       "stage": "ollama.generate",
+       "end_at": -0.36,
+       "wall": 13.44,
+       "output_chars": 132,
+       "prompt_est_tokens": 341,
+       "prompt_exact_tokens": 281
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 0.12,
+       "wall": 0.0
+      },
+      {
+       "stage": "hybrid._vector_search",
+       "end_at": 16.77,
+       "wall": 16.66
+      },
+      {
+       "stage": "hybrid._rerank_scored_with_status",
+       "end_at": 46.83,
+       "wall": 29.91,
+       "reranker_ok": true,
+       "docs": 5
+      },
+      {
+       "stage": "hybrid._expand_parents",
+       "end_at": 46.87,
+       "wall": 0.02
+      },
+      {
+       "stage": "hybrid.get_relevant_documents_with_path",
+       "end_at": 46.88,
+       "wall": 46.76
+      },
+      {
+       "stage": "ollama.generate_stream",
+       "end_at": 125.57,
+       "wall": 78.68,
+       "first_chunk_sec": 62.02,
+       "chunks": 71,
+       "output_chars": 208,
+       "prompt_est_tokens": 2523,
+       "max_tokens": 1024,
+       "prompt_exact_tokens": 2238
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 192.89,
+       "wall": 67.32,
+       "output_chars": 3,
+       "prompt_est_tokens": 2741,
+       "max_tokens": 128,
+       "prompt_exact_tokens": 2452
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 208.91,
+       "wall": 16.02,
+       "output_chars": 151,
+       "prompt_est_tokens": 355,
+       "prompt_exact_tokens": 324
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 209.08,
+       "wall": 0.0
+      }
+     ]
+    },
+    {
+     "case": "aircargo-dismissal-order",
+     "question": "Может ли ассистент подготовить приказ об увольнении?",
+     "http": 200,
+     "first_token_sec": 107.806,
+     "last_token_sec": 137.893,
+     "tokens": 127,
+     "answer_tokens": 127,
+     "result_sec": 228.598,
+     "error_sec": null,
+     "total_sec": 228.598,
+     "drain_sec": 0.044,
+     "client_error": null,
+     "route": "auto",
+     "quality": 100,
+     "quality_source": "llm",
+     "sources": 4,
+     "suggested": 3,
+     "memory": {
+      "samples": 74,
+      "swap_used_mb": [
+       3732.25,
+       4468.0
+      ],
+      "free_mb_min": 4,
+      "max_rss_mb": {
+       "postgres": 2,
+       "ollama": 3527,
+       "python": 1772
+      }
+     },
+     "events": [
+      {
+       "at": 0.06,
+       "type": "status"
+      },
+      {
+       "at": 43.124,
+       "type": "token_start"
+      },
+      {
+       "at": 228.598,
+       "type": "result",
+       "quality_score": 100,
+       "quality_source": "llm",
+       "route": "auto"
+      }
+     ],
+     "answer": "Да, ассистент может подготовить черновик «Приказ об увольнении» только по утвержденному шаблону и только после заполнения обязательных полей, при условии, что все ключевые факты (основание, даты, суммы, персональные данные и т.д.) подтверждены и не выдуманы [3]. Генерация финальной версии приказа запрещена без проверки обязательных полей, основания и полномочий подписанта [2].",
+     "timeline": [
+      {
+       "stage": "ollama.generate",
+       "end_at": -0.13,
+       "wall": 16.02,
+       "output_chars": 151,
+       "prompt_est_tokens": 355,
+       "prompt_exact_tokens": 324
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 0.04,
+       "wall": 0.0
+      },
+      {
+       "stage": "hybrid._vector_search",
+       "end_at": 16.5,
+       "wall": 16.46
+      },
+      {
+       "stage": "hybrid._rerank_scored_with_status",
+       "end_at": 42.97,
+       "wall": 26.29,
+       "reranker_ok": true,
+       "docs": 5
+      },
+      {
+       "stage": "hybrid._expand_parents",
+       "end_at": 43.02,
+       "wall": 0.03
+      },
+      {
+       "stage": "hybrid.get_relevant_documents_with_path",
+       "end_at": 43.02,
+       "wall": 42.98
+      },
+      {
+       "stage": "ollama.generate_stream",
+       "end_at": 138.23,
+       "wall": 95.16,
+       "first_chunk_sec": 64.7,
+       "chunks": 127,
+       "output_chars": 379,
+       "prompt_est_tokens": 2606,
+       "max_tokens": 1024,
+       "prompt_exact_tokens": 2308
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 211.43,
+       "wall": 73.19,
+       "output_chars": 3,
+       "prompt_est_tokens": 2885,
+       "max_tokens": 128,
+       "prompt_exact_tokens": 2575
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 228.53,
+       "wall": 16.96,
+       "output_chars": 171,
+       "prompt_est_tokens": 422,
+       "prompt_exact_tokens": 399
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 228.67,
+       "wall": 0.0
+      }
+     ]
+    },
+    {
+     "case": "aircargo-leave-sources",
+     "question": "Какие источники проверять перед ответом по отпуску?",
+     "http": 200,
+     "first_token_sec": 115.27,
+     "last_token_sec": 125.794,
+     "tokens": 47,
+     "answer_tokens": 47,
+     "result_sec": 206.743,
+     "error_sec": null,
+     "total_sec": 206.743,
+     "drain_sec": 0.079,
+     "client_error": null,
+     "route": "auto",
+     "quality": 100,
+     "quality_source": "llm",
+     "sources": 3,
+     "suggested": 3,
+     "memory": {
+      "samples": 68,
+      "swap_used_mb": [
+       4372.0,
+       5672.0
+      ],
+      "free_mb_min": 3,
+      "max_rss_mb": {
+       "postgres": 2,
+       "ollama": 3629,
+       "python": 1662
+      }
+     },
+     "events": [
+      {
+       "at": 0.047,
+       "type": "status"
+      },
+      {
+       "at": 53.445,
+       "type": "token_start"
+      },
+      {
+       "at": 206.743,
+       "type": "result",
+       "quality_score": 100,
+       "quality_source": "llm",
+       "route": "auto"
+      }
+     ],
+     "answer": "Проверяются политика отпусков, график отпусков, кадровые приказы и нормы ТК РФ о ежегодном, учебном и дополнительном отпуске. [1]",
+     "timeline": [
+      {
+       "stage": "ollama.generate",
+       "end_at": -0.12,
+       "wall": 16.96,
+       "output_chars": 171,
+       "prompt_est_tokens": 422,
+       "prompt_exact_tokens": 399
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 0.02,
+       "wall": 0.0
+      },
+      {
+       "stage": "hybrid._vector_search",
+       "end_at": 16.38,
+       "wall": 16.35
+      },
+      {
+       "stage": "hybrid._rerank_scored_with_status",
+       "end_at": 53.34,
+       "wall": 36.8,
+       "reranker_ok": true,
+       "docs": 5
+      },
+      {
+       "stage": "hybrid._expand_parents",
+       "end_at": 53.37,
+       "wall": 0.03
+      },
+      {
+       "stage": "hybrid.get_relevant_documents_with_path",
+       "end_at": 53.37,
+       "wall": 53.35
+      },
+      {
+       "stage": "ollama.generate_stream",
+       "end_at": 126.05,
+       "wall": 72.66,
+       "first_chunk_sec": 61.84,
+       "chunks": 47,
+       "output_chars": 129,
+       "prompt_est_tokens": 2573,
+       "max_tokens": 1024,
+       "prompt_exact_tokens": 2270
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 193.03,
+       "wall": 66.96,
+       "output_chars": 3,
+       "prompt_est_tokens": 2763,
+       "max_tokens": 128,
+       "prompt_exact_tokens": 2458
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 206.65,
+       "wall": 13.62,
+       "output_chars": 131,
+       "prompt_est_tokens": 333,
+       "prompt_exact_tokens": 276
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 206.86,
+       "wall": 0.0
+      }
+     ]
+    },
+    {
+     "case": "aircargo-leave-compensation",
+     "question": "Может ли ассистент рассчитать компенсацию за отпуск?",
+     "http": 200,
+     "first_token_sec": 117.377,
+     "last_token_sec": 131.967,
+     "tokens": 63,
+     "answer_tokens": 63,
+     "result_sec": 216.849,
+     "error_sec": null,
+     "total_sec": 216.849,
+     "drain_sec": 0.073,
+     "client_error": null,
+     "route": "auto",
+     "quality": 95,
+     "quality_source": "llm",
+     "sources": 4,
+     "suggested": 3,
+     "memory": {
+      "samples": 70,
+      "swap_used_mb": [
+       5502.0,
+       6551.25
+      ],
+      "free_mb_min": 3,
+      "max_rss_mb": {
+       "postgres": 2,
+       "ollama": 3672,
+       "python": 1946
+      }
+     },
+     "events": [
+      {
+       "at": 0.038,
+       "type": "status"
+      },
+      {
+       "at": 51.026,
+       "type": "token_start"
+      },
+      {
+       "at": 216.849,
+       "type": "result",
+       "quality_score": 95,
+       "quality_source": "llm",
+       "route": "auto"
+      }
+     ],
+     "answer": "Может ли ассистент рассчитать компенсацию за отпуск?  \nДа, ассистент может дать структуру расчета и список входных данных, но итоговую сумму должна подтвердить бухгалтерия или HR. [3]",
+     "timeline": [
+      {
+       "stage": "ollama.generate",
+       "end_at": -0.18,
+       "wall": 13.62,
+       "output_chars": 131,
+       "prompt_est_tokens": 333,
+       "prompt_exact_tokens": 276
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 0.02,
+       "wall": 0.0
+      },
+      {
+       "stage": "hybrid._vector_search",
+       "end_at": 18.31,
+       "wall": 18.28
+      },
+      {
+       "stage": "hybrid._rerank_scored_with_status",
+       "end_at": 50.87,
+       "wall": 32.43,
+       "reranker_ok": true,
+       "docs": 5
+      },
+      {
+       "stage": "hybrid._expand_parents",
+       "end_at": 50.95,
+       "wall": 0.07
+      },
+      {
+       "stage": "hybrid.get_relevant_documents_with_path",
+       "end_at": 50.95,
+       "wall": 50.92
+      },
+      {
+       "stage": "ollama.generate_stream",
+       "end_at": 132.28,
+       "wall": 81.3,
+       "first_chunk_sec": 66.36,
+       "chunks": 63,
+       "output_chars": 183,
+       "prompt_est_tokens": 2635,
+       "max_tokens": 1024,
+       "prompt_exact_tokens": 2339
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 202.41,
+       "wall": 70.12,
+       "output_chars": 2,
+       "prompt_est_tokens": 2844,
+       "max_tokens": 128,
+       "prompt_exact_tokens": 2541
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 216.68,
+       "wall": 14.27,
+       "output_chars": 99,
+       "prompt_est_tokens": 349,
+       "prompt_exact_tokens": 329
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 216.95,
+       "wall": 0.0
+      }
+     ]
+    },
+    {
+     "case": "aircargo-leave-risk",
+     "question": "Что считать рисковым кейсом по отпуску?",
+     "http": 200,
+     "first_token_sec": 109.891,
+     "last_token_sec": 121.069,
+     "tokens": 49,
+     "answer_tokens": 49,
+     "result_sec": 200.844,
+     "error_sec": null,
+     "total_sec": 200.844,
+     "drain_sec": 0.054,
+     "client_error": null,
+     "route": "auto",
+     "quality": 100,
+     "quality_source": "llm",
+     "sources": 3,
+     "suggested": 3,
+     "memory": {
+      "samples": 66,
+      "swap_used_mb": [
+       6419.0,
+       7064.75
+      ],
+      "free_mb_min": 3,
+      "max_rss_mb": {
+       "postgres": 2,
+       "ollama": 3672,
+       "python": 1815
+      }
+     },
+     "events": [
+      {
+       "at": 0.043,
+       "type": "status"
+      },
+      {
+       "at": 48.35,
+       "type": "token_start"
+      },
+      {
+       "at": 200.844,
+       "type": "result",
+       "quality_score": 100,
+       "quality_source": "llm",
+       "route": "auto"
+      }
+     ],
+     "answer": "Рисковым кейсом по отпуску считается перенос отпуска без согласия, увольнение перед отпуском, декретные периоды и спор о компенсации [4].",
+     "timeline": [
+      {
+       "stage": "ollama.generate",
+       "end_at": -0.25,
+       "wall": 14.27,
+       "output_chars": 99,
+       "prompt_est_tokens": 349,
+       "prompt_exact_tokens": 329
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 0.02,
+       "wall": 0.0
+      },
+      {
+       "stage": "hybrid._vector_search",
+       "end_at": 10.45,
+       "wall": 10.43
+      },
+      {
+       "stage": "hybrid._rerank_scored_with_status",
+       "end_at": 48.25,
+       "wall": 37.68,
+       "reranker_ok": true,
+       "docs": 5
+      },
+      {
+       "stage": "hybrid._expand_parents",
+       "end_at": 48.29,
+       "wall": 0.02
+      },
+      {
+       "stage": "hybrid.get_relevant_documents_with_path",
+       "end_at": 48.29,
+       "wall": 48.27
+      },
+      {
+       "stage": "ollama.generate_stream",
+       "end_at": 121.34,
+       "wall": 73.03,
+       "first_chunk_sec": 61.54,
+       "chunks": 49,
+       "output_chars": 137,
+       "prompt_est_tokens": 2606,
+       "max_tokens": 1024,
+       "prompt_exact_tokens": 2253
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 186.74,
+       "wall": 65.4,
+       "output_chars": 3,
+       "prompt_est_tokens": 2799,
+       "max_tokens": 128,
+       "prompt_exact_tokens": 2444
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 200.81,
+       "wall": 14.05,
+       "output_chars": 128,
+       "prompt_est_tokens": 331,
+       "prompt_exact_tokens": 319
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 200.92,
+       "wall": 0.0
+      }
+     ]
+    },
+    {
+     "case": "aircargo-matliab-check",
+     "question": "Что проверить по материальной ответственности работника?",
+     "http": 200,
+     "first_token_sec": 102.509,
+     "last_token_sec": 110.846,
+     "tokens": 40,
+     "answer_tokens": 40,
+     "result_sec": 184.702,
+     "error_sec": null,
+     "total_sec": 184.703,
+     "drain_sec": 0.079,
+     "client_error": null,
+     "route": "auto",
+     "quality": 100,
+     "quality_source": "llm",
+     "sources": 4,
+     "suggested": 3,
+     "memory": {
+      "samples": 60,
+      "swap_used_mb": [
+       6880.5,
+       8713.75
+      ],
+      "free_mb_min": 5,
+      "max_rss_mb": {
+       "postgres": 2,
+       "ollama": 3607,
+       "python": 1847
+      }
+     },
+     "events": [
+      {
+       "at": 0.034,
+       "type": "status"
+      },
+      {
+       "at": 38.87,
+       "type": "token_start"
+      },
+      {
+       "at": 184.702,
+       "type": "result",
+       "quality_score": 100,
+       "quality_source": "llm",
+       "route": "auto"
+      }
+     ],
+     "answer": "Должность, договор о полной ответственности, факт ущерба, размер ущерба, объяснения работника и результаты проверки. [N1]",
+     "timeline": [
+      {
+       "stage": "ollama.generate",
+       "end_at": -0.1,
+       "wall": 14.05,
+       "output_chars": 128,
+       "prompt_est_tokens": 331,
+       "prompt_exact_tokens": 319
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 0.02,
+       "wall": 0.0
+      },
+      {
+       "stage": "hybrid._vector_search",
+       "end_at": 13.16,
+       "wall": 13.14
+      },
+      {
+       "stage": "hybrid._rerank_scored_with_status",
+       "end_at": 38.63,
+       "wall": 25.3,
+       "reranker_ok": true,
+       "docs": 5
+      },
+      {
+       "stage": "hybrid._expand_parents",
+       "end_at": 38.71,
+       "wall": 0.06
+      },
+      {
+       "stage": "hybrid.get_relevant_documents_with_path",
+       "end_at": 38.72,
+       "wall": 38.7
+      },
+      {
+       "stage": "ollama.generate_stream",
+       "end_at": 111.26,
+       "wall": 72.49,
+       "first_chunk_sec": 63.74,
+       "chunks": 40,
+       "output_chars": 121,
+       "prompt_est_tokens": 2537,
+       "max_tokens": 1024,
+       "prompt_exact_tokens": 2142
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 173.33,
+       "wall": 62.02,
+       "output_chars": 3,
+       "prompt_est_tokens": 2728,
+       "max_tokens": 128,
+       "prompt_exact_tokens": 2326
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 184.6,
+       "wall": 11.27,
+       "output_chars": 124,
+       "prompt_est_tokens": 330,
+       "prompt_exact_tokens": 265
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 184.84,
+       "wall": 0.0
+      }
+     ]
+    },
+    {
+     "case": "aircargo-matliab-disputed",
+     "question": "Когда полная материальная ответственность работника спорна?",
+     "http": 200,
+     "first_token_sec": 198.106,
+     "last_token_sec": 207.619,
+     "tokens": 42,
+     "answer_tokens": 42,
+     "result_sec": 288.642,
+     "error_sec": null,
+     "total_sec": 288.643,
+     "drain_sec": 0.092,
+     "client_error": null,
+     "route": "auto",
+     "quality": 100,
+     "quality_source": "llm",
+     "sources": 4,
+     "suggested": 3,
+     "memory": {
+      "samples": 93,
+      "swap_used_mb": [
+       7546.25,
+       8770.5
+      ],
+      "free_mb_min": 5,
+      "max_rss_mb": {
+       "postgres": 2,
+       "ollama": 3662,
+       "python": 1825
+      }
+     },
+     "events": [
+      {
+       "at": 0.07,
+       "type": "status"
+      },
+      {
+       "at": 131.534,
+       "type": "token_start"
+      },
+      {
+       "at": 288.642,
+       "type": "result",
+       "quality_score": 100,
+       "quality_source": "llm",
+       "route": "auto"
+      }
+     ],
+     "answer": "Когда полная материальная ответственность работника спорна — если нет законного основания, договора, перечня должностей или доказанной причинной связи [2].",
+     "timeline": [
+      {
+       "stage": "ollama.generate",
+       "end_at": -0.19,
+       "wall": 11.27,
+       "output_chars": 124,
+       "prompt_est_tokens": 330,
+       "prompt_exact_tokens": 265
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 0.05,
+       "wall": 0.0
+      },
+      {
+       "stage": "hybrid._vector_search",
+       "end_at": 22.84,
+       "wall": 22.79
+      },
+      {
+       "stage": "hybrid._rerank_scored_with_status",
+       "end_at": 130.53,
+       "wall": 107.34,
+       "reranker_ok": true,
+       "docs": 5
+      },
+      {
+       "stage": "hybrid._expand_parents",
+       "end_at": 130.78,
+       "wall": 0.23
+      },
+      {
+       "stage": "hybrid.get_relevant_documents_with_path",
+       "end_at": 130.93,
+       "wall": 130.88
+      },
+      {
+       "stage": "ollama.generate_stream",
+       "end_at": 208.0,
+       "wall": 76.87,
+       "first_chunk_sec": 66.98,
+       "chunks": 42,
+       "output_chars": 155,
+       "prompt_est_tokens": 2635,
+       "max_tokens": 1024,
+       "prompt_exact_tokens": 2295
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 276.3,
+       "wall": 68.28,
+       "output_chars": 3,
+       "prompt_est_tokens": 2836,
+       "max_tokens": 128,
+       "prompt_exact_tokens": 2479
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 288.56,
+       "wall": 12.24,
+       "output_chars": 121,
+       "prompt_est_tokens": 342,
+       "prompt_exact_tokens": 289
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 288.81,
+       "wall": 0.0
+      }
+     ]
+    },
+    {
+     "case": "aircargo-templates-choose",
+     "question": "Как выбрать подходящий шаблон договора?",
+     "http": 200,
+     "first_token_sec": 207.105,
+     "last_token_sec": 215.31,
+     "tokens": 37,
+     "answer_tokens": 37,
+     "result_sec": 290.961,
+     "error_sec": null,
+     "total_sec": 290.961,
+     "drain_sec": 0.077,
+     "client_error": null,
+     "route": "auto",
+     "quality": 100,
+     "quality_source": "llm",
+     "sources": 5,
+     "suggested": 3,
+     "memory": {
+      "samples": 95,
+      "swap_used_mb": [
+       8555.25,
+       10052.5
+      ],
+      "free_mb_min": 6,
+      "max_rss_mb": {
+       "postgres": 3,
+       "ollama": 3662,
+       "python": 1645
+      }
+     },
+     "events": [
+      {
+       "at": 0.088,
+       "type": "status"
+      },
+      {
+       "at": 142.169,
+       "type": "token_start"
+      },
+      {
+       "at": 290.961,
+       "type": "result",
+       "quality_score": 100,
+       "quality_source": "llm",
+       "route": "auto"
+      }
+     ],
+     "answer": "По предмету сделки: услуги, поставка, перевозка, экспедиция, хранение, аренда или смешанная модель. [1]",
+     "timeline": [
+      {
+       "stage": "ollama.generate",
+       "end_at": -0.18,
+       "wall": 12.24,
+       "output_chars": 121,
+       "prompt_est_tokens": 342,
+       "prompt_exact_tokens": 289
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 0.07,
+       "wall": 0.0
+      },
+      {
+       "stage": "hybrid._vector_search",
+       "end_at": 19.8,
+       "wall": 19.71
+      },
+      {
+       "stage": "hybrid._rerank_scored_with_status",
+       "end_at": 141.82,
+       "wall": 121.8,
+       "reranker_ok": true,
+       "docs": 5
+      },
+      {
+       "stage": "hybrid._expand_parents",
+       "end_at": 141.89,
+       "wall": 0.01
+      },
+      {
+       "stage": "hybrid.get_relevant_documents_with_path",
+       "end_at": 141.89,
+       "wall": 141.81
+      },
+      {
+       "stage": "ollama.generate_stream",
+       "end_at": 215.59,
+       "wall": 73.68,
+       "first_chunk_sec": 65.2,
+       "chunks": 37,
+       "output_chars": 103,
+       "prompt_est_tokens": 2599,
+       "max_tokens": 1024,
+       "prompt_exact_tokens": 2234
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 279.97,
+       "wall": 64.37,
+       "output_chars": 3,
+       "prompt_est_tokens": 2781,
+       "max_tokens": 128,
+       "prompt_exact_tokens": 2412
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 290.93,
+       "wall": 10.96,
+       "output_chars": 157,
+       "prompt_est_tokens": 324,
+       "prompt_exact_tokens": 255
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 291.06,
+       "wall": 0.0
+      }
+     ]
+    },
+    {
+     "case": "aircargo-templates-checklist",
+     "question": "Что обязательно проверить в договоре перед согласованием?",
+     "http": 200,
+     "first_token_sec": 290.452,
+     "last_token_sec": 306.116,
+     "tokens": 68,
+     "answer_tokens": 68,
+     "result_sec": 386.514,
+     "error_sec": null,
+     "total_sec": 386.515,
+     "drain_sec": 0.1,
+     "client_error": null,
+     "route": "auto",
+     "quality": 100,
+     "quality_source": "llm",
+     "sources": 3,
+     "suggested": 3,
+     "memory": {
+      "samples": 126,
+      "swap_used_mb": [
+       9301.25,
+       10970.75
+      ],
+      "free_mb_min": 4,
+      "max_rss_mb": {
+       "postgres": 2,
+       "ollama": 3657,
+       "python": 1911
+      }
+     },
+     "events": [
+      {
+       "at": 0.034,
+       "type": "status"
+      },
+      {
+       "at": 222.852,
+       "type": "token_start"
+      },
+      {
+       "at": 386.514,
+       "type": "result",
+       "quality_score": 100,
+       "quality_source": "llm",
+       "route": "auto"
+      }
+     ],
+     "answer": "Перед согласованием обязательно проверить: цель обработки, правовое основание, срок хранения, матрицу доступа, журналирование действий, маршрут инцидента, порядок ответа субъектам данных и регулятору в установленный срок [N].",
+     "timeline": [
+      {
+       "stage": "ollama.generate",
+       "end_at": -0.11,
+       "wall": 10.96,
+       "output_chars": 157,
+       "prompt_est_tokens": 324,
+       "prompt_exact_tokens": 255
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 0.02,
+       "wall": 0.0
+      },
+      {
+       "stage": "hybrid._vector_search",
+       "end_at": 23.78,
+       "wall": 23.76
+      },
+      {
+       "stage": "hybrid._rerank_scored_with_status",
+       "end_at": 222.57,
+       "wall": 198.49,
+       "reranker_ok": true,
+       "docs": 5
+      },
+      {
+       "stage": "hybrid._expand_parents",
+       "end_at": 222.67,
+       "wall": 0.08
+      },
+      {
+       "stage": "hybrid.get_relevant_documents_with_path",
+       "end_at": 222.67,
+       "wall": 222.65
+      },
+      {
+       "stage": "ollama.generate_stream",
+       "end_at": 306.6,
+       "wall": 83.9,
+       "first_chunk_sec": 67.75,
+       "chunks": 68,
+       "output_chars": 225,
+       "prompt_est_tokens": 2627,
+       "max_tokens": 1024,
+       "prompt_exact_tokens": 2255
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 373.22,
+       "wall": 66.59,
+       "output_chars": 3,
+       "prompt_est_tokens": 2854,
+       "max_tokens": 128,
+       "prompt_exact_tokens": 2467
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 386.22,
+       "wall": 12.97,
+       "output_chars": 155,
+       "prompt_est_tokens": 365,
+       "prompt_exact_tokens": 305
+      }
+     ]
+    },
+    {
+     "case": "aircargo-templates-insufficient",
+     "question": "Когда стандартного шаблона договора недостаточно?",
+     "http": 200,
+     "first_token_sec": 270.185,
+     "last_token_sec": 281.313,
+     "tokens": 50,
+     "answer_tokens": 50,
+     "result_sec": 358.07,
+     "error_sec": null,
+     "total_sec": 358.07,
+     "drain_sec": 0.134,
+     "client_error": null,
+     "route": "auto",
+     "quality": 100,
+     "quality_source": "llm",
+     "sources": 3,
+     "suggested": 3,
+     "memory": {
+      "samples": 116,
+      "swap_used_mb": [
+       8369.75,
+       10193.25
+      ],
+      "free_mb_min": 4,
+      "max_rss_mb": {
+       "postgres": 3,
+       "ollama": 3626,
+       "python": 1571
+      }
+     },
+     "events": [
+      {
+       "at": 7.348,
+       "type": "status"
+      },
+      {
+       "at": 193.032,
+       "type": "token_start"
+      },
+      {
+       "at": 358.07,
+       "type": "result",
+       "quality_score": 100,
+       "quality_source": "llm",
+       "route": "auto"
+      }
+     ],
+     "answer": "Стандартного шаблона договора недостаточно при нестандартной сделке, иностранном элементе, санкционных рисках, персональных данных или крупной сумме [3].",
+     "timeline": [
+      {
+       "stage": "ollama.generate",
+       "end_at": -0.4,
+       "wall": 12.97,
+       "output_chars": 155,
+       "prompt_est_tokens": 365,
+       "prompt_exact_tokens": 305
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 7.33,
+       "wall": 0.0
+      },
+      {
+       "stage": "hybrid._vector_search",
+       "end_at": 39.81,
+       "wall": 32.46
+      },
+      {
+       "stage": "hybrid._rerank_scored_with_status",
+       "end_at": 192.62,
+       "wall": 152.72,
+       "reranker_ok": true,
+       "docs": 5
+      },
+      {
+       "stage": "hybrid._expand_parents",
+       "end_at": 192.68,
+       "wall": 0.03
+      },
+      {
+       "stage": "hybrid.get_relevant_documents_with_path",
+       "end_at": 192.68,
+       "wall": 185.33
+      },
+      {
+       "stage": "ollama.generate_stream",
+       "end_at": 281.6,
+       "wall": 88.9,
+       "first_chunk_sec": 77.48,
+       "chunks": 50,
+       "output_chars": 153,
+       "prompt_est_tokens": 2634,
+       "max_tokens": 1024,
+       "prompt_exact_tokens": 2221
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 346.54,
+       "wall": 64.92,
+       "output_chars": 3,
+       "prompt_est_tokens": 2833,
+       "max_tokens": 128,
+       "prompt_exact_tokens": 2413
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 357.94,
+       "wall": 11.39,
+       "output_chars": 105,
+       "prompt_est_tokens": 340,
+       "prompt_exact_tokens": 309
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 358.35,
+       "wall": 0.01
+      }
+     ]
+    },
+    {
+     "case": "aircargo-secret-check",
+     "question": "Что проверять по режиму коммерческой тайны?",
+     "http": 200,
+     "first_token_sec": 262.119,
+     "last_token_sec": 273.87,
+     "tokens": 50,
+     "answer_tokens": 50,
+     "result_sec": 356.017,
+     "error_sec": null,
+     "total_sec": 356.032,
+     "drain_sec": 0.216,
+     "client_error": null,
+     "route": "auto",
+     "quality": 100,
+     "quality_source": "llm",
+     "sources": 4,
+     "suggested": 3,
+     "memory": {
+      "samples": 116,
+      "swap_used_mb": [
+       9353.25,
+       10946.75
+      ],
+      "free_mb_min": 4,
+      "max_rss_mb": {
+       "postgres": 2,
+       "ollama": 3661,
+       "python": 1816
+      }
+     },
+     "events": [
+      {
+       "at": 0.172,
+       "type": "status"
+      },
+      {
+       "at": 194.816,
+       "type": "token_start"
+      },
+      {
+       "at": 356.017,
+       "type": "result",
+       "quality_score": 100,
+       "quality_source": "llm",
+       "route": "auto"
+      }
+     ],
+     "answer": "Что проверять по режиму коммерческой тайны: перечень сведений, маркировку, круг доступа, NDA, журнал передачи и внутренние меры защиты [N1].",
+     "timeline": [
+      {
+       "stage": "ollama.generate",
+       "end_at": -0.27,
+       "wall": 11.39,
+       "output_chars": 105,
+       "prompt_est_tokens": 340,
+       "prompt_exact_tokens": 309
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 0.14,
+       "wall": 0.01
+      },
+      {
+       "stage": "hybrid._vector_search",
+       "end_at": 39.02,
+       "wall": 38.85
+      },
+      {
+       "stage": "hybrid._rerank_scored_with_status",
+       "end_at": 194.68,
+       "wall": 155.3,
+       "reranker_ok": true,
+       "docs": 5
+      },
+      {
+       "stage": "hybrid._expand_parents",
+       "end_at": 194.73,
+       "wall": 0.03
+      },
+      {
+       "stage": "hybrid.get_relevant_documents_with_path",
+       "end_at": 194.73,
+       "wall": 194.57
+      },
+      {
+       "stage": "ollama.generate_stream",
+       "end_at": 274.21,
+       "wall": 79.46,
+       "first_chunk_sec": 67.36,
+       "chunks": 50,
+       "output_chars": 140,
+       "prompt_est_tokens": 2587,
+       "max_tokens": 1024,
+       "prompt_exact_tokens": 2268
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 342.78,
+       "wall": 68.5,
+       "output_chars": 3,
+       "prompt_est_tokens": 2784,
+       "max_tokens": 128,
+       "prompt_exact_tokens": 2462
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 355.79,
+       "wall": 12.97,
+       "output_chars": 155,
+       "prompt_est_tokens": 335,
+       "prompt_exact_tokens": 281
+      }
+     ]
+    },
+    {
+     "case": "aircargo-secret-not-auto",
+     "question": "Когда сведения не стоит автоматически считать коммерческой тайной?",
+     "http": null,
+     "first_token_sec": null,
+     "last_token_sec": null,
+     "tokens": 0,
+     "answer_tokens": 0,
+     "result_sec": null,
+     "error_sec": null,
+     "total_sec": 0.085,
+     "drain_sec": 0.007,
+     "client_error": "HTTPError: HTTP Error 401: Unauthorized",
+     "route": null,
+     "quality": null,
+     "quality_source": null,
+     "sources": 0,
+     "suggested": 0,
+     "memory": {
+      "samples": 0,
+      "swap_used_mb": null,
+      "free_mb_min": null,
+      "max_rss_mb": {}
+     },
+     "events": [],
+     "answer": "",
+     "timeline": [
+      {
+       "stage": "ollama.generate",
+       "end_at": -0.49,
+       "wall": 12.97,
+       "output_chars": 155,
+       "prompt_est_tokens": 335,
+       "prompt_exact_tokens": 281
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "label": "qwen3-4b-instruct-q30-r2",
+   "mode": "prod",
+   "overrides": {
+    "REQUEST_TIMEOUT_SEC": "3600",
+    "OLLAMA_REQUEST_TIMEOUT_SEC": "3600",
+    "STREAMING_TIMEOUT_SEC": "3600",
+    "RAG_DEVICE": "cpu"
+   },
+   "started": "2026-10-16T23:08:39+00:00",
+   "finished": "2026-10-17T01:48:00+00:00",
+   "status": "complete",
+   "runner_exit": 0,
+   "model": "qwen3:4b-instruct-2507-q4_K_M",
+   "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+   "ollama_models_before": [],
+   "ollama_models_after": [
+    "qwen3:4b-instruct-2507-q4_K_M"
+   ],
+   "ollama_load_sec": 38.937,
+   "settings": {
+    "llm_provider_profile": "local-first",
+    "ollama_model_name": "qwen3:4b-instruct-2507-q4_K_M",
+    "ollama_fast_model_name": "llama3.2:3b",
+    "model_routing_enabled": false,
+    "ollama_context_window": 4096,
+    "embedding_model": "BAAI/bge-m3",
+    "embedding_backend": "local",
+    "reranker_model": "BAAI/bge-reranker-v2-m3",
+    "rag_device": "cpu",
+    "vector_backend": "chroma",
+    "hybrid_search": true,
+    "retrieval_strategy": "hybrid",
+    "retrieval_top_k": 20,
+    "rerank_top_k": 5,
+    "hyde": false,
+    "graph_retrieval": "off",
+    "parent_expansion": true,
+    "self_rag_max_iterations": 2,
+    "fact_verification_enabled": true,
+    "streaming_enabled": false,
+    "streaming_rag_parity": false,
+    "streaming_quality_eval": true,
+    "streaming_timeout_sec": 3600.0,
+    "request_timeout_sec": 3600.0,
+    "ollama_request_timeout_sec": 3600.0,
+    "quality_threshold": 80,
+    "suggested_questions_enabled": true,
+    "llm_max_calls_per_request": 24,
+    "online_evaluators_enabled": true,
+    "max_concurrent_pipelines": 8,
+    "support_sink_backend": "local",
+    "tracing_db_path": "<workspace>/chatlive/runs/qwen3-4b-instruct-q30-r2/traces.db",
+    "vectordb_chroma_dir": "<runtime>/chroma"
+   },
+   "settings_off_default": {
+    "db_encryption_key": {
+     "default": "<empty>",
+     "run": "<set>"
+    },
+    "tracing_db_path": {
+     "default": "<workspace>/data/tracing/traces.db",
+     "run": "<workspace>/chatlive/runs/qwen3-4b-instruct-q30-r2/traces.db"
+    },
+    "vectordb_chroma_dir": {
+     "default": "<workspace>/data/vectordb/chroma",
+     "run": "<runtime>/chroma"
+    }
+   },
+   "tickets": [
+    "94",
+    "94"
+   ],
+   "memory": {
+    "samples": 3091,
+    "swap_used_mb": [
+     914.75,
+     12273.75
+    ],
+    "free_mb_min": 3,
+    "max_rss_mb": {
+     "postgres": 10,
+     "python": 2641,
+     "ollama": 3782
+    }
+   },
+   "api_warnings": {
+    "WARNING api.app: CORS_ORIGINS='*' - OK for development, but set explicit origins before deploying to production (RAG_ENV=production will refuse to start).": {
+     "count": 1,
+     "first": "CORS_ORIGINS='*' - OK for development, but set explicit origins before deploying to production (RAG_ENV=production will refuse to start)."
+    },
+    "WARNING vectordb.embedder_manifest: Tenant default loaded an unstamped index: NOT_EVIDENCE; rebuild it": {
+     "count": 1,
+     "first": "Tenant default loaded an unstamped index: NOT_EVIDENCE; rebuild it"
+    },
+    "WARNING vectordb.manager: Tenant default: retriever built WITHOUT BM# index while hybrid search is enabled — retrieval degraded to vector-only. Usually means the chunk cache is empty and": {
+     "count": 1,
+     "first": "Tenant default: retriever built WITHOUT BM25 index while hybrid search is enabled — retrieval degraded to vector-only. Usually means the chunk cache is empty and could not be restored."
+    },
+    "WARNING db.audit: Audit DB write failed: action=ask error=TimeoutError": {
+     "count": 1,
+     "first": "Audit DB write failed: action=ask error=TimeoutError"
+    }
+   },
+   "notes": [
+    {
+     "at": "2026-10-17T01:59:34Z",
+     "by": "session",
+     "observed": "retrieval was hybrid: the API logged 'Restored 5589 chunks for tenant aircargo from the persisted collection (BM25 + parent-expansion re-enabled)' at 23:09:49.952Z, 0.3 s before the first question's request line; the run's one 'retriever built WITHOUT BM25 index' warning names the tenant default, built at startup, which no question uses"
+    },
+    {
+     "at": "2026-10-17T01:59:34Z",
+     "by": "session",
+     "observed": "the model runner's memory: top on the Mac, sampled every 5 min from 00:39Z to 01:35Z (questions 18-28), gave llama-server (pid 4637) a footprint of 11 GB, 7.6-11 GB of it compressed or swapped out, while Ollama's /api/ps sized the loaded model at 3,184,001,022 bytes with a 4,096-token context; the API (pid 4585) held about 920 MB. Swap use grew by 600-700 MB a question in every run of this stand (qwen3-4b-instruct-q5 1,126 -> 4,087 MB over 5; qwen3-4b-instruct-q30 956 -> 10,971 MB over 15; here 947 MB at 23:08Z, 10,384 MB at 00:15Z), then held at 8.6-12.3 GB to the end with the runner's footprint at 11 GB, and was back near 1 GB at each next run's start, after the model was unloaded"
+    },
+    {
+     "at": "2026-10-17T01:59:34Z",
+     "by": "session",
+     "observed": "the runner grows with no API around it: after this run (01:49-01:59Z) the session loaded the 4B into Ollama alone and sent eight of this run's stream prompts (2,109-2,385 prompt tokens, 48 output tokens, num_ctx 4096, think false) through /api/generate; top gave llama-server 2,977 MB after the load, then 3,158, 3,461, 3,803, 4,144, 4,469, 4,792, 5,146 and 5,473 MB, about 312 MB a request, while /api/ps kept sizing the model at 3,184,001,022 bytes; a chat answer makes three requests (the answer, the self-evaluation, the suggested questions). Why the runner keeps the memory is not established"
+    }
+   ],
+   "cases": [
+    {
+     "case": "aircargo-probation-data",
+     "question": "Какие данные нужны для ответа по испытательному сроку?",
+     "http": 200,
+     "first_token_sec": 199.46,
+     "last_token_sec": 209.165,
+     "tokens": 47,
+     "answer_tokens": 47,
+     "result_sec": 283.667,
+     "error_sec": null,
+     "total_sec": 283.671,
+     "drain_sec": 0.058,
+     "client_error": null,
+     "route": "auto",
+     "quality": 100,
+     "quality_source": "llm",
+     "sources": 3,
+     "suggested": 3,
+     "memory": {
+      "samples": 91,
+      "swap_used_mb": [
+       914.75,
+       1339.0
+      ],
+      "free_mb_min": 6,
+      "max_rss_mb": {
+       "postgres": 9,
+       "python": 2641,
+       "ollama": 3338
+      }
+     },
+     "events": [
+      {
+       "at": 5.691,
+       "type": "status"
+      },
+      {
+       "at": 138.129,
+       "type": "token_start"
+      },
+      {
+       "at": 283.667,
+       "type": "result",
+       "quality_score": 100,
+       "quality_source": "llm",
+       "route": "auto"
+      }
+     ],
+     "answer": "Для ответа по испытательному сроку нужны: должность, дата приема, условие в трудовом договоре, длительность испытания и результаты оценки [1].",
+     "timeline": [
+      {
+       "stage": "vectordb._base_manager.get_embeddings",
+       "end_at": 0.92,
+       "wall": 0.0
+      },
+      {
+       "stage": "vectordb.manager.get_embeddings",
+       "end_at": 0.92,
+       "wall": 0.0
+      },
+      {
+       "stage": "vectordb._base_manager.get_reranker",
+       "end_at": 5.32,
+       "wall": 0.0
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 5.64,
+       "wall": 4.73
+      },
+      {
+       "stage": "hybrid._vector_search",
+       "end_at": 38.36,
+       "wall": 32.67
+      },
+      {
+       "stage": "hybrid._rerank_scored_with_status",
+       "end_at": 137.66,
+       "wall": 99.29,
+       "reranker_ok": true,
+       "docs": 5
+      },
+      {
+       "stage": "hybrid._expand_parents",
+       "end_at": 137.67,
+       "wall": 0.0
+      },
+      {
+       "stage": "hybrid.get_relevant_documents_with_path",
+       "end_at": 137.67,
+       "wall": 131.98
+      },
+      {
+       "stage": "ollama.generate_stream",
+       "end_at": 209.36,
+       "wall": 71.66,
+       "first_chunk_sec": 61.72,
+       "chunks": 47,
+       "output_chars": 142,
+       "prompt_est_tokens": 2466,
+       "max_tokens": 1024,
+       "prompt_exact_tokens": 2101
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 270.06,
+       "wall": 60.7,
+       "output_chars": 3,
+       "prompt_est_tokens": 2661,
+       "max_tokens": 128,
+       "prompt_exact_tokens": 2290
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 283.38,
+       "wall": 13.3,
+       "output_chars": 134,
+       "prompt_est_tokens": 339,
+       "prompt_exact_tokens": 278
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 283.78,
+       "wall": 0.0
+      }
+     ]
+    },
+    {
+     "case": "aircargo-probation-extend",
+     "question": "Можно ли продлить испытательный срок сотруднику?",
+     "http": 200,
+     "first_token_sec": 281.227,
+     "last_token_sec": 297.973,
+     "tokens": 72,
+     "answer_tokens": 72,
+     "result_sec": 389.761,
+     "error_sec": null,
+     "total_sec": 389.762,
+     "drain_sec": 0.035,
+     "client_error": null,
+     "route": "auto",
+     "quality": 100,
+     "quality_source": "llm",
+     "sources": 3,
+     "suggested": 3,
+     "memory": {
+      "samples": 127,
+      "swap_used_mb": [
+       983.75,
+       1708.5
+      ],
+      "free_mb_min": 3,
+      "max_rss_mb": {
+       "postgres": 3,
+       "python": 1950,
+       "ollama": 3674
+      }
+     },
+     "events": [
+      {
+       "at": 0.086,
+       "type": "status"
+      },
+      {
+       "at": 215.649,
+       "type": "token_start"
+      },
+      {
+       "at": 389.761,
+       "type": "result",
+       "quality_score": 100,
+       "quality_source": "llm",
+       "route": "auto"
+      }
+     ],
+     "answer": "Нет, испытательный срок не может быть продлен. Продление испытательного срока не допускается. Срок испытания устанавливается при заключении трудового договора и не может превышать пределы ст. 70 ТК РФ. [2]",
+     "timeline": [
+      {
+       "stage": "ollama.generate",
+       "end_at": -0.36,
+       "wall": 13.3,
+       "output_chars": 134,
+       "prompt_est_tokens": 339,
+       "prompt_exact_tokens": 278
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 0.04,
+       "wall": 0.0
+      },
+      {
+       "stage": "hybrid._vector_search",
+       "end_at": 32.07,
+       "wall": 31.98
+      },
+      {
+       "stage": "hybrid._rerank_scored_with_status",
+       "end_at": 215.55,
+       "wall": 183.4,
+       "reranker_ok": true,
+       "docs": 5
+      },
+      {
+       "stage": "hybrid._expand_parents",
+       "end_at": 215.57,
+       "wall": 0.0
+      },
+      {
+       "stage": "hybrid.get_relevant_documents_with_path",
+       "end_at": 215.58,
+       "wall": 215.49
+      },
+      {
+       "stage": "ollama.generate_stream",
+       "end_at": 298.27,
+       "wall": 82.68,
+       "first_chunk_sec": 65.64,
+       "chunks": 72,
+       "output_chars": 205,
+       "prompt_est_tokens": 2587,
+       "max_tokens": 1024,
+       "prompt_exact_tokens": 2377
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 373.4,
+       "wall": 75.12,
+       "output_chars": 3,
+       "prompt_est_tokens": 2806,
+       "max_tokens": 128,
+       "prompt_exact_tokens": 2590
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 389.7,
+       "wall": 16.3,
+       "output_chars": 164,
+       "prompt_est_tokens": 357,
+       "prompt_exact_tokens": 330
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 389.83,
+       "wall": 0.0
+      }
+     ]
+    },
+    {
+     "case": "aircargo-probation-dismissal",
+     "question": "Что важно для увольнения по результатам испытательного срока?",
+     "http": 200,
+     "first_token_sec": 278.586,
+     "last_token_sec": 291.069,
+     "tokens": 53,
+     "answer_tokens": 53,
+     "result_sec": 385.464,
+     "error_sec": null,
+     "total_sec": 385.464,
+     "drain_sec": 1.171,
+     "client_error": null,
+     "route": "auto",
+     "quality": 100,
+     "quality_source": "llm",
+     "sources": 4,
+     "suggested": 3,
+     "memory": {
+      "samples": 122,
+      "swap_used_mb": [
+       1635.75,
+       2298.0
+      ],
+      "free_mb_min": 5,
+      "max_rss_mb": {
+       "postgres": 3,
+       "python": 1696,
+       "ollama": 3689
+      }
+     },
+     "events": [
+      {
+       "at": 0.147,
+       "type": "status"
+      },
+      {
+       "at": 209.578,
+       "type": "token_start"
+      },
+      {
+       "at": 385.464,
+       "type": "result",
+       "quality_score": 100,
+       "quality_source": "llm",
+       "route": "auto"
+      }
+     ],
+     "answer": "Что важно для увольнения по результатам испытательного срока: документированные критерии, факты неудовлетворительной работы и соблюдение срока уведомления [3].",
+     "timeline": [
+      {
+       "stage": "ollama.generate",
+       "end_at": -0.1,
+       "wall": 16.3,
+       "output_chars": 164,
+       "prompt_est_tokens": 357,
+       "prompt_exact_tokens": 330
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 0.03,
+       "wall": 0.0
+      },
+      {
+       "stage": "hybrid._vector_search",
+       "end_at": 34.3,
+       "wall": 34.27
+      },
+      {
+       "stage": "hybrid._rerank_scored_with_status",
+       "end_at": 207.49,
+       "wall": 172.99,
+       "reranker_ok": true,
+       "docs": 5
+      },
+      {
+       "stage": "hybrid._expand_parents",
+       "end_at": 207.55,
+       "wall": 0.06
+      },
+      {
+       "stage": "hybrid.get_relevant_documents_with_path",
+       "end_at": 207.55,
+       "wall": 207.52
+      },
+      {
+       "stage": "ollama.generate_stream",
+       "end_at": 291.51,
+       "wall": 83.78,
+       "first_chunk_sec": 70.86,
+       "chunks": 53,
+       "output_chars": 159,
+       "prompt_est_tokens": 2631,
+       "max_tokens": 1024,
+       "prompt_exact_tokens": 2368
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 363.93,
+       "wall": 72.4,
+       "output_chars": 3,
+       "prompt_est_tokens": 2832,
+       "max_tokens": 128,
+       "prompt_exact_tokens": 2563
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 380.67,
+       "wall": 16.73,
+       "output_chars": 161,
+       "prompt_est_tokens": 343,
+       "prompt_exact_tokens": 311
+      }
+     ]
+    },
+    {
+     "case": "aircargo-dismissal-check",
+     "question": "Что проверить перед ответом об увольнении работника?",
+     "http": 200,
+     "first_token_sec": 380.7,
+     "last_token_sec": 392.607,
+     "tokens": 50,
+     "answer_tokens": 51,
+     "result_sec": 476.434,
+     "error_sec": null,
+     "total_sec": 476.434,
+     "drain_sec": 0.043,
+     "client_error": null,
+     "route": "auto",
+     "quality": 100,
+     "quality_source": "llm",
+     "sources": 3,
+     "suggested": 3,
+     "memory": {
+      "samples": 154,
+      "swap_used_mb": [
+       2177.25,
+       3545.25
+      ],
+      "free_mb_min": 7,
+      "max_rss_mb": {
+       "postgres": 3,
+       "python": 1684,
+       "ollama": 3689
+      }
+     },
+     "events": [
+      {
+       "at": 0.749,
+       "type": "status"
+      },
+      {
+       "at": 308.602,
+       "type": "token_start"
+      },
+      {
+       "at": 476.434,
+       "type": "result",
+       "quality_score": 100,
+       "quality_source": "llm",
+       "route": "auto"
+      }
+     ],
+     "answer": "Перед ответом об увольнении нужно проверить: основание увольнения, дату последнего рабочего дня, заявления, соглашения, приказы и расчетные выплаты [1].",
+     "timeline": [
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 0.67,
+       "wall": 0.0
+      },
+      {
+       "stage": "hybrid._vector_search",
+       "end_at": 129.82,
+       "wall": 128.92
+      },
+      {
+       "stage": "hybrid._rerank_scored_with_status",
+       "end_at": 304.66,
+       "wall": 174.55,
+       "reranker_ok": true,
+       "docs": 5
+      },
+      {
+       "stage": "hybrid._expand_parents",
+       "end_at": 304.93,
+       "wall": 0.22
+      },
+      {
+       "stage": "hybrid.get_relevant_documents_with_path",
+       "end_at": 304.94,
+       "wall": 304.19
+      },
+      {
+       "stage": "ollama.generate_stream",
+       "end_at": 393.0,
+       "wall": 87.55,
+       "first_chunk_sec": 75.25,
+       "chunks": 50,
+       "output_chars": 152,
+       "prompt_est_tokens": 2607,
+       "max_tokens": 1024,
+       "prompt_exact_tokens": 2258
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 462.96,
+       "wall": 69.93,
+       "output_chars": 3,
+       "prompt_est_tokens": 2806,
+       "max_tokens": 128,
+       "prompt_exact_tokens": 2451
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 476.37,
+       "wall": 13.41,
+       "output_chars": 144,
+       "prompt_est_tokens": 341,
+       "prompt_exact_tokens": 281
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 476.56,
+       "wall": 0.0
+      }
+     ]
+    },
+    {
+     "case": "aircargo-dismissal-lawyer",
+     "question": "В каких случаях при увольнении нужен юрист?",
+     "http": 200,
+     "first_token_sec": 237.082,
+     "last_token_sec": 253.302,
+     "tokens": 71,
+     "answer_tokens": 72,
+     "result_sec": 337.804,
+     "error_sec": null,
+     "total_sec": 337.804,
+     "drain_sec": 0.05,
+     "client_error": null,
+     "route": "auto",
+     "quality": 100,
+     "quality_source": "llm",
+     "sources": 4,
+     "suggested": 3,
+     "memory": {
+      "samples": 110,
+      "swap_used_mb": [
+       3422.75,
+       3963.0
+      ],
+      "free_mb_min": 6,
+      "max_rss_mb": {
+       "postgres": 3,
+       "python": 2001,
+       "ollama": 3570
+      }
+     },
+     "events": [
+      {
+       "at": 0.091,
+       "type": "status"
+      },
+      {
+       "at": 174.498,
+       "type": "token_start"
+      },
+      {
+       "at": 337.804,
+       "type": "result",
+       "quality_score": 100,
+       "quality_source": "llm",
+       "route": "auto"
+      }
+     ],
+     "answer": "При увольнении нужен юрист в следующих случаях: по инициативе работодателя, в споре о дисциплине, при сокращении, в вопросах материальной ответственности или при увольнении защищённой категории работника [2].",
+     "timeline": [
+      {
+       "stage": "ollama.generate",
+       "end_at": -0.12,
+       "wall": 13.41,
+       "output_chars": 144,
+       "prompt_est_tokens": 341,
+       "prompt_exact_tokens": 281
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 0.07,
+       "wall": 0.0
+      },
+      {
+       "stage": "hybrid._vector_search",
+       "end_at": 33.1,
+       "wall": 33.03
+      },
+      {
+       "stage": "hybrid._rerank_scored_with_status",
+       "end_at": 174.38,
+       "wall": 141.03,
+       "reranker_ok": true,
+       "docs": 5
+      },
+      {
+       "stage": "hybrid._expand_parents",
+       "end_at": 174.44,
+       "wall": 0.06
+      },
+      {
+       "stage": "hybrid.get_relevant_documents_with_path",
+       "end_at": 174.44,
+       "wall": 174.37
+      },
+      {
+       "stage": "ollama.generate_stream",
+       "end_at": 253.58,
+       "wall": 79.12,
+       "first_chunk_sec": 62.6,
+       "chunks": 71,
+       "output_chars": 208,
+       "prompt_est_tokens": 2523,
+       "max_tokens": 1024,
+       "prompt_exact_tokens": 2238
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 322.57,
+       "wall": 68.97,
+       "output_chars": 3,
+       "prompt_est_tokens": 2741,
+       "max_tokens": 128,
+       "prompt_exact_tokens": 2452
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 337.76,
+       "wall": 15.18,
+       "output_chars": 152,
+       "prompt_est_tokens": 355,
+       "prompt_exact_tokens": 324
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 337.88,
+       "wall": 0.0
+      }
+     ]
+    },
+    {
+     "case": "aircargo-dismissal-order",
+     "question": "Может ли ассистент подготовить приказ об увольнении?",
+     "http": 200,
+     "first_token_sec": 254.802,
+     "last_token_sec": 288.45,
+     "tokens": 141,
+     "answer_tokens": 141,
+     "result_sec": 380.792,
+     "error_sec": null,
+     "total_sec": 380.793,
+     "drain_sec": 0.048,
+     "client_error": null,
+     "route": "auto",
+     "quality": 100,
+     "quality_source": "llm",
+     "sources": 4,
+     "suggested": 3,
+     "memory": {
+      "samples": 121,
+      "swap_used_mb": [
+       3899.0,
+       4728.25
+      ],
+      "free_mb_min": 6,
+      "max_rss_mb": {
+       "postgres": 4,
+       "python": 1597,
+       "ollama": 3484
+      }
+     },
+     "events": [
+      {
+       "at": 0.035,
+       "type": "status"
+      },
+      {
+       "at": 188.843,
+       "type": "token_start"
+      },
+      {
+       "at": 380.792,
+       "type": "result",
+       "quality_score": 100,
+       "quality_source": "llm",
+       "route": "auto"
+      }
+     ],
+     "answer": "Да, ассистент может подготовить черновик «Приказ об увольнении» только по утвержденному шаблону и только после заполнения обязательных полей, при условии, что все ключевые факты (основание, даты, персональные данные, суммы и т.д.) подтверждены и не выдуманы [3]. Однако генерация финальной версии приказа запрещена без проверки основания, обязательных полей и полномочий подписанта, а также без ручной проверки владельцем процесса [2].",
+     "timeline": [
+      {
+       "stage": "ollama.generate",
+       "end_at": -0.1,
+       "wall": 15.18,
+       "output_chars": 152,
+       "prompt_est_tokens": 355,
+       "prompt_exact_tokens": 324
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 0.02,
+       "wall": 0.0
+      },
+      {
+       "stage": "hybrid._vector_search",
+       "end_at": 36.21,
+       "wall": 36.19
+      },
+      {
+       "stage": "hybrid._rerank_scored_with_status",
+       "end_at": 188.68,
+       "wall": 152.21,
+       "reranker_ok": true,
+       "docs": 5
+      },
+      {
+       "stage": "hybrid._expand_parents",
+       "end_at": 188.73,
+       "wall": 0.04
+      },
+      {
+       "stage": "hybrid.get_relevant_documents_with_path",
+       "end_at": 188.73,
+       "wall": 188.71
+      },
+      {
+       "stage": "ollama.generate_stream",
+       "end_at": 288.85,
+       "wall": 100.1,
+       "first_chunk_sec": 66.05,
+       "chunks": 141,
+       "output_chars": 435,
+       "prompt_est_tokens": 2606,
+       "max_tokens": 1024,
+       "prompt_exact_tokens": 2308
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 364.0,
+       "wall": 75.13,
+       "output_chars": 3,
+       "prompt_est_tokens": 2905,
+       "max_tokens": 128,
+       "prompt_exact_tokens": 2589
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 380.76,
+       "wall": 16.74,
+       "output_chars": 150,
+       "prompt_est_tokens": 441,
+       "prompt_exact_tokens": 413
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 380.87,
+       "wall": 0.0
+      }
+     ]
+    },
+    {
+     "case": "aircargo-leave-sources",
+     "question": "Какие источники проверять перед ответом по отпуску?",
+     "http": 200,
+     "first_token_sec": 129.166,
+     "last_token_sec": 140.207,
+     "tokens": 47,
+     "answer_tokens": 47,
+     "result_sec": 220.647,
+     "error_sec": null,
+     "total_sec": 220.648,
+     "drain_sec": 0.121,
+     "client_error": null,
+     "route": "auto",
+     "quality": 100,
+     "quality_source": "llm",
+     "sources": 3,
+     "suggested": 3,
+     "memory": {
+      "samples": 72,
+      "swap_used_mb": [
+       4646.0,
+       5345.25
+      ],
+      "free_mb_min": 4,
+      "max_rss_mb": {
+       "postgres": 2,
+       "python": 1840,
+       "ollama": 3568
+      }
+     },
+     "events": [
+      {
+       "at": 0.031,
+       "type": "status"
+      },
+      {
+       "at": 67.271,
+       "type": "token_start"
+      },
+      {
+       "at": 220.647,
+       "type": "result",
+       "quality_score": 100,
+       "quality_source": "llm",
+       "route": "auto"
+      }
+     ],
+     "answer": "Проверяются политика отпусков, график отпусков, кадровые приказы и нормы ТК РФ о ежегодном, учебном и дополнительном отпуске. [1]",
+     "timeline": [
+      {
+       "stage": "ollama.generate",
+       "end_at": -0.09,
+       "wall": 16.74,
+       "output_chars": 150,
+       "prompt_est_tokens": 441,
+       "prompt_exact_tokens": 413
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 0.02,
+       "wall": 0.0
+      },
+      {
+       "stage": "hybrid._vector_search",
+       "end_at": 31.01,
+       "wall": 30.98
+      },
+      {
+       "stage": "hybrid._rerank_scored_with_status",
+       "end_at": 67.19,
+       "wall": 35.99,
+       "reranker_ok": true,
+       "docs": 5
+      },
+      {
+       "stage": "hybrid._expand_parents",
+       "end_at": 67.21,
+       "wall": 0.03
+      },
+      {
+       "stage": "hybrid.get_relevant_documents_with_path",
+       "end_at": 67.22,
+       "wall": 67.2
+      },
+      {
+       "stage": "ollama.generate_stream",
+       "end_at": 140.42,
+       "wall": 73.19,
+       "first_chunk_sec": 61.92,
+       "chunks": 47,
+       "output_chars": 129,
+       "prompt_est_tokens": 2573,
+       "max_tokens": 1024,
+       "prompt_exact_tokens": 2270
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 208.68,
+       "wall": 68.23,
+       "output_chars": 3,
+       "prompt_est_tokens": 2763,
+       "max_tokens": 128,
+       "prompt_exact_tokens": 2458
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 220.6,
+       "wall": 11.9,
+       "output_chars": 139,
+       "prompt_est_tokens": 333,
+       "prompt_exact_tokens": 276
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 220.89,
+       "wall": 0.0
+      }
+     ]
+    },
+    {
+     "case": "aircargo-leave-compensation",
+     "question": "Может ли ассистент рассчитать компенсацию за отпуск?",
+     "http": 200,
+     "first_token_sec": 131.181,
+     "last_token_sec": 145.808,
+     "tokens": 63,
+     "answer_tokens": 63,
+     "result_sec": 229.932,
+     "error_sec": null,
+     "total_sec": 229.933,
+     "drain_sec": 0.069,
+     "client_error": null,
+     "route": "auto",
+     "quality": 95,
+     "quality_source": "llm",
+     "sources": 4,
+     "suggested": 3,
+     "memory": {
+      "samples": 75,
+      "swap_used_mb": [
+       5246.25,
+       6136.75
+      ],
+      "free_mb_min": 3,
+      "max_rss_mb": {
+       "postgres": 2,
+       "python": 1862,
+       "ollama": 3548
+      }
+     },
+     "events": [
+      {
+       "at": 0.126,
+       "type": "status"
+      },
+      {
+       "at": 66.904,
+       "type": "token_start"
+      },
+      {
+       "at": 229.932,
+       "type": "result",
+       "quality_score": 95,
+       "quality_source": "llm",
+       "route": "auto"
+      }
+     ],
+     "answer": "Может ли ассистент рассчитать компенсацию за отпуск?  \nДа, ассистент может дать структуру расчета и список входных данных, но итоговую сумму должна подтвердить бухгалтерия или HR. [3]",
+     "timeline": [
+      {
+       "stage": "ollama.generate",
+       "end_at": -0.17,
+       "wall": 11.9,
+       "output_chars": 139,
+       "prompt_est_tokens": 333,
+       "prompt_exact_tokens": 276
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 0.11,
+       "wall": 0.0
+      },
+      {
+       "stage": "hybrid._vector_search",
+       "end_at": 34.27,
+       "wall": 34.15
+      },
+      {
+       "stage": "hybrid._rerank_scored_with_status",
+       "end_at": 66.77,
+       "wall": 32.28,
+       "reranker_ok": true,
+       "docs": 5
+      },
+      {
+       "stage": "hybrid._expand_parents",
+       "end_at": 66.82,
+       "wall": 0.01
+      },
+      {
+       "stage": "hybrid.get_relevant_documents_with_path",
+       "end_at": 66.82,
+       "wall": 66.69
+      },
+      {
+       "stage": "ollama.generate_stream",
+       "end_at": 146.01,
+       "wall": 79.16,
+       "first_chunk_sec": 64.31,
+       "chunks": 63,
+       "output_chars": 183,
+       "prompt_est_tokens": 2635,
+       "max_tokens": 1024,
+       "prompt_exact_tokens": 2339
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 214.72,
+       "wall": 68.7,
+       "output_chars": 2,
+       "prompt_est_tokens": 2844,
+       "max_tokens": 128,
+       "prompt_exact_tokens": 2541
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 229.9,
+       "wall": 15.16,
+       "output_chars": 127,
+       "prompt_est_tokens": 349,
+       "prompt_exact_tokens": 329
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 230.09,
+       "wall": 0.0
+      }
+     ]
+    },
+    {
+     "case": "aircargo-leave-risk",
+     "question": "Что считать рисковым кейсом по отпуску?",
+     "http": 200,
+     "first_token_sec": 109.989,
+     "last_token_sec": 120.392,
+     "tokens": 49,
+     "answer_tokens": 49,
+     "result_sec": 202.045,
+     "error_sec": null,
+     "total_sec": 202.045,
+     "drain_sec": 0.085,
+     "client_error": null,
+     "route": "auto",
+     "quality": 100,
+     "quality_source": "llm",
+     "sources": 3,
+     "suggested": 3,
+     "memory": {
+      "samples": 65,
+      "swap_used_mb": [
+       6029.25,
+       7406.0
+      ],
+      "free_mb_min": 4,
+      "max_rss_mb": {
+       "postgres": 3,
+       "python": 1891,
+       "ollama": 3623
+      }
+     },
+     "events": [
+      {
+       "at": 0.089,
+       "type": "status"
+      },
+      {
+       "at": 43.892,
+       "type": "token_start"
+      },
+      {
+       "at": 202.045,
+       "type": "result",
+       "quality_score": 100,
+       "quality_source": "llm",
+       "route": "auto"
+      }
+     ],
+     "answer": "Рисковым кейсом по отпуску считается перенос отпуска без согласия, увольнение перед отпуском, декретные периоды и спор о компенсации [4].",
+     "timeline": [
+      {
+       "stage": "ollama.generate",
+       "end_at": -0.11,
+       "wall": 15.16,
+       "output_chars": 127,
+       "prompt_est_tokens": 349,
+       "prompt_exact_tokens": 329
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 0.07,
+       "wall": 0.0
+      },
+      {
+       "stage": "hybrid._vector_search",
+       "end_at": 4.76,
+       "wall": 4.68
+      },
+      {
+       "stage": "hybrid._rerank_scored_with_status",
+       "end_at": 43.78,
+       "wall": 38.86,
+       "reranker_ok": true,
+       "docs": 5
+      },
+      {
+       "stage": "hybrid._expand_parents",
+       "end_at": 43.81,
+       "wall": 0.01
+      },
+      {
+       "stage": "hybrid.get_relevant_documents_with_path",
+       "end_at": 43.81,
+       "wall": 43.74
+      },
+      {
+       "stage": "ollama.generate_stream",
+       "end_at": 120.77,
+       "wall": 76.94,
+       "first_chunk_sec": 66.11,
+       "chunks": 49,
+       "output_chars": 137,
+       "prompt_est_tokens": 2606,
+       "max_tokens": 1024,
+       "prompt_exact_tokens": 2253
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 187.9,
+       "wall": 67.1,
+       "output_chars": 3,
+       "prompt_est_tokens": 2799,
+       "max_tokens": 128,
+       "prompt_exact_tokens": 2444
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 201.95,
+       "wall": 14.03,
+       "output_chars": 132,
+       "prompt_est_tokens": 331,
+       "prompt_exact_tokens": 319
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 202.16,
+       "wall": 0.0
+      }
+     ]
+    },
+    {
+     "case": "aircargo-matliab-check",
+     "question": "Что проверить по материальной ответственности работника?",
+     "http": 200,
+     "first_token_sec": 112.411,
+     "last_token_sec": 121.372,
+     "tokens": 40,
+     "answer_tokens": 40,
+     "result_sec": 196.231,
+     "error_sec": null,
+     "total_sec": 196.232,
+     "drain_sec": 0.048,
+     "client_error": null,
+     "route": "auto",
+     "quality": 100,
+     "quality_source": "llm",
+     "sources": 4,
+     "suggested": 3,
+     "memory": {
+      "samples": 64,
+      "swap_used_mb": [
+       7323.5,
+       8201.5
+      ],
+      "free_mb_min": 6,
+      "max_rss_mb": {
+       "postgres": 4,
+       "python": 1954,
+       "ollama": 3623
+      }
+     },
+     "events": [
+      {
+       "at": 0.051,
+       "type": "status"
+      },
+      {
+       "at": 53.058,
+       "type": "token_start"
+      },
+      {
+       "at": 196.231,
+       "type": "result",
+       "quality_score": 100,
+       "quality_source": "llm",
+       "route": "auto"
+      }
+     ],
+     "answer": "Должность, договор о полной ответственности, факт ущерба, размер ущерба, объяснения работника и результаты проверки. [N1]",
+     "timeline": [
+      {
+       "stage": "ollama.generate",
+       "end_at": -0.19,
+       "wall": 14.03,
+       "output_chars": 132,
+       "prompt_est_tokens": 331,
+       "prompt_exact_tokens": 319
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 0.02,
+       "wall": 0.0
+      },
+      {
+       "stage": "hybrid._vector_search",
+       "end_at": 12.37,
+       "wall": 12.34
+      },
+      {
+       "stage": "hybrid._rerank_scored_with_status",
+       "end_at": 52.77,
+       "wall": 40.2,
+       "reranker_ok": true,
+       "docs": 5
+      },
+      {
+       "stage": "hybrid._expand_parents",
+       "end_at": 52.92,
+       "wall": 0.15
+      },
+      {
+       "stage": "hybrid.get_relevant_documents_with_path",
+       "end_at": 52.92,
+       "wall": 52.89
+      },
+      {
+       "stage": "ollama.generate_stream",
+       "end_at": 121.74,
+       "wall": 68.8,
+       "first_chunk_sec": 59.47,
+       "chunks": 40,
+       "output_chars": 121,
+       "prompt_est_tokens": 2537,
+       "max_tokens": 1024,
+       "prompt_exact_tokens": 2142
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 185.04,
+       "wall": 63.28,
+       "output_chars": 3,
+       "prompt_est_tokens": 2728,
+       "max_tokens": 128,
+       "prompt_exact_tokens": 2326
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 196.17,
+       "wall": 11.11,
+       "output_chars": 123,
+       "prompt_est_tokens": 330,
+       "prompt_exact_tokens": 265
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 196.31,
+       "wall": 0.0
+      }
+     ]
+    },
+    {
+     "case": "aircargo-matliab-disputed",
+     "question": "Когда полная материальная ответственность работника спорна?",
+     "http": 200,
+     "first_token_sec": 137.69,
+     "last_token_sec": 147.596,
+     "tokens": 42,
+     "answer_tokens": 42,
+     "result_sec": 227.556,
+     "error_sec": null,
+     "total_sec": 227.557,
+     "drain_sec": 0.071,
+     "client_error": null,
+     "route": "auto",
+     "quality": 100,
+     "quality_source": "llm",
+     "sources": 4,
+     "suggested": 3,
+     "memory": {
+      "samples": 74,
+      "swap_used_mb": [
+       7759.0,
+       9559.75
+      ],
+      "free_mb_min": 3,
+      "max_rss_mb": {
+       "postgres": 2,
+       "python": 1749,
+       "ollama": 3661
+      }
+     },
+     "events": [
+      {
+       "at": 0.038,
+       "type": "status"
+      },
+      {
+       "at": 66.934,
+       "type": "token_start"
+      },
+      {
+       "at": 227.556,
+       "type": "result",
+       "quality_score": 100,
+       "quality_source": "llm",
+       "route": "auto"
+      }
+     ],
+     "answer": "Когда полная материальная ответственность работника спорна — если нет законного основания, договора, перечня должностей или доказанной причинной связи [2].",
+     "timeline": [
+      {
+       "stage": "ollama.generate",
+       "end_at": -0.11,
+       "wall": 11.11,
+       "output_chars": 123,
+       "prompt_est_tokens": 330,
+       "prompt_exact_tokens": 265
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 0.03,
+       "wall": 0.0
+      },
+      {
+       "stage": "hybrid._vector_search",
+       "end_at": 12.01,
+       "wall": 11.97
+      },
+      {
+       "stage": "hybrid._rerank_scored_with_status",
+       "end_at": 66.81,
+       "wall": 54.56,
+       "reranker_ok": true,
+       "docs": 5
+      },
+      {
+       "stage": "hybrid._expand_parents",
+       "end_at": 66.88,
+       "wall": 0.01
+      },
+      {
+       "stage": "hybrid.get_relevant_documents_with_path",
+       "end_at": 66.88,
+       "wall": 66.84
+      },
+      {
+       "stage": "ollama.generate_stream",
+       "end_at": 147.93,
+       "wall": 81.04,
+       "first_chunk_sec": 70.75,
+       "chunks": 42,
+       "output_chars": 155,
+       "prompt_est_tokens": 2635,
+       "max_tokens": 1024,
+       "prompt_exact_tokens": 2295
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 215.69,
+       "wall": 67.74,
+       "output_chars": 3,
+       "prompt_est_tokens": 2836,
+       "max_tokens": 128,
+       "prompt_exact_tokens": 2479
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 227.46,
+       "wall": 11.75,
+       "output_chars": 148,
+       "prompt_est_tokens": 342,
+       "prompt_exact_tokens": 289
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 227.66,
+       "wall": 0.0
+      }
+     ]
+    },
+    {
+     "case": "aircargo-templates-choose",
+     "question": "Как выбрать подходящий шаблон договора?",
+     "http": 200,
+     "first_token_sec": 175.248,
+     "last_token_sec": 183.258,
+     "tokens": 37,
+     "answer_tokens": 37,
+     "result_sec": 260.027,
+     "error_sec": null,
+     "total_sec": 260.027,
+     "drain_sec": 0.136,
+     "client_error": null,
+     "route": "auto",
+     "quality": 100,
+     "quality_source": "llm",
+     "sources": 5,
+     "suggested": 3,
+     "memory": {
+      "samples": 85,
+      "swap_used_mb": [
+       8535.25,
+       10141.25
+      ],
+      "free_mb_min": 4,
+      "max_rss_mb": {
+       "postgres": 2,
+       "python": 1840,
+       "ollama": 3659
+      }
+     },
+     "events": [
+      {
+       "at": 0.042,
+       "type": "status"
+      },
+      {
+       "at": 108.644,
+       "type": "token_start"
+      },
+      {
+       "at": 260.027,
+       "type": "result",
+       "quality_score": 100,
+       "quality_source": "llm",
+       "route": "auto"
+      }
+     ],
+     "answer": "По предмету сделки: услуги, поставка, перевозка, экспедиция, хранение, аренда или смешанная модель. [1]",
+     "timeline": [
+      {
+       "stage": "ollama.generate",
+       "end_at": -0.18,
+       "wall": 11.75,
+       "output_chars": 148,
+       "prompt_est_tokens": 342,
+       "prompt_exact_tokens": 289
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 0.02,
+       "wall": 0.0
+      },
+      {
+       "stage": "hybrid._vector_search",
+       "end_at": 23.52,
+       "wall": 23.5
+      },
+      {
+       "stage": "hybrid._rerank_scored_with_status",
+       "end_at": 108.07,
+       "wall": 84.32,
+       "reranker_ok": true,
+       "docs": 5
+      },
+      {
+       "stage": "hybrid._expand_parents",
+       "end_at": 108.29,
+       "wall": 0.05
+      },
+      {
+       "stage": "hybrid.get_relevant_documents_with_path",
+       "end_at": 108.29,
+       "wall": 108.26
+      },
+      {
+       "stage": "ollama.generate_stream",
+       "end_at": 183.6,
+       "wall": 75.21,
+       "first_chunk_sec": 66.82,
+       "chunks": 37,
+       "output_chars": 103,
+       "prompt_est_tokens": 2599,
+       "max_tokens": 1024,
+       "prompt_exact_tokens": 2234
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 248.25,
+       "wall": 64.64,
+       "output_chars": 3,
+       "prompt_est_tokens": 2781,
+       "max_tokens": 128,
+       "prompt_exact_tokens": 2412
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 259.59,
+       "wall": 11.34,
+       "output_chars": 153,
+       "prompt_est_tokens": 324,
+       "prompt_exact_tokens": 255
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 260.22,
+       "wall": 0.0
+      }
+     ]
+    },
+    {
+     "case": "aircargo-templates-checklist",
+     "question": "Что обязательно проверить в договоре перед согласованием?",
+     "http": 200,
+     "first_token_sec": 229.107,
+     "last_token_sec": 244.843,
+     "tokens": 68,
+     "answer_tokens": 68,
+     "result_sec": 323.432,
+     "error_sec": null,
+     "total_sec": 323.433,
+     "drain_sec": 0.134,
+     "client_error": null,
+     "route": "auto",
+     "quality": 100,
+     "quality_source": "llm",
+     "sources": 3,
+     "suggested": 3,
+     "memory": {
+      "samples": 104,
+      "swap_used_mb": [
+       9329.5,
+       10918.75
+      ],
+      "free_mb_min": 4,
+      "max_rss_mb": {
+       "postgres": 2,
+       "python": 1849,
+       "ollama": 3657
+      }
+     },
+     "events": [
+      {
+       "at": 0.03,
+       "type": "status"
+      },
+      {
+       "at": 162.967,
+       "type": "token_start"
+      },
+      {
+       "at": 323.432,
+       "type": "result",
+       "quality_score": 100,
+       "quality_source": "llm",
+       "route": "auto"
+      }
+     ],
+     "answer": "Перед согласованием обязательно проверить: цель обработки, правовое основание, срок хранения, матрицу доступа, журналирование действий, маршрут инцидента, порядок ответа субъектам данных и регулятору в установленный срок [N].",
+     "timeline": [
+      {
+       "stage": "ollama.generate",
+       "end_at": -0.6,
+       "wall": 11.34,
+       "output_chars": 153,
+       "prompt_est_tokens": 324,
+       "prompt_exact_tokens": 255
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 0.02,
+       "wall": 0.0
+      },
+      {
+       "stage": "hybrid._vector_search",
+       "end_at": 27.81,
+       "wall": 27.79
+      },
+      {
+       "stage": "hybrid._rerank_scored_with_status",
+       "end_at": 161.13,
+       "wall": 133.07,
+       "reranker_ok": true,
+       "docs": 5
+      },
+      {
+       "stage": "hybrid._expand_parents",
+       "end_at": 161.19,
+       "wall": 0.04
+      },
+      {
+       "stage": "hybrid.get_relevant_documents_with_path",
+       "end_at": 161.19,
+       "wall": 161.16
+      },
+      {
+       "stage": "ollama.generate_stream",
+       "end_at": 245.16,
+       "wall": 83.71,
+       "first_chunk_sec": 67.62,
+       "chunks": 68,
+       "output_chars": 225,
+       "prompt_est_tokens": 2627,
+       "max_tokens": 1024,
+       "prompt_exact_tokens": 2255
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 311.14,
+       "wall": 65.95,
+       "output_chars": 3,
+       "prompt_est_tokens": 2854,
+       "max_tokens": 128,
+       "prompt_exact_tokens": 2467
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 323.06,
+       "wall": 11.92,
+       "output_chars": 135,
+       "prompt_est_tokens": 365,
+       "prompt_exact_tokens": 305
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 323.73,
+       "wall": 0.0
+      }
+     ]
+    },
+    {
+     "case": "aircargo-templates-insufficient",
+     "question": "Когда стандартного шаблона договора недостаточно?",
+     "http": 200,
+     "first_token_sec": 209.873,
+     "last_token_sec": 221.056,
+     "tokens": 50,
+     "answer_tokens": 50,
+     "result_sec": 298.491,
+     "error_sec": null,
+     "total_sec": 298.513,
+     "drain_sec": 0.196,
+     "client_error": null,
+     "route": "auto",
+     "quality": 100,
+     "quality_source": "llm",
+     "sources": 3,
+     "suggested": 3,
+     "memory": {
+      "samples": 97,
+      "swap_used_mb": [
+       8703.5,
+       10255.5
+      ],
+      "free_mb_min": 5,
+      "max_rss_mb": {
+       "postgres": 2,
+       "python": 1901,
+       "ollama": 3657
+      }
+     },
+     "events": [
+      {
+       "at": 0.141,
+       "type": "status"
+      },
+      {
+       "at": 145.018,
+       "type": "token_start"
+      },
+      {
+       "at": 298.491,
+       "type": "result",
+       "quality_score": 100,
+       "quality_source": "llm",
+       "route": "auto"
+      }
+     ],
+     "answer": "Стандартного шаблона договора недостаточно при нестандартной сделке, иностранном элементе, санкционных рисках, персональных данных или крупной сумме [3].",
+     "timeline": [
+      {
+       "stage": "ollama.generate",
+       "end_at": -0.57,
+       "wall": 11.92,
+       "output_chars": 135,
+       "prompt_est_tokens": 365,
+       "prompt_exact_tokens": 305
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 0.1,
+       "wall": 0.0
+      },
+      {
+       "stage": "hybrid._vector_search",
+       "end_at": 45.65,
+       "wall": 45.55
+      },
+      {
+       "stage": "hybrid._rerank_scored_with_status",
+       "end_at": 144.91,
+       "wall": 98.92,
+       "reranker_ok": true,
+       "docs": 5
+      },
+      {
+       "stage": "hybrid._expand_parents",
+       "end_at": 144.97,
+       "wall": 0.04
+      },
+      {
+       "stage": "hybrid.get_relevant_documents_with_path",
+       "end_at": 144.97,
+       "wall": 144.86
+      },
+      {
+       "stage": "ollama.generate_stream",
+       "end_at": 221.31,
+       "wall": 76.33,
+       "first_chunk_sec": 64.89,
+       "chunks": 50,
+       "output_chars": 153,
+       "prompt_est_tokens": 2634,
+       "max_tokens": 1024,
+       "prompt_exact_tokens": 2221
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 285.88,
+       "wall": 64.56,
+       "output_chars": 3,
+       "prompt_est_tokens": 2833,
+       "max_tokens": 128,
+       "prompt_exact_tokens": 2413
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 298.19,
+       "wall": 12.3,
+       "output_chars": 144,
+       "prompt_est_tokens": 340,
+       "prompt_exact_tokens": 309
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 298.79,
+       "wall": 0.0
+      }
+     ]
+    },
+    {
+     "case": "aircargo-secret-check",
+     "question": "Что проверять по режиму коммерческой тайны?",
+     "http": 200,
+     "first_token_sec": 199.523,
+     "last_token_sec": 211.149,
+     "tokens": 50,
+     "answer_tokens": 50,
+     "result_sec": 290.931,
+     "error_sec": null,
+     "total_sec": 290.936,
+     "drain_sec": 0.105,
+     "client_error": null,
+     "route": "auto",
+     "quality": 100,
+     "quality_source": "llm",
+     "sources": 4,
+     "suggested": 3,
+     "memory": {
+      "samples": 93,
+      "swap_used_mb": [
+       9457.25,
+       11010.75
+      ],
+      "free_mb_min": 4,
+      "max_rss_mb": {
+       "postgres": 3,
+       "python": 1926,
+       "ollama": 3662
+      }
+     },
+     "events": [
+      {
+       "at": 0.045,
+       "type": "status"
+      },
+      {
+       "at": 129.347,
+       "type": "token_start"
+      },
+      {
+       "at": 290.931,
+       "type": "result",
+       "quality_score": 100,
+       "quality_source": "llm",
+       "route": "auto"
+      }
+     ],
+     "answer": "Что проверять по режиму коммерческой тайны: перечень сведений, маркировку, круг доступа, NDA, журнал передачи и внутренние меры защиты [N1].",
+     "timeline": [
+      {
+       "stage": "ollama.generate",
+       "end_at": -0.58,
+       "wall": 12.3,
+       "output_chars": 144,
+       "prompt_est_tokens": 340,
+       "prompt_exact_tokens": 309
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 0.02,
+       "wall": 0.0
+      },
+      {
+       "stage": "hybrid._vector_search",
+       "end_at": 43.32,
+       "wall": 43.29
+      },
+      {
+       "stage": "hybrid._rerank_scored_with_status",
+       "end_at": 128.74,
+       "wall": 85.08,
+       "reranker_ok": true,
+       "docs": 5
+      },
+      {
+       "stage": "hybrid._expand_parents",
+       "end_at": 128.87,
+       "wall": 0.08
+      },
+      {
+       "stage": "hybrid.get_relevant_documents_with_path",
+       "end_at": 129.01,
+       "wall": 128.98
+      },
+      {
+       "stage": "ollama.generate_stream",
+       "end_at": 211.43,
+       "wall": 82.25,
+       "first_chunk_sec": 70.29,
+       "chunks": 50,
+       "output_chars": 140,
+       "prompt_est_tokens": 2587,
+       "max_tokens": 1024,
+       "prompt_exact_tokens": 2268
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 278.63,
+       "wall": 67.17,
+       "output_chars": 3,
+       "prompt_est_tokens": 2784,
+       "max_tokens": 128,
+       "prompt_exact_tokens": 2462
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 290.85,
+       "wall": 12.19,
+       "output_chars": 143,
+       "prompt_est_tokens": 335,
+       "prompt_exact_tokens": 281
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 291.08,
+       "wall": 0.0
+      }
+     ]
+    },
+    {
+     "case": "aircargo-secret-not-auto",
+     "question": "Когда сведения не стоит автоматически считать коммерческой тайной?",
+     "http": 200,
+     "first_token_sec": 209.089,
+     "last_token_sec": 220.263,
+     "tokens": 48,
+     "answer_tokens": 48,
+     "result_sec": 305.73,
+     "error_sec": null,
+     "total_sec": 305.732,
+     "drain_sec": 0.132,
+     "client_error": null,
+     "route": "auto",
+     "quality": 100,
+     "quality_source": "llm",
+     "sources": 3,
+     "suggested": 3,
+     "memory": {
+      "samples": 99,
+      "swap_used_mb": [
+       9361.25,
+       11767.25
+      ],
+      "free_mb_min": 4,
+      "max_rss_mb": {
+       "postgres": 2,
+       "python": 1759,
+       "ollama": 3680
+      }
+     },
+     "events": [
+      {
+       "at": 0.09,
+       "type": "status"
+      },
+      {
+       "at": 134.047,
+       "type": "token_start"
+      },
+      {
+       "at": 305.73,
+       "type": "result",
+       "quality_score": 100,
+       "quality_source": "llm",
+       "route": "auto"
+      }
+     ],
+     "answer": "Когда сведения не стоит считать коммерческой тайной автоматически — если компания не ввела режим, не ограничила доступ или не обозначила конфиденциальность [N].",
+     "timeline": [
+      {
+       "stage": "ollama.generate",
+       "end_at": -0.2,
+       "wall": 12.19,
+       "output_chars": 143,
+       "prompt_est_tokens": 335,
+       "prompt_exact_tokens": 281
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 0.03,
+       "wall": 0.0
+      },
+      {
+       "stage": "hybrid._vector_search",
+       "end_at": 42.08,
+       "wall": 42.04
+      },
+      {
+       "stage": "hybrid._rerank_scored_with_status",
+       "end_at": 133.91,
+       "wall": 91.47,
+       "reranker_ok": true,
+       "docs": 5
+      },
+      {
+       "stage": "hybrid._expand_parents",
+       "end_at": 133.97,
+       "wall": 0.01
+      },
+      {
+       "stage": "hybrid.get_relevant_documents_with_path",
+       "end_at": 133.97,
+       "wall": 133.93
+      },
+      {
+       "stage": "ollama.generate_stream",
+       "end_at": 220.53,
+       "wall": 86.55,
+       "first_chunk_sec": 75.06,
+       "chunks": 48,
+       "output_chars": 160,
+       "prompt_est_tokens": 2634,
+       "max_tokens": 1024,
+       "prompt_exact_tokens": 2387
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 292.82,
+       "wall": 72.28,
+       "output_chars": 3,
+       "prompt_est_tokens": 2838,
+       "max_tokens": 128,
+       "prompt_exact_tokens": 2579
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 305.65,
+       "wall": 12.82,
+       "output_chars": 151,
+       "prompt_est_tokens": 345,
+       "prompt_exact_tokens": 305
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 305.89,
+       "wall": 0.0
+      }
+     ]
+    },
+    {
+     "case": "aircargo-secret-disclosure",
+     "question": "Что делать при разглашении коммерческой тайны?",
+     "http": 200,
+     "first_token_sec": 201.828,
+     "last_token_sec": 214.19,
+     "tokens": 54,
+     "answer_tokens": 54,
+     "result_sec": 297.614,
+     "error_sec": null,
+     "total_sec": 297.615,
+     "drain_sec": 0.101,
+     "client_error": null,
+     "route": "auto",
+     "quality": 100,
+     "quality_source": "llm",
+     "sources": 4,
+     "suggested": 3,
+     "memory": {
+      "samples": 97,
+      "swap_used_mb": [
+       9348.25,
+       10935.5
+      ],
+      "free_mb_min": 5,
+      "max_rss_mb": {
+       "postgres": 2,
+       "python": 1810,
+       "ollama": 3382
+      }
+     },
+     "events": [
+      {
+       "at": 0.04,
+       "type": "status"
+      },
+      {
+       "at": 132.923,
+       "type": "token_start"
+      },
+      {
+       "at": 297.614,
+       "type": "result",
+       "quality_score": 100,
+       "quality_source": "llm",
+       "route": "auto"
+      }
+     ],
+     "answer": "При разглашении коммерческой тайны нужно зафиксировать факт разглашения, канал раскрытия, круг получателей, ущерб и передать кейс compliance/юристу [1].",
+     "timeline": [
+      {
+       "stage": "ollama.generate",
+       "end_at": -0.22,
+       "wall": 12.82,
+       "output_chars": 151,
+       "prompt_est_tokens": 345,
+       "prompt_exact_tokens": 305
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 0.02,
+       "wall": 0.0
+      },
+      {
+       "stage": "hybrid._vector_search",
+       "end_at": 42.68,
+       "wall": 42.65
+      },
+      {
+       "stage": "hybrid._rerank_scored_with_status",
+       "end_at": 132.83,
+       "wall": 86.39,
+       "reranker_ok": true,
+       "docs": 5
+      },
+      {
+       "stage": "hybrid._expand_parents",
+       "end_at": 132.85,
+       "wall": 0.01
+      },
+      {
+       "stage": "hybrid.get_relevant_documents_with_path",
+       "end_at": 132.85,
+       "wall": 132.83
+      },
+      {
+       "stage": "ollama.generate_stream",
+       "end_at": 214.48,
+       "wall": 81.61,
+       "first_chunk_sec": 68.92,
+       "chunks": 54,
+       "output_chars": 152,
+       "prompt_est_tokens": 2622,
+       "max_tokens": 1024,
+       "prompt_exact_tokens": 2330
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 283.08,
+       "wall": 68.59,
+       "output_chars": 3,
+       "prompt_est_tokens": 2819,
+       "max_tokens": 128,
+       "prompt_exact_tokens": 2526
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 297.49,
+       "wall": 14.4,
+       "output_chars": 145,
+       "prompt_est_tokens": 333,
+       "prompt_exact_tokens": 316
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 297.78,
+       "wall": 0.0
+      }
+     ]
+    },
+    {
+     "case": "aircargo-pdp-scope",
+     "question": "Какие вопросы относятся к персональным данным?",
+     "http": 200,
+     "first_token_sec": 191.897,
+     "last_token_sec": 204.37,
+     "tokens": 61,
+     "answer_tokens": 61,
+     "result_sec": 279.436,
+     "error_sec": null,
+     "total_sec": 279.443,
+     "drain_sec": 0.118,
+     "client_error": null,
+     "route": "auto",
+     "quality": 100,
+     "quality_source": "llm",
+     "sources": 5,
+     "suggested": 3,
+     "memory": {
+      "samples": 90,
+      "swap_used_mb": [
+       9465.25,
+       11654.25
+      ],
+      "free_mb_min": 4,
+      "max_rss_mb": {
+       "postgres": 2,
+       "python": 1879,
+       "ollama": 3552
+      }
+     },
+     "events": [
+      {
+       "at": 0.066,
+       "type": "status"
+      },
+      {
+       "at": 132.04,
+       "type": "token_start"
+      },
+      {
+       "at": 279.436,
+       "type": "result",
+       "quality_score": 100,
+       "quality_source": "llm",
+       "route": "auto"
+      }
+     ],
+     "answer": "Вопросы, относящиеся к персональным данным, включают: согласие, доступ, исправление, удаление, сроки хранения, передачу третьим лицам и трансграничная передача. [N1]",
+     "timeline": [
+      {
+       "stage": "ollama.generate",
+       "end_at": -0.24,
+       "wall": 14.4,
+       "output_chars": 145,
+       "prompt_est_tokens": 333,
+       "prompt_exact_tokens": 316
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 0.05,
+       "wall": 0.0
+      },
+      {
+       "stage": "hybrid._vector_search",
+       "end_at": 42.93,
+       "wall": 42.86
+      },
+      {
+       "stage": "hybrid._rerank_scored_with_status",
+       "end_at": 131.94,
+       "wall": 88.74,
+       "reranker_ok": true,
+       "docs": 5
+      },
+      {
+       "stage": "hybrid._expand_parents",
+       "end_at": 131.97,
+       "wall": 0.02
+      },
+      {
+       "stage": "hybrid.get_relevant_documents_with_path",
+       "end_at": 131.97,
+       "wall": 131.91
+      },
+      {
+       "stage": "ollama.generate_stream",
+       "end_at": 204.64,
+       "wall": 72.64,
+       "first_chunk_sec": 59.9,
+       "chunks": 61,
+       "output_chars": 165,
+       "prompt_est_tokens": 2308,
+       "max_tokens": 1024,
+       "prompt_exact_tokens": 1988
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 265.74,
+       "wall": 61.1,
+       "output_chars": 3,
+       "prompt_est_tokens": 2515,
+       "max_tokens": 128,
+       "prompt_exact_tokens": 2193
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 279.36,
+       "wall": 13.62,
+       "output_chars": 173,
+       "prompt_est_tokens": 345,
+       "prompt_exact_tokens": 296
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 279.6,
+       "wall": 0.0
+      }
+     ]
+    },
+    {
+     "case": "aircargo-pdp-data",
+     "question": "Какие данные нужны для ответа по защите персональных данных?",
+     "http": 200,
+     "first_token_sec": 252.814,
+     "last_token_sec": 266.426,
+     "tokens": 55,
+     "answer_tokens": 55,
+     "result_sec": 349.074,
+     "error_sec": null,
+     "total_sec": 349.074,
+     "drain_sec": 0.141,
+     "client_error": null,
+     "route": "auto",
+     "quality": 100,
+     "quality_source": "llm",
+     "sources": 3,
+     "suggested": 3,
+     "memory": {
+      "samples": 113,
+      "swap_used_mb": [
+       9436.25,
+       10311.75
+      ],
+      "free_mb_min": 4,
+      "max_rss_mb": {
+       "postgres": 3,
+       "python": 1852,
+       "ollama": 3671
+      }
+     },
+     "events": [
+      {
+       "at": 0.057,
+       "type": "status"
+      },
+      {
+       "at": 188.253,
+       "type": "token_start"
+      },
+      {
+       "at": 349.074,
+       "type": "result",
+       "quality_score": 100,
+       "quality_source": "llm",
+       "route": "auto"
+      }
+     ],
+     "answer": "Для ответа по защите персональных данных нужны следующие данные: категория данных, цель обработки, субъект данных, система хранения, срок хранения и ответственный владелец процесса [2].",
+     "timeline": [
+      {
+       "stage": "ollama.generate",
+       "end_at": -0.21,
+       "wall": 13.62,
+       "output_chars": 173,
+       "prompt_est_tokens": 345,
+       "prompt_exact_tokens": 296
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 0.03,
+       "wall": 0.0
+      },
+      {
+       "stage": "hybrid._vector_search",
+       "end_at": 45.42,
+       "wall": 45.38
+      },
+      {
+       "stage": "hybrid._rerank_scored_with_status",
+       "end_at": 188.1,
+       "wall": 142.3,
+       "reranker_ok": true,
+       "docs": 5
+      },
+      {
+       "stage": "hybrid._expand_parents",
+       "end_at": 188.12,
+       "wall": 0.02
+      },
+      {
+       "stage": "hybrid.get_relevant_documents_with_path",
+       "end_at": 188.12,
+       "wall": 188.07
+      },
+      {
+       "stage": "ollama.generate_stream",
+       "end_at": 266.79,
+       "wall": 78.67,
+       "first_chunk_sec": 64.67,
+       "chunks": 55,
+       "output_chars": 185,
+       "prompt_est_tokens": 2636,
+       "max_tokens": 1024,
+       "prompt_exact_tokens": 2319
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 336.77,
+       "wall": 69.95,
+       "output_chars": 3,
+       "prompt_est_tokens": 2846,
+       "max_tokens": 128,
+       "prompt_exact_tokens": 2516
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 348.95,
+       "wall": 12.15,
+       "output_chars": 138,
+       "prompt_est_tokens": 352,
+       "prompt_exact_tokens": 306
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 349.26,
+       "wall": 0.0
+      }
+     ]
+    },
+    {
+     "case": "aircargo-pdp-uncertain",
+     "question": "Когда по персональным данным нельзя давать уверенный ответ?",
+     "http": 200,
+     "first_token_sec": 257.308,
+     "last_token_sec": 267.723,
+     "tokens": 45,
+     "answer_tokens": 45,
+     "result_sec": 348.448,
+     "error_sec": null,
+     "total_sec": 348.451,
+     "drain_sec": 0.151,
+     "client_error": null,
+     "route": "auto",
+     "quality": 100,
+     "quality_source": "llm",
+     "sources": 4,
+     "suggested": 3,
+     "memory": {
+      "samples": 113,
+      "swap_used_mb": [
+       9374.0,
+       11524.0
+      ],
+      "free_mb_min": 4,
+      "max_rss_mb": {
+       "postgres": 2,
+       "python": 1718,
+       "ollama": 3671
+      }
+     },
+     "events": [
+      {
+       "at": 0.058,
+       "type": "status"
+      },
+      {
+       "at": 191.155,
+       "type": "token_start"
+      },
+      {
+       "at": 348.448,
+       "type": "result",
+       "quality_score": 100,
+       "quality_source": "llm",
+       "route": "auto"
+      }
+     ],
+     "answer": "По персональным данным нельзя давать уверенный ответ, если неизвестно правовое основание обработки или запрос касается реального инцидента с утечкой [1].",
+     "timeline": [
+      {
+       "stage": "ollama.generate",
+       "end_at": -0.28,
+       "wall": 12.15,
+       "output_chars": 138,
+       "prompt_est_tokens": 352,
+       "prompt_exact_tokens": 306
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 0.04,
+       "wall": 0.0
+      },
+      {
+       "stage": "hybrid._vector_search",
+       "end_at": 47.43,
+       "wall": 47.38
+      },
+      {
+       "stage": "hybrid._rerank_scored_with_status",
+       "end_at": 190.95,
+       "wall": 143.28,
+       "reranker_ok": true,
+       "docs": 5
+      },
+      {
+       "stage": "hybrid._expand_parents",
+       "end_at": 191.0,
+       "wall": 0.02
+      },
+      {
+       "stage": "hybrid.get_relevant_documents_with_path",
+       "end_at": 191.01,
+       "wall": 190.96
+      },
+      {
+       "stage": "ollama.generate_stream",
+       "end_at": 268.03,
+       "wall": 76.98,
+       "first_chunk_sec": 66.21,
+       "chunks": 45,
+       "output_chars": 153,
+       "prompt_est_tokens": 2636,
+       "max_tokens": 1024,
+       "prompt_exact_tokens": 2266
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 334.37,
+       "wall": 66.32,
+       "output_chars": 3,
+       "prompt_est_tokens": 2834,
+       "max_tokens": 128,
+       "prompt_exact_tokens": 2453
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 348.4,
+       "wall": 14.03,
+       "output_chars": 177,
+       "prompt_est_tokens": 342,
+       "prompt_exact_tokens": 304
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 348.67,
+       "wall": 0.0
+      }
+     ]
+    },
+    {
+     "case": "aircargo-claims-delay",
+     "question": "Клиент требует компенсацию за задержку грузового рейса — что нужно для первичного ответа?",
+     "http": 200,
+     "first_token_sec": 281.132,
+     "last_token_sec": 294.274,
+     "tokens": 57,
+     "answer_tokens": 57,
+     "result_sec": 375.717,
+     "error_sec": null,
+     "total_sec": 375.722,
+     "drain_sec": 0.149,
+     "client_error": null,
+     "route": "auto",
+     "quality": 100,
+     "quality_source": "llm",
+     "sources": 3,
+     "suggested": 3,
+     "memory": {
+      "samples": 121,
+      "swap_used_mb": [
+       8257.5,
+       9900.25
+      ],
+      "free_mb_min": 5,
+      "max_rss_mb": {
+       "postgres": 2,
+       "python": 1624,
+       "ollama": 3695
+      }
+     },
+     "events": [
+      {
+       "at": 0.071,
+       "type": "status"
+      },
+      {
+       "at": 214.555,
+       "type": "token_start"
+      },
+      {
+       "at": 375.717,
+       "type": "result",
+       "quality_score": 100,
+       "quality_source": "llm",
+       "route": "auto"
+      }
+     ],
+     "answer": "Нужны AWB/booking, номер рейса, маршрут, договорные условия, фактические даты, уведомления, причина задержки и расчет требования. Ассистент не признает долг или вину. [1]",
+     "timeline": [
+      {
+       "stage": "ollama.generate",
+       "end_at": -0.21,
+       "wall": 14.03,
+       "output_chars": 177,
+       "prompt_est_tokens": 342,
+       "prompt_exact_tokens": 304
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 0.06,
+       "wall": 0.0
+      },
+      {
+       "stage": "hybrid._vector_search",
+       "end_at": 56.99,
+       "wall": 56.93
+      },
+      {
+       "stage": "hybrid._rerank_scored_with_status",
+       "end_at": 214.3,
+       "wall": 152.75,
+       "reranker_ok": true,
+       "docs": 5
+      },
+      {
+       "stage": "hybrid._expand_parents",
+       "end_at": 214.37,
+       "wall": 0.04
+      },
+      {
+       "stage": "hybrid.get_relevant_documents_with_path",
+       "end_at": 214.38,
+       "wall": 214.31
+      },
+      {
+       "stage": "ollama.generate_stream",
+       "end_at": 294.62,
+       "wall": 80.21,
+       "first_chunk_sec": 66.67,
+       "chunks": 57,
+       "output_chars": 170,
+       "prompt_est_tokens": 2611,
+       "max_tokens": 1024,
+       "prompt_exact_tokens": 2338
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 363.19,
+       "wall": 68.55,
+       "output_chars": 3,
+       "prompt_est_tokens": 2816,
+       "max_tokens": 128,
+       "prompt_exact_tokens": 2536
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 375.67,
+       "wall": 12.47,
+       "output_chars": 116,
+       "prompt_est_tokens": 352,
+       "prompt_exact_tokens": 317
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 375.91,
+       "wall": 0.0
+      }
+     ]
+    },
+    {
+     "case": "aircargo-claims-damage",
+     "question": "Груз пришёл с повреждением упаковки — какие доказательства запросить?",
+     "http": 200,
+     "first_token_sec": 244.779,
+     "last_token_sec": 258.2,
+     "tokens": 57,
+     "answer_tokens": 57,
+     "result_sec": 343.116,
+     "error_sec": null,
+     "total_sec": 343.116,
+     "drain_sec": 0.143,
+     "client_error": null,
+     "route": "auto",
+     "quality": 100,
+     "quality_source": "llm",
+     "sources": 3,
+     "suggested": 3,
+     "memory": {
+      "samples": 111,
+      "swap_used_mb": [
+       9209.5,
+       10778.25
+      ],
+      "free_mb_min": 7,
+      "max_rss_mb": {
+       "postgres": 3,
+       "python": 1733,
+       "ollama": 3709
+      }
+     },
+     "events": [
+      {
+       "at": 0.05,
+       "type": "status"
+      },
+      {
+       "at": 175.587,
+       "type": "token_start"
+      },
+      {
+       "at": 343.116,
+       "type": "result",
+       "quality_score": 100,
+       "quality_source": "llm",
+       "route": "auto"
+      }
+     ],
+     "answer": "Акт повреждения, фото, вес, пломбы, данные приемки/выдачи, AWB, складские записи, температурный лог при необходимости и подтверждение, когда дефект обнаружен. [2]",
+     "timeline": [
+      {
+       "stage": "ollama.generate",
+       "end_at": -0.21,
+       "wall": 12.47,
+       "output_chars": 116,
+       "prompt_est_tokens": 352,
+       "prompt_exact_tokens": 317
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 0.03,
+       "wall": 0.0
+      },
+      {
+       "stage": "hybrid._vector_search",
+       "end_at": 46.14,
+       "wall": 46.09
+      },
+      {
+       "stage": "hybrid._rerank_scored_with_status",
+       "end_at": 175.47,
+       "wall": 129.05,
+       "reranker_ok": true,
+       "docs": 5
+      },
+      {
+       "stage": "hybrid._expand_parents",
+       "end_at": 175.51,
+       "wall": 0.02
+      },
+      {
+       "stage": "hybrid.get_relevant_documents_with_path",
+       "end_at": 175.52,
+       "wall": 175.47
+      },
+      {
+       "stage": "ollama.generate_stream",
+       "end_at": 258.53,
+       "wall": 83.0,
+       "first_chunk_sec": 69.25,
+       "chunks": 57,
+       "output_chars": 162,
+       "prompt_est_tokens": 2560,
+       "max_tokens": 1024,
+       "prompt_exact_tokens": 2355
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 328.42,
+       "wall": 69.88,
+       "output_chars": 3,
+       "prompt_est_tokens": 2763,
+       "max_tokens": 128,
+       "prompt_exact_tokens": 2553
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 343.0,
+       "wall": 14.57,
+       "output_chars": 162,
+       "prompt_est_tokens": 338,
+       "prompt_exact_tokens": 308
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 343.29,
+       "wall": 0.0
+      }
+     ]
+    },
+    {
+     "case": "aircargo-claims-lawyer",
+     "question": "Когда по претензии нужно подключать юриста или compliance?",
+     "http": 200,
+     "first_token_sec": 252.419,
+     "last_token_sec": 283.903,
+     "tokens": 126,
+     "answer_tokens": 127,
+     "result_sec": 374.33,
+     "error_sec": null,
+     "total_sec": 374.338,
+     "drain_sec": 0.189,
+     "client_error": null,
+     "route": "auto",
+     "quality": 100,
+     "quality_source": "llm",
+     "sources": 3,
+     "suggested": 3,
+     "memory": {
+      "samples": 121,
+      "swap_used_mb": [
+       8626.0,
+       10184.0
+      ],
+      "free_mb_min": 6,
+      "max_rss_mb": {
+       "postgres": 3,
+       "python": 1779,
+       "ollama": 3754
+      }
+     },
+     "events": [
+      {
+       "at": 0.037,
+       "type": "status"
+      },
+      {
+       "at": 176.778,
+       "type": "token_start"
+      },
+      {
+       "at": 374.33,
+       "type": "result",
+       "quality_score": 100,
+       "quality_source": "llm",
+       "route": "auto"
+      }
+     ],
+     "answer": "По претензии нужно подключать юриста или compliance в следующих случаях:  \n- при крупной сумме,  \n- угрозе суда,  \n- пропуске срока,  \n- встречных требованиях,  \n- при наличии опасных грузов (dangerous goods),  \n- при вопросах таможни, безопасности, санкций,  \n- при наличии данных о грузе, валютных платежах, страховом случае или нестандартном лимите ответственности.  \n\nЭто указано в [3].",
+     "timeline": [
+      {
+       "stage": "ollama.generate",
+       "end_at": -0.27,
+       "wall": 14.57,
+       "output_chars": 162,
+       "prompt_est_tokens": 338,
+       "prompt_exact_tokens": 308
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 0.03,
+       "wall": 0.0
+      },
+      {
+       "stage": "hybrid._vector_search",
+       "end_at": 46.97,
+       "wall": 46.93
+      },
+      {
+       "stage": "hybrid._rerank_scored_with_status",
+       "end_at": 176.56,
+       "wall": 129.24,
+       "reranker_ok": true,
+       "docs": 5
+      },
+      {
+       "stage": "hybrid._expand_parents",
+       "end_at": 176.64,
+       "wall": 0.03
+      },
+      {
+       "stage": "hybrid.get_relevant_documents_with_path",
+       "end_at": 176.64,
+       "wall": 176.6
+      },
+      {
+       "stage": "ollama.generate_stream",
+       "end_at": 284.24,
+       "wall": 107.58,
+       "first_chunk_sec": 75.77,
+       "chunks": 126,
+       "output_chars": 390,
+       "prompt_est_tokens": 2633,
+       "max_tokens": 1024,
+       "prompt_exact_tokens": 2410
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 357.41,
+       "wall": 73.16,
+       "output_chars": 3,
+       "prompt_est_tokens": 2910,
+       "max_tokens": 128,
+       "prompt_exact_tokens": 2670
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 374.25,
+       "wall": 16.84,
+       "output_chars": 170,
+       "prompt_est_tokens": 421,
+       "prompt_exact_tokens": 395
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 374.56,
+       "wall": 0.0
+      }
+     ]
+    },
+    {
+     "case": "aircargo-claims-forbidden",
+     "question": "Что нельзя делать ассистенту при работе с претензией?",
+     "http": 200,
+     "first_token_sec": 243.388,
+     "last_token_sec": 258.123,
+     "tokens": 63,
+     "answer_tokens": 63,
+     "result_sec": 346.764,
+     "error_sec": null,
+     "total_sec": 346.765,
+     "drain_sec": 0.182,
+     "client_error": null,
+     "route": "auto",
+     "quality": 100,
+     "quality_source": "llm",
+     "sources": 3,
+     "suggested": 3,
+     "memory": {
+      "samples": 112,
+      "swap_used_mb": [
+       9407.25,
+       10825.25
+      ],
+      "free_mb_min": 5,
+      "max_rss_mb": {
+       "postgres": 2,
+       "python": 1713,
+       "ollama": 3754
+      }
+     },
+     "events": [
+      {
+       "at": 0.037,
+       "type": "status"
+      },
+      {
+       "at": 175.539,
+       "type": "token_start"
+      },
+      {
+       "at": 346.764,
+       "type": "result",
+       "quality_score": 100,
+       "quality_source": "llm",
+       "route": "auto"
+      }
+     ],
+     "answer": "Нельзя признавать долг или вину компании, обещать выплату, рассчитывать итоговый ущерб или отправлять финальную претензионную позицию без утверждения Legal/Claims. [1]",
+     "timeline": [
+      {
+       "stage": "ollama.generate",
+       "end_at": -0.28,
+       "wall": 16.84,
+       "output_chars": 170,
+       "prompt_est_tokens": 421,
+       "prompt_exact_tokens": 395
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 0.02,
+       "wall": 0.0
+      },
+      {
+       "stage": "hybrid._vector_search",
+       "end_at": 53.02,
+       "wall": 52.99
+      },
+      {
+       "stage": "hybrid._rerank_scored_with_status",
+       "end_at": 175.38,
+       "wall": 121.96,
+       "reranker_ok": true,
+       "docs": 5
+      },
+      {
+       "stage": "hybrid._expand_parents",
+       "end_at": 175.46,
+       "wall": 0.02
+      },
+      {
+       "stage": "hybrid.get_relevant_documents_with_path",
+       "end_at": 175.47,
+       "wall": 175.43
+      },
+      {
+       "stage": "ollama.generate_stream",
+       "end_at": 258.41,
+       "wall": 82.93,
+       "first_chunk_sec": 67.9,
+       "chunks": 63,
+       "output_chars": 167,
+       "prompt_est_tokens": 2564,
+       "max_tokens": 1024,
+       "prompt_exact_tokens": 2385
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 332.08,
+       "wall": 73.64,
+       "output_chars": 3,
+       "prompt_est_tokens": 2766,
+       "max_tokens": 128,
+       "prompt_exact_tokens": 2589
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 346.66,
+       "wall": 14.55,
+       "output_chars": 159,
+       "prompt_est_tokens": 333,
+       "prompt_exact_tokens": 324
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 347.03,
+       "wall": 0.0
+      }
+     ]
+    },
+    {
+     "case": "aircargo-expedition-vs-carrier",
+     "question": "Чем экспедитор в авиагрузе отличается от авиаперевозчика?",
+     "http": 200,
+     "first_token_sec": 161.547,
+     "last_token_sec": 181.152,
+     "tokens": 84,
+     "answer_tokens": 84,
+     "result_sec": 275.096,
+     "error_sec": null,
+     "total_sec": 275.097,
+     "drain_sec": 0.215,
+     "client_error": null,
+     "route": "auto",
+     "quality": 100,
+     "quality_source": "llm",
+     "sources": 3,
+     "suggested": 3,
+     "memory": {
+      "samples": 89,
+      "swap_used_mb": [
+       9129.0,
+       11766.5
+      ],
+      "free_mb_min": 7,
+      "max_rss_mb": {
+       "postgres": 2,
+       "python": 1939,
+       "ollama": 3733
+      }
+     },
+     "events": [
+      {
+       "at": 0.089,
+       "type": "status"
+      },
+      {
+       "at": 68.67,
+       "type": "token_start"
+      },
+      {
+       "at": 275.096,
+       "type": "result",
+       "quality_score": 100,
+       "quality_source": "llm",
+       "route": "auto"
+      }
+     ],
+     "answer": "Экспедитор организует авиагрузовую цепочку, booking, документы, terminal handover, first/last mile и взаимодействие с агентами/GHA, а авиаперевозчик выполняет воздушную перевозку по AWB. Ответственность нельзя определять без договора и документов. [1]",
+     "timeline": [
+      {
+       "stage": "ollama.generate",
+       "end_at": -0.3,
+       "wall": 14.55,
+       "output_chars": 159,
+       "prompt_est_tokens": 333,
+       "prompt_exact_tokens": 324
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 0.07,
+       "wall": 0.0
+      },
+      {
+       "stage": "hybrid._vector_search",
+       "end_at": 22.76,
+       "wall": 22.67
+      },
+      {
+       "stage": "hybrid._rerank_scored_with_status",
+       "end_at": 68.53,
+       "wall": 44.84,
+       "reranker_ok": true,
+       "docs": 5
+      },
+      {
+       "stage": "hybrid._expand_parents",
+       "end_at": 68.59,
+       "wall": 0.05
+      },
+      {
+       "stage": "hybrid.get_relevant_documents_with_path",
+       "end_at": 68.59,
+       "wall": 68.51
+      },
+      {
+       "stage": "ollama.generate_stream",
+       "end_at": 181.59,
+       "wall": 112.99,
+       "first_chunk_sec": 92.9,
+       "chunks": 84,
+       "output_chars": 251,
+       "prompt_est_tokens": 2622,
+       "max_tokens": 1024,
+       "prompt_exact_tokens": 2381
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 259.03,
+       "wall": 77.39,
+       "output_chars": 3,
+       "prompt_est_tokens": 2850,
+       "max_tokens": 128,
+       "prompt_exact_tokens": 2606
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 274.98,
+       "wall": 15.93,
+       "output_chars": 148,
+       "prompt_est_tokens": 354,
+       "prompt_exact_tokens": 332
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 275.37,
+       "wall": 0.0
+      }
+     ]
+    },
+    {
+     "case": "aircargo-expedition-mawb-hawb",
+     "question": "Клиент путает MAWB и HAWB — какие факты нужны для ответа?",
+     "http": 200,
+     "first_token_sec": 186.658,
+     "last_token_sec": 201.256,
+     "tokens": 57,
+     "answer_tokens": 57,
+     "result_sec": 290.288,
+     "error_sec": null,
+     "total_sec": 290.29,
+     "drain_sec": 0.22,
+     "client_error": null,
+     "route": "auto",
+     "quality": 100,
+     "quality_source": "llm",
+     "sources": 3,
+     "suggested": 3,
+     "memory": {
+      "samples": 94,
+      "swap_used_mb": [
+       9265.0,
+       10782.75
+      ],
+      "free_mb_min": 6,
+      "max_rss_mb": {
+       "postgres": 2,
+       "python": 1922,
+       "ollama": 3393
+      }
+     },
+     "events": [
+      {
+       "at": 0.06,
+       "type": "status"
+      },
+      {
+       "at": 110.471,
+       "type": "token_start"
+      },
+      {
+       "at": 290.288,
+       "type": "result",
+       "quality_score": 100,
+       "quality_source": "llm",
+       "route": "auto"
+      }
+     ],
+     "answer": "Уточнить, кто указан shipper/consignee, есть ли house shipment, кто выпустил HAWB, какой MAWB связан с рейсом, где груз в terminal handover и какие документы подтверждены. [2]",
+     "timeline": [
+      {
+       "stage": "ollama.generate",
+       "end_at": -0.34,
+       "wall": 15.93,
+       "output_chars": 148,
+       "prompt_est_tokens": 354,
+       "prompt_exact_tokens": 332
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 0.05,
+       "wall": 0.0
+      },
+      {
+       "stage": "hybrid._vector_search",
+       "end_at": 43.02,
+       "wall": 42.97
+      },
+      {
+       "stage": "hybrid._rerank_scored_with_status",
+       "end_at": 109.4,
+       "wall": 66.07,
+       "reranker_ok": true,
+       "docs": 5
+      },
+      {
+       "stage": "hybrid._expand_parents",
+       "end_at": 109.59,
+       "wall": 0.06
+      },
+      {
+       "stage": "hybrid.get_relevant_documents_with_path",
+       "end_at": 109.59,
+       "wall": 109.54
+      },
+      {
+       "stage": "ollama.generate_stream",
+       "end_at": 201.6,
+       "wall": 91.62,
+       "first_chunk_sec": 76.66,
+       "chunks": 57,
+       "output_chars": 175,
+       "prompt_est_tokens": 2624,
+       "max_tokens": 1024,
+       "prompt_exact_tokens": 2530
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 277.96,
+       "wall": 76.35,
+       "output_chars": 3,
+       "prompt_est_tokens": 2824,
+       "max_tokens": 128,
+       "prompt_exact_tokens": 2728
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 290.22,
+       "wall": 12.23,
+       "output_chars": 112,
+       "prompt_est_tokens": 325,
+       "prompt_exact_tokens": 322
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 290.56,
+       "wall": 0.0
+      }
+     ]
+    },
+    {
+     "case": "aircargo-expedition-risks",
+     "question": "Где основные риски в ответе по авиаэкспедиции?",
+     "http": 200,
+     "first_token_sec": 235.874,
+     "last_token_sec": 253.584,
+     "tokens": 75,
+     "answer_tokens": 75,
+     "result_sec": 340.469,
+     "error_sec": null,
+     "total_sec": 340.491,
+     "drain_sec": 0.108,
+     "client_error": null,
+     "route": "auto",
+     "quality": 100,
+     "quality_source": "llm",
+     "sources": 3,
+     "suggested": 3,
+     "memory": {
+      "samples": 110,
+      "swap_used_mb": [
+       9766.25,
+       11506.5
+      ],
+      "free_mb_min": 6,
+      "max_rss_mb": {
+       "postgres": 2,
+       "python": 1628,
+       "ollama": 3716
+      }
+     },
+     "events": [
+      {
+       "at": 0.05,
+       "type": "status"
+      },
+      {
+       "at": 165.193,
+       "type": "token_start"
+      },
+      {
+       "at": 340.469,
+       "type": "result",
+       "quality_score": 100,
+       "quality_source": "llm",
+       "route": "auto"
+      }
+     ],
+     "answer": "Основные риски в экспедиторском ответе — это смешивание ответственности экспедитора, авиаперевозчика и наземного плеча; отдельно проверяются missed cutoff, customs/security hold, DG/sanctions, страхование, temperature log и сроки претензий [N].",
+     "timeline": [
+      {
+       "stage": "ollama.generate",
+       "end_at": -0.3,
+       "wall": 12.23,
+       "output_chars": 112,
+       "prompt_est_tokens": 325,
+       "prompt_exact_tokens": 322
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 0.04,
+       "wall": 0.0
+      },
+      {
+       "stage": "hybrid._vector_search",
+       "end_at": 61.58,
+       "wall": 61.54
+      },
+      {
+       "stage": "hybrid._rerank_scored_with_status",
+       "end_at": 165.03,
+       "wall": 103.15,
+       "reranker_ok": true,
+       "docs": 5
+      },
+      {
+       "stage": "hybrid._expand_parents",
+       "end_at": 165.08,
+       "wall": 0.04
+      },
+      {
+       "stage": "hybrid.get_relevant_documents_with_path",
+       "end_at": 165.08,
+       "wall": 165.04
+      },
+      {
+       "stage": "ollama.generate_stream",
+       "end_at": 253.99,
+       "wall": 88.86,
+       "first_chunk_sec": 70.72,
+       "chunks": 75,
+       "output_chars": 244,
+       "prompt_est_tokens": 2591,
+       "max_tokens": 1024,
+       "prompt_exact_tokens": 2361
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 326.07,
+       "wall": 72.07,
+       "output_chars": 3,
+       "prompt_est_tokens": 2817,
+       "max_tokens": 128,
+       "prompt_exact_tokens": 2580
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 340.37,
+       "wall": 14.27,
+       "output_chars": 167,
+       "prompt_est_tokens": 346,
+       "prompt_exact_tokens": 344
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 340.66,
+       "wall": 0.02
+      }
+     ]
+    },
+    {
+     "case": "aircargo-road-cutoff",
+     "question": "Машина идёт на терминал как road feeder service — что проверить до cut-off?",
+     "http": 200,
+     "first_token_sec": 217.475,
+     "last_token_sec": 231.209,
+     "tokens": 59,
+     "answer_tokens": 59,
+     "result_sec": 315.825,
+     "error_sec": null,
+     "total_sec": 315.825,
+     "drain_sec": 0.078,
+     "client_error": null,
+     "route": "auto",
+     "quality": 100,
+     "quality_source": "llm",
+     "sources": 3,
+     "suggested": 3,
+     "memory": {
+      "samples": 102,
+      "swap_used_mb": [
+       8728.5,
+       12273.75
+      ],
+      "free_mb_min": 4,
+      "max_rss_mb": {
+       "postgres": 3,
+       "python": 1757,
+       "ollama": 3722
+      }
+     },
+     "events": [
+      {
+       "at": 0.091,
+       "type": "status"
+      },
+      {
+       "at": 143.314,
+       "type": "token_start"
+      },
+      {
+       "at": 315.825,
+       "type": "result",
+       "quality_score": 100,
+       "quality_source": "llm",
+       "route": "auto"
+      }
+     ],
+     "answer": "Сверить заявку, AWB/booking, CMR/ТТН, airport pair, слот терминала, terminal pass, водителя/ТС, пломбы, GPS, температурный режим и запас времени до cut-off. [1]",
+     "timeline": [
+      {
+       "stage": "ollama.generate",
+       "end_at": -0.25,
+       "wall": 14.27,
+       "output_chars": 167,
+       "prompt_est_tokens": 346,
+       "prompt_exact_tokens": 344
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 0.05,
+       "wall": 0.02
+      },
+      {
+       "stage": "hybrid._vector_search",
+       "end_at": 46.46,
+       "wall": 46.4
+      },
+      {
+       "stage": "hybrid._rerank_scored_with_status",
+       "end_at": 142.64,
+       "wall": 94.14,
+       "reranker_ok": true,
+       "docs": 5
+      },
+      {
+       "stage": "hybrid._expand_parents",
+       "end_at": 142.77,
+       "wall": 0.1
+      },
+      {
+       "stage": "hybrid.get_relevant_documents_with_path",
+       "end_at": 142.89,
+       "wall": 142.83
+      },
+      {
+       "stage": "ollama.generate_stream",
+       "end_at": 231.52,
+       "wall": 88.41,
+       "first_chunk_sec": 74.35,
+       "chunks": 59,
+       "output_chars": 160,
+       "prompt_est_tokens": 2547,
+       "max_tokens": 1024,
+       "prompt_exact_tokens": 2381
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 303.85,
+       "wall": 72.3,
+       "output_chars": 3,
+       "prompt_est_tokens": 2744,
+       "max_tokens": 128,
+       "prompt_exact_tokens": 2581
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 315.71,
+       "wall": 11.84,
+       "output_chars": 116,
+       "prompt_est_tokens": 335,
+       "prompt_exact_tokens": 312
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 316.04,
+       "wall": 0.0
+      }
+     ]
+    },
+    {
+     "case": "aircargo-road-penalty",
+     "question": "GPS показывает опоздание, но рейс ещё не закрыт — можно сразу обещать клиенту штраф?",
+     "http": 200,
+     "first_token_sec": 243.553,
+     "last_token_sec": 260.143,
+     "tokens": 72,
+     "answer_tokens": 72,
+     "result_sec": 345.18,
+     "error_sec": null,
+     "total_sec": 345.181,
+     "drain_sec": 0.082,
+     "client_error": null,
+     "route": "auto",
+     "quality": 100,
+     "quality_source": "llm",
+     "sources": 3,
+     "suggested": 3,
+     "memory": {
+      "samples": 112,
+      "swap_used_mb": [
+       8531.5,
+       10105.0
+      ],
+      "free_mb_min": 4,
+      "max_rss_mb": {
+       "postgres": 2,
+       "python": 1771,
+       "ollama": 3722
+      }
+     },
+     "events": [
+      {
+       "at": 0.127,
+       "type": "status"
+      },
+      {
+       "at": 165.178,
+       "type": "token_start"
+      },
+      {
+       "at": 345.18,
+       "type": "result",
+       "quality_score": 100,
+       "quality_source": "llm",
+       "route": "auto"
+      }
+     ],
+     "answer": "Нет. Можно сразу обещать клиенту штраф — нет. Нужно собрать GPS-трек, CMR/ТТН, terminal timestamps, переписку с перевозчиком и договорное условие о штрафе; позицию согласуют Logistics/Claims/Legal. [2]",
+     "timeline": [
+      {
+       "stage": "ollama.generate",
+       "end_at": -0.22,
+       "wall": 11.84,
+       "output_chars": 116,
+       "prompt_est_tokens": 335,
+       "prompt_exact_tokens": 312
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 0.11,
+       "wall": 0.0
+      },
+      {
+       "stage": "hybrid._vector_search",
+       "end_at": 45.93,
+       "wall": 45.81
+      },
+      {
+       "stage": "hybrid._rerank_scored_with_status",
+       "end_at": 165.05,
+       "wall": 118.33,
+       "reranker_ok": true,
+       "docs": 5
+      },
+      {
+       "stage": "hybrid._expand_parents",
+       "end_at": 165.09,
+       "wall": 0.02
+      },
+      {
+       "stage": "hybrid.get_relevant_documents_with_path",
+       "end_at": 165.09,
+       "wall": 164.97
+      },
+      {
+       "stage": "ollama.generate_stream",
+       "end_at": 260.46,
+       "wall": 95.36,
+       "first_chunk_sec": 78.4,
+       "chunks": 72,
+       "output_chars": 201,
+       "prompt_est_tokens": 2624,
+       "max_tokens": 1024,
+       "prompt_exact_tokens": 2359
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 332.22,
+       "wall": 71.73,
+       "output_chars": 3,
+       "prompt_est_tokens": 2836,
+       "max_tokens": 128,
+       "prompt_exact_tokens": 2572
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 345.03,
+       "wall": 12.8,
+       "output_chars": 127,
+       "prompt_est_tokens": 350,
+       "prompt_exact_tokens": 346
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 345.3,
+       "wall": 0.0
+      }
+     ]
+    },
+    {
+     "case": "aircargo-road-seal",
+     "question": "Пломба на машине не совпала с terminal record — какие источники нужны?",
+     "http": 200,
+     "first_token_sec": 286.436,
+     "last_token_sec": 302.052,
+     "tokens": 58,
+     "answer_tokens": 58,
+     "result_sec": 391.852,
+     "error_sec": null,
+     "total_sec": 391.856,
+     "drain_sec": 0.076,
+     "client_error": null,
+     "route": "auto",
+     "quality": 100,
+     "quality_source": "llm",
+     "sources": 4,
+     "suggested": 3,
+     "memory": {
+      "samples": 126,
+      "swap_used_mb": [
+       9309.0,
+       10978.25
+      ],
+      "free_mb_min": 6,
+      "max_rss_mb": {
+       "postgres": 3,
+       "python": 1781,
+       "ollama": 3782
+      }
+     },
+     "events": [
+      {
+       "at": 0.033,
+       "type": "status"
+      },
+      {
+       "at": 210.977,
+       "type": "token_start"
+      },
+      {
+       "at": 391.852,
+       "type": "result",
+       "quality_score": 100,
+       "quality_source": "llm",
+       "route": "auto"
+      }
+     ],
+     "answer": "Нужны CMR/ТТН, журнал пломб, фото до/после handover, акт терминала, AWB/booking, GPS, данные водителя и запись, кто обнаружил расхождение. [N]",
+     "timeline": [
+      {
+       "stage": "ollama.generate",
+       "end_at": -0.24,
+       "wall": 12.8,
+       "output_chars": 127,
+       "prompt_est_tokens": 350,
+       "prompt_exact_tokens": 346
+      },
+      {
+       "stage": "vectordb.manager.get_retriever",
+       "end_at": 0.02,
+       "wall": 0.0
+      },
+      {
+       "stage": "hybrid._vector_search",
+       "end_at": 47.31,
+       "wall": 47.28
+      },
+      {
+       "stage": "hybrid._rerank_scored_with_status",
+       "end_at": 210.81,
+       "wall": 163.12,
+       "reranker_ok": true,
+       "docs": 5
+      },
+      {
+       "stage": "hybrid._expand_parents",
+       "end_at": 210.87,
+       "wall": 0.04
+      },
+      {
+       "stage": "hybrid.get_relevant_documents_with_path",
+       "end_at": 210.88,
+       "wall": 210.85
+      },
+      {
+       "stage": "ollama.generate_stream",
+       "end_at": 302.5,
+       "wall": 91.59,
+       "first_chunk_sec": 75.53,
+       "chunks": 58,
+       "output_chars": 142,
+       "prompt_est_tokens": 2636,
+       "max_tokens": 1024,
+       "prompt_exact_tokens": 2537
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 378.55,
+       "wall": 76.03,
+       "output_chars": 3,
+       "prompt_est_tokens": 2831,
+       "max_tokens": 128,
+       "prompt_exact_tokens": 2739
+      },
+      {
+       "stage": "ollama.generate",
+       "end_at": 391.77,
+       "wall": 13.2,
+       "output_chars": 114,
+       "prompt_est_tokens": 324,
+       "prompt_exact_tokens": 330
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "retrieval_runs": [],
+ "index": {
+  "rag_docs_aircargo": {
+   "chunks": 5589,
+   "sha256_sorted_texts": "b7cdcac13df472600c9cb4933325260dc3914da09f72ffcb98b2c8e3cfbe4b57"
+  }
+ }
+}

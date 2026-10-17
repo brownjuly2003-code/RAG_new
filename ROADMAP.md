@@ -77,9 +77,9 @@ Each step is a slice of its own
    and evaluates the answer in 29 s. The stop was memory: over the thirty, swap grew from
    764 MB to 4,117 MB, the API and the model were paged out, and question 9's vector search
    alone took 147 s. Two findings for steps 4 and 5: the 8-GB Mac does not hold the API and a
-   model through a long series without swapping, and every live run on this stand logged a
-   retriever built without its BM25 index — retrieval vector-only
-   ([evidence row](EVIDENCE_INDEX.md)).
+   model through a long series without swapping; the BM25 warning every live run logged is the
+   startup tenant `default`'s — the questions' tenant restores BM25 at the first question and
+   retrieves hybrid (corrected 2026-10-16; [evidence row](EVIDENCE_INDEX.md)).
 4. **Julia's production model — decided 2026-10-16: Qwen3-4B-Instruct-2507** (Ollama tag
    `qwen3:4b-instruct-2507-q4_K_M`, digest `0edcdef34593…`), the session's recommendation, to
    which she answered «Согласна с тобой» (02:11 UTC). Why: the judge on all 100 cases gave it
@@ -89,11 +89,32 @@ Each step is a slice of its own
    qwen3:1.7b's ~200 s, which the judge puts behind it (after correcting for six pairs the 4B
    is apart from qwen3:1.7b only, [evidence row](EVIDENCE_INDEX.md)). No SLO is named: research acceptance on
    the Mac is still not product acceptance (phase Q below), and no quality default flips.
-   Next, a slice of its own (rule (a), then (c)): make it the code default — `qwen2.5:7b`
-   still stands in `config/settings.py`, `config/providers.yml`, `.env.example` and the
-   deployment files — with an E2E test that reads the model the API asks Ollama for, then
-   time it in the live chat 1 → 5 → 30 under the stop rule, its forecasts from the 2026-10-14
-   record. The 4B takes more memory than qwen3:1.7b, whose thirty already stopped on swap.
+   **The code default since 2026-10-16, `7a99c45` (rule (a)):** `config/settings.py`,
+   `config/providers.yml` (listed, the Ollama defaults, `local-first`, the GraceKelly
+   fallback), `.env.example`, the deployment files and the quickstarts name the 4B; the chat's
+   stream and `/api/ask`, on a clean `Settings()`, ask a fake Ollama for it and no other — red
+   on `26fcb4a`, green after ([evidence row](EVIDENCE_INDEX.md)). **How often the chat would
+   hand its answers to a person (rule (c)):** the chat's rule — the model's own score, `auto`
+   at 80 — replayed on the 4B's 100 judged answers sends 2 of 100 to `human` (Wilson
+   0.6–7.0 %), both declines; 10 of the judge's 12 bad answers go `auto`: the model scores 89
+   of its answers 100. An estimate of the rule on the test set, not a chat run, and not the
+   widget's rule ([evidence row](EVIDENCE_INDEX.md)). What gate should send an answer to a
+   person is Julia's decision. **The first live series (2026-10-16, 20:12–21:12 UTC, stand
+   `7a99c45`) is not the 4B's:** the stand's deployment environment pins
+   `OLLAMA_MODEL_NAME=qwen2.5:7b`, and the stream's suggested questions, which read that
+   setting, loaded the 7B (about 4.7 GB) beside the 4B after every answer; its thirty stopped
+   at question 2 on a 503 of the session store's 60-s cooldown after a 2-s database timeout
+   under swap — met through the runner's own session ids, which a web-chat visitor's first
+   question does not send. Fixed in `19beeb1` (rule (a)): the suggestions follow the answer's
+   model — with the 7B pinned, the stream's three calls ask the 4B, red on `da134d4`. Then
+   the live chat 1 → 5 → 30 on `19beeb1` under the stop rule, plan and forecasts (340 s,
+   then 400 s) in `cf25593` (rule (c), 2026-10-16 21:27 – 10-17 01:48 UTC): the whole answer
+   median about 300 s — one question 281 s, five median 322 s, the thirty rerun (its first
+   stopped at question 16 on the test client's expired token, `25ed888`) median 320 s
+   (196–476 s); 2 of 47 past the 400-s forecast, none near the stop. All 51 answers `auto`,
+   49 scored 100 by the model: the chat offered no handover. The wall is memory, not time:
+   swap grew 600–700 MB a question to 12.3 GB, and Ollama's runner alone grows about 312 MB
+   a request ([evidence row](EVIDENCE_INDEX.md)).
    Her answer is the explicit decision the stop-list asks of a model swap, for this one model;
    the no-flip rule is about phase Q's retrieval and generation defaults, not this one.
 5. **Then the speed levers, one at a time, each measured:** fewer rerank candidates first
