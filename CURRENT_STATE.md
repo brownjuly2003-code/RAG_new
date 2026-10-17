@@ -7,7 +7,7 @@ Audits: [Astra](docs/audits/audit_asta_30_09_26.md), [GLM](docs/audits/audit_glm
 
 ### Now — one plan (2026-10-17)
 
-Julia, 2026-10-17: «Нужно продумать и переписать общий план проекта, чтобы он был последовательным и включал все аспекты». [`PLAN.md`](PLAN.md) is that plan: goal and «done», the measured state, one measurement on the client's path for every decision, stages 1–8 with their Mac hours and acceptance, what became of every earlier stream (§7), decisions in force and needed (§8), frozen items (§9). Next, at her word: stage 1 — the production model's 100 aircargo answers on the chat's path (the 70 new on `19beeb1`), judged, with the handover signals; meanwhile on the laptop the code made ready for foreign corpora; then retrieval on all four corpora, 300 judged answers on the three external bases on the current path (Julia's «Вариант B»), and the graph lane on aircargo (stage 2). The quality thread's campaign is stopped by its §7.
+Julia, 2026-10-17: «Нужно продумать и переписать общий план проекта, чтобы он был последовательным и включал все аспекты». [`PLAN.md`](PLAN.md) is that plan: goal and «done», the measured state, one measurement on the client's path for every decision, stages 1–8 with their Mac hours and acceptance, what became of every earlier stream (§7), decisions in force and needed (§8), frozen items (§9). Next, at her word — and first, by her word «поставить в приоритет»: stage 1 fixes the defects found — the loaders (section chunking works only for markdown; DOCX drops its tables), the Russian chunk header and its cut heading path, table headers, the overlap repeated by parent expansion, the answer in the question's language — and rebuilds the indexes as a new generation; stage 2 then measures the four corpora on the fixed code: all 100 aircargo answers anew (the 70 on `19beeb1` cancelled), retrieval, 300 judged answers on the three external bases (Julia's «Вариант B»), the graph lane on aircargo. The quality thread's campaign is stopped by its §7.
 
 ### Julia's decisions of 2026-10-15 — thread M, steps 1–4 (done)
 
@@ -110,7 +110,7 @@ T-03: (a). B.1: (b) since the 2026-09-25 approval, real labelled 0 → 100 (T-54
 | B.1 | Labels on all 100 cases | **done** (b), `real_labelled`: approved 2026-09-25 (T-54) |
 | B.2 | Fixture TMS covering the cases | **blocked** — three reasons, not one |
 | B.3 | First real numbers on the labelled cases | **blocked** — same |
-| B.4 | Judge calibration 10 → ≥40 double-annotated routes | **taken over** 2026-10-17 by the [handover plan](docs/specs/handover-signal.md), [`PLAN.md`](PLAN.md) stages 1 and 3: routes judged by the session's model under D11 |
+| B.4 | Judge calibration 10 → ≥40 double-annotated routes | **taken over** 2026-10-17 by the [handover plan](docs/specs/handover-signal.md), [`PLAN.md`](PLAN.md) stages 2 and 3: routes judged by the session's model under D11 |
 | B.5 | Corpus v1.0 at `real_labelled` | labels approved; **blocked** on shipment-bound data (Q2b) |
 | GR-0.2 | Separate pinned bucket: 15 cases over 13 documents; 10 `multi_hop`, 5 `aggregation`; original phase-C dataset unchanged | **done as preparation**, not a measured slice |
 | GR-0.3 | [Baseline](docs/evidence/gr0-bucket-baseline.md), `91ce1745…`: top-5 0.5067 / 0.9050; 99 single-hop 0.5063 / 0.9091, one multi-hop | **done** (c) |

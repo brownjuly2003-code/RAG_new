@@ -13,7 +13,7 @@ conditions, read [`ROADMAP.md`](ROADMAP.md). The one plan is
   limits lifted to a 3,600-s ceiling, the reranker on the CPU (`468224b`), the operator offered on
   a timeout and on `human` (`056844d`; widget `4977582`), thinking off (`c2739af`), qwen3:1.7b
   timed live, her Qwen3-4B-Instruct the default (`7a99c45`) and timed live (`19beeb1`); next
-  [`PLAN.md`](PLAN.md) stage 1 — 100 answers on the client's path, judged, with the signals.
+  [`PLAN.md`](PLAN.md) stage 1 — the found defects fixed first, then stage 2's measurements.
 - Phase B remains blocked on real shipment-bound support data; its calibration routes (B.4)
   are PLAN.md stage 3 under D11; the 100 labels were approved 2026-09-25.
   Do not manufacture more fixture cases to make the gate pass.

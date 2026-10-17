@@ -68,8 +68,8 @@ Plan: [`PLAN.md`](PLAN.md), the one plan since 2026-10-17 (awaiting Julia's word
 replaces `plan_06_09_26.md` (adopted 2026-09-10, mode B; now in `archive/docs/plans/`) and
 the order of work of `docs/specs/plan_03_10_26.md`. Phase 0 and phase A are done; B.1
 (labels) landed on 2026-08-25 and was approved on 2026-09-25; B.2/B.3/B.5 wait on owner
-data (Q2b). Next: stage 1 — the production model's 100 answers on the client's path,
-judged, with the handover signals.
+data (Q2b). Next: stage 1 — the defects found fixed first (Julia, 2026-10-17), then
+stage 2 — the four corpora measured on the fixed code.
 
 **Stream GR was called required by the 2026-09-10 plan** to move the ≥ 0.63
 precision gate; P2 then found that ruler does not track meaning (τ_b 0.1561), so

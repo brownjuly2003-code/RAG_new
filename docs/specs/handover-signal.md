@@ -2,8 +2,9 @@
 
 Status 2026-10-17: **named, not run;** Julia accepted the reading the same day («давай
 так»). No answer, verdict or signal of this plan exists yet. Since 2026-10-17 it runs as
-[`PLAN.md`](../../PLAN.md) stages 1 and 3, in a new order: the 70 answers first, then the
-judge and the signals on all 100 — no separate pilot on the 30. A
+[`PLAN.md`](../../PLAN.md) stages 2 and 3: after stage 1's fixes all 100 answers anew on the
+fixed code (the 30 of 2026-10-16 become history, the 70 on `19beeb1` are cancelled), then the
+judge and the signals on all 100 — no separate pilot. A
 cold read of the first draft by a fresh agent found nine problems; this text answers them
 (the corrections are listed [at the end](#what-the-cold-read-corrected)). Each stage's
 `plan.json` is committed before its first request, as in the records it follows
@@ -147,9 +148,9 @@ defaults, `RAG_ENV` development; none is re-implemented. Each is a yes/no "mark 
 
 ### 1.0 The instruments — preparation
 
-Since 2026-10-17 ([`PLAN.md`](../../PLAN.md) stage 1) stage 1.1 runs first. The judge's adapter
-is built and run on the 30 while the Mac answers the 70; the signal tool's first five answers
-give its forecast in 1.3; no pilot table is published. What follows is what the instruments
+Since 2026-10-17 the instruments are built in [`PLAN.md`](../../PLAN.md) stage 1, beside the
+fixes, and checked on the first answers of 1.1; the signal tool's first five answers give its
+forecast in 1.3; no pilot table is published. What follows is what the instruments
 are and what they cost.
 
 The rerun of 2026-10-16 (`qwen3-4b-instruct-q30-r2`, code `19beeb1`) holds 30 answers in the
@@ -177,17 +178,17 @@ Output: the instruments and the forecasts for 1.1–1.3; no table is published b
 (cases 1–30 hold no customs question and 22 of the set's 66 out-of-scope ones, so a table on
 them alone would say little about the 100).
 
-### 1.1 The other 70 answers — preparation for 1.4
+### 1.1 The 100 answers — preparation for 1.4
 
-Cases 31–100 in file order through `/api/ask/stream` on a stand of `19beeb1` — the code of the
-first 30, so all 100 answers come from one commit — at the code defaults, each question sent as
-a web-chat visitor's first. Batches of ten, each on a fresh API with the model unloaded before
-it. Forecast 340 s for a batch's first question, 400 s for the others; the stop rule at 3×.
-About 8 h: one night.
+All 100 cases in file order through `/api/ask/stream` on a stand of the commit that closes
+[`PLAN.md`](../../PLAN.md) stage 1 — so all 100 answers come from one commit — at the code
+defaults, each question sent as a web-chat visitor's first. Batches of ten, each on a fresh
+API with the model unloaded before it. Forecast 340 s for a batch's first question, 400 s for
+the others; the stop rule at 3×. About 11 h.
 
-### 1.2 The judge on the 70
+### 1.2 The judge on the 100
 
-The adapter of 1.0 unchanged; about 70 requests.
+The adapter of 1.0 unchanged; about 115 requests with the retests.
 
 ### 1.3 The signals on all 100
 
@@ -195,7 +196,7 @@ The tool unchanged; its first five answers give the forecast: 100 × 3–10 min,
 
 ### 1.4 The result on 100 — rule (c)
 
-Record `reports/handover-signal/19beeb1/`, a test that derives every number from it, one
+Record `reports/handover-signal/<commit>/`, a test that derives every number from it, one
 evidence row: per signal caught, over-marked, marked and added time; R1–R3 confirmed or
 refuted with their counts; the reading applied as frozen.
 
@@ -226,7 +227,7 @@ judge prompt with its own retest and English decline wording. The answers come f
 
 ## Where this sits in the project plan
 
-- [`PLAN.md`](../../PLAN.md) stages 1 and 3 (formerly ROADMAP thread M step 5); stage 4, the
+- [`PLAN.md`](../../PLAN.md) stages 2 and 3 (formerly ROADMAP thread M step 5); stage 4, the
   speed levers, waits for it.
 - It takes over the routing part of phase B: B.4, «Judge calibration 10 → ≥40 double-annotated
   routes», never started, and the calibration routes of open question Q2b. Both asked for routes
@@ -247,15 +248,15 @@ judge prompt with its own retest and English decline wording. The answers come f
   (D12); or a person to grade (D11) — the judge is the session's model.
 - Tune a threshold and confirm it on the same answers.
 - Run beside the speed levers ([`PLAN.md`](../../PLAN.md) stage 4): the Mac takes one
-  measurement at a time, and stage 1.1's 70 answers are also their baseline.
+  measurement at a time, and stage 1.1's 100 answers are also their baseline.
 
 ## Order and cost
 
 | Stage | What | Mac | Session | Counts as |
 |---|---|---|---|---|
 | 1.0 | the instruments, checked on the first answers | in 1.3 | judge adapter, signal tool, 45 judge requests | preparation |
-| 1.1 | the other 70 answers | ~8 h, one night | the stand, the watch | preparation |
-| 1.2 | the judge on the 70 | — | ~70 requests | preparation |
+| 1.1 | the 100 answers ([`PLAN.md`](../../PLAN.md) stage 2) | ~11 h | the stand, the watch | preparation |
+| 1.2 | the judge on the 100 | — | ~115 requests | preparation |
 | 1.3 | the signals on all 100 | 5–17 h | — | — |
 | 1.4 | the result on 100 | — | record, test, evidence row | rule (c) |
 | 2 | WixQA's open part, if needed | 4–12 h per hundred | its own plan | rule (c) |

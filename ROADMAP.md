@@ -11,18 +11,18 @@ WIP limit: **one measurement on the Mac at a time**; work without the Mac runs b
 ## Active
 
 **Now (2026-10-17): [`PLAN.md`](PLAN.md), the one plan — stage 0 done, stage 1 next at Julia's word.**
-Stages: 1 — the production model's 100 aircargo answers on the client's path, judged, with the
-handover signals; 2 — the code made ready for foreign corpora (an audit for Russian- and
-aircargo-bound spots, each fixed or recorded), then retrieval without generation on the four
-corpora (aircargo, ConditionalQA, WixQA, MultiHop-RAG), 300 judged answers on the three
-external bases on the current path (Julia's «Вариант B», 2026-10-17) and the graph lane on aircargo; 3 — the handover signal chosen
-and wired; 4 — speed and memory on the Mac, the final path, then Julia's SLO; 5 — the external
-answers again, only if stage 4 changed the path; 6 — production running as a service; 7 — retrieval
-mechanisms, the graph included, on end metrics; 8 — publication, Julia's gate. Each closed
-stage adds its line here.
+Stages: 1 — the defects found fixed first (Julia, 2026-10-17: «поставить в приоритет»): the
+loaders, the chunk header, table headers, the overlap repeated by parent expansion, the answer
+in the question's language, the indexes rebuilt as a new generation; 2 — the four corpora
+measured on the fixed code: 100 aircargo answers, retrieval without generation, 300 judged
+answers on the three external bases (Julia's «Вариант B»), the graph lane on aircargo; 3 — the
+handover signals on the 100, one chosen and wired; 4 — speed and memory on the Mac, the final
+path, then Julia's SLO; 5 — the external answers again, only if stage 4 changed the path;
+6 — production running as a service; 7 — retrieval mechanisms, the graph included, on end
+metrics; 8 — publication, Julia's gate. Each closed stage adds its line here.
 
 **Thread M — the chat on the production Mac (Julia, 2026-10-14/15): steps 1–4 done; steps 5
-and 6 continue as [`PLAN.md`](PLAN.md) stages 1, 3 and 4.**
+and 6 continue as [`PLAN.md`](PLAN.md) stages 2, 3 and 4.**
 Production is `deproject-mac` («прод на маке», 2026-10-14). There the web chat answered
 nothing under the code's default limits before step 1: every question ended with route
 `timeout` after 30 s; on a timeout the client sees an apology badged «Качество: 0» and
@@ -133,10 +133,10 @@ Each step is a slice of its own
    замерим»).** Two signals are configured — the chat's self-score at 80, the widget's
    self-score, relevance and claim check — and neither was ever checked against answers
    known to be bad; the chat's misses 10 of the judge's 12. [The plan](docs/specs/handover-signal.md):
-   100 answers in the chat's own form (the 30 of the rerun, 70 new on `19beeb1`), judged, and
-   seven signals computed on them through the repository's code; since 2026-10-17 the 70
-   come first, with no separate pilot, then the judge and the signals on all 100
-   (rule (c)); WixQA's open part only if a signal lands in between. It withdraws the session's 2026-10-16 proposal to replay the widget's
+   100 answers in the chat's own form, judged, and seven signals computed on them through the
+   repository's code; since 2026-10-17 (Julia: fixes first) all 100 are answered anew on
+   the code fixed by [`PLAN.md`](PLAN.md) stage 1, the 70 on `19beeb1` cancelled, with no
+   separate pilot, then the judge and the signals on all 100 (rule (c)); WixQA's open part only if a signal lands in between. It withdraws the session's 2026-10-16 proposal to replay the widget's
    rule on the screening's answers, which cite no `[N]`.
 6. **Then the speed levers, one at a time, each measured:** fewer rerank candidates first
    (Julia agreed 2026-10-16; `RAG_RETRIEVAL_TOP_K`, 20 candidates reranked to 5 today; time
