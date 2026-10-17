@@ -52,7 +52,7 @@ The runner must execute only commands available on the local machine.
 1. Current `git status`, recent log, and diff.
 2. `CURRENT_STATE.md`, then `ROADMAP.md`.
 3. The digest in `AGENT_STATE.md`.
-4. `plan_06_09_26.md` and `docs/architecture/migration-plan.md`.
+4. `PLAN.md` and `docs/architecture/migration-plan.md`.
 5. `BACKLOG.md` only for the small current queue it names.
 6. `README.md` and other `docs/` for supporting context, not queue selection.
 

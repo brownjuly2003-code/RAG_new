@@ -9,7 +9,7 @@ Reviewers can inspect that record in the admin Evidence tab.
 The journey uses a fixture TMS and is off by default. See
 [`CURRENT_STATE.md`](CURRENT_STATE.md) for the current gate,
 [`ROADMAP.md`](ROADMAP.md) for frozen work, and
-[`plan_06_09_26.md`](plan_06_09_26.md) for the delivery plan.
+[`PLAN.md`](PLAN.md) for the plan.
 
 The [three-minute walkthrough](demo/phase-e-demo.mp4) follows a real
 `/api/ask` request into the admin Evidence view. It shows a fixture-sourced
@@ -19,8 +19,9 @@ describe the sequence and its limits.
 ## Measured results
 
 These are offline measurements on agent-written questions over real documents,
-not verified shipment resolutions. The graph and Qwen3 arms remain off by
-default; each comparison changes only the component named in its row.
+not verified shipment resolutions. The graph lane and the Qwen3 8B arm stay
+off by default (the production model is Qwen3-4B-Instruct-2507 since
+2026-10-16); each comparison changes only the component named in its row.
 
 | Measure | Current baseline | Experimental arm | Evidence |
 |---|---:|---:|---|
@@ -33,8 +34,9 @@ Graph G2 missed the multi-document coverage and latency gates; Qwen3 missed
 the 0.90 LLM faithfulness gate. Neither changed the default. The linked reports
 pin corpus, code, configuration, and measurement limits. There is no measured
 VR precision, verified-resolution yield (VRY), or cost per resolution: none of
-the 100 approved journey labels names a real shipment, and the 40 human
-calibration routes are still pending. See the [admission and outcome
+the 100 approved journey labels names a real shipment, and no person grades
+routes (owner's decision, 2026-10-03); which answers go to a person is
+measured in [`PLAN.md`](PLAN.md) stage 3. See the [admission and outcome
 analysis](docs/evidence/a6-journey-admission-and-clarification.md).
 
 ## Design

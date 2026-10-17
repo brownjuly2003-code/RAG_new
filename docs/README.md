@@ -24,7 +24,7 @@ automation and agent onboarding depend on those paths:
 - [`CURRENT_STATE.md`](../CURRENT_STATE.md) — one current status and next-action capsule;
 - [`ROADMAP.md`](../ROADMAP.md) — active, frozen, and conditional streams;
 - [`BACKLOG.md`](../BACKLOG.md) — short list of actionable residuals;
-- [`plan_06_09_26.md`](../plan_06_09_26.md) — active delivery plan;
+- [`PLAN.md`](../PLAN.md) — the one plan, since 2026-10-17;
 - [`EVIDENCE_INDEX.md`](../EVIDENCE_INDEX.md) — index of accepted slices and corrections.
 
 Supporting records live under:

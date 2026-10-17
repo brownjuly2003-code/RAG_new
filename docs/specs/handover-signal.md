@@ -1,7 +1,9 @@
 # Which answers go to a person: the handover-signal plan
 
 Status 2026-10-17: **named, not run;** Julia accepted the reading the same day («давай
-так»). No answer, verdict or signal of this plan exists yet. A
+так»). No answer, verdict or signal of this plan exists yet. Since 2026-10-17 it runs as
+[`PLAN.md`](../../PLAN.md) stages 1 and 3, in a new order: the 70 answers first, then the
+judge and the signals on all 100 — no separate pilot on the 30. A
 cold read of the first draft by a fresh agent found nine problems; this text answers them
 (the corrections are listed [at the end](#what-the-cold-read-corrected)). Each stage's
 `plan.json` is committed before its first request, as in the records it follows
@@ -56,7 +58,7 @@ retrieve, write a new answer), then routes `human` and opens a ticket:
   (`config/settings.py:558`); with one model serving everything there is no independent judge,
   the self-score fails closed (`agent/judge_policy.py:113`), and the widget routes **every**
   answer `human` (`agent/graph.py:2904`). The chat does not use that rule. Checked by one widget
-  request under each `RAG_ENV` in the pilot.
+  request under each `RAG_ENV` with the instruments (stage 1.0).
 - **R2.** An answer with no factual claims (the extractor says `NONE`) is "verified" with
   factuality 0, which `_is_knowledge_gap` turns into a gap: `human`, against
   `grounding_allows_auto`'s own comment that it may go `auto`.
@@ -98,7 +100,7 @@ with them, and how much time does it add to an answer on the Mac?
   *over-marked* — good, non-declining answers marked / all of them; *marked* — all answers
   marked; *added time* — median seconds per answer on the Mac.
 
-## Reading — frozen in the pilot's `plan.json`, before its first verdict
+## Reading — frozen in stage 1's `plan.json`, before its first verdict
 
 In the chat a marked answer is still shown, with the operator button; an unmarked bad answer
 reaches the client with no hint. A miss costs more than a needless button, so the reading puts
@@ -143,12 +145,17 @@ defaults, `RAG_ENV` development; none is re-implemented. Each is a yes/no "mark 
 
 ## Stages
 
-### 1.0 Pilot on the 30 answers already recorded — preparation
+### 1.0 The instruments — preparation
+
+Since 2026-10-17 ([`PLAN.md`](../../PLAN.md) stage 1) stage 1.1 runs first. The judge's adapter
+is built and run on the 30 while the Mac answers the 70; the signal tool's first five answers
+give its forecast in 1.3; no pilot table is published. What follows is what the instruments
+are and what they cost.
 
 The rerun of 2026-10-16 (`qwen3-4b-instruct-q30-r2`, code `19beeb1`) holds 30 answers in the
 chat's own form — cases 1–30 of `evaluation/curated_cases_aircargo.jsonl` — each with its
 exact stream prompt, the documents the 4B saw, in its run directory on the Mac (90 prompt files,
-checked 2026-10-17; not in the published record). The pilot builds and checks the instruments:
+checked 2026-10-17; not in the published record). Stage 1.0 builds and checks the instruments:
 
 - **the judge's adapter.** The judge script takes benchmark reports that share one set of
   contexts; a chat answer brings its own documents, parsed from its stream prompt. Blind to the
@@ -164,13 +171,13 @@ checked 2026-10-17; not in the published record). The pilot builds and checks th
 Forecast: per answer 3–10 min (the grader's and the first claim's reading about 65 s each, the
 others 10–65 s each); the cap for the first five answers 30 min each (3 × 10 min), then 3 × the
 median of the first five. Retrieval rerun alone about 30 s a question (median 27.6 s with no
-model loaded, `reports/chat-live/33d4b42/`). About 3–4 h of the Mac; 45 judge requests.
+model loaded, `reports/chat-live/33d4b42/`). Its Mac time is part of 1.3; 45 judge requests.
 
-Output: the instruments, the forecasts for 1.1–1.3, and a first table on 30 answers,
-published as the pilot (n = 30), with no reading applied. Cases 1–30 hold no customs question
-and 22 out-of-scope ones of 66 in the set, so the pilot's table says little about the 100.
+Output: the instruments and the forecasts for 1.1–1.3; no table is published before 1.4
+(cases 1–30 hold no customs question and 22 of the set's 66 out-of-scope ones, so a table on
+them alone would say little about the 100).
 
-### 1.1 The other 70 answers — rule (b)
+### 1.1 The other 70 answers — preparation for 1.4
 
 Cases 31–100 in file order through `/api/ask/stream` on a stand of `19beeb1` — the code of the
 first 30, so all 100 answers come from one commit — at the code defaults, each question sent as
@@ -180,11 +187,11 @@ About 8 h: one night.
 
 ### 1.2 The judge on the 70
 
-The pilot's adapter unchanged; about 70 requests.
+The adapter of 1.0 unchanged; about 70 requests.
 
-### 1.3 The signals on the 70
+### 1.3 The signals on all 100
 
-The pilot's tool unchanged, at the pilot's measured time per answer: 4–12 h, likely a night.
+The tool unchanged; its first five answers give the forecast: 100 × 3–10 min, about 5–17 h.
 
 ### 1.4 The result on 100 — rule (c)
 
@@ -194,12 +201,13 @@ refuted with their counts; the reading applied as frozen.
 
 ### 2 WixQA — when stage 1 gives no reading, a signal in between, or a chosen threshold
 
-The 200 ExpertWritten questions of WixQA — real support requests with expert answers,
-connected as a tenant of their own under D7 (plan slice 1.5c) — under a plan of its own, named
+The open part of WixQA — its 142 `tuning` questions, answered in [`PLAN.md`](../../PLAN.md)
+stage 5; the 200 ExpertWritten questions are the locked part (`evaluation/external_parts.json`),
+opened once in stage 7 and never used to choose a threshold — under a plan of its own, named
 before its first request. Not the same protocol: the judge's instructions name an air-cargo
 assistant answering in Russian, and S5's phrases are Russian, so stage 2 brings an English
-judge prompt with its own retest and English decline wording. About 33 h of the Mac: four
-nights.
+judge prompt with its own retest and English decline wording. The answers come from stage 5; the expensive signals on them about
+4–12 h of the Mac per hundred.
 
 ## What each outcome means, and what Julia is told
 
@@ -218,8 +226,8 @@ nights.
 
 ## Where this sits in the project plan
 
-- ROADMAP, thread M — the chat on the production Mac — step 5; step 6, the speed levers, waits
-  for it.
+- [`PLAN.md`](../../PLAN.md) stages 1 and 3 (formerly ROADMAP thread M step 5); stage 4, the
+  speed levers, waits for it.
 - It takes over the routing part of phase B: B.4, «Judge calibration 10 → ≥40 double-annotated
   routes», never started, and the calibration routes of open question Q2b. Both asked for routes
   graded by people, which D11 (2026-10-03) closed; here the session's model judges. This is the
@@ -229,8 +237,8 @@ nights.
   floors from a calibration artifact (`RAG_CALIBRATION_ARTIFACT`, `agent/calibration.py:372`),
   which no measurement has written yet. Outcome A writes its threshold where the wired surface
   reads it, with the record's provenance.
-- The quality thread (phase Q, `docs/specs/plan_03_10_26.md`) measures retrieval, not routing;
-  it waits behind thread M under the WIP limit.
+- The quality thread's campaign (`docs/specs/plan_03_10_26.md`) is stopped by `PLAN.md` §7;
+  retrieval mechanisms are its stage 7.
 
 ## What this plan does not do
 
@@ -238,19 +246,19 @@ nights.
 - Use a model other than the 4B in the product's role, or any other vendor's model in any role
   (D12); or a person to grade (D11) — the judge is the session's model.
 - Tune a threshold and confirm it on the same answers.
-- Run beside the speed levers (ROADMAP thread M, step 6): the Mac takes one measurement at a
-  time, and stage 1.1's 70 answers are also their baseline.
+- Run beside the speed levers ([`PLAN.md`](../../PLAN.md) stage 4): the Mac takes one
+  measurement at a time, and stage 1.1's 70 answers are also their baseline.
 
 ## Order and cost
 
 | Stage | What | Mac | Session | Counts as |
 |---|---|---|---|---|
-| 1.0 | pilot on the 30 recorded answers | ~3–4 h | judge adapter, signal tool, 45 judge requests | preparation |
-| 1.1 | the other 70 answers | ~8 h, one night | the stand, the watch | rule (b) |
-| 1.2 | the judge on the 70 | — | ~70 requests | rule (b) |
-| 1.3 | the signals on the 70 | 4–12 h | — | — |
+| 1.0 | the instruments, checked on the first answers | in 1.3 | judge adapter, signal tool, 45 judge requests | preparation |
+| 1.1 | the other 70 answers | ~8 h, one night | the stand, the watch | preparation |
+| 1.2 | the judge on the 70 | — | ~70 requests | preparation |
+| 1.3 | the signals on all 100 | 5–17 h | — | — |
 | 1.4 | the result on 100 | — | record, test, evidence row | rule (c) |
-| 2 | WixQA, if needed | ~33 h | its own plan | rule (c) |
+| 2 | WixQA's open part, if needed | 4–12 h per hundred | its own plan | rule (c) |
 
 Stage 1: two to three days, most of it the Mac's nights.
 

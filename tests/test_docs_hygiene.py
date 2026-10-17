@@ -24,7 +24,7 @@ ALLOWED_ROOT_DOCS = {
     "BACKLOG.md",
     "DEPRECATIONS.md",
     "AGENT_STATE.md",
-    "plan_06_09_26.md",
+    "PLAN.md",
 }
 
 MAX_ROOT_DOCS = 9

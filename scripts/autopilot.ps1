@@ -207,7 +207,7 @@ function Get-PlannerContext {
     $roadmap = Read-PlannerContextFile "ROADMAP.md"
     $backlog = Read-PlannerContextFile "BACKLOG.md"
     $readme = Read-PlannerContextFile "README.md" 8000
-    $activePlan = Read-PlannerContextFile "plan_06_09_26.md"
+    $activePlan = Read-PlannerContextFile "PLAN.md"
 
     return @"
 ## git status --short

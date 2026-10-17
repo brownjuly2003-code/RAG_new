@@ -122,6 +122,12 @@ Verbatim, times UTC.
   грамотный план?» — so the handover signal is measured before anything changes, under
   [the plan](../specs/handover-signal.md) (ROADMAP thread M, step 5).
 - 2026-10-17, to the plan: «Решения. 1. давай так 2. пуш.» — the reading accepted; pushed.
+- 2026-10-17: «А в какой именно план ты все вписал? Почему на 30 ответах, а не на 100
+  ответах?», then «Нужно продумать и переписать общий план проекта, чтобы он был
+  последовательным и включал все аспекты. И почему мы тестируем без графового поиска?
+  Почему тесты не запускаются на трех других базах? А сейчас запуск теста 70 вопросов - это
+  про какую модель?» — so [`PLAN.md`](../../PLAN.md) replaces the three plans, answers the three
+  questions at its top and waits for her word; the 70 answers are not launched before it.
 
 In force from before: D12 and D11; production is `deproject-mac`; the 3,600-s ceiling and the
 stop rule for every live run (3× each question's named forecast); a `human` answer gets the
@@ -155,13 +161,14 @@ operator button, not a ticket; her production model Qwen3-4B-Instruct-2507 (2026
 
 ## The next session's order
 
-1. Step 5 of the ROADMAP, [the handover plan](../specs/handover-signal.md): the pilot on
-   the rerun's 30 answers (the judge's adapter, the signal tool, the reading frozen in its
-   `plan.json`), then the other 70 answers, their verdicts and signals, the result on 100.
-2. Step 6: fewer rerank candidates (20 reranked to 5 today), measured live as in this
-   record and for quality as phase Q measures it; the count and the quality measure named
-   in its plan. Julia agreed to this lever on 2026-10-16; it waits for the Mac, which
-   takes one measurement at a time.
+Since 2026-10-17 the order is [`PLAN.md`](../../PLAN.md)'s; nothing starts on the Mac before
+Julia accepts it.
+
+1. Its stage 1, with [the handover plan](../specs/handover-signal.md): the other 70 answers
+   first, then the judge on all 100 and the signals on all 100 — no separate pilot.
+2. Its stage 2: retrieval without generation on the four corpora, the graph lane on
+   aircargo. Fewer rerank candidates — Julia's lever of 2026-10-16 — is its stage 4, read
+   from stage 2's saved rerank scores and timed live.
 3. Before any series longer than thirty, or a day of traffic: why Ollama's model runner
    grows about 312 MB a request. `tools/runner_memory.py` of the record repeats the check
    in ten minutes on an idle Mac, stdlib only, reading its prompts from the stand

@@ -300,7 +300,7 @@ def test_autopilot_runner_pi_planner_gets_preloaded_context(
         "# Current state\n", encoding="utf-8", newline="\n"
     )
     (repo / "ROADMAP.md").write_text("# Roadmap\n", encoding="utf-8", newline="\n")
-    (repo / "plan_06_09_26.md").write_text(
+    (repo / "PLAN.md").write_text(
         "# Active plan\n", encoding="utf-8", newline="\n"
     )
     _run(
@@ -312,7 +312,7 @@ def test_autopilot_runner_pi_planner_gets_preloaded_context(
             "README.md",
             "CURRENT_STATE.md",
             "ROADMAP.md",
-            "plan_06_09_26.md",
+            "PLAN.md",
         ],
         cwd=repo,
     )

@@ -2,15 +2,25 @@
 
 Status of every stream. Anything marked **frozen** stays frozen until its
 unfreeze condition is met — not "until there is time", and not for
-completeness. Source: [`plan_06_09_26.md`](plan_06_09_26.md) (supersedes
-`archive/docs/plans/plan-2026-08-23.md`).
+completeness. Order of work: [`PLAN.md`](PLAN.md), the one plan since 2026-10-17; this
+file records progress against it (it replaces `archive/docs/plans/plan_06_09_26.md`).
 
-WIP limit: **one thread at a time**, except that phases A and B may run in
-parallel (A does not wait on Julia; B does).
+WIP limit: **one measurement on the Mac at a time**; work without the Mac runs beside it
+([`PLAN.md`](PLAN.md) §5).
 
 ## Active
 
-**Now: the chat on the production Mac — the one active thread (Julia, 2026-10-14/15).**
+**Now (2026-10-17): [`PLAN.md`](PLAN.md), the one plan — stage 0 done, stage 1 next at Julia's word.**
+Stages: 1 — the production model's 100 aircargo answers on the client's path, judged, with the
+handover signals; 2 — retrieval without generation on the four corpora (aircargo, ConditionalQA,
+WixQA, MultiHop-RAG) and the graph lane on aircargo; 3 — the handover signal chosen and wired;
+4 — speed and memory on the Mac, the final path, then Julia's SLO; 5 — answers on the three
+external bases on the final path; 6 — production running as a service; 7 — retrieval
+mechanisms, the graph included, on end metrics; 8 — publication, Julia's gate. Each closed
+stage adds its line here.
+
+**Thread M — the chat on the production Mac (Julia, 2026-10-14/15): steps 1–4 done; steps 5
+and 6 continue as [`PLAN.md`](PLAN.md) stages 1, 3 and 4.**
 Production is `deproject-mac` («прод на маке», 2026-10-14). There the web chat answered
 nothing under the code's default limits before step 1: every question ended with route
 `timeout` after 30 s; on a timeout the client sees an apology badged «Качество: 0» and
@@ -122,9 +132,9 @@ Each step is a slice of its own
    self-score, relevance and claim check — and neither was ever checked against answers
    known to be bad; the chat's misses 10 of the judge's 12. [The plan](docs/specs/handover-signal.md):
    100 answers in the chat's own form (the 30 of the rerun, 70 new on `19beeb1`), judged, and
-   seven signals computed on them through the repository's code; a pilot on the 30 first
-   (preparation), then the 70 (rule (b)) and the result (rule (c)); WixQA only if a signal
-   lands in between. It withdraws the session's 2026-10-16 proposal to replay the widget's
+   seven signals computed on them through the repository's code; since 2026-10-17 the 70
+   come first, with no separate pilot, then the judge and the signals on all 100
+   (rule (c)); WixQA's open part only if a signal lands in between. It withdraws the session's 2026-10-16 proposal to replay the widget's
    rule on the screening's answers, which cite no `[N]`.
 6. **Then the speed levers, one at a time, each measured:** fewer rerank candidates first
    (Julia agreed 2026-10-16; `RAG_RETRIEVAL_TOP_K`, 20 candidates reranked to 5 today; time
@@ -132,8 +142,8 @@ Each step is a slice of its own
    the self-evaluation after the answer is shown, which changes what the client sees and is
    hers to decide.
 
-The quality thread (phase Q) waits behind this one under the WIP limit; its open items stand
-as `CURRENT_STATE.md` lists them.
+The quality thread's campaign (phase Q) is stopped by [`PLAN.md`](PLAN.md) §7, which lists
+what of it is reused and where.
 
 **Phase A is done.** A.1 + A.5 landed on 2026-08-25 and are the first
 slice this repository has had under rule (a): a shipment-status question
@@ -360,15 +370,15 @@ from the lock with real models — the Mac environment is not built from the loc
 
 | Phase | What | Acceptance |
 |---|---|---|
-| **0** | Freeze, publish, truth about gates | root ≤ 8 md, remote exists, CI status known, pricing/README/eval-gate claims true |
+| **0** | Freeze, publish, truth about gates | root ≤ 8 md (≤ 9 since, `tests/test_docs_hygiene.py`), remote exists, CI status known, pricing/README/eval-gate claims true |
 | **A** | Wire the shipment-status shadow into `/api/ask` | rule (a): E2E test on real endpoint behaviour + evidence bundle + replay receipt |
 | **B** | 100 real labelled air-cargo cases | rule (b): corpus v1.0 at `evidence_class: real_labelled`, ≥40 double-annotated calibration routes (taken over 2026-10-17 by thread M step 5, [the handover plan](docs/specs/handover-signal.md), judged by the session's model under D11). B.1 done (`real_labelled` since the 2026-09-25 approval); B.2/B.3/B.5 blocked on data, now for three reasons rather than one |
 | **C** | Quality leverage: Qwen3 benchmark, NLI second judge, claim-level compilation | rule (c): faithfulness ≥ 0.90 and precision ≥ 0.63 over 3 runs with a CI, **or** a NO-SHIP report with a cause |
-| **GR** | Graph retrieval: structure graph (0 LLM calls) → entity graph → A/B → wired behind flags. Unfrozen 2026-09-06; **required** under the plan the owner adopted on 2026-09-10 — the only stream that can move the precision gate (0.5067 → ≥ 0.63), which is computed over cached contexts (plan §2); GR-1a's cheap arm gave 0.5216, no better than plain top-4's 0.5214 ([capsule](docs/evidence/gr1a-section-coherence.md)) | rule (c): published context precision / multi-hop coverage with provenance per step; rule (a): graph lane behind `RAG_GRAPH_RETRIEVAL` with an E2E test; GR-3 measured 2026-09-18/19 — NO-SHIP-to-default, default stays `off` ([capsule](docs/evidence/gr3-graph-lane-ab.md)) |
+| **GR** | Graph retrieval: structure graph (0 LLM calls) → entity graph → A/B → wired behind flags. Unfrozen 2026-09-06; called required by the 2026-09-10 plan to move the 0.63 precision gate, a ruler P2 found not to track meaning — re-decided on end metrics in [`PLAN.md`](PLAN.md) stages 2 and 7; GR-1a's cheap arm gave 0.5216, no better than plain top-4's 0.5214 ([capsule](docs/evidence/gr1a-section-coherence.md)) | rule (c): published context precision / multi-hop coverage with provenance per step; rule (a): graph lane behind `RAG_GRAPH_RETRIEVAL` with an E2E test; GR-3 measured 2026-09-18/19 — NO-SHIP-to-default, default stays `off` ([capsule](docs/evidence/gr3-graph-lane-ab.md)) |
 | **D** | pgvector spike, ADR 0007 — D.1–D.5 measured; accepted 2026-09-25: retain the current retrieval backend (a vector-DB swap stays on the stop-list) | a table of numbers in the ADR; no migration without it |
-| **E** | Public artefact: README-first, 3-minute demo, `resolution-contracts` sub-package; Q4 confirmed 2026-09-30: publish current `RAG_new` as **RAG assistant**, Pages base `/RAG_new/`; E.4 site prepared at `236f7c1`, pushed and unpublished; CI is green on `45a417a` (2026-10-03, run 37157492007, 11 of 11 jobs) and the Pages build passed on it (run 37157492017; deploy skipped, the repository is private and nothing is published), so the owner's order of 2026-10-03 — a green CI on HEAD before the quality thread's 2.5 chain — is met and that chain is next; making the repository public and deploying Pages are the owner's gate and do not hold that thread (plan D11) | E.5: Mac full suite and final [history scan](docs/evidence/e5-secret-scan.md); E.4: push, green CI, public repo, Pages deploy, links from the old repo and proof-pack; numbers in README |
-| **Q** | Quality thread after E ([plan](docs/specs/plan_03_10_26.md), adopted and ratified by delegation 2026-09-30, revised 2026-10-03): ruler cross-checked by model references (no human grades, D11) → observable route → ≤ 2 mechanisms chosen by the evidence-loss map (D8; default H1 in the graph lane, H5 as its budget) → locked-holdout acceptance. 2.1/2.2 implemented 2026-10-01 (T-59, rule (a)); 1.1 done 2026-10-04 (T-57) and 1.3b done 2026-10-04 (T-78: [30 pilot drafts verified by one model](docs/evidence/devset-pilot-label-verification.md), `single_model_verified`, preparation); 1.3c done 2026-10-06 ([variance pilot](docs/evidence/variance-pilot-gold-metrics.md), rule (c), no verdict: development 60 cases in 37 clusters, holdout 64 in 18; the registered MDE stays 0.17–0.30 — the corpus has no more independent families — so the campaign checks effects of that size and no smaller, and a neutral mechanism is expected to end `INCONCLUSIVE`; whether the grading filter, in part a draw, is changed before the campaign is undecided); since D12 (2026-10-04) one model, the session's Opus 5.5, does every job and check, and no other vendor's model is called | rule (c) per experiment with the [development ruler](docs/specs/semantic-precision-metrics.md): +0.05 in the mechanism's registered primary metric (sent-precision for selection, all-evidence coverage for coverage mechanisms) with CI95 lower bound > 0, non-inferiority −0.02 on the rest, no critical-fact loss on H/Hm, p95 delta ≤ 200 ms at equal budget; the lexical 0.63 gate stays on its own ruler; research acceptance on the Mac is not product acceptance (deployment target + SLO, D5); no default flip before both — the target is named (`deproject-mac`, 2026-10-14), the SLO is not: on 2026-10-15 Julia decided to lift the time limits for now instead |
-| **M** | The chat on the production Mac (Julia, 2026-10-14/15), the active thread: lift the time limits (done 2026-10-15, `468224b`: a 3,600-s ceiling, the reranker on the CPU), offer the operator on a timeout and on a `human` answer (done 2026-10-15, `056844d`), turn thinking off on the chat path (done 2026-10-15, `c2739af`) and time qwen3:1.7b in the live chat (done 2026-10-16: the whole answer 139–352 s, all `auto`, most of it the rerank on the CPU; the thirty stopped at question 9 as the Mac swapped); her production model is Qwen3-4B-Instruct-2507 (2026-10-16), no SLO named; next serve it as the code default and time it live, then the speed levers one at a time, fewer rerank candidates first (order above) | rule (a) for each product change, with an E2E test; rule (c) for each live run — code SHA, index, model digest and the configuration actually served, its time and routes |
+| **E** | Public artefact: README-first, 3-minute demo, `resolution-contracts` sub-package; Q4 confirmed 2026-09-30: publish current `RAG_new` as **RAG assistant**, Pages base `/RAG_new/`; E.4 site prepared at `236f7c1`, pushed and unpublished; CI is green on `45a417a` (2026-10-03, run 37157492007, 11 of 11 jobs) and the Pages build passed on it (run 37157492017; deploy skipped, the repository is private and nothing is published), so the owner's order of 2026-10-03 — a green CI on HEAD before the quality thread's 2.5 chain — is met and that chain ran (2.5 closed 2026-10-05); making the repository public and deploying Pages are the owner's gate and do not hold that thread (plan D11) | E.5: Mac full suite and final [history scan](docs/evidence/e5-secret-scan.md); E.4: push, green CI, public repo, Pages deploy, links from the old repo and proof-pack; numbers in README |
+| **Q** | **Campaign stopped 2026-10-17 by [`PLAN.md`](PLAN.md) §7.** Quality thread after E ([plan](docs/specs/plan_03_10_26.md), adopted and ratified by delegation 2026-09-30, revised 2026-10-03): ruler cross-checked by model references (no human grades, D11) → observable route → ≤ 2 mechanisms chosen by the evidence-loss map (D8; default H1 in the graph lane, H5 as its budget) → locked-holdout acceptance. 2.1/2.2 implemented 2026-10-01 (T-59, rule (a)); 1.1 done 2026-10-04 (T-57) and 1.3b done 2026-10-04 (T-78: [30 pilot drafts verified by one model](docs/evidence/devset-pilot-label-verification.md), `single_model_verified`, preparation); 1.3c done 2026-10-06 ([variance pilot](docs/evidence/variance-pilot-gold-metrics.md), rule (c), no verdict: development 60 cases in 37 clusters, holdout 64 in 18; the registered MDE stays 0.17–0.30 — the corpus has no more independent families — so the campaign checks effects of that size and no smaller, and a neutral mechanism is expected to end `INCONCLUSIVE`; whether the grading filter, in part a draw, is changed before the campaign is undecided); since D12 (2026-10-04) one model, the session's Opus 5.5, does every job and check, and no other vendor's model is called | rule (c) per experiment with the [development ruler](docs/specs/semantic-precision-metrics.md): +0.05 in the mechanism's registered primary metric (sent-precision for selection, all-evidence coverage for coverage mechanisms) with CI95 lower bound > 0, non-inferiority −0.02 on the rest, no critical-fact loss on H/Hm, p95 delta ≤ 200 ms at equal budget; the lexical 0.63 gate stays on its own ruler; research acceptance on the Mac is not product acceptance (deployment target + SLO, D5); no default flip before both — the target is named (`deproject-mac`, 2026-10-14), the SLO is not: on 2026-10-15 Julia decided to lift the time limits for now instead |
+| **M** | The chat on the production Mac (Julia, 2026-10-14/15), steps 1–4 done: lift the time limits (done 2026-10-15, `468224b`: a 3,600-s ceiling, the reranker on the CPU), offer the operator on a timeout and on a `human` answer (done 2026-10-15, `056844d`), turn thinking off on the chat path (done 2026-10-15, `c2739af`) and time qwen3:1.7b in the live chat (done 2026-10-16: the whole answer 139–352 s, all `auto`, most of it the rerank on the CPU; the thirty stopped at question 9 as the Mac swapped); her production model is Qwen3-4B-Instruct-2507 (2026-10-16), no SLO named, the code default since `7a99c45` and timed live (`19beeb1`); next [`PLAN.md`](PLAN.md) stages 1, 3 and 4 | rule (a) for each product change, with an E2E test; rule (c) for each live run — code SHA, index, model digest and the configuration actually served, its time and routes |
 
 Heavy runs (models, full suite, Docker) go to the Mac — never the Windows
 laptop. Do not install or launch WSL, Docker or VMs on Windows (owner direction,
@@ -378,16 +388,16 @@ laptop. Do not install or launch WSL, Docker or VMs on Windows (owner direction,
 
 | Stream | Why frozen | Unfreeze condition |
 |---|---|---|
-| Trust Foundation steps 5–10 | Release machinery on synthetic fixtures; the missing input is real data, not more layers | Phase B produces 100 real labelled cases |
-| G9+ | Same — G1–G8 already exceed what 17 synthetic scenarios can support | Phase C publishes real numbers |
+| Trust Foundation steps 5–10 | Release machinery on synthetic fixtures; the missing input is real data, not more layers | Phase B produces 100 real labelled cases — literally met 2026-09-25; [`PLAN.md`](PLAN.md) §9 proposes a new condition, Julia's to decide |
+| G9+ | Same — G1–G8 already exceed what 17 synthetic scenarios can support | Phase C publishes real numbers — literally met 2026-09-11; the same proposal |
 | REL-03D (per-turn response replay) | Needed for a durable-HTTP story that has no consumer | A design partner asks for it |
 | Durable HTTP semantics (`Idempotency-Key`, `ETag`/`If-Match`, 428/412/409/503), 2-replica floor | Enterprise DoD without an enterprise | A design partner appears |
 | SSE as a projection of persisted events; removing the direct-stream path | Full FIN-04 close is a rewrite; the shadow path in phase A does not need it | Conditional track |
 | Service accounts, forced RLS on legacy `sessions`/`messages`, JWT `iss/aud/iat/jti` + rotation | Full FIN-12; only the cheap Origin fix was in scope for phase 0 | Conditional track |
 | Helm production hardening (encrypted backup fail-closed, restore drill, NetworkPolicy, PDB, digest pin, SBOM/SLSA) | FIN-15; no deployment target | A real deployment |
 | MCP connectors, vector-DB swap, model swap, microservices/Kafka/OPA, new channels, new dashboards | Stop-list — none is on the critical path to a wired, measured, published system | Explicit decision by Julia |
-| Framework-grade GraphRAG (LightRAG, MS GraphRAG, community summaries, Neo4j) | Still frozen. **GraphRAG as such was unfrozen on 2026-09-06 by Julia's decision** and scoped as stream GR — an in-repo structure + entity graph used to narrow and route retrieval ([`plan_06_09_26.md`](plan_06_09_26.md) §4–5). The reason is measured: the phase-C precision gate (0.5067 → ≥ 0.63) is computed over cached contexts and can only be moved by the retriever | ADR 0001 scale trigger (> 50 000 chunks per tenant) or a measured GR-3 failure on the `global` class |
-| God-module refactor (FIN-16) | Large refactor before convergence loses more than it gains | After phases A–C converge |
+| Framework-grade GraphRAG (LightRAG, MS GraphRAG, community summaries, Neo4j) | Still frozen. **GraphRAG as such was unfrozen on 2026-09-06 by Julia's decision** and scoped as stream GR — an in-repo structure + entity graph used to narrow and route retrieval ([`plan_06_09_26.md`](archive/docs/plans/plan_06_09_26.md) §4–5). The reason is measured: the phase-C precision gate (0.5067 → ≥ 0.63) is computed over cached contexts and can only be moved by the retriever | ADR 0001 scale trigger (> 50 000 chunks per tenant) or a measured GR-3 failure on the `global` class — neither can fire today (largest base 37,571 chunks; 0 `global` cases); [`PLAN.md`](PLAN.md) §9 proposes one |
+| God-module refactor (FIN-16) | Large refactor before convergence loses more than it gains | After phases A–C converge — C never converged; [`PLAN.md`](PLAN.md) §9 proposes after stage 6 |
 
 ## Conditional track
 

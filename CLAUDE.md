@@ -1,7 +1,8 @@
 # Onboarding for agents working in `D:\RAG_new`
 
-Read exactly two files to start: [`CURRENT_STATE.md`](CURRENT_STATE.md), then
-[`ROADMAP.md`](ROADMAP.md). Everything else is reached by link, on demand.
+Read exactly three files to start: [`CURRENT_STATE.md`](CURRENT_STATE.md), then
+[`PLAN.md`](PLAN.md) — the one plan, the order of work — then [`ROADMAP.md`](ROADMAP.md),
+progress against it. Everything else is reached by link, on demand.
 Do not read `archive/` for routing — it is history, and planning from it is
 how this repository accumulated seven layers of release machinery on
 synthetic fixtures.
@@ -39,7 +40,7 @@ binds autopilot too.
 
 ## Repository rules
 
-- **Check `ROADMAP.md` before starting anything.** Frozen streams stay frozen;
+- **Check `PLAN.md` and `ROADMAP.md` before starting anything.** Frozen streams stay frozen;
   wanting the system to be more complete is not an unfreeze condition.
 - **Numbers need provenance.** A metric without a corpus SHA, a code SHA and a
   config is not evidence. A run that did not happen is `NOT_EVIDENCE`, never a
