@@ -6,6 +6,9 @@ DocumentLoader: loads documents from a directory or a single file.
 Supported formats:
     .txt, .md, .pdf (pypdf), .docx (python-docx), .json, .csv, .html, .htm
 
+A DOCX, an HTML page and a PDF with an outline are read as markdown — headings, lists and
+tables kept — so section chunking cuts them by their sections (ingestion/markup.py).
+
 Each document gets metadata:
     - source: filename
     - file_path: absolute path
@@ -188,19 +191,22 @@ class DocumentLoader:
     def _read_pdf(self, path: Path) -> list[Document]:
         if pypdf is None:
             raise ImportError("pypdf is required for PDF files: pip install pypdf")
+        from ingestion import markup
+
         docs: list[Document] = []
         with path.open("rb") as fh:
             reader = pypdf.PdfReader(fh)
-            for page_num, page in enumerate(reader.pages, start=1):
+            pages: list[str] = []
+            for page in reader.pages:
                 try:
-                    text = page.extract_text() or ""
+                    pages.append(page.extract_text() or "")
                 except Exception:
-                    text = ""
-                if not text.strip():
-                    continue
-                docs.append(
-                    self._make_doc(text, path, file_type="pdf", page=page_num)
-                )
+                    pages.append("")
+            marked = markup.pdf_pages_as_markdown(reader, pages)
+        for page_num, (text, original) in enumerate(zip(marked, pages, strict=True), start=1):
+            if not original.strip():
+                continue
+            docs.append(self._make_doc(text, path, file_type="pdf", page=page_num))
         return docs
 
     def _read_docx(self, path: Path) -> list[Document]:
@@ -208,8 +214,9 @@ class DocumentLoader:
             raise ImportError(
                 "python-docx is required for DOCX files: pip install python-docx"
             )
-        doc = DocxDocument(str(path))
-        text = "\n".join(p.text for p in doc.paragraphs if p.text)
+        from ingestion import markup
+
+        text = markup.docx_to_markdown(DocxDocument(str(path)))
         if not text.strip():
             return []
         return [self._make_doc(text, path, file_type="docx")]
@@ -272,25 +279,9 @@ class DocumentLoader:
         return docs if docs else [self._make_doc(raw, path, file_type="csv")]
 
     def _read_html(self, path: Path) -> list[Document]:
-        from html.parser import HTMLParser
+        from ingestion import markup
 
-        class TextExtractor(HTMLParser):
-            def __init__(self) -> None:
-                super().__init__()
-                self._parts: list[str] = []
-
-            def handle_data(self, data: str) -> None:
-                data = data.strip()
-                if data:
-                    self._parts.append(data)
-
-            def get_text(self) -> str:
-                return " ".join(self._parts)
-
-        content = path.read_text(encoding="utf-8", errors="ignore")
-        parser = TextExtractor()
-        parser.feed(content)
-        text = parser.get_text()
+        text = markup.html_to_markdown(path.read_text(encoding="utf-8", errors="ignore"))
         if not text.strip():
             return []
         return [self._make_doc(text, path, file_type=path.suffix.lstrip(".").lower())]
