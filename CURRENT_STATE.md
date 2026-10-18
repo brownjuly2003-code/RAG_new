@@ -53,7 +53,7 @@ Each number has a record; numbers on another path or model are history, not the 
 | Retrieval, lexical ruler | precision 0.5067, recall 0.905 | the ruler does not track meaning (P2, τ_b 0.156) — no longer a threshold |
 | Graph lane (GR-3) | precision 0.5067 → 0.5487, +8.8 s to p95; recall on 15 multi-document questions 0.5 → 0.4 | NO-SHIP on the 200-ms budget; the generation half produced no evidence ([capsule](docs/evidence/gr3-graph-lane-ab.md)) |
 | Shipment binding | admission recall 0.0000 | none of the 100 questions names a shipment (phase B, Q2b) |
-| Engineering | 5,874 unit tests pass on the Mac on `4ca5ddd` (124 skipped) | CI starts no job since `e81f0c5` (2026-10-16): GitHub reports the account's billing |
+| Engineering | 5,885 unit tests pass on the Mac on `96ee4e6` (124 skipped); CI's mypy, bandit, pip-audit and npm-audit gates pass, run by hand | CI starts no job since `e81f0c5` (2026-10-16): GitHub reports the account's billing |
 
 The first quality number on the customer's path does not exist yet: it is [`PLAN.md`](PLAN.md)
 stage 2.
