@@ -14,10 +14,14 @@ articles (reports/external/36f1167/connection.json, wixqa.convert.counts):
   they all stand, in order, in the loader's text. Characters the loader adds beyond them are
   counted apart: markdown syntax, or text the page holds and ``contents`` does not;
 - the headings: the texts of the page's h1-h6 (``external_convert.html_headings``) equal, in
-  order, the loader's markdown headings;
+  order, the loader's markdown headings, white space read as one space on both sides (the page
+  writes some with a no-break space, the loader's text with a space);
 - the table rows: the page's ``<tr>`` count equals the loader's table lines without the
   separator rows;
 - the gold: the articles the questions of both strata name, whole.
+
+An article whose page holds no text beyond its title yields no document — the loader skips an
+empty file — and is counted apart; nothing of it can be lost.
 
 The report holds counts and article ids only: the texts stay on the host
 (evaluation/external_bases.json, "redistribution").
@@ -27,6 +31,7 @@ from __future__ import annotations
 
 import argparse
 import difflib
+import hashlib
 import json
 import re
 import tempfile
@@ -65,6 +70,10 @@ def covered(target: str, text: str) -> tuple[int, int]:
     return position, beyond
 
 
+def _spaced(text: str) -> str:
+    return " ".join(text.split())
+
+
 def table_rows(markdown: str) -> int:
     return sum(
         1
@@ -76,6 +85,11 @@ def table_rows(markdown: str) -> int:
 def check(raw: Path) -> dict[str, Any]:
     from ingestion.loader import DocumentLoader
 
+    inputs = (
+        "wix_kb_corpus/wix_kb_corpus.jsonl",
+        "wixqa_expertwritten/test.jsonl",
+        "wixqa_simulated/test.jsonl",
+    )
     articles = _lines(raw / "wix_kb_corpus/wix_kb_corpus.jsonl")
     gold = {
         article_id
@@ -101,8 +115,7 @@ def check(raw: Path) -> dict[str, Any]:
         text = visible(markdown)[0]
         held, beyond = covered(target, text)
         headings = [
-            " ".join(heading.replace("\\", "").split())
-            for _, heading in convert.markdown_headings(markdown)
+            _spaced(heading.replace("\\", "")) for _, heading in convert.markdown_headings(markdown)
         ]
         rows.append(
             {
@@ -111,17 +124,23 @@ def check(raw: Path) -> dict[str, Any]:
                 "chars": len(target),
                 "held": held,
                 "beyond_syntax": beyond,
-                "headings": headings == convert.html_headings(article["html_content"]),
+                "loaded": f"{index:05d}.html" in loaded,
+                "headings": headings
+                == [_spaced(heading) for heading in convert.html_headings(article["html_content"])],
                 "rows": table_rows(markdown)
                 == len(re.findall(r"(?i)<tr\b", article["html_content"])),
             }
         )
     whole = [row for row in rows if row["held"] == row["chars"]]
     gold_rows = [row for row in rows if row["gold"]]
-    worst = sorted(rows, key=lambda row: row["held"] / max(row["chars"], 1))[:10]
+    # An article with no text beyond its title has nothing to lose: it is whole.
+    worst = sorted(rows, key=lambda row: row["held"] / row["chars"] if row["chars"] else 1.0)[:10]
     return {
         "documents": len(rows),
         "loaded": len(loaded),
+        "documents_without_text_beyond_title": sum(
+            1 for row in rows if not row["loaded"] and row["chars"] == 0
+        ),
         "documents_whole": len(whole),
         "visible_characters": sum(row["chars"] for row in rows),
         "visible_characters_held": sum(row["held"] for row in rows),
@@ -134,6 +153,9 @@ def check(raw: Path) -> dict[str, Any]:
         "least_held": [
             {"id": row["id"], "chars": row["chars"], "held": row["held"]} for row in worst
         ],
+        "input_sha256": {
+            name: hashlib.sha256((raw / name).read_bytes()).hexdigest() for name in inputs
+        },
         "connection": {
             "documents_with_the_visible_text_of_contents": 6221,
             "documents_with_every_heading_in_order": 6221,
