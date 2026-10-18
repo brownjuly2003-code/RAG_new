@@ -1930,6 +1930,12 @@ a host that holds the converted questions
 `python -m evaluation.external_parts --data DIR` rebuilds the file and
 compares it byte for byte; in the repository a test holds the counts and
 the digests of the file to the ids it lists.
+On 2026-10-18 (`e5e135a`) [`PLAN.md`](../../PLAN.md) stage 1 added the
+questions of stage 2 as the selections `stage2` and `stage2_not_answerable`,
+drawn by the same rules; the file is now SHA-256
+`47b04926ec079851f1583cc3f025f96da5af04659cc784cf577ade9a302b15b7`, and a
+test holds that without those selections it is byte for byte the file
+registered here.
 
 | Base | Part | Access | Questions | Clusters | Largest cluster |
 |---|---|---|---|---|---|

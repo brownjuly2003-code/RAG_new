@@ -1217,6 +1217,7 @@ def test_spec_registers_what_the_parts_and_the_pilot_apply() -> None:
     registered = parts.registration()
     for path in (parts.REGISTRATION, bases.REGISTRATION):
         assert f"SHA-256 `{parity.file_sha(path)}`" in flat
+    assert f"SHA-256 `{parts.sha_before_later_selections(registered)}`" in flat
     assert f"the seed {parts.SEED}" in flat and f"`{gold.MATCH_RULE}`" in flat
     assert registered["opened"] == [] and "The list `opened` of the registration is empty" in flat
 

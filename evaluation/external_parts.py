@@ -348,6 +348,22 @@ def dump(value: Any) -> bytes:
     return (json.dumps(value, ensure_ascii=False, indent=1) + "\n").encode("utf-8")
 
 
+# Selections added after the pilot of plan slice 1.6 read the file: PLAN.md stage 1 registered
+# the questions of stage 2 on 2026-10-18 (`e5e135a`).
+LATER_SELECTIONS = ("stage2", "stage2_not_answerable")
+
+
+def sha_before_later_selections(registered: Mapping[str, Any]) -> str:
+    """SHA-256 of the registration as the pilot read it: the file without the later selections."""
+    earlier = dict(registered)
+    kept = {
+        base: {name: chosen for name, chosen in block.items() if name not in LATER_SELECTIONS}
+        for base, block in registered["selections"].items()
+    }
+    earlier["selections"] = {base: block for base, block in kept.items() if block}
+    return hashlib.sha256(dump(earlier)).hexdigest()
+
+
 def registration(path: Path | None = None) -> dict[str, Any]:
     registered: dict[str, Any] = json.loads((path or REGISTRATION).read_text(encoding="utf-8"))
     if registered["seed"] != SEED or registered["rules"] != RULES:

@@ -127,6 +127,13 @@ def test_sizes_replay_and_do_not_lower_the_registered_variance(aggregates):
     assert rebuilt.pop("code") == {
         name: hashlib.sha256((ROOT / name).read_bytes()).hexdigest() for name in pilot.CODE_FILES
     }
+    # The pilot read the registration before stage 1 added its selections; the rest is the same.
+    assert rebuilt.pop("registration_sha256") == (
+        hashlib.sha256(parts.REGISTRATION.read_bytes()).hexdigest()
+    )
+    assert published.pop("registration_sha256") == parts.sha_before_later_selections(
+        parts.registration()
+    )
     published_code = published.pop("code")
     assert set(published_code) == set(pilot.CODE_FILES)
     for document in aggregates.values():
