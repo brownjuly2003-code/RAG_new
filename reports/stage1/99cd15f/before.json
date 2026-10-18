@@ -1,0 +1,282 @@
+{
+ "prefix": "before",
+ "runs": {
+  "aircargo": {
+   "launch": {
+    "label": "before-aircargo",
+    "code_sha": "99cd15f63967575aca0cb53d3ca33b0caacef289",
+    "model": "qwen3:4b-instruct-2507-q4_K_M",
+    "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+    "tenant": "aircargo",
+    "chroma_dir": "env.json",
+    "cases_file": "evaluation/curated_cases_aircargo.jsonl",
+    "started": "2026-10-18T00:12:03+00:00",
+    "finished": "2026-10-18T00:17:28+00:00",
+    "status": "complete",
+    "client_cap_sec": "1020"
+   },
+   "data_root": "/Users/julia/RAG_new_external",
+   "source_sha256": {},
+   "cases": [
+    {
+     "case_id": "aircargo-probation-data",
+     "question_letters": {
+      "cyrillic": 46,
+      "latin": 0
+     },
+     "answer_letters": {
+      "cyrillic": 116,
+      "latin": 0
+     },
+     "quality_score": 100,
+     "quality_source": "llm",
+     "route": "auto",
+     "first_token_sec": 173.048,
+     "result_sec": 257.114,
+     "tokens": 47
+    }
+   ],
+   "paths": [
+    {
+     "kind": "hybrid",
+     "candidates": {
+      "vector": 20,
+      "bm25": 20,
+      "merged": 32
+     },
+     "rerank_status": "ok",
+     "retrieved_contexts": 32,
+     "retained_contexts": 5,
+     "timings_ms": {
+      "pools": 41982.584,
+      "rerank": 65079.377,
+      "total": 107063.671
+     }
+    }
+   ],
+   "prompts": [
+    {
+     "file": "001-stream.txt",
+     "sha256": "803c630b3b6df7da82fd98b19631c05b26fd99254314c2577366fb72600c284e",
+     "labels_dokument": 3,
+     "labels_source": 0,
+     "header_kontekst": 3
+    }
+   ],
+   "bm25_restore_log": [
+    "Restored 5589 chunks for tenant aircargo from the persisted collection (BM25 + parent-expansion re-enabled)"
+   ]
+  },
+  "conditionalqa": {
+   "launch": {
+    "label": "before-conditionalqa",
+    "code_sha": "99cd15f63967575aca0cb53d3ca33b0caacef289",
+    "model": "qwen3:4b-instruct-2507-q4_K_M",
+    "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+    "tenant": "ext_conditionalqa",
+    "chroma_dir": "/Users/julia/RAG_new_chat_99cd15f/chatlive/runs/before-conditionalqa.chroma",
+    "cases_file": "/Users/julia/RAG_new_external/conditionalqa/cases.jsonl",
+    "started": "2026-10-18T00:26:41+00:00",
+    "finished": "2026-10-18T00:31:57+00:00",
+    "status": "complete",
+    "client_cap_sec": "1020"
+   },
+   "data_root": "/Users/julia/RAG_new_external",
+   "source_sha256": {
+    "corpus.manifest.json": "25c4b33f5cd5ee385317183ae56e2c101019c2c81907599988a379fe2e99115b",
+    "chunks-report.json": "17adee5140760626ad28b9f8269743d32c0a9a5bc356817f312493138cfe36a1",
+    "index/index-receipt.json": "7a63d3a6c3f46eb9cfa8d90ece6e768d21a15a81c919fa92b0d44745c8e660fd"
+   },
+   "cases": [
+    {
+     "case_id": "conditionalqa-train-1484",
+     "question_letters": {
+      "cyrillic": 0,
+      "latin": 145
+     },
+     "answer_letters": {
+      "cyrillic": 494,
+      "latin": 1
+     },
+     "quality_score": 30,
+     "quality_source": "llm",
+     "route": "human",
+     "first_token_sec": 143.472,
+     "result_sec": 258.963,
+     "tokens": 251
+    }
+   ],
+   "paths": [
+    {
+     "kind": "hybrid",
+     "candidates": {
+      "vector": 20,
+      "bm25": 20,
+      "merged": 37
+     },
+     "rerank_status": "ok",
+     "retrieved_contexts": 37,
+     "retained_contexts": 5,
+     "timings_ms": {
+      "pools": 7049.058,
+      "rerank": 80012.49,
+      "total": 87062.698
+     }
+    }
+   ],
+   "prompts": [
+    {
+     "file": "001-stream.txt",
+     "sha256": "1776f66a433e42b821495b1c1149d17c3a8839771796f2ebc9c53f10be145942",
+     "labels_dokument": 5,
+     "labels_source": 0,
+     "header_kontekst": 5
+    }
+   ],
+   "bm25_restore_log": [
+    "Restored 13778 chunks for tenant ext_conditionalqa from the persisted collection (BM25 + parent-expansion re-enabled)"
+   ]
+  },
+  "wixqa": {
+   "launch": {
+    "label": "before-wixqa",
+    "code_sha": "99cd15f63967575aca0cb53d3ca33b0caacef289",
+    "model": "qwen3:4b-instruct-2507-q4_K_M",
+    "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+    "tenant": "ext_wixqa",
+    "chroma_dir": "/Users/julia/RAG_new_chat_99cd15f/chatlive/runs/before-wixqa.chroma",
+    "cases_file": "/Users/julia/RAG_new_external/wixqa/cases.jsonl",
+    "started": "2026-10-18T00:32:02+00:00",
+    "finished": "2026-10-18T00:36:01+00:00",
+    "status": "complete",
+    "client_cap_sec": "1020"
+   },
+   "data_root": "/Users/julia/RAG_new_external",
+   "source_sha256": {
+    "corpus.manifest.json": "aeabd28fd61d4dfe9d95aa093a2efd1c383e8cef7f26dedac8153f9e97d24e24",
+    "chunks-report.json": "9398d191708131ea138f8b859a043f82d74f79ff965cca01ef259da7c2647392",
+    "index/index-receipt.json": "21046caf1c0b6096db1e08eb0a2cf6302e3bfb2e24a4971d74e3b9ff9fc5e23d"
+   },
+   "cases": [
+    {
+     "case_id": "wixqa-simulated-074",
+     "question_letters": {
+      "cyrillic": 0,
+      "latin": 38
+     },
+     "answer_letters": {
+      "cyrillic": 0,
+      "latin": 245
+     },
+     "quality_score": 100,
+     "quality_source": "llm",
+     "route": "auto",
+     "first_token_sec": 125.332,
+     "result_sec": 180.144,
+     "tokens": 65
+    }
+   ],
+   "paths": [
+    {
+     "kind": "hybrid",
+     "candidates": {
+      "vector": 20,
+      "bm25": 0,
+      "merged": 20
+     },
+     "rerank_status": "ok",
+     "retrieved_contexts": 20,
+     "retained_contexts": 5,
+     "timings_ms": {
+      "pools": 38014.573,
+      "rerank": 49435.864,
+      "total": 87451.185
+     }
+    }
+   ],
+   "prompts": [
+    {
+     "file": "001-stream.txt",
+     "sha256": "7faa051f0a2ada5bb0804670911a90e48bf0bac25ea6a3307ee24b93145bffe5",
+     "labels_dokument": 5,
+     "labels_source": 0,
+     "header_kontekst": 5
+    }
+   ],
+   "bm25_restore_log": [
+    "Chunk restore failed for tenant ext_wixqa: Error executing plan: Internal error: error returned from database: (code: 1) too many SQL variables",
+    "Tenant ext_wixqa: retriever built WITHOUT BM25 index while hybrid search is enabled — retrieval degraded to vector-only. Usually means the chunk cache is empty and could not be restored."
+   ]
+  },
+  "multihoprag": {
+   "launch": {
+    "label": "before-multihoprag",
+    "code_sha": "99cd15f63967575aca0cb53d3ca33b0caacef289",
+    "model": "qwen3:4b-instruct-2507-q4_K_M",
+    "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+    "tenant": "ext_multihoprag",
+    "chroma_dir": "/Users/julia/RAG_new_chat_99cd15f/chatlive/runs/before-multihoprag.chroma",
+    "cases_file": "/Users/julia/RAG_new_external/multihoprag/cases.jsonl",
+    "started": "2026-10-18T00:36:03+00:00",
+    "finished": "2026-10-18T00:42:04+00:00",
+    "status": "complete",
+    "client_cap_sec": "1020"
+   },
+   "data_root": "/Users/julia/RAG_new_external",
+   "source_sha256": {
+    "corpus.manifest.json": "3d8de600c4082bc876919b61594ead37e51a6d70d25edcb1694e3b0eb60f26fc",
+    "chunks-report.json": "1970627c07d49297dab93ccc3b8f67716ab3f6fe2a880343ded4227c35316323",
+    "index/index-receipt.json": "d5b51cab00a67fd4a3004fe3e214504f6a0d7fc3ef98a1171a3bead7f3fa979c"
+   },
+   "cases": [
+    {
+     "case_id": "multihoprag-0448",
+     "question_letters": {
+      "cyrillic": 0,
+      "latin": 306
+     },
+     "answer_letters": {
+      "cyrillic": 331,
+      "latin": 49
+     },
+     "quality_score": 100,
+     "quality_source": "llm",
+     "route": "auto",
+     "first_token_sec": 199.468,
+     "result_sec": 304.914,
+     "tokens": 132
+    }
+   ],
+   "paths": [
+    {
+     "kind": "hybrid",
+     "candidates": {
+      "vector": 20,
+      "bm25": 20,
+      "merged": 37
+     },
+     "rerank_status": "ok",
+     "retrieved_contexts": 37,
+     "retained_contexts": 5,
+     "timings_ms": {
+      "pools": 48491.74,
+      "rerank": 89572.583,
+      "total": 138065.841
+     }
+    }
+   ],
+   "prompts": [
+    {
+     "file": "001-stream.txt",
+     "sha256": "2a96d658624dbcbf37c53df07a0c4993967eab8f7914ff60a36f2aa794476353",
+     "labels_dokument": 3,
+     "labels_source": 0,
+     "header_kontekst": 3
+    }
+   ],
+   "bm25_restore_log": [
+    "Restored 11231 chunks for tenant ext_multihoprag from the persisted collection (BM25 + parent-expansion re-enabled)"
+   ]
+  }
+ }
+}

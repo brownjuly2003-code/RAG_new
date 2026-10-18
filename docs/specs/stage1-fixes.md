@@ -1,6 +1,6 @@
 # Stage 1: the chat path made ready for any corpus — audit, fixes, new indexes
 
-Status 2026-10-17: **written, audit run, no fix yet.** [`PLAN.md`](../../PLAN.md) §5, stage 1,
+Status 2026-10-18: **audit run, live check before the fixes run, fixes under way.** [`PLAN.md`](../../PLAN.md) §5, stage 1,
 is the authority; this spec records how the audit is repeated, what it found, the outcome of
 each finding, the Mac forecast and the stop rule. The outcome table is the stage's acceptance
 artefact: the stage closes when every row has an outcome, every **fix** row a commit with a unit
@@ -56,6 +56,17 @@ model nor the customer reads it (log lines, id and hash patterns, headers of HTT
 | 21 | `config/settings.py` validation log lines, `agentic_measure` | operator | **not text** |
 | 22 | id, hash, SHA, date and URL-credential patterns; CORS header list; GraceKelly time pattern | — | **not text** |
 | 23 | External tenants not shown to run BM25 + BGE-M3, rerank and expansion, after a restart too | chat | **fix or proof**: the live check above reads the trace's retrieval mode per tenant |
+| 24 | Markdown YAML front matter (`---` … `---`) stays text of a document's first chunk: all 201 aircargo files, none of the external bases | loading | **limit**: the author's own lines (title, category, type) — retrieval reads their words; making them metadata or the header's name is a change to measure, not a known defect |
+| 25 | An index directory without a database (`VECTORDB_CHROMA_DIR` at `<base>/index`, not `<base>/index/chroma`) opens as a new empty one: the tenant's every answer says the context lacks it, the log warns «unstamped index» (live check, 2026-10-18) | deployment | **limit**: a new tenant starts empty the same way; the stage-1 stand refuses a directory without `chroma.sqlite3` and reads a copy of each index, so no run writes into a generation |
+
+**Live check before the fixes** (stand `99cd15f`, the first-generation indexes, 2026-10-18;
+record [`reports/stage1/99cd15f/before.json`](../../reports/stage1/99cd15f/before.json): counts,
+ids and the API's log lines, no text of an external base). One question per tenant, each on a
+fresh API: aircargo, ConditionalQA and MultiHop-RAG took the hybrid path (20 vector + 20 BM25
+candidates, rerank ok, 5 documents); WixQA took the vector lane alone (row 23). The answers to
+the English questions of ConditionalQA and MultiHop-RAG came in Russian, WixQA's in English;
+every answer prompt labelled its documents «[Документ N» and carried «[Контекст:» headers
+(rows 5 and 10).
 
 ## Mac forecast and stop rule
 
