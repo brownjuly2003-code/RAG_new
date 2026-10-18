@@ -33,6 +33,7 @@ from collections.abc import Sequence
 from pathlib import Path
 from typing import Any, Optional
 
+from vectordb import table_header
 from vectordb.parent_join import SEAM_KEY
 
 logger = logging.getLogger(__name__)
@@ -1153,11 +1154,13 @@ class HybridRetriever:
                     if npos - 1 in pieces and parent_join.same_section(
                         pieces[npos - 1][1], neighbor_meta
                     ):
-                        cost -= parent_join.seam(pieces[npos - 1][0], text, neighbor_meta, limit)
+                        cost -= parent_join.repeated(
+                            pieces[npos - 1][0], text, neighbor_meta, limit
+                        )
                     if npos + 1 in pieces and parent_join.same_section(
                         neighbor_meta, pieces[npos + 1][1]
                     ):
-                        cost -= parent_join.seam(
+                        cost -= parent_join.repeated(
                             text, pieces[npos + 1][0], pieces[npos + 1][1], limit
                         )
                     if max(cost, 0) > budget:
@@ -1342,12 +1345,30 @@ def structural_split(
             pieces = (
                 char_splitter.split_text(content) if len(content) > max_chunk_size else [content]
             )
-            for piece, seam in zip(pieces, _seams(content, pieces), strict=True):
-                out.append(Document(page_content=piece, metadata={**meta, SEAM_KEY: seam}))
+            starts = _starts(content, pieces)
+            for piece, start, seam in zip(pieces, starts, _seams(pieces, starts), strict=True):
+                metadata = {**meta, SEAM_KEY: seam}
+                # A piece that continues a table starts with the table's header rows.
+                rows = table_header.header_rows(content, start) if start > 0 else ""
+                if rows:
+                    piece = f"{rows}\n{piece}"
+                    metadata[table_header.PREFIX_KEY] = len(rows) + 1
+                out.append(Document(page_content=piece, metadata=metadata))
     return out
 
 
-def _seams(content: str, pieces: list[str]) -> list[int]:
+def _starts(content: str, pieces: list[str]) -> list[int]:
+    """Where each piece of a section starts in it; -1 for a piece the section does not hold."""
+    starts: list[int] = []
+    previous = -1
+    for piece in pieces:
+        start = content.find(piece, previous + 1)
+        starts.append(start)
+        previous = start
+    return starts
+
+
+def _seams(pieces: list[str], starts: list[int]) -> list[int]:
     """For each piece of a section, how many of its first characters repeat the piece before.
 
     The character splitter overlaps neighbouring pieces by up to ``chunk_overlap`` characters;
@@ -1355,15 +1376,14 @@ def _seams(content: str, pieces: list[str]) -> list[int]:
     (``vectordb.parent_join``). A piece the section does not hold as it is gets 0.
     """
     seams: list[int] = []
-    previous_start = previous_end = -1
-    for piece in pieces:
-        start = content.find(piece, previous_start + 1)
+    previous_end = -1
+    for piece, start in zip(pieces, starts, strict=True):
         if start < 0:
             seams.append(0)
-            previous_start = previous_end = -1
+            previous_end = -1
             continue
         seams.append(max(previous_end - start, 0) if previous_end > 0 else 0)
-        previous_start, previous_end = start, start + len(piece)
+        previous_end = start + len(piece)
     return seams
 
 

@@ -109,12 +109,16 @@ def locate_chunks(
     its end. An equal text elsewhere in the document cannot take the place. A chunk put wrongly
     leaves characters of its document in no chunk, and ``uncovered`` counts them.
     """
+    from vectordb import table_header
+
     places: list[Range | None] = []
     last: dict[str, Range] = {}
     for chunk in chunks:
         name = str(chunk["metadata"].get("source") or "")
         source = sources.get(name)
-        needle = visible(strip_header(chunk["page_content"], chunk["metadata"]))[0]
+        body = strip_header(chunk["page_content"], chunk["metadata"])
+        # Header rows the chunker repeated at the start of a continued table are not its place.
+        needle = visible(body[table_header.prefix(body, chunk["metadata"]) :])[0]
         if source is None or not needle:
             places.append(None)
             continue

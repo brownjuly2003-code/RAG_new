@@ -10,7 +10,9 @@ retrieved chunk stands once, first (before stage 1 it stood wherever that chunk 
 Since stage 1 the chunker records the seam: ``structural_split`` writes under ``SEAM_KEY`` how
 many characters at the start of a piece repeat the piece before it in its section (0 for the
 first piece of a section), so the join is exact. A collection cut before stage 1 has no such
-record, and the seam is found by matching text, bounded by the splitter's overlap.
+record, and the seam is found by matching text, bounded by the splitter's overlap. A piece
+that continues a table starts with the table's header rows (``vectordb.table_header``); joined
+to the piece before it, it loses them first.
 
 Pure text, no models: ``HybridRetriever._expand_parents`` joins with it, and the gold metric of
 the external bases (``evaluation/external_gold.py``) reads a sent document back with it.
@@ -21,7 +23,7 @@ from __future__ import annotations
 from collections.abc import Mapping, Sequence
 from typing import Any
 
-from vectordb import contextual_header
+from vectordb import contextual_header, table_header
 
 #: Shorter repeats are taken for a coincidence: a word that ends one piece and starts the next.
 MIN_OVERLAP = 20
@@ -64,6 +66,14 @@ def seam(
     return overlap(before, text, limit)
 
 
+def repeated(
+    before: str, text: str, metadata: Mapping[str, Any] | None, limit: int = MAX_OVERLAP
+) -> int:
+    """How many first characters of ``text`` a join to ``before`` drops: header rows, seam."""
+    prefix = table_header.prefix(text, metadata)
+    return prefix + seam(before, text[prefix:], metadata, limit)
+
+
 def same_section(first: Mapping[str, Any] | None, second: Mapping[str, Any] | None) -> bool:
     """Whether two chunks of one document carry the same heading path."""
     return contextual_header.heading_path(first) == contextual_header.heading_path(second)
@@ -81,8 +91,11 @@ def join(header: str, pieces: Sequence[Piece], limit: int = MAX_OVERLAP) -> str:
         if previous is None:
             body = text
         elif position == previous[0] + 1 and same_section(previous[2], metadata):
+            prefix = table_header.prefix(text, metadata)
+            text = text[prefix:]
             cut = seam(body, text, metadata, limit)
-            body += text[cut:] if cut else "\n\n" + text
+            # Rows that continue a table stay in it: no empty line between them.
+            body += text[cut:] if cut else ("\n" if prefix else "\n\n") + text
         else:
             body += "\n\n" + text
         previous = piece
