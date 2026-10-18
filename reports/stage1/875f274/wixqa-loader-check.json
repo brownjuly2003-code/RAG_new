@@ -1,0 +1,76 @@
+{
+  "connection": {
+    "documents_with_every_heading_in_order": 6221,
+    "documents_with_the_visible_text_of_contents": 6221,
+    "source": "reports/external/36f1167/connection.json"
+  },
+  "documents": 6221,
+  "documents_whole": 6221,
+  "documents_with_every_heading_in_order": 6221,
+  "documents_with_every_table_row": 6221,
+  "documents_with_text_beyond_contents": 0,
+  "documents_without_text_beyond_title": 29,
+  "gold_articles": 340,
+  "gold_articles_whole": 340,
+  "gold_articles_with_every_heading_in_order": 340,
+  "input_sha256": {
+    "wix_kb_corpus/wix_kb_corpus.jsonl": "46b852c60b85fb1828e7c6118bb56ba796eba99120a6b69c6b984c06e1c5e1fe",
+    "wixqa_expertwritten/test.jsonl": "a1bb6888a8394f980bc88f0d09b873fcd283ff4c9782600bc203f8103c2f1bad",
+    "wixqa_simulated/test.jsonl": "9a2b9f42c081467b3de5bd92511e770bca3cc7977f169526fd78dd3c985ac4a8"
+  },
+  "least_held": [
+    {
+      "chars": 1971,
+      "held": 1971,
+      "id": "860475a2cbc65c226ecf08729d0430584e46f35f23a3e10bb5500c2c4ad09168"
+    },
+    {
+      "chars": 205,
+      "held": 205,
+      "id": "913665765c35232f5bf39d0cb66755f744e4397a0b1b273f2c3570f18e623366"
+    },
+    {
+      "chars": 3596,
+      "held": 3596,
+      "id": "00beb4e23da4af13aa39f82ce6474eb7728d7d63c92ef0599861a2f06ed27d45"
+    },
+    {
+      "chars": 1726,
+      "held": 1726,
+      "id": "7ca649496753c30bc3249e7e51315e01e9f245292f0b093b481f27fe1092f383"
+    },
+    {
+      "chars": 1889,
+      "held": 1889,
+      "id": "f3ec5a01f586ef98e3dfcc1590adb422f6e199d01d85c8a17938989df2b2e87f"
+    },
+    {
+      "chars": 126,
+      "held": 126,
+      "id": "b9b7b497ff870838ab517ad00bd7f3d3fb8c3261907169f79a159319fb7ce2fc"
+    },
+    {
+      "chars": 4464,
+      "held": 4464,
+      "id": "a338afcdc4dee2ad9d409d569e44b78ec960ff9251856cb739eca0d8cca170a1"
+    },
+    {
+      "chars": 1567,
+      "held": 1567,
+      "id": "8c2e56296ddb7b441238ff06cfa9b38204aca9e27371386689b1fa4643cdfbff"
+    },
+    {
+      "chars": 1132,
+      "held": 1132,
+      "id": "e5665776e16333115ce5f4da83d8fe84a2ec545efdab0e4fda2f3e9f844fdcf1"
+    },
+    {
+      "chars": 1198,
+      "held": 1198,
+      "id": "557f71d42bcc7f1621eb9348eb067092bb1b7742981bbf5617508122cae35877"
+    }
+  ],
+  "loaded": 6192,
+  "visible_characters": 11411293,
+  "visible_characters_held": 11411293
+}
