@@ -43,6 +43,30 @@ PILOTS = {
     "conditionalqa": (50, "5c3f5ae6faa9941318ab1e3f487a8284e650bdd7cd93e35afad4b81539dfffd4"),
     "wixqa": (40, "74effed693bafe0e46d50e9a65c22ba9e3f70424b7dd110e48102329f22452f4"),
 }
+# PLAN.md stage 2's questions, registered 2026-10-18 before its first request: about 100 of
+# each base's open part, ConditionalQA's not-answerable questions beside its primary ones.
+STAGE2 = {
+    ("conditionalqa", "stage2"): (
+        {"part": "tuning", "stratum": "primary", "documents": 40, "per_document": 2},
+        80,
+        "7d250c40781a311eb3c5f71c84f07e817db5f1fa5013cd587ea02088a200df42",
+    ),
+    ("conditionalqa", "stage2_not_answerable"): (
+        {"part": "tuning", "stratum": "not_answerable", "questions": 20},
+        20,
+        "e1a26e128190af2243e9e47a45410dc46cfe171bf841dfb88e2615dab84859d8",
+    ),
+    ("wixqa", "stage2"): (
+        {"part": "tuning", "questions": 100},
+        100,
+        "51bf5c9bc98d67203daaff838d66418a33702979d7ce5695a71b31bf580b6309",
+    ),
+    ("multihoprag", "stage2"): (
+        {"part": "advisory", "questions": 100},
+        100,
+        "1c164c3cfe64dea0080a6c49b1133348c90f9fc747aac802fa0b892d06e8afff",
+    ),
+}
 
 
 def _cq(number: int, document: str, kind: str = "a", sections: tuple[int, ...] = (1,)) -> dict:
@@ -737,7 +761,7 @@ def test_the_registration_is_whole_and_no_locked_part_is_opened() -> None:
     # Acceptance 4.1 alone opens a part, by a commit that changes this line with the file.
     assert registered["opened"] == []
     assert registered["registered"] == "2026-10-05" and registered["schema_version"] == 1
-    assert sorted(registered["selections"]) == ["conditionalqa", "wixqa"]
+    assert sorted(registered["selections"]) == ["conditionalqa", "multihoprag", "wixqa"]
     found = {}
     for base, block in registered["bases"].items():
         assert block["cases"] == converted[base]["converted"]["cases"]
@@ -809,6 +833,30 @@ def test_the_registration_is_whole_and_no_locked_part_is_opened() -> None:
     )
     page_pilot = registered["selections"]["conditionalqa"]["pilot"]
     assert (page_pilot["documents"], page_pilot["cluster_sizes"]) == (25, {"2": 25})
+    assert {
+        (base, name)
+        for base, chosen in registered["selections"].items()
+        for name in chosen
+        if name != "pilot"
+    } == set(STAGE2)
+    for (base, name), (rule, cases, sha256) in STAGE2.items():
+        selection = registered["selections"][base][name]
+        assert (selection["rule"], len(selection["case_ids"]), selection["cases_sha256"]) == (
+            rule,
+            cases,
+            sha256,
+        )
+        assert selection["cases_sha256"] == parts.digest(selection["case_ids"])
+        # A prefix of the open part's order: a size chosen later draws nothing anew.
+        part = registered["bases"][base]["parts"][rule["part"]]["case_ids"]
+        assert [case_id for case_id in part if case_id in set(selection["case_ids"])] == (
+            selection["case_ids"]
+        )
+        assert parts.read(registered, base, selection=name) == selection["case_ids"]
+    # The stage-2 questions of a base hold its pilot.
+    for base in PILOTS:
+        pilot = set(registered["selections"][base]["pilot"]["case_ids"])
+        assert pilot <= set(registered["selections"][base]["stage2"]["case_ids"])
     for base, part in (
         ("conditionalqa", "locked"),
         ("conditionalqa", "reserve"),
