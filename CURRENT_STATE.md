@@ -18,8 +18,8 @@ its sources (RAG). Two answer paths:
 - **the widget** — `/api/ask`: an agent graph with query rewriting, document grading, claim
   checking, up to two retries and a ticket to a person.
 
-Retrieval: BM25 and BGE-M3 vectors merged by RRF, then the bge-reranker-v2-m3 cross-encoder on
-the CPU picks 5 of 20 candidates. Documents are cut by their markdown sections (DOCX, HTML and
+Retrieval: BM25 and BGE-M3 vectors, 20 candidates each, merged by RRF; the bge-reranker-v2-m3
+cross-encoder on the CPU keeps 5 of them. Documents are cut by their markdown sections (DOCX, HTML and
 PDF are read into markdown first; at most 800 characters, 200 overlap inside a long section),
 each chunk opens with a header `[document › section]` (indexes built before stage 1 carry the
 old Russian one, still read), and parent expansion adds up to two neighbouring chunks on each
@@ -82,8 +82,8 @@ records `reports/stage1/`, pinned by `tests/test_stage1_live_artifact.py`; one e
 [`PLAN.md`](PLAN.md) stage 2 — the four corpora on the fixed path: 100 aircargo answers on the
 chat path, retrieval without generation, 300 judged answers on the external bases' `stage2`
 selections («Вариант B»), the graph lane on aircargo. First its spec, committed before the
-first request: forecast, stop rule, and the judge by id — `claude-opus-5-5` at effort `max`,
-pinned in `evaluation/isolated_request.py`, the judge of 2026-10-15.
+first request: forecast, stop rule, the judge `claude-opus-5-5` at effort `max` (pinned in
+`evaluation/isolated_request.py`); where to start — the last session's «Next actions».
 
 ## Julia's decisions in force
 
@@ -127,9 +127,9 @@ condition is formally met ([`PLAN.md`](PLAN.md) §9).
   pip-audit clean.
 - **Since `e81f0c5` (2026-10-16) CI starts no job** — GitHub's annotation names failed account
   payments. Until Julia settles it, a push is checked by the whole unit suite on the Mac.
-- **Last push:** `99cd15f` (the documents tidied) to `origin/master`, 2026-10-17 15:03 UTC, by
-  the previous session; `3e52a02` before it at Julia's word (suite on the Mac: 5,820 passed,
-  123 skipped). **Not pushed:** the stage-1 commits from `8f94d84`; a push waits for her word.
+- **Last push:** the last session's handoff to `origin/master`, 2026-10-18 about 15:45 UTC, at
+  Julia's «да»; before it `b0bd87c` (stage 1 closed, 27 commits from `8f94d84`), 14:58 UTC, at her
+  «пуш». CI and Pages runs fail in 3–4 s (billing). Nothing is left unpushed.
 - Remote: `brownjuly2003-code/RAG_new`, private; pushes over HTTPS (command in
   [`CLAUDE.md`](CLAUDE.md)).
 
@@ -147,4 +147,4 @@ stream GR measured graph retrieval (NO-SHIP); phase E prepared the public site l
   [`EVIDENCE_INDEX.md`](EVIDENCE_INDEX.md) · documents map — [`docs/README.md`](docs/README.md)
 - Agent conventions — [`CLAUDE.md`](CLAUDE.md), [`AGENT_STATE.md`](AGENT_STATE.md) · queue for
   automation — [`BACKLOG.md`](BACKLOG.md) · module layout — [`DEPRECATIONS.md`](DEPRECATIONS.md)
-- Last session — [`docs/operations/session-handoff-2026-10-18-stage1.md`](docs/operations/session-handoff-2026-10-18-stage1.md)
+- Last session — [`docs/operations/session-handoff-2026-10-18-stage1-closed.md`](docs/operations/session-handoff-2026-10-18-stage1-closed.md)

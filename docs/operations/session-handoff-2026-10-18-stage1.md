@@ -4,6 +4,8 @@ Session `99ac58b5`, 2026-10-17 22:59 UTC – 2026-10-18 about 02:30 UTC, Claude 
 (D12), continued across several context compactions. **Times are UTC**, as the Mac's records
 are; the laptop's clock is UTC−4 (commit dates read 2026-10-17 evening; 12:00 UTC is 08:00 on
 the laptop). The session before: [one plan, fixes first](session-handoff-2026-10-17-one-plan.md).
+The session after: [stage 1 closed, stage 2 next](session-handoff-2026-10-18-stage1-closed.md) —
+this file's «Next actions» are done; their launch, stand, stop and rerun procedures (1–2) still hold.
 
 Julia's request: «продолжи по CURRENT_STATE.md, этап 1» — carry out [`PLAN.md`](../../PLAN.md)
 §5, stage 1. Mid-session (about 00:20) she asked «что грузит мак?»; the answer: nothing heavy —
