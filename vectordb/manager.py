@@ -51,6 +51,10 @@ _store_cache: dict[str, Any] = {}
 _index_cache_keys: dict[str, tuple[str, str, int]] = {}
 _index_manifest_status: dict[str, dict[str, Any] | None] = {}
 _cache_lock = Lock()
+# Chunks read per call when the BM25 corpus is restored: one call for a whole
+# collection binds a variable per row and SQLite refuses it past 32,766 (live
+# check 2026-10-18: WixQA's 37,571 chunks came back vector-only).
+RESTORE_PAGE = 5000
 
 
 class ActiveCollectionEmbeddingDimensionMismatch(RuntimeError):
@@ -832,14 +836,24 @@ def _restore_chunks_from_store(vector_store: Any, tenant: str) -> list[Document]
     collection = getattr(vector_store, "_collection", None)
     if collection is None or not hasattr(collection, "get"):
         return None
+    texts: list[Any] = []
+    metadatas: list[Any] = []
     try:
-        payload = collection.get(include=["documents", "metadatas"])
+        while True:
+            payload = collection.get(
+                include=["documents", "metadatas"], limit=RESTORE_PAGE, offset=len(texts)
+            )
+            page = list((payload or {}).get("documents") or [])
+            page_metadatas = list((payload or {}).get("metadatas") or [])
+            texts.extend(page)
+            metadatas.extend(page_metadatas[: len(page)])
+            metadatas.extend([None] * (len(page) - len(page_metadatas)))
+            if len(page) < RESTORE_PAGE:
+                break
     except Exception as exc:
         logger.warning("Chunk restore failed for tenant %s: %s", tenant, exc)
         return None
 
-    texts = (payload or {}).get("documents") or []
-    metadatas = (payload or {}).get("metadatas") or []
     if not texts:
         return None
 
