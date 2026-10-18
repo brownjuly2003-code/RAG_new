@@ -52,7 +52,7 @@ ESCALATED = "Запрос передан оператору."
 # The limit a timeout test sets, and how long its model stays silent.
 LIMIT_SEC = 8.0
 SILENT_SEC = 60.0
-SELF_EVAL_MARKER = "оценке качества ответов"
+SELF_EVAL_MARKER = "rating the quality of assistant answers"
 SUGGESTIONS_MARKER = "propose 3 short follow-up questions"
 PATH_ENV = ("STREAMING_RAG_PARITY", "STREAMING_QUALITY_EVAL", "LLM_PROVIDER_PROFILE")
 

@@ -30,7 +30,7 @@ from tests import _fake_ollama
 
 QUESTION = "How do I report a damaged parcel?"
 ANSWER = "Report it with a photo of the parcel [1]."
-SELF_EVAL_MARKER = "оценке качества ответов"
+SELF_EVAL_MARKER = "rating the quality of assistant answers"
 SUGGESTIONS_MARKER = "propose 3 short follow-up questions"
 PATH_ENV = ("STREAMING_RAG_PARITY", "STREAMING_QUALITY_EVAL", "LLM_PROVIDER_PROFILE")
 HEADER = "[Returns policy › Damaged goods]"
@@ -132,9 +132,16 @@ def test_the_chat_model_reads_a_language_free_header_naming_the_section_once(
     results = [event for event in events if event.get("type") == "result"]
     assert len(results) == 1 and results[0]["answer"] == ANSWER, response.text
     prompts = [str(r["payload"].get("prompt")) for r in fake_ollama.requests]
-    answer_prompts = [
-        p for p in prompts if SELF_EVAL_MARKER not in p and SUGGESTIONS_MARKER not in p
-    ]
+    # An English question over an English page: no request carries a Cyrillic letter. Before
+    # V3 the instructions themselves were Russian, and the live check of 2026-10-18 got a
+    # Russian answer to an English question (MultiHop-RAG).
+    for request in fake_ollama.requests:
+        sent = json.dumps(request["payload"], ensure_ascii=False)
+        found = re.search("[а-яА-ЯёЁ]", sent)
+        assert found is None, sent[max(0, found.start() - 80) : found.start() + 80]
+    # The answer's prompt is the one without the answer: the self-evaluation and the
+    # suggestions quote it, its marks dropped.
+    answer_prompts = [p for p in prompts if ANSWER.split(" [")[0] not in p]
     assert len(answer_prompts) == 1, prompts
     prompt = answer_prompts[0]
     # The section's chunks reach the model under the header the ingest wrote.
@@ -153,11 +160,10 @@ def test_the_chat_model_reads_a_language_free_header_naming_the_section_once(
     assert len(held) > 9  # more than one piece of 800 characters holds
     assert all(blocks[0].count(clause) == 1 for clause in held)
     # The answer, its self-evaluation and the suggestions are asked for in the question's
-    # language, not in the prompt's (PLAN.md stage 1, Julia 2026-10-17); the context labels
-    # carry no word.
-    assert "Отвечай на языке ВОПРОСА" in prompt
+    # language (PLAN.md stage 1, Julia 2026-10-17); the context labels carry no word.
+    assert "Answer in the language of the QUESTION" in prompt
     assert "[1 | source=returns_policy.md]" in prompt and "Документ" not in prompt
     [self_eval] = [p for p in prompts if SELF_EVAL_MARKER in p]
-    assert "Ответ должен быть на языке вопроса" in self_eval
+    assert "The answer must be in the language of the question" in self_eval
     [suggestions] = [p for p in prompts if SUGGESTIONS_MARKER in p]
     assert "be written in the language of the QUESTION" in suggestions

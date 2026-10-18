@@ -1,7 +1,8 @@
 # Stage 1: the chat path made ready for any corpus — audit, fixes, new indexes
 
 Status 2026-10-18: **audit and live check before the fixes run, fixes committed, the new
-generation building, the check after the fixes registered.** [`PLAN.md`](../../PLAN.md) §5,
+generation built, the check after the fixes run once — one criterion failed, its cause fixed
+(V3 prompts, row 10), the rerun registered.** [`PLAN.md`](../../PLAN.md) §5,
 stage 1, is the authority; this spec records how the audit is repeated, what it found, the
 outcome of each finding, the Mac forecast and the stop rule. The outcome table is the stage's acceptance
 artefact: the stage closes when every row has an outcome, every **fix** row a commit with a unit
@@ -50,7 +51,7 @@ model nor the customer reads it (log lines, id and hash patterns, headers of HTT
 | 7 | LLM header prompt of `add_contextual_headers` in Russian | not on the path (`vectordb/manager.py` passes `llm=None`) | **fix** with row 5: English instruction, header in the fragment's language |
 | 8 | A continued table chunk has no column-header row (`structural_split`) | chat | **fix**: a continued piece starts with its table's header row and separator row (`vectordb/table_header.py`), recorded as `table_header_prefix`; expansion drops them when it joins the piece back. Count (`scripts/table_continuations.py`, chunks 800/200), continued pieces without a header: aircargo 176 of 5,589 chunks in 132 documents (corpus digest `e69169b4`), ConditionalQA 127 of 13,778 in 60 (`d06190bb`), WixQA 442 of 37,571 in 166 (`e712f1a7`), MultiHop-RAG 0 of 11,231 (`306c227f`) |
 | 9 | Parent expansion glues neighbours with their 200-character overlap; the core chunk's header lands mid-text | chat | **fix**: `structural_split` records each piece's seam (`seam_overlap`), expansion joins adjacent pieces of one section over it and counts the budget without the repeat; header first. A collection without the record is joined by a bounded whole-word match. Two adjacent pieces that are both retrieved stay two documents and repeat their seam — the selection is not expansion's to change: **limit** |
-| 10 | `qa`, `self_eval`, `conversational_qa` prompts in Russian; `suggested_questions` sets no language; `_format_context_block` labels and the empty-context line in Russian; history labels «Пользователь/Ассистент» | chat | **fix**: the instruction names no language — answer in the question's language even when the context is in another (`qa`, `conversational_qa`), the suggestions in it, and self-evaluation lowers the score of an answer in another; context labels `[N | source=…]`, the empty context `[]`, history roles `user`/`assistant`; prompt ids V2 (Julia, 2026-10-17) |
+| 10 | `qa`, `self_eval`, `conversational_qa` prompts in Russian; `suggested_questions` sets no language; `_format_context_block` labels and the empty-context line in Russian; history labels «Пользователь/Ассистент» | chat | **fix**: the instruction names no language — answer in the question's language even when the context is in another (`qa`, `conversational_qa`), the suggestions in it, and self-evaluation lowers the score of an answer in another; context labels `[N | source=…]`, the empty context `[]`, history roles `user`/`assistant`; prompt ids V2 (Julia, 2026-10-17). V2 kept the instructions Russian and added one Russian sentence asking for the question's language; the check after the fixes got a Russian answer to an English question (MultiHop-RAG) from them. **V3** (2026-10-18): `qa`, `conversational_qa` and `self_eval` written in English with the same rules; the E2E test holds that an English question over an English page sends the model no Cyrillic letter (red on V2). The V2 decline wording «ответить нельзя» is gone, so S5 of the [handover plan](handover-signal.md) catches it only in an answer that still uses it — stage 3's to settle |
 | 11 | BM25 tokens `[^\W_]+`, `\w+` in `context_window`, `grounding` | chat | **limit**: languages written without spaces (Chinese, Japanese, Thai) get one token per run of letters; none of the four corpora is one |
 | 12 | Fixed customer messages in `ask_stream` («Сессия не инициализирована.», «Ошибка обработки запроса.», «Не удалось получить ответ.») | chat, error branches only | **limit**: the interface's language, as the whole web UI (`static/`, `templates/`); interface texts are stage 6 |
 | 13 | Widget graph: fixed messages, `_is_knowledge_gap` Russian refusal phrases, ticket texts, `response_safety` refusal | widget | **stage 3**: the widget's handover is decided there; the refusal phrases are a hand-made list to replace |
@@ -90,6 +91,22 @@ may drop documents or cut one to an excerpt without its header line, so not ever
 question the client's cap stopped (1,020 s, named in `client_error`) or a run that failed
 (`launch.status`) is `NOT_EVIDENCE` for its tenant.
 
+**The first run of the check after** (stand `0892441`, 2026-10-18 12:09–12:32 UTC; record
+[`reports/stage1/0892441/after.json`](../../reports/stage1/0892441/after.json)): all four runs
+complete, no cap reached. Every tenant passed `paths`, `bm25_restore_log` and `prompts` — WixQA
+now hybrid, 20 + 20 candidates, its 37,571 chunks restored. `answer_letters` passed for
+aircargo, ConditionalQA (English now, Russian before) and WixQA, and **failed for MultiHop-RAG**:
+347 Cyrillic letters against 65 Latin, as before the fixes. Reading the run's answer prompts
+found the cause the criteria could not see: V2's instructions are Russian — 608 Cyrillic
+letters in each external tenant's prompt, all of them the instruction's. Fixed in V3 (row 10).
+
+**The rerun on V3** (registered 2026-10-18, before its run): the same four questions by
+`audit.sh after`, all four tenants, on a stand of the V3 commit, whose product code differs from
+`e5e135a`'s only in `agent/prompts.py` — no chunking or header code, so the new generation
+stands; record `reports/stage1/<stand commit>/after.json`. It passes on the criteria above and
+one more, read off `prompts[].letters` (added to `audit_summary.py` with V3): the answer prompt
+of each external tenant holds 0 Cyrillic letters — instruction, documents and question.
+
 ## Mac forecast and stop rule
 
 | Work | Forecast | Stops at |
@@ -98,6 +115,7 @@ question the client's cap stopped (1,020 s, named in `client_error`) or a run th
 | Unit suite per push candidate | 9 min | 30 min |
 | New index generation: aircargo; three external bases | 1 h; 10 h (9.8 h at connection) | 3 h; 30 h |
 | E2E live check after the fixes on the new indexes | 40 min | as the first: 1,020 s a question; 2 h in all |
+| Its rerun on V3 (the first took 23 min) | 25 min | the same |
 
 Each live run starts on an idle Mac (no `llama-server`, a 5-minute load below 2) and writes its
 record under `reports/stage1/<commit>/` with the corpus SHA, the code SHA and the config. A run

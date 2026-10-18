@@ -43,7 +43,7 @@ FIRST_TOKEN_AFTER_SEC = 65.0
 TOKEN_GAP_SEC = 4.0
 SUGGESTIONS = ["Какие документы приложить?", "Сколько ждать ответа?", "Куда отправить акт?"]
 # Templates of the stream's two later model calls (agent/prompts.py).
-SELF_EVAL_MARKER = "оценке качества ответов"
+SELF_EVAL_MARKER = "rating the quality of assistant answers"
 SUGGESTIONS_MARKER = "propose 3 short follow-up questions"
 LIMIT_ENV = ("REQUEST_TIMEOUT_SEC", "OLLAMA_REQUEST_TIMEOUT_SEC", "STREAMING_TIMEOUT_SEC")
 PATH_ENV = ("STREAMING_RAG_PARITY", "STREAMING_QUALITY_EVAL", "LLM_PROVIDER_PROFILE")

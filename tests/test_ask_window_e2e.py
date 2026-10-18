@@ -56,13 +56,13 @@ def _reply(prompt: str) -> str:
         if "[1] source=" in prompt:
             return json.dumps({"grades": [{"index": i, "relevant": True} for i in range(1, 6)]})
         return "YES"
-    if "ассистент службы поддержки" in prompt:
+    if "You are a support assistant" in prompt:
         return ANSWER
     if "atomic factual claims" in prompt:
         return "- Претензию подают в письменной форме."
     if "fact-checker" in prompt:
         return "SUPPORTED: Претензия о повреждении груза подаётся в письменной форме."
-    if "оценке качества ответов" in prompt:
+    if "rating the quality of assistant answers" in prompt:
         return '{"score": 90, "reason": "grounded"}'
     return "[]"
 
@@ -154,12 +154,12 @@ def test_ask_graph_fits_every_model_call_into_the_window(monkeypatch, client, tm
     # Grading, generation, fact verification and the judge all called the model.
     for template in (
         "оценке релевантности документов",
-        "ассистент службы поддержки",
+        "You are a support assistant",
         "fact-checker",
-        "оценке качества ответов",
+        "rating the quality of assistant answers",
     ):
         assert any(template in c["prompt"] for c in calls), template
-    generate_calls = [c for c in calls if "ассистент службы поддержки" in c["prompt"]]
+    generate_calls = [c for c in calls if "You are a support assistant" in c["prompt"]]
     assert len(generate_calls) == 1, [c["prompt"][:80] for c in calls]
     prompt = generate_calls[0]["prompt"]
     # The model sees the instructions, the question and the leading sources.

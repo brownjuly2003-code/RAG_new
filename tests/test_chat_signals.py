@@ -65,7 +65,7 @@ def test_the_plan_freezes_the_signals_without_a_model_and_holds_no_text(tmp_path
     first, second = plan["items"]
     assert (first["S1"], first["S1p"], first["S5"]) == (False, False, False)
     assert first["S7"] == {"status": "ok", "top_score": 0.91}
-    # The second answer declines in the prompt's own words and scored 60; its prompt holds two
+    # The second answer declines in the V2 prompt's words and scored 60; its prompt holds two
     # documents but the rerank recorded one: S7 does not read a score it cannot tie to them.
     assert (second["S1"], second["S1p"], second["S5"]) == (True, True, True)
     assert second["S7"] == {"status": "order_differs", "top_score": None}

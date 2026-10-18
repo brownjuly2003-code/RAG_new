@@ -139,7 +139,9 @@ defaults, `RAG_ENV` development; none is re-implemented. Each is a yes/no "mark 
   share of 0.8.
 - **S5** a decline: the answer says it cannot answer — `_is_knowledge_gap`'s phrases plus the
   answer prompt's own wording «ответить нельзя» (`agent/prompts.py:20`); no model call. A new
-  signal: the product's gap check also needs factuality, which only S2 produces.
+  signal: the product's gap check also needs factuality, which only S2 produces. Since V3
+  (2026-10-18, [stage 1 row 10](stage1-fixes.md)) the answer prompt asks for the decline in the
+  question's language and fixes no words, so that wording remains only in answers that use it.
 - **S6** the widget's first pass: `route_or_retry` on the state S1, S2 and S4 build, the gap
   with S2's factuality — marked unless `auto`. A retry writes a new answer no judge graded, so
   retries are not replayed: S6 gives the most answers the widget's first pass would mark.

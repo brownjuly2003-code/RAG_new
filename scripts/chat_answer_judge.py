@@ -3,7 +3,7 @@
 
 The chat's path chooses each answer's documents itself, so a judge of chat answers reads, per
 answer, the documents the chat's model read: the stand saves every prompt it sends
-(``reports/stage1/tools/live_api.py``), and the answer prompt (``QA_PROMPT_V2``) holds the
+(``reports/stage1/tools/live_api.py``), and the answer prompt (``QA_PROMPT_V3``) holds the
 question and the numbered documents. Decision D12 leaves one judge, the session's model, asked
 in stateless requests by the registered route (``evaluation.isolated_request``), as
 ``scripts/generator_answer_judge.py`` asks it; the rules here name no domain and no language —
@@ -53,11 +53,11 @@ SALT = "chat-answer-judge-2026-10-18"
 RETEST_SIZE = 15
 FORM_ATTEMPTS = 3
 CLI_TIMEOUT_S = 1200.0
-PROMPT_ID = "QA_PROMPT_V2"
-# The answer prompt's frame (agent/prompts.py, QA_PROMPT_V2): the stand saves it after "USER:".
-CONTEXT_START = "КОНТЕКСТ:\n"
-CONTEXT_END = "\n--------------------\n\nВОПРОС:\n"
-QUESTION_END = "\n\nЕсли ты ссылаешься"
+PROMPT_ID = "QA_PROMPT_V3"
+# The answer prompt's frame (agent/prompts.py, QA_PROMPT_V3): the stand saves it after "USER:".
+CONTEXT_START = "CONTEXT:\n"
+CONTEXT_END = "\n--------------------\n\nQUESTION:\n"
+QUESTION_END = "\n\nWhen you rely on"
 LABEL = re.compile(r"(?m)^\[(\d+) \| source=([^\]\n]*)\]\n")
 MARK = re.compile(r"\[(\d+(?:\s*,\s*\d+)*)\]")
 ANSWERS = ("full", "partial", "declined", "no")

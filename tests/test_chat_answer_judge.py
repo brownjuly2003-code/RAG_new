@@ -72,7 +72,7 @@ def test_the_saved_prompt_gives_back_the_question_and_the_numbered_documents() -
     ]
     empty = flatten_messages([{"role": "user", "content": build_qa_prompt("Fee?", [])}])
     assert judge.read_prompt(empty) == ("Fee?", [])
-    with pytest.raises(ValueError, match="QA_PROMPT_V2"):
+    with pytest.raises(ValueError, match="QA_PROMPT_V3"):
         judge.read_prompt("USER:\nsomething else")
 
 

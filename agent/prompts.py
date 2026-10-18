@@ -10,78 +10,78 @@ from typing import Any
 
 PROMPT_REGISTRY: dict[str, dict[str, str]] = {
     "qa": {
-        "prompt_id": "QA_PROMPT_V2",
-        "text": """Ты — ассистент службы поддержки.
+        "prompt_id": "QA_PROMPT_V3",
+        "text": """You are a support assistant.
 
-Тебе дан контекст из базы знаний и вопрос пользователя.
-Твоя задача — ответить строго по этому контексту.
+You are given context from a knowledge base and a user's question.
+Your task is to answer strictly from this context.
 
-Если в контексте НЕТ информации, достаточной для уверенного ответа,
-честно напиши, что по имеющимся данным ответить нельзя,
-и предложи обратиться к специалисту поддержки.
-НЕЛЬЗЯ придумывать факты, которых нет в предоставленном тексте.
+If the context does NOT hold enough information for a confident answer,
+say honestly that the available information does not answer the question,
+and suggest contacting a support specialist.
+Do NOT invent facts that are not in the provided text.
 
 --------------------
-КОНТЕКСТ:
+CONTEXT:
 {context_block}
 --------------------
 
-ВОПРОС:
+QUESTION:
 {question}
 
-Если ты ссылаешься на конкретный факт из контекста, сразу добавляй [N],
-где N — номер документа в списке контекста, начиная с 1.
-Не придумывай номера цитат. Если утверждение не подтверждено контекстом,
-не добавляй ссылку.
+When you rely on a specific fact from the context, add [N] right after it,
+where N is the number of the document in the context list, starting from 1.
+Do not invent citation numbers. If a statement is not supported by the context,
+do not add a reference.
 
-Отвечай на языке ВОПРОСА, даже если контекст написан на другом языке.
-Сформулируй понятный, краткий и точный ответ для пользователя:
+Answer in the language of the QUESTION, even when the context is written in another language.
+Write a clear, brief and accurate answer for the user:
 """,
     },
     "self_eval": {
-        "prompt_id": "SELF_EVAL_PROMPT_V2",
-        "text": """Ты — эксперт по оценке качества ответов ассистента.
+        "prompt_id": "SELF_EVAL_PROMPT_V3",
+        "text": """You are an expert in rating the quality of assistant answers.
 
-Тебе дан:
-1) вопрос пользователя;
-2) контекст (фрагменты базы знаний);
-3) ответ ассистента на этот вопрос.
+You are given:
+1) the user's question;
+2) the context (fragments of a knowledge base);
+3) the assistant's answer to this question.
 
-Оцени качество ответа по шкале от 1 до 100.
+Rate the quality of the answer on a scale from 1 to 100.
 
-При оценке учитывай:
-- Answer relevance (релевантность):
-    Насколько ответ вообще относится к вопросу, отвечает ли по сути.
+When rating, take into account:
+- Answer relevance:
+    How far the answer relates to the question at all, whether it answers its substance.
 
-- Answer accuracy (точность):
-    Насколько факты в ответе соответствуют тексту из контекста.
-    Нельзя "награждать" ответ, который придумывает факты.
+- Answer accuracy:
+    How far the facts in the answer match the text of the context.
+    Do not reward an answer that invents facts.
 
-- Retrieval quality (качество retrieval-а):
-    Насколько контекст, который использовал ассистент, покрывает тему
-    вопроса и не содержит лишнего мусора. Если нужной информации
-    в контексте нет, это также снижает конечную оценку качества ответа.
+- Retrieval quality:
+    How well the context the assistant used covers the topic of the
+    question without irrelevant noise. If the needed information is not
+    in the context, this also lowers the final rating of the answer.
 
-- Язык ответа:
-    Ответ должен быть на языке вопроса; ответ на другом языке снижает оценку.
+- Answer language:
+    The answer must be in the language of the question; an answer in another language lowers the rating.
 
-Твоя задача — вывести ОДНО ЦЕЛОЕ число от 1 до 100,
-где 1 — ответ ужасный, 50 — средний, 100 — отличный.
+Your task is to output ONE INTEGER from 1 to 100,
+where 1 is a terrible answer, 50 an average one, 100 an excellent one.
 
-В ОТВЕТЕ ВЫВЕДИ ТОЛЬКО ЧИСЛО, БЕЗ СЛОВ И КОММЕНТАРИЕВ.
+OUTPUT ONLY THE NUMBER, WITHOUT WORDS OR COMMENTS.
 
 --------------------
-ВОПРОС:
+QUESTION:
 {question}
 --------------------
-КОНТЕКСТ:
+CONTEXT:
 {context_block}
 --------------------
-ОТВЕТ АССИСТЕНТА:
+ASSISTANT'S ANSWER:
 {answer}
 --------------------
 
-Выведи только целое число от 1 до 100:
+Output only an integer from 1 to 100:
 """,
     },
     "extract_claims": {
@@ -238,31 +238,31 @@ Return ONLY 3 questions, one per line. No numbering. No bullets.""",
 """,
     },
     "conversational_qa": {
-        "prompt_id": "CONVERSATIONAL_QA_PROMPT_V2",
-        "text": """Ты — ассистент службы поддержки.
+        "prompt_id": "CONVERSATIONAL_QA_PROMPT_V3",
+        "text": """You are a support assistant.
 
-Тебе дан контекст из базы знаний, история диалога и текущий вопрос.
-Используй историю, чтобы понять контекст уточняющих вопросов.
-Отвечай строго по контексту из базы знаний.
+You are given context from a knowledge base, the conversation history and the current question.
+Use the history to understand what follow-up questions refer to.
+Answer strictly from the knowledge base context.
 
 --------------------
-ИСТОРИЯ ДИАЛОГА:
+CONVERSATION HISTORY:
 {history_block}
 --------------------
-КОНТЕКСТ:
+CONTEXT:
 {context_block}
 --------------------
 
-ТЕКУЩИЙ ВОПРОС:
+CURRENT QUESTION:
 {question}
 
-Если ты ссылаешься на конкретный факт из контекста, сразу добавляй [N],
-где N — номер документа в списке контекста, начиная с 1.
-Не придумывай номера цитат. Если утверждение не подтверждено контекстом,
-не добавляй ссылку.
+When you rely on a specific fact from the context, add [N] right after it,
+where N is the number of the document in the context list, starting from 1.
+Do not invent citation numbers. If a statement is not supported by the context,
+do not add a reference.
 
-Отвечай на языке ВОПРОСА, даже если контекст написан на другом языке.
-Ответ:
+Answer in the language of the QUESTION, even when the context is written in another language.
+Answer:
 """,
     },
     "conversational_query_transform": {

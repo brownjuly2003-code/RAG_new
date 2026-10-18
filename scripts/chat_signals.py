@@ -61,7 +61,9 @@ if str(PROJECT_ROOT) not in sys.path:
 from scripts import chat_answer_judge as judge  # noqa: E402
 
 MODEL = "qwen3:4b-instruct-2507-q4_K_M"
-# The answer prompt's own instruction for a decline (QA_PROMPT_V2, agent/prompts.py).
+# The decline wording of the V2 answer prompt. V3 (2026-10-18, agent/prompts.py) asks for the
+# decline in the question's language and fixes no words, so this catches only an answer that
+# still uses V2's; S5's wording is stage 3's to settle (docs/specs/handover-signal.md).
 PROMPT_DECLINE = "ответить нельзя"
 UNLOAD_EVERY = 5
 # Per answer: the grader and the first claim about 65 s each, other claims 10-65 s.

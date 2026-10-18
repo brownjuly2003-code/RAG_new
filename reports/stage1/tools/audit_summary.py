@@ -10,9 +10,9 @@ into at startup, so the provenance is the source generation's manifest and recei
 For each run ``RUNS_DIR/PREFIX-<tenant>``: the launch record (code, model, tenant, index,
 cases), the hybrid path the trace recorded, the BM25 restore lines of the API log, the letters
 of the question and the answer by script (the language check of finding 10), the prompt's
-document labels and header form (findings 5 and 10), the self-score, route and timings. The
-external bases' texts stay on the host (evaluation/external_bases.json, "redistribution"):
-the record holds case ids, counts and the API's own log messages only.
+document labels, header form and letters by script (findings 5 and 10), the self-score, route
+and timings. The external bases' texts stay on the host (evaluation/external_bases.json,
+"redistribution"): the record holds case ids, counts and the API's own log messages only.
 """
 
 import glob
@@ -88,6 +88,8 @@ for tenant in TENANTS:
                 "header_first_line": len(
                     re.findall(r"^\[\d+ \| source=[^\n]*\n\[(?!Контекст:)[^\n]*\]$", text, re.M)
                 ),
+                # the whole prompt by script: instruction, documents and question
+                "letters": letters(text),
             }
         )
     restore = [

@@ -31,7 +31,7 @@ from tests import _fake_ollama
 QUESTION = "Как подать претензию о повреждении груза?"
 ANSWER = "Претензию подают в письменной форме перевозчику [1]."
 SUGGESTIONS = ["Какие документы приложить?", "Сколько ждать ответа?", "Куда отправить акт?"]
-SELF_EVAL_MARKER = "оценке качества ответов"
+SELF_EVAL_MARKER = "rating the quality of assistant answers"
 SUGGESTIONS_MARKER = "propose 3 short follow-up questions"
 PATH_ENV = ("STREAMING_RAG_PARITY", "STREAMING_QUALITY_EVAL", "LLM_PROVIDER_PROFILE")
 

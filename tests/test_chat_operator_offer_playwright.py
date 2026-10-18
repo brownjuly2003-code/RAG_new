@@ -45,7 +45,7 @@ HUMAN_ANSWER = "Претензию подают в письменной форм
 # The limit the timeout test sets, and how long its model stays silent.
 REQUEST_LIMIT_SEC = 8.0
 SILENT_SEC = 60.0
-SELF_EVAL_MARKER = "оценке качества ответов"
+SELF_EVAL_MARKER = "rating the quality of assistant answers"
 SUGGESTIONS_MARKER = "propose 3 short follow-up questions"
 # The chat streams from /api/chat/stream when the health check reports streaming on,
 # from /api/ask/stream otherwise (this stand has no Postgres, so health is 503): one handler.

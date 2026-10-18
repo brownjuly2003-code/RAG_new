@@ -35,7 +35,7 @@ PINNED_MODEL = "qwen2.5:7b"
 QUESTION = "Как подать претензию о повреждении груза?"
 ANSWER = "Претензию подают в письменной форме перевозчику [1]."
 SUGGESTIONS = ["Какие документы приложить?", "Сколько ждать ответа?", "Куда отправить акт?"]
-SELF_EVAL_MARKER = "оценке качества ответов"
+SELF_EVAL_MARKER = "rating the quality of assistant answers"
 SUGGESTIONS_MARKER = "propose 3 short follow-up questions"
 # Anything that would choose the model, the profile or the registry for the run.
 CHOICE_ENV = (
@@ -175,7 +175,7 @@ def test_api_ask_asks_ollama_for_the_production_model(client, served, fake_ollam
     # The graph graded the documents, wrote the answer and judged it.
     for template in (
         "оценке релевантности документов",
-        "ассистент службы поддержки",
+        "You are a support assistant",
         SELF_EVAL_MARKER,
     ):
         assert any(template in p for p in prompts), (template, [p[:80] for p in prompts])

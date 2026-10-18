@@ -71,7 +71,7 @@ def test_generate_keeps_instructions_and_leading_documents_within_the_window():
     ((prompt, kwargs),) = llm.calls
     _assert_fits(prompt, kwargs)
     assert kwargs["max_tokens"] == 1024
-    assert "Ты — ассистент службы поддержки" in prompt and QUESTION in prompt
+    assert "You are a support assistant" in prompt and QUESTION in prompt
     seen = out["generation_context_docs"]
     assert 1 <= len(seen) < 5
     assert seen[0] == docs[0]
