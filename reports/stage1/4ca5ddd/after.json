@@ -1,0 +1,353 @@
+{
+ "prefix": "after",
+ "runs": {
+  "aircargo": {
+   "launch": {
+    "label": "after-aircargo",
+    "code_sha": "4ca5ddd3dfa7d9ee3df643dcaeabc38e3db9f03d",
+    "model": "qwen3:4b-instruct-2507-q4_K_M",
+    "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+    "tenant": "aircargo",
+    "chroma_dir": "/Users/julia/RAG_new_chat_4ca5ddd/chatlive/runs/after-aircargo.chroma",
+    "cases_file": "evaluation/curated_cases_aircargo.jsonl",
+    "started": "2026-10-18T13:27:49+00:00",
+    "finished": "2026-10-18T13:35:33+00:00",
+    "status": "complete",
+    "client_cap_sec": "1020",
+    "mode": "prod",
+    "overrides": {
+     "REQUEST_TIMEOUT_SEC": "3600",
+     "OLLAMA_REQUEST_TIMEOUT_SEC": "3600",
+     "STREAMING_TIMEOUT_SEC": "3600",
+     "RAG_DEVICE": "cpu"
+    },
+    "runner_exit": 0,
+    "error": null,
+    "api_killed": null
+   },
+   "data_root": "/Users/julia/RAG_new_external_s1",
+   "source_sha256": {
+    "corpus.manifest.json": "2b2e9232e69b4f52a55237f3ee620f34c91d1900383877c2310ba616c6590444",
+    "chunks-report.json": "bf01530e5a4cf33de44a7ce4aa1282805fc600a49b3a2f82b30b3b5715c6a714",
+    "index/index-receipt.json": "2dcc80e75d22e9dc34b31313c1db2724aa59c606203eb56c9ac7b84abb684666"
+   },
+   "cases": [
+    {
+     "case_id": "aircargo-probation-data",
+     "question_letters": {
+      "cyrillic": 46,
+      "latin": 0
+     },
+     "answer_letters": {
+      "cyrillic": 461,
+      "latin": 6
+     },
+     "quality_score": 100,
+     "quality_source": "llm",
+     "route": "auto",
+     "first_token_sec": 231.24,
+     "result_sec": 398.697,
+     "tokens": 172,
+     "client_error": null,
+     "error_sec": null
+    }
+   ],
+   "paths": [
+    {
+     "kind": "hybrid",
+     "candidates": {
+      "vector": 20,
+      "bm25": 20,
+      "merged": 32
+     },
+     "rerank_status": "ok",
+     "retrieved_contexts": 32,
+     "retained_contexts": 5,
+     "timings_ms": {
+      "pools": 61467.684,
+      "rerank": 110171.141,
+      "total": 171820.167
+     }
+    }
+   ],
+   "prompts": [
+    {
+     "file": "001-stream.txt",
+     "sha256": "63e02131a910308db90e84264af9361276b27d2c45086c25dafd589ef76f6ade",
+     "labels_dokument": 0,
+     "labels_source": 3,
+     "header_kontekst": 0,
+     "header_first_line": 2,
+     "letters": {
+      "cyrillic": 4425,
+      "latin": 796
+     }
+    }
+   ],
+   "bm25_restore_log": [
+    "Restored 5589 chunks for tenant aircargo from the persisted collection (BM25 + parent-expansion re-enabled)"
+   ]
+  },
+  "conditionalqa": {
+   "launch": {
+    "label": "after-conditionalqa",
+    "code_sha": "4ca5ddd3dfa7d9ee3df643dcaeabc38e3db9f03d",
+    "model": "qwen3:4b-instruct-2507-q4_K_M",
+    "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+    "tenant": "ext_conditionalqa",
+    "chroma_dir": "/Users/julia/RAG_new_chat_4ca5ddd/chatlive/runs/after-conditionalqa.chroma",
+    "cases_file": "/Users/julia/RAG_new_external_s1/conditionalqa/cases.jsonl",
+    "started": "2026-10-18T13:36:00+00:00",
+    "finished": "2026-10-18T13:41:52+00:00",
+    "status": "complete",
+    "client_cap_sec": "1020",
+    "mode": "prod",
+    "overrides": {
+     "REQUEST_TIMEOUT_SEC": "3600",
+     "OLLAMA_REQUEST_TIMEOUT_SEC": "3600",
+     "STREAMING_TIMEOUT_SEC": "3600",
+     "RAG_DEVICE": "cpu"
+    },
+    "runner_exit": 0,
+    "error": null,
+    "api_killed": null
+   },
+   "data_root": "/Users/julia/RAG_new_external_s1",
+   "source_sha256": {
+    "corpus.manifest.json": "25c4b33f5cd5ee385317183ae56e2c101019c2c81907599988a379fe2e99115b",
+    "chunks-report.json": "cf5ed1be7d8b99922395f7bc765a19a6279887af61fd7c9f2b125bd6838cf2d1",
+    "index/index-receipt.json": "3fce93e02bbedb03058587b850b2ae73ede66dc89536d2e75763430de4d7abbf"
+   },
+   "cases": [
+    {
+     "case_id": "conditionalqa-train-1484",
+     "question_letters": {
+      "cyrillic": 0,
+      "latin": 145
+     },
+     "answer_letters": {
+      "cyrillic": 0,
+      "latin": 129
+     },
+     "quality_score": 80,
+     "quality_source": "llm",
+     "route": "auto",
+     "first_token_sec": 211.061,
+     "result_sec": 284.85,
+     "tokens": 39,
+     "client_error": null,
+     "error_sec": null
+    }
+   ],
+   "paths": [
+    {
+     "kind": "hybrid",
+     "candidates": {
+      "vector": 20,
+      "bm25": 20,
+      "merged": 37
+     },
+     "rerank_status": "ok",
+     "retrieved_contexts": 37,
+     "retained_contexts": 5,
+     "timings_ms": {
+      "pools": 56602.989,
+      "rerank": 93463.055,
+      "total": 150068.05
+     }
+    }
+   ],
+   "prompts": [
+    {
+     "file": "001-stream.txt",
+     "sha256": "82f0c62b3f4d1693cbb04e179907a0293ab2078375a21f0dba7734df3e0b48a5",
+     "labels_dokument": 0,
+     "labels_source": 5,
+     "header_kontekst": 0,
+     "header_first_line": 5,
+     "letters": {
+      "cyrillic": 0,
+      "latin": 5092
+     }
+    }
+   ],
+   "bm25_restore_log": [
+    "Restored 13778 chunks for tenant ext_conditionalqa from the persisted collection (BM25 + parent-expansion re-enabled)"
+   ]
+  },
+  "wixqa": {
+   "launch": {
+    "label": "after-wixqa",
+    "code_sha": "4ca5ddd3dfa7d9ee3df643dcaeabc38e3db9f03d",
+    "model": "qwen3:4b-instruct-2507-q4_K_M",
+    "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+    "tenant": "ext_wixqa",
+    "chroma_dir": "/Users/julia/RAG_new_chat_4ca5ddd/chatlive/runs/after-wixqa.chroma",
+    "cases_file": "/Users/julia/RAG_new_external_s1/wixqa/cases.jsonl",
+    "started": "2026-10-18T13:42:20+00:00",
+    "finished": "2026-10-18T13:49:01+00:00",
+    "status": "complete",
+    "client_cap_sec": "1020",
+    "mode": "prod",
+    "overrides": {
+     "REQUEST_TIMEOUT_SEC": "3600",
+     "OLLAMA_REQUEST_TIMEOUT_SEC": "3600",
+     "STREAMING_TIMEOUT_SEC": "3600",
+     "RAG_DEVICE": "cpu"
+    },
+    "runner_exit": 0,
+    "error": null,
+    "api_killed": null
+   },
+   "data_root": "/Users/julia/RAG_new_external_s1",
+   "source_sha256": {
+    "corpus.manifest.json": "aeabd28fd61d4dfe9d95aa093a2efd1c383e8cef7f26dedac8153f9e97d24e24",
+    "chunks-report.json": "d167bb78a119c6932340e60be9592191d1200c2ce4d9d14c2b6328af85a921a9",
+    "index/index-receipt.json": "8dc009a68900a07502d59d199e8da476abb19de65f5dceb4692d25d4f9bb35f8"
+   },
+   "cases": [
+    {
+     "case_id": "wixqa-simulated-074",
+     "question_letters": {
+      "cyrillic": 0,
+      "latin": 38
+     },
+     "answer_letters": {
+      "cyrillic": 0,
+      "latin": 338
+     },
+     "quality_score": 100,
+     "quality_source": "llm",
+     "route": "auto",
+     "first_token_sec": 228.678,
+     "result_sec": 335.628,
+     "tokens": 87,
+     "client_error": null,
+     "error_sec": null
+    }
+   ],
+   "paths": [
+    {
+     "kind": "hybrid",
+     "candidates": {
+      "vector": 20,
+      "bm25": 20,
+      "merged": 33
+     },
+     "rerank_status": "ok",
+     "retrieved_contexts": 33,
+     "retained_contexts": 5,
+     "timings_ms": {
+      "pools": 91828.176,
+      "rerank": 58738.829,
+      "total": 150569.165
+     }
+    }
+   ],
+   "prompts": [
+    {
+     "file": "001-stream.txt",
+     "sha256": "78fa09d8db375be9acac7b9b082fe0b861388992ee14dec6dc2f66061d497e5b",
+     "labels_dokument": 0,
+     "labels_source": 5,
+     "header_kontekst": 0,
+     "header_first_line": 5,
+     "letters": {
+      "cyrillic": 0,
+      "latin": 7852
+     }
+    }
+   ],
+   "bm25_restore_log": [
+    "Restored 37571 chunks for tenant ext_wixqa from the persisted collection (BM25 + parent-expansion re-enabled)"
+   ]
+  },
+  "multihoprag": {
+   "launch": {
+    "label": "after-multihoprag",
+    "code_sha": "4ca5ddd3dfa7d9ee3df643dcaeabc38e3db9f03d",
+    "model": "qwen3:4b-instruct-2507-q4_K_M",
+    "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+    "tenant": "ext_multihoprag",
+    "chroma_dir": "/Users/julia/RAG_new_chat_4ca5ddd/chatlive/runs/after-multihoprag.chroma",
+    "cases_file": "/Users/julia/RAG_new_external_s1/multihoprag/cases.jsonl",
+    "started": "2026-10-18T13:49:27+00:00",
+    "finished": "2026-10-18T13:56:14+00:00",
+    "status": "complete",
+    "client_cap_sec": "1020",
+    "mode": "prod",
+    "overrides": {
+     "REQUEST_TIMEOUT_SEC": "3600",
+     "OLLAMA_REQUEST_TIMEOUT_SEC": "3600",
+     "STREAMING_TIMEOUT_SEC": "3600",
+     "RAG_DEVICE": "cpu"
+    },
+    "runner_exit": 0,
+    "error": null,
+    "api_killed": null
+   },
+   "data_root": "/Users/julia/RAG_new_external_s1",
+   "source_sha256": {
+    "corpus.manifest.json": "3d8de600c4082bc876919b61594ead37e51a6d70d25edcb1694e3b0eb60f26fc",
+    "chunks-report.json": "cefcfbd1c812e7faa6acaf872b0582dc9ccdaa89125d693f5ead794dbe929259",
+    "index/index-receipt.json": "d1662e2ff7b587bc4484cf4405ac561a931da838c273aeb686ee7da55ab6a37a"
+   },
+   "cases": [
+    {
+     "case_id": "multihoprag-0448",
+     "question_letters": {
+      "cyrillic": 0,
+      "latin": 306
+     },
+     "answer_letters": {
+      "cyrillic": 0,
+      "latin": 225
+     },
+     "quality_score": 20,
+     "quality_source": "llm",
+     "route": "human",
+     "first_token_sec": 247.904,
+     "result_sec": 334.791,
+     "tokens": 42,
+     "client_error": null,
+     "error_sec": null
+    }
+   ],
+   "paths": [
+    {
+     "kind": "hybrid",
+     "candidates": {
+      "vector": 20,
+      "bm25": 20,
+      "merged": 37
+     },
+     "rerank_status": "ok",
+     "retrieved_contexts": 37,
+     "retained_contexts": 5,
+     "timings_ms": {
+      "pools": 62818.403,
+      "rerank": 111996.364,
+      "total": 174818.95
+     }
+    }
+   ],
+   "prompts": [
+    {
+     "file": "001-stream.txt",
+     "sha256": "0dec363efb1df3de14974c39dfbf86d45203f6785ac6a2f33cffe79a72c5827e",
+     "labels_dokument": 0,
+     "labels_source": 4,
+     "header_kontekst": 0,
+     "header_first_line": 3,
+     "letters": {
+      "cyrillic": 0,
+      "latin": 8002
+     }
+    }
+   ],
+   "bm25_restore_log": [
+    "Restored 11231 chunks for tenant ext_multihoprag from the persisted collection (BM25 + parent-expansion re-enabled)"
+   ]
+  }
+ }
+}
