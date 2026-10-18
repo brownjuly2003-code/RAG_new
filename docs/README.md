@@ -81,6 +81,9 @@ P2 reference samples ([Astra](specs/p2-astra-reference-sample.md),
 
 - [`evidence/`](evidence/) — one write-up per measured slice; the register with provenance is
   [`EVIDENCE_INDEX.md`](../EVIDENCE_INDEX.md). The records themselves are in `../reports/`.
+- [Project audit of 2026-10-18](operations/audit_fable_18_10_26.md) (Fable 5.1) — the state
+  against the plan, the status files' claims checked, findings F-1…F-10; kept in `operations/`
+  because `docs/audits/` is publishable (earlier audits: `../archive/docs/audits/`).
 - [`operations/`](operations/) — besides the runbooks above: the
   [GR-2 entity builder preparation](operations/gr2-entity-builder-preparation.md) and the last
   session handoffs (the newest is linked from [`CURRENT_STATE.md`](../CURRENT_STATE.md)). Older
