@@ -10,7 +10,7 @@ from typing import Any
 
 PROMPT_REGISTRY: dict[str, dict[str, str]] = {
     "qa": {
-        "prompt_id": "QA_PROMPT_V1",
+        "prompt_id": "QA_PROMPT_V2",
         "text": """Ты — ассистент службы поддержки.
 
 Тебе дан контекст из базы знаний и вопрос пользователя.
@@ -34,11 +34,12 @@ PROMPT_REGISTRY: dict[str, dict[str, str]] = {
 Не придумывай номера цитат. Если утверждение не подтверждено контекстом,
 не добавляй ссылку.
 
+Отвечай на языке ВОПРОСА, даже если контекст написан на другом языке.
 Сформулируй понятный, краткий и точный ответ для пользователя:
 """,
     },
     "self_eval": {
-        "prompt_id": "SELF_EVAL_PROMPT_V1",
+        "prompt_id": "SELF_EVAL_PROMPT_V2",
         "text": """Ты — эксперт по оценке качества ответов ассистента.
 
 Тебе дан:
@@ -60,6 +61,9 @@ PROMPT_REGISTRY: dict[str, dict[str, str]] = {
     Насколько контекст, который использовал ассистент, покрывает тему
     вопроса и не содержит лишнего мусора. Если нужной информации
     в контексте нет, это также снижает конечную оценку качества ответа.
+
+- Язык ответа:
+    Ответ должен быть на языке вопроса; ответ на другом языке снижает оценку.
 
 Твоя задача — вывести ОДНО ЦЕЛОЕ число от 1 до 100,
 где 1 — ответ ужасный, 50 — средний, 100 — отличный.
@@ -144,12 +148,13 @@ Question: {question}
 Classification:""",
     },
     "suggested_questions": {
-        "prompt_id": "SUGGESTED_QUESTIONS_PROMPT_V1",
+        "prompt_id": "SUGGESTED_QUESTIONS_PROMPT_V2",
         "text": """Based on the user question and the assistant answer, propose 3 short follow-up questions.
 The questions must:
 - stay on topic
 - be short (up to 60 characters)
 - help the user go one step deeper
+- be written in the language of the QUESTION
 
 QUESTION: {question}
 ANSWER: {answer_excerpt}{context_block}
@@ -233,7 +238,7 @@ Return ONLY 3 questions, one per line. No numbering. No bullets.""",
 """,
     },
     "conversational_qa": {
-        "prompt_id": "CONVERSATIONAL_QA_PROMPT_V1",
+        "prompt_id": "CONVERSATIONAL_QA_PROMPT_V2",
         "text": """Ты — ассистент службы поддержки.
 
 Тебе дан контекст из базы знаний, история диалога и текущий вопрос.
@@ -256,6 +261,7 @@ Return ONLY 3 questions, one per line. No numbering. No bullets.""",
 Не придумывай номера цитат. Если утверждение не подтверждено контекстом,
 не добавляй ссылку.
 
+Отвечай на языке ВОПРОСА, даже если контекст написан на другом языке.
 Ответ:
 """,
     },
@@ -304,14 +310,15 @@ def _resolve_prompt(name: str, experiment: Any | None = None) -> str:
 
 def _format_context_block(context_docs: list[dict[str, Any]]) -> str:
     if not context_docs:
-        return "Контекст отсутствует. База знаний не вернула ни одного фрагмента."
+        # No words of any language in the context block: the documents speak for themselves.
+        return "[]"
 
     parts = []
     for idx, doc in enumerate(context_docs, start=1):
         text = str(doc.get("page_content", ""))
         metadata = doc.get("metadata", {}) or {}
         source = metadata.get("source") or metadata.get("file_name") or f"doc_{idx}"
-        parts.append(f"[Документ {idx} | source={source}]\n{text}")
+        parts.append(f"[{idx} | source={source}]\n{text}")
     return "\n\n".join(parts)
 
 
@@ -437,7 +444,7 @@ def build_conversational_qa_prompt(
         for msg in chat_history[-5:]:
             role = msg.get("role", "user")
             text = msg.get("content", "")
-            label = "Пользователь" if role == "user" else "Ассистент"
+            label = "user" if role == "user" else "assistant"
             parts.append(f"{label}: {text}")
         history_block = "\n".join(parts)
 

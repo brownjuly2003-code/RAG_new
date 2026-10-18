@@ -144,7 +144,7 @@ def test_stream_prompt_fits_the_ollama_window(
     prompt = generate_call["prompt"]
     # The instructions and the question survive; the tail of the ranking does not.
     assert QUESTION in prompt
-    assert "[Документ 1 | source=rules-1.md]" in prompt
+    assert "[1 | source=rules-1.md]" in prompt
     assert "rules-5.md" not in prompt
     assert generate_call["kwargs"]["num_ctx"] == 4096
     assert generate_call["kwargs"]["num_predict"] == 1024

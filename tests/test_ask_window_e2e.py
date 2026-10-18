@@ -163,7 +163,7 @@ def test_ask_graph_fits_every_model_call_into_the_window(monkeypatch, client, tm
     assert len(generate_calls) == 1, [c["prompt"][:80] for c in calls]
     prompt = generate_calls[0]["prompt"]
     # The model sees the instructions, the question and the leading sources.
-    assert QUESTION in prompt and "[Документ 1 | source=rules-1.md]" in prompt
+    assert QUESTION in prompt and "[1 | source=rules-1.md]" in prompt
     assert "rules-5.md" not in prompt
     # Every call carries num_ctx and fits what the window leaves for input.
     for call in calls:

@@ -1,4 +1,4 @@
-"""What the chat's model reads of a chunk and its neighbours (PLAN.md stage 1, spec rows 5, 6, 9).
+"""What the chat's model reads: chunks, neighbours, language (PLAN.md stage 1, rows 5, 6, 9, 10).
 
 The chunks are cut and headed by the product's own ingest steps (``select_chunks`` with
 section chunking, then ``vectordb.manager.add_contextual_headers``) from an English page, and
@@ -152,3 +152,12 @@ def test_the_chat_model_reads_a_language_free_header_naming_the_section_once(
     held = [clause for clause in CLAUSES if clause in blocks[0]]
     assert len(held) > 9  # more than one piece of 800 characters holds
     assert all(blocks[0].count(clause) == 1 for clause in held)
+    # The answer, its self-evaluation and the suggestions are asked for in the question's
+    # language, not in the prompt's (PLAN.md stage 1, Julia 2026-10-17); the context labels
+    # carry no word.
+    assert "Отвечай на языке ВОПРОСА" in prompt
+    assert "[1 | source=returns_policy.md]" in prompt and "Документ" not in prompt
+    [self_eval] = [p for p in prompts if SELF_EVAL_MARKER in p]
+    assert "Ответ должен быть на языке вопроса" in self_eval
+    [suggestions] = [p for p in prompts if SUGGESTIONS_MARKER in p]
+    assert "be written in the language of the QUESTION" in suggestions
