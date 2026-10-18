@@ -6,7 +6,8 @@ models are deterministic stand-ins. The ingesting process builds and publishes
 through the log's highest sequence id.
 
 A second Python process runs test_restarted_process_child with pytest and reopens
-the published collection through manager.get_retriever. Its get_relevant_documents
+the published collection through manager.get_retriever, which reads the BM25 corpus
+back from it in pages of 64 records. Its get_relevant_documents
 lists for 100 queries cover the whole RRF-fused pool that production's reranker
 receives. Those lists, the /api/ask answer, sources, and retrieved context must
 equal the ingesting process's. The child test skips unless the parent starts it.
@@ -260,6 +261,10 @@ def test_restarted_process_child(monkeypatch, client, tmp_path):
         pytest.skip("only run in the restarted Python process")
     assert not manager._store_cache
     settings = _configure(monkeypatch, tmp_path, Path(os.environ[_CHROMA_DIR]))
+    # The restart reads the BM25 corpus back a page at a time (a whole-collection read fails
+    # past SQLite's variable limit, live check 2026-10-18): 600 records over ten pages must
+    # give the ingesting process's pools and answer.
+    monkeypatch.setattr(manager, "RESTORE_PAGE", 64)
     record = _record_answers(monkeypatch, client, settings)
     record["reopened_from_disk"] = True
     Path(os.environ[_OUTPUT_PATH]).write_text(json.dumps(record), encoding="utf-8")
