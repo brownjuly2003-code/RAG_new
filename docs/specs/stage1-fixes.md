@@ -77,25 +77,27 @@ every answer prompt labelled its documents «[Документ N» and carried �
 (rows 5 and 10).
 
 **The check after the fixes** (registered 2026-10-18, before its run): the same four questions
-by `audit.sh after` on a stand of the closing code, the indexes of the new generation
-(`/Users/julia/RAG_new_external_s1/`), a fresh API each; record
-`reports/stage1/<commit>/after.json` by `audit_summary.py`. It passes when, for every tenant:
-the path is hybrid with 20 vector and 20 BM25 candidates, rerank `ok` and 5 documents kept; the
-API log has the tenant's `Restored N chunks` line and no `Chunk restore failed` or `WITHOUT
-BM25`; the answer's letters are mostly of the question's script (Latin for the three external
-bases, Cyrillic for aircargo); the prompt has no «[Документ» label and no «[Контекст:» header,
-its documents are labelled `[N | source=…]`, and at least one opens with the header line
-`[document › section]` (`header_first_line`; window fitting may cut a long document to an
-excerpt without it). A question stopped at 1,020 s is `NOT_EVIDENCE` for its tenant.
+by `audit.sh after` on a stand whose product code is that of `e5e135a`, which cut the new
+chunks; the indexes of the new generation (`/Users/julia/RAG_new_external_s1/`), a fresh API
+each; record `reports/stage1/<stand commit>/after.json` by `audit_summary.py`. It passes when
+the record shows, for every tenant: in `paths`, 20 vector and 20 BM25 candidates, rerank `ok`,
+5 documents kept (`kind` alone does not tell: the vector-only run before also says `hybrid`);
+in `bm25_restore_log`, the tenant's `Restored N chunks` line and no `Chunk restore failed` or
+`WITHOUT BM25`; in `answer_letters`, more letters of the question's script than of the other
+(Latin for the three external bases, Cyrillic for aircargo); in `prompts`, `labels_dokument`
+and `header_kontekst` 0, `labels_source` and `header_first_line` at least 1 — window fitting
+may drop documents or cut one to an excerpt without its header line, so not every one. A
+question the client's cap stopped (1,020 s, named in `client_error`) or a run that failed
+(`launch.status`) is `NOT_EVIDENCE` for its tenant.
 
 ## Mac forecast and stop rule
 
 | Work | Forecast | Stops at |
 |---|---|---|
-| Live check before the fixes: stand + 4 questions | 40 min (≈ 400 s a question) | 1,200 s a question; 2 h in all |
+| Live check before the fixes: stand + 4 questions | 40 min (≈ 400 s a question) | 1,020 s a question (3 × 340 s, the cap `audit.sh` gives the client); 2 h in all |
 | Unit suite per push candidate | 9 min | 30 min |
 | New index generation: aircargo; three external bases | 1 h; 10 h (9.8 h at connection) | 3 h; 30 h |
-| E2E live check after the fixes on the new indexes | 40 min | as the first |
+| E2E live check after the fixes on the new indexes | 40 min | as the first: 1,020 s a question; 2 h in all |
 
 Each live run starts on an idle Mac (no `llama-server`, a 5-minute load below 2) and writes its
 record under `reports/stage1/<commit>/` with the corpus SHA, the code SHA and the config. A run

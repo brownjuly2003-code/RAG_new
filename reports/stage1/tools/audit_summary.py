@@ -60,6 +60,9 @@ for tenant in TENANTS:
                 "first_token_sec": case.get("first_token_sec"),
                 "result_sec": case.get("result_sec"),
                 "tokens": case.get("tokens"),
+                # how a question ended short: the client's cap or an exception's type
+                "client_error": case.get("client_error"),
+                "error_sec": case.get("error_sec"),
             }
         )
     paths = []
@@ -115,6 +118,12 @@ for tenant in TENANTS:
                 "finished",
                 "status",
                 "client_cap_sec",
+                # the config beside the code defaults of code_sha, and how the run ended
+                "mode",
+                "overrides",
+                "runner_exit",
+                "error",
+                "api_killed",
             )
         },
         "data_root": str(ROOT),

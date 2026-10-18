@@ -13,7 +13,17 @@
     "started": "2026-10-18T00:12:03+00:00",
     "finished": "2026-10-18T00:17:28+00:00",
     "status": "complete",
-    "client_cap_sec": "1020"
+    "client_cap_sec": "1020",
+    "mode": "prod",
+    "overrides": {
+     "REQUEST_TIMEOUT_SEC": "3600",
+     "OLLAMA_REQUEST_TIMEOUT_SEC": "3600",
+     "STREAMING_TIMEOUT_SEC": "3600",
+     "RAG_DEVICE": "cpu"
+    },
+    "runner_exit": 0,
+    "error": null,
+    "api_killed": null
    },
    "data_root": "/Users/julia/RAG_new_external",
    "source_sha256": {},
@@ -33,7 +43,9 @@
      "route": "auto",
      "first_token_sec": 173.048,
      "result_sec": 257.114,
-     "tokens": 47
+     "tokens": 47,
+     "client_error": null,
+     "error_sec": null
     }
    ],
    "paths": [
@@ -60,7 +72,8 @@
      "sha256": "803c630b3b6df7da82fd98b19631c05b26fd99254314c2577366fb72600c284e",
      "labels_dokument": 3,
      "labels_source": 0,
-     "header_kontekst": 3
+     "header_kontekst": 3,
+     "header_first_line": 0
     }
    ],
    "bm25_restore_log": [
@@ -79,7 +92,17 @@
     "started": "2026-10-18T00:26:41+00:00",
     "finished": "2026-10-18T00:31:57+00:00",
     "status": "complete",
-    "client_cap_sec": "1020"
+    "client_cap_sec": "1020",
+    "mode": "prod",
+    "overrides": {
+     "REQUEST_TIMEOUT_SEC": "3600",
+     "OLLAMA_REQUEST_TIMEOUT_SEC": "3600",
+     "STREAMING_TIMEOUT_SEC": "3600",
+     "RAG_DEVICE": "cpu"
+    },
+    "runner_exit": 0,
+    "error": null,
+    "api_killed": null
    },
    "data_root": "/Users/julia/RAG_new_external",
    "source_sha256": {
@@ -103,7 +126,9 @@
      "route": "human",
      "first_token_sec": 143.472,
      "result_sec": 258.963,
-     "tokens": 251
+     "tokens": 251,
+     "client_error": null,
+     "error_sec": null
     }
    ],
    "paths": [
@@ -130,7 +155,8 @@
      "sha256": "1776f66a433e42b821495b1c1149d17c3a8839771796f2ebc9c53f10be145942",
      "labels_dokument": 5,
      "labels_source": 0,
-     "header_kontekst": 5
+     "header_kontekst": 5,
+     "header_first_line": 0
     }
    ],
    "bm25_restore_log": [
@@ -149,7 +175,17 @@
     "started": "2026-10-18T00:32:02+00:00",
     "finished": "2026-10-18T00:36:01+00:00",
     "status": "complete",
-    "client_cap_sec": "1020"
+    "client_cap_sec": "1020",
+    "mode": "prod",
+    "overrides": {
+     "REQUEST_TIMEOUT_SEC": "3600",
+     "OLLAMA_REQUEST_TIMEOUT_SEC": "3600",
+     "STREAMING_TIMEOUT_SEC": "3600",
+     "RAG_DEVICE": "cpu"
+    },
+    "runner_exit": 0,
+    "error": null,
+    "api_killed": null
    },
    "data_root": "/Users/julia/RAG_new_external",
    "source_sha256": {
@@ -173,7 +209,9 @@
      "route": "auto",
      "first_token_sec": 125.332,
      "result_sec": 180.144,
-     "tokens": 65
+     "tokens": 65,
+     "client_error": null,
+     "error_sec": null
     }
    ],
    "paths": [
@@ -200,7 +238,8 @@
      "sha256": "7faa051f0a2ada5bb0804670911a90e48bf0bac25ea6a3307ee24b93145bffe5",
      "labels_dokument": 5,
      "labels_source": 0,
-     "header_kontekst": 5
+     "header_kontekst": 5,
+     "header_first_line": 0
     }
    ],
    "bm25_restore_log": [
@@ -220,7 +259,17 @@
     "started": "2026-10-18T00:36:03+00:00",
     "finished": "2026-10-18T00:42:04+00:00",
     "status": "complete",
-    "client_cap_sec": "1020"
+    "client_cap_sec": "1020",
+    "mode": "prod",
+    "overrides": {
+     "REQUEST_TIMEOUT_SEC": "3600",
+     "OLLAMA_REQUEST_TIMEOUT_SEC": "3600",
+     "STREAMING_TIMEOUT_SEC": "3600",
+     "RAG_DEVICE": "cpu"
+    },
+    "runner_exit": 0,
+    "error": null,
+    "api_killed": null
    },
    "data_root": "/Users/julia/RAG_new_external",
    "source_sha256": {
@@ -244,7 +293,9 @@
      "route": "auto",
      "first_token_sec": 199.468,
      "result_sec": 304.914,
-     "tokens": 132
+     "tokens": 132,
+     "client_error": null,
+     "error_sec": null
     }
    ],
    "paths": [
@@ -271,7 +322,8 @@
      "sha256": "2a96d658624dbcbf37c53df07a0c4993967eab8f7914ff60a36f2aa794476353",
      "labels_dokument": 3,
      "labels_source": 0,
-     "header_kontekst": 3
+     "header_kontekst": 3,
+     "header_first_line": 0
     }
    ],
    "bm25_restore_log": [
