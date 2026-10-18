@@ -1,8 +1,9 @@
 # Stage 1: the chat path made ready for any corpus — audit, fixes, new indexes
 
-Status 2026-10-18: **audit and live check before the fixes run, fixes committed, the new
-generation built, the check after the fixes run once — one criterion failed, its cause fixed
-(V3 prompts, row 10), the rerun registered.** [`PLAN.md`](../../PLAN.md) §5,
+Status 2026-10-18: **closed.** Audit, fixes, the new index generation and the stage-2 tools
+committed; the check after the fixes failed one criterion on V2 and passed every one on its
+rerun on V3 (`4ca5ddd`); the three records are pinned by `tests/test_stage1_live_artifact.py`,
+with one row in [`EVIDENCE_INDEX.md`](../../EVIDENCE_INDEX.md). [`PLAN.md`](../../PLAN.md) §5,
 stage 1, is the authority; this spec records how the audit is repeated, what it found, the
 outcome of each finding, the Mac forecast and the stop rule. The outcome table is the stage's acceptance
 artefact: the stage closes when every row has an outcome, every **fix** row a commit with a unit
@@ -107,15 +108,33 @@ stands; record `reports/stage1/<stand commit>/after.json`. It passes on the crit
 one more, read off `prompts[].letters` (added to `audit_summary.py` with V3): the answer prompt
 of each external tenant holds 0 Cyrillic letters — instruction, documents and question.
 
+**The rerun's result** (stand `4ca5ddd`, 2026-10-18 13:27–13:56 UTC; record
+[`reports/stage1/4ca5ddd/after.json`](../../reports/stage1/4ca5ddd/after.json)): all four runs
+complete, no cap reached, every criterion passed for every tenant — the hybrid path with 20
+vector and 20 BM25 candidates, rerank `ok`, 5 documents; the `Restored N chunks` line alone
+(5,589, 13,778, 37,571 and 11,231 chunks); each answer in its question's script, MultiHop-RAG's
+now without a Cyrillic letter; in each prompt `[N | source=…]` labels and a header line, no
+«[Документ» or «[Контекст:»; no Cyrillic letter in the three external answer prompts. Both
+records after the fixes name one generation — the same SHA-256 of each tenant's manifest,
+chunk report and index receipt; the external manifests are the first generation's, the chunks
+and indexes new. Seen beside the criteria, not read as quality, since one question per tenant
+reads the path: from the V2 run to V3 the model's self-score of the same questions moved,
+ConditionalQA 40 → 80, MultiHop-RAG 100 → 20 — the first from `human` to `auto`, the second
+from `auto`, its answer then Russian, to `human`; aircargo's answer grew from 48 to 172 tokens
+and its result from 263 to 399 s. V2's 608 Cyrillic letters a prompt were counted on the
+stand's prompt files on the Mac: its record holds each prompt's SHA-256, not its letters, which
+`audit_summary.py` counts since V3. `tests/test_stage1_live_artifact.py` pins the records and
+checks against them what this spec says of them, the 608 letters aside.
+
 ## Mac forecast and stop rule
 
-| Work | Forecast | Stops at |
-|---|---|---|
-| Live check before the fixes: stand + 4 questions | 40 min (≈ 400 s a question) | 1,020 s a question (3 × 340 s, the cap `audit.sh` gives the client); 2 h in all |
-| Unit suite per push candidate | 9 min | 30 min |
-| New index generation: aircargo; three external bases | 1 h; 10 h (9.8 h at connection) | 3 h; 30 h |
-| E2E live check after the fixes on the new indexes | 40 min | as the first: 1,020 s a question; 2 h in all |
-| Its rerun on V3 (the first took 23 min) | 25 min | the same |
+| Work | Forecast | Stops at | Actual |
+|---|---|---|---|
+| Live check before the fixes: stand + 4 questions | 40 min (≈ 400 s a question) | 1,020 s a question (3 × 340 s, the cap `audit.sh` gives the client); 2 h in all | 30 min, 00:12–00:42 UTC |
+| Unit suite per push candidate | 9 min | 30 min | 8 min 13 s (`4ca5ddd`) |
+| New index generation: aircargo; three external bases | 1 h; 10 h (9.8 h at connection) | 3 h; 30 h | 1 h 18 min; 8 h 43 min (the build's state file on the Mac) |
+| E2E live check after the fixes on the new indexes | 40 min | as the first: 1,020 s a question; 2 h in all | 23 min, 12:09–12:32 UTC |
+| Its rerun on V3 (the first took 23 min) | 25 min | the same | 28 min, 13:27–13:56 UTC |
 
 Each live run starts on an idle Mac (no `llama-server`, a 5-minute load below 2) and writes its
 record under `reports/stage1/<commit>/` with the corpus SHA, the code SHA and the config. A run
@@ -125,8 +144,8 @@ ones are never rebuilt in place.
 ## Tools for stage 2 (step 5 of the stage)
 
 All written (2026-10-18). The scripts each have a unit test; the stand's tools, like those of
-the earlier chat records, are pinned with the live records by their artefact test when the
-stage closes:
+the earlier chat records, are pinned with the live records by
+`tests/test_stage1_live_artifact.py`:
 
 - **the chat-answer runner for any tenant** — the stand `reports/stage1/tools/`
   (`live_supervisor.py` takes `TENANT`, `CHROMA` and `CASES_FILE`, refuses an index directory

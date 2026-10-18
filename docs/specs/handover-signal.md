@@ -151,6 +151,16 @@ defaults, `RAG_ENV` development; none is re-implemented. Each is a yes/no "mark 
   only when the prompt's sources are the reranked ones in order. No model call in the
   product — the reranker runs anyway; its threshold is chosen on stage 1 and confirmed on
   stage 2.
+- **S8** the answer's script, a candidate added 2026-10-18 before any answer of this plan:
+  marked when fewer than half of the answer's letters are in the question's script, counted
+  by Unicode ranges as `reports/stage1/tools/audit_summary.py` counts them — no model call, no
+  word list; it tells scripts apart, not languages (English and German are both Latin). Why:
+  the live checks of [`PLAN.md`](../../PLAN.md) stage 1 ([spec](stage1-fixes.md)) hold three
+  answers in the other script, and the chat's rule sent two of them `auto`, each scored 100:
+  S1's self-score missed both, and S2–S7 do not look at the script. On those records S8 marks
+  2 of 4 answers before the fixes, 1 of 4 on V2 and 0 of 4 on V3
+  (`tests/test_stage1_live_artifact.py`). `scripts/chat_signals.py` does not compute it yet;
+  it is added before 1.3.
 
 ## Stages
 
@@ -221,7 +231,7 @@ judge prompt with its own retest and English decline wording. The answers come f
 
 ## What each outcome means, and what Julia is told
 
-- **A. A cheap signal is worth wiring** (S1′, S5 or S7 — no extra model call): wire it into the
+- **A. A cheap signal is worth wiring** (S1′, S5, S7 or S8 — no extra model call): wire it into the
   chat — rule (a), an E2E test that an answer it marks shows the operator button — then check
   it live.
 - **B. Only the claim check or the grader is worth wiring** (S2, S3, S4 or S6), a few minutes

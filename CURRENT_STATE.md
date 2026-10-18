@@ -1,7 +1,7 @@
 # Current state — RAG_new
 
 2026-10-18 · The plan: [`PLAN.md`](PLAN.md), accepted by Julia on 2026-10-17 («принять») ·
-now: its stage 1 — fixes committed, the new index generation building · previous version of this file:
+now: its stage 1 closed (2026-10-18), stage 2 next · previous version of this file:
 [`archive/docs/state/current-state-through-2026-10-17.md`](archive/docs/state/current-state-through-2026-10-17.md).
 
 Read this file for *what is true now*; [`PLAN.md`](PLAN.md) for *what happens next and why*;
@@ -23,7 +23,8 @@ the CPU picks 5 of 20 candidates. Documents are cut by their markdown sections (
 PDF are read into markdown first; at most 800 characters, 200 overlap inside a long section),
 each chunk opens with a header `[document › section]` (indexes built before stage 1 carry the
 old Russian one, still read), and parent expansion adds up to two neighbouring chunks on each
-side. The chat answers in the question's language (since `ffae1c2`).
+side. The chat answers in the question's language (since `ffae1c2`); its instructions are
+English (V3, `4ca5ddd`).
 
 **Production is `deproject-mac`** (Julia, 2026-10-14: «прод на маке»): i5-7500, 4 cores, 8 GB,
 Ollama 0.33.2 on the CPU. **The model is Qwen3-4B-Instruct-2507** (Julia, 2026-10-16; the code
@@ -34,8 +35,9 @@ brought up for each run ([`PLAN.md`](PLAN.md) stage 6 makes it a service).
 written by an agent from the documents, labels approved by Julia on 2026-09-25 (the only real
 labelled cases). Three external bases connected 2026-10-05/07 for universality: ConditionalQA
 (13,778 chunks), WixQA (37,571), MultiHop-RAG (11,231); their questions are split into open and
-locked parts (`evaluation/external_parts.json`). No quality run has used them yet. The indexes
-above are the first generation; stage 1 builds a second beside it.
+locked parts (`evaluation/external_parts.json`). No quality run has used them yet. The chat
+reads the second generation of all four indexes, built in stage 1 at `e5e135a` into
+`/Users/julia/RAG_new_external_s1/` (10 h 01 min on the Mac); the first stays beside it.
 
 ## Numbers
 
@@ -51,36 +53,37 @@ Each number has a record; numbers on another path or model are history, not the 
 | Retrieval, lexical ruler | precision 0.5067, recall 0.905 | the ruler does not track meaning (P2, τ_b 0.156) — no longer a threshold |
 | Graph lane (GR-3) | precision 0.5067 → 0.5487, +8.8 s to p95; recall on 15 multi-document questions 0.5 → 0.4 | NO-SHIP on the 200-ms budget; the generation half produced no evidence ([capsule](docs/evidence/gr3-graph-lane-ab.md)) |
 | Shipment binding | admission recall 0.0000 | none of the 100 questions names a shipment (phase B, Q2b) |
-| Engineering | 5,874 unit tests pass on the Mac on `8d97c1b` (124 skipped) | CI starts no job since `e81f0c5` (2026-10-16): GitHub reports the account's billing |
+| Engineering | 5,874 unit tests pass on the Mac on `4ca5ddd` (124 skipped) | CI starts no job since `e81f0c5` (2026-10-16): GitHub reports the account's billing |
 
 The first quality number on the customer's path does not exist yet: it is [`PLAN.md`](PLAN.md)
 stage 2.
 
-## Stage 1 — where it stands (2026-10-18)
+## Stage 1 — closed 2026-10-18
 
-The audit, its 25 findings and the outcome of each: [`docs/specs/stage1-fixes.md`](docs/specs/stage1-fixes.md).
+The 25 findings, their outcomes and the live checks: [`docs/specs/stage1-fixes.md`](docs/specs/stage1-fixes.md);
+records `reports/stage1/`, pinned by `tests/test_stage1_live_artifact.py`; one evidence row.
 
-- **Fixed, a commit and a unit test each** (`8f94d84`…`047d379`): DOCX, HTML and PDF keep
-  headings, lists and tables (WixQA's 6,221 HTML pages lose nothing through the loader); a
-  header with no words, the nearest section kept; a continued table piece repeats its column
-  header; expansion reads each seam once; the question's language throughout, context labels
-  `[N | source=…]`; the BM25 corpus restored from a collection of any size.
-- **Proven live before the fixes** ([record](reports/stage1/99cd15f/before.json)): WixQA's
-  tenant ran on vectors alone after a restart (SQLite refused a one-call restore of 37,571
-  chunks); English questions got Russian answers; every prompt carried Russian labels.
+- **Fixed, a commit and a unit test each** (`8f94d84`…`4ca5ddd`): DOCX, HTML and PDF keep
+  headings, lists and tables; a header with no words, the nearest section kept; a continued
+  table piece repeats its column header; expansion reads each seam once; English instructions
+  asking for the question's language, labels `[N | source=…]`; BM25 restored at any size.
+- **Proven live**, one question per tenant on a fresh API: before the fixes WixQA ran on
+  vectors alone after a restart, two of the three English questions got Russian answers, every
+  prompt carried Russian labels; on the second generation and V3 every tenant hybrid, every
+  answer in its question's script, no Cyrillic letter in an external prompt.
 - **Also done:** the API's upload path cuts the chunks the measurements index (a test); the
   stage-2 tools — chat runner, judge's adapter with M2, signal tool, ≈ 100 questions per
   external base registered before any request (`e5e135a`). Limits and reasons: the spec.
-- **Building on the Mac:** the second generation of all four indexes in
-  `/Users/julia/RAG_new_external_s1/`, code `e5e135a`, from 2026-10-18 01:05 UTC, ≈ 11 h; the
-  first generation and the upload folder are hashed before and after.
+- **Left from the [audit of 2026-10-18](docs/operations/audit_fable_18_10_26.md):** S8, the
+  answer's script, a signal candidate for stage 3; the audit's keys bound by a test (later).
 
 ## Next
 
-When the build ends: the check after the fixes (one question per tenant on the new indexes,
-criteria registered in the spec before the run), then stage 1 closes — records pinned by an
-artefact test, an [`EVIDENCE_INDEX.md`](EVIDENCE_INDEX.md) row; then stage 2. Commands and how
-to read each outcome: [the last handoff](docs/operations/session-handoff-2026-10-18-stage1.md#next-actions).
+[`PLAN.md`](PLAN.md) stage 2 — the four corpora on the fixed path: 100 aircargo answers on the
+chat path, retrieval without generation, 300 judged answers on the external bases' `stage2`
+selections («Вариант B»), the graph lane on aircargo. First its spec, committed before the
+first request: forecast, stop rule, and the judge by id — `claude-opus-5-5` at effort `max`,
+pinned in `evaluation/isolated_request.py`, the judge of 2026-10-15.
 
 ## Julia's decisions in force
 

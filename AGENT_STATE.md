@@ -40,6 +40,9 @@ The product measured and improved now is the web chat on the production Mac
 - **`deproject-mac`** (production, 8 GB): tests, models, Docker, measurements. Tests go through
   `.tmp/mf-mac/sync.py`, then `.tmp/mf-mac/remote.py`. One measurement at a time; no tests
   during a live run; time numbers only from an idle Mac.
+- **One writing session per repository.** A second session at the same time only reads: no
+  `sync.py` or `remote.py` (a sync rewrites the Mac's gate checkout under the other session's
+  tests), and its result names the SHA it read (audit of 2026-10-18, F-6).
 - **Do not touch what the session did not start** — `ollama serve`, other projects' jobs,
   PostgreSQL. Restarting `ollama serve`, installing anything (brew included) — Julia's word.
 - **Indexes are never rebuilt in place**: a new generation is published beside the old one
