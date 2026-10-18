@@ -1,8 +1,9 @@
 # Stage 1: the chat path made ready for any corpus — audit, fixes, new indexes
 
-Status 2026-10-18: **audit run, live check before the fixes run, fixes under way.** [`PLAN.md`](../../PLAN.md) §5, stage 1,
-is the authority; this spec records how the audit is repeated, what it found, the outcome of
-each finding, the Mac forecast and the stop rule. The outcome table is the stage's acceptance
+Status 2026-10-18: **audit and live check before the fixes run, fixes committed, the new
+generation building, the check after the fixes registered.** [`PLAN.md`](../../PLAN.md) §5,
+stage 1, is the authority; this spec records how the audit is repeated, what it found, the
+outcome of each finding, the Mac forecast and the stop rule. The outcome table is the stage's acceptance
 artefact: the stage closes when every row has an outcome, every **fix** row a commit with a unit
 test, and the E2E checks below pass on the fixed code with the new indexes (rule (a)).
 
@@ -24,6 +25,13 @@ test, and the E2E checks below pass on the fixed code with the new indexes (rule
    before the fixes (what the path does now) and after them on the new indexes (the E2E of
    rule (a)). Questions: the first of `evaluation/curated_cases_aircargo.jsonl` and the first of
    each external base's open part (`evaluation/external_parts.json`).
+4. **Index path.** The new generation is built by the measurement path
+   (`scripts/corpus_chunks.py` or the `chunks` step of `scripts/external_base.py`, then the
+   embedding and index scripts); production updates an index through the upload path
+   (`api.app._rebuild_vector_store_from_docs` → `build_vector_store_with_publication`).
+   `tests/test_publication_chunk_parity.py` holds that both cut one corpus into the same chunks,
+   text and metadata, and that a restarted API reads the same back from the published
+   collection; with the API's headers switched off it fails (2026-10-18).
 
 ## Findings and outcomes
 
@@ -68,6 +76,18 @@ the English questions of ConditionalQA and MultiHop-RAG came in Russian, WixQA's
 every answer prompt labelled its documents «[Документ N» and carried «[Контекст:» headers
 (rows 5 and 10).
 
+**The check after the fixes** (registered 2026-10-18, before its run): the same four questions
+by `audit.sh after` on a stand of the closing code, the indexes of the new generation
+(`/Users/julia/RAG_new_external_s1/`), a fresh API each; record
+`reports/stage1/<commit>/after.json` by `audit_summary.py`. It passes when, for every tenant:
+the path is hybrid with 20 vector and 20 BM25 candidates, rerank `ok` and 5 documents kept; the
+API log has the tenant's `Restored N chunks` line and no `Chunk restore failed` or `WITHOUT
+BM25`; the answer's letters are mostly of the question's script (Latin for the three external
+bases, Cyrillic for aircargo); the prompt has no «[Документ» label and no «[Контекст:» header,
+its documents are labelled `[N | source=…]`, and at least one opens with the header line
+`[document › section]` (`header_first_line`; window fitting may cut a long document to an
+excerpt without it). A question stopped at 1,020 s is `NOT_EVIDENCE` for its tenant.
+
 ## Mac forecast and stop rule
 
 | Work | Forecast | Stops at |
@@ -84,8 +104,24 @@ ones are never rebuilt in place.
 
 ## Tools for stage 2 (step 5 of the stage)
 
-A chat-answer runner for any tenant; the judge's adapter for chat answers (each answer brings
-its documents) with an English prompt, its own stability check and the `[N]` citation check;
-M2 against reference answers; the sample of ≈ 100 questions per external base from the open
-parts, by cluster, committed before the first request; the signal tool (signal stage 1.0 of
-the [handover plan](handover-signal.md)).
+All written (2026-10-18). The scripts each have a unit test; the stand's tools, like those of
+the earlier chat records, are pinned with the live records by their artefact test when the
+stage closes:
+
+- **the chat-answer runner for any tenant** — the stand `reports/stage1/tools/`
+  (`live_supervisor.py` takes `TENANT`, `CHROMA` and `CASES_FILE`, refuses an index directory
+  without `chroma.sqlite3`; `live_api.py` records each retrieval's path and every rerank score);
+  `audit.sh` runs the one-question check, `audit_summary.py` writes its committable record;
+- **the judge's adapter** — `scripts/chat_answer_judge.py`: each answer graded against the
+  documents its own answer prompt held, one English prompt for every corpus, the answer due in
+  the question's language, the `[N]` marks counted, 15 retests and a quadratic kappa; **M2**
+  against reference answers when the cases carry them;
+- **the sample** — `evaluation/external_parts.json`, selections `stage2` (registered before any
+  request): ConditionalQA 40 documents × 2 primary questions plus the first 20 not-answerable
+  ones, WixQA the first 100 tuning questions (77 clusters), MultiHop-RAG the first 100 advisory
+  ones (15 clusters, one of 49);
+- **the signal tool** — `scripts/chat_signals.py`: S1–S7 of the
+  [handover plan](handover-signal.md) through the widget's own nodes;
+- **the new generation's build** — `scripts/corpus_chunks.py` (aircargo's chunks from its
+  manifest) and `reports/stage1/tools/s1_supervisor.py` (four corpora into
+  `/Users/julia/RAG_new_external_s1/`, started 2026-10-18 at `e5e135a`).

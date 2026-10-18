@@ -143,10 +143,12 @@ defaults, `RAG_ENV` development; none is re-implemented. Each is a yes/no "mark 
 - **S6** the widget's first pass: `route_or_retry` on the state S1, S2 and S4 build, the gap
   with S2's factuality — marked unless `auto`. A retry writes a new answer no judge graded, so
   retries are not replayed: S6 gives the most answers the widget's first pass would mark.
-- **S7** retrieval's confidence: the reranker's top score for the question, retrieval rerun
-  alone at the same index and code; it must return the stream prompt's documents in its order,
-  or S7 stops. No model call in the product — the reranker runs anyway; its threshold is chosen
-  on stage 1 and confirmed on stage 2.
+- **S7** retrieval's confidence: the reranker's top score for the question, as the stand
+  records it with the very retrieval whose documents the stream prompt holds
+  (`reports/stage1/tools/live_api.py`, since 2026-10-18 — no rerun of retrieval); counted
+  only when the prompt's sources are the reranked ones in order. No model call in the
+  product — the reranker runs anyway; its threshold is chosen on stage 1 and confirmed on
+  stage 2.
 
 ## Stages
 
@@ -175,8 +177,9 @@ checked 2026-10-17; not in the published record). Stage 1.0 builds and checks th
 
 Forecast: per answer 3–10 min (the grader's and the first claim's reading about 65 s each, the
 others 10–65 s each); the cap for the first five answers 30 min each (3 × 10 min), then 3 × the
-median of the first five. Retrieval rerun alone about 30 s a question (median 27.6 s with no
-model loaded, `reports/chat-live/33d4b42/`). Its Mac time is part of 1.3; 45 judge requests.
+median of the first five. S7 adds no Mac time: the stand records every rerank score with the
+answer. The tool is `scripts/chat_signals.py` (committed 2026-10-18, `88a58c2`); the judge's
+adapter is `scripts/chat_answer_judge.py`. Its Mac time is part of 1.3; 45 judge requests.
 
 Output: the instruments and the forecasts for 1.1–1.3; no table is published before 1.4
 (cases 1–30 hold no customs question and 22 of the set's 66 out-of-scope ones, so a table on

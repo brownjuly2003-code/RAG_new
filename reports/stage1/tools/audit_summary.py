@@ -81,6 +81,10 @@ for tenant in TENANTS:
                 "labels_dokument": len(re.findall(r"^\[Документ \d+", text, re.M)),
                 "labels_source": len(re.findall(r"^\[\d+ \| source=", text, re.M)),
                 "header_kontekst": text.count("[Контекст:"),
+                # a document whose text opens with stage 1's header line, [document › section]
+                "header_first_line": len(
+                    re.findall(r"^\[\d+ \| source=[^\n]*\n\[(?!Контекст:)[^\n]*\]$", text, re.M)
+                ),
             }
         )
     restore = [
