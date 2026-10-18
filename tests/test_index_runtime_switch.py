@@ -47,9 +47,12 @@ def _fake_chroma(state: _FakeChromaState) -> type[Any]:
                 raise RuntimeError("dimension validation failed")
             return {"ids": [["known-chunk"]]}
 
-        def get(self, *, include: list[str]) -> dict[str, list[Any]]:
+        def get(
+            self, *, include: list[str], limit: int | None = None, offset: int = 0
+        ) -> dict[str, list[Any]]:
             assert include == ["documents", "metadatas"]
             documents = state.documents.get(self.name, [])
+            documents = documents[offset : None if limit is None else offset + limit]
             return {
                 "documents": [doc.page_content for doc in documents],
                 "metadatas": [dict(doc.metadata or {}) for doc in documents],

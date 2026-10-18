@@ -67,10 +67,11 @@ def test_restore_out_of_order_and_telemetry(tmp_path):
         def __init__(self, ordered):
             self.ordered = ordered
 
-        def get(self, include):
+        def get(self, include, limit=None, offset=0):
             assert include == ["documents", "metadatas"]
-            metadata = [{"chunk_index": i} for i in self.ordered]
-            return {"documents": [texts[i] for i in self.ordered], "metadatas": metadata}
+            page = self.ordered[offset : None if limit is None else offset + limit]
+            metadata = [{"chunk_index": i} for i in page]
+            return {"documents": [texts[i] for i in page], "metadatas": metadata}
 
         def query(self, **kwargs):
             return {"ids": [["0", "1"]]}

@@ -35,8 +35,13 @@ class FakeCollection:
         self._texts = texts
         self._metadatas = metadatas
 
-    def get(self, include=None):
-        return {"documents": list(self._texts), "metadatas": list(self._metadatas)}
+    def get(self, include=None, limit=None, offset=0):
+        # Chroma's own paging: the restore reads the collection a page at a time
+        end = None if limit is None else offset + limit
+        return {
+            "documents": list(self._texts[offset:end]),
+            "metadatas": list(self._metadatas[offset:end]),
+        }
 
 
 class FakeChroma:
@@ -105,7 +110,7 @@ def test_restore_survives_collection_error(monkeypatch: pytest.MonkeyPatch) -> N
     store = FakeChroma(collection_name="rag_docs_broken")
 
     class BrokenCollection:
-        def get(self, include=None):
+        def get(self, include=None, limit=None, offset=0):
             raise RuntimeError("collection unavailable")
 
     store._collection = BrokenCollection()
