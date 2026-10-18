@@ -18,7 +18,7 @@ Closing a stage fills its row: the date, the commit and the [`EVIDENCE_INDEX.md`
 | Stage | What | Mac, h | State |
 |---|---|---|---|
 | 0 | One plan | — | **done 2026-10-17** — `PLAN.md` pushed in `3e52a02`; accepted by Julia the same day («принять») |
-| 1 | Fixes first (Julia: «поставить в приоритет»): a repeatable audit; the defects found — loaders, chunk header, table headers, overlap on expansion, answer in the question's language; external tenants proven on the hybrid path; the indexes of the four corpora rebuilt as a new generation; the tools of stage 2 | 12–15 | **next** |
+| 1 | Fixes first (Julia: «поставить в приоритет»): a repeatable audit; the defects found — loaders, chunk header, table headers, overlap on expansion, answer in the question's language; external tenants proven on the hybrid path; the indexes of the four corpora rebuilt as a new generation; the tools of stage 2 | 12–15 | **under way** — audit, fixes and stage-2 tools committed (`8f94d84`…, [spec](docs/specs/stage1-fixes.md)); the new generation building since 2026-10-18; then the check after the fixes |
 | 2 | Four corpora on the fixed code: 100 aircargo answers on the chat path, retrieval without generation on 400 questions, 300 judged answers on the three external bases («Вариант B»), the graph lane on aircargo | 41–49 | — |
 | 3 | Handover signals on the 100, reading, one signal chosen and wired | 5–34 | — |
 | 4 | Speed and memory on the Mac; the final path; time to first word; Julia's SLO | 14–17 | — |

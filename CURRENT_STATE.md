@@ -1,7 +1,7 @@
 # Current state — RAG_new
 
-2026-10-17 · The plan: [`PLAN.md`](PLAN.md), accepted by Julia on 2026-10-17 («принять») ·
-next: its stage 1 · previous version of this file:
+2026-10-18 · The plan: [`PLAN.md`](PLAN.md), accepted by Julia on 2026-10-17 («принять») ·
+now: its stage 1 — fixes committed, the new index generation building · previous version of this file:
 [`archive/docs/state/current-state-through-2026-10-17.md`](archive/docs/state/current-state-through-2026-10-17.md).
 
 Read this file for *what is true now*; [`PLAN.md`](PLAN.md) for *what happens next and why*;
@@ -19,9 +19,11 @@ its sources (RAG). Two answer paths:
   checking, up to two retries and a ticket to a person.
 
 Retrieval: BM25 and BGE-M3 vectors merged by RRF, then the bge-reranker-v2-m3 cross-encoder on
-the CPU picks 5 of 20 candidates. Documents are cut by their markdown sections (at most 800
-characters, 200 overlap inside a long section), each chunk carries a header with its document
-and section path, and parent expansion adds up to two neighbouring chunks on each side.
+the CPU picks 5 of 20 candidates. Documents are cut by their markdown sections (DOCX, HTML and
+PDF are read into markdown first; at most 800 characters, 200 overlap inside a long section),
+each chunk opens with a header `[document › section]` (indexes built before stage 1 carry the
+old Russian one, still read), and parent expansion adds up to two neighbouring chunks on each
+side. The chat answers in the question's language (since `ffae1c2`).
 
 **Production is `deproject-mac`** (Julia, 2026-10-14: «прод на маке»): i5-7500, 4 cores, 8 GB,
 Ollama 0.33.2 on the CPU. **The model is Qwen3-4B-Instruct-2507** (Julia, 2026-10-16; the code
@@ -32,7 +34,8 @@ brought up for each run ([`PLAN.md`](PLAN.md) stage 6 makes it a service).
 written by an agent from the documents, labels approved by Julia on 2026-09-25 (the only real
 labelled cases). Three external bases connected 2026-10-05/07 for universality: ConditionalQA
 (13,778 chunks), WixQA (37,571), MultiHop-RAG (11,231); their questions are split into open and
-locked parts (`evaluation/external_parts.json`). No quality run has used them yet.
+locked parts (`evaluation/external_parts.json`). No quality run has used them yet. The indexes
+above are the first generation; stage 1 builds a second beside it.
 
 ## Numbers
 
@@ -48,36 +51,36 @@ Each number has a record; numbers on another path or model are history, not the 
 | Retrieval, lexical ruler | precision 0.5067, recall 0.905 | the ruler does not track meaning (P2, τ_b 0.156) — no longer a threshold |
 | Graph lane (GR-3) | precision 0.5067 → 0.5487, +8.8 s to p95; recall on 15 multi-document questions 0.5 → 0.4 | NO-SHIP on the 200-ms budget; the generation half produced no evidence ([capsule](docs/evidence/gr3-graph-lane-ab.md)) |
 | Shipment binding | admission recall 0.0000 | none of the 100 questions names a shipment (phase B, Q2b) |
-| Engineering | 5,820 unit tests pass on the Mac on `3e52a02` | CI starts no job since `e81f0c5` (2026-10-16): GitHub reports the account's billing |
+| Engineering | 5,874 unit tests pass on the Mac on `8d97c1b` (124 skipped) | CI starts no job since `e81f0c5` (2026-10-16): GitHub reports the account's billing |
 
 The first quality number on the customer's path does not exist yet: it is [`PLAN.md`](PLAN.md)
 stage 2.
 
-## Known defects — fixed by PLAN.md stage 1
+## Stage 1 — where it stands (2026-10-18)
 
-Found 2026-10-17 by reading the code; none is measured on the chat path yet.
+The audit, its 25 findings and the outcome of each: [`docs/specs/stage1-fixes.md`](docs/specs/stage1-fixes.md).
 
-- **Loaders.** Section chunking works only for markdown: DOCX loses its headings and drops its
-  tables, HTML is flattened to one line, PDF has no headings. aircargo is markdown and the
-  external bases were converted to markdown by the connection script, so every measurement so
-  far was the best case.
-- **Chunk header.** A Russian phrase «[Контекст: Из документа …, раздел: …]» on every corpus;
-  the heading path is cut at 200 characters from the wrong end (8–34 % of external chunks).
-- **Long tables.** A continued table chunk has no column-header row.
-- **Overlap.** Parent expansion glues neighbouring pieces with their 200-character overlap, so
-  the prompt repeats text.
-- **Answer language.** The prompts are Russian and do not set the answer's language; Julia
-  decided 2026-10-17: answer in the question's language.
-- **External tenants.** Not yet shown to run the same hybrid path as aircargo.
+- **Fixed, a commit and a unit test each** (`8f94d84`…`047d379`): DOCX, HTML and PDF keep
+  headings, lists and tables (WixQA's 6,221 HTML pages lose nothing through the loader); a
+  header with no words, the nearest section kept; a continued table piece repeats its column
+  header; expansion reads each seam once; the question's language throughout, context labels
+  `[N | source=…]`; the BM25 corpus restored from a collection of any size.
+- **Proven live before the fixes** ([record](reports/stage1/99cd15f/before.json)): WixQA's
+  tenant ran on vectors alone after a restart (SQLite refused a one-call restore of 37,571
+  chunks); English questions got Russian answers; every prompt carried Russian labels.
+- **Also done:** the API's upload path cuts the chunks the measurements index (a test); the
+  stage-2 tools — chat runner, judge's adapter with M2, signal tool, ≈ 100 questions per
+  external base registered before any request (`e5e135a`). Limits and reasons: the spec.
+- **Building on the Mac:** the second generation of all four indexes in
+  `/Users/julia/RAG_new_external_s1/`, code `e5e135a`, from 2026-10-18 01:05 UTC, ≈ 11 h; the
+  first generation and the upload folder are hashed before and after.
 
 ## Next
 
-[`PLAN.md`](PLAN.md) stage 1 (Julia, 2026-10-17: the fixes «поставить в приоритет»): the audit
-and the fixes above, each with a test; the indexes of the four corpora rebuilt as a new
-generation beside the old (Julia agreed 2026-10-17; the old collections stay for rollback).
-Then stage 2 measures all four corpora on the fixed code. Nothing else runs on the Mac first.
-Step by step, with every code location, how to test on the Mac and how to bring up a stand:
-[the last handoff, «Next actions»](docs/operations/session-handoff-2026-10-17-one-plan.md#next-actions--stage-1).
+When the build ends: the check after the fixes (one question per tenant on the new indexes,
+criteria registered in the spec before the run), then stage 1 closes — records pinned by an
+artefact test, an [`EVIDENCE_INDEX.md`](EVIDENCE_INDEX.md) row; then stage 2. Commands and how
+to read each outcome: [the last handoff](docs/operations/session-handoff-2026-10-18-stage1.md#next-actions).
 
 ## Julia's decisions in force
 
@@ -121,19 +124,19 @@ condition is formally met ([`PLAN.md`](PLAN.md) §9).
   pip-audit clean.
 - **Since `e81f0c5` (2026-10-16) CI starts no job** — GitHub's annotation names failed account
   payments. Until Julia settles it, a push is checked by the whole unit suite on the Mac.
-- **Last push:** `3e52a02` to `origin/master` at Julia's word, 2026-10-17 (suite on the Mac:
-  5,820 passed, 123 skipped).
+- **Last push:** `99cd15f` (the documents tidied) to `origin/master`, 2026-10-17 15:03 UTC, by
+  the previous session; `3e52a02` before it at Julia's word (suite on the Mac: 5,820 passed,
+  123 skipped). **Not pushed:** the stage-1 commits from `8f94d84`; a push waits for her word.
 - Remote: `brownjuly2003-code/RAG_new`, private; pushes over HTTPS (command in
   [`CLAUDE.md`](CLAUDE.md)).
 
 ## How the project got here
 
-Phases 0 and A (2026-08) built and wired a deterministic resolution kernel behind `/api/ask`;
-phase B labelled 100 real aircargo cases (approved 2026-09-25) and is blocked on shipment data
-(Q2b); phase C benchmarked generators; stream GR measured graph retrieval (NO-SHIP); phase E
-prepared the public site locally; the quality campaign of `plan_03_10_26` was stopped by
-[`PLAN.md`](PLAN.md) §7. Detail: [`ROADMAP.md`](ROADMAP.md), the evidence register
-[`EVIDENCE_INDEX.md`](EVIDENCE_INDEX.md), and this file's previous version (link at the top).
+Phases 0 and A (2026-08) wired a resolution kernel behind `/api/ask`; phase B labelled 100 real
+aircargo cases (2026-09-25), blocked on shipment data (Q2b); phase C benchmarked generators;
+stream GR measured graph retrieval (NO-SHIP); phase E prepared the public site locally;
+[`PLAN.md`](PLAN.md) §7 stopped the quality campaign of `plan_03_10_26`. Detail:
+[`ROADMAP.md`](ROADMAP.md), [`EVIDENCE_INDEX.md`](EVIDENCE_INDEX.md), this file's previous version.
 
 ## Links
 
@@ -141,4 +144,4 @@ prepared the public site locally; the quality campaign of `plan_03_10_26` was st
   [`EVIDENCE_INDEX.md`](EVIDENCE_INDEX.md) · documents map — [`docs/README.md`](docs/README.md)
 - Agent conventions — [`CLAUDE.md`](CLAUDE.md), [`AGENT_STATE.md`](AGENT_STATE.md) · queue for
   automation — [`BACKLOG.md`](BACKLOG.md) · module layout — [`DEPRECATIONS.md`](DEPRECATIONS.md)
-- Last session — [`docs/operations/session-handoff-2026-10-17-one-plan.md`](docs/operations/session-handoff-2026-10-17-one-plan.md)
+- Last session — [`docs/operations/session-handoff-2026-10-18-stage1.md`](docs/operations/session-handoff-2026-10-18-stage1.md)
