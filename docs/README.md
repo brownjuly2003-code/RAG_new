@@ -50,7 +50,9 @@ intent, and the code and [`CURRENT_STATE.md`](../CURRENT_STATE.md) for what runs
 ## Specs — `specs/`
 
 **In use by the plan:** [handover signal](specs/handover-signal.md) — which answers go to a
-person; run as [`PLAN.md`](../PLAN.md) stages 2 and 3.
+person; run as [`PLAN.md`](../PLAN.md) stages 2 and 3. [Stage 2](specs/stage2-four-corpora.md)
+— the four corpora measured on the chat path: the stand, the questions, the stop rules, the
+metrics and the judge, registered before the first request.
 
 **Contracts the code keeps** — what the code must do, with tests behind each:
 
