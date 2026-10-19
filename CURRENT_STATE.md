@@ -1,7 +1,7 @@
 # Current state — RAG_new
 
 2026-10-19 · The plan: [`PLAN.md`](PLAN.md), accepted by Julia on 2026-10-17 («принять») ·
-now: stage 2 registered (2026-10-19), its first part next · previous version of this file:
+now: stage 2 registered at `5e308fe`, part 1 running (2026-10-19) · previous version of this file:
 [`archive/docs/state/current-state-through-2026-10-17.md`](archive/docs/state/current-state-through-2026-10-17.md).
 
 Read this file for *what is true now*; [`PLAN.md`](PLAN.md) for *what happens next and why*;
@@ -79,11 +79,11 @@ records `reports/stage1/`, pinned by `tests/test_stage1_live_artifact.py`; one e
 
 ## Next
 
-[`PLAN.md`](PLAN.md) stage 2 — the four corpora on the fixed path, registered before its first
-request in [`docs/specs/stage2-four-corpora.md`](docs/specs/stage2-four-corpora.md) (tools in
-`reports/stage2/tools/`): 100 aircargo answers, retrieval alone on 415 questions, 300 answers on
-the external bases' `stage2` selections («Вариант B»); the judge `claude-opus-5-5` at `max`; the
-graph lane by an amendment. While a part runs, its label, log and stop command stand here.
+[`PLAN.md`](PLAN.md) stage 2 by [`docs/specs/stage2-four-corpora.md`](docs/specs/stage2-four-corpora.md)
+(`5e308fe`): 100 aircargo answers, retrieval on 415 questions, 300 external answers, the graph lane.
+**Running:** part 1, batches 2–10 (`p1-aircargo-b02`…`b10`, forecast 36,540 s; batch 1 took 3,329 s, no path break); stand
+`S=/Users/julia/RAG_new_chat_5e308fe`, log `$S/chatlive/runs/p1-aircargo.log`. Stop before the next batch: `touch $S/chatlive/runs/p1-aircargo.stop`;
+at once: `pkill -f "stage2.sh answers p1 aircargo"`, then `pkill -f "$S/chatlive/live_runner.py"`.
 
 ## Julia's decisions in force
 
