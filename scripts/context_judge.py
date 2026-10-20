@@ -20,8 +20,8 @@ answers it - and ``documents_with_answer``, the numbers of the documents that ho
 - ``run`` sends the requests one at a time and appends every reply to ``verdicts.jsonl``, so a
   stopped run resumes; it stops at the first reply the route refuses;
 - ``summary`` counts the levels per run, the retest's quadratic kappa over the three levels and
-  each context's level by case id; a verdict counts only with the record of a clean session
-  and the hash of its planned request.
+  each context's level by case id; a verdict counts as ``chat_answer_judge`` counts one, by the
+  same checks of the plan and of each reply.
 
 Usage:
   python scripts/context_judge.py plan --run LABEL=DIR ... --out DIR [--retest N]
@@ -75,7 +75,7 @@ Reply with one JSON object and nothing else:
 "<one short sentence>"}"""
 
 
-class VerdictError(ValueError):
+class VerdictError(answer_judge.VerdictError):
     """A reply that is not one verdict object of the registered form."""
 
 
@@ -112,6 +112,8 @@ def parse_verdict(text: str, documents: int) -> dict[str, Any]:
         raise VerdictError("documents_with_answer does not fit context_answer")
     if not isinstance(value["note"], str):
         raise VerdictError("note is not a string")
+    # Smallest first, as the rules ask, so two verdicts naming the same documents compare equal.
+    value["documents_with_answer"] = sorted(numbers)
     return value
 
 
@@ -181,69 +183,26 @@ def build_plan(runs: Mapping[str, Path], *, retest: int = RETEST_SIZE) -> dict[s
 Sender = Callable[[str, str], Any]
 
 
+def _items(plan: Mapping[str, Any]) -> dict[str, dict[str, Any]]:
+    return answer_judge.check_plan(
+        plan, salt=SALT, instructions=INSTRUCTIONS, system_prompt=SYSTEM_PROMPT
+    )
+
+
+def _read(item: Mapping[str, Any], text: str) -> dict[str, Any]:
+    return parse_verdict(text, item["documents"])
+
+
 def run_plan(plan: Mapping[str, Any], out: Path, send: Sender, *, limit: int = 0) -> int:
-    """Send each request that has no valid verdict yet; return how many requests were graded."""
-    path = out / "verdicts.jsonl"
-    done = {row["item_id"] for row in answer_judge._read_jsonl(path) if row["status"] == "valid"}
-    graded = 0
-    for item in plan["items"]:
-        if "message" not in item or item["item_id"] in done:
-            continue
-        if limit and graded >= limit:
-            break
-        for attempt in range(1, answer_judge.FORM_ATTEMPTS + 1):
-            row: dict[str, Any] = {
-                "item_id": item["item_id"],
-                "message_sha256": item["message_sha256"],
-                "attempt": attempt,
-            }
-            try:
-                reply = send(SYSTEM_PROMPT, item["message"])
-            except JudgeUnavailable as exc:
-                row.update(status="unavailable", reason=exc.code)
-                answer_judge._append(path, row)
-                raise
-            row.update(
-                raw_text=reply.text,
-                model=reply.model,
-                usage={
-                    key: reply.usage[key] for key in answer_judge.USAGE_FIELDS if key in reply.usage
-                },
-                elapsed_s=round(reply.elapsed_s, 1),
-                session=reply.session,
-            )
-            try:
-                row.update(status="valid", verdict=parse_verdict(reply.text, item["documents"]))
-            except VerdictError as exc:
-                row.update(status="invalid", reason=str(exc))
-            answer_judge._append(path, row)
-            print(f"{item['item_id']} attempt {attempt}: {row['status']}", flush=True)
-            if row["status"] == "valid":
-                break
-        graded += 1
-    return graded
+    """Send each request that has no counted verdict yet; return how many requests were graded."""
+    return answer_judge.send_plan(plan, _items(plan), out, send, SYSTEM_PROMPT, _read, limit=limit)
 
 
 def _vouched(
     plan: Mapping[str, Any], verdicts: Sequence[Mapping[str, Any]]
 ) -> dict[str, dict[str, Any]]:
-    """The first valid verdict of each request, re-read from its raw reply."""
-    items = {item["item_id"]: item for item in plan["items"]}
-    valid: dict[str, dict[str, Any]] = {}
-    for row in verdicts:
-        if row.get("status") != "valid":
-            continue
-        item = items.get(str(row.get("item_id")))
-        if item is None or row.get("message_sha256") != item.get("message_sha256"):
-            raise ValueError(f"the verdict of {row.get('item_id')} answers no planned request")
-        try:
-            isolated.check_record(row.get("session"))
-        except ValueError as exc:
-            raise ValueError(f"the verdict of {row['item_id']} is not vouched for: {exc}") from None
-        valid.setdefault(
-            item["item_id"], parse_verdict(str(row.get("raw_text")), item["documents"])
-        )
-    return valid
+    """The counted verdict of each request (``chat_answer_judge.vouch``), re-read from its reply."""
+    return answer_judge.vouch(plan, _items(plan), verdicts, _read)
 
 
 def summarize(plan: Mapping[str, Any], verdicts: Sequence[Mapping[str, Any]]) -> dict[str, Any]:

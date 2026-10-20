@@ -80,7 +80,7 @@ records `reports/stage1/`, pinned by `tests/test_stage1_live_artifact.py`; one e
 ## Next
 
 [`PLAN.md`](PLAN.md) stage 2 by [`docs/specs/stage2-four-corpora.md`](docs/specs/stage2-four-corpora.md)
-(`5e308fe`): 100 aircargo answers, retrieval on 415 questions, 300 external answers, the graph lane.
+(`5e308fe`): 100 aircargo answers, retrieval on 415 questions, 300 external answers; the graph lane amended 2026-10-19 — GR-3's archives counted, the live lane in stage 7; the judge amended before its first grade on Codex's second opinion (the spec, «The judge»).
 **Running:** part 1, batches 2–10 (`p1-aircargo-b02`…`b10`, forecast 36,540 s; batch 1 took 3,329 s, no path break); stand
 `S=/Users/julia/RAG_new_chat_5e308fe`, log `$S/chatlive/runs/p1-aircargo.log`. Stop before the next batch: `touch $S/chatlive/runs/p1-aircargo.stop`;
 at once: `pkill -f "stage2.sh answers p1 aircargo"`, then `pkill -f "$S/chatlive/live_runner.py"`.
@@ -89,10 +89,10 @@ at once: `pkill -f "stage2.sh answers p1 aircargo"`, then `pkill -f "$S/chatlive
 
 The full list with dates is [`PLAN.md`](PLAN.md) §8.1. The ones that shape every step:
 D11 (2026-10-03) — no person grades or approves anything in the process; D12 (2026-10-04) — the
-session does all the work, no other model in any role; production on the Mac (2026-10-14);
+session does all the work, no other model in any role but Codex's second opinion (2026-10-19); production on the Mac (2026-10-14);
 Qwen3-4B (2026-10-16); the one plan accepted, external answers in stage 2 («Вариант B»), fixes
 first, answers in the question's language, indexes as a new generation (all 2026-10-17).
-A push is her decision, asked each time.
+When a plan's premise breaks, the session decides by the best final product and reports (2026-10-19). A push is her decision, asked each time.
 
 ## Open for Julia
 

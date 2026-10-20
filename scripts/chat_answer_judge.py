@@ -19,9 +19,13 @@ mark that names no listed document is counted here, without the judge.
   per answer in a fixed shuffled order, plus a retest of ``--retest`` of them (the stability
   check), before the first grade; an empty answer is graded bad without a request;
 - ``run`` sends the requests one at a time and appends every reply to ``verdicts.jsonl``, so a
-  stopped run resumes; it stops at the first reply the route refuses;
-- ``summary`` counts the verdicts per run; a verdict counts only with the record of a clean
-  session and the hash of its planned request.
+  stopped run resumes; it stops at the first reply the route refuses; a request gets at most
+  six replies over all runs (``REPLIES``);
+- ``summary`` counts the verdicts per run; a verdict counts only from a request's first six
+  replies, from the plan's model, with the record of a clean session and the hash of its
+  planned request. Both refuse a plan this code did not freeze: another salt, rules or route,
+  a request that is not the text its hash names, a second retest of a request or a retest that
+  is not its request's copy.
 
 Usage:
   python scripts/chat_answer_judge.py plan --run LABEL=DIR ... [--references FILE] --out DIR
@@ -52,6 +56,8 @@ from evaluation.blinded_judge_clients import JudgeUnavailable  # noqa: E402
 SALT = "chat-answer-judge-2026-10-18"
 RETEST_SIZE = 15
 FORM_ATTEMPTS = 3
+# A request's replies that count: the attempts of one run of the plan and of one more run.
+REPLIES = 2 * FORM_ATTEMPTS
 CLI_TIMEOUT_S = 1200.0
 PROMPT_ID = "QA_PROMPT_V3"
 # The answer prompt's frame (agent/prompts.py, QA_PROMPT_V3): the stand saves it after "USER:".
@@ -224,16 +230,21 @@ def parse_verdict(text: str, listed: int, has_reference: bool) -> dict[str, Any]
 
 
 def classify(verdict: Mapping[str, Any]) -> str:
-    """good: complete and fully supported, or a right decline; partial_ok: faithful but partial."""
+    """good: complete and fully supported, or a right decline; partial_ok: faithful but partial.
+
+    "full" and "partial" weigh the answer against what the documents offer, so they count only
+    where the documents hold the answer: without it the right answer is a decline.
+    """
     faithful = verdict["defect"] == "none" and (
         verdict["claims_supported"] == verdict["claims_total"]
     )
     answered = verdict["claims_total"] >= 1
-    if faithful and verdict["answers_question"] == "full" and answered:
+    held = verdict["context_has_answer"]
+    if faithful and verdict["answers_question"] == "full" and answered and held:
         return "good"
-    if faithful and verdict["answers_question"] == "declined" and not verdict["context_has_answer"]:
+    if faithful and verdict["answers_question"] == "declined" and not held:
         return "good"
-    if faithful and verdict["answers_question"] == "partial" and answered:
+    if faithful and verdict["answers_question"] == "partial" and answered and held:
         return "partial_ok"
     return "bad"
 
@@ -290,6 +301,7 @@ def build_plan(
     references: Mapping[str, Sequence[str]],
     *,
     retest: int = RETEST_SIZE,
+    references_sha256: str | None = None,
 ) -> dict[str, Any]:
     """Freeze every request and every deterministic count before the first grade."""
     items: list[dict[str, Any]] = []
@@ -337,31 +349,145 @@ def build_plan(
         "runs": records,
         "route": isolated.settings(SYSTEM_PROMPT),
         "instructions_sha256": _digest(INSTRUCTIONS),
+        "references_sha256": references_sha256,
         "items": items,
     }
 
 
 Sender = Callable[[str, str], Any]
+Reader = Callable[[Mapping[str, Any], str], dict[str, Any]]
 
 
-def run_plan(plan: Mapping[str, Any], out: Path, send: Sender, *, limit: int = 0) -> int:
-    """Send each request that has no valid verdict yet; return how many requests were graded."""
+def check_plan(
+    plan: Mapping[str, Any],
+    *,
+    salt: str = SALT,
+    instructions: str = INSTRUCTIONS,
+    system_prompt: str = SYSTEM_PROMPT,
+) -> dict[str, dict[str, Any]]:
+    """The plan's requests by id; refused unless it is this judge's and whole.
+
+    Its salt, rules and route are this code's; each request is the text its hash names; each id
+    stands once; a request has at most one retest, and that one is its copy. The hashes inside
+    a plan cannot show an edit of the whole: the plan's own SHA-256 is committed before its
+    first grade.
+    """
+    if (
+        plan.get("salt") != salt
+        or plan.get("instructions_sha256") != _digest(instructions)
+        or plan.get("route") != isolated.settings(system_prompt)
+    ):
+        raise ValueError("the plan was not frozen by this judge: its salt, rules or route differ")
+    items: dict[str, dict[str, Any]] = {}
+    for item in plan["items"]:
+        if item["item_id"] in items:
+            raise ValueError(f"{item['item_id']} stands twice in the plan")
+        if "message" in item and _digest(item["message"]) != item.get("message_sha256"):
+            raise ValueError(f"the request of {item['item_id']} is not the text its hash names")
+        items[item["item_id"]] = item
+    retested: set[str] = set()
+    for item in items.values():
+        if "retest_of" not in item:
+            continue
+        first = items.get(item["retest_of"])
+        copy = {key: value for key, value in item.items() if key not in ("item_id", "retest_of")}
+        if (
+            first is None
+            or "retest_of" in first
+            or "message" not in item
+            or item["retest_of"] in retested
+            or copy != {key: value for key, value in first.items() if key != "item_id"}
+        ):
+            raise ValueError(f"the retest {item['item_id']} does not repeat its request")
+        retested.add(item["retest_of"])
+    return items
+
+
+def _replies(
+    items: Mapping[str, Mapping[str, Any]], rows: Sequence[Mapping[str, Any]]
+) -> Counter[str]:
+    """Each request's replies so far; refused when a row answers no request of the plan."""
+    replies: Counter[str] = Counter()
+    for row in rows:
+        item = items.get(str(row.get("item_id")))
+        if (
+            item is None
+            or "message" not in item
+            or row.get("message_sha256") != item["message_sha256"]
+        ):
+            raise ValueError(f"a row of {row.get('item_id')} answers no planned request")
+        if row.get("status") in ("valid", "invalid"):
+            replies[item["item_id"]] += 1
+    return replies
+
+
+def vouch(
+    plan: Mapping[str, Any],
+    items: Mapping[str, Mapping[str, Any]],
+    rows: Sequence[Mapping[str, Any]],
+    read: Reader,
+) -> dict[str, dict[str, Any]]:
+    """The first valid verdict of each request among its first REPLIES replies.
+
+    A verdict counts only from the plan's model, with the record of a clean session of one
+    turn, re-read from its raw reply.
+    """
+    _replies(items, rows)
+    model = plan["route"]["model"]
+    seen: Counter[str] = Counter()
+    valid: dict[str, dict[str, Any]] = {}
+    for row in rows:
+        if row.get("status") not in ("valid", "invalid"):
+            continue
+        item_id = str(row["item_id"])
+        seen[item_id] += 1
+        if row["status"] != "valid" or seen[item_id] > REPLIES or item_id in valid:
+            continue
+        session = row.get("session")
+        if (
+            row.get("model") != model
+            or not isinstance(session, Mapping)
+            or session.get("model") != model
+        ):
+            raise ValueError(f"the verdict of {item_id} is not the plan's model's")
+        try:
+            isolated.check_record(session)
+        except ValueError as exc:
+            raise ValueError(f"the verdict of {item_id} is not vouched for: {exc}") from None
+        valid[item_id] = read(items[item_id], str(row.get("raw_text")))
+    return valid
+
+
+def send_plan(
+    plan: Mapping[str, Any],
+    items: Mapping[str, Mapping[str, Any]],
+    out: Path,
+    send: Sender,
+    system_prompt: str,
+    read: Reader,
+    *,
+    limit: int = 0,
+) -> int:
+    """Send each request without a counted verdict, at most REPLIES times over all runs."""
     path = out / "verdicts.jsonl"
-    done = {row["item_id"] for row in _read_jsonl(path) if row["status"] == "valid"}
+    rows = _read_jsonl(path)
+    replies = _replies(items, rows)
+    done = vouch(plan, items, rows, read)
     graded = 0
     for item in plan["items"]:
-        if "message" not in item or item["item_id"] in done:
+        left = REPLIES - replies[item["item_id"]]
+        if "message" not in item or item["item_id"] in done or left <= 0:
             continue
         if limit and graded >= limit:
             break
-        for attempt in range(1, FORM_ATTEMPTS + 1):
+        for attempt in range(1, min(FORM_ATTEMPTS, left) + 1):
             row: dict[str, Any] = {
                 "item_id": item["item_id"],
                 "message_sha256": item["message_sha256"],
                 "attempt": attempt,
             }
             try:
-                reply = send(SYSTEM_PROMPT, item["message"])
+                reply = send(system_prompt, item["message"])
             except JudgeUnavailable as exc:
                 row.update(status="unavailable", reason=exc.code)
                 _append(path, row)
@@ -374,8 +500,7 @@ def run_plan(plan: Mapping[str, Any], out: Path, send: Sender, *, limit: int = 0
                 session=reply.session,
             )
             try:
-                verdict = parse_verdict(reply.text, item["marks_listed"], item["has_reference"])
-                row.update(status="valid", verdict=verdict)
+                row.update(status="valid", verdict=read(item, reply.text))
             except VerdictError as exc:
                 row.update(status="invalid", reason=str(exc))
             _append(path, row)
@@ -386,31 +511,28 @@ def run_plan(plan: Mapping[str, Any], out: Path, send: Sender, *, limit: int = 0
     return graded
 
 
+def _read(item: Mapping[str, Any], text: str) -> dict[str, Any]:
+    return parse_verdict(text, item["marks_listed"], item["has_reference"])
+
+
+def run_plan(plan: Mapping[str, Any], out: Path, send: Sender, *, limit: int = 0) -> int:
+    """Send each request that has no counted verdict yet; return how many requests were graded."""
+    return send_plan(plan, check_plan(plan), out, send, SYSTEM_PROMPT, _read, limit=limit)
+
+
 def _vouched(
     plan: Mapping[str, Any], verdicts: Sequence[Mapping[str, Any]]
 ) -> dict[str, dict[str, Any]]:
-    """The first valid verdict of each request, re-read from its raw reply."""
-    items = {item["item_id"]: item for item in plan["items"]}
-    valid: dict[str, dict[str, Any]] = {}
-    for row in verdicts:
-        if row.get("status") != "valid":
-            continue
-        item = items.get(str(row.get("item_id")))
-        if item is None or row.get("message_sha256") != item.get("message_sha256"):
-            raise ValueError(f"the verdict of {row.get('item_id')} answers no planned request")
-        try:
-            isolated.check_record(row.get("session"))
-        except ValueError as exc:
-            raise ValueError(f"the verdict of {row['item_id']} is not vouched for: {exc}") from None
-        verdict = parse_verdict(
-            str(row.get("raw_text")), item["marks_listed"], item["has_reference"]
-        )
-        valid.setdefault(item["item_id"], verdict)
-    return valid
+    """The counted verdict of each request (``vouch``), re-read from its raw reply."""
+    return vouch(plan, check_plan(plan), verdicts, _read)
 
 
 def quadratic_kappa(pairs: Sequence[tuple[int, int]], levels: int) -> float | None:
-    """Cohen's kappa with quadratic weights over ordinal levels 0..levels-1."""
+    """Cohen's kappa with quadratic weights over ordinal levels 0..levels-1.
+
+    None when it cannot be computed: no pairs, or no disagreement to expect - every rating on
+    one level (stage 2's spec, «Stability»: the agreement then decides).
+    """
     if not pairs:
         return None
     count = len(pairs)
@@ -422,7 +544,7 @@ def quadratic_kappa(pairs: Sequence[tuple[int, int]], levels: int) -> float | No
         first[a] * second[b] * (a - b) ** 2 / span for a in range(levels) for b in range(levels)
     ) / (count * count)
     if expected == 0:
-        return 1.0 if observed == 0 else None
+        return None
     return round(1 - observed / expected, 4)
 
 
@@ -450,6 +572,12 @@ def summarize(plan: Mapping[str, Any], verdicts: Sequence[Mapping[str, Any]]) ->
             "marks_supported": sum(verdict["citations_supported"] for verdict in graded),
             "marks_unlisted": sum(item["marks_unlisted"] for item in mine),
             "context_has_answer": sum(verdict["context_has_answer"] for verdict in graded),
+            # "full" or "partial" where the documents hold no answer: bad by ``classify``.
+            "answer_without_context": sum(
+                verdict["answers_question"] in ("full", "partial")
+                and not verdict["context_has_answer"]
+                for verdict in graded
+            ),
         }
     level = {name: index for index, name in enumerate(reversed(CLASSES))}
     pairs = [
@@ -483,10 +611,12 @@ def _isolated_sender(timeout_s: float) -> Sender:
 def _references(path: Path | None) -> dict[str, list[str]]:
     if path is None:
         return {}
-    return {
-        row["case_id"]: [str(answer) for answer in row.get("reference_answers") or []]
-        for row in _read_jsonl(path)
-    }
+    references: dict[str, list[str]] = {}
+    for row in _read_jsonl(path):
+        if row["case_id"] in references:
+            raise ValueError(f"{path.name}: {row['case_id']} stands twice")
+        references[row["case_id"]] = [str(answer) for answer in row.get("reference_answers") or []]
+    return references
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -515,7 +645,16 @@ def main(argv: Sequence[str] | None = None) -> int:
             if not label or not path or label in runs:
                 raise SystemExit(f"--run {spec}: give each run once as LABEL=DIR")
             runs[label] = Path(path)
-        plan = build_plan(runs, _references(args.references), retest=args.retest)
+        plan = build_plan(
+            runs,
+            _references(args.references),
+            retest=args.retest,
+            references_sha256=(
+                hashlib.sha256(args.references.read_bytes()).hexdigest()
+                if args.references
+                else None
+            ),
+        )
         args.out.mkdir(parents=True, exist_ok=True)
         plan_path.write_text(json.dumps(plan, ensure_ascii=False, indent=1) + "\n", "utf-8")
         asked = sum("message" in item for item in plan["items"])

@@ -29,6 +29,10 @@ binds autopilot too.
   A rule or runbook that names another model predates D12 and is not in
   force, the [direct GLM 5.3 runbook](archive/docs/operations/direct-glm-5.3.md) and
   its Codex fallback included; they come back only on the owner's word.
+  Her word of 2026-10-19 («Привлекай кодекс для второго мнения») brought
+  back one role: Codex, profile cw, reads a package of the repository's
+  files and gives a second opinion; it writes no code, grades nothing and
+  gets no data of an external base ([`PLAN.md`](PLAN.md) §8.1).
 - **No MyFlow unless the owner names it in the current session**: neither the
   `myflow_new` skill nor a `$MF` command. `$MF` steps in a handoff give the
   order of the tasks, not the tool.

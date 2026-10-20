@@ -15,7 +15,7 @@ from scripts import context_judge as judge
 
 SESSION = {
     "cli_version": "9.9.9",
-    "model": "fixture-reported-model",
+    "model": isolated.MODEL,
     "loaded": {kind: [] for kind in isolated.LOADED},
     "builtin": {"plugins": [], "agents": []},
     "turns": 1,
@@ -65,7 +65,7 @@ def test_a_planned_run_is_graded_summarised_and_retested(tmp_path: Path) -> None
 
     def send(system_prompt: str, message: str) -> isolated.IsolatedReply:
         assert system_prompt == judge.SYSTEM_PROMPT
-        return isolated.IsolatedReply(json.dumps(VERDICT), "m", {}, 1.0, SESSION)
+        return isolated.IsolatedReply(json.dumps(VERDICT), isolated.MODEL, {}, 1.0, SESSION)
 
     out = tmp_path / "judge"
     out.mkdir()
@@ -77,11 +77,31 @@ def test_a_planned_run_is_graded_summarised_and_retested(tmp_path: Path) -> None
     # The context without documents holds nothing, and costs no request.
     assert toy["levels"] == {"none": 1, "partial": 0, "full": 1}
     assert toy["context_has_answer"] == 1 and toy["empty_contexts"] == 1
-    assert summary["retest"] == {"pairs": 1, "same_level": 1, "quadratic_kappa": 1.0}
+    # One pair, both full: no disagreement to expect, so no kappa - the agreement decides.
+    assert summary["retest"] == {"pairs": 1, "same_level": 1, "quadratic_kappa": None}
     assert [(c["case_id"], c["level"]) for c in summary["per_case"]] == [
         ("q1", "full"),
         ("q2", "none"),
     ]
+
+
+def test_a_reply_out_of_form_is_asked_again_by_the_answer_judges_rules(tmp_path: Path) -> None:
+    run = _run(tmp_path / "toy-run", [("q1", "How much is storage?", DOCS)])
+    plan = judge.build_plan({"toy": run}, retest=0)
+    replies = iter(["not json", json.dumps({**VERDICT, "documents_with_answer": [2, 1]})])
+
+    def send(system_prompt: str, message: str) -> isolated.IsolatedReply:
+        return isolated.IsolatedReply(next(replies), isolated.MODEL, {}, 1.0, SESSION)
+
+    out = tmp_path / "judge"
+    out.mkdir()
+    assert judge.run_plan(plan, out, send) == 1
+    rows = judge.answer_judge._read_jsonl(out / "verdicts.jsonl")
+
+    assert [row["status"] for row in rows] == ["invalid", "valid"]
+    assert judge._vouched(plan, rows)[rows[1]["item_id"]]["documents_with_answer"] == [1, 2]
+    with pytest.raises(ValueError, match="not frozen by this judge"):
+        judge.answer_judge._vouched(plan, rows)  # the answer judge's salt and rules differ
 
 
 def test_a_record_whose_prompt_is_not_its_hash_is_refused(tmp_path: Path) -> None:

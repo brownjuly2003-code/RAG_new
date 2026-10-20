@@ -23,22 +23,28 @@ docs/specs/stage2-four-corpora.md, «The judge». Three commands:
   judge_export.py export PLAN_DIR NAME OUT --run LABEL=DIR ... [--references FILE]
     On the laptop: the plan's committed record, OUT/NAME.json and OUT/NAME.cases.jsonl. A
     verdict counts from a request's first six replies only - the adapter's three attempts and
-    one more run of the plan - and through the adapter's own checks (a clean session, the
-    planned request). Per question: its ids, class or level, the verdict's enums and integers,
-    never the note; on an external base M2 - the judge's reference for a question with one,
-    right or wrong by answers_question for one without - and the question's stratum, cluster
-    and condition. The plan's numbers: per run as the adapter counts them; each share with its
-    n and Wilson 95 % interval and, on an external base, its clusters and cluster-bootstrap
-    interval (evaluation.semantic_ruler.cluster_summary); the retest's pairs, agreement, pairs
-    two steps apart, quadratic kappa and its bootstrap interval, and the stability rule's
-    verdict; the other fields' agreement on the pairs. The run folders, given as to the plan,
-    supply the questions and the documents' names stage2_common.without_text keeps out.
+    one more run of the plan - and through the adapter's own checks (the plan as the adapter
+    froze it, the plan's model, a clean session, the planned request); the references file
+    is the one the plan was frozen with. Per question: its ids, class or level, the verdict's
+    enums and integers, never the note - each string of a row an identifier or a registered
+    value, checked (`plain`); on an external base M2 - the judge's reference for a
+    question with one, right or wrong by answers_question for one without - and the
+    question's stratum, cluster and condition. The plan's numbers: per run as the adapter
+    counts them; each share with its n and Wilson 95 % interval and, on an external base, its
+    clusters and cluster-bootstrap interval (evaluation.semantic_ruler.cluster_summary); the
+    retest's pairs, agreement, pairs two steps apart, quadratic kappa and its bootstrap
+    interval, and the stability rule's verdict; the other fields' agreement on the pairs
+    (M2's reference on the pairs of a question with one). The record's status is "counted",
+    or "NOT_EVIDENCE" when the retests fail the rule - then the command exits 3. The run
+    folders, given as to the plan, supply the questions and the documents' names
+    stage2_common.without_text keeps out.
 """
 
 import argparse
 import json
 import math
 import random
+import re
 import subprocess
 import sys
 from collections import Counter
@@ -51,7 +57,10 @@ sys.path.insert(0, str(HERE))
 sys.path.insert(1, str(WS))
 from stage2_common import load_jsonl, sha256, without_text, write  # noqa: E402
 
-REPLIES = 6  # the adapter's three attempts in one run of the plan, and one more run
+# The adapter's three attempts in one run of the plan, and one more run: chat_answer_judge's
+# REPLIES, held equal by a test (the adapter is not imported where the references are made).
+REPLIES = 6
+PLAIN = re.compile(r"[A-Za-z0-9_.:~-]{1,120}")
 MIN_PAIRS = 12
 KAPPA = 0.6
 AGREE, OF = 13, 15  # at least 13 in 15 of the pairs agree, and none is two steps apart
@@ -162,7 +171,10 @@ def git(*args):
 
 
 def counted(rows):
-    """The replies a record counts: a request's first six; a refused route's row is none."""
+    """A request's first six replies, and how many came past them (`past_the_limit`).
+
+    A refused route's row is no reply. The adapter applies the same limit itself.
+    """
     seen = Counter()
     kept = []
     for row in rows:
@@ -172,6 +184,19 @@ def counted(rows):
                 continue
         kept.append(row)
     return kept, sum(max(0, n - REPLIES) for n in seen.values())
+
+
+def plain(row):
+    """Refuse a question row with a string that is not an identifier or a registered value.
+
+    Ids, labels, enums and hashes only - letters, digits and _.:~- - so no text of a question,
+    a document or an answer can ride in a row; the error names the field, never the value.
+    """
+    for key, value in row.items():
+        for one in value if isinstance(value, list) else [value]:
+            if isinstance(one, str) and not PLAIN.fullmatch(one):
+                raise SystemExit(f"{row.get('item_id')}: {key} holds more than an identifier")
+    return row
 
 
 def judge_of(plan):
@@ -211,9 +236,13 @@ def grade(judge, item, valid):
 
 
 def m2(item, verdict):
-    """M2 on an external base: the judge's reference, or right or wrong by a decline."""
+    """M2 on an external base: the judge's reference, or right or wrong by a decline.
+
+    An empty answer has no verdict: beside a reference it is counted apart; to a question
+    without one it is wrong, for it does not decline (the spec, «What each number is»).
+    """
     if item.get("empty_answer"):
-        return "empty_answer"
+        return "empty_answer" if item["has_reference"] else "wrong"
     if verdict is None:
         return None
     if item["has_reference"]:
@@ -279,7 +308,7 @@ def stability(judge, plan, valid):
     scale = judge["scale"]
     index = {name: number for number, name in enumerate(scale)}
     first = {item["item_id"]: item for item in plan["items"] if "retest_of" not in item}
-    pairs, fields = [], Counter()
+    pairs, fields, of = [], Counter(), Counter()
     for item in plan["items"]:
         if "retest_of" not in item:
             continue
@@ -290,6 +319,10 @@ def stability(judge, plan, valid):
         pairs.append((index[before], index[after]))
         a, b = valid[item["retest_of"]], valid[item["item_id"]]
         for name in judge["paired"]:
+            # M2's reference is read on the pairs of a question with one; elsewhere both say none.
+            if name == "reference" and not item.get("has_reference"):
+                continue
+            of[name] += 1
             fields[name] += a[name] == b[name]
     n = len(pairs)
     agree = sum(a == b for a, b in pairs)
@@ -310,7 +343,9 @@ def stability(judge, plan, valid):
         "passes_by_agreement": by_agreement,
         "enough_pairs": n >= MIN_PAIRS,
         "passed": n >= MIN_PAIRS and (by_kappa or by_agreement),
-        "field_agreement": {name: {"agree": fields[name], "of": n} for name in judge["paired"]},
+        "field_agreement": {
+            name: {"agree": fields[name], "of": of[name]} for name in judge["paired"]
+        },
     }
 
 
@@ -336,12 +371,20 @@ def export(plan_dir, name, out, runs, references_file=None):
         for entry in read(Path(run)):
             questions.add(entry["question"])
             names.update(source for source, _ in entry["documents"])
-    refs = {row["case_id"]: row for row in load_jsonl(references_file)} if references_file else {}
+    refs = {}
+    for row in load_jsonl(references_file) if references_file else []:
+        if row["case_id"] in refs:
+            raise SystemExit(f"the references file holds {row['case_id']} twice")
+        refs[row["case_id"]] = row
     if base in EXTERNAL and not refs:
         raise SystemExit("an external base's record needs its references file: the clusters")
+    if (sha256(references_file) if references_file else None) != plan.get("references_sha256"):
+        raise SystemExit("the references file is not the one the plan was frozen with")
     rows_in = load_jsonl(plan_dir / "verdicts.jsonl")
-    kept, past = counted(rows_in)
-    valid = module._vouched(plan, kept)
+    # The adapter reads the whole journal, the rows past a request's sixth reply included: it
+    # refuses a row of a request the plan does not hold, and counts the first six itself.
+    _, past = counted(rows_in)
+    valid = module._vouched(plan, rows_in)
     first = [item for item in plan["items"] if "retest_of" not in item]
     if len({item["case_id"] for item in first}) != len(first):
         raise SystemExit("a question stands twice in the plan: one counted run per batch")
@@ -371,17 +414,22 @@ def export(plan_dir, name, out, runs, references_file=None):
             row.update({key: verdict[key] for key in judge["keep"]})
         if item["case_id"] in refs:
             ref = refs[item["case_id"]]
+            if answers and item["has_reference"] != bool(ref["reference_answers"]):
+                raise SystemExit(f"{item['case_id']}: the plan and the references disagree")
             row.update(stratum=ref["stratum"], cluster=ref["cluster"])
             if "conditional" in ref:
                 row["conditional"] = ref["conditional"]
         if answers and base in EXTERNAL:
             row["m2"] = by_m2[item["case_id"]] = m2(item, verdict)
-        rows.append(row)
+        rows.append(plain(row))
     if refs and any(case not in refs for case in grades):
         raise SystemExit("the references file lacks a question of the plan")
     families = {case: [f"cluster:{refs[case]['cluster']}"] for case in grades} if refs else None
+    retest = stability(judge, plan, valid)
     record = {
         "plan": name,
+        # The spec, «What is NOT_EVIDENCE»: a plan's numbers when its retests fail the rule.
+        "status": "counted" if retest["passed"] else "NOT_EVIDENCE",
         "judge": "answers" if answers else "contexts",
         "base": base,
         "provenance": {
@@ -411,9 +459,9 @@ def export(plan_dir, name, out, runs, references_file=None):
         "questions": len(first),
         "requests_valid": len(valid),
         "missing": sorted(case for case, value in grades.items() if value is None),
-        "per_run": module.summarize(plan, kept)["per_run"],
+        "per_run": module.summarize(plan, rows_in)["per_run"],
         "shares": shares(grades, scale, families),
-        "retest": stability(judge, plan, valid),
+        "retest": retest,
     }
     if not answers:
         held = {
@@ -429,7 +477,7 @@ def export(plan_dir, name, out, runs, references_file=None):
             "with_reference": shares(
                 with_ref, ("agrees", "partial", "disagrees", "declined", "empty_answer"), families
             ),
-            "without_reference": shares(without, ("right", "wrong", "empty_answer"), families),
+            "without_reference": shares(without, ("right", "wrong"), families),
         }
         if any(r.get("conditional") for r in rows):
             for group, wanted in (("conditional", True), ("not_conditional", False)):
@@ -483,8 +531,9 @@ def main(argv=None):
             raise SystemExit(f"--run {spec}: give each run once as LABEL=DIR")
         runs[label] = Path(path)
     record = export(args.plan_dir, args.name, args.out, runs, args.references)
-    print(json.dumps({key: record[key] for key in ("questions", "missing", "retest")}, indent=1))
-    return 0
+    shown = ("status", "questions", "missing", "retest")
+    print(json.dumps({key: record[key] for key in shown}, indent=1))
+    return 0 if record["status"] == "counted" else 3
 
 
 if __name__ == "__main__":

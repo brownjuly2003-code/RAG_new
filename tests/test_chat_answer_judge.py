@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 from pathlib import Path
 
@@ -14,7 +15,7 @@ from scripts import chat_answer_judge as judge
 
 SESSION = {
     "cli_version": "9.9.9",
-    "model": "fixture-reported-model",
+    "model": isolated.MODEL,
     "loaded": {kind: [] for kind in isolated.LOADED},
     "builtin": {"plugins": [], "agents": []},
     "turns": 1,
@@ -102,7 +103,7 @@ def test_a_planned_run_is_graded_summarised_and_retested(tmp_path: Path) -> None
 
     def send(system_prompt: str, message: str) -> isolated.IsolatedReply:
         assert system_prompt == judge.SYSTEM_PROMPT
-        return isolated.IsolatedReply(json.dumps(VERDICT), "m", {}, 1.0, SESSION)
+        return isolated.IsolatedReply(json.dumps(VERDICT), isolated.MODEL, {}, 1.0, SESSION)
 
     out = tmp_path / "judge"
     out.mkdir()
@@ -114,7 +115,165 @@ def test_a_planned_run_is_graded_summarised_and_retested(tmp_path: Path) -> None
     assert toy["classes"] == {"good": 1, "partial_ok": 0, "bad": 1}  # the empty answer is bad
     assert toy["marks_listed"] == 1 and toy["marks_supported"] == 1
     assert toy["reference"] == {"agrees": 1}
-    assert summary["retest"] == {"pairs": 1, "same_class": 1, "quadratic_kappa": 1.0}
+    assert toy["answer_without_context"] == 0
+    # One pair, both good: no disagreement to expect, so no kappa - the agreement decides.
+    assert summary["retest"] == {"pairs": 1, "same_class": 1, "quadratic_kappa": None}
+
+
+def test_a_plan_counts_only_as_this_judge_froze_it(tmp_path: Path) -> None:
+    run = _run(tmp_path / "toy-run", [("q1", "How much is storage?", "Ten a day [1].", DOCS)])
+    plan = judge.build_plan({"toy": run}, {}, retest=1)
+    first, again = plan["items"]
+    assert set(judge.check_plan(plan)) == {first["item_id"], again["item_id"]}
+
+    edited = again["message"] + "!"
+    for changed, match in (
+        ({**plan, "salt": "another"}, "not frozen by this judge"),
+        ({**plan, "instructions_sha256": "0" * 64}, "not frozen by this judge"),
+        ({**plan, "route": {**plan["route"], "effort": "high"}}, "not frozen by this judge"),
+        ({**plan, "items": [{**first, "message": first["message"] + "!"}, again]}, "hash names"),
+        ({**plan, "items": [first, first]}, "twice"),
+        ({**plan, "items": [first, again, {**again, "item_id": "x"}]}, "does not repeat"),
+        ({**plan, "items": [first, {**again, "marks_listed": 0}]}, "does not repeat"),
+        ({**plan, "items": [first, {**again, "has_reference": True}]}, "does not repeat"),
+        (
+            {
+                **plan,
+                "items": [
+                    first,
+                    {**again, "message": edited, "message_sha256": judge._digest(edited)},
+                ],
+            },
+            "does not repeat",
+        ),
+    ):
+        with pytest.raises(ValueError, match=match):
+            judge.check_plan(changed)
+
+
+def test_a_request_gets_six_replies_over_all_runs_and_a_verdict_counts_from_them(
+    tmp_path: Path,
+) -> None:
+    run = _run(tmp_path / "toy-run", [("q1", "How much is storage?", "Ten a day [1].", DOCS)])
+    plan = judge.build_plan({"toy": run}, {}, retest=0)
+    replies = iter(["not json"] * judge.REPLIES)
+
+    def send(system_prompt: str, message: str) -> isolated.IsolatedReply:
+        return isolated.IsolatedReply(next(replies), isolated.MODEL, {}, 1.0, SESSION)
+
+    out = tmp_path / "judge"
+    out.mkdir()
+    assert judge.run_plan(plan, out, send) == 1
+    assert judge.run_plan(plan, out, send) == 1
+    assert judge.run_plan(plan, out, send) == 0  # six replies: no seventh request
+    rows = judge._read_jsonl(out / "verdicts.jsonl")
+    assert [row["status"] for row in rows] == ["invalid"] * judge.REPLIES
+
+    valid = {**rows[0], "status": "valid", "raw_text": json.dumps({**VERDICT, "reference": "none"})}
+    assert judge._vouched(plan, [*rows, valid]) == {}  # a seventh reply counts for nothing
+    assert list(judge._vouched(plan, [valid])) == [rows[0]["item_id"]]  # a first one counts
+    with pytest.raises(ValueError, match="plan's model"):
+        judge._vouched(plan, [{**valid, "model": "another-model"}])
+    with pytest.raises(ValueError, match="plan's model"):
+        judge._vouched(plan, [{**valid, "session": {**SESSION, "model": "another-model"}}])
+    with pytest.raises(ValueError, match="answers no planned request"):
+        judge._vouched(plan, [{**valid, "item_id": "unplanned"}])
+    # A resume refuses a row of a request the plan does not hold, whatever its status.
+    stray = {**rows[0], "message_sha256": "0" * 64}
+    (out / "verdicts.jsonl").write_text(json.dumps(stray) + "\n", "utf-8")
+    with pytest.raises(ValueError, match="answers no planned request"):
+        judge.run_plan(plan, out, send)
+
+
+def test_a_resumed_run_asks_no_further_than_the_sixth_reply(tmp_path: Path) -> None:
+    run = _run(tmp_path / "toy-run", [("q1", "How much is storage?", "Ten a day [1].", DOCS)])
+    plan = judge.build_plan({"toy": run}, {}, retest=0)
+    (item,) = plan["items"]
+    prior = {"item_id": item["item_id"], "message_sha256": item["message_sha256"]}
+    rows = [{**prior, "attempt": n, "status": "invalid"} for n in (1, 2, 3, 1, 2)]
+    rows.append({**prior, "attempt": 3, "status": "unavailable", "reason": "cli_exit"})
+    out = tmp_path / "judge"
+    out.mkdir()
+    (out / "verdicts.jsonl").write_text("".join(json.dumps(r) + "\n" for r in rows), "utf-8")
+    sent: list[str] = []
+
+    def send(system_prompt: str, message: str) -> isolated.IsolatedReply:
+        sent.append(message)
+        return isolated.IsolatedReply("not json", isolated.MODEL, {}, 1.0, SESSION)
+
+    # Five replies so far - the refused route's row is none - leave one attempt.
+    assert judge.run_plan(plan, out, send) == 1 and len(sent) == 1
+    assert judge.run_plan(plan, out, send) == 0 and len(sent) == 1
+
+
+def test_a_run_with_a_limit_skips_what_is_counted(tmp_path: Path) -> None:
+    run = _run(
+        tmp_path / "toy-run",
+        [
+            ("q1", "How much is storage?", "Ten a day [1].", DOCS),
+            ("q2", "How do I file a claim?", "Within 14 days [2].", DOCS),
+        ],
+    )
+    plan = judge.build_plan({"toy": run}, {}, retest=0)
+    # "full" where the judge finds no answer in the documents: bad, and counted apart.
+    unheld = json.dumps({**VERDICT, "reference": "none", "context_has_answer": False})
+
+    def send(system_prompt: str, message: str) -> isolated.IsolatedReply:
+        return isolated.IsolatedReply(unheld, isolated.MODEL, {}, 1.0, SESSION)
+
+    out = tmp_path / "judge"
+    out.mkdir()
+    assert [judge.run_plan(plan, out, send, limit=1) for _ in range(3)] == [1, 1, 0]
+    rows = judge._read_jsonl(out / "verdicts.jsonl")
+
+    assert sorted(row["item_id"] for row in rows) == sorted(i["item_id"] for i in plan["items"])
+    toy = judge.summarize(plan, rows)["per_run"]["toy"]
+    assert toy["answer_without_context"] == 2
+    assert toy["classes"] == {"good": 0, "partial_ok": 0, "bad": 2}
+
+
+@pytest.mark.parametrize(
+    ("changes", "expected"),
+    [
+        ({}, "good"),
+        ({"context_has_answer": False}, "bad"),  # "full" where the documents hold no answer
+        ({"answers_question": "partial"}, "partial_ok"),
+        ({"answers_question": "partial", "context_has_answer": False}, "bad"),
+        (
+            {
+                "answers_question": "declined",
+                "context_has_answer": False,
+                "claims_total": 0,
+                "claims_supported": 0,
+            },
+            "good",
+        ),
+        ({"answers_question": "declined", "claims_total": 0, "claims_supported": 0}, "bad"),
+        ({"claims_supported": 0}, "bad"),
+    ],
+)
+def test_full_and_partial_count_only_where_the_documents_hold_the_answer(
+    changes: dict, expected: str
+) -> None:
+    assert judge.classify({**VERDICT, **changes}) == expected
+
+
+def test_the_plan_names_its_references_file_and_the_file_each_question_once(
+    tmp_path: Path,
+) -> None:
+    run = _run(tmp_path / "toy-run", [("q1", "How much is storage?", "Ten a day [1].", DOCS)])
+    references = tmp_path / "references.jsonl"
+    references.write_text('{"case_id": "q1", "reference_answers": ["Ten a day."]}\n', "utf-8")
+    out = tmp_path / "judge"
+
+    command = ["plan", "--run", f"toy={run}", "--references", str(references), "--out", str(out)]
+    assert judge.main(command) == 0
+
+    plan = json.loads((out / "plan.json").read_text("utf-8"))
+    assert plan["references_sha256"] == hashlib.sha256(references.read_bytes()).hexdigest()
+    references.write_text(references.read_text("utf-8") * 2, "utf-8")
+    with pytest.raises(ValueError, match="twice"):
+        judge._references(references)
 
 
 def test_a_verdict_must_fit_its_request() -> None:
@@ -131,4 +290,5 @@ def test_a_verdict_must_fit_its_request() -> None:
 def test_quadratic_kappa_reads_agreement_on_an_ordinal_scale() -> None:
     assert judge.quadratic_kappa([(0, 0), (1, 1), (2, 2)], 3) == 1.0
     assert judge.quadratic_kappa([], 3) is None
+    assert judge.quadratic_kappa([(2, 2)] * 3, 3) is None  # one level: nothing to expect
     assert judge.quadratic_kappa([(0, 2), (2, 0)], 3) < 0

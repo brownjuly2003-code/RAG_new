@@ -1,7 +1,8 @@
 # Stage 2: the four corpora measured on the fixed chat path
 
 Status 2026-10-19: **registered before the stage's first request** — parts 1, 2, 4 and 5;
-part 3, the graph lane, by an amendment committed before its own first request.
+part 3, the graph lane, amended on 2026-10-19 before any request of its own: GR-3's archives
+counted, the live lane moved to stage 7 ([below](#part-3-the-graph-lane--amended-2026-10-19)).
 [`PLAN.md`](../../PLAN.md) §5, stage 2, is the authority. This spec writes down everything
 that must not be chosen after seeing an answer: the stand, the questions and their order, the
 forecasts and stop rules, what each number is and how it is read, the judge, what is
@@ -44,7 +45,7 @@ found 28 problems; this text answers them (listed [at the end](#what-the-cold-re
 | Key | Questions | Count | What they hold |
 |---|---|---|---|
 | `aircargo` | `evaluation/curated_cases_aircargo.jsonl`, file order | 100 | Russian; two keywords each (`expected.answer_contains`, M2) |
-| `aircargo-gr` | `evaluation/curated_cases_aircargo_gr_multihop.jsonl`, file order | 15 | GR's questions that need several documents; part 2 only, as part 3's baseline |
+| `aircargo-gr` | `evaluation/curated_cases_aircargo_gr_multihop.jsonl`, file order | 15 | GR's questions that need several documents; part 2 only (part 3's baseline before its amendment) |
 | `conditionalqa` | selection `stage2`, then `stage2_not_answerable` | 80 + 20 | 40 documents × 2 primary questions, 26 of them conditional; then 20 not answerable — no gold, no reference answer |
 | `wixqa` | selection `stage2` | 100 | the first 100 tuning questions (77 clusters, all of the `simulated` stratum); 1–3 gold articles and one reference answer each |
 | `multihoprag` | selection `stage2` | 100 | the first 100 advisory questions (15 clusters): 70 `inference_query` with 2–4 gold documents, 30 `null_query` with none; one reference answer each |
@@ -62,7 +63,7 @@ order: batch *b* holds questions 10*b* − 9 to 10*b*.
 |---|---|---|---|
 | 1 | aircargo, 100 answers: 10 batches of 10, each one supervisor run — a fresh API and database, the model loaded (timed apart) and unloaded after | a batch 4,060 s: 120 s the API's start and the model's load, 340 s the first question, 400 s each other; 11.3 h | a question past 1,020 s (a batch's first) or 1,200 s (the others); the part past 3 × 10 × 4,060 s (33.8 h) |
 | 2 | retrieval without the answer model, 415 questions: one run per key — aircargo 100, aircargo-gr 15, each external base 100 | a run of *M* questions 140 + 40*M* s (60 s to build the retriever, 120 s the first question, 40 s each other): 4,140 s for 100, 740 s for 15; 4.8 h | a question past 360 s (the first) or 120 s (the others); a run past 3 × (140 + 40*M*) s |
-| 3 | the graph lane on aircargo | ≈ 1–1.5 h | by its amendment |
+| 3 | the graph lane on aircargo — amended 2026-10-19: GR-3's archives counted by a test | none of the Mac's or the judge's time (registered: ≈ 1–1.5 h) | none: no request |
 | 4 | 300 answers on the external bases: 10 batches of 10 per base, as part 1 | as part 1: 11.3 h a base, 33.8 h the three | as part 1, per base: a base's part past 33.8 h |
 | judge | 115 requests (part 1), 130 (part 2), 345 (part 4), on the laptop | an answer 80 s and $0.15, a context 40 s and $0.10: 11.7 h, ≈ $82 | a plan's run past 3× its forecast |
 
@@ -110,10 +111,11 @@ measured, not a stop.
 ## What each number is
 
 - **M1, the answer's verdict** (parts 1 and 4): the shares of good, partial_ok and bad answers
-  (`classify` of the answer judge: good — complete and fully supported, or a right decline;
-  partial_ok — faithful but partial); of the `[N]` marks that name a listed document, those
-  whose statement the document supports; marks that name none, counted without the judge; the
-  defects. An empty answer is bad without a request.
+  (`classify` of the answer judge: good — complete against what the documents offer and
+  fully supported, or a right decline; partial_ok — faithful but partial; both only where the
+  documents hold the answer, [as amended](#the-judge) before the first grade); of the `[N]`
+  marks that name a listed document, those whose statement the document supports; marks that
+  name none, counted without the judge; the defects. An empty answer is bad without a request.
 - **M2, against the gold.** aircargo: the case's keywords in the answer by the repository's
   rule (`scripts/ab_remote_contextual._kw_status`: FULL, PART, MISS) — a weak gold, printed as
   it is. External bases, a question with an answer: the judge's `reference` — agrees, partial,
@@ -176,10 +178,10 @@ cluster of its own), and the wider of the two intervals is the one read. Two cor
 independent samples: at 80 % power and α = 0.05 two-sided a difference below about 20 points
 (16 near a share of 0.8; 23 between the 80 and the 70 questions with gold) cannot be detected
 — written «not detected», never «no difference». Two points of one question set — M3 at
-«ranked» and at «sent», two values of K, part 3's lane against part 2's — are paired:
-McNemar's test on the discordant questions, detecting about
-2.8·√(d/n): 9 points when a tenth of the questions disagree, 13 when a fifth do. A stage-2
-number decides nothing alone; stages 3, 4 and 7 read it under their own registrations.
+«ranked» and at «sent», two values of K (part 3's pairing withdrawn by its amendment) — are
+paired: McNemar's test on the discordant questions, detecting about 2.8·√(d/n): 9 points when
+a tenth of the questions disagree, 13 when a fifth do. A stage-2 number decides nothing alone;
+stages 3, 4 and 7 read it under their own registrations.
 Numbers far from phase C's (the 4B: 67 good, 21 partial, 12 bad) are a finding, not a stop:
 phase C judged fixed contexts, not the chat's retrieval.
 
@@ -245,6 +247,40 @@ phase C judged fixed contexts, not the chat's retrieval.
   batch, part 2's after both aircargo runs, each base's of part 4 after its tenth batch. A
   failing route (a CLI update, a plugin that refuses it) or a spent usage window pauses the
   judge; the Mac's parts go on.
+- **Amended 2026-10-19, before the first grade,** on a second opinion in two rounds: Codex
+  `gpt-6-astra`, effort xhigh, read-only, on frozen packages of the judges, the export, their
+  tests and this spec — session `01a1566e-2af8-7da1-8f0b-43bff2b2040b` at `d006d7b`, then
+  session `01a15697-40e7-71e0-b7d1-4a648fc3de86` on the fixes. Each point was checked in the
+  code; taken:
+  - a plan counts only when it is its judge's and whole — the code's salt, rules and route,
+    each request the text its hash names, each id once, at most one retest of a request and
+    that one its copy — checked before a request is sent and again when a verdict is counted.
+    The hashes inside a plan cannot show an edit of the whole, so each plan's SHA-256, its
+    reading written, is committed before its first grade, and its record names it;
+  - a verdict counts only from the plan's model, and the six replies bind the sending too: a
+    resumed run asks a request no further than its sixth reply and refuses a row of a request
+    the plan does not hold; the export reads the whole journal, the rows past the sixth
+    included, by the same checks;
+  - each string of a record's question row is an identifier or a registered value (letters,
+    digits and `_.:~-`), so no text of a question, a document or an answer rides in a row;
+  - `classify` takes `full` and `partial` only where the judge finds the answer in the
+    documents (`context_has_answer`), since both weigh the answer against what the documents
+    offer; otherwise the answer is bad, and `answer_without_context` counts how often;
+  - a kappa that cannot be computed is none, as the rule above reads it — the code gave 1;
+  - part 4's plans name the SHA-256 of their references file, which holds a question once, and
+    the export takes no other file; an empty answer to a question without a reference is M2's
+    wrong, as above — the export had a value of its own for it;
+  - the context judge's documents stand smallest first; M2's `reference` agreement is read on
+    the pairs of a question with a reference only;
+  - a record whose retests fail the rule says `NOT_EVIDENCE` in its status, and the export
+    exits 3.
+
+  Deferred, each to before what it bears on: whether part 4 reads M1 in a request without
+  the reference, so that the reference cannot sway it (before part 4's first grade); the
+  record's full schema, the pairs' ids and each verdict's basis of admission (before part 4's
+  records); the denominators and intervals of M1's other parts (part 5's record). The plans,
+  journals and run copies stay in the private folder, so each deferred count can be made
+  later from what was graded.
 
 ## What is `NOT_EVIDENCE`
 
@@ -332,17 +368,70 @@ evidence string, document, chunk or embedding).
 - Part 5: a test that derives every published number from these files, one row in
   [`EVIDENCE_INDEX.md`](../../EVIDENCE_INDEX.md), the numbers in `CURRENT_STATE.md`.
 
-## Part 3, the graph lane — by an amendment
+## Part 3, the graph lane — amended 2026-10-19
 
-The chat path has no graph runner: GR-3's `scripts/gr3_graph_lane_ab.py` and
+**As registered:** the chat path has no graph runner: GR-3's `scripts/gr3_graph_lane_ab.py` and
 `scripts/extract_graph_entities.py` read phase C's contexts and the first generation's chunks.
-The amendment registers, before part 3's first request: the graph (GR-3's, or rebuilt on the
-second generation), the lane's runner on this stand, the same 115 questions, M3 by
-`context_judge.py` paired against part 2's contexts of the same questions, the forecast and the
-stop rule; its stand passes the same check of product code as this one. Parts 4 and 5 do
-not wait for it; part 5's record names part 3 as not run if no amendment is registered by
-then. Stage 2 does not close without part 3 — [`PLAN.md`](../../PLAN.md) puts the graph lane
-inside it — unless Julia says so.
+An amendment was to register, before part 3's first request, the graph (GR-3's, or rebuilt on
+the second generation), the lane's runner on this stand, the same 115 questions, M3 by
+`context_judge.py` paired against part 2's contexts, the forecast and the stop rule. Stage 2
+was not to close without part 3 unless Julia said so.
+
+**The amendment, before any request of part 3.** Julia delegated the choice on 2026-10-19:
+«Прими решения сам из цели — лучший продукт в финале».
+
+- **The forecast's premise failed.** PLAN's 1–1.5 h assumed GR-3's graph. Stage 1 changed the
+  chunk texts, so GR-2's entity cache is refused and its graph would load as `mismatch`
+  (`vectordb/manager.py` 1040–1064: the persisted graph's structural part must equal the one
+  rebuilt from the restored chunks, content hashes included). The live entity lane needs the
+  entities of the second generation's 5,589 aircargo chunks extracted again (GR-2's benchmark:
+  11.4 s a chunk with qwen2.5:7b, ≈ 17.7 h of the Mac — an extrapolation from eight chunks); a
+  step persisting the entity graph, which does not exist; a runner; Postgres and model routing
+  in retrieval mode, so a new stand. In all ≈ 25–30 h of the Mac and 1–2 days of work, with
+  part 4 waiting for the Mac. The structural route alone needs no extraction, but the same
+  runner, routing and stand.
+- **GR-3's committed archives already show what the graph route did with these questions.**
+  `evaluation/gr3-32de532-{phase-c,bucket}-{Hm,G1m,G2m}-candidates.json.gz` hold the same
+  100 + 15 questions; their SHA-256 are in the [GR-3 record](../evidence/gr3-graph-lane-ab.md).
+  `Hm` is the hybrid, `G1m` the structural route, `G2m` structural + entity.
+  - G2m hands on the same candidates as G1m on 98 of 100 phase-C questions and on 15 of 15
+    bucket questions. GR-3 builds every arm's context through one function with one top-k and
+    one cap (`scripts/gr3_graph_lane_ab.py`, `_score_arm`), so the entity lane changed the
+    context on at most 2 of 115 questions. Entities matched on 5 of 100 and on 11 of 15.
+  - Those 2 are the only questions where a graph arm hands on a source that none of the
+    hybrid's five candidates comes from.
+  - Otherwise the graph route trims the hybrid's context: ≈ 3 documents against 5 (305 on 100
+    questions, 45 on 15); on 57 of 100 questions (59 for G1m) and on 5 of 15 every document is
+    one of the hybrid's five texts verbatim. A subset adds no evidence, and a share of useful
+    documents can rise from the smaller denominator alone.
+  - `tests/test_stage2_part3_archives.py` pins the archives and every count.
+- **So part 3 is this archive diagnostic: no request, no time of the Mac or the judge.** It
+  replaces the registered comparison and the close condition: stage 2 closes with part 3 as
+  this finding, under Julia's delegation above — it stands for the word
+  [item 26](#what-the-cold-read-corrected) asks for.
+  - **Not done:** the judge on GR-3's arms (≈ 245 context requests). The arms ran on the first
+    generation's chunking in GR-3's harness, not on the chat's path: the result would decide
+    nothing now, and stage 7 measures on the final path anyway.
+  - **To stage 7:** the live measurement, the structural route (G1) first. Universality asks
+    more than a new extractor: the section, quote and order cross-references are Russian
+    patterns (`ingestion/structure_graph.py` 28–43), the entity prompt is Russian, the
+    normalisation uses hand-made aliases, and the web stream calls the hybrid retriever, not
+    the graph route. M3 at «sent» by `context_judge.py`, paired with the hybrid on the same
+    questions, hybrid → structural and structural → entity apart: the whole context's
+    completeness and the evidence each arm loses, exact McNemar on «full» and on «full or
+    partial», the retest drawn from both arms.
+  - **Part 5's record** carries the counts and states what they cannot show — answer quality,
+    latency on the current path, the second generation's effect, whether a graph helps on the
+    final path.
+- **A second opinion:** Codex `gpt-6-astra`, effort xhigh, read-only, session
+  `01a15640-3635-7312-97fc-f13e40635ec5`, on a frozen package of this repository's files at
+  `d006d7b`; it saw no archive. It agreed, with amendments, all taken above: call the result a
+  diagnostic and change the close condition in writing; separate the entity lane's effect from
+  the structural route's; read a subset as another selection, not a better one; count the
+  context GR-3 handed on, not raw candidates (GR-3's table counts 3.04 and 2.93 a question,
+  the raw archives 3.05 and 3.00); universality asks more than a new extractor. Not taken: the
+  judge on the 2 changed questions' four contexts — two questions decide nothing, and the
+  extractor that made them is to be replaced.
 
 ## The tools
 
