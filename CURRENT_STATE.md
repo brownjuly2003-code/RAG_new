@@ -81,9 +81,9 @@ records `reports/stage1/`, pinned by `tests/test_stage1_live_artifact.py`; one e
 
 [`PLAN.md`](PLAN.md) stage 2 by [`docs/specs/stage2-four-corpora.md`](docs/specs/stage2-four-corpora.md)
 (`5e308fe`): 100 aircargo answers, retrieval on 415 questions, 300 external answers; the graph lane amended 2026-10-19 — GR-3's archives counted, the live lane in stage 7; the judge amended before its first grade on Codex's second opinion (the spec, «The judge»).
-**Running:** part 1, batches 2–10 (`p1-aircargo-b02`…`b10`, forecast 36,540 s; batch 1 took 3,329 s, no path break); stand
-`S=/Users/julia/RAG_new_chat_5e308fe`, log `$S/chatlive/runs/p1-aircargo.log`. Stop before the next batch: `touch $S/chatlive/runs/p1-aircargo.stop`;
-at once: `pkill -f "stage2.sh answers p1 aircargo"`, then `pkill -f "$S/chatlive/live_runner.py"`.
+**Done:** part 1 — 100 answers in ten batches (`p1-aircargo-b01`…`b10`), every case complete, no path break; batch 1 3,329 s, batches 2–10 28,749 s against a forecast of 36,540 s. Its judge's `plan.json`, frozen before the first grade: SHA-256 `1212f74a4e7b20844f02bd92bdcbe0c153f7c8cee00e153791b611061cea2593` (115 requests, 15 retests; private folder).
+**Running:** part 2, retrieval on 415 questions in five runs, one at a time (forecast 17,300 s); stand `S=/Users/julia/RAG_new_chat_5e308fe`, chain log `$S/chatlive/runs/p2-chain.out`, each run's `$S/chatlive/runs/p2-KEY.log`.
+Stop before the next run: `touch $S/chatlive/runs/p2-chain.stop`; at once: `pkill -f p2-chain.sh`, `pkill -f "stage2.sh retrieval p2"`, then `pkill -f "$S/chatlive/live_retrieval.py"`.
 
 ## Julia's decisions in force
 
