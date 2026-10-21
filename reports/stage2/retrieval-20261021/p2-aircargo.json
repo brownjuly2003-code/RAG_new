@@ -1,0 +1,191 @@
+{
+ "run": "p2-aircargo",
+ "key": "aircargo",
+ "base": "aircargo",
+ "provenance": {
+  "label": "p2-aircargo",
+  "code_sha": "5e308fe48cca0955c3007057a574a425f71e2a6a",
+  "tenant": "aircargo",
+  "chroma_dir": "/Users/julia/RAG_new_chat_5e308fe/chatlive/runs/p2-aircargo.chroma",
+  "cases_file": "/Users/julia/RAG_new_chat_5e308fe/evaluation/curated_cases_aircargo.jsonl",
+  "started": "2026-10-20T04:21:37+00:00",
+  "finished": "2026-10-20T05:08:48+00:00",
+  "status": "complete",
+  "variants": {
+   "cpu": 0
+  },
+  "mode": "retrieval",
+  "overrides": {
+   "REQUEST_TIMEOUT_SEC": "3600",
+   "OLLAMA_REQUEST_TIMEOUT_SEC": "3600",
+   "STREAMING_TIMEOUT_SEC": "3600",
+   "RAG_DEVICE": "cpu"
+  },
+  "client_cap_sec": "12420",
+  "error": null,
+  "settings": {
+   "llm_provider_profile": "local-first",
+   "ollama_model_name": "qwen3:4b-instruct-2507-q4_K_M",
+   "ollama_fast_model_name": "llama3.2:3b",
+   "model_routing_enabled": false,
+   "ollama_context_window": 4096,
+   "embedding_model": "BAAI/bge-m3",
+   "embedding_backend": "local",
+   "reranker_model": "BAAI/bge-reranker-v2-m3",
+   "rag_device": "cpu",
+   "vector_backend": "chroma",
+   "hybrid_search": true,
+   "retrieval_strategy": "hybrid",
+   "retrieval_top_k": 20,
+   "rerank_top_k": 5,
+   "hyde": false,
+   "graph_retrieval": "off",
+   "parent_expansion": true,
+   "self_rag_max_iterations": 2,
+   "fact_verification_enabled": true,
+   "streaming_enabled": false,
+   "streaming_rag_parity": false,
+   "streaming_quality_eval": true,
+   "streaming_timeout_sec": 3600.0,
+   "request_timeout_sec": 3600.0,
+   "ollama_request_timeout_sec": 3600.0,
+   "quality_threshold": 80,
+   "suggested_questions_enabled": true,
+   "llm_max_calls_per_request": 24,
+   "online_evaluators_enabled": true,
+   "max_concurrent_pipelines": 8,
+   "support_sink_backend": "local",
+   "tracing_db_path": "/Users/julia/RAG_new_chat_5e308fe/chatlive/runs/p2-aircargo/traces.db",
+   "vectordb_chroma_dir": "/Users/julia/RAG_new_chat_5e308fe/chatlive/runs/p2-aircargo.chroma"
+  },
+  "settings_sha256": "6492a93ed9dd6ec2ef5f5ac4163f36bcb8afcba7b4909a3b39ce8fbfbc30da38",
+  "parent_expansion_window": 2,
+  "retriever_build_sec": 19.031,
+  "bm25_restore_log": [
+   "INFO vectordb.manager: Restored 5589 chunks for tenant aircargo from the persisted collection (BM25 + parent-expansion re-enabled)"
+  ],
+  "path_breaks": [],
+  "window": {
+   "owner": "provider",
+   "context_window": 4096
+  },
+  "caps": [
+   360.0,
+   120.0
+  ],
+  "data_root": "/Users/julia/RAG_new_external_s1",
+  "source_sha256": {
+   "corpus.manifest.json": "2b2e9232e69b4f52a55237f3ee620f34c91d1900383877c2310ba616c6590444",
+   "chunks-report.json": "bf01530e5a4cf33de44a7ce4aa1282805fc600a49b3a2f82b30b3b5715c6a714",
+   "index/index-receipt.json": "2dcc80e75d22e9dc34b31313c1db2724aa59c606203eb56c9ac7b84abb684666"
+  },
+  "archive_sha256": "b3e4d3727f3456b66ee398698b6a610f60c0c269de5c81bd814ae4e2c0ebba15",
+  "receipt_corpus_sha256": "b3e4d3727f3456b66ee398698b6a610f60c0c269de5c81bd814ae4e2c0ebba15",
+  "cases_file_sha256": "3737d694362d1867ca3d5983e3765d02c01110d2409145ba7e0f05c021d9c720",
+  "tools_sha256": {
+   "live_api.py": "43ff96f06af18538a2571d68a86e898ecfcdd5fcab47039f0d58bd245361a7b5",
+   "live_retrieval.py": "9e41910d371630ec7b215c8649d5c1a124da16ff5c0977d89c291f5de371e916",
+   "live_supervisor.py": "32e5a40552b62c37ee1e3cc387ae01a453b7729adadd7b9f790d73bb1906138c",
+   "stage2.sh": "8bde8bf050e814c284e688db209835501e389796b11e3f044e62ae5b831ae48c",
+   "stage2_cases.py": "17550c826764349a9ea654a18cfb107948dfcaa3474675a269695c78b572fb9d",
+   "stage2_common.py": "4d5241560ab5425faa0a1fe6c5b856454b3f8ee47e59187f0da6644b1bad48da",
+   "retrieval_summary.py": "c5848ae81d9ed2ab1bcade119793d544fd2b0e2991e043e4c87a319b69c9219c"
+  }
+ },
+ "aggregate": {
+  "registered": 100,
+  "asked": 100,
+  "measured": 100,
+  "missing": [],
+  "in_registered_order": true,
+  "path_breaks": {},
+  "walls": {
+   "first": {
+    "retrieval": {
+     "n": 1,
+     "min": 99.276,
+     "median": 99.276,
+     "p90": 99.276,
+     "max": 99.276
+    },
+    "vector": {
+     "n": 1,
+     "min": 60.364,
+     "median": 60.364,
+     "p90": 60.364,
+     "max": 60.364
+    },
+    "rerank": {
+     "n": 1,
+     "min": 38.899,
+     "median": 38.899,
+     "p90": 38.899,
+     "max": 38.899
+    }
+   },
+   "rest": {
+    "retrieval": {
+     "n": 99,
+     "min": 14.127,
+     "median": 26.986,
+     "p90": 35.206,
+     "max": 47.639
+    },
+    "vector": {
+     "n": 99,
+     "min": 0.122,
+     "median": 0.203,
+     "p90": 0.271,
+     "max": 0.378
+    },
+    "rerank": {
+     "n": 99,
+     "min": 13.852,
+     "median": 26.71,
+     "p90": 35.015,
+     "max": 47.452
+    }
+   }
+  },
+  "reranker_ok": 100,
+  "rerank_status": {
+   "ok": 100
+  },
+  "pool_size": {
+   "n": 100,
+   "min": 23,
+   "median": 35.0,
+   "p90": 39.0,
+   "max": 40
+  },
+  "sent_documents": {
+   "3": 47,
+   "4": 40,
+   "5": 13
+  },
+  "cut": 98,
+  "prompt_est_tokens": {
+   "n": 100,
+   "min": 2301,
+   "median": 2589.5,
+   "p90": 2635.1,
+   "max": 2636
+  },
+  "memory": {
+   "samples": 924,
+   "swap_used_mb": [
+    875.75,
+    907.75
+   ],
+   "free_mb_min": 4,
+   "max_rss_mb": {
+    "ollama": 17,
+    "postgres": 3,
+    "python": 4439
+   }
+  },
+  "parity": {
+   "True": 100
+  }
+ }
+}

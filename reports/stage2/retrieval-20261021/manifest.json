@@ -1,0 +1,19 @@
+{
+  "exported_at": "2026-10-21",
+  "code_sha": "5e308fe48cca0955c3007057a574a425f71e2a6a",
+  "source": "/Users/julia/RAG_new_stage2_export_20261021",
+  "files": {
+    "p1-aircargo.cases.jsonl": "3c82a7d3bd9b69bade85ee78b5703aa6fbf42ded6fb794d613b32c51c4baadc9",
+    "p1-aircargo.json": "e7ef3130defc2ee6c304aff538b39f43f69ddc96fc195cff5df29dcc39b76c97",
+    "p2-aircargo-gr.cases.jsonl": "005a8738d11ab52b9c8a2529628ff382100f0c13e3e5e1473d0fb55d1c092258",
+    "p2-aircargo-gr.json": "4f991fadb04af554d9c6895a15215f6e086facb40df8f9d0795724558facc491",
+    "p2-aircargo.cases.jsonl": "9444e081b31951dab31df91ffebd199e946e05627c15cca25e857551551287c5",
+    "p2-aircargo.json": "27c20fbc294270d03bef1705399d157c07e6598323b68486e4409918c253476f",
+    "p2-conditionalqa.cases.jsonl": "e586571e8648aac0c9eacdb6763f5e91bd9af3a7008a9440e249eb116b3f863e",
+    "p2-conditionalqa.json": "0b64901c701cfc86d5a6bccfac295329198f8618a9e1bb584932e3b9a05ce10e",
+    "p2-multihoprag.cases.jsonl": "678ec9bc72e115349b5f0da9f303c956c48b45fb81ebeeac315e26f404a0d4e4",
+    "p2-multihoprag.json": "6484809fac2543537cd7e8832cb8c111ed4f88794d981ed092c583cd23ec2d03",
+    "p2-wixqa.cases.jsonl": "2882c0e5d4992e3c0c5fb9f66cc9f62f127405ad9796ab05685bfa0147c8a644",
+    "p2-wixqa.json": "85cf89fe2276ea9c105266fd05ea1ae59cfd47d507bf7d0a0e674320c0cdf1ca"
+  }
+}

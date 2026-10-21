@@ -20,6 +20,12 @@ on this list.
 New evidence is a test plus one row here. Not a new capsule file in the repo
 root — that habit is what produced 29 of them and is now closed.
 
+## Stage 2 retrieval baseline
+
+| Slice | Evidence class | Record and verification |
+|---|---|---|
+| Stage 2, part 2: 415 retrieval questions complete; aircargo answer/context parity 100/100; sent-context gold coverage ConditionalQA 60/80, WixQA 68/100 (any gold article), MultiHop-RAG 10/70 | measured | [Capsule](docs/evidence/stage2-retrieval-baseline.md), [immutable record](reports/stage2/retrieval-20261021/), [derivation and provenance test](tests/test_stage2_retrieval_artifact.py). Stage 2 remains open; these are retrieval metrics, not external answer grades. |
+
 ## Publication gate checks
 
 - CI on `45a417a` (2026-10-03), run 37157492007: 11 of 11 jobs passed. `test-unit` on 3.11 and on 3.13: **4650 passed, 41 skipped**, coverage on 3.13 **78.89%** (gate 72%); `test-integration` on both legs: **93 passed, 1 skipped**. Pages run 37157492017 on the same commit: the `build` job passed (its steps include `Audit npm dependencies`, `Type-check docs site` and `Build`); the `deploy` job was skipped because the repository is private, so nothing is published. This is publication preparation, not a quality number.

@@ -1,0 +1,371 @@
+{
+ "run": "p2-wixqa",
+ "key": "wixqa",
+ "base": "wixqa",
+ "provenance": {
+  "label": "p2-wixqa",
+  "code_sha": "5e308fe48cca0955c3007057a574a425f71e2a6a",
+  "tenant": "ext_wixqa",
+  "chroma_dir": "/Users/julia/RAG_new_chat_5e308fe/chatlive/runs/p2-wixqa.chroma",
+  "cases_file": "/Users/julia/RAG_new_external_s1/wixqa/cases.jsonl",
+  "started": "2026-10-20T06:10:01+00:00",
+  "finished": "2026-10-20T06:47:45+00:00",
+  "status": "complete",
+  "variants": {
+   "cpu": 0
+  },
+  "mode": "retrieval",
+  "overrides": {
+   "REQUEST_TIMEOUT_SEC": "3600",
+   "OLLAMA_REQUEST_TIMEOUT_SEC": "3600",
+   "STREAMING_TIMEOUT_SEC": "3600",
+   "RAG_DEVICE": "cpu"
+  },
+  "client_cap_sec": "12420",
+  "error": null,
+  "settings": {
+   "llm_provider_profile": "local-first",
+   "ollama_model_name": "qwen3:4b-instruct-2507-q4_K_M",
+   "ollama_fast_model_name": "llama3.2:3b",
+   "model_routing_enabled": false,
+   "ollama_context_window": 4096,
+   "embedding_model": "BAAI/bge-m3",
+   "embedding_backend": "local",
+   "reranker_model": "BAAI/bge-reranker-v2-m3",
+   "rag_device": "cpu",
+   "vector_backend": "chroma",
+   "hybrid_search": true,
+   "retrieval_strategy": "hybrid",
+   "retrieval_top_k": 20,
+   "rerank_top_k": 5,
+   "hyde": false,
+   "graph_retrieval": "off",
+   "parent_expansion": true,
+   "self_rag_max_iterations": 2,
+   "fact_verification_enabled": true,
+   "streaming_enabled": false,
+   "streaming_rag_parity": false,
+   "streaming_quality_eval": true,
+   "streaming_timeout_sec": 3600.0,
+   "request_timeout_sec": 3600.0,
+   "ollama_request_timeout_sec": 3600.0,
+   "quality_threshold": 80,
+   "suggested_questions_enabled": true,
+   "llm_max_calls_per_request": 24,
+   "online_evaluators_enabled": true,
+   "max_concurrent_pipelines": 8,
+   "support_sink_backend": "local",
+   "tracing_db_path": "/Users/julia/RAG_new_chat_5e308fe/chatlive/runs/p2-wixqa/traces.db",
+   "vectordb_chroma_dir": "/Users/julia/RAG_new_chat_5e308fe/chatlive/runs/p2-wixqa.chroma"
+  },
+  "settings_sha256": "82861785d942b0a601c6ce4ab60ddef2c3bbe164e19afff330d347bf0eb04b43",
+  "parent_expansion_window": 2,
+  "retriever_build_sec": 14.691,
+  "bm25_restore_log": [
+   "INFO vectordb.manager: Restored 37571 chunks for tenant ext_wixqa from the persisted collection (BM25 + parent-expansion re-enabled)"
+  ],
+  "path_breaks": [],
+  "window": {
+   "owner": "provider",
+   "context_window": 4096
+  },
+  "caps": [
+   360.0,
+   120.0
+  ],
+  "data_root": "/Users/julia/RAG_new_external_s1",
+  "source_sha256": {
+   "corpus.manifest.json": "aeabd28fd61d4dfe9d95aa093a2efd1c383e8cef7f26dedac8153f9e97d24e24",
+   "chunks-report.json": "d167bb78a119c6932340e60be9592191d1200c2ce4d9d14c2b6328af85a921a9",
+   "index/index-receipt.json": "8dc009a68900a07502d59d199e8da476abb19de65f5dceb4692d25d4f9bb35f8"
+  },
+  "archive_sha256": "2cc24c6f56a394ff189366f70b6ed11b919ba8f545fa592e019c9b193814ba5a",
+  "receipt_corpus_sha256": "2cc24c6f56a394ff189366f70b6ed11b919ba8f545fa592e019c9b193814ba5a",
+  "cases_file_sha256": "d18255995e045c791849db44fb940182f9573056ff3eb11578acb8bf69c20412",
+  "tools_sha256": {
+   "live_api.py": "43ff96f06af18538a2571d68a86e898ecfcdd5fcab47039f0d58bd245361a7b5",
+   "live_retrieval.py": "9e41910d371630ec7b215c8649d5c1a124da16ff5c0977d89c291f5de371e916",
+   "live_supervisor.py": "32e5a40552b62c37ee1e3cc387ae01a453b7729adadd7b9f790d73bb1906138c",
+   "stage2.sh": "8bde8bf050e814c284e688db209835501e389796b11e3f044e62ae5b831ae48c",
+   "stage2_cases.py": "17550c826764349a9ea654a18cfb107948dfcaa3474675a269695c78b572fb9d",
+   "stage2_common.py": "4d5241560ab5425faa0a1fe6c5b856454b3f8ee47e59187f0da6644b1bad48da",
+   "retrieval_summary.py": "c5848ae81d9ed2ab1bcade119793d544fd2b0e2991e043e4c87a319b69c9219c"
+  },
+  "match_rule": "external-gold/range-coverage-v1",
+  "chunking": {
+   "chunk_size": 800,
+   "chunk_overlap": 200,
+   "structural_chunking": true,
+   "contextual_headers": true
+  },
+  "chunks_without_a_place": null,
+  "registrations": {
+   "external_bases.json": "cf80efc2e0194028c9469a0008a01f0e105bcf3669de71bcfa19947f3a6be167",
+   "external_parts.json": "47b04926ec079851f1583cc3f025f96da5af04659cc784cf577ade9a302b15b7"
+  },
+  "measure_code": {
+   "evaluation/external_gold.py": "fa15dc1ef84c58b524ee276382794dacfcf9cf4a7c7a459698e1152ccb741e61",
+   "scripts/external_pilot.py": "407a493b699c6d27050c974f3513209a44e16199fe7e917c2cf038db2985715f",
+   "evaluation/external_parts.py": "10e101f5e880a8448ff3fc45e27207d672a82bf7e9e478d2f0bbe53b662104de",
+   "evaluation/external_bases.py": "27adea919a40386a9ac9da3ad1d536ab191157aaeed19fde1fb993a5030031b1",
+   "agent/context_window.py": "9fe51ce62e15ae0e18b9e0466e1c35b5a92677088091b6f97f3195578a9a1e15"
+  }
+ },
+ "aggregate": {
+  "registered": 100,
+  "asked": 100,
+  "measured": 100,
+  "missing": [],
+  "in_registered_order": true,
+  "path_breaks": {},
+  "walls": {
+   "first": {
+    "retrieval": {
+     "n": 1,
+     "min": 26.162,
+     "median": 26.162,
+     "p90": 26.162,
+     "max": 26.162
+    },
+    "vector": {
+     "n": 1,
+     "min": 4.627,
+     "median": 4.627,
+     "p90": 4.627,
+     "max": 4.627
+    },
+    "rerank": {
+     "n": 1,
+     "min": 21.357,
+     "median": 21.357,
+     "p90": 21.357,
+     "max": 21.357
+    }
+   },
+   "rest": {
+    "retrieval": {
+     "n": 99,
+     "min": 16.411,
+     "median": 21.442,
+     "p90": 27.553,
+     "max": 39.168
+    },
+    "vector": {
+     "n": 99,
+     "min": 0.11,
+     "median": 0.154,
+     "p90": 0.285,
+     "max": 0.951
+    },
+    "rerank": {
+     "n": 99,
+     "min": 16.132,
+     "median": 21.242,
+     "p90": 27.139,
+     "max": 38.516
+    }
+   }
+  },
+  "reranker_ok": 100,
+  "rerank_status": {
+   "ok": 100
+  },
+  "pool_size": {
+   "n": 100,
+   "min": 26,
+   "median": 36.0,
+   "p90": 39.0,
+   "max": 40
+  },
+  "sent_documents": {
+   "5": 98,
+   "4": 2
+  },
+  "cut": 20,
+  "prompt_est_tokens": {
+   "n": 100,
+   "min": 1420,
+   "median": 2235.0,
+   "p90": 2613.0,
+   "max": 2636
+  },
+  "memory": {
+   "samples": 737,
+   "swap_used_mb": [
+    826.0,
+    954.0
+   ],
+   "free_mb_min": 4,
+   "max_rss_mb": {
+    "ollama": 13,
+    "postgres": 4,
+    "python": 4394
+   }
+  },
+  "m3": {
+   "with_gold": 100,
+   "without_gold": 0,
+   "gold_in_index": {
+    "True": 100
+   },
+   "with_unresolved_evidence": 0,
+   "unresolved": {
+    "None": 100
+   },
+   "excerpt_pieces_missed": 0,
+   "points": {
+    "vector": {
+     "n": 100,
+     "gold_article": 0.83,
+     "gold_articles": 0.7933
+    },
+    "bm25": {
+     "n": 100,
+     "gold_article": 0.53,
+     "gold_articles": 0.5117
+    },
+    "pool": {
+     "n": 100,
+     "gold_article": 0.84,
+     "gold_articles": 0.8117
+    },
+    "ranked": {
+     "n": 100,
+     "gold_article": 0.68,
+     "gold_articles": 0.6317
+    },
+    "expanded": {
+     "n": 100,
+     "gold_article": 0.68,
+     "gold_articles": 0.6317
+    },
+    "sent": {
+     "n": 100,
+     "gold_article": 0.68,
+     "gold_articles": 0.6317
+    }
+   },
+   "points_by_stratum": {
+    "simulated": {
+     "vector": {
+      "n": 100,
+      "gold_article": 0.83,
+      "gold_articles": 0.7933
+     },
+     "bm25": {
+      "n": 100,
+      "gold_article": 0.53,
+      "gold_articles": 0.5117
+     },
+     "pool": {
+      "n": 100,
+      "gold_article": 0.84,
+      "gold_articles": 0.8117
+     },
+     "ranked": {
+      "n": 100,
+      "gold_article": 0.68,
+      "gold_articles": 0.6317
+     },
+     "expanded": {
+      "n": 100,
+      "gold_article": 0.68,
+      "gold_articles": 0.6317
+     },
+     "sent": {
+      "n": 100,
+      "gold_article": 0.68,
+      "gold_articles": 0.6317
+     }
+    }
+   },
+   "k_curve_questions": 100,
+   "k20_is_ranked": 100,
+   "k20_not_ranked": 0,
+   "k20_order_differs": 0,
+   "lane_not_in_pool": 0,
+   "k_curve": [
+    {
+     "gold_article": 0.43,
+     "gold_articles": 0.3983
+    },
+    {
+     "gold_article": 0.52,
+     "gold_articles": 0.4883
+    },
+    {
+     "gold_article": 0.6,
+     "gold_articles": 0.5533
+    },
+    {
+     "gold_article": 0.61,
+     "gold_articles": 0.5683
+    },
+    {
+     "gold_article": 0.6,
+     "gold_articles": 0.5583
+    },
+    {
+     "gold_article": 0.63,
+     "gold_articles": 0.5883
+    },
+    {
+     "gold_article": 0.66,
+     "gold_articles": 0.6083
+    },
+    {
+     "gold_article": 0.66,
+     "gold_articles": 0.6117
+    },
+    {
+     "gold_article": 0.66,
+     "gold_articles": 0.6167
+    },
+    {
+     "gold_article": 0.65,
+     "gold_articles": 0.6117
+    },
+    {
+     "gold_article": 0.66,
+     "gold_articles": 0.6217
+    },
+    {
+     "gold_article": 0.66,
+     "gold_articles": 0.6217
+    },
+    {
+     "gold_article": 0.66,
+     "gold_articles": 0.6217
+    },
+    {
+     "gold_article": 0.68,
+     "gold_articles": 0.6417
+    },
+    {
+     "gold_article": 0.69,
+     "gold_articles": 0.6467
+    },
+    {
+     "gold_article": 0.69,
+     "gold_articles": 0.6467
+    },
+    {
+     "gold_article": 0.69,
+     "gold_articles": 0.6467
+    },
+    {
+     "gold_article": 0.69,
+     "gold_articles": 0.6467
+    },
+    {
+     "gold_article": 0.68,
+     "gold_articles": 0.6367
+    },
+    {
+     "gold_article": 0.68,
+     "gold_articles": 0.6317
+    }
+   ]
+  }
+ }
+}
