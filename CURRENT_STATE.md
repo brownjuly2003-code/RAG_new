@@ -1,7 +1,7 @@
 # Current state — RAG_new
 
 2026-10-23 · The plan: [`PLAN.md`](PLAN.md), accepted by Julia on 2026-10-17 («принять») ·
-now: stage 2 parts 1, 2 and 4 collected and published; grading waits for the judge · previous version:
+now: stage 2 parts 1, 2 and 4 collected and published; the judge of parts 2 and 4 running · previous version:
 [`archive/docs/state/current-state-through-2026-10-17.md`](archive/docs/state/current-state-through-2026-10-17.md).
 
 Read this file for *what is true now*; [`PLAN.md`](PLAN.md) for *what happens next and why*;
@@ -71,15 +71,15 @@ Part 3 uses GR-3's archives; live graph measurement is stage 7. Judge amendment:
 **Done:** part 1 — 100 answers in ten batches (`p1-aircargo-b01`…`b10`), all complete, no path break; judge record and frozen-plan hash in `reports/stage2/5e308fe/` (115 requests, 15 retests).
 **Done:** part 2 — all 415 questions completed 2026-10-20; immutable export `reports/stage2/retrieval-20261021/`, provenance/derivation tests passed on the Mac (41 focused checks including docs).
 **Done:** part 4 — 300 external answers, 30 counted batches, completed 2026-10-23 04:32 UTC after the pause and resume of 2026-10-22; immutable export `reports/stage2/external-answers-20261023/`, raw answers private in `D:/RAG_new_stage2_private/p4/resume-20261022/` (1,356 hashes verified).
-**Open:** part 2's aircargo context judge (plan frozen in `77795a3`) and part 4's answer judge — Claude, the registered judge, is unavailable; then part 5, the combined record. The Mac is free; no measurement runs.
+**Judge running (2026-10-23):** part 2's aircargo context plan (`77795a3`, 115/130 graded on 10-20) resumed; part 4's six plans — M1 without the reference, M2 with it ([amendment](docs/specs/stage2-four-corpora.md#the-judge), `575e24f`) — frozen before the first grade, 690 requests, ≈ 8.6 h on the laptop; then part 5. Private folder `D:/RAG_new_stage2_private/p4/judge/`. The Mac is free.
 
 ## Julia's decisions in force
 
 [`PLAN.md`](PLAN.md) §8.1: no human grading; the session does the work, no other model except
 the authorized Codex second-opinion role; Qwen3-4B; production on Mac; external answers in
 stage 2; indexes as new generations. A broken premise is resolved and reported (2026-10-19).
-Pushes require her authorization. Claude, the registered judge, is unavailable (Julia,
-2026-10-21, reaffirmed 2026-10-22); grading waits. Mac generation may continue; no replacement judge.
+Pushes require her authorization. Claude, the registered judge, was unavailable 2026-10-21/22;
+on 2026-10-23 Julia: «Да, запускай судью». No replacement judge.
 
 ## Open for Julia
 
@@ -112,8 +112,8 @@ condition is formally met ([`PLAN.md`](PLAN.md) §9).
   prevents jobs starting. Before a push: full Mac unit suite, mypy, bandit and dependency audits.
 - Run 34359692687 on `69a5140` verified the CVE-2026-9856 floor `transformers>=5.10.0` under
   `--require-hashes`, pip-audit clean; both locks still pin it.
-- Tracked `origin/master`: `172620f`, last pushed 2026-10-18. Later stage-2 commits, including
-  `7208ed2` and `4fe4aaf`, are local. No push authorized this session.
+- Tracked `origin/master`: `fc74f04`, pushed 2026-10-23 at Julia's word («Пушить сейчас») after
+  the Mac suite, mypy and bandit passed; pip-audit and the npm audit fail on advisories newer than the locks.
 - Private remote: `brownjuly2003-code/RAG_new`; HTTPS command in [`CLAUDE.md`](CLAUDE.md).
 
 ## Links
