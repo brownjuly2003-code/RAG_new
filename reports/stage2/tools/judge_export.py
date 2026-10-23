@@ -26,15 +26,17 @@ docs/specs/stage2-four-corpora.md, «The judge». Three commands:
     one more run of the plan - and through the adapter's own checks (the plan as the adapter
     froze it, the plan's model, a clean session, the planned request); the references file
     is the one the plan was frozen with. Per question: its ids, class or level, the verdict's
-    enums and integers, never the note - each string of a row an identifier or a registered
-    value, checked (`plain`); on an external base M2 - the judge's reference for a
-    question with one, right or wrong by answers_question for one without - and the
+    enums and integers, never the note, and the basis of the verdict's admission - which of
+    its request's replies it is and the CLI's version - each string of a row an identifier
+    or a registered value, checked (`plain`); on an external base M2 - the judge's reference
+    for a question with one, right or wrong by answers_question for one without - and the
     question's stratum, cluster and condition. The plan's numbers: per run as the adapter
     counts them; each share with its n and Wilson 95 % interval and, on an external base, its
     clusters and cluster-bootstrap interval (evaluation.semantic_ruler.cluster_summary); the
-    retest's pairs, agreement, pairs two steps apart, quadratic kappa and its bootstrap
-    interval, and the stability rule's verdict; the other fields' agreement on the pairs
-    (M2's reference on the pairs of a question with one). A plan that withheld its references
+    retest's pairs with their first requests' ids, agreement, pairs two steps apart,
+    quadratic kappa and its bootstrap interval, and the stability rule's verdict; the other
+    fields' agreement on the pairs (M2's reference on the pairs of a question with one); which
+    reply admitted each counted verdict and under which CLI. A plan that withheld its references
     from the requests (`chat_answer_judge.py plan --withhold-references`, part 4's M1, amended
     2026-10-23) takes from the file the strata and clusters only, and its record holds no M2:
     each question's has_reference is false there. The record's status is "counted",
@@ -189,6 +191,26 @@ def counted(rows):
     return kept, sum(max(0, n - REPLIES) for n in seen.values())
 
 
+def admission(rows, valid):
+    """Each counted verdict's basis: which of its request's replies it is, and the CLI's version.
+
+    The adapter's own rule, mirrored: a request's first valid reply among its first six.
+    """
+    seen, admitted = Counter(), {}
+    for row in rows:
+        if row.get("status") not in ("valid", "invalid"):
+            continue
+        item_id = str(row["item_id"])
+        seen[item_id] += 1
+        if row["status"] == "valid" and item_id in valid and item_id not in admitted:
+            if seen[item_id] <= REPLIES:
+                session = row.get("session") or {}
+                admitted[item_id] = (seen[item_id], session.get("cli_version"))
+    if set(admitted) != set(valid):
+        raise SystemExit("a counted verdict has no reply the adapter's rule admits")
+    return admitted
+
+
 def plain(row):
     """Refuse a question row with a string that is not an identifier or a registered value.
 
@@ -311,7 +333,7 @@ def stability(judge, plan, valid):
     scale = judge["scale"]
     index = {name: number for number, name in enumerate(scale)}
     first = {item["item_id"]: item for item in plan["items"] if "retest_of" not in item}
-    pairs, fields, of = [], Counter(), Counter()
+    pairs, ids, fields, of = [], [], Counter(), Counter()
     for item in plan["items"]:
         if "retest_of" not in item:
             continue
@@ -320,6 +342,7 @@ def stability(judge, plan, valid):
         if before is None or after is None:
             continue
         pairs.append((index[before], index[after]))
+        ids.append(item["retest_of"])
         a, b = valid[item["retest_of"]], valid[item["item_id"]]
         for name in judge["paired"]:
             # M2's reference is read on the pairs of a question with one; elsewhere both say none.
@@ -338,6 +361,8 @@ def stability(judge, plan, valid):
         "scale": list(scale),
         "pairs": n,
         "pairs_list": [list(pair) for pair in pairs],
+        # The item id of each pair's first request, in the order of pairs_list.
+        "pairs_ids": ids,
         "agree": agree,
         "two_steps_apart": apart,
         "quadratic_kappa": kappa,
@@ -389,6 +414,7 @@ def export(plan_dir, name, out, runs, references_file=None):
     # refuses a row of a request the plan does not hold, and counts the first six itself.
     _, past = counted(rows_in)
     valid = module._vouched(plan, rows_in)
+    admitted = admission(rows_in, valid)
     first = [item for item in plan["items"] if "retest_of" not in item]
     if len({item["case_id"] for item in first}) != len(first):
         raise SystemExit("a question stands twice in the plan: one counted run per batch")
@@ -416,6 +442,7 @@ def export(plan_dir, name, out, runs, references_file=None):
         row["missing"] = row["grade"] is None
         if verdict is not None:
             row.update({key: verdict[key] for key in judge["keep"]})
+            row["admitted_reply"], row["admitted_cli"] = admitted[item["item_id"]]
         if item["case_id"] in refs:
             ref = refs[item["case_id"]]
             carried = bool(ref["reference_answers"]) and not withheld
@@ -457,6 +484,9 @@ def export(plan_dir, name, out, runs, references_file=None):
             "statuses": dict(Counter(str(row.get("status")) for row in rows_in)),
             "past_the_limit": past,
             "models": dict(Counter(str(row.get("model")) for row in rows_in if "model" in row)),
+            # Every counted verdict, retests included: which reply admitted it, and the CLI.
+            "admitted_at_reply": dict(Counter(str(reply) for reply, _ in admitted.values())),
+            "admitted_cli": dict(Counter(str(cli) for _, cli in admitted.values())),
             "cost_usd": round(
                 sum(float((row.get("usage") or {}).get("total_cost_usd") or 0) for row in rows_in),
                 4,

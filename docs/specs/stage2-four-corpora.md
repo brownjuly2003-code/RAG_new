@@ -297,6 +297,21 @@ phase C judged fixed contexts, not the chat's retrieval.
   request, ≈ 8.6 h and ≈ $76; a plan's run past 3× its forecast pauses. Each plan's SHA-256
   is committed before its first grade. The tools: `chat_answer_judge.py plan
   --withhold-references` and `judge_export.py`'s reading of such a plan, with their tests.
+- **Settled 2026-10-23, before part 4's records:** the record's schema, the pairs' ids and
+  each verdict's basis of admission. A judge record holds `plan`, `status`, `judge`, `base`;
+  `provenance` — the SHA-256 of the plan, the journal, the references file, the rules, the
+  adapter and the tool, `references_withheld`, the salt, prompt id, route, runs, the replies
+  counted per request and the reading; `replies` — rows, statuses, past the limit, models,
+  cost, and for every counted verdict, retests included, the reply that admitted it
+  (`admitted_at_reply`) and the CLI it ran under (`admitted_cli`); `questions`,
+  `requests_valid`, `missing`, `per_run`, `shares`; `retest` with `pairs_ids`, the first
+  request of each pair in the order of `pairs_list`; for answers whose requests carried
+  references `m2`, and on ConditionalQA the conditional split; for contexts
+  `holds_the_answer`. A question row: the plan's ids and counts, `grade`, `missing`, the
+  verdict's fields but the note, `admitted_reply` and `admitted_cli`; on an external base
+  `stratum`, `cluster`, `conditional` and, where references were carried, `m2`. Part 1's and
+  part 2's records, exported before this, lack the admission fields and `pairs_ids`; their
+  private journals give them.
 
 ## What is `NOT_EVIDENCE`
 

@@ -168,6 +168,24 @@ def test_a_request_counts_from_its_first_six_replies(export) -> None:
     assert {"item_id": "b", "status": "valid"} in kept
 
 
+def test_each_counted_verdict_names_the_reply_that_admitted_it(export) -> None:
+    session = {"cli_version": "2.1.309"}
+    rows = [
+        {"item_id": "a", "status": "unavailable"},
+        {"item_id": "a", "status": "invalid"},
+        {"item_id": "a", "status": "valid", "session": session},
+        {"item_id": "a", "status": "valid", "session": {"cli_version": "other"}},
+        {"item_id": "b", "status": "valid", "session": {"cli_version": "2.1.304"}},
+    ]
+
+    admitted = export.admission(rows, {"a": {}, "b": {}})
+
+    # A refused route's row is no reply; the first valid one counts, the later one does not.
+    assert admitted == {"a": (2, "2.1.309"), "b": (1, "2.1.304")}
+    with pytest.raises(SystemExit, match="admits"):
+        export.admission(rows[:2], {"a": {}})
+
+
 @pytest.mark.parametrize(
     ("pairs", "passed", "by_kappa", "by_agreement"),
     [
@@ -341,6 +359,13 @@ def test_the_record_holds_ids_classes_and_the_m2_split_but_no_text(export, tmp_p
     assert record["m2"]["with_reference"]["agrees"]["hits"] == 1
     assert record["shares"]["good"]["clusters"] == 3
     assert record["retest"]["pairs"] == 1 and record["replies"]["cost_usd"] > 0
+    assert record["retest"]["pairs_ids"] == [
+        item["retest_of"] for item in plan["items"] if "retest_of" in item
+    ]
+    assert record["replies"]["admitted_at_reply"] == {"1": 3}
+    assert record["replies"]["admitted_cli"] == {"9.9.9": 3}
+    assert rows["m1"]["admitted_reply"] == 1 and rows["m1"]["admitted_cli"] == "9.9.9"
+    assert "admitted_reply" not in rows["m3"]  # an empty answer: no request, no reply
     # One retest pair of the 12 the rule needs: the plan's numbers are not evidence.
     assert record["status"] == "NOT_EVIDENCE"
     text = (out / "p4-multihoprag-judge.json").read_text("utf-8")
