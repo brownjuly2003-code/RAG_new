@@ -281,6 +281,22 @@ phase C judged fixed contexts, not the chat's retrieval.
   records); the denominators and intervals of M1's other parts (part 5's record). The plans,
   journals and run copies stay in the private folder, so each deferred count can be made
   later from what was graded.
+- **Amended 2026-10-23, before part 4's first grade:** part 4 reads M1 in a request without
+  the reference — the first deferred point, decided by the session under Julia's word of
+  2026-10-19 («Прими решения сам из цели - лучший продукт в финале»). The ruler is one: part
+  1's aircargo requests carry no reference, so an external M1 read beside one would be another
+  measurement, and whether a reference sways the judge is not known. Each base gets two plans
+  of its ten counted batch runs — the same answers, item ids and 15 retests:
+  - `p4-<base>-m1`, `plan --references FILE --withhold-references`: the file named by its
+    SHA-256 for the strata and clusters only, every request with «none» for the reference; its
+    M1 is part 4's M1, and its record holds no M2;
+  - `p4-<base>-m2`, as registered above: its `reference` and declines give M2.
+
+  The m2 plan's M1 fields are printed beside the m1 plan's on the same answers — the
+  reference's sway — and gate nothing. 6 × 115 = 690 requests; forecast ≈ 45 s and ≈ $0.11 a
+  request, ≈ 8.6 h and ≈ $76; a plan's run past 3× its forecast pauses. Each plan's SHA-256
+  is committed before its first grade. The tools: `chat_answer_judge.py plan
+  --withhold-references` and `judge_export.py`'s reading of such a plan, with their tests.
 
 ## What is `NOT_EVIDENCE`
 

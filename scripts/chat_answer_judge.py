@@ -13,7 +13,9 @@ Per answer the judge gives M1 (PLAN.md §4.3): the material claims and how many 
 documents support, whether the documents hold the answer, whether the answer gives it, the
 reference marks ``[N]`` whose statement document N supports, and a defect. Given a reference
 answer (the external bases' cases), it also gives M2: whether the answer agrees with it. A
-mark that names no listed document is counted here, without the judge.
+mark that names no listed document is counted here, without the judge. With
+``--withhold-references`` the plan names the references file by its SHA-256 but no request
+carries a reference: M1 read where no reference can sway it, as part 1's aircargo requests are.
 
 - ``plan`` reads run records (``cases/*.json`` and ``prompts/`` of each), freezes one request
   per answer in a fixed shuffled order, plus a retest of ``--retest`` of them (the stability
@@ -28,7 +30,8 @@ mark that names no listed document is counted here, without the judge.
   is not its request's copy.
 
 Usage:
-  python scripts/chat_answer_judge.py plan --run LABEL=DIR ... [--references FILE] --out DIR
+  python scripts/chat_answer_judge.py plan --run LABEL=DIR ...
+      [--references FILE [--withhold-references]] --out DIR
   python scripts/chat_answer_judge.py run --out DIR [--limit N]
   python scripts/chat_answer_judge.py summary --out DIR
 """
@@ -302,8 +305,15 @@ def build_plan(
     *,
     retest: int = RETEST_SIZE,
     references_sha256: str | None = None,
+    withheld: bool = False,
 ) -> dict[str, Any]:
-    """Freeze every request and every deterministic count before the first grade."""
+    """Freeze every request and every deterministic count before the first grade.
+
+    ``withheld``: the references file is named by ``references_sha256``, and ``references``
+    is empty, so no request carries a reference.
+    """
+    if withheld and (references or references_sha256 is None):
+        raise ValueError("a plan withholds the references of a named file: none in its requests")
     items: list[dict[str, Any]] = []
     records: dict[str, Any] = {}
     for label, run in runs.items():
@@ -350,6 +360,7 @@ def build_plan(
         "route": isolated.settings(SYSTEM_PROMPT),
         "instructions_sha256": _digest(INSTRUCTIONS),
         "references_sha256": references_sha256,
+        "references_withheld": withheld,
         "items": items,
     }
 
@@ -625,6 +636,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     plan_parser = commands.add_parser("plan")
     plan_parser.add_argument("--run", action="append", required=True, metavar="LABEL=DIR")
     plan_parser.add_argument("--references", type=Path)
+    plan_parser.add_argument("--withhold-references", action="store_true")
     plan_parser.add_argument("--retest", type=int, default=RETEST_SIZE)
     plan_parser.add_argument("--out", type=Path, required=True)
     run_parser = commands.add_parser("run")
@@ -645,15 +657,19 @@ def main(argv: Sequence[str] | None = None) -> int:
             if not label or not path or label in runs:
                 raise SystemExit(f"--run {spec}: give each run once as LABEL=DIR")
             runs[label] = Path(path)
+        if args.withhold_references and args.references is None:
+            raise SystemExit("--withhold-references names the file it withholds: give --references")
+        references = _references(args.references)
         plan = build_plan(
             runs,
-            _references(args.references),
+            {} if args.withhold_references else references,
             retest=args.retest,
             references_sha256=(
                 hashlib.sha256(args.references.read_bytes()).hexdigest()
                 if args.references
                 else None
             ),
+            withheld=args.withhold_references,
         )
         args.out.mkdir(parents=True, exist_ok=True)
         plan_path.write_text(json.dumps(plan, ensure_ascii=False, indent=1) + "\n", "utf-8")

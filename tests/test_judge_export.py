@@ -364,3 +364,64 @@ def test_the_record_holds_ids_classes_and_the_m2_split_but_no_text(export, tmp_p
     (plan_dir / "plan.json").write_text(json.dumps(edited), "utf-8")
     with pytest.raises(SystemExit, match="disagree"):
         export.export(plan_dir, "x", out, {"p4-multihoprag-b01": run}, references)
+
+
+def test_a_plan_that_withheld_its_references_gives_m1_and_no_m2(export, tmp_path: Path) -> None:
+    run = _run(
+        tmp_path / "p4-multihoprag-b01",
+        "ext_multihoprag",
+        [
+            ("m1", "Who bought the startup?", "Acme did [1]."),
+            ("m2", "Which fee applies?", "Ten [2]."),
+        ],
+    )
+    references = tmp_path / "references.jsonl"
+    references.write_text(
+        json.dumps(
+            {
+                "case_id": "m1",
+                "stratum": "inference_query",
+                "cluster": 0,
+                "reference_answers": ["X."],
+            }
+        )
+        + "\n"
+        + json.dumps(
+            {"case_id": "m2", "stratum": "null_query", "cluster": 1, "reference_answers": []}
+        )
+        + "\n"
+    )
+    plan = judge.build_plan(
+        {"p4-multihoprag-b01": run},
+        {},
+        retest=1,
+        references_sha256=hashlib.sha256(references.read_bytes()).hexdigest(),
+        withheld=True,
+    )
+    plan_dir = tmp_path / "judge"
+    plan_dir.mkdir()
+    (plan_dir / "plan.json").write_text(json.dumps(plan, ensure_ascii=False, indent=1) + "\n")
+    sent = []
+
+    def send(system_prompt: str, message: str) -> isolated.IsolatedReply:
+        sent.append(message)
+        return _reply({**VERDICT, "reference": "none"})
+
+    judge.run_plan(plan, plan_dir, send)
+    out = tmp_path / "out"
+
+    record = export.export(plan_dir, "m1", out, {"p4-multihoprag-b01": run}, references)
+
+    assert len(sent) == 3 and all("REFERENCE ANSWER:\nnone\n" in m for m in sent)
+    rows = {row["case_id"]: row for row in map(json.loads, (out / "m1.cases.jsonl").open())}
+    assert rows["m1"]["grade"] == rows["m2"]["grade"] == "good"
+    assert rows["m1"]["stratum"] == "inference_query" and rows["m2"]["cluster"] == 1
+    assert not any(row["has_reference"] or "m2" in row for row in rows.values())
+    assert "m2" not in record and record["provenance"]["references_withheld"] is True
+    assert record["retest"]["field_agreement"]["reference"]["of"] == 0
+    # A plan that says it carried the file's references must hold them in its requests.
+    edited = json.loads((plan_dir / "plan.json").read_text("utf-8"))
+    edited["references_withheld"] = False
+    (plan_dir / "plan.json").write_text(json.dumps(edited), "utf-8")
+    with pytest.raises(SystemExit, match="disagree"):
+        export.export(plan_dir, "x", out, {"p4-multihoprag-b01": run}, references)

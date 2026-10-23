@@ -34,7 +34,10 @@ docs/specs/stage2-four-corpora.md, «The judge». Three commands:
     clusters and cluster-bootstrap interval (evaluation.semantic_ruler.cluster_summary); the
     retest's pairs, agreement, pairs two steps apart, quadratic kappa and its bootstrap
     interval, and the stability rule's verdict; the other fields' agreement on the pairs
-    (M2's reference on the pairs of a question with one). The record's status is "counted",
+    (M2's reference on the pairs of a question with one). A plan that withheld its references
+    from the requests (`chat_answer_judge.py plan --withhold-references`, part 4's M1, amended
+    2026-10-23) takes from the file the strata and clusters only, and its record holds no M2:
+    each question's has_reference is false there. The record's status is "counted",
     or "NOT_EVIDENCE" when the retests fail the rule - then the command exits 3. The run
     folders, given as to the plan, supply the questions and the documents' names
     stage2_common.without_text keeps out.
@@ -380,6 +383,7 @@ def export(plan_dir, name, out, runs, references_file=None):
         raise SystemExit("an external base's record needs its references file: the clusters")
     if (sha256(references_file) if references_file else None) != plan.get("references_sha256"):
         raise SystemExit("the references file is not the one the plan was frozen with")
+    withheld = plan.get("references_withheld", False) is True
     rows_in = load_jsonl(plan_dir / "verdicts.jsonl")
     # The adapter reads the whole journal, the rows past a request's sixth reply included: it
     # refuses a row of a request the plan does not hold, and counts the first six itself.
@@ -414,12 +418,13 @@ def export(plan_dir, name, out, runs, references_file=None):
             row.update({key: verdict[key] for key in judge["keep"]})
         if item["case_id"] in refs:
             ref = refs[item["case_id"]]
-            if answers and item["has_reference"] != bool(ref["reference_answers"]):
+            carried = bool(ref["reference_answers"]) and not withheld
+            if answers and item["has_reference"] != carried:
                 raise SystemExit(f"{item['case_id']}: the plan and the references disagree")
             row.update(stratum=ref["stratum"], cluster=ref["cluster"])
             if "conditional" in ref:
                 row["conditional"] = ref["conditional"]
-        if answers and base in EXTERNAL:
+        if answers and base in EXTERNAL and not withheld:
             row["m2"] = by_m2[item["case_id"]] = m2(item, verdict)
         rows.append(plain(row))
     if refs and any(case not in refs for case in grades):
@@ -436,6 +441,7 @@ def export(plan_dir, name, out, runs, references_file=None):
             "plan_sha256": sha256(plan_dir / "plan.json"),
             "verdicts_sha256": sha256(plan_dir / "verdicts.jsonl"),
             "references_sha256": sha256(references_file) if references_file else None,
+            "references_withheld": withheld,
             "salt": plan["salt"],
             "prompt_id": plan.get("prompt_id"),
             "instructions_sha256": plan.get("instructions_sha256"),

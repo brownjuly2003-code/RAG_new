@@ -276,6 +276,36 @@ def test_the_plan_names_its_references_file_and_the_file_each_question_once(
         judge._references(references)
 
 
+def test_a_plan_can_withhold_the_references_it_names(tmp_path: Path) -> None:
+    run = _run(tmp_path / "toy-run", [("q1", "How much is storage?", "Ten a day [1].", DOCS)])
+    references = tmp_path / "references.jsonl"
+    references.write_text('{"case_id": "q1", "reference_answers": ["Ten a day."]}\n', "utf-8")
+    withheld, carried = tmp_path / "withheld", tmp_path / "carried"
+    command = ["plan", "--run", f"toy={run}", "--references", str(references)]
+
+    assert judge.main([*command, "--withhold-references", "--out", str(withheld)]) == 0
+    assert judge.main([*command, "--out", str(carried)]) == 0
+
+    blind = json.loads((withheld / "plan.json").read_text("utf-8"))
+    seen = json.loads((carried / "plan.json").read_text("utf-8"))
+    digest = hashlib.sha256(references.read_bytes()).hexdigest()
+    assert blind["references_sha256"] == seen["references_sha256"] == digest
+    assert blind["references_withheld"] is True and seen["references_withheld"] is False
+    # The same requests and the same retests, the reference alone told apart.
+    assert [item["item_id"] for item in blind["items"]] == [
+        item["item_id"] for item in seen["items"]
+    ]
+    assert all(not item["has_reference"] for item in blind["items"])
+    assert all("REFERENCE ANSWER:\nnone\n" in item["message"] for item in blind["items"])
+    assert all("REFERENCE ANSWER:\nTen a day.\n" in item["message"] for item in seen["items"])
+    with pytest.raises(SystemExit, match="give --references"):
+        judge.main(["plan", "--run", f"toy={run}", "--withhold-references", "--out", "x"])
+    with pytest.raises(ValueError, match="withholds"):
+        judge.build_plan(
+            {"toy": run}, {"q1": ["Ten a day."]}, references_sha256=digest, withheld=True
+        )
+
+
 def test_a_verdict_must_fit_its_request() -> None:
     text = json.dumps(VERDICT)
     assert judge.parse_verdict(text, 1, True)["reference"] == "agrees"
