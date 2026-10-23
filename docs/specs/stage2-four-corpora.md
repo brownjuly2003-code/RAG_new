@@ -312,6 +312,32 @@ phase C judged fixed contexts, not the chat's retrieval.
   `stratum`, `cluster`, `conditional` and, where references were carried, `m2`. Part 1's and
   part 2's records, exported before this, lack the admission fields and `pairs_ids`; their
   private journals give them.
+- **Settled 2026-10-23, before part 4's first record — part 5's reading,** the third deferred
+  point, under the same word of Julia's:
+  - **M1's other parts.** The supported marks: of the marks naming a listed document
+    (`marks_listed`) in the answers with a verdict, those the judge finds supported
+    (`citations_supported`); the claims likewise (`claims_supported` of `claims_total`). Each
+    is a share of marks or claims, not of answers, so beside its Wilson interval it prints a
+    cluster-bootstrap interval — the answer is the cluster on aircargo, the question's cluster
+    on an external base — and the wider is read. The marks naming no listed document: their
+    count and the answers with one. The defects: the share of graded answers whose defect is
+    not `none`, and each defect's count; `answer_without_context`, a count. On ConditionalQA
+    and MultiHop-RAG, M1 is also printed by stratum: without an answer, good is a right decline.
+  - **Two corpora**, aircargo against an external base, per class of M1: the difference of
+    the shares with Newcombe's hybrid score interval, each side taken from its share's read
+    interval — Wilson on aircargo, the wider of Wilson and the cluster bootstrap on an
+    external base. «Detected» when the interval excludes zero, «not detected» otherwise, never
+    «no difference». Three comparisons per class, printed as found, none corrected for the
+    others; the external bases are not compared with each other.
+  - **The reference's sway**, per base: the m1 and m2 plans' classes on the answers both
+    graded — the 3 × 3 counts, the agreement, the pairs two steps apart, the quadratic kappa;
+    printed, not gated.
+  - **aircargo's M3:** the context judge's record split by run, aircargo's 100 and
+    aircargo-gr's 15 apart; its `full` or `partial` against part 1's `context_has_answer` on
+    the questions both read.
+  - The tool, `reports/stage2/tools/stage2_record.py`, is committed with its test before part
+    4's first record. It reads committed records only and writes
+    `reports/stage2/5e308fe/stage2-record.json`; part 5's test derives that record again.
 
 ## What is `NOT_EVIDENCE`
 
