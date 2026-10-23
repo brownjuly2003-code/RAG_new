@@ -1,0 +1,1432 @@
+{
+ "part": "p4-conditionalqa",
+ "key": "conditionalqa",
+ "base": "conditionalqa",
+ "provenance": {
+  "code_sha": [
+   "5e308fe48cca0955c3007057a574a425f71e2a6a"
+  ],
+  "model": [
+   "qwen3:4b-instruct-2507-q4_K_M"
+  ],
+  "model_digest": [
+   "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0"
+  ],
+  "settings_sha256": [
+   "1437d2985424c50d3d44d9a623434d274c85ff370b150c59dfcd86b830ce31c1",
+   "16c75456fde5b357d30d96e2160b542f699f7cb61f7cff87e1958c555cb6afa0",
+   "2a0e3d244c67b78a0f05a6420d178077e57004924b8ecc7f723d47b524f83594",
+   "3e73273f07fa5b578d064ae87513765922d2c3fc40e4b464b2ba2b8207011c37",
+   "579c19a22ff8b2592ae73edc1d3ec3b3ecfd8bf7f70322b107697d505f6c17b2",
+   "5d47a533828ca69b556da53dfdfec0a62dba1a37e9e65c0eee6b7f4c0a8e213b",
+   "866376a1b5fcfd2b3c33361d5b472276fb801f9b640300d277050458e53ed617",
+   "929dd456578dcebbe7cd69d6fc4c0f8d876a314137054058cc46cf72bf0dc835",
+   "b144b032507bcf92f569c1364ed01e0d7a5437a12156aa8af05f788b1d09b640",
+   "bff93318e13ede5a649702825f116d0a6e96447d3489f2bdeada7e7215e4b3a2"
+  ],
+  "settings": {
+   "llm_provider_profile": "local-first",
+   "ollama_model_name": "qwen3:4b-instruct-2507-q4_K_M",
+   "ollama_fast_model_name": "llama3.2:3b",
+   "model_routing_enabled": false,
+   "ollama_context_window": 4096,
+   "embedding_model": "BAAI/bge-m3",
+   "embedding_backend": "local",
+   "reranker_model": "BAAI/bge-reranker-v2-m3",
+   "rag_device": "cpu",
+   "vector_backend": "chroma",
+   "hybrid_search": true,
+   "retrieval_strategy": "hybrid",
+   "retrieval_top_k": 20,
+   "rerank_top_k": 5,
+   "hyde": false,
+   "graph_retrieval": "off",
+   "parent_expansion": true,
+   "self_rag_max_iterations": 2,
+   "fact_verification_enabled": true,
+   "streaming_enabled": false,
+   "streaming_rag_parity": false,
+   "streaming_quality_eval": true,
+   "streaming_timeout_sec": 3600.0,
+   "request_timeout_sec": 3600.0,
+   "ollama_request_timeout_sec": 3600.0,
+   "quality_threshold": 80,
+   "suggested_questions_enabled": true,
+   "llm_max_calls_per_request": 24,
+   "online_evaluators_enabled": true,
+   "max_concurrent_pipelines": 8,
+   "support_sink_backend": "local",
+   "tracing_db_path": "/Users/julia/RAG_new_chat_5e308fe/chatlive/runs/p4-conditionalqa-b01/traces.db",
+   "vectordb_chroma_dir": "/Users/julia/RAG_new_chat_5e308fe/chatlive/runs/p4-conditionalqa-b01.chroma"
+  },
+  "code": {
+   "workspace": "/Users/julia/RAG_new_chat_5e308fe",
+   "code_sha": "5e308fe48cca0955c3007057a574a425f71e2a6a",
+   "context_window_file": "/Users/julia/RAG_new_chat_5e308fe/agent/context_window.py",
+   "has_fit_all_context_docs": true
+  },
+  "overrides": {
+   "REQUEST_TIMEOUT_SEC": "3600",
+   "OLLAMA_REQUEST_TIMEOUT_SEC": "3600",
+   "STREAMING_TIMEOUT_SEC": "3600",
+   "RAG_DEVICE": "cpu"
+  },
+  "data_root": "/Users/julia/RAG_new_external_s1",
+  "source_sha256": {
+   "corpus.manifest.json": "25c4b33f5cd5ee385317183ae56e2c101019c2c81907599988a379fe2e99115b",
+   "chunks-report.json": "cf5ed1be7d8b99922395f7bc765a19a6279887af61fd7c9f2b125bd6838cf2d1",
+   "index/index-receipt.json": "3fce93e02bbedb03058587b850b2ae73ede66dc89536d2e75763430de4d7abbf"
+  },
+  "cases_file": "/Users/julia/RAG_new_external_s1/conditionalqa/cases.jsonl",
+  "cases_file_sha256": "8467991cdb095fe1e2204d8eca90679da56f0bac53e3c81686d488cca59eb6b7",
+  "tools_sha256": {
+   "live_api.py": "43ff96f06af18538a2571d68a86e898ecfcdd5fcab47039f0d58bd245361a7b5",
+   "live_runner.py": "fd5f7d7b66e5be827cb1cbc23074d6b7955f64d18143a11a1f9cd4dbe9caf4d1",
+   "live_supervisor.py": "32e5a40552b62c37ee1e3cc387ae01a453b7729adadd7b9f790d73bb1906138c",
+   "stage2.sh": "8bde8bf050e814c284e688db209835501e389796b11e3f044e62ae5b831ae48c",
+   "stage2_cases.py": "17550c826764349a9ea654a18cfb107948dfcaa3474675a269695c78b572fb9d",
+   "stage2_common.py": "4d5241560ab5425faa0a1fe6c5b856454b3f8ee47e59187f0da6644b1bad48da",
+   "answers_summary.py": "b5b51f9cc913d59034e4d9cd8464410c544fe0876561eff31525e6ef7950c39d"
+  }
+ },
+ "driver_log": [
+  "2026-10-21T23:48:16Z PART p4-conditionalqa answers batches 1-1 of 10, cap 12180 s",
+  "2026-10-21T23:48:18Z START p4-conditionalqa-b01",
+  "2026-10-22T00:44:57Z LIVE_DONE p4-conditionalqa-b01 complete exit 0",
+  "2026-10-22T00:44:58Z PART_DONE",
+  "2026-10-22T00:55:23Z PART p4-conditionalqa answers batches 2-10 of 10, cap 109620 s",
+  "2026-10-22T00:55:25Z START p4-conditionalqa-b02",
+  "2026-10-22T01:42:11Z LIVE_DONE p4-conditionalqa-b02 complete exit 0",
+  "2026-10-22T01:42:39Z START p4-conditionalqa-b03",
+  "2026-10-22T02:31:17Z LIVE_DONE p4-conditionalqa-b03 complete exit 0",
+  "2026-10-22T02:31:45Z START p4-conditionalqa-b04",
+  "2026-10-22T03:17:44Z LIVE_DONE p4-conditionalqa-b04 complete exit 0",
+  "2026-10-22T03:18:12Z START p4-conditionalqa-b05",
+  "2026-10-22T03:56:56Z LIVE_DONE p4-conditionalqa-b05 complete exit 0",
+  "2026-10-22T03:56:58Z START p4-conditionalqa-b06",
+  "2026-10-22T04:27:02Z LIVE_DONE p4-conditionalqa-b06 complete exit 0",
+  "2026-10-22T04:27:29Z START p4-conditionalqa-b07",
+  "2026-10-22T05:02:19Z LIVE_DONE p4-conditionalqa-b07 complete exit 0",
+  "2026-10-22T05:02:47Z START p4-conditionalqa-b08",
+  "2026-10-22T05:59:42Z LIVE_DONE p4-conditionalqa-b08 complete exit 0",
+  "2026-10-22T05:59:46Z START p4-conditionalqa-b09",
+  "2026-10-22T06:40:19Z LIVE_DONE p4-conditionalqa-b09 complete exit 0",
+  "2026-10-22T06:40:47Z START p4-conditionalqa-b10",
+  "2026-10-22T07:17:42Z LIVE_DONE p4-conditionalqa-b10 complete exit 0",
+  "2026-10-22T07:17:43Z PART_DONE"
+ ],
+ "runs": [
+  {
+   "label": "p4-conditionalqa-b01",
+   "batch": 1,
+   "counted": true,
+   "launch": {
+    "label": "p4-conditionalqa-b01",
+    "code_sha": "5e308fe48cca0955c3007057a574a425f71e2a6a",
+    "model": "qwen3:4b-instruct-2507-q4_K_M",
+    "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+    "tenant": "ext_conditionalqa",
+    "chroma_dir": "/Users/julia/RAG_new_chat_5e308fe/chatlive/runs/p4-conditionalqa-b01.chroma",
+    "cases_file": "/Users/julia/RAG_new_external_s1/conditionalqa/cases.jsonl",
+    "started": "2026-10-21T23:48:18+00:00",
+    "api_ready": "2026-10-21T23:48:44+00:00",
+    "finished": "2026-10-22T00:44:57+00:00",
+    "status": "complete",
+    "client_cap_sec": "1020/1200",
+    "mode": "prod",
+    "overrides": {
+     "REQUEST_TIMEOUT_SEC": "3600",
+     "OLLAMA_REQUEST_TIMEOUT_SEC": "3600",
+     "STREAMING_TIMEOUT_SEC": "3600",
+     "RAG_DEVICE": "cpu"
+    },
+    "runner_exit": 0,
+    "error": null,
+    "api_killed": null,
+    "ollama_load_sec": 39.087,
+    "db_tickets_before": "94",
+    "db_tickets_after": "94",
+    "ollama_models_before": [],
+    "ollama_models_after": [
+     "qwen3:4b-instruct-2507-q4_K_M"
+    ],
+    "unloaded_models": [
+     "qwen3:4b-instruct-2507-q4_K_M"
+    ],
+    "pg_stop_error": null,
+    "unload_error": null
+   },
+   "settings": {
+    "llm_provider_profile": "local-first",
+    "ollama_model_name": "qwen3:4b-instruct-2507-q4_K_M",
+    "ollama_fast_model_name": "llama3.2:3b",
+    "model_routing_enabled": false,
+    "ollama_context_window": 4096,
+    "embedding_model": "BAAI/bge-m3",
+    "embedding_backend": "local",
+    "reranker_model": "BAAI/bge-reranker-v2-m3",
+    "rag_device": "cpu",
+    "vector_backend": "chroma",
+    "hybrid_search": true,
+    "retrieval_strategy": "hybrid",
+    "retrieval_top_k": 20,
+    "rerank_top_k": 5,
+    "hyde": false,
+    "graph_retrieval": "off",
+    "parent_expansion": true,
+    "self_rag_max_iterations": 2,
+    "fact_verification_enabled": true,
+    "streaming_enabled": false,
+    "streaming_rag_parity": false,
+    "streaming_quality_eval": true,
+    "streaming_timeout_sec": 3600.0,
+    "request_timeout_sec": 3600.0,
+    "ollama_request_timeout_sec": 3600.0,
+    "quality_threshold": 80,
+    "suggested_questions_enabled": true,
+    "llm_max_calls_per_request": 24,
+    "online_evaluators_enabled": true,
+    "max_concurrent_pipelines": 8,
+    "support_sink_backend": "local",
+    "tracing_db_path": "/Users/julia/RAG_new_chat_5e308fe/chatlive/runs/p4-conditionalqa-b01/traces.db",
+    "vectordb_chroma_dir": "/Users/julia/RAG_new_chat_5e308fe/chatlive/runs/p4-conditionalqa-b01.chroma"
+   },
+   "code": {
+    "workspace": "/Users/julia/RAG_new_chat_5e308fe",
+    "code_sha": "5e308fe48cca0955c3007057a574a425f71e2a6a",
+    "context_window_file": "/Users/julia/RAG_new_chat_5e308fe/agent/context_window.py",
+    "has_fit_all_context_docs": true
+   },
+   "settings_sha256": "929dd456578dcebbe7cd69d6fc4c0f8d876a314137054058cc46cf72bf0dc835",
+   "cases": [
+    "conditionalqa-train-1484",
+    "conditionalqa-train-1509",
+    "conditionalqa-dev-53",
+    "conditionalqa-dev-35",
+    "conditionalqa-dev-69",
+    "conditionalqa-dev-68",
+    "conditionalqa-train-2078",
+    "conditionalqa-train-2077",
+    "conditionalqa-train-236",
+    "conditionalqa-train-197"
+   ],
+   "bm25_restore_log": [
+    "Restored 13778 chunks for tenant ext_conditionalqa from the persisted collection (BM25 + parent-expansion re-enabled)"
+   ],
+   "path_breaks": [],
+   "log_levels": {
+    "WARNING api.app": 1,
+    "WARNING db.audit": 1,
+    "WARNING vectordb.embedder_manifest": 1,
+    "WARNING vectordb.manager": 1
+   },
+   "memory": {
+    "samples": 1108,
+    "swap_used_mb": [
+     666.0,
+     6520.0
+    ],
+    "free_mb_min": 4,
+    "max_rss_mb": {
+     "ollama": 3708,
+     "postgres": 9,
+     "python": 2251
+    }
+   }
+  },
+  {
+   "label": "p4-conditionalqa-b02",
+   "batch": 2,
+   "counted": true,
+   "launch": {
+    "label": "p4-conditionalqa-b02",
+    "code_sha": "5e308fe48cca0955c3007057a574a425f71e2a6a",
+    "model": "qwen3:4b-instruct-2507-q4_K_M",
+    "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+    "tenant": "ext_conditionalqa",
+    "chroma_dir": "/Users/julia/RAG_new_chat_5e308fe/chatlive/runs/p4-conditionalqa-b02.chroma",
+    "cases_file": "/Users/julia/RAG_new_external_s1/conditionalqa/cases.jsonl",
+    "started": "2026-10-22T00:55:25+00:00",
+    "api_ready": "2026-10-22T00:55:47+00:00",
+    "finished": "2026-10-22T01:42:11+00:00",
+    "status": "complete",
+    "client_cap_sec": "1020/1200",
+    "mode": "prod",
+    "overrides": {
+     "REQUEST_TIMEOUT_SEC": "3600",
+     "OLLAMA_REQUEST_TIMEOUT_SEC": "3600",
+     "STREAMING_TIMEOUT_SEC": "3600",
+     "RAG_DEVICE": "cpu"
+    },
+    "runner_exit": 0,
+    "error": null,
+    "api_killed": null,
+    "ollama_load_sec": 35.339,
+    "db_tickets_before": "94",
+    "db_tickets_after": "94",
+    "ollama_models_before": [],
+    "ollama_models_after": [
+     "qwen3:4b-instruct-2507-q4_K_M"
+    ],
+    "unloaded_models": [
+     "qwen3:4b-instruct-2507-q4_K_M"
+    ],
+    "pg_stop_error": null,
+    "unload_error": null
+   },
+   "settings": {
+    "llm_provider_profile": "local-first",
+    "ollama_model_name": "qwen3:4b-instruct-2507-q4_K_M",
+    "ollama_fast_model_name": "llama3.2:3b",
+    "model_routing_enabled": false,
+    "ollama_context_window": 4096,
+    "embedding_model": "BAAI/bge-m3",
+    "embedding_backend": "local",
+    "reranker_model": "BAAI/bge-reranker-v2-m3",
+    "rag_device": "cpu",
+    "vector_backend": "chroma",
+    "hybrid_search": true,
+    "retrieval_strategy": "hybrid",
+    "retrieval_top_k": 20,
+    "rerank_top_k": 5,
+    "hyde": false,
+    "graph_retrieval": "off",
+    "parent_expansion": true,
+    "self_rag_max_iterations": 2,
+    "fact_verification_enabled": true,
+    "streaming_enabled": false,
+    "streaming_rag_parity": false,
+    "streaming_quality_eval": true,
+    "streaming_timeout_sec": 3600.0,
+    "request_timeout_sec": 3600.0,
+    "ollama_request_timeout_sec": 3600.0,
+    "quality_threshold": 80,
+    "suggested_questions_enabled": true,
+    "llm_max_calls_per_request": 24,
+    "online_evaluators_enabled": true,
+    "max_concurrent_pipelines": 8,
+    "support_sink_backend": "local",
+    "tracing_db_path": "/Users/julia/RAG_new_chat_5e308fe/chatlive/runs/p4-conditionalqa-b02/traces.db",
+    "vectordb_chroma_dir": "/Users/julia/RAG_new_chat_5e308fe/chatlive/runs/p4-conditionalqa-b02.chroma"
+   },
+   "code": {
+    "workspace": "/Users/julia/RAG_new_chat_5e308fe",
+    "code_sha": "5e308fe48cca0955c3007057a574a425f71e2a6a",
+    "context_window_file": "/Users/julia/RAG_new_chat_5e308fe/agent/context_window.py",
+    "has_fit_all_context_docs": true
+   },
+   "settings_sha256": "2a0e3d244c67b78a0f05a6420d178077e57004924b8ecc7f723d47b524f83594",
+   "cases": [
+    "conditionalqa-train-2057",
+    "conditionalqa-train-2059",
+    "conditionalqa-train-629",
+    "conditionalqa-train-630",
+    "conditionalqa-train-1996",
+    "conditionalqa-train-2038",
+    "conditionalqa-train-1975",
+    "conditionalqa-train-1925",
+    "conditionalqa-train-1759",
+    "conditionalqa-train-466"
+   ],
+   "bm25_restore_log": [
+    "Restored 13778 chunks for tenant ext_conditionalqa from the persisted collection (BM25 + parent-expansion re-enabled)"
+   ],
+   "path_breaks": [],
+   "log_levels": {
+    "WARNING api.app": 1,
+    "WARNING db.audit": 1,
+    "WARNING vectordb.embedder_manifest": 1,
+    "WARNING vectordb.manager": 1
+   },
+   "memory": {
+    "samples": 916,
+    "swap_used_mb": [
+     1019.0,
+     6704.5
+    ],
+    "free_mb_min": 4,
+    "max_rss_mb": {
+     "ollama": 3653,
+     "postgres": 10,
+     "python": 3046
+    }
+   }
+  },
+  {
+   "label": "p4-conditionalqa-b03",
+   "batch": 3,
+   "counted": true,
+   "launch": {
+    "label": "p4-conditionalqa-b03",
+    "code_sha": "5e308fe48cca0955c3007057a574a425f71e2a6a",
+    "model": "qwen3:4b-instruct-2507-q4_K_M",
+    "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+    "tenant": "ext_conditionalqa",
+    "chroma_dir": "/Users/julia/RAG_new_chat_5e308fe/chatlive/runs/p4-conditionalqa-b03.chroma",
+    "cases_file": "/Users/julia/RAG_new_external_s1/conditionalqa/cases.jsonl",
+    "started": "2026-10-22T01:42:39+00:00",
+    "api_ready": "2026-10-22T01:42:57+00:00",
+    "finished": "2026-10-22T02:31:17+00:00",
+    "status": "complete",
+    "client_cap_sec": "1020/1200",
+    "mode": "prod",
+    "overrides": {
+     "REQUEST_TIMEOUT_SEC": "3600",
+     "OLLAMA_REQUEST_TIMEOUT_SEC": "3600",
+     "STREAMING_TIMEOUT_SEC": "3600",
+     "RAG_DEVICE": "cpu"
+    },
+    "runner_exit": 0,
+    "error": null,
+    "api_killed": null,
+    "ollama_load_sec": 34.22,
+    "db_tickets_before": "94",
+    "db_tickets_after": "94",
+    "ollama_models_before": [],
+    "ollama_models_after": [
+     "qwen3:4b-instruct-2507-q4_K_M"
+    ],
+    "unloaded_models": [
+     "qwen3:4b-instruct-2507-q4_K_M"
+    ],
+    "pg_stop_error": null,
+    "unload_error": null
+   },
+   "settings": {
+    "llm_provider_profile": "local-first",
+    "ollama_model_name": "qwen3:4b-instruct-2507-q4_K_M",
+    "ollama_fast_model_name": "llama3.2:3b",
+    "model_routing_enabled": false,
+    "ollama_context_window": 4096,
+    "embedding_model": "BAAI/bge-m3",
+    "embedding_backend": "local",
+    "reranker_model": "BAAI/bge-reranker-v2-m3",
+    "rag_device": "cpu",
+    "vector_backend": "chroma",
+    "hybrid_search": true,
+    "retrieval_strategy": "hybrid",
+    "retrieval_top_k": 20,
+    "rerank_top_k": 5,
+    "hyde": false,
+    "graph_retrieval": "off",
+    "parent_expansion": true,
+    "self_rag_max_iterations": 2,
+    "fact_verification_enabled": true,
+    "streaming_enabled": false,
+    "streaming_rag_parity": false,
+    "streaming_quality_eval": true,
+    "streaming_timeout_sec": 3600.0,
+    "request_timeout_sec": 3600.0,
+    "ollama_request_timeout_sec": 3600.0,
+    "quality_threshold": 80,
+    "suggested_questions_enabled": true,
+    "llm_max_calls_per_request": 24,
+    "online_evaluators_enabled": true,
+    "max_concurrent_pipelines": 8,
+    "support_sink_backend": "local",
+    "tracing_db_path": "/Users/julia/RAG_new_chat_5e308fe/chatlive/runs/p4-conditionalqa-b03/traces.db",
+    "vectordb_chroma_dir": "/Users/julia/RAG_new_chat_5e308fe/chatlive/runs/p4-conditionalqa-b03.chroma"
+   },
+   "code": {
+    "workspace": "/Users/julia/RAG_new_chat_5e308fe",
+    "code_sha": "5e308fe48cca0955c3007057a574a425f71e2a6a",
+    "context_window_file": "/Users/julia/RAG_new_chat_5e308fe/agent/context_window.py",
+    "has_fit_all_context_docs": true
+   },
+   "settings_sha256": "b144b032507bcf92f569c1364ed01e0d7a5437a12156aa8af05f788b1d09b640",
+   "cases": [
+    "conditionalqa-train-871",
+    "conditionalqa-train-884",
+    "conditionalqa-train-470",
+    "conditionalqa-train-511",
+    "conditionalqa-train-1497",
+    "conditionalqa-train-1580",
+    "conditionalqa-train-999",
+    "conditionalqa-train-991",
+    "conditionalqa-train-1219",
+    "conditionalqa-train-1236"
+   ],
+   "bm25_restore_log": [
+    "Restored 13778 chunks for tenant ext_conditionalqa from the persisted collection (BM25 + parent-expansion re-enabled)"
+   ],
+   "path_breaks": [],
+   "log_levels": {
+    "WARNING api.app": 1,
+    "WARNING db.audit": 1,
+    "WARNING vectordb.embedder_manifest": 1,
+    "WARNING vectordb.manager": 1
+   },
+   "memory": {
+    "samples": 953,
+    "swap_used_mb": [
+     1108.0,
+     6752.5
+    ],
+    "free_mb_min": 4,
+    "max_rss_mb": {
+     "ollama": 3738,
+     "postgres": 10,
+     "python": 2951
+    }
+   }
+  },
+  {
+   "label": "p4-conditionalqa-b04",
+   "batch": 4,
+   "counted": true,
+   "launch": {
+    "label": "p4-conditionalqa-b04",
+    "code_sha": "5e308fe48cca0955c3007057a574a425f71e2a6a",
+    "model": "qwen3:4b-instruct-2507-q4_K_M",
+    "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+    "tenant": "ext_conditionalqa",
+    "chroma_dir": "/Users/julia/RAG_new_chat_5e308fe/chatlive/runs/p4-conditionalqa-b04.chroma",
+    "cases_file": "/Users/julia/RAG_new_external_s1/conditionalqa/cases.jsonl",
+    "started": "2026-10-22T02:31:45+00:00",
+    "api_ready": "2026-10-22T02:32:09+00:00",
+    "finished": "2026-10-22T03:17:44+00:00",
+    "status": "complete",
+    "client_cap_sec": "1020/1200",
+    "mode": "prod",
+    "overrides": {
+     "REQUEST_TIMEOUT_SEC": "3600",
+     "OLLAMA_REQUEST_TIMEOUT_SEC": "3600",
+     "STREAMING_TIMEOUT_SEC": "3600",
+     "RAG_DEVICE": "cpu"
+    },
+    "runner_exit": 0,
+    "error": null,
+    "api_killed": null,
+    "ollama_load_sec": 35.665,
+    "db_tickets_before": "94",
+    "db_tickets_after": "94",
+    "ollama_models_before": [],
+    "ollama_models_after": [
+     "qwen3:4b-instruct-2507-q4_K_M"
+    ],
+    "unloaded_models": [
+     "qwen3:4b-instruct-2507-q4_K_M"
+    ],
+    "pg_stop_error": null,
+    "unload_error": null
+   },
+   "settings": {
+    "llm_provider_profile": "local-first",
+    "ollama_model_name": "qwen3:4b-instruct-2507-q4_K_M",
+    "ollama_fast_model_name": "llama3.2:3b",
+    "model_routing_enabled": false,
+    "ollama_context_window": 4096,
+    "embedding_model": "BAAI/bge-m3",
+    "embedding_backend": "local",
+    "reranker_model": "BAAI/bge-reranker-v2-m3",
+    "rag_device": "cpu",
+    "vector_backend": "chroma",
+    "hybrid_search": true,
+    "retrieval_strategy": "hybrid",
+    "retrieval_top_k": 20,
+    "rerank_top_k": 5,
+    "hyde": false,
+    "graph_retrieval": "off",
+    "parent_expansion": true,
+    "self_rag_max_iterations": 2,
+    "fact_verification_enabled": true,
+    "streaming_enabled": false,
+    "streaming_rag_parity": false,
+    "streaming_quality_eval": true,
+    "streaming_timeout_sec": 3600.0,
+    "request_timeout_sec": 3600.0,
+    "ollama_request_timeout_sec": 3600.0,
+    "quality_threshold": 80,
+    "suggested_questions_enabled": true,
+    "llm_max_calls_per_request": 24,
+    "online_evaluators_enabled": true,
+    "max_concurrent_pipelines": 8,
+    "support_sink_backend": "local",
+    "tracing_db_path": "/Users/julia/RAG_new_chat_5e308fe/chatlive/runs/p4-conditionalqa-b04/traces.db",
+    "vectordb_chroma_dir": "/Users/julia/RAG_new_chat_5e308fe/chatlive/runs/p4-conditionalqa-b04.chroma"
+   },
+   "code": {
+    "workspace": "/Users/julia/RAG_new_chat_5e308fe",
+    "code_sha": "5e308fe48cca0955c3007057a574a425f71e2a6a",
+    "context_window_file": "/Users/julia/RAG_new_chat_5e308fe/agent/context_window.py",
+    "has_fit_all_context_docs": true
+   },
+   "settings_sha256": "16c75456fde5b357d30d96e2160b542f699f7cb61f7cff87e1958c555cb6afa0",
+   "cases": [
+    "conditionalqa-dev-40",
+    "conditionalqa-dev-58",
+    "conditionalqa-train-433",
+    "conditionalqa-train-1749",
+    "conditionalqa-train-593",
+    "conditionalqa-train-2137",
+    "conditionalqa-train-815",
+    "conditionalqa-train-2303",
+    "conditionalqa-train-588",
+    "conditionalqa-train-587"
+   ],
+   "bm25_restore_log": [
+    "Restored 13778 chunks for tenant ext_conditionalqa from the persisted collection (BM25 + parent-expansion re-enabled)"
+   ],
+   "path_breaks": [],
+   "log_levels": {
+    "WARNING api.app": 1,
+    "WARNING db.audit": 1,
+    "WARNING vectordb.embedder_manifest": 1,
+    "WARNING vectordb.manager": 1
+   },
+   "memory": {
+    "samples": 900,
+    "swap_used_mb": [
+     1166.5,
+     7620.5
+    ],
+    "free_mb_min": 4,
+    "max_rss_mb": {
+     "ollama": 3641,
+     "postgres": 10,
+     "python": 2957
+    }
+   }
+  },
+  {
+   "label": "p4-conditionalqa-b05",
+   "batch": 5,
+   "counted": true,
+   "launch": {
+    "label": "p4-conditionalqa-b05",
+    "code_sha": "5e308fe48cca0955c3007057a574a425f71e2a6a",
+    "model": "qwen3:4b-instruct-2507-q4_K_M",
+    "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+    "tenant": "ext_conditionalqa",
+    "chroma_dir": "/Users/julia/RAG_new_chat_5e308fe/chatlive/runs/p4-conditionalqa-b05.chroma",
+    "cases_file": "/Users/julia/RAG_new_external_s1/conditionalqa/cases.jsonl",
+    "started": "2026-10-22T03:18:12+00:00",
+    "api_ready": "2026-10-22T03:18:46+00:00",
+    "finished": "2026-10-22T03:56:56+00:00",
+    "status": "complete",
+    "client_cap_sec": "1020/1200",
+    "mode": "prod",
+    "overrides": {
+     "REQUEST_TIMEOUT_SEC": "3600",
+     "OLLAMA_REQUEST_TIMEOUT_SEC": "3600",
+     "STREAMING_TIMEOUT_SEC": "3600",
+     "RAG_DEVICE": "cpu"
+    },
+    "runner_exit": 0,
+    "error": null,
+    "api_killed": null,
+    "ollama_load_sec": 35.637,
+    "db_tickets_before": "94",
+    "db_tickets_after": "94",
+    "ollama_models_before": [],
+    "ollama_models_after": [
+     "qwen3:4b-instruct-2507-q4_K_M"
+    ],
+    "unloaded_models": [
+     "qwen3:4b-instruct-2507-q4_K_M"
+    ],
+    "pg_stop_error": null,
+    "unload_error": null
+   },
+   "settings": {
+    "llm_provider_profile": "local-first",
+    "ollama_model_name": "qwen3:4b-instruct-2507-q4_K_M",
+    "ollama_fast_model_name": "llama3.2:3b",
+    "model_routing_enabled": false,
+    "ollama_context_window": 4096,
+    "embedding_model": "BAAI/bge-m3",
+    "embedding_backend": "local",
+    "reranker_model": "BAAI/bge-reranker-v2-m3",
+    "rag_device": "cpu",
+    "vector_backend": "chroma",
+    "hybrid_search": true,
+    "retrieval_strategy": "hybrid",
+    "retrieval_top_k": 20,
+    "rerank_top_k": 5,
+    "hyde": false,
+    "graph_retrieval": "off",
+    "parent_expansion": true,
+    "self_rag_max_iterations": 2,
+    "fact_verification_enabled": true,
+    "streaming_enabled": false,
+    "streaming_rag_parity": false,
+    "streaming_quality_eval": true,
+    "streaming_timeout_sec": 3600.0,
+    "request_timeout_sec": 3600.0,
+    "ollama_request_timeout_sec": 3600.0,
+    "quality_threshold": 80,
+    "suggested_questions_enabled": true,
+    "llm_max_calls_per_request": 24,
+    "online_evaluators_enabled": true,
+    "max_concurrent_pipelines": 8,
+    "support_sink_backend": "local",
+    "tracing_db_path": "/Users/julia/RAG_new_chat_5e308fe/chatlive/runs/p4-conditionalqa-b05/traces.db",
+    "vectordb_chroma_dir": "/Users/julia/RAG_new_chat_5e308fe/chatlive/runs/p4-conditionalqa-b05.chroma"
+   },
+   "code": {
+    "workspace": "/Users/julia/RAG_new_chat_5e308fe",
+    "code_sha": "5e308fe48cca0955c3007057a574a425f71e2a6a",
+    "context_window_file": "/Users/julia/RAG_new_chat_5e308fe/agent/context_window.py",
+    "has_fit_all_context_docs": true
+   },
+   "settings_sha256": "579c19a22ff8b2592ae73edc1d3ec3b3ecfd8bf7f70322b107697d505f6c17b2",
+   "cases": [
+    "conditionalqa-train-1684",
+    "conditionalqa-train-1659",
+    "conditionalqa-train-877",
+    "conditionalqa-train-851",
+    "conditionalqa-dev-249",
+    "conditionalqa-dev-242",
+    "conditionalqa-train-1559",
+    "conditionalqa-train-1590",
+    "conditionalqa-dev-150",
+    "conditionalqa-dev-161"
+   ],
+   "bm25_restore_log": [
+    "Restored 13778 chunks for tenant ext_conditionalqa from the persisted collection (BM25 + parent-expansion re-enabled)"
+   ],
+   "path_breaks": [],
+   "log_levels": {
+    "WARNING api.app": 1,
+    "WARNING db.audit": 1,
+    "WARNING vectordb.embedder_manifest": 1,
+    "WARNING vectordb.manager": 1
+   },
+   "memory": {
+    "samples": 757,
+    "swap_used_mb": [
+     1122.75,
+     5770.25
+    ],
+    "free_mb_min": 3,
+    "max_rss_mb": {
+     "ollama": 3565,
+     "postgres": 10,
+     "python": 2916
+    }
+   }
+  },
+  {
+   "label": "p4-conditionalqa-b06",
+   "batch": 6,
+   "counted": true,
+   "launch": {
+    "label": "p4-conditionalqa-b06",
+    "code_sha": "5e308fe48cca0955c3007057a574a425f71e2a6a",
+    "model": "qwen3:4b-instruct-2507-q4_K_M",
+    "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+    "tenant": "ext_conditionalqa",
+    "chroma_dir": "/Users/julia/RAG_new_chat_5e308fe/chatlive/runs/p4-conditionalqa-b06.chroma",
+    "cases_file": "/Users/julia/RAG_new_external_s1/conditionalqa/cases.jsonl",
+    "started": "2026-10-22T03:56:58+00:00",
+    "api_ready": "2026-10-22T03:57:20+00:00",
+    "finished": "2026-10-22T04:27:02+00:00",
+    "status": "complete",
+    "client_cap_sec": "1020/1200",
+    "mode": "prod",
+    "overrides": {
+     "REQUEST_TIMEOUT_SEC": "3600",
+     "OLLAMA_REQUEST_TIMEOUT_SEC": "3600",
+     "STREAMING_TIMEOUT_SEC": "3600",
+     "RAG_DEVICE": "cpu"
+    },
+    "runner_exit": 0,
+    "error": null,
+    "api_killed": null,
+    "ollama_load_sec": 35.806,
+    "db_tickets_before": "94",
+    "db_tickets_after": "94",
+    "ollama_models_before": [],
+    "ollama_models_after": [
+     "qwen3:4b-instruct-2507-q4_K_M"
+    ],
+    "unloaded_models": [
+     "qwen3:4b-instruct-2507-q4_K_M"
+    ],
+    "pg_stop_error": null,
+    "unload_error": null
+   },
+   "settings": {
+    "llm_provider_profile": "local-first",
+    "ollama_model_name": "qwen3:4b-instruct-2507-q4_K_M",
+    "ollama_fast_model_name": "llama3.2:3b",
+    "model_routing_enabled": false,
+    "ollama_context_window": 4096,
+    "embedding_model": "BAAI/bge-m3",
+    "embedding_backend": "local",
+    "reranker_model": "BAAI/bge-reranker-v2-m3",
+    "rag_device": "cpu",
+    "vector_backend": "chroma",
+    "hybrid_search": true,
+    "retrieval_strategy": "hybrid",
+    "retrieval_top_k": 20,
+    "rerank_top_k": 5,
+    "hyde": false,
+    "graph_retrieval": "off",
+    "parent_expansion": true,
+    "self_rag_max_iterations": 2,
+    "fact_verification_enabled": true,
+    "streaming_enabled": false,
+    "streaming_rag_parity": false,
+    "streaming_quality_eval": true,
+    "streaming_timeout_sec": 3600.0,
+    "request_timeout_sec": 3600.0,
+    "ollama_request_timeout_sec": 3600.0,
+    "quality_threshold": 80,
+    "suggested_questions_enabled": true,
+    "llm_max_calls_per_request": 24,
+    "online_evaluators_enabled": true,
+    "max_concurrent_pipelines": 8,
+    "support_sink_backend": "local",
+    "tracing_db_path": "/Users/julia/RAG_new_chat_5e308fe/chatlive/runs/p4-conditionalqa-b06/traces.db",
+    "vectordb_chroma_dir": "/Users/julia/RAG_new_chat_5e308fe/chatlive/runs/p4-conditionalqa-b06.chroma"
+   },
+   "code": {
+    "workspace": "/Users/julia/RAG_new_chat_5e308fe",
+    "code_sha": "5e308fe48cca0955c3007057a574a425f71e2a6a",
+    "context_window_file": "/Users/julia/RAG_new_chat_5e308fe/agent/context_window.py",
+    "has_fit_all_context_docs": true
+   },
+   "settings_sha256": "bff93318e13ede5a649702825f116d0a6e96447d3489f2bdeada7e7215e4b3a2",
+   "cases": [
+    "conditionalqa-train-31",
+    "conditionalqa-train-57",
+    "conditionalqa-train-2223",
+    "conditionalqa-train-139",
+    "conditionalqa-train-2178",
+    "conditionalqa-train-84",
+    "conditionalqa-train-795",
+    "conditionalqa-train-612",
+    "conditionalqa-train-1786",
+    "conditionalqa-train-1785"
+   ],
+   "bm25_restore_log": [
+    "Restored 13778 chunks for tenant ext_conditionalqa from the persisted collection (BM25 + parent-expansion re-enabled)"
+   ],
+   "path_breaks": [],
+   "log_levels": {
+    "WARNING api.app": 1,
+    "WARNING db.audit": 1,
+    "WARNING vectordb.embedder_manifest": 1,
+    "WARNING vectordb.manager": 1
+   },
+   "memory": {
+    "samples": 587,
+    "swap_used_mb": [
+     1135.5,
+     5971.25
+    ],
+    "free_mb_min": 4,
+    "max_rss_mb": {
+     "ollama": 3519,
+     "postgres": 10,
+     "python": 3149
+    }
+   }
+  },
+  {
+   "label": "p4-conditionalqa-b07",
+   "batch": 7,
+   "counted": true,
+   "launch": {
+    "label": "p4-conditionalqa-b07",
+    "code_sha": "5e308fe48cca0955c3007057a574a425f71e2a6a",
+    "model": "qwen3:4b-instruct-2507-q4_K_M",
+    "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+    "tenant": "ext_conditionalqa",
+    "chroma_dir": "/Users/julia/RAG_new_chat_5e308fe/chatlive/runs/p4-conditionalqa-b07.chroma",
+    "cases_file": "/Users/julia/RAG_new_external_s1/conditionalqa/cases.jsonl",
+    "started": "2026-10-22T04:27:30+00:00",
+    "api_ready": "2026-10-22T04:27:49+00:00",
+    "finished": "2026-10-22T05:02:19+00:00",
+    "status": "complete",
+    "client_cap_sec": "1020/1200",
+    "mode": "prod",
+    "overrides": {
+     "REQUEST_TIMEOUT_SEC": "3600",
+     "OLLAMA_REQUEST_TIMEOUT_SEC": "3600",
+     "STREAMING_TIMEOUT_SEC": "3600",
+     "RAG_DEVICE": "cpu"
+    },
+    "runner_exit": 0,
+    "error": null,
+    "api_killed": null,
+    "ollama_load_sec": 34.564,
+    "db_tickets_before": "94",
+    "db_tickets_after": "94",
+    "ollama_models_before": [],
+    "ollama_models_after": [
+     "qwen3:4b-instruct-2507-q4_K_M"
+    ],
+    "unloaded_models": [
+     "qwen3:4b-instruct-2507-q4_K_M"
+    ],
+    "pg_stop_error": null,
+    "unload_error": null
+   },
+   "settings": {
+    "llm_provider_profile": "local-first",
+    "ollama_model_name": "qwen3:4b-instruct-2507-q4_K_M",
+    "ollama_fast_model_name": "llama3.2:3b",
+    "model_routing_enabled": false,
+    "ollama_context_window": 4096,
+    "embedding_model": "BAAI/bge-m3",
+    "embedding_backend": "local",
+    "reranker_model": "BAAI/bge-reranker-v2-m3",
+    "rag_device": "cpu",
+    "vector_backend": "chroma",
+    "hybrid_search": true,
+    "retrieval_strategy": "hybrid",
+    "retrieval_top_k": 20,
+    "rerank_top_k": 5,
+    "hyde": false,
+    "graph_retrieval": "off",
+    "parent_expansion": true,
+    "self_rag_max_iterations": 2,
+    "fact_verification_enabled": true,
+    "streaming_enabled": false,
+    "streaming_rag_parity": false,
+    "streaming_quality_eval": true,
+    "streaming_timeout_sec": 3600.0,
+    "request_timeout_sec": 3600.0,
+    "ollama_request_timeout_sec": 3600.0,
+    "quality_threshold": 80,
+    "suggested_questions_enabled": true,
+    "llm_max_calls_per_request": 24,
+    "online_evaluators_enabled": true,
+    "max_concurrent_pipelines": 8,
+    "support_sink_backend": "local",
+    "tracing_db_path": "/Users/julia/RAG_new_chat_5e308fe/chatlive/runs/p4-conditionalqa-b07/traces.db",
+    "vectordb_chroma_dir": "/Users/julia/RAG_new_chat_5e308fe/chatlive/runs/p4-conditionalqa-b07.chroma"
+   },
+   "code": {
+    "workspace": "/Users/julia/RAG_new_chat_5e308fe",
+    "code_sha": "5e308fe48cca0955c3007057a574a425f71e2a6a",
+    "context_window_file": "/Users/julia/RAG_new_chat_5e308fe/agent/context_window.py",
+    "has_fit_all_context_docs": true
+   },
+   "settings_sha256": "3e73273f07fa5b578d064ae87513765922d2c3fc40e4b464b2ba2b8207011c37",
+   "cases": [
+    "conditionalqa-train-315",
+    "conditionalqa-train-347",
+    "conditionalqa-train-1226",
+    "conditionalqa-train-1284",
+    "conditionalqa-dev-14",
+    "conditionalqa-dev-26",
+    "conditionalqa-train-1309",
+    "conditionalqa-train-1310",
+    "conditionalqa-train-1877",
+    "conditionalqa-train-1850"
+   ],
+   "bm25_restore_log": [
+    "Restored 13778 chunks for tenant ext_conditionalqa from the persisted collection (BM25 + parent-expansion re-enabled)"
+   ],
+   "path_breaks": [],
+   "log_levels": {
+    "WARNING api.app": 1,
+    "WARNING db.audit": 1,
+    "WARNING vectordb.embedder_manifest": 1,
+    "WARNING vectordb.manager": 1
+   },
+   "memory": {
+    "samples": 679,
+    "swap_used_mb": [
+     1155.75,
+     5817.5
+    ],
+    "free_mb_min": 3,
+    "max_rss_mb": {
+     "ollama": 3592,
+     "postgres": 10,
+     "python": 2962
+    }
+   }
+  },
+  {
+   "label": "p4-conditionalqa-b08",
+   "batch": 8,
+   "counted": true,
+   "launch": {
+    "label": "p4-conditionalqa-b08",
+    "code_sha": "5e308fe48cca0955c3007057a574a425f71e2a6a",
+    "model": "qwen3:4b-instruct-2507-q4_K_M",
+    "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+    "tenant": "ext_conditionalqa",
+    "chroma_dir": "/Users/julia/RAG_new_chat_5e308fe/chatlive/runs/p4-conditionalqa-b08.chroma",
+    "cases_file": "/Users/julia/RAG_new_external_s1/conditionalqa/cases.jsonl",
+    "started": "2026-10-22T05:02:47+00:00",
+    "api_ready": "2026-10-22T05:03:09+00:00",
+    "finished": "2026-10-22T05:59:42+00:00",
+    "status": "complete",
+    "client_cap_sec": "1020/1200",
+    "mode": "prod",
+    "overrides": {
+     "REQUEST_TIMEOUT_SEC": "3600",
+     "OLLAMA_REQUEST_TIMEOUT_SEC": "3600",
+     "STREAMING_TIMEOUT_SEC": "3600",
+     "RAG_DEVICE": "cpu"
+    },
+    "runner_exit": 0,
+    "error": null,
+    "api_killed": null,
+    "ollama_load_sec": 33.668,
+    "db_tickets_before": "94",
+    "db_tickets_after": "94",
+    "ollama_models_before": [],
+    "ollama_models_after": [
+     "qwen3:4b-instruct-2507-q4_K_M"
+    ],
+    "unloaded_models": [
+     "qwen3:4b-instruct-2507-q4_K_M"
+    ],
+    "pg_stop_error": null,
+    "unload_error": null
+   },
+   "settings": {
+    "llm_provider_profile": "local-first",
+    "ollama_model_name": "qwen3:4b-instruct-2507-q4_K_M",
+    "ollama_fast_model_name": "llama3.2:3b",
+    "model_routing_enabled": false,
+    "ollama_context_window": 4096,
+    "embedding_model": "BAAI/bge-m3",
+    "embedding_backend": "local",
+    "reranker_model": "BAAI/bge-reranker-v2-m3",
+    "rag_device": "cpu",
+    "vector_backend": "chroma",
+    "hybrid_search": true,
+    "retrieval_strategy": "hybrid",
+    "retrieval_top_k": 20,
+    "rerank_top_k": 5,
+    "hyde": false,
+    "graph_retrieval": "off",
+    "parent_expansion": true,
+    "self_rag_max_iterations": 2,
+    "fact_verification_enabled": true,
+    "streaming_enabled": false,
+    "streaming_rag_parity": false,
+    "streaming_quality_eval": true,
+    "streaming_timeout_sec": 3600.0,
+    "request_timeout_sec": 3600.0,
+    "ollama_request_timeout_sec": 3600.0,
+    "quality_threshold": 80,
+    "suggested_questions_enabled": true,
+    "llm_max_calls_per_request": 24,
+    "online_evaluators_enabled": true,
+    "max_concurrent_pipelines": 8,
+    "support_sink_backend": "local",
+    "tracing_db_path": "/Users/julia/RAG_new_chat_5e308fe/chatlive/runs/p4-conditionalqa-b08/traces.db",
+    "vectordb_chroma_dir": "/Users/julia/RAG_new_chat_5e308fe/chatlive/runs/p4-conditionalqa-b08.chroma"
+   },
+   "code": {
+    "workspace": "/Users/julia/RAG_new_chat_5e308fe",
+    "code_sha": "5e308fe48cca0955c3007057a574a425f71e2a6a",
+    "context_window_file": "/Users/julia/RAG_new_chat_5e308fe/agent/context_window.py",
+    "has_fit_all_context_docs": true
+   },
+   "settings_sha256": "866376a1b5fcfd2b3c33361d5b472276fb801f9b640300d277050458e53ed617",
+   "cases": [
+    "conditionalqa-train-1716",
+    "conditionalqa-train-1666",
+    "conditionalqa-train-199",
+    "conditionalqa-train-125",
+    "conditionalqa-train-12",
+    "conditionalqa-train-46",
+    "conditionalqa-train-322",
+    "conditionalqa-train-2152",
+    "conditionalqa-train-1648",
+    "conditionalqa-train-1647"
+   ],
+   "bm25_restore_log": [
+    "Restored 13778 chunks for tenant ext_conditionalqa from the persisted collection (BM25 + parent-expansion re-enabled)"
+   ],
+   "path_breaks": [],
+   "log_levels": {
+    "WARNING api.app": 1,
+    "WARNING db.audit": 1,
+    "WARNING vectordb.embedder_manifest": 1,
+    "WARNING vectordb.manager": 1
+   },
+   "memory": {
+    "samples": 1102,
+    "swap_used_mb": [
+     1122.0,
+     8429.25
+    ],
+    "free_mb_min": 3,
+    "max_rss_mb": {
+     "ollama": 3645,
+     "postgres": 10,
+     "python": 2985
+    }
+   }
+  },
+  {
+   "label": "p4-conditionalqa-b09",
+   "batch": 9,
+   "counted": true,
+   "launch": {
+    "label": "p4-conditionalqa-b09",
+    "code_sha": "5e308fe48cca0955c3007057a574a425f71e2a6a",
+    "model": "qwen3:4b-instruct-2507-q4_K_M",
+    "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+    "tenant": "ext_conditionalqa",
+    "chroma_dir": "/Users/julia/RAG_new_chat_5e308fe/chatlive/runs/p4-conditionalqa-b09.chroma",
+    "cases_file": "/Users/julia/RAG_new_external_s1/conditionalqa/cases.jsonl",
+    "started": "2026-10-22T05:59:46+00:00",
+    "api_ready": "2026-10-22T06:00:40+00:00",
+    "finished": "2026-10-22T06:40:19+00:00",
+    "status": "complete",
+    "client_cap_sec": "1020/1200",
+    "mode": "prod",
+    "overrides": {
+     "REQUEST_TIMEOUT_SEC": "3600",
+     "OLLAMA_REQUEST_TIMEOUT_SEC": "3600",
+     "STREAMING_TIMEOUT_SEC": "3600",
+     "RAG_DEVICE": "cpu"
+    },
+    "runner_exit": 0,
+    "error": null,
+    "api_killed": null,
+    "ollama_load_sec": 54.653,
+    "db_tickets_before": "94",
+    "db_tickets_after": "94",
+    "ollama_models_before": [],
+    "ollama_models_after": [
+     "qwen3:4b-instruct-2507-q4_K_M"
+    ],
+    "unloaded_models": [
+     "qwen3:4b-instruct-2507-q4_K_M"
+    ],
+    "pg_stop_error": null,
+    "unload_error": null
+   },
+   "settings": {
+    "llm_provider_profile": "local-first",
+    "ollama_model_name": "qwen3:4b-instruct-2507-q4_K_M",
+    "ollama_fast_model_name": "llama3.2:3b",
+    "model_routing_enabled": false,
+    "ollama_context_window": 4096,
+    "embedding_model": "BAAI/bge-m3",
+    "embedding_backend": "local",
+    "reranker_model": "BAAI/bge-reranker-v2-m3",
+    "rag_device": "cpu",
+    "vector_backend": "chroma",
+    "hybrid_search": true,
+    "retrieval_strategy": "hybrid",
+    "retrieval_top_k": 20,
+    "rerank_top_k": 5,
+    "hyde": false,
+    "graph_retrieval": "off",
+    "parent_expansion": true,
+    "self_rag_max_iterations": 2,
+    "fact_verification_enabled": true,
+    "streaming_enabled": false,
+    "streaming_rag_parity": false,
+    "streaming_quality_eval": true,
+    "streaming_timeout_sec": 3600.0,
+    "request_timeout_sec": 3600.0,
+    "ollama_request_timeout_sec": 3600.0,
+    "quality_threshold": 80,
+    "suggested_questions_enabled": true,
+    "llm_max_calls_per_request": 24,
+    "online_evaluators_enabled": true,
+    "max_concurrent_pipelines": 8,
+    "support_sink_backend": "local",
+    "tracing_db_path": "/Users/julia/RAG_new_chat_5e308fe/chatlive/runs/p4-conditionalqa-b09/traces.db",
+    "vectordb_chroma_dir": "/Users/julia/RAG_new_chat_5e308fe/chatlive/runs/p4-conditionalqa-b09.chroma"
+   },
+   "code": {
+    "workspace": "/Users/julia/RAG_new_chat_5e308fe",
+    "code_sha": "5e308fe48cca0955c3007057a574a425f71e2a6a",
+    "context_window_file": "/Users/julia/RAG_new_chat_5e308fe/agent/context_window.py",
+    "has_fit_all_context_docs": true
+   },
+   "settings_sha256": "5d47a533828ca69b556da53dfdfec0a62dba1a37e9e65c0eee6b7f4c0a8e213b",
+   "cases": [
+    "conditionalqa-train-1510",
+    "conditionalqa-dev-34",
+    "conditionalqa-train-2072",
+    "conditionalqa-train-658",
+    "conditionalqa-train-1995",
+    "conditionalqa-train-992",
+    "conditionalqa-train-785",
+    "conditionalqa-train-1658",
+    "conditionalqa-dev-250",
+    "conditionalqa-train-1548"
+   ],
+   "bm25_restore_log": [
+    "Restored 13778 chunks for tenant ext_conditionalqa from the persisted collection (BM25 + parent-expansion re-enabled)"
+   ],
+   "path_breaks": [],
+   "log_levels": {
+    "WARNING api.app": 1,
+    "WARNING db.audit": 1,
+    "WARNING vectordb.embedder_manifest": 1,
+    "WARNING vectordb.manager": 1
+   },
+   "memory": {
+    "samples": 785,
+    "swap_used_mb": [
+     1111.75,
+     7292.75
+    ],
+    "free_mb_min": 3,
+    "max_rss_mb": {
+     "ollama": 3857,
+     "postgres": 10,
+     "python": 2244
+    }
+   }
+  },
+  {
+   "label": "p4-conditionalqa-b10",
+   "batch": 10,
+   "counted": true,
+   "launch": {
+    "label": "p4-conditionalqa-b10",
+    "code_sha": "5e308fe48cca0955c3007057a574a425f71e2a6a",
+    "model": "qwen3:4b-instruct-2507-q4_K_M",
+    "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+    "tenant": "ext_conditionalqa",
+    "chroma_dir": "/Users/julia/RAG_new_chat_5e308fe/chatlive/runs/p4-conditionalqa-b10.chroma",
+    "cases_file": "/Users/julia/RAG_new_external_s1/conditionalqa/cases.jsonl",
+    "started": "2026-10-22T06:40:47+00:00",
+    "api_ready": "2026-10-22T06:41:13+00:00",
+    "finished": "2026-10-22T07:17:42+00:00",
+    "status": "complete",
+    "client_cap_sec": "1020/1200",
+    "mode": "prod",
+    "overrides": {
+     "REQUEST_TIMEOUT_SEC": "3600",
+     "OLLAMA_REQUEST_TIMEOUT_SEC": "3600",
+     "STREAMING_TIMEOUT_SEC": "3600",
+     "RAG_DEVICE": "cpu"
+    },
+    "runner_exit": 0,
+    "error": null,
+    "api_killed": null,
+    "ollama_load_sec": 31.452,
+    "db_tickets_before": "94",
+    "db_tickets_after": "94",
+    "ollama_models_before": [],
+    "ollama_models_after": [
+     "qwen3:4b-instruct-2507-q4_K_M"
+    ],
+    "unloaded_models": [
+     "qwen3:4b-instruct-2507-q4_K_M"
+    ],
+    "pg_stop_error": null,
+    "unload_error": null
+   },
+   "settings": {
+    "llm_provider_profile": "local-first",
+    "ollama_model_name": "qwen3:4b-instruct-2507-q4_K_M",
+    "ollama_fast_model_name": "llama3.2:3b",
+    "model_routing_enabled": false,
+    "ollama_context_window": 4096,
+    "embedding_model": "BAAI/bge-m3",
+    "embedding_backend": "local",
+    "reranker_model": "BAAI/bge-reranker-v2-m3",
+    "rag_device": "cpu",
+    "vector_backend": "chroma",
+    "hybrid_search": true,
+    "retrieval_strategy": "hybrid",
+    "retrieval_top_k": 20,
+    "rerank_top_k": 5,
+    "hyde": false,
+    "graph_retrieval": "off",
+    "parent_expansion": true,
+    "self_rag_max_iterations": 2,
+    "fact_verification_enabled": true,
+    "streaming_enabled": false,
+    "streaming_rag_parity": false,
+    "streaming_quality_eval": true,
+    "streaming_timeout_sec": 3600.0,
+    "request_timeout_sec": 3600.0,
+    "ollama_request_timeout_sec": 3600.0,
+    "quality_threshold": 80,
+    "suggested_questions_enabled": true,
+    "llm_max_calls_per_request": 24,
+    "online_evaluators_enabled": true,
+    "max_concurrent_pipelines": 8,
+    "support_sink_backend": "local",
+    "tracing_db_path": "/Users/julia/RAG_new_chat_5e308fe/chatlive/runs/p4-conditionalqa-b10/traces.db",
+    "vectordb_chroma_dir": "/Users/julia/RAG_new_chat_5e308fe/chatlive/runs/p4-conditionalqa-b10.chroma"
+   },
+   "code": {
+    "workspace": "/Users/julia/RAG_new_chat_5e308fe",
+    "code_sha": "5e308fe48cca0955c3007057a574a425f71e2a6a",
+    "context_window_file": "/Users/julia/RAG_new_chat_5e308fe/agent/context_window.py",
+    "has_fit_all_context_docs": true
+   },
+   "settings_sha256": "1437d2985424c50d3d44d9a623434d274c85ff370b150c59dfcd86b830ce31c1",
+   "cases": [
+    "conditionalqa-train-1547",
+    "conditionalqa-train-37",
+    "conditionalqa-train-370",
+    "conditionalqa-train-1534",
+    "conditionalqa-train-143",
+    "conditionalqa-train-1693",
+    "conditionalqa-train-1692",
+    "conditionalqa-train-780",
+    "conditionalqa-train-608",
+    "conditionalqa-dev-118"
+   ],
+   "bm25_restore_log": [
+    "Restored 13778 chunks for tenant ext_conditionalqa from the persisted collection (BM25 + parent-expansion re-enabled)"
+   ],
+   "path_breaks": [],
+   "log_levels": {
+    "WARNING api.app": 1,
+    "WARNING db.audit": 1,
+    "WARNING vectordb.embedder_manifest": 1,
+    "WARNING vectordb.manager": 1
+   },
+   "memory": {
+    "samples": 713,
+    "swap_used_mb": [
+     1240.5,
+     6791.5
+    ],
+    "free_mb_min": 3,
+    "max_rss_mb": {
+     "ollama": 3452,
+     "postgres": 10,
+     "python": 2877
+    }
+   }
+  }
+ ],
+ "aggregate": {
+  "registered": 100,
+  "measured": 100,
+  "missing": [],
+  "out_of_place": [],
+  "path_breaks": {},
+  "answered": 100,
+  "routes": {
+   "auto": 73,
+   "human": 27
+  },
+  "quality_below_80": 27,
+  "quality_sources": {
+   "llm": 100
+  },
+  "keywords": {
+   "None": 100
+  },
+  "retrievals_per_case": {
+   "1": 100
+  },
+  "rerank_status": {
+   "ok": 100
+  },
+  "pool_size": {
+   "n": 100,
+   "min": 24,
+   "median": 36.0,
+   "p90": 40.0,
+   "max": 40
+  },
+  "prompt_labels": {
+   "5": 98,
+   "4": 2
+  },
+  "with_marks": 67,
+  "marks_past_labels": 0,
+  "answer_script_vs_question": {
+   "latin->latin": 100
+  },
+  "times": {
+   "first_of_batch": {
+    "total_sec": {
+     "n": 10,
+     "min": 164.466,
+     "median": 270.288,
+     "p90": 360.553,
+     "max": 377.803
+    },
+    "first_token_sec": {
+     "n": 10,
+     "min": 101.814,
+     "median": 164.719,
+     "p90": 246.805,
+     "max": 272.202
+    },
+    "result_sec": {
+     "n": 10,
+     "min": 164.465,
+     "median": 270.286,
+     "p90": 360.55,
+     "max": 377.784
+    },
+    "retrieval_sec": {
+     "n": 10,
+     "min": 50.641,
+     "median": 115.757,
+     "p90": 186.164,
+     "max": 211.286
+    },
+    "rerank_sec": {
+     "n": 10,
+     "min": 27.61,
+     "median": 61.136,
+     "p90": 117.097,
+     "max": 126.947
+    },
+    "stream_sec": {
+     "n": 10,
+     "min": 45.254,
+     "median": 63.658,
+     "p90": 94.839,
+     "max": 98.571
+    }
+   },
+   "rest": {
+    "total_sec": {
+     "n": 90,
+     "min": 119.582,
+     "median": 253.083,
+     "p90": 327.698,
+     "max": 508.985
+    },
+    "first_token_sec": {
+     "n": 90,
+     "min": 60.013,
+     "median": 168.839,
+     "p90": 248.509,
+     "max": 387.799
+    },
+    "result_sec": {
+     "n": 90,
+     "min": 119.581,
+     "median": 253.082,
+     "p90": 327.697,
+     "max": 508.908
+    },
+    "retrieval_sec": {
+     "n": 90,
+     "min": 27.299,
+     "median": 114.016,
+     "p90": 192.501,
+     "max": 298.757
+    },
+    "rerank_sec": {
+     "n": 90,
+     "min": 21.621,
+     "median": 54.608,
+     "p90": 126.302,
+     "max": 225.252
+    },
+    "stream_sec": {
+     "n": 90,
+     "min": 30.314,
+     "median": 73.166,
+     "p90": 96.579,
+     "max": 146.729
+    }
+   }
+  },
+  "swap_used_mb_max": 8429.25
+ }
+}

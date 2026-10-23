@@ -1,0 +1,24 @@
+{
+  "exported_at": "2026-10-23",
+  "code_sha": "5e308fe48cca0955c3007057a574a425f71e2a6a",
+  "source": "/Users/julia/RAG_new_stage2_external_resume_20261022",
+  "private_raw": {
+    "archive_sha256": "895f7040fd48bba72346f811af273d5613031bf4537d87c6c22fce86c92c485b",
+    "raw_manifest_sha256": "2017c5d286d218aeaf8689e004b9f8f3ccbfc3b83b428d826f6ab109d88b1222",
+    "members": 1356
+  },
+  "files": {
+    "p2-conditionalqa.cases.jsonl": "ff58ebd3d46885c82b6ca10ec1ed1155c1e96227a2c73a066536feceddbae353",
+    "p2-conditionalqa.json": "7dedf65fb0c4fd8ea8a961083619235eb246c37952143a1a14506437875679a5",
+    "p2-multihoprag.cases.jsonl": "dfadc164361a9704841d46216b1f45cbaa8b0ed64b5065f6849b2eca944fe27a",
+    "p2-multihoprag.json": "99d02a22bd39cff49c068d465e8ca71c0b42b5cc5fe31085bac061c3e74c1452",
+    "p2-wixqa.cases.jsonl": "6c75a5b80673dfd49eb7428acff2aa39c432833d06c5d5d1419f309ecb3350ce",
+    "p2-wixqa.json": "bc9b8677460512b2eb9ccb616a49a16ce054264a45cf81de25d169fb0fef8aa3",
+    "p4-conditionalqa.cases.jsonl": "351628f994e8fd0227ba43878c5ab66b823a976f3759fbe5e2afd0127d9b5c57",
+    "p4-conditionalqa.json": "ec4f1723624b73e328f66b9115f6b4b5b4185c9c0601c1be14cea24d339d6189",
+    "p4-multihoprag.cases.jsonl": "f0c2f8976a8b86de1f05954a2741057c744a8f766ff0c3a6e73c508630168f38",
+    "p4-multihoprag.json": "7ba7dfd7eb7415cea1c77862c3ad0bb355700d507de1e4e187dcc047c0312745",
+    "p4-wixqa.cases.jsonl": "771c648739ce3bf01d19c7ddfd82e37643e3512002d6c40c97dfff53ba5dac06",
+    "p4-wixqa.json": "b9332cbb018d16bb13ac0560e9f573cee69d32e7045ce5f9cd4fe7e07a1a65a3"
+  }
+}

@@ -25,6 +25,7 @@ root — that habit is what produced 29 of them and is now closed.
 | Slice | Evidence class | Record and verification |
 |---|---|---|
 | Stage 2, part 2: 415 retrieval questions complete; aircargo answer/context parity 100/100; sent-context gold coverage ConditionalQA 60/80, WixQA 68/100 (any gold article), MultiHop-RAG 10/70 | measured | [Capsule](docs/evidence/stage2-retrieval-baseline.md), [immutable record](reports/stage2/retrieval-20261021/), [derivation and provenance test](tests/test_stage2_retrieval_artifact.py). Stage 2 remains open; these are retrieval metrics, not external answer grades. |
+| Stage 2, part 4: 300 external answers complete in 30 counted batches, no path break; all 300 in the question's language; answer/retrieval prompt parity 100/100 per base; routed to a person ConditionalQA 27, WixQA 24, MultiHop-RAG 33; median 266.9 s | measured | [Capsule](docs/evidence/stage2-external-answers.md), [immutable record](reports/stage2/external-answers-20261023/), [derivation and provenance test](tests/test_stage2_external_answers_artifact.py). Collection only: the registered judge is unavailable, so no answer-quality grade exists yet. |
 
 ## Publication gate checks
 

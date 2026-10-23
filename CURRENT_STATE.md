@@ -1,7 +1,7 @@
 # Current state — RAG_new
 
-2026-10-21 · The plan: [`PLAN.md`](PLAN.md), accepted by Julia on 2026-10-17 («принять») ·
-now: stage 2 parts 1/2 collected; part 4, first batch complete, continuation queued · previous version:
+2026-10-23 · The plan: [`PLAN.md`](PLAN.md), accepted by Julia on 2026-10-17 («принять») ·
+now: stage 2 parts 1, 2 and 4 collected and published; grading waits for the judge · previous version:
 [`archive/docs/state/current-state-through-2026-10-17.md`](archive/docs/state/current-state-through-2026-10-17.md).
 
 Read this file for *what is true now*; [`PLAN.md`](PLAN.md) for *what happens next and why*;
@@ -47,7 +47,10 @@ limits: [`EVIDENCE_INDEX.md`](EVIDENCE_INDEX.md), [`PLAN.md`](PLAN.md) §3.
 | Engineering | 5,885 passed, 124 skipped on `96ee4e6`; static/security checks passed | Historical full gate; current slice's focused checks below |
 
 The stage-2 [retrieval baseline](docs/evidence/stage2-retrieval-baseline.md) is recorded at
-`7208ed2`: 415 questions, no path break, aircargo prompt parity 100/100. External answer quality remains open.
+`7208ed2`: 415 questions, no path break, aircargo prompt parity 100/100. The
+[300 external answers](docs/evidence/stage2-external-answers.md): no path break, all in the
+question's language, prompt parity 100/100 per base, 84 routed to a person, median 266.9 s.
+External answer quality remains open: the judge is unavailable.
 
 ## Stage 1 — closed 2026-10-18
 
@@ -67,8 +70,8 @@ records `reports/stage1/`, pinned by `tests/test_stage1_live_artifact.py`; one e
 Part 3 uses GR-3's archives; live graph measurement is stage 7. Judge amendment: the spec.
 **Done:** part 1 — 100 answers in ten batches (`p1-aircargo-b01`…`b10`), all complete, no path break; judge record and frozen-plan hash in `reports/stage2/5e308fe/` (115 requests, 15 retests).
 **Done:** part 2 — all 415 questions completed 2026-10-20; immutable export `reports/stage2/retrieval-20261021/`, provenance/derivation tests passed on the Mac (41 focused checks including docs).
-**Part 4:** `p4-conditionalqa-b01` complete, exit 0: 10 answers, no path break, 3,402 s. Queue: ConditionalQA 2–10; WixQA 1, then 2–10; MultiHop-RAG 1, then 2–10, with first-five gates. Mac reserved for all three (2026-10-21). SSH log/status: `.tmp/stage2/remaining-20261021.{log,status.json}`; stand `S=/Users/julia/RAG_new_chat_5e308fe`.
-Stop before a next batch: `touch $S/chatlive/runs/p4-conditionalqa.stop`; immediate commands and cleanup: [registered runbook](docs/specs/stage2-four-corpora.md#running-it). No tests or sync while the live run is active.
+**Done:** part 4 — 300 external answers, 30 counted batches, completed 2026-10-23 04:32 UTC after the pause and resume of 2026-10-22; immutable export `reports/stage2/external-answers-20261023/`, raw answers private in `D:/RAG_new_stage2_private/p4/resume-20261022/` (1,356 hashes verified).
+**Open:** part 2's aircargo context judge (plan frozen in `77795a3`) and part 4's answer judge — Claude, the registered judge, is unavailable; then part 5, the combined record. The Mac is free; no measurement runs.
 
 ## Julia's decisions in force
 
@@ -76,7 +79,7 @@ Stop before a next batch: `touch $S/chatlive/runs/p4-conditionalqa.stop`; immedi
 the authorized Codex second-opinion role; Qwen3-4B; production on Mac; external answers in
 stage 2; indexes as new generations. A broken premise is resolved and reported (2026-10-19).
 Pushes require her authorization. Claude, the registered judge, is unavailable (Julia,
-2026-10-21); grading waits. Mac generation continues and keeps the answers for later grading.
+2026-10-21, reaffirmed 2026-10-22); grading waits. Mac generation may continue; no replacement judge.
 
 ## Open for Julia
 
@@ -107,8 +110,10 @@ condition is formally met ([`PLAN.md`](PLAN.md) §9).
 
 - Last green CI: `45a417a`, 2026-10-03, 11/11 jobs. Since `e81f0c5` (2026-10-16), billing
   prevents jobs starting. Before a push: full Mac unit suite, mypy, bandit and dependency audits.
+- Run 34359692687 on `69a5140` verified the CVE-2026-9856 floor `transformers>=5.10.0` under
+  `--require-hashes`, pip-audit clean; both locks still pin it.
 - Tracked `origin/master`: `172620f`, last pushed 2026-10-18. Later stage-2 commits, including
-  `7208ed2`, are local. No push authorized this session.
+  `7208ed2` and `4fe4aaf`, are local. No push authorized this session.
 - Private remote: `brownjuly2003-code/RAG_new`; HTTPS command in [`CLAUDE.md`](CLAUDE.md).
 
 ## Links
@@ -117,4 +122,4 @@ condition is formally met ([`PLAN.md`](PLAN.md) §9).
   [`EVIDENCE_INDEX.md`](EVIDENCE_INDEX.md) · documents map — [`docs/README.md`](docs/README.md)
 - Agent conventions — [`CLAUDE.md`](CLAUDE.md), [`AGENT_STATE.md`](AGENT_STATE.md) · queue for
   automation — [`BACKLOG.md`](BACKLOG.md) · module layout — [`DEPRECATIONS.md`](DEPRECATIONS.md)
-- Last session — [`docs/operations/session-handoff-2026-10-18-stage1-closed.md`](docs/operations/session-handoff-2026-10-18-stage1-closed.md)
+- Last session — [stage 2 answers collected and published](docs/operations/session-handoff-2026-10-23-stage2-collected.md)
