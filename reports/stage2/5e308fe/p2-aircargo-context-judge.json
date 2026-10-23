@@ -1,0 +1,207 @@
+{
+ "plan": "p2-aircargo-context-judge",
+ "status": "counted",
+ "judge": "contexts",
+ "base": "aircargo",
+ "provenance": {
+  "plan_sha256": "ce0aa29ecdae74be6a16a7206501d1e6efff3793c1b7788d5bb25468774f6e8d",
+  "verdicts_sha256": "a404c9368600dd67e79d4ebc545c9188922d20588e41825bb048a52226a74620",
+  "references_sha256": null,
+  "salt": "context-judge-2026-10-19",
+  "prompt_id": "QA_PROMPT_V3",
+  "instructions_sha256": "79edebd8a0372bbe4dcf15dd815eaf050328d36033be0c20ed42fe9d9ccba354",
+  "route": {
+   "model": "claude-opus-5-5",
+   "effort": "max",
+   "tools": "none",
+   "session": "safe mode: no instruction file, memory, hook, skill, plugin or MCP server; no tools; an empty working directory; nothing stored; one turn",
+   "system_prompt_sha256": "d7cf132eb5c29e84329347599be0df274f2605895747267f3efebee603134443"
+  },
+  "runs": {
+   "p2-aircargo": {
+    "code_sha": "5e308fe48cca0955c3007057a574a425f71e2a6a",
+    "tenant": "aircargo",
+    "chroma_dir": "/Users/julia/RAG_new_chat_5e308fe/chatlive/runs/p2-aircargo.chroma",
+    "cases_file": "/Users/julia/RAG_new_chat_5e308fe/evaluation/curated_cases_aircargo.jsonl"
+   },
+   "p2-aircargo-gr": {
+    "code_sha": "5e308fe48cca0955c3007057a574a425f71e2a6a",
+    "tenant": "aircargo",
+    "chroma_dir": "/Users/julia/RAG_new_chat_5e308fe/chatlive/runs/p2-aircargo-gr.chroma",
+    "cases_file": "/Users/julia/RAG_new_chat_5e308fe/evaluation/curated_cases_aircargo_gr_multihop.jsonl"
+   }
+  },
+  "adapter_sha256": "36b87909f187e98efdd673ad60a09b341b45a48b7ed29eb0688a24ecbb87ed01",
+  "tool_sha256": "712ef667d02846f006375cbc5e08a54dc9c542ac1d0872aea66e25062cfdd8a7",
+  "replies_counted_per_request": 6,
+  "reading": null
+ },
+ "replies": {
+  "rows": 131,
+  "statuses": {
+   "valid": 130,
+   "unavailable": 1
+  },
+  "past_the_limit": 0,
+  "models": {
+   "claude-opus-5-5": 130
+  },
+  "cost_usd": 12.164
+ },
+ "questions": 115,
+ "requests_valid": 130,
+ "missing": [],
+ "per_run": {
+  "p2-aircargo": {
+   "contexts": 100,
+   "graded": 100,
+   "missing": 0,
+   "levels": {
+    "none": 0,
+    "partial": 1,
+    "full": 99
+   },
+   "context_has_answer": 100,
+   "empty_contexts": 0
+  },
+  "p2-aircargo-gr": {
+   "contexts": 15,
+   "graded": 15,
+   "missing": 0,
+   "levels": {
+    "none": 1,
+    "partial": 5,
+    "full": 9
+   },
+   "context_has_answer": 14,
+   "empty_contexts": 0
+  }
+ },
+ "shares": {
+  "none": {
+   "n": 115,
+   "hits": 1,
+   "share": 0.0087,
+   "wilson95": [
+    0.0015,
+    0.0476
+   ]
+  },
+  "partial": {
+   "n": 115,
+   "hits": 6,
+   "share": 0.0522,
+   "wilson95": [
+    0.0241,
+    0.1092
+   ]
+  },
+  "full": {
+   "n": 115,
+   "hits": 108,
+   "share": 0.9391,
+   "wilson95": [
+    0.8797,
+    0.9702
+   ]
+  }
+ },
+ "retest": {
+  "planned": 15,
+  "scale": [
+   "none",
+   "partial",
+   "full"
+  ],
+  "pairs": 15,
+  "pairs_list": [
+   [
+    2,
+    2
+   ],
+   [
+    2,
+    2
+   ],
+   [
+    2,
+    2
+   ],
+   [
+    2,
+    2
+   ],
+   [
+    2,
+    2
+   ],
+   [
+    2,
+    1
+   ],
+   [
+    1,
+    1
+   ],
+   [
+    2,
+    2
+   ],
+   [
+    2,
+    2
+   ],
+   [
+    2,
+    2
+   ],
+   [
+    2,
+    2
+   ],
+   [
+    2,
+    2
+   ],
+   [
+    2,
+    2
+   ],
+   [
+    2,
+    2
+   ],
+   [
+    2,
+    2
+   ]
+  ],
+  "agree": 14,
+  "two_steps_apart": 0,
+  "quadratic_kappa": 0.6341,
+  "ci95": [
+   0.0,
+   1.0
+  ],
+  "resamples_undefined": 1191,
+  "passes_by_kappa": true,
+  "passes_by_agreement": true,
+  "enough_pairs": true,
+  "passed": true,
+  "field_agreement": {
+   "documents_with_answer": {
+    "agree": 13,
+    "of": 15
+   }
+  }
+ },
+ "holds_the_answer": {
+  "n": 115,
+  "hits": 114,
+  "share": 0.9913,
+  "wilson95": [
+   0.9524,
+   0.9985
+  ]
+ }
+}
