@@ -343,7 +343,12 @@ def build():
             **collection(answers, answer_rows, retrieval_rows),
             "m1": m1(first, first_rows, families),
             "m2": m2,
-            "sway": sway(first_rows, second_rows),
+            "sway": {
+                **sway(first_rows, second_rows),
+                "status": "counted"
+                if first["status"] == second["status"] == "counted"
+                else "NOT_EVIDENCE",
+            },
             "m3": coverage(retrieval_rows, COVERAGE[base], families),
             "m4": routes(answer_rows, families, strata),
             "m5": times(answer_rows),

@@ -1,7 +1,7 @@
 # Current state — RAG_new
 
-2026-10-23 · The plan: [`PLAN.md`](PLAN.md), accepted by Julia on 2026-10-17 («принять») ·
-now: stage 2 parts 1, 2 and 4 collected and published; the judge of parts 2 and 4 running · previous version:
+2026-10-24 · The plan: [`PLAN.md`](PLAN.md), accepted by Julia on 2026-10-17 («принять») ·
+now: stage 2 closed — the four corpora judged on the chat path; stage 3 next · previous version:
 [`archive/docs/state/current-state-through-2026-10-17.md`](archive/docs/state/current-state-through-2026-10-17.md).
 
 Read this file for *what is true now*; [`PLAN.md`](PLAN.md) for *what happens next and why*;
@@ -45,12 +45,15 @@ limits: [`EVIDENCE_INDEX.md`](EVIDENCE_INDEX.md), [`PLAN.md`](PLAN.md) §3.
 | Earlier memory | swap up to 12,274 MB; runner +312 MB/request | same record; stage 4 investigates |
 | Retrieval alone | median 27.6 s, rerank 27.3 s | [record](reports/chat-live/33d4b42/); stage 4 investigates contention |
 | Engineering | 5,885 passed, 124 skipped on `96ee4e6`; static/security checks passed | Historical full gate; current slice's focused checks below |
+| Answer quality, chat path | M1 good: aircargo 69, ConditionalQA 31, WixQA 27, MultiHop-RAG 65 of 100; bad 14, 64, 63, 34 | [stage-2 record](docs/evidence/stage2-record.md); one model judges, no person; MultiHop-RAG's M2 `NOT_EVIDENCE` |
 
 The stage-2 [retrieval baseline](docs/evidence/stage2-retrieval-baseline.md) is recorded at
 `7208ed2`: 415 questions, no path break, aircargo prompt parity 100/100. The
 [300 external answers](docs/evidence/stage2-external-answers.md): no path break, all in the
 question's language, prompt parity 100/100 per base, 84 routed to a person, median 266.9 s.
-External answer quality remains open: the judge is unavailable.
+The [stage-2 record](docs/evidence/stage2-record.md) (part 5) grades all 400 answers: aircargo's
+good share is above ConditionalQA's and WixQA's (+38.0, +42.0 pp, detected), not detected
+against MultiHop-RAG's; M2 agrees ConditionalQA 43/80, WixQA 29/100.
 
 ## Stage 1 — closed 2026-10-18
 
@@ -63,15 +66,21 @@ records `reports/stage1/`, pinned by `tests/test_stage1_live_artifact.py`; one e
 - **Left from the [audit of 2026-10-18](docs/operations/audit_fable_18_10_26.md):** S8, the
   answer's script, a signal candidate for stage 3; the audit's keys bound by a test (later).
 
-## Next
+## Stage 2 — closed 2026-10-24
 
-[`PLAN.md`](PLAN.md) stage 2 by [`docs/specs/stage2-four-corpora.md`](docs/specs/stage2-four-corpora.md)
-(`5e308fe`): 100 aircargo answers, retrieval on 415 questions, 300 external answers.
+By [`docs/specs/stage2-four-corpora.md`](docs/specs/stage2-four-corpora.md) on stand `5e308fe`:
+100 aircargo answers, retrieval on 415 questions, 300 external answers, the judge, the record.
 Part 3 uses GR-3's archives; live graph measurement is stage 7. Judge amendment: the spec.
 **Done:** part 1 — 100 answers in ten batches (`p1-aircargo-b01`…`b10`), all complete, no path break; judge record and frozen-plan hash in `reports/stage2/5e308fe/` (115 requests, 15 retests).
 **Done:** part 2 — all 415 questions completed 2026-10-20; immutable export `reports/stage2/retrieval-20261021/`, provenance/derivation tests passed on the Mac (41 focused checks including docs).
 **Done:** part 4 — 300 external answers, 30 counted batches, completed 2026-10-23 04:32 UTC after the pause and resume of 2026-10-22; immutable export `reports/stage2/external-answers-20261023/`, raw answers private in `D:/RAG_new_stage2_private/p4/resume-20261022/` (1,356 hashes verified).
-**Judge running (2026-10-23):** part 2's aircargo context plan (`77795a3`, 115/130 graded on 10-20) resumed; part 4's six plans — M1 without the reference, M2 with it ([amendment](docs/specs/stage2-four-corpora.md#the-judge), `575e24f`) — frozen before the first grade, 690 requests, ≈ 8.6 h on the laptop; then part 5. Private folder `D:/RAG_new_stage2_private/p4/judge/`. The Mac is free.
+**Done:** the judge — part 2's context plan (130 requests) and part 4's six plans (M1 without the reference, M2 with it; [amendment](docs/specs/stage2-four-corpora.md#the-judge), `575e24f`), 690 requests 2026-10-23 15:15 – 10-24 02:05 UTC, $122.45, six streams paced by the five-hour usage window; `p4-multihoprag-judge-m2` failed the stability rule (13/15, κ 0.59) and is `NOT_EVIDENCE`. Private folder `D:/RAG_new_stage2_private/p4/judge/`.
+**Done:** part 5 — `reports/stage2/5e308fe/stage2-record.json` by `stage2_record.py`, `tests/test_stage2_record_artifact.py`, the [capsule](docs/evidence/stage2-record.md) and its evidence row.
+
+## Next
+
+[`PLAN.md`](PLAN.md) stage 3, handover to a person: the signals on stage 2's 100 aircargo
+answers, read by the [handover plan](docs/specs/handover-signal.md). The Mac is free.
 
 ## Julia's decisions in force
 
