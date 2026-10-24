@@ -11,9 +11,13 @@ stage and the frozen streams with their unfreeze conditions are [`ROADMAP.md`](R
   retrieval without generation, 300 judged answers on the external bases' `stage2` selections,
   the graph lane. Its spec — forecast, stop rule, the judge by model id and effort — is
   committed before the first request. Nothing else runs on the Mac before it.
-- **Dated:** 2026-10-24 — review the three ChromaDB CVE ignores and the npm advisory
-  GHSA-ch52-4w7c-c8xp; 2026-11-03 — the npm exception expires, and from 2026-11-04 the Pages
-  build and the unit suite are red until it is renewed or removed (ADR 0009).
+- **Dated:** 2026-11-24 — review the three ChromaDB CVE ignores (ADR 0008; 2026-10-24: no
+  fixed release). The npm exception GHSA-ch52-4w7c-c8xp was removed 2026-10-24 with
+  `http-cache-semantics` 4.3.0, not a fix but outside its range (ADR 0009's log).
+- **Lock update, before the next push:** `pip-audit` finds 26 advisories with fixes in
+  `requirements.lock` (aiohttp, certifi, filelock, opentelemetry-api, pypdf, setuptools), the npm
+  gate 19 (astro, dompurify, fast-uri, undici, vite, zod); the torch ignore `CVE-2025-3000`
+  matches nothing (risk review of 2026-10-24).
 - **Blocked on data, not on work:** phase B needs real shipment-bound requests (Q2b,
   [`PLAN.md`](PLAN.md) §6). Do not manufacture fixture cases to make a gate pass.
 - **Chroma collections built before `534612e`** keep an unpersisted write-ahead-log tail until

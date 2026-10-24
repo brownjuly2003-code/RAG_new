@@ -149,6 +149,15 @@ its driver.
 - 2026-09-24 — no fixed release: PyPI latest `1.5.9` (2026-05-05),
   PyPI `fixed_in` empty for all three advisories, OSV has no `fixed` event
   (modified 2026-09-10); the ignores stay; next review 2026-10-24.
+- 2026-10-24 — no fixed release: PyPI latest still `1.5.9` (2026-05-05),
+  nothing newer, pre-releases included; PyPI `fixed_in` empty for all three
+  (GHSA and PYSEC-2026-3813/3814/3815); OSV `last_affected` 1.5.9 with no
+  `fixed` event; GitHub `first_patched_version` null; the upstream fix for
+  45830/45831, chroma-core/chroma#7602, open and unmerged, none for 45833.
+  Re-checked: Chroma runs embedded only (`PersistentClient`,
+  `persist_directory`), no Chroma server, HTTP client or auth provider in
+  code, compose, helm or the image. pip-audit finds no new chromadb advisory.
+  The ignores stay; next review 2026-11-24.
 
 ## Q2 — the labelling commitment (not decided here)
 

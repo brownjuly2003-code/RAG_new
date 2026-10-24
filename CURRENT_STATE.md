@@ -102,13 +102,11 @@ condition is formally met ([`PLAN.md`](PLAN.md) §9).
 
 ## Accepted open risks
 
-- **npm advisory GHSA-ch52-4w7c-c8xp** (`http-cache-semantics`, high), no fixed release. One
-  dated exception by advisory id per [ADR 0009](docs/adr/0009-npm-advisory-without-fix.md),
-  added 2026-10-03, expires 2026-11-03. **From 2026-11-04 the Pages build and the unit suite are
-  red** until the entry is renewed or removed — intended. **Next review 2026-10-24**, with the
-  ChromaDB ignores.
+- **npm advisory GHSA-ch52-4w7c-c8xp** (`http-cache-semantics`, high): its exception was removed
+  2026-10-24 with the lock at 4.3.0 — outside the advisory's range, not a fix (the same
+  `max-stale` code); Astro never calls that code ([ADR 0009](docs/adr/0009-npm-advisory-without-fix.md)'s log).
 - **ChromaDB CVEs** (CVE-2026-45830 / 45833 / 45831), no fix version. Ignored by id per ADR
-  0008. Reviewed 2026-09-24: no fixed release. **Next review 2026-10-24.**
+  0008. Reviewed 2026-10-24: no fixed release. **Next review 2026-11-24.**
 - **The fixture TMS is a stand-in.** Every shipment-resolution number measured through it is
   fixture-sourced and has to say so.
 - **The integration job connects to Postgres as a superuser**, so RLS is inert unless the

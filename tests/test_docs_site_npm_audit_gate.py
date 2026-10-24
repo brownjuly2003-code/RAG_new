@@ -145,17 +145,21 @@ def test_matching_exception_covers_transitive_packages(tmp_path: Path) -> None:
 
 
 def test_committed_register_covers_report_on_added_date(tmp_path: Path) -> None:
-    """The committed exception accepts its root and derivations on its added date."""
+    """Each committed exception accepts its root and derivations on its added date.
+
+    The register is empty since 2026-10-24, when the lock moved to http-cache-semantics 4.3.0
+    (ADR 0009's review log); an entry added later is run here in the synthetic report's shape.
+    """
     register = json.loads(REGISTER.read_text(encoding="utf-8"))
-    exception = register["exceptions"][0]
-    report = _report()
-    root = report["vulnerabilities"][PACKAGE]["via"][0]
-    root.update(
-        url=f"https://github.com/advisories/{exception['advisory']}",
-        name=exception["package"],
-        range=exception["vulnerable_range"],
-    )
-    _assert_pass(_run(tmp_path, report, [], today=exception["added"], register=register))
+    for exception in register["exceptions"]:
+        report = _report()
+        root = report["vulnerabilities"][PACKAGE]["via"][0]
+        root.update(
+            url=f"https://github.com/advisories/{exception['advisory']}",
+            name=exception["package"],
+            range=exception["vulnerable_range"],
+        )
+        _assert_pass(_run(tmp_path, report, [], today=exception["added"], register=register))
 
 
 def test_unexcepted_advisory_fails(tmp_path: Path) -> None:

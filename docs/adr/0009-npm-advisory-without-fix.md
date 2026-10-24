@@ -126,12 +126,29 @@ force it to be re-read.
   If a fixed `http-cache-semantics` or an Astro release without the dependency
   exists, upgrade and delete the entry. Otherwise re-check the reachability
   facts above and add a dated line here with the new `expires`.
+- 2026-10-24 — upgraded to 4.3.0 and the entry deleted; the register is empty.
+  4.3.0 (2026-10-04, the same maintainer, no dependencies) lies outside the
+  advisory's `<=4.2.0` but **is not a fix**: against 4.2.0 it changes Vary
+  matching and adds a `status` field, and the `max-stale` branch of
+  `evaluateRequest()` is the same code. GitHub names no patched version; the
+  maintainer closed the report as not planned (upstream issue 56, «bogus»
+  under RFC 9111 §7.3); the dispute github/advisory-database#10139 is open, a
+  re-test there reproducing the behaviour up to 4.3.0. The upgrade is
+  acceptable only by the reachability above, re-checked on 4.3.0: Astro 7.2.8
+  calls `CachePolicy`, `storable()` and `timeToLive()` only, never the
+  function holding the branch, and the built bundles do not ship the package.
+  The entry's own unfreeze text named this case («a release … outside the
+  vulnerable range: upgrade and delete this entry»), and any lock refresh
+  would have made it stale (Astro 7.4 requires `^4.3.0`). The package is not in
+  `FIXED_IN` (`tests/test_npm_audit_floors.py`): 4.3.0 is no floor. An
+  advisory range widened to 4.3.0 fails the gate again by rule 1. Review
+  record: `.tmp/risk-review-20261024/REPORT.md` (not committed).
 
 ## Consequences
 
 - The Pages build can be green while one high advisory is open, and it says so:
   every passing run prints the applied exception with its id and expiry.
 - From 2026-11-04 the build and the unit suite are red until the entry is
-  renewed or removed. That is intended.
+  renewed or removed. That is intended. (Removed 2026-10-24: review log.)
 - A second advisory against `http-cache-semantics`, or any advisory against
   Astro itself, still fails the gate.
