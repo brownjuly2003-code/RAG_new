@@ -3,7 +3,7 @@
 
 The chat's path chooses each answer's documents itself, so a judge of chat answers reads, per
 answer, the documents the chat's model read: the stand saves every prompt it sends
-(``reports/stage1/tools/live_api.py``), and the answer prompt (``QA_PROMPT_V3``) holds the
+(``reports/stage1/tools/live_api.py``), and the answer prompt (``QA_PROMPT_V3``, ``V4``) holds the
 question and the numbered documents. Decision D12 leaves one judge, the session's model, asked
 in stateless requests by the registered route (``evaluation.isolated_request``), as
 ``scripts/generator_answer_judge.py`` asks it; the rules here name no domain and no language —
@@ -45,7 +45,7 @@ import os
 import re
 import sys
 from collections import Counter
-from collections.abc import Callable, Mapping, Sequence
+from collections.abc import Callable, Iterable, Mapping, Sequence
 from pathlib import Path
 from typing import Any
 
@@ -62,8 +62,13 @@ FORM_ATTEMPTS = 3
 # A request's replies that count: the attempts of one run of the plan and of one more run.
 REPLIES = 2 * FORM_ATTEMPTS
 CLI_TIMEOUT_S = 1200.0
-PROMPT_ID = "QA_PROMPT_V3"
-# The answer prompt's frame (agent/prompts.py, QA_PROMPT_V3): the stand saves it after "USER:".
+# The answer prompts of agent/prompts.py this adapter reads, told apart by their citation
+# sentence; a plan's answers come from one of them.
+PROMPT_IDS = {
+    "QA_PROMPT_V3": "add [N] right after it,",
+    "QA_PROMPT_V4": "[1] for the first document in the context list,",
+}
+# Their common frame: the stand saves the prompt after "USER:".
 CONTEXT_START = "CONTEXT:\n"
 CONTEXT_END = "\n--------------------\n\nQUESTION:\n"
 QUESTION_END = "\n\nWhen you rely on"
@@ -155,10 +160,26 @@ def _digest(text: str) -> str:
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
 
 
+def prompt_id(text: str) -> str:
+    """Which answer prompt a saved prompt is."""
+    found = [name for name, marker in PROMPT_IDS.items() if marker in text]
+    framed = CONTEXT_START in text and CONTEXT_END in text and QUESTION_END in text
+    if not framed or len(found) != 1:
+        raise ValueError(f"not an answer prompt of {' or '.join(PROMPT_IDS)}")
+    return found[0]
+
+
+def one_prompt(names: Iterable[str]) -> str | None:
+    """The answer prompt all of a plan's requests were written with."""
+    found = sorted(set(names))
+    if len(found) > 1:
+        raise ValueError(f"the runs hold answers of {' and '.join(found)}: a plan reads one prompt")
+    return found[0] if found else None
+
+
 def read_prompt(text: str) -> tuple[str, list[tuple[str, str]]]:
     """The question and the numbered documents (source, text) of a saved answer prompt."""
-    if CONTEXT_START not in text or CONTEXT_END not in text or QUESTION_END not in text:
-        raise ValueError(f"not an answer prompt of {PROMPT_ID}")
+    prompt_id(text)
     context = text.split(CONTEXT_START, 1)[1].split(CONTEXT_END, 1)[0]
     question = text.split(CONTEXT_END, 1)[1].split(QUESTION_END, 1)[0]
     if context == "[]":
@@ -265,14 +286,16 @@ def _append(path: Path, row: Mapping[str, Any]) -> None:
 
 def run_answers(run: Path) -> list[dict[str, Any]]:
     """Each answered case of a run record with the documents its answer prompt held."""
-    prompts: dict[str, list[tuple[str, list[tuple[str, str]], str]]] = {}
+    prompts: dict[str, list[tuple[str, list[tuple[str, str]], str, str]]] = {}
     for path in sorted((run / "prompts").glob("*-stream.txt")):
         text = path.read_text(encoding="utf-8")
         try:
             question, documents = read_prompt(text)
         except ValueError:
             continue
-        prompts.setdefault(question, []).append((path.name, documents, _digest(text)))
+        prompts.setdefault(question, []).append(
+            (path.name, documents, _digest(text), prompt_id(text))
+        )
     answers = []
     for path in sorted((run / "cases").glob("*.json")):
         case = json.loads(path.read_text(encoding="utf-8"))
@@ -283,7 +306,7 @@ def run_answers(run: Path) -> list[dict[str, Any]]:
             raise ValueError(
                 f"{run.name}/{path.name}: {len(found)} answer prompts hold its question"
             )
-        name, documents, digest = found[0]
+        name, documents, digest, prompt = found[0]
         result = next((e for e in case.get("events", []) if e.get("type") == "result"), {})
         answers.append(
             {
@@ -294,6 +317,7 @@ def run_answers(run: Path) -> list[dict[str, Any]]:
                 "documents": documents,
                 "prompt_file": name,
                 "prompt_sha256": digest,
+                "prompt_id": prompt,
             }
         )
     return answers
@@ -316,6 +340,7 @@ def build_plan(
         raise ValueError("a plan withholds the references of a named file: none in its requests")
     items: list[dict[str, Any]] = []
     records: dict[str, Any] = {}
+    prompts: list[str] = []
     for label, run in runs.items():
         launch_path = run / "launch.json"
         launch = json.loads(launch_path.read_text(encoding="utf-8")) if launch_path.exists() else {}
@@ -324,6 +349,7 @@ def build_plan(
             for key in ("code_sha", "model", "model_digest", "tenant", "chroma_dir", "cases_file")
         }
         for answer in run_answers(run):
+            prompts.append(answer["prompt_id"])
             reference = "\n\n".join(references.get(answer["case_id"], [])) or None
             listed, unlisted = marks(answer["answer"], len(answer["documents"]))
             item: dict[str, Any] = {
@@ -355,7 +381,7 @@ def build_plan(
     )
     return {
         "salt": SALT,
-        "prompt_id": PROMPT_ID,
+        "prompt_id": one_prompt(prompts),
         "runs": records,
         "route": isolated.settings(SYSTEM_PROMPT),
         "instructions_sha256": _digest(INSTRUCTIONS),

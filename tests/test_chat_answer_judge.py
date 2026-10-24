@@ -77,6 +77,21 @@ def test_the_saved_prompt_gives_back_the_question_and_the_numbered_documents() -
         judge.read_prompt("USER:\nsomething else")
 
 
+def test_a_saved_prompt_names_its_version_and_a_plan_reads_one() -> None:
+    v4 = flatten_messages([{"role": "user", "content": build_qa_prompt("Fee?", DOCS)}])
+    # V3, the prompt of stage 2's answers, differs from V4 in its instructions, not its frame.
+    v3 = v4.replace(judge.PROMPT_IDS["QA_PROMPT_V4"], judge.PROMPT_IDS["QA_PROMPT_V3"])
+
+    assert (judge.prompt_id(v4), judge.prompt_id(v3)) == ("QA_PROMPT_V4", "QA_PROMPT_V3")
+    assert judge.read_prompt(v3) == judge.read_prompt(v4)
+    assert judge.one_prompt(["QA_PROMPT_V4", "QA_PROMPT_V4"]) == "QA_PROMPT_V4"
+    assert judge.one_prompt([]) is None
+    with pytest.raises(ValueError, match="a plan reads one prompt"):
+        judge.one_prompt(["QA_PROMPT_V3", "QA_PROMPT_V4"])
+    with pytest.raises(ValueError, match="not an answer prompt"):
+        judge.prompt_id(v4.replace(judge.PROMPT_IDS["QA_PROMPT_V4"], "add a mark,"))
+
+
 def test_marks_that_name_no_listed_document_are_counted_apart() -> None:
     assert judge.marks("Ten a day [1]. Fourteen days [2, 5].", 2) == (2, 1)
     assert judge.marks("No marks.", 2) == (0, 0)
@@ -100,6 +115,7 @@ def test_a_planned_run_is_graded_summarised_and_retested(tmp_path: Path) -> None
     assert "holds 1 reference marks" in asked[0]["message"]
     assert "[2] source=claims.md\nClaims are filed within 14 days." in asked[0]["message"]
     assert plan["runs"]["toy"]["tenant"] == "toy"
+    assert plan["prompt_id"] == "QA_PROMPT_V4"  # read from the saved prompts
 
     def send(system_prompt: str, message: str) -> isolated.IsolatedReply:
         assert system_prompt == judge.SYSTEM_PROMPT

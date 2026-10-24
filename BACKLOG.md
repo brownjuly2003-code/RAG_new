@@ -6,11 +6,11 @@ stage and the frozen streams with their unfreeze conditions are [`ROADMAP.md`](R
 
 ## Current queue
 
-- **[`PLAN.md`](PLAN.md) stage 2 — the four corpora on the fixed path** (stage 1 closed
-  2026-10-18, [its spec](docs/specs/stage1-fixes.md)): 100 aircargo answers on the chat path,
-  retrieval without generation, 300 judged answers on the external bases' `stage2` selections,
-  the graph lane. Its spec — forecast, stop rule, the judge by model id and effort — is
-  committed before the first request. Nothing else runs on the Mac before it.
+- **[`PLAN.md`](PLAN.md) stage 2b — the answer prompt V4** (stage 2 closed 2026-10-24,
+  [its record](docs/evidence/stage2-record.md)): V4's answers on WixQA, ConditionalQA and
+  aircargo paired with stage 2's V3 answers, judged, one record
+  ([spec](docs/specs/answer-prompt-v4.md)); then stage 3 on the answers the decision keeps.
+  No tests on the Mac while a base runs.
 - **Dated:** 2026-11-24 — review the three ChromaDB CVE ignores (ADR 0008; 2026-10-24: no
   fixed release). The npm exception GHSA-ch52-4w7c-c8xp was removed 2026-10-24 with
   `http-cache-semantics` 4.3.0, not a fix but outside its range (ADR 0009's log).

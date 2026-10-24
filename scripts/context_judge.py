@@ -134,6 +134,7 @@ def run_contexts(run: Path) -> list[dict[str, Any]]:
                 "question": question,
                 "documents": documents,
                 "prompt_sha256": record["prompt"]["sha256"],
+                "prompt_id": answer_judge.prompt_id(text),
             }
         )
     return contexts
@@ -143,6 +144,7 @@ def build_plan(runs: Mapping[str, Path], *, retest: int = RETEST_SIZE) -> dict[s
     """Freeze every request before the first grade."""
     items: list[dict[str, Any]] = []
     records: dict[str, Any] = {}
+    prompts: list[str] = []
     for label, run in runs.items():
         launch_path = run / "launch.json"
         launch = json.loads(launch_path.read_text(encoding="utf-8")) if launch_path.exists() else {}
@@ -150,6 +152,7 @@ def build_plan(runs: Mapping[str, Path], *, retest: int = RETEST_SIZE) -> dict[s
             key: launch.get(key) for key in ("code_sha", "tenant", "chroma_dir", "cases_file")
         }
         for context in run_contexts(run):
+            prompts.append(context["prompt_id"])
             item: dict[str, Any] = {
                 "item_id": answer_judge._digest(f"{label}:{context['case_id']}")[:16],
                 "run": label,
@@ -172,7 +175,7 @@ def build_plan(runs: Mapping[str, Path], *, retest: int = RETEST_SIZE) -> dict[s
     )
     return {
         "salt": SALT,
-        "prompt_id": answer_judge.PROMPT_ID,
+        "prompt_id": answer_judge.one_prompt(prompts),
         "runs": records,
         "route": isolated.settings(SYSTEM_PROMPT),
         "instructions_sha256": answer_judge._digest(INSTRUCTIONS),

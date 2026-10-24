@@ -1,7 +1,8 @@
 # Current state — RAG_new
 
 2026-10-24 · The plan: [`PLAN.md`](PLAN.md), accepted by Julia on 2026-10-17 («принять») ·
-now: stage 2 closed — the four corpora judged on the chat path; stage 3 next · previous version:
+now: stage 2b — the answer prompt V4 against stage 2's answers (amended 2026-10-24); stage 3
+after it · previous version:
 [`archive/docs/state/current-state-through-2026-10-17.md`](archive/docs/state/current-state-through-2026-10-17.md).
 
 Read this file for *what is true now*; [`PLAN.md`](PLAN.md) for *what happens next and why*;
@@ -20,8 +21,9 @@ its sources (RAG). Two answer paths:
 
 Retrieval: BM25 + BGE-M3, 20 candidates each, RRF, CPU bge-reranker-v2-m3 keeps five.
 Chunks: markdown sections, 800 characters/200 overlap; DOCX/HTML/PDF converted by loaders;
-`[document › section]` headers, expansion up to two neighbours each side. English V3
-instructions (`4ca5ddd`) request the question's language; actual language is measured.
+`[document › section]` headers, expansion up to two neighbours each side. English answer
+instructions request the question's language; actual language is measured. V3 (`4ca5ddd`)
+wrote every measured answer; V4 (stage 2b) replaces it in the code, measured before it stays.
 
 **Production is `deproject-mac`** (Julia, 2026-10-14: «прод на маке»): i5-7500, 4 cores, 8 GB,
 Ollama 0.33.2 on the CPU. **The model is Qwen3-4B-Instruct-2507** (Julia, 2026-10-16; the code
@@ -77,10 +79,23 @@ Part 3 uses GR-3's archives; live graph measurement is stage 7. Judge amendment:
 **Done:** the judge — part 2's context plan (130 requests) and part 4's six plans (M1 without the reference, M2 with it; [amendment](docs/specs/stage2-four-corpora.md#the-judge), `575e24f`), 690 requests 2026-10-23 15:15 – 10-24 02:05 UTC, $122.45, six streams paced by the five-hour usage window; `p4-multihoprag-judge-m2` failed the stability rule (13/15, κ 0.59) and is `NOT_EVIDENCE`. Private folder `D:/RAG_new_stage2_private/p4/judge/`.
 **Done:** part 5 — `reports/stage2/5e308fe/stage2-record.json` by `stage2_record.py`, `tests/test_stage2_record_artifact.py`, the [capsule](docs/evidence/stage2-record.md) and its evidence row.
 
+## Stage 2b — in progress since 2026-10-24
+
+Stage 2's judge found three of V3's own instructions in the bad answers: a decline when the
+documents answer in part (WixQA 29 of 63 bad, ConditionalQA 13 of 64), advice to contact a
+specialist that no document holds (42 WixQA answers of 100), the placeholder «[N]» (25
+answers). V4 fixes the three; [`tests/test_chat_answer_prompt_e2e.py`](tests/test_chat_answer_prompt_e2e.py)
+proves the path's prompt. [Spec](docs/specs/answer-prompt-v4.md): WixQA, ConditionalQA, aircargo
+paired with stage 2's V3 answers; a five-row decision table, bridges to stage 2's grades, the
+stand's environment and the reading's tools pinned by SHA-256, registered before the first request.
+
 ## Next
 
-[`PLAN.md`](PLAN.md) stage 3, handover to a person: the signals on stage 2's 100 aircargo
-answers, read by the [handover plan](docs/specs/handover-signal.md). The Mac is free.
+1. The V4 stand from the registering commit (`raise_stand.sh`); WixQA's batch 1 alone, then
+   2–10; ConditionalQA; aircargo (≈ 25–34 h Mac). The judge's five plans and three bridges on the
+   laptop meanwhile; the record after each base (`--keys`), then the final one.
+2. [`PLAN.md`](PLAN.md) stage 3 — the [handover plan](docs/specs/handover-signal.md)'s signals
+   on V4's 100 aircargo answers, or on stage 2's if the prompt returns to V3.
 
 ## Julia's decisions in force
 
@@ -119,8 +134,9 @@ condition is formally met ([`PLAN.md`](PLAN.md) §9).
   prevents jobs starting. Before a push: full Mac unit suite, mypy, bandit and dependency audits.
 - Run 34359692687 on `69a5140` verified the CVE-2026-9856 floor `transformers>=5.10.0` under
   `--require-hashes`, pip-audit clean; both locks still pin it.
-- Tracked `origin/master`: `fc74f04`, pushed 2026-10-23 at Julia's word («Пушить сейчас») after
-  the Mac suite, mypy and bandit passed; pip-audit and the npm audit fail on advisories newer than the locks.
+- Tracked `origin/master`: `8fdbfee`, pushed 2026-10-24 at Julia's word («да») after the Mac
+  suite (5,972 passed, 124 skipped), mypy and bandit; pip-audit and the npm audit, not rerun,
+  failed on `fc74f04` (2026-10-23) on advisories newer than the locks.
 - Private remote: `brownjuly2003-code/RAG_new`; HTTPS command in [`CLAUDE.md`](CLAUDE.md).
 
 ## Links

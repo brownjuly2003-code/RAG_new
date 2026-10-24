@@ -10,16 +10,19 @@ from typing import Any
 
 PROMPT_REGISTRY: dict[str, dict[str, str]] = {
     "qa": {
-        "prompt_id": "QA_PROMPT_V3",
+        "prompt_id": "QA_PROMPT_V4",
         "text": """You are a support assistant.
 
 You are given context from a knowledge base and a user's question.
 Your task is to answer strictly from this context.
 
-If the context does NOT hold enough information for a confident answer,
-say honestly that the available information does not answer the question,
-and suggest contacting a support specialist.
-Do NOT invent facts that are not in the provided text.
+If the context answers the question only in part, or in general terms that cover
+the user's case, give what the context says and briefly name what it does not cover.
+Only when nothing in the context answers the question, say that the available
+information does not answer it.
+When the answer depends on conditions the context gives, state them
+instead of a bare yes or no.
+Do NOT invent facts, conditions or advice that are not in the provided text.
 
 --------------------
 CONTEXT:
@@ -29,10 +32,10 @@ CONTEXT:
 QUESTION:
 {question}
 
-When you rely on a specific fact from the context, add [N] right after it,
-where N is the number of the document in the context list, starting from 1.
-Do not invent citation numbers. If a statement is not supported by the context,
-do not add a reference.
+When you rely on a specific fact from the context, put the number of its document
+in square brackets right after it: [1] for the first document in the context list,
+[2] for the second, and so on. Do not invent citation numbers. If a statement is not
+supported by the context, do not add a reference.
 
 Answer in the language of the QUESTION, even when the context is written in another language.
 Write a clear, brief and accurate answer for the user:
@@ -238,7 +241,7 @@ Return ONLY 3 questions, one per line. No numbering. No bullets.""",
 """,
     },
     "conversational_qa": {
-        "prompt_id": "CONVERSATIONAL_QA_PROMPT_V3",
+        "prompt_id": "CONVERSATIONAL_QA_PROMPT_V4",
         "text": """You are a support assistant.
 
 You are given context from a knowledge base, the conversation history and the current question.
@@ -256,10 +259,10 @@ CONTEXT:
 CURRENT QUESTION:
 {question}
 
-When you rely on a specific fact from the context, add [N] right after it,
-where N is the number of the document in the context list, starting from 1.
-Do not invent citation numbers. If a statement is not supported by the context,
-do not add a reference.
+When you rely on a specific fact from the context, put the number of its document
+in square brackets right after it: [1] for the first document in the context list,
+[2] for the second, and so on. Do not invent citation numbers. If a statement is not
+supported by the context, do not add a reference.
 
 Answer in the language of the QUESTION, even when the context is written in another language.
 Answer:
