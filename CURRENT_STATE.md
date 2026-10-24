@@ -85,15 +85,16 @@ Stage 2's judge found three of V3's own instructions in the bad answers: a decli
 documents answer in part (WixQA 29 of 63 bad, ConditionalQA 13 of 64), advice to contact a
 specialist that no document holds (42 WixQA answers of 100), the placeholder «[N]» (25
 answers). V4 fixes the three; [`tests/test_chat_answer_prompt_e2e.py`](tests/test_chat_answer_prompt_e2e.py)
-proves the path's prompt. [Spec](docs/specs/answer-prompt-v4.md): WixQA, ConditionalQA, aircargo
-paired with stage 2's V3 answers; a five-row decision table, bridges to stage 2's grades, the
-stand's environment and the reading's tools pinned by SHA-256, registered before the first request.
+proves the path's prompt. [Spec](docs/specs/answer-prompt-v4.md), registered in `4f48fed` before the
+first request: WixQA, ConditionalQA, aircargo paired with stage 2's V3 answers; a five-row decision
+table, bridges to stage 2's grades, the stand's environment, the reading's tools pinned by SHA-256.
 
 ## Next
 
-1. The V4 stand from the registering commit (`raise_stand.sh`); WixQA's batch 1 alone, then
-   2–10; ConditionalQA; aircargo (≈ 25–34 h Mac). The judge's five plans and three bridges on the
-   laptop meanwhile; the record after each base (`--keys`), then the final one.
+1. **Running, unattended:** WixQA's V4 answers on the stand `/Users/julia/RAG_new_chat_4f48fed`
+   (b01–b06 complete, path checks clean); then `v4_chain.sh` runs ConditionalQA and aircargo by
+   Julia's «Автозапуск на Mac» (the last answer ≈ 10-25 20:00–23:00 UTC). Logs, stop files and
+   the judge's steps a base: the [handoff](docs/operations/session-handoff-2026-10-24-v4-running.md).
 2. [`PLAN.md`](PLAN.md) stage 3 — the [handover plan](docs/specs/handover-signal.md)'s signals
    on V4's 100 aircargo answers, or on stage 2's if the prompt returns to V3.
 
@@ -136,7 +137,8 @@ condition is formally met ([`PLAN.md`](PLAN.md) §9).
   `--require-hashes`, pip-audit clean; both locks still pin it.
 - Tracked `origin/master`: `8fdbfee`, pushed 2026-10-24 at Julia's word («да») after the Mac
   suite (5,972 passed, 124 skipped), mypy and bandit; pip-audit and the npm audit, not rerun,
-  failed on `fc74f04` (2026-10-23) on advisories newer than the locks.
+  failed on `fc74f04` (2026-10-23) on advisories newer than the locks. Local, not pushed:
+  `3422244` (risk review), `4f48fed` (V4; Mac suite 6,016 passed, 123 skipped; mypy clean), the handoff.
 - Private remote: `brownjuly2003-code/RAG_new`; HTTPS command in [`CLAUDE.md`](CLAUDE.md).
 
 ## Links
@@ -145,4 +147,4 @@ condition is formally met ([`PLAN.md`](PLAN.md) §9).
   [`EVIDENCE_INDEX.md`](EVIDENCE_INDEX.md) · documents map — [`docs/README.md`](docs/README.md)
 - Agent conventions — [`CLAUDE.md`](CLAUDE.md), [`AGENT_STATE.md`](AGENT_STATE.md) · queue for
   automation — [`BACKLOG.md`](BACKLOG.md) · module layout — [`DEPRECATIONS.md`](DEPRECATIONS.md)
-- Last session — [stage 2 answers collected and published](docs/operations/session-handoff-2026-10-23-stage2-collected.md)
+- Last session — [V4 registered, its answers running unattended](docs/operations/session-handoff-2026-10-24-v4-running.md)
