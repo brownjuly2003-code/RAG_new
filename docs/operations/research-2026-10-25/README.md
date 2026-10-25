@@ -49,17 +49,17 @@ one run at a time.
 - **What I checked:**
   - Every number below appears in the report it is credited to; the check was
     `.tmp/research/_audit/verify.py`.
-  - Three claims were checked against their primary source:
-    - MultiHop-RAG's `retrieval_evaluate.py`, which corrected Claude's research 1;
-    - the Trust-Align paper (arXiv 2409.11242), which corrected Claude's research 2;
-    - ReClaim (arXiv 2407.01796, table 2), which confirmed Codex's research 2.
+  - Seven claims were checked against their primary source, chosen where the reports
+    disagree or where a proposal leans on them. The results are in
+    [How good the two reports are](#how-good-the-two-reports-are).
+  - Every link was opened by `.tmp/research/_audit/links.py`.
   - The rest is the reports' word; their links are in the reports.
 
 | Run | Brief | Claude's report | Codex's report |
 |---|---|---|---|
 | 1 — results on our three bases, current metrics | [brief](brief-1-bases-and-metrics.md) | [report](claude-1-bases-and-metrics.md): 24.6k characters, 33 sources, 18:51–19:02 UTC | [report](codex-1-bases-and-metrics.md): 35.3k characters, 33 sources, 19:10–19:28 UTC, thread `01a17478-b668-7293-8418-91c299d212db` |
 | 2 — how to treat claims, declines, retrieval, routing | [brief](brief-2-treatment.md) | [report](claude-2-treatment.md): 23.9k characters, 56 sources, 19:10–19:24 UTC | [report](codex-2-treatment.md): 33.8k characters, 32 sources, 19:29–19:49 UTC, thread `01a17489-8e72-7221-b9b6-c62c53d49ddb` |
-| 3 — the state of RAG, October 2026 | [brief](brief-3-state-of-rag.md) | [report](claude-3-state-of-rag.md): 27.2k characters, 72 sources, 19:30–19:36 UTC | after Codex's run 2 |
+| 3 — the state of RAG, October 2026 | [brief](brief-3-state-of-rag.md) | [report](claude-3-state-of-rag.md): 27.2k characters, 46 sources, 19:30–19:36 UTC | running since ≈19:50 UTC |
 
 ## Research 1 — are our numbers low against others?
 
@@ -68,7 +68,7 @@ one run at a time.
 - **WixQA.** The dataset paper (2505.08643) reports Factuality of 0.63–0.77 on Simulated, a
   *graded* GPT-4o score (1–5 → 0–1), with frontier API generators.
   - Codex alone found five later works with whole-corpus retrieval:
-    - AgenticRAG: GPT-5-mini, Factuality .94 on Simulated;
+    - AgenticRAG: agentic search, Factuality .94 on Simulated and .96 on ExpertWritten (GPT-5-mini);
     - LivingRAG: 66–70 % LLM accuracy, Simulated and ExpertWritten pooled;
     - CorpusMap: a 79-question subset;
     - Corpus2Skill and Knowledge-as-Skill: ExpertWritten.
@@ -108,8 +108,10 @@ excluded by D11: no person in the quality process.
     are removed and null queries excluded. MAP@10 counts the share, by a non-standard formula.
   - Our «all evidence 10/70» and mean evidence recall 0.49 are stricter measures. They are
     not comparable until recomputed by that rule.
-- **The original MAP@10.** Codex alone found that a later work recomputed the original
-  voyage-02 MAP@10 as .2718 instead of the published .4795.
+- **The original MAP@10.** Codex alone found that a later work (Multi-Meta-RAG) recomputed
+  the original voyage-02 MAP@10 with the repository's script. Its table 2 gives 0.2619,
+  against the published 0.4795, at the same Hits@4 (0.6630 against 0.6625). Codex's report
+  says .2718; the paper's table does not.
 
 ## Research 2 — how to treat it
 
@@ -239,6 +241,51 @@ near CRAG's plain RAG (32–44 % accuracy, Llama-3-8B to GPT-4T). They sit below
   correctness gap.
 - **Its first recommended family**, a cheap grounding detector, meets research 2's finding:
   those detectors read no Russian.
+
+## How good the two reports are
+
+Checked on 2026-10-25 against the primary sources. The seven claims were chosen where the
+reports disagree or where a proposal leans on them, so the sample is small and not random.
+
+| Claim | Report | Source says | Verdict |
+|---|---|---|---|
+| MultiHop-RAG's Hits@K counts any one gold fact | Codex 1: any one; Claude 1: the share | `retrieval_evaluate.py`: any one | Codex right; Claude wrong, and its «we lag» rested on it |
+| Trust-Align's 1.5 % → 99 % answer rate | Claude 2: a prompt effect | ICL against FRONT, a trained model | Claude wrong; its declines option rested on it |
+| ReClaim's training-free prompt: CAS 54.7 → 77.7, EM recall 55.2 → 50.7, best-of-4 79.1 / 55.3 | Codex 2 | table 2, the same | exact |
+| Llama-3.1-8B on MultiHop-RAG: 92.16 / 96.01 / 67.02, HippoRAG2 70.27 | Codex 1 | 2502.11371 table 2, the same | exact |
+| AgenticRAG on WixQA: .94 Simulated, .96 ExpertWritten, GPT-5-mini | Codex 1 | the same numbers; the generator is named for ExpertWritten only | exact numbers, one attribution stretched |
+| Multi-Meta-RAG's Hits@4 0.77–0.79 | Codex 1 | 0.7672 and 0.792 | exact |
+| The recomputed voyage-02 MAP@10 | Codex 1: .2718 | 0.2619 (v2, table 2) | conclusion right, number wrong |
+
+**Links:**
+
+- Codex: all 65 links open.
+- Claude: 131 of 135 open. One is a 404 (an ACL Anthology preview path), one site refuses
+  scripts (406), and two are blocked (403 or 429), which does not make them dead.
+
+**Reading (mine):**
+
+- **Codex (`gpt-6-astra`, `xhigh`) is the more reliable one on the facts a decision turns on.**
+  Both errors that drove a wrong conclusion were Claude's, and Codex had both right. Codex's
+  own slips were in secondary details.
+- **Codex is the more careful one.**
+  - It marks every interpretation and every number from our brief.
+  - It says «не найдено» and what it searched, rather than give an estimate.
+  - Its research 2 ranks for both stage 3 outcomes and orders the measurements much as
+    `PLAN.md` does.
+- **Codex's weak side is use.**
+  - It breaks the size contract: 35k and 34k characters against ≤ ~25k.
+  - It is dense, with many English terms.
+  - It often finds no CPU cost.
+  - It took 18–20 minutes a run against Claude's 11–14.
+  - Its research 1 suggests blind human labelling of our judge. The brief asked about
+    agreement with people and did not state D11, so this is not a breach, but it does not
+    apply to us.
+- **Claude's side is breadth and concreteness.** It gave more sources (56 against 32 in
+  research 2), estimated costs on our hardware, and its research 3 found the Russian CPU benchmark
+  (Codex's research 3 is not in yet).
+- **Where they conflict, the source decides.** Codex has been right both times; one check per
+  conflict costs a minute.
 
 ## What it means — a proposal for Julia's decision, not a plan
 
