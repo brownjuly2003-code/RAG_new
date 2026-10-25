@@ -219,6 +219,15 @@ Record `reports/handover-signal/<commit>/`, a test that derives every number fro
 evidence row: per signal caught, over-marked, marked and added time; R1–R3 confirmed or
 refuted with their counts; the reading applied as frozen.
 
+**S7's threshold** (written 2026-10-25, after V4's verdicts and the signal plan
+`reports/handover-signal/d260d95/plan.json` were committed and before S7's scores were set
+against the verdicts): every distinct top score is a candidate, S7 marking the answers scored
+below it; among the candidates that over-mark at most 1 of 3 good, non-declining answers, the
+one that catches the most target answers, a tie going to the lower score. It is read like the
+other signals and stays a candidate, as above: stage 2 confirms it on other answers before it
+is wired. If the best candidate catches none, S7 has no threshold here and is reported as
+such.
+
 ### 2 WixQA — when stage 1 gives no reading, a signal in between, or a chosen threshold
 
 The open part of WixQA — its 142 `tuning` questions, answered in [`PLAN.md`](../../PLAN.md)
