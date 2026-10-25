@@ -7,10 +7,14 @@ Session `5ec44b60`, 2026-10-25 08:54 UTC – (open). The laptop's clock and Juli
 ## Read this first
 
 - **A measurement is running on the Mac with no session watching it** — stage 3's signals
-  (`scripts/chat_signals.py run`) on V4's 100 aircargo answers, started 17:26:57 UTC, forecast
-  about 10 h from the first five answers (median 383 s), so done about 04:00 UTC on 10-26.
+  (`scripts/chat_signals.py run`) on V4's 100 aircargo answers, started 17:26:57 UTC; 15
+  answers by 18:51 (5.7 min each, alive, no traceback), so done about 03:00–04:00 UTC on 10-26.
   Check it first ([Next actions](#next-actions), step 1). It resumes after the last answer row
   if it dies: the same command again.
+- **Three web research runs, one after another** (Julia, 18:41–18:53 UTC): research 1 — published
+  results on our three external bases and the current RAG metrics — launched 18:51 UTC; research 2
+  («как лечить») waits for it and stage 3's outcome; research 3 is decided before its launch. See
+  [Research](#research-three-runs-one-after-another).
 - **While it runs:** no `sync.py`, no `remote.py`, no tests on the Mac — the record publishes
   the seconds each signal adds, and they count only from an idle Mac. Never stop another
   project's process (an idle `main.py` of `/Users/julia/atv2` has run there since 10-23).
@@ -39,6 +43,24 @@ stage 2b adopted it today.
 - 11:02 — «новый лимит будет доступен примерно через 3 часа, тогда нужно и перезапустить
   процесс». Answered: no restart needed — the judge driver waits for the window's reset by
   itself; it resumed at 13:59 UTC on its own.
+- 18:28 — «можно ли сейчас вывести текущие метрики по проекту?» Answered from the committed
+  records (the V4 table in [Research](#research-three-runs-one-after-another)).
+- 18:37 — «а почему передача опреатору так хромает?» Answered: the self-score is the chat's
+  only signal and it does not see the main error, an unsupported claim; its thresholds were
+  never calibrated; the strict claim check exists only in the widget and takes minutes.
+- 18:41 — «текущие проблемы нужно же как-то лечить((( над этим стоит думать только после
+  полного прогона. И по трем базам результат очень низкий - с этим же тоже стоит что-то
+  делать. Вероятно стоит запустить 2 рисеча - на предмет, как лкчить текущие проблемы и какие
+  метрики по RAG актуальны на текущий момент.» Answered: agreed, one after another, the
+  metrics run first (it tells whether «низкий» is low against others on the same bases).
+- 18:48 — «Найдутся ли результаты по RAG именно на найденных базах? … Я бы тогда еще один
+  общий ресерч запустила - общие метрики по RAG, которые достигаются на момент октября 2026
+  года и методы. … Если согласен, запусти последовательно. Вероятно решение о3-ем рисерче
+  стоит принять перед его запуском.» Answered: yes, each base has a paper with baselines, not
+  directly comparable (other models, metrics, subsets); research 1 launched at 18:51.
+- ≈18:52 — «и вероятно все это стоит оставить для следующей сессии … стоит все прописать в
+  доке - про текущий запуск на маке и про рисерчи». This file is that record.
+- ≈18:53 — «вижу, что ты уже запустил первый рисерч - конечно не останавливай его».
 
 ## My choices, not hers
 
@@ -103,12 +125,69 @@ First five rows (each: grader s, claim check s, total s; all routed `retry` by S
 errors): 145/202/347, 289/229/518, 302/81/383, 83/235/318, then total 403. The cap is now
 3 × 383 = 1,149 s an answer.
 
+## Research: three runs, one after another
+
+**Why.** V4's answers, judged by M1 without the reference ([V4 record](../evidence/answer-prompt-v4-record.md);
+MultiHop-RAG was not in V4's run, its row is V3's from [stage 2](../evidence/stage2-record.md)):
+
+| Base | Good | Partial | Bad | Claims supported | Routed to a person | Median / p90 s |
+|---|---|---|---|---|---|---|
+| aircargo | 63 | 20 | 17 | 96.7 % | 3 | 296 / 390 |
+| WixQA | 40 | 9 | 51 | 90.5 % | 14 | 301 / 471 |
+| ConditionalQA | 35 | 8 | 57 | 79.2 % | 17 | 249 / 339 |
+| MultiHop-RAG (V3) | 65 | 1 | 34 | — | — | — |
+
+Where the bad answers come from, by the judge's per-answer fields
+(`reports/answer-prompt-v4/4f48fed/*-judge.cases.jsonl`):
+
+| Base | Bad | The context held the answer | With an unsupported claim | Declined though the context answered |
+|---|---|---|---|---|
+| aircargo | 17 | 17 | 14 | 0 |
+| WixQA | 51 | 48 | 32 | 22 |
+| ConditionalQA | 57 | 54 | 50 | 6 |
+
+Retrieval by the gold documents ([stage 2's baseline](../evidence/stage2-retrieval-baseline.md),
+the same retrieval as V4's): ConditionalQA all evidence in the context 60/80, WixQA a gold
+article 68/100, MultiHop-RAG all evidence 10/70. **Reading (mine):** the main loss is the 4B's
+generation — it adds claims the documents do not hold, and on WixQA declines what they answer;
+retrieval is the second loss, worst on multi-hop questions. The handover problem has the same
+root: the cheap signals do not see an unsupported claim, so a claim check could both route an
+answer to a person and repair it — that is the question research 2 has to answer at this Mac's cost.
+
+**The runs.** Each is a `deep-researcher` subagent on the session's model (Opus — D12 allows
+it: a subagent, not another model), read-only web, one at a time (her global rule: no parallel
+agents), the brief and the Russian report in the git-ignored `.tmp/research/`. A brief holds no
+personal data. Each number in a report needs its source, date and setup.
+
+1. **Research 1 — results published on WixQA, ConditionalQA and MultiHop-RAG, and the RAG metrics in
+   use in 2025 – October 2026.** Brief `.tmp/research/brief-r1-bases-and-metrics.md`; report
+   `.tmp/research/r1-bases-and-metrics.md`. Launched 18:51 UTC. It asks: per base, the papers
+   and their numbers with setup (model size, given document or open retrieval, subset); how
+   close each is to ours; current metrics (claim-level faithfulness and completeness, nuggets,
+   citation precision and recall, abstention, LLM-judge agreement and biases); 1–3 metrics to
+   add, computed from what we record. If the report is missing or cut short, launch it again
+   from the same brief.
+2. **Research 2 — «как лечить»**: unsupported claims and wrong declines in a small model on a CPU;
+   claim checks cheaper than the widget's minutes; multi-hop retrieval coverage. Each option
+   rated by its expected gain, its cost on this Mac and universality (no hand-made
+   dictionaries); a model, vector-DB or reranker swap is a stop-list item — mark it as Julia's
+   decision. **Not written yet:** its brief takes research 1's findings and stage 3's outcome (her
+   words: think about treatment only after the full run).
+3. **Research 3 — the general state of RAG as of October 2026**, the numbers reached and the methods.
+   **Decide before launching** (her words): after research 1 and 2, say what research 3 would add that they do
+   not; if little, say so and propose not running it — her call.
+
+After them: a proposed `PLAN.md` amendment for her decision. A report she keeps goes to
+`docs/operations/` with a line in `docs/README.md` (`docs/audits/` is published; the root is
+capped at 9 files).
+
 ## State now
 
 - **Commits this session (local):** `410a642`, `d5f6e91` (plans' hashes), `df60777` (stage
   2b's record), `d260d95` (S8), `b7ad62a` (the signal plan), `f520cde` (S7's rule), `a383318`
   (this handoff), `b557082` (the locks refreshed: CI's pip-audit clean on `requirements.lock`,
-  the npm gate DEP-01 PASS; filelock 3 → 4 and astro 7.2 → 7.3 are the risky moves).
+  the npm gate DEP-01 PASS; filelock 3 → 4 and astro 7.2 → 7.3 are the risky moves),
+  `8047d40` and the next one (this handoff).
 - **Uncommitted, in the tree:** `reports/handover-signal/tools/signal_record.py` and
   `tests/test_handover_signal_record_artifact.py` — they wait for the rows; ruff clean, not yet
   run on real rows. Also untracked and not this session's: `demo/phase-e-raw.webm`,
@@ -119,8 +198,8 @@ errors): 145/202/347, 289/229/518, 302/81/383, 83/235/318, then total 403. The c
   `signals/out.jsonl` and `signals/run.log`; interpreter
   `/Users/julia/RAG_Support_Assistant/.venv/bin/python`; under `caffeinate`, `nohup`.
 - **Private, on the laptop only:** `D:/RAG_new_stage2_private/v4/` (runs and verdicts).
-- **Backup:** the git-ignored `.tmp/v4/` scripts and the two uncommitted files in the local
-  branch `wip/stage3-signals` (see Verification); nothing pushed.
+- **Backup:** the git-ignored `.tmp/v4/`, `.tmp/locks/` and `.tmp/research/` files and the two
+  uncommitted files in the local branch `wip/stage3-signals` (see Verification); nothing pushed.
 
 ## Next actions
 
@@ -154,12 +233,18 @@ errors): 145/202/347, 289/229/518, 302/81/383, 83/235/318, then total 403. The c
    (`npm ci && npm run check && npm run build` in `docs-site/`, Chromium from the Playwright
    folder); then the whole Mac suite, both CI mypy commands, bandit, pip-audit, npm audit — and
    ask. Only CI installs the Linux lock; say so when asking.
+7. **Research** ([above](#research-three-runs-one-after-another)): read research 1's report (check
+   that its key numbers carry links); then write research 2's brief with research 1's findings and stage 3's
+   outcome, launch it; then decide research 3 and tell Julia why; then the `PLAN.md` proposal. Steps
+   1–5 come first — research 2 needs the outcome.
 
 ## Do not
 
 - Change S5's phrases, S8's rule or S7's rule and read them again on these 100 answers.
 - Read `archive/` for routing; push without her word; run anything heavy on the laptop.
 - Run `sync.py`/`remote.py` or tests on the Mac before the run's `end`.
+- Launch research 2 before stage 3's outcome, research 3 before deciding it, or two research
+  agents at once.
 
 ## Lessons
 
@@ -178,12 +263,19 @@ errors): 145/202/347, 289/229/518, 302/81/383, 83/235/318, then total 403. The c
   all of them; Wilson 95 % limits.
 - **S1…S8** — the plan's signals; S2, S3, S4, S6 need the 4B (the widget's claim check,
   grader and first-pass route); the others need no model call.
+- **R1, R2, R3** — the [handover plan](../specs/handover-signal.md)'s suspected widget defects
+  (R1: production routes every answer `human`; R2: an answer with no claims becomes a gap; R3:
+  a claim counts only with a cited `[N]`); not the research runs.
+- **Research 1–3** — the web research Julia asked for on 2026-10-25
+  ([Research](#research-three-runs-one-after-another)).
 - **Stand** — a `git archive` of one commit on the Mac; **workspace** here is the same for the
   signal tool's commit.
 
 ## Verification
 
-- `git log --oneline -7` shows `f520cde` on top; `git status` shows the two uncommitted files.
+- `git log --oneline -3` shows this handoff's commit on top; `git status` shows the two
+  uncommitted files (and the untracked `demo/phase-e-raw.webm`, `reports/ask100/`).
+- `ls .tmp/research/` shows research 1's brief and, once it finished, its report.
 - `git rev-parse wip/stage3-signals` gives the backup commit; restore a file with
   `git show wip/stage3-signals:<path> > <path>`.
 - `sha256sum reports/handover-signal/d260d95/plan.json` gives `30e0a598…df16e`.

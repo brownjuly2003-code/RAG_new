@@ -92,10 +92,10 @@ answerable questions (V3 8); aircargo's nine good answers turned bad, eight by a
 
 ## Next
 
-1. [`PLAN.md`](PLAN.md) stage 3 — the [handover plan](docs/specs/handover-signal.md)'s signals
-   on V4's 100 aircargo answers: plan `b7ad62a`, on the Mac since 10-25 17:27 UTC (~10 h).
-2. Before a push: the whole Mac suite, mypy, bandit and the dependency audits; the locks were
-   refreshed 2026-10-25, audits clean on the laptop, the site build waits ([`BACKLOG.md`](BACKLOG.md)).
+1. [`PLAN.md`](PLAN.md) stage 3 — the [handover plan](docs/specs/handover-signal.md)'s signals on V4's 100 aircargo answers:
+   plan `b7ad62a`, on the Mac since 10-25 17:27 UTC, end about 03:00–04:00 UTC 10-26.
+2. Julia's three web research runs, one after another (2026-10-25): research 1 running, 2 after stage 3's outcome, 3 decided before its launch — [handoff](docs/operations/session-handoff-2026-10-25-stage3-signals-running.md#research-three-runs-one-after-another).
+3. Before a push: the whole Mac suite, mypy, bandit and the audits; locks refreshed 2026-10-25, audits clean on the laptop, the site build waits ([`BACKLOG.md`](BACKLOG.md)).
 
 ## Julia's decisions in force
 
