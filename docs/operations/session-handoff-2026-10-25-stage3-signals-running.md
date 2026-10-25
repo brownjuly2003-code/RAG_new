@@ -20,8 +20,9 @@ Session `5ec44b60`, 2026-10-25 08:54 UTC – (open). The laptop's clock and Juli
   stop another project's process. At 19:13 UTC the Mac ran only our `llama-server` (373 % CPU,
   all four cores; no pytest; 72 % memory free), so nothing makes this run faster without
   changing its frozen conditions (Julia asked at ≈19:14; answered so).
-- **Nothing is pushed** since `8fdbfee`; the commits since are in [State](#state-now). A push
-  needs Julia's word, after step 6's checks.
+- **Pushed ≈19:25 UTC at Julia's word** («закомить и запуш все, что сделано», 19:20), up to
+  this file's commit, **without the Mac suite** (the Mac was measuring); laptop checks passed.
+  Step 6 lists what still has to run on the Mac once the signal run ends.
 - **Stage 2b is closed: V4 adopted** ([record](../evidence/answer-prompt-v4-record.md)). Stage 3
   reads V4's answers by the [handover plan](../specs/handover-signal.md) — its «Reading» is
   frozen since 2026-10-17 (Julia: «давай так»), S7's threshold rule since `f520cde`.
@@ -70,6 +71,10 @@ stage 2b adopted it today.
   to be rated for both outcomes, and the choice of a treatment still waits for the outcome
   (her 18:41 words).
 - ≈19:14 — «а можно как-то ускорить процесс на маке?» Answered: no, see «Read this first».
+- ≈19:20 — «закомить и запуш все, что сделано». Done: the record tool committed (`5049430`),
+  its test held back (it fails until the record exists), the laptop's checks run (CI's two
+  mypy commands, `ruff check`, bandit, pip-audit, DEP-01 — all clean), pushed. The Mac suite
+  could not run: the signal run measures there.
 
 ## My choices, not hers
 
@@ -238,16 +243,16 @@ capped at 9 files).
 
 ## State now
 
-- **Commits since the push `8fdbfee` (local):** before this session `3422244` (risk review),
-  `4f48fed` (V4), `c2c5a58` (handoff); this session `410a642`, `d5f6e91` (plans' hashes),
-  `df60777` (stage 2b's record), `d260d95` (S8), `b7ad62a` (the signal plan), `f520cde` (S7's
-  rule), `b557082` (the locks; the risky moves are filelock's major version 3 → 4 and astro
-  7.2 → 7.3, whose site build has not run), and the handoff commits `a383318`, `8047d40`,
-  `d3e165c` and later ones.
-- **Uncommitted, in the tree:** `reports/handover-signal/tools/signal_record.py` and
-  `tests/test_handover_signal_record_artifact.py` — they wait for the rows; ruff clean, not yet
-  run on real rows. Also untracked and not this session's: `demo/phase-e-raw.webm`,
-  `reports/ask100/`.
+- **Commits since the push `8fdbfee`, all pushed ≈19:25 UTC:** before this session `3422244`
+  (risk review), `4f48fed` (V4), `c2c5a58` (handoff); this session `410a642`, `d5f6e91`
+  (plans' hashes), `df60777` (stage 2b's record), `d260d95` (S8), `b7ad62a` (the signal plan),
+  `f520cde` (S7's rule), `b557082` (the locks; the risky moves are filelock's major version
+  3 → 4 and astro 7.2 → 7.3, whose site build has not run), `5049430` (the record tool), and
+  the handoff commits `a383318`, `8047d40`, `d3e165c`, `6c9e51a` and this file's.
+- **Uncommitted, in the tree:** `tests/test_handover_signal_record_artifact.py` — it waits for
+  the rows (it reads `signals.jsonl` and `record.json`); the tool it tests is committed, ruff
+  clean, not yet run on real rows. Also untracked and not this session's:
+  `demo/phase-e-raw.webm`, `reports/ask100/`.
 - **The Mac:** workspace `/Users/julia/RAG_new_signals_d260d95` (a `git archive` of `d260d95`
   with `CODE_SHA`); the run reads the stand's folders
   `/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-aircargo-b01…b10`; it writes
@@ -311,7 +316,8 @@ capped at 9 files).
    answers on the 4B on the idle Mac (its time and routes; R1 by one widget request under each
    `RAG_ENV`, production also needing `CORS_ORIGINS`; R2) — checking needs no word, a fix needs
    hers and a test.
-6. **Before any push** (only then): on the idle Mac after `sync.py`, `b557082`'s guards
+6. **What the push of 2026-10-25 skipped** — run after the signal run's `end` and step 4, and
+   before the next push: on the idle Mac after `sync.py`, `b557082`'s guards
    (`remote.py --site pytest tests/test_pip_audit_floors.py tests/test_npm_audit_floors.py tests/test_docs_site_npm_audit.py -q -p no:cacheprovider`)
    and the site build on astro 7.3 over ssh in `/Users/julia/RAG_new_mf_gate/docs-site`
    (`node -v` first; `npm ci && npm run check && npm run build`; Chromium is Playwright's cached

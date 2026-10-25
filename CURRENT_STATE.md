@@ -134,11 +134,11 @@ condition is formally met ([`PLAN.md`](PLAN.md) §9).
   prevents jobs starting. Before a push: full Mac unit suite, mypy, bandit and dependency audits.
 - Run 34359692687 on `69a5140` verified the CVE-2026-9856 floor `transformers>=5.10.0` under
   `--require-hashes`, pip-audit clean; both locks still pin it.
-- Tracked `origin/master`: `8fdbfee`, pushed 2026-10-24 at Julia's word («да») after the Mac
-  suite (5,972 passed, 124 skipped), mypy and bandit. Local, not pushed: `3422244` (risk review),
-  `4f48fed` (V4; Mac suite 6,016 passed, 123 skipped; mypy clean), `c2c5a58`, `410a642`, `d5f6e91`,
-  `df60777` (stage 2b's record), `d260d95`, `b7ad62a`, `f520cde` (stage 3), `b557082` (locks: pip-audit
-  and npm audit clean on the laptop), handoffs `a383318`, `8047d40`, `d3e165c` and later.
+- Pushed 2026-10-25 ≈19:25 UTC at Julia's word («закомить и запуш все, что сделано»): `8fdbfee`..this file's commit, without the Mac suite —
+  the Mac was measuring stage 3. Passed on the laptop: CI's two mypy commands, `ruff check`, bandit, pip-audit on `requirements.lock`
+  (5 ignored), DEP-01. Not run yet: the Mac suite (last: `4f48fed`, 6,016 passed, 123 skipped), `b557082`'s guards on the Mac, the
+  docs-site build on astro 7.3, the Linux lock install (CI only; billing). The push before, `8fdbfee` (2026-10-24), had the Mac suite.
+  Not pushed: `tests/test_handover_signal_record_artifact.py`, which needs the stage-3 record.
 - Private remote: `brownjuly2003-code/RAG_new`; HTTPS command in [`CLAUDE.md`](CLAUDE.md).
 
 ## Links
