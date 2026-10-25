@@ -13,10 +13,11 @@ stage and the frozen streams with their unfreeze conditions are [`ROADMAP.md`](R
 - **Dated:** 2026-11-24 — review the three ChromaDB CVE ignores (ADR 0008; 2026-10-24: no
   fixed release). The npm exception GHSA-ch52-4w7c-c8xp was removed 2026-10-24 with
   `http-cache-semantics` 4.3.0, not a fix but outside its range (ADR 0009's log).
-- **Lock update, before the next push:** `pip-audit` finds 26 advisories with fixes in
-  `requirements.lock` (aiohttp, certifi, filelock, opentelemetry-api, pypdf, setuptools), the npm
-  gate 19 (astro, dompurify, fast-uri, undici, vite, zod); the torch ignore `CVE-2025-3000`
-  matches nothing (risk review of 2026-10-24).
+- **Locks refreshed 2026-10-25, local:** CI's `pip-audit` on `requirements.lock` clean (aiohttp,
+  certifi, filelock 3 → 4, opentelemetry, pypdf, setuptools), the npm gate DEP-01 PASS (astro
+  7.2 → 7.3 with markdown-remark, dompurify, fast-uri, undici, vite, zod). Before the push: the
+  Mac's guard tests and the site build; CI alone installs the Linux lock. Not gated: the dev
+  lock's test-only `httpx2==2.10.0` (three advisories); `CVE-2025-3000` matches nothing.
 - **Blocked on data, not on work:** phase B needs real shipment-bound requests (Q2b,
   [`PLAN.md`](PLAN.md) §6). Do not manufacture fixture cases to make a gate pass.
 - **Chroma collections built before `534612e`** keep an unpersisted write-ahead-log tail until

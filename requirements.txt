@@ -37,10 +37,11 @@ networkx>=3.5
 # (uses sentence-transformers, no extra package needed)
 
 # === Document Loaders ===
-# Floor at 6.19.0: clears PYSEC-2026-4153..4160 (2026-10-03); the earlier floor
-# 6.13.3 cleared GHSA-jm82-fx9c-mx94 and CVE-2026-48155/48156.
+# Floor at 6.21.2: clears CVE-2026-113786, 113789..113795, 115572, 115580 and 115585
+# (2026-10-25); 6.19.0 cleared PYSEC-2026-4153..4160 (2026-10-03), the earlier floor
+# 6.13.3 GHSA-jm82-fx9c-mx94 and CVE-2026-48155/48156.
 # PDF parsing handles untrusted uploads.
-pypdf>=6.19.0
+pypdf>=6.21.2
 python-docx>=1.0.0
 langdetect>=1.0.9
 
@@ -98,12 +99,19 @@ langgraph-sdk>=0.4.4
 # Capped below 7: without the cap uv moves to 7.1.0, a major line the advisory does not
 # need and nothing here has run on; lift the cap when a fix ships only in 7.x.
 multidict>=6.9.1,<7
-# aiohttp: floor at 3.14.1 clears CVE-2026-54273..54280 (was resolving to 3.14.0).
-aiohttp>=3.14.1
+# aiohttp: floor at 3.14.4 clears CVE-2026-111063..111066, CVE-2026-111748..111750 and
+# GHSA-2g87-pp6c-29x5 (2026-10-25); 3.14.1 cleared CVE-2026-54273..54280.
+aiohttp>=3.14.4
 # cryptography: floor at 48.0.1 clears GHSA-537c-gmf6-5ccf (lock may resolve newer).
 cryptography>=48.0.1
-# setuptools: floor at 83.0.0 clears PYSEC-2026-3447 (transitive build/runtime dep).
-setuptools>=83.0.0
+# setuptools: floor at 84.1.0 clears GHSA-xmj3-9gf7-h52w (2026-10-25); 83.0.0 cleared
+# PYSEC-2026-3447 (transitive build/runtime dep).
+setuptools>=84.1.0
+# certifi: floor at 2026.10.19 clears PYSEC-2026-4320 (2026-10-25). Transitive via requests.
+certifi>=2026.10.19
+# filelock: floor at 4.2.1 clears CVE-2026-112907, 112913 and 112940 (2026-10-25).
+# Transitive via huggingface-hub and torch.
+filelock>=4.2.1
 # PyJWT: floor at 2.15.0 clears PYSEC-2026-4140..4152 (2026-10-03): eleven are fixed
 # in 2.14.0 and PYSEC-2026-4141 in 2.15.0; PYSEC-2026-4146 names no fixed version,
 # its last affected release is 2.13.0.
@@ -112,7 +120,8 @@ passlib[bcrypt]>=1.7.4
 authlib>=1.3.0
 langfuse>=2.0.0
 python-telegram-bot>=21.0
-opentelemetry-api>=1.27.0
+# opentelemetry-api: floor at 1.45.1 clears CVE-2026-114603 (2026-10-25).
+opentelemetry-api>=1.45.1
 opentelemetry-sdk>=1.27.0
 opentelemetry-exporter-otlp>=1.27.0
 opentelemetry-instrumentation-fastapi>=0.48b0

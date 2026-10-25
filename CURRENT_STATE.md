@@ -94,8 +94,8 @@ answerable questions (V3 8); aircargo's nine good answers turned bad, eight by a
 
 1. [`PLAN.md`](PLAN.md) stage 3 — the [handover plan](docs/specs/handover-signal.md)'s signals
    on V4's 100 aircargo answers: plan `b7ad62a`, on the Mac since 10-25 17:27 UTC (~10 h).
-2. Before a push: the whole Mac suite, mypy, bandit and the dependency audits; the locks need
-   an update (pip-audit and npm audit failed on `fc74f04` on advisories newer than the locks).
+2. Before a push: the whole Mac suite, mypy, bandit and the dependency audits; the locks were
+   refreshed 2026-10-25, audits clean on the laptop, the site build waits ([`BACKLOG.md`](BACKLOG.md)).
 
 ## Julia's decisions in force
 

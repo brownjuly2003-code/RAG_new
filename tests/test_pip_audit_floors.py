@@ -1,5 +1,5 @@
-"""Guard the pip-audit floors (six raised on 2026-10-03, three on 2026-10-15) and the
-caps below major lines nothing here has run on."""
+"""Guard the pip-audit floors (six raised on 2026-10-03, three on 2026-10-15, six on
+2026-10-25) and the caps below major lines nothing here has run on."""
 
 from __future__ import annotations
 
@@ -15,7 +15,10 @@ LOCK_NAMES = ("requirements.lock", "requirements-dev.lock")
 
 # Advisory ranges retain the shorthand used by requirements.txt.
 FIXED_IN = {
-    "pypdf": (Version("6.19.0"), ("PYSEC-2026-4153..4160",)),
+    "pypdf": (
+        Version("6.21.2"),
+        ("CVE-2026-113786", "113789..113795", "115585", "PYSEC-2026-4153..4160"),
+    ),
     "urllib3": (Version("2.8.0"), ("PYSEC-2026-4175/4176/4177",)),
     "pyjwt": (Version("2.15.0"), ("PYSEC-2026-4140..4152",)),
     "sentence-transformers": (Version("5.6.0"), ("PYSEC-2026-4164",)),
@@ -24,6 +27,14 @@ FIXED_IN = {
     "fsspec": (Version("2026.6.0"), ("CVE-2026-104851",)),
     "langgraph-sdk": (Version("0.4.4"), ("CVE-2026-104873",)),
     "multidict": (Version("6.9.1"), ("CVE-2026-104874",)),
+    "aiohttp": (
+        Version("3.14.4"),
+        ("CVE-2026-111063..111066", "CVE-2026-111748..111750", "GHSA-2g87-pp6c-29x5"),
+    ),
+    "setuptools": (Version("84.1.0"), ("GHSA-xmj3-9gf7-h52w",)),
+    "certifi": (Version("2026.10.19"), ("PYSEC-2026-4320",)),
+    "filelock": (Version("4.2.1"), ("CVE-2026-112907", "112913", "112940")),
+    "opentelemetry-api": (Version("1.45.1"), ("CVE-2026-114603",)),
 }
 # Major lines kept out of the locks; requirements.txt says why beside each cap.
 CAPS = {"sentence-transformers": Version("6"), "multidict": Version("7")}

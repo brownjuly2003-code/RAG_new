@@ -1,5 +1,5 @@
-"""Guard: the docs-site npm floors raised by T-18, T-74 and on 2026-10-15 cannot drift
-back down.
+"""Guard: the docs-site npm floors raised by T-18, T-74, on 2026-10-15 and on 2026-10-25
+cannot drift back down.
 
 Advisories against five packages published upstream between 2026-08-25 and
 2026-09-07 turned `Deploy docs site (Astro Starlight) to Pages` red without a
@@ -28,6 +28,15 @@ postcss-selector-parser (6 -> 7) cross a line their parents declare
 (mermaid-isomorphic ^0.16; postcss-nested ^6, which @expressive-code/core holds
 at ^6): the latest mermaid-isomorphic and @expressive-code/core still declare
 those lines, and both packages run only while the site builds.
+
+On 2026-10-25 (`npm audit` on the laptop; CI cannot start) astro leaves the 7.2 line:
+GHSA-98hj-9722-w3j8 and GHSA-mpr7-6m5w-76rw are fixed only from 7.3.3, so astro moves to
+7.3.8 and @astrojs/markdown-remark to 7.3.4 with it, as a dependency and as an override:
+astro 7.3 peer-requires ^7.3.0, and @astrojs/mdx 7.0.8, the newest 7.x, pins 7.2.4
+exactly. dompurify rises to 3.4.17 and fast-uri to 3.1.9; undici and zod, reached
+through astro, get override floors 8.12.2 and 4.6.6 (astro 7.3.8 itself accepts zod
+4.6.5, inside the advisory's range). vite needs none: astro 7.3.8 requires ^8.3.1,
+above the vulnerable 8.2.0-8.2.3.
 """
 
 from __future__ import annotations
@@ -44,11 +53,17 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DOCS_SITE = PROJECT_ROOT / "docs-site"
 
 # package -> minimum fixed release for the advisories guarded by T-18, T-74 and the
-# floors of 2026-10-15.
+# floors of 2026-10-15 and 2026-10-25.
 FIXED_IN = {
-    "astro": Version("7.2.8"),  # GHSA-26w7-cxv4-gfx2 (critical), GHSA-376h-93r7-7g6f
-    "dompurify": Version("3.4.16"),  # GHSA-p98j-92pf-mc4p
-    "fast-uri": Version("3.1.8"),  # T-18 advisories + GHSA-hrr3-gc8f-f4qj
+    # GHSA-26w7-cxv4-gfx2 (critical), GHSA-376h-93r7-7g6f; 7.3.3: GHSA-98hj-9722-w3j8,
+    # GHSA-mpr7-6m5w-76rw
+    "astro": Version("7.3.3"),
+    # GHSA-p98j-92pf-mc4p; 3.4.17: GHSA-cg2g-xh64-v4q7 (critical), GHSA-mrv2-3pqr-j5jr,
+    # GHSA-c6gr-qvv4-5v3f
+    "dompurify": Version("3.4.17"),
+    # T-18 advisories + GHSA-hrr3-gc8f-f4qj; 3.1.9: GHSA-w74x-v6f9-j3xg, GHSA-xhq7-xmqj-769h,
+    # GHSA-wjr9-j795-jxcr, GHSA-333x-w4r6-6crp
+    "fast-uri": Version("3.1.9"),
     "js-yaml": Version("4.3.2"),  # GHSA-2883-xcg3-v3hh
     "katex": Version("0.18.2"),  # GHSA-238p-pmpm-9mq7
     "postcss-selector-parser": Version("7.1.6"),  # GHSA-rj75-hqrm-r3gf
@@ -56,6 +71,8 @@ FIXED_IN = {
     "smol-toml": Version("1.9.0"),  # GHSA-r4xh-jqrq-34v2
     "source-map-js": Version("1.2.2"),  # GHSA-68fv-2mgg-jv7q
     "svgo": Version("4.1.0"),  # GHSA-w27v-7q3p-w38r, GHSA-4vpr-x523-8j87
+    "undici": Version("8.12.2"),  # GHSA-xjj6-f33q-929c, GHSA-4qv8-2p9j-2685, GHSA-f72v-6w45-q472
+    "zod": Version("4.6.6"),  # GHSA-mrhx-c7xc-m3w5
 }
 
 
@@ -150,25 +167,28 @@ def test_neither_manifest_source_can_shadow_a_below_fix_spec_in_the_other(
         _assert_floors(shadowing, {"sharp": FIXED_IN["sharp"]})
 
 
-def test_astro_is_pinned_exactly_because_the_caret_leaves_the_7_2_line() -> None:
-    """`astro` is the one advisory package whose floor cannot be a caret.
+def test_astro_and_markdown_remark_are_pinned_on_one_minor_line() -> None:
+    """`astro` and `@astrojs/markdown-remark` move together, each an exact pin.
 
-    `^7.2.8` resolves to the newest 7.x, and 7.3.x peer-requires
-    `@astrojs/markdown-remark ^7.3.0` — which contradicts the 7.2.4 this site
-    depends on directly for the `markdown` rehype plugins (`unified()` imported
-    from `@astrojs/markdown-remark`). So the fix is carried by
-    an exact pin, and this is the single place in the repository that asserts
-    the pin format for `astro`.
+    A caret on `astro` resolves to the newest 7.x, whose peer range for
+    `@astrojs/markdown-remark` (the site imports `unified()` from it for the `markdown`
+    rehype plugins) may leave the pinned line. Astro 7.3 peer-requires ^7.3.0, and
+    `@astrojs/mdx` 7.0.8, the newest 7.x, pins 7.2.4 exactly, so the override carries the
+    direct pin under it too. This is the single place in the repository that asserts the
+    pin format for `astro`.
     """
-    spec = _package_json()["dependencies"]["astro"]
-    assert re.fullmatch(r"\d+\.\d+\.\d+", spec), (
-        f"astro must stay an exact pin, got {spec!r}: a caret resolves into "
-        "7.3.x and breaks the @astrojs/markdown-remark peer contract"
+    manifest = _package_json()
+    astro = manifest["dependencies"]["astro"]
+    remark = manifest["dependencies"]["@astrojs/markdown-remark"]
+    for name, spec in (("astro", astro), ("@astrojs/markdown-remark", remark)):
+        assert re.fullmatch(r"\d+\.\d+\.\d+", spec), f"{name} must stay an exact pin, got {spec!r}"
+    assert manifest["overrides"].get("@astrojs/markdown-remark") == remark, (
+        "the @astrojs/markdown-remark override must equal its direct pin, or @astrojs/mdx "
+        "keeps its own 7.2.4 beside it"
     )
-    assert Version(spec) < Version("7.3.0"), (
-        f"astro {spec} leaves the 7.2 line; moving to 7.3+ means bumping "
-        "@astrojs/markdown-remark with it, which is a dependency refresh, not "
-        "a security floor"
+    assert Version(astro).release[:2] == Version(remark).release[:2], (
+        f"astro {astro} and @astrojs/markdown-remark {remark} sit on different minor lines; "
+        "astro's peer range follows its own minor"
     )
 
 
