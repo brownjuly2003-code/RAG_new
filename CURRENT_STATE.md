@@ -93,7 +93,7 @@ answerable questions (V3 8); aircargo's nine good answers turned bad, eight by a
 ## Next
 
 1. [`PLAN.md`](PLAN.md) stage 3 — the [handover plan](docs/specs/handover-signal.md)'s signals
-   on V4's 100 aircargo answers (stand `4f48fed`); its S3 marks an unsupported claim.
+   on V4's 100 aircargo answers: plan `b7ad62a`, on the Mac since 10-25 17:27 UTC (~10 h).
 2. Before a push: the whole Mac suite, mypy, bandit and the dependency audits; the locks need
    an update (pip-audit and npm audit failed on `fc74f04` on advisories newer than the locks).
 
@@ -147,4 +147,4 @@ condition is formally met ([`PLAN.md`](PLAN.md) §9).
   [`EVIDENCE_INDEX.md`](EVIDENCE_INDEX.md) · documents map — [`docs/README.md`](docs/README.md)
 - Agent conventions — [`CLAUDE.md`](CLAUDE.md), [`AGENT_STATE.md`](AGENT_STATE.md) · queue for
   automation — [`BACKLOG.md`](BACKLOG.md) · module layout — [`DEPRECATIONS.md`](DEPRECATIONS.md)
-- Last session — [V4 registered, its answers running unattended](docs/operations/session-handoff-2026-10-24-v4-running.md)
+- Last session — [stage 2b closed, stage 3's signals running](docs/operations/session-handoff-2026-10-25-stage3-signals-running.md)

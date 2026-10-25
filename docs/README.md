@@ -86,8 +86,9 @@ P2 reference samples ([Astra](specs/p2-astra-reference-sample.md),
 
 - [`evidence/`](evidence/) — one write-up per measured slice; the register with provenance is
   [`EVIDENCE_INDEX.md`](../EVIDENCE_INDEX.md). The records themselves are in `../reports/`.
-- [Latest handoff: V4 registered, its answers running unattended](operations/session-handoff-2026-10-24-v4-running.md)
-  — stage 2b's run on the Mac, its chain, and the judge's steps per base. Before it: the
+- [Latest handoff: stage 2b closed, stage 3's signals running](operations/session-handoff-2026-10-25-stage3-signals-running.md)
+  — V4's judge and record, S8, the signal plan and its run on the Mac. Before it:
+  [V4 running unattended](operations/session-handoff-2026-10-24-v4-running.md), the
   [stage 2 answers collected](operations/session-handoff-2026-10-23-stage2-collected.md), the
   [resume from 140 answers](operations/session-handoff-2026-10-22-stage2-resume.md) and the
   [pause checkpoint](operations/session-handoff-2026-10-22-stage2-paused.md), all preserved.
