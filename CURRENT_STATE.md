@@ -94,7 +94,7 @@ answerable questions (V3 8); aircargo's nine good answers turned bad, eight by a
 
 1. [`PLAN.md`](PLAN.md) stage 3 — the [handover plan](docs/specs/handover-signal.md)'s signals on V4's 100 aircargo answers:
    plan `b7ad62a`, on the Mac since 10-25 17:27 UTC, end about 02:40–03:30 UTC 10-26.
-2. Julia's three web research runs (2026-10-25), each repeated by Codex as a second opinion, one at a time in each queue: Claude's three and Codex's 1 and 2 done, Codex's 3 running — literature, not our measurement, with a proposal for her decision: [research](docs/operations/research-2026-10-25/README.md).
+2. Julia's three web research runs (2026-10-25), each repeated by Codex as a second opinion, one at a time in each queue: all six done and compared — literature, not our measurement, with a proposal for her decision: [research](docs/operations/research-2026-10-25/README.md).
 3. Before a push: the whole Mac suite, mypy, bandit and the audits; locks refreshed 2026-10-25, audits clean on the laptop, the site build waits ([`BACKLOG.md`](BACKLOG.md)).
 
 ## Julia's decisions in force

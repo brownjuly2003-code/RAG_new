@@ -12,7 +12,8 @@ no number below is ours unless it says so. Session `5ec44b60`; its
   WixQA's Context Recall is a judge's score, our 0.63 is article identity. MultiHop-RAG's Hits@K
   counts *any one* gold fact, our 10/70 counts *all* of them.
 - **Our loss is mainly generation.** Our judge's rows show unsupported claims and, on WixQA,
-  wrong declines; research 3 guessed retrieval without those rows.
+  wrong declines. Claude's research 3 guessed retrieval without those rows; Codex's agrees
+  with them.
 - **First, measure by the published rules.** That costs no Mac time and few or no judge calls.
   Then test an evidence-first answer, with an explicit answered / partly / declined status.
   It is the one prompt-only method with a measured effect: more supported claims, a little
@@ -59,7 +60,7 @@ one run at a time.
 |---|---|---|---|
 | 1 — results on our three bases, current metrics | [brief](brief-1-bases-and-metrics.md) | [report](claude-1-bases-and-metrics.md): 24.6k characters, 33 sources, 18:51–19:02 UTC | [report](codex-1-bases-and-metrics.md): 35.3k characters, 33 sources, 19:10–19:28 UTC, thread `01a17478-b668-7293-8418-91c299d212db` |
 | 2 — how to treat claims, declines, retrieval, routing | [brief](brief-2-treatment.md) | [report](claude-2-treatment.md): 23.9k characters, 56 sources, 19:10–19:24 UTC | [report](codex-2-treatment.md): 33.8k characters, 32 sources, 19:29–19:49 UTC, thread `01a17489-8e72-7221-b9b6-c62c53d49ddb` |
-| 3 — the state of RAG, October 2026 | [brief](brief-3-state-of-rag.md) | [report](claude-3-state-of-rag.md): 27.2k characters, 46 sources, 19:30–19:36 UTC | running since ≈19:50 UTC |
+| 3 — the state of RAG, October 2026 | [brief](brief-3-state-of-rag.md) | [report](claude-3-state-of-rag.md): 27.2k characters, 46 sources, 19:30–19:36 UTC | [report](codex-3-state-of-rag.md): 34.6k characters, 47 sources, 19:50–20:14 UTC, thread `01a1749c-834a-7772-b74d-9e5d0dd258d3` |
 
 ## Research 1 — are our numbers low against others?
 
@@ -177,7 +178,7 @@ Codex's order of measurement:
 4. Recompute MultiHop-RAG, then measure each candidate's full cost: cold and warm, peak memory,
    inside the 3,600-s ceiling.
 
-## Research 3 — the frame (Claude's; Codex's follows)
+## Research 3 — the frame
 
 **The scope, decided ≈19:28 UTC.** Research 1 had covered the metrics and research 2 the
 methods. So research 3 asked what they did not:
@@ -223,11 +224,11 @@ Nobody had covered the last one, and it is her handover question.
   - the share passing a grounding check;
   - a risk–coverage curve.
 
-**Where it places us (its interpretation).** Our 35–63 good of 100 with open retrieval sit
+**Claude's report places us (its interpretation).** Our 35–63 good of 100 with open retrieval sit
 near CRAG's plain RAG (32–44 % accuracy, Llama-3-8B to GPT-4T). They sit below Little Brains'
 0.71, where the context is given. These are different metrics.
 
-**Where it disagrees with our data:**
+**Where Claude's report disagrees with our data:**
 
 - **It reads the gap to 0.71 as a retrieval loss**, and calls faithfulness not the small
   models' main weakness. Our judge's rows say otherwise:
@@ -242,9 +243,42 @@ near CRAG's plain RAG (32–44 % accuracy, Llama-3-8B to GPT-4T). They sit below
 - **Its first recommended family**, a cheap grounding detector, meets research 2's finding:
   those detectors read no Russian.
 
+**Codex's report agrees on four points:**
+
+- There is no single quality number.
+- Production resolution and containment rest on what the customer did, not on a fact check.
+- Nobody publishes the precision and recall of the handover decision.
+- Graph RAG with a large extraction model, RL training and long context do not fit our
+  hardware; one extra retrieval step does, in part.
+
+**Codex differs on four:**
+
+- **It will not place our numbers** on anyone's leaderboard without the same questions,
+  retrieval and rubric. Our «good» is not a resolution rate either.
+- **It reads our failures as our data do.** If the documents do not hold a claim, better
+  reasoning will not remove it. So its priorities are:
+  - structural, extractive selection of the evidence before the answer;
+  - a reader trained for grounding and refusal, compared at the same retrieval and coverage;
+  - a bounded extra retrieval step when the evidence has a gap;
+  - late interaction only after its index size and memory are measured.
+- **Russian: it found no 2026 leader for grounded answering.** Its only Russian figures are
+  MIRAGE-Bench's preference scores (2025, Qwen2). It missed Little Brains, which Claude found
+  and I checked.
+- **It adds production detail:**
+  - Fin's denominator was revised in 2026, so resolution can rise with no more solved cases.
+  - Airbnb's A/B (2609.05758, checked) cut hard-escalation responses from 5.60 % to 3.08 %,
+    while real handoffs moved only from 8.56 % to 8.20 %. The wording changed more than the
+    routing did.
+  - Its report for us is three numbers: coverage (questions answered), quality among the
+    answered, and the share of answers given out with an unsupported claim.
+
+**Small models close the gap mainly by training.** LongPAS (2601.12465, checked), an RL method,
+lifts Qwen3-4B on FRAMES from 46.81 to 64.90, against GPT-5-Nano's 73.54. That is out of reach
+for us without a GPU.
+
 ## How good the two reports are
 
-Checked on 2026-10-25 against the primary sources. The seven claims were chosen where the
+Checked on 2026-10-25 against the primary sources. The ten claims were chosen where the
 reports disagree or where a proposal leans on them, so the sample is small and not random.
 
 | Claim | Report | Source says | Verdict |
@@ -256,10 +290,13 @@ reports disagree or where a proposal leans on them, so the sample is small and n
 | AgenticRAG on WixQA: .94 Simulated, .96 ExpertWritten, GPT-5-mini | Codex 1 | the same numbers; the generator is named for ExpertWritten only | exact numbers, one attribution stretched |
 | Multi-Meta-RAG's Hits@4 0.77–0.79 | Codex 1 | 0.7672 and 0.792 | exact |
 | The recomputed voyage-02 MAP@10 | Codex 1: .2718 | 0.2619 (v2, table 2) | conclusion right, number wrong |
+| Little Brains: Qwen3-4B Q5_K_M 0.71 / 0.80, Qwen3-8B 0.72 / 0.83, GPT-5-mini 0.73 / 0.89; CPU, 16 GB, context given | Claude 3 | 2606.30062 table 3, the same | exact; Codex 3 missed the paper |
+| Airbnb's A/B: hard escalation 5.60 → 3.08 %, handoff 8.56 → 8.20 % | Codex 3 | 2609.05758 §6.3, the same | exact |
+| LongPAS: Qwen3-4B FRAMES 46.81 → 64.90, GPT-5-Nano 73.54; an RL method | Codex 3 | 2601.12465 table 1, the same | exact |
 
 **Links:**
 
-- Codex: all 65 links open.
+- Codex: all 112 links open.
 - Claude: 131 of 135 open. One is a 404 (an ACL Anthology preview path), one site refuses
   scripts (406), and two are blocked (403 or 429), which does not make them dead.
 
@@ -274,18 +311,22 @@ reports disagree or where a proposal leans on them, so the sample is small and n
   - Its research 2 ranks for both stage 3 outcomes and orders the measurements much as
     `PLAN.md` does.
 - **Codex's weak side is use.**
-  - It breaks the size contract: 35k and 34k characters against ≤ ~25k.
+  - It breaks the size contract: 35k, 34k and 35k characters against ≤ ~25k.
   - It is dense, with many English terms.
   - It often finds no CPU cost.
-  - It took 18–20 minutes a run against Claude's 11–14.
+  - It took 18–24 minutes a run against Claude's 6–14.
   - Its research 1 suggests blind human labelling of our judge. The brief asked about
     agreement with people and did not state D11, so this is not a breach, but it does not
     apply to us.
-- **Claude's side is breadth and concreteness.** It gave more sources (56 against 32 in
-  research 2), estimated costs on our hardware, and its research 3 found the Russian CPU benchmark
-  (Codex's research 3 is not in yet).
-- **Where they conflict, the source decides.** Codex has been right both times; one check per
-  conflict costs a minute.
+- **Claude's side is breadth and concreteness.**
+  - It gave more sources in research 2: 56 against 32.
+  - It estimated costs on our hardware.
+  - Its research 3 found the one Russian CPU benchmark of a model like ours, which Codex
+    missed.
+- **Codex's research 3 read our failures right; Claude's did not.** Claude's put the loss in
+  retrieval, against our judge's rows.
+- **Where they conflict, the source decides.** Codex has been right both times a fact
+  conflicted; one check per conflict costs a minute.
 
 ## What it means — a proposal for Julia's decision, not a plan
 
@@ -294,12 +335,13 @@ checker in item 4.
 
 | # | Step | Place in `PLAN.md` | Counts as | Needs her word |
 |---|---|---|---|---|
-| 1 | **Measure by the published rules, no model call:** MultiHop-RAG's Hits@K and MAP@10 by the official script; the decline matrix and the CRAG-style score from M1/M2. MultiHop-RAG needs the top-K texts in the stage 2 retrieval records, or a retrieval-only rerun on the Mac. | «Параллельно, без Mac»: processing of records | rule (c) once published | no |
+| 1 | **Measure by the published rules, no model call:** MultiHop-RAG's Hits@K and MAP@10 by the official script; the decline matrix and the CRAG-style score from M1/M2; Codex's three numbers (coverage, quality among the answered, unsupported answers given out). MultiHop-RAG needs the top-K texts in the stage 2 retrieval records, or a retrieval-only rerun on the Mac. | «Параллельно, без Mac»: processing of records | rule (c) once published | no |
 | 2 | **Judge metrics that make us comparable:** WixQA's own Context Recall and Factuality prompts (~200 calls); nugget recall: ~100 calls a base to split the references, then ~2 an answer — ≈ 1,200 calls for four bases, ≈ 0.12 of a weekly window at §4.4's rate | judge, from the laptop | rule (c) | the judge budget beyond §4.4 |
 | 3 | **Generation:** an evidence-first answer in the same call, with an answered / partial / declined status (Codex; ReClaim's measured gain), or Claude's second pass for declines only. Measured paired on a fixed context on WixQA's and ConditionalQA's open parts (§4.2: not the locked parts), by claim faithfulness, nugget recall and declines together | a prompt change — §9 allows only stage 1's fixes, V4 and stage 4's levers | rule (c); (a) if adopted | yes: an amendment |
 | 4 | **The router:** stage 3's outcome on the Mac decides. Outcome B: how to fit a check of minutes into the chat is hers. Outcome C: an English checker covers the English bases only, and Russian has no proven fast checker | stage 3, step 3 | (a) when wired | yes for B, and for any new model |
 | 5 | **Shorter context:** research 3's context pruning supports stage 4's «Промпт короче» lever | stage 4, step 4 | (a), (c) | no: already planned |
 | 6 | **Retrieval:** one query rewrite or decomposition, after item 1 shows the real gap. BGE-M3's multi-vector mode would change the vector store (ADR 0007) and the embedder | a new mechanism — stage 7 takes only code that exists; the vector store and the embedder are frozen | (c), then (a) | yes |
+| 6a | **A reader trained for grounding and refusal** (Trust-Align's weights are published; trained and tested in English, Russian and Q4 not checked): compared with the 4B at the same retrieval, with coverage beside quality | a model swap — §9: «явное решение Юли с числами» | (c) | yes |
 | 7 | **Not worth our hardware:** graph-RAG frameworks (also ADR 0001), long context, RL training, large reasoning rerankers (a reranker swap is hers anyway), semantic entropy | stop-list §9 | — | — |
 
-Codex's report of run 3, once in, is compared here the same way.
+All six reports are in; no run is pending.

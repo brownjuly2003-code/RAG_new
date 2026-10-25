@@ -13,9 +13,9 @@ Session `5ec44b60`, 2026-10-25 08:54 UTC – (open). The laptop's clock and Juli
   after the last answer row: the same command again.
 - **Web research, two queues side by side, one run at a time in each** (Julia, 18:41–19:06
   UTC): three research runs by a Claude subagent, each repeated by Codex (profile cw,
-  `gpt-6-astra`, effort `xhigh`) as a second opinion. Claude's three and Codex's research 1
-  and 2 are done, in [their own document](research-2026-10-25/README.md); what runs and what
-  is next: [Research](#research-three-runs-each-twice).
+  `gpt-6-astra`, effort `xhigh`) as a second opinion. All six are done and compared in
+  [their own document](research-2026-10-25/README.md), with a proposal for her decision:
+  [Research](#research-three-runs-each-twice).
 - **While the signal run measures:** no `sync.py`, no `remote.py`, no tests on the Mac — the
   record publishes the seconds each signal adds, and they count only from an idle Mac. Never
   stop another project's process. At 19:13 UTC the Mac ran only our `llama-server` (373 % CPU,
@@ -82,6 +82,10 @@ stage 2b adopted it today.
   slowing the run (fewer threads, Turbo off: the remaining answers' times would not match
   the first 28) or pausing it overnight. Her word: «Нет, ничего не снижаем. Если убрать шум
   никак - пусть шумит. Важно закрыть задачу» — the run goes on unchanged, no pause.
+- ≈20:20 — «Для моего понимания от тебя ценно получить оценку качества рисерча от астры».
+  Answered with ten claims checked against their sources and every link opened: Codex the
+  more reliable on facts, Claude the broader and more concrete on cost — the research
+  folder's «How good the two reports are».
 
 ## My choices, not hers
 
@@ -213,9 +217,10 @@ proposal for Julia's decision. In short:
    and recall; its reading of our gap as a retrieval loss conflicts with the table above.
 
 Codex's queue: research 1 done (thread `01a17478-…`, 19:10–19:28 UTC), research 2 done
-(`01a17489-…`, 19:29–19:49), research 3 running since ≈19:50 UTC (stream
-`.tmp/research/cx-r3-stream.txt`); each report is saved by step 7's command and compared in
-that document.
+(`01a17489-…`, 19:29–19:49), research 3 done (`01a1749c-…`, 19:50–20:14). All six reports
+are compared in that document, with ten claims checked against their sources and every link
+opened; its «How good the two reports are» answers Julia's question of ≈20:20 UTC on the
+quality of Codex's research.
 
 ## State now
 
@@ -303,20 +308,13 @@ that document.
    `remote.py` without `--site`; on the laptop bandit as CI runs it (ci.yml line 278), CI's
    pip-audit command (ci.yml lines 280–307) and `npm run audit:deps` in `docs-site/` — then ask.
    Only CI installs the Linux lock; say so when asking.
-7. **Research** ([above](#research-three-runs-each-twice)), independent of steps 1–6.
-   - Claude's three runs are done. When a Codex run ends (the stream ends with `EXIT 0`):
-     `python -I -X utf8 D:/RAG_new/.tmp/research/save_cx_report.py D:/RAG_new/.tmp/research/cx-<run>-stream.txt D:/RAG_new/.tmp/research/cx-<run>-….md`
-     saves the final message and prints the rollout's model, effort and sandbox (they must say
-     `gpt-6-astra`, `xhigh`, `read-only`); copy it to the research folder as `codex-<n>-….md`
-     and add its comparison there. Then launch the next:
-     `python -I -X utf8 D:/RAG_new/.tmp/research/build_cx_brief.py D:/RAG_new/.tmp/research/brief-<run>.md D:/cx-research-rag/<run>/BRIEF.md`,
-     then in the background
-     `env -u CODEX_COMPANION_APP_SERVER_ENDPOINT CODEX_HOME='C:\Users\uedom\.codex-work' CLAUDE_PLUGIN_DATA='D:\RAG_new\.tmp\cx-work-state' node "C:/Users/uedom/.claude/plugins/cache/openai-codex/codex/1.0.4/scripts/codex-companion.mjs" task --cwd "D:/cx-research-rag/<run>" --model gpt-6-astra --effort xhigh --prompt-file "D:/cx-research-rag/<run>/BRIEF.md" > D:/RAG_new/.tmp/research/cx-<run>-stream.txt 2>&1`
-     (first `powershell -NoLogo -NoProfile -ExecutionPolicy Bypass -File 'C:/Users/uedom/.codex/scripts/codex-account-launcher.ps1' work -PrepareOnly` once a session).
-   - Research 3's brief is built (`D:/cx-research-rag/r3/BRIEF.md`). After the last report:
-     the comparison of each pair in the research folder (where they agree, where they differ,
-     which sources only one found), and at the session's end the companion brokers of `D:/cx-research-rag/*` stopped (only
-     those trees, by an explicit list — never `taskkill /T`).
+7. **Research — done.** All six reports and their comparison are in the
+   [research folder](research-2026-10-25/README.md); the companion brokers of
+   `D:/cx-research-rag/*` were stopped at ≈20:25 UTC by an explicit list (four trees, all of
+   this session). What is left is Julia's: the proposal's items 2, 3, 4 (outcome B), 6 and 6a
+   need her word; item 1 (the published rules, no model call) needs none and fits beside the
+   signal run. To repeat a Codex run: `save_cx_report.py` and `build_cx_brief.py` in `.tmp/research/`, and
+   the launch command of `D:/cx-research-rag/<run>` in this file's history (`git log -p`).
 
 ## Do not
 
