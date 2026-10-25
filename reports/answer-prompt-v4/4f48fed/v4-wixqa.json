@@ -1,0 +1,1432 @@
+{
+ "part": "v4-wixqa",
+ "key": "wixqa",
+ "base": "wixqa",
+ "provenance": {
+  "code_sha": [
+   "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1"
+  ],
+  "model": [
+   "qwen3:4b-instruct-2507-q4_K_M"
+  ],
+  "model_digest": [
+   "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0"
+  ],
+  "settings_sha256": [
+   "042ce344d6b68d0ed29bb772dc8fa7bddc6a60373afe27ff7e024e54bbf6b1c5",
+   "0f119e5505b8bb25f9dc2a445888bd254a7cdc003cf6eda1510d048c3eaa5b22",
+   "3207e38fd83d5660379a79adf2c345eaa723b3a2d5d69bb248a11331a4b0f510",
+   "37a0e985ec819e77d404a2ed6e4360ad80ea814de19c6a50f7204357e75ba1a1",
+   "3cc227d8491427cef00849154cb53ec63179641f74ebda9fd2be1c5502b26180",
+   "45a455140a3af0a6e4339f815cabd801a5cc38b9bf27aa2601e96ebbb0aa42cf",
+   "76c8c963bd007a164dfd34e0d3b8bd522572bd1258ecfa4b17fb008e65ca5343",
+   "869c07429bf92745f6b2c5c9f8dd4c0847b237243fc8d37f3ac60bb6a866facf",
+   "b3799d622495ebcdbcd10bd01ccdc9ac06d98926a5b165842128fad179544615",
+   "eb912045421dc063fff7b56e4428318e0c7dae4e0ec85e7ea1269ecac44d28fd"
+  ],
+  "settings": {
+   "llm_provider_profile": "local-first",
+   "ollama_model_name": "qwen3:4b-instruct-2507-q4_K_M",
+   "ollama_fast_model_name": "llama3.2:3b",
+   "model_routing_enabled": false,
+   "ollama_context_window": 4096,
+   "embedding_model": "BAAI/bge-m3",
+   "embedding_backend": "local",
+   "reranker_model": "BAAI/bge-reranker-v2-m3",
+   "rag_device": "cpu",
+   "vector_backend": "chroma",
+   "hybrid_search": true,
+   "retrieval_strategy": "hybrid",
+   "retrieval_top_k": 20,
+   "rerank_top_k": 5,
+   "hyde": false,
+   "graph_retrieval": "off",
+   "parent_expansion": true,
+   "self_rag_max_iterations": 2,
+   "fact_verification_enabled": true,
+   "streaming_enabled": false,
+   "streaming_rag_parity": false,
+   "streaming_quality_eval": true,
+   "streaming_timeout_sec": 3600.0,
+   "request_timeout_sec": 3600.0,
+   "ollama_request_timeout_sec": 3600.0,
+   "quality_threshold": 80,
+   "suggested_questions_enabled": true,
+   "llm_max_calls_per_request": 24,
+   "online_evaluators_enabled": true,
+   "max_concurrent_pipelines": 8,
+   "support_sink_backend": "local",
+   "tracing_db_path": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-wixqa-b01/traces.db",
+   "vectordb_chroma_dir": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-wixqa-b01.chroma"
+  },
+  "code": {
+   "workspace": "/Users/julia/RAG_new_chat_4f48fed",
+   "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+   "context_window_file": "/Users/julia/RAG_new_chat_4f48fed/agent/context_window.py",
+   "has_fit_all_context_docs": true
+  },
+  "overrides": {
+   "REQUEST_TIMEOUT_SEC": "3600",
+   "OLLAMA_REQUEST_TIMEOUT_SEC": "3600",
+   "STREAMING_TIMEOUT_SEC": "3600",
+   "RAG_DEVICE": "cpu"
+  },
+  "data_root": "/Users/julia/RAG_new_external_s1",
+  "source_sha256": {
+   "corpus.manifest.json": "aeabd28fd61d4dfe9d95aa093a2efd1c383e8cef7f26dedac8153f9e97d24e24",
+   "chunks-report.json": "d167bb78a119c6932340e60be9592191d1200c2ce4d9d14c2b6328af85a921a9",
+   "index/index-receipt.json": "8dc009a68900a07502d59d199e8da476abb19de65f5dceb4692d25d4f9bb35f8"
+  },
+  "cases_file": "/Users/julia/RAG_new_external_s1/wixqa/cases.jsonl",
+  "cases_file_sha256": "d18255995e045c791849db44fb940182f9573056ff3eb11578acb8bf69c20412",
+  "tools_sha256": {
+   "live_api.py": "43ff96f06af18538a2571d68a86e898ecfcdd5fcab47039f0d58bd245361a7b5",
+   "live_runner.py": "fd5f7d7b66e5be827cb1cbc23074d6b7955f64d18143a11a1f9cd4dbe9caf4d1",
+   "live_supervisor.py": "32e5a40552b62c37ee1e3cc387ae01a453b7729adadd7b9f790d73bb1906138c",
+   "stage2.sh": "8bde8bf050e814c284e688db209835501e389796b11e3f044e62ae5b831ae48c",
+   "stage2_cases.py": "17550c826764349a9ea654a18cfb107948dfcaa3474675a269695c78b572fb9d",
+   "stage2_common.py": "4d5241560ab5425faa0a1fe6c5b856454b3f8ee47e59187f0da6644b1bad48da",
+   "answers_summary.py": "b5b51f9cc913d59034e4d9cd8464410c544fe0876561eff31525e6ef7950c39d"
+  }
+ },
+ "driver_log": [
+  "2026-10-24T13:12:47Z PART v4-wixqa answers batches 1-1 of 10, cap 12180 s",
+  "2026-10-24T13:12:53Z START v4-wixqa-b01",
+  "2026-10-24T14:18:49Z LIVE_DONE v4-wixqa-b01 complete exit 0",
+  "2026-10-24T14:18:51Z PART_DONE",
+  "2026-10-24T14:32:26Z PART v4-wixqa answers batches 2-10 of 10, cap 109620 s",
+  "2026-10-24T14:32:30Z START v4-wixqa-b02",
+  "2026-10-24T15:31:08Z LIVE_DONE v4-wixqa-b02 complete exit 0",
+  "2026-10-24T15:31:16Z START v4-wixqa-b03",
+  "2026-10-24T16:40:09Z LIVE_DONE v4-wixqa-b03 complete exit 0",
+  "2026-10-24T16:40:41Z START v4-wixqa-b04",
+  "2026-10-24T17:37:32Z LIVE_DONE v4-wixqa-b04 complete exit 0",
+  "2026-10-24T17:38:03Z START v4-wixqa-b05",
+  "2026-10-24T18:44:50Z LIVE_DONE v4-wixqa-b05 complete exit 0",
+  "2026-10-24T18:45:21Z START v4-wixqa-b06",
+  "2026-10-24T19:46:08Z LIVE_DONE v4-wixqa-b06 complete exit 0",
+  "2026-10-24T19:46:38Z START v4-wixqa-b07",
+  "2026-10-24T20:27:35Z LIVE_DONE v4-wixqa-b07 complete exit 0",
+  "2026-10-24T20:28:05Z START v4-wixqa-b08",
+  "2026-10-24T21:08:50Z LIVE_DONE v4-wixqa-b08 complete exit 0",
+  "2026-10-24T21:09:21Z START v4-wixqa-b09",
+  "2026-10-24T21:53:10Z LIVE_DONE v4-wixqa-b09 complete exit 0",
+  "2026-10-24T21:53:38Z START v4-wixqa-b10",
+  "2026-10-24T22:37:39Z LIVE_DONE v4-wixqa-b10 complete exit 0",
+  "2026-10-24T22:37:40Z PART_DONE"
+ ],
+ "runs": [
+  {
+   "label": "v4-wixqa-b01",
+   "batch": 1,
+   "counted": true,
+   "launch": {
+    "label": "v4-wixqa-b01",
+    "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+    "model": "qwen3:4b-instruct-2507-q4_K_M",
+    "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+    "tenant": "ext_wixqa",
+    "chroma_dir": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-wixqa-b01.chroma",
+    "cases_file": "/Users/julia/RAG_new_external_s1/wixqa/cases.jsonl",
+    "started": "2026-10-24T13:12:53+00:00",
+    "api_ready": "2026-10-24T13:13:32+00:00",
+    "finished": "2026-10-24T14:18:49+00:00",
+    "status": "complete",
+    "client_cap_sec": "1020/1200",
+    "mode": "prod",
+    "overrides": {
+     "REQUEST_TIMEOUT_SEC": "3600",
+     "OLLAMA_REQUEST_TIMEOUT_SEC": "3600",
+     "STREAMING_TIMEOUT_SEC": "3600",
+     "RAG_DEVICE": "cpu"
+    },
+    "runner_exit": 0,
+    "error": null,
+    "api_killed": null,
+    "ollama_load_sec": 45.947,
+    "db_tickets_before": "94",
+    "db_tickets_after": "94",
+    "ollama_models_before": [],
+    "ollama_models_after": [
+     "qwen3:4b-instruct-2507-q4_K_M"
+    ],
+    "unloaded_models": [
+     "qwen3:4b-instruct-2507-q4_K_M"
+    ],
+    "pg_stop_error": null,
+    "unload_error": null
+   },
+   "settings": {
+    "llm_provider_profile": "local-first",
+    "ollama_model_name": "qwen3:4b-instruct-2507-q4_K_M",
+    "ollama_fast_model_name": "llama3.2:3b",
+    "model_routing_enabled": false,
+    "ollama_context_window": 4096,
+    "embedding_model": "BAAI/bge-m3",
+    "embedding_backend": "local",
+    "reranker_model": "BAAI/bge-reranker-v2-m3",
+    "rag_device": "cpu",
+    "vector_backend": "chroma",
+    "hybrid_search": true,
+    "retrieval_strategy": "hybrid",
+    "retrieval_top_k": 20,
+    "rerank_top_k": 5,
+    "hyde": false,
+    "graph_retrieval": "off",
+    "parent_expansion": true,
+    "self_rag_max_iterations": 2,
+    "fact_verification_enabled": true,
+    "streaming_enabled": false,
+    "streaming_rag_parity": false,
+    "streaming_quality_eval": true,
+    "streaming_timeout_sec": 3600.0,
+    "request_timeout_sec": 3600.0,
+    "ollama_request_timeout_sec": 3600.0,
+    "quality_threshold": 80,
+    "suggested_questions_enabled": true,
+    "llm_max_calls_per_request": 24,
+    "online_evaluators_enabled": true,
+    "max_concurrent_pipelines": 8,
+    "support_sink_backend": "local",
+    "tracing_db_path": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-wixqa-b01/traces.db",
+    "vectordb_chroma_dir": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-wixqa-b01.chroma"
+   },
+   "code": {
+    "workspace": "/Users/julia/RAG_new_chat_4f48fed",
+    "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+    "context_window_file": "/Users/julia/RAG_new_chat_4f48fed/agent/context_window.py",
+    "has_fit_all_context_docs": true
+   },
+   "settings_sha256": "37a0e985ec819e77d404a2ed6e4360ad80ea814de19c6a50f7204357e75ba1a1",
+   "cases": [
+    "wixqa-simulated-074",
+    "wixqa-simulated-056",
+    "wixqa-simulated-184",
+    "wixqa-simulated-083",
+    "wixqa-simulated-104",
+    "wixqa-simulated-047",
+    "wixqa-simulated-111",
+    "wixqa-simulated-045",
+    "wixqa-simulated-122",
+    "wixqa-simulated-107"
+   ],
+   "bm25_restore_log": [
+    "Restored 37571 chunks for tenant ext_wixqa from the persisted collection (BM25 + parent-expansion re-enabled)"
+   ],
+   "path_breaks": [],
+   "log_levels": {
+    "WARNING api.app": 1,
+    "WARNING db.audit": 1,
+    "WARNING vectordb.embedder_manifest": 1,
+    "WARNING vectordb.manager": 1
+   },
+   "memory": {
+    "samples": 1284,
+    "swap_used_mb": [
+     1443.5,
+     9584.25
+    ],
+    "free_mb_min": 4,
+    "max_rss_mb": {
+     "ollama": 3607,
+     "postgres": 31,
+     "python": 1842
+    }
+   }
+  },
+  {
+   "label": "v4-wixqa-b02",
+   "batch": 2,
+   "counted": true,
+   "launch": {
+    "label": "v4-wixqa-b02",
+    "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+    "model": "qwen3:4b-instruct-2507-q4_K_M",
+    "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+    "tenant": "ext_wixqa",
+    "chroma_dir": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-wixqa-b02.chroma",
+    "cases_file": "/Users/julia/RAG_new_external_s1/wixqa/cases.jsonl",
+    "started": "2026-10-24T14:32:30+00:00",
+    "api_ready": "2026-10-24T14:32:58+00:00",
+    "finished": "2026-10-24T15:31:08+00:00",
+    "status": "complete",
+    "client_cap_sec": "1020/1200",
+    "mode": "prod",
+    "overrides": {
+     "REQUEST_TIMEOUT_SEC": "3600",
+     "OLLAMA_REQUEST_TIMEOUT_SEC": "3600",
+     "STREAMING_TIMEOUT_SEC": "3600",
+     "RAG_DEVICE": "cpu"
+    },
+    "runner_exit": 0,
+    "error": null,
+    "api_killed": null,
+    "ollama_load_sec": 40.89,
+    "db_tickets_before": "94",
+    "db_tickets_after": "94",
+    "ollama_models_before": [],
+    "ollama_models_after": [
+     "qwen3:4b-instruct-2507-q4_K_M"
+    ],
+    "unloaded_models": [
+     "qwen3:4b-instruct-2507-q4_K_M"
+    ],
+    "pg_stop_error": null,
+    "unload_error": null
+   },
+   "settings": {
+    "llm_provider_profile": "local-first",
+    "ollama_model_name": "qwen3:4b-instruct-2507-q4_K_M",
+    "ollama_fast_model_name": "llama3.2:3b",
+    "model_routing_enabled": false,
+    "ollama_context_window": 4096,
+    "embedding_model": "BAAI/bge-m3",
+    "embedding_backend": "local",
+    "reranker_model": "BAAI/bge-reranker-v2-m3",
+    "rag_device": "cpu",
+    "vector_backend": "chroma",
+    "hybrid_search": true,
+    "retrieval_strategy": "hybrid",
+    "retrieval_top_k": 20,
+    "rerank_top_k": 5,
+    "hyde": false,
+    "graph_retrieval": "off",
+    "parent_expansion": true,
+    "self_rag_max_iterations": 2,
+    "fact_verification_enabled": true,
+    "streaming_enabled": false,
+    "streaming_rag_parity": false,
+    "streaming_quality_eval": true,
+    "streaming_timeout_sec": 3600.0,
+    "request_timeout_sec": 3600.0,
+    "ollama_request_timeout_sec": 3600.0,
+    "quality_threshold": 80,
+    "suggested_questions_enabled": true,
+    "llm_max_calls_per_request": 24,
+    "online_evaluators_enabled": true,
+    "max_concurrent_pipelines": 8,
+    "support_sink_backend": "local",
+    "tracing_db_path": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-wixqa-b02/traces.db",
+    "vectordb_chroma_dir": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-wixqa-b02.chroma"
+   },
+   "code": {
+    "workspace": "/Users/julia/RAG_new_chat_4f48fed",
+    "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+    "context_window_file": "/Users/julia/RAG_new_chat_4f48fed/agent/context_window.py",
+    "has_fit_all_context_docs": true
+   },
+   "settings_sha256": "eb912045421dc063fff7b56e4428318e0c7dae4e0ec85e7ea1269ecac44d28fd",
+   "cases": [
+    "wixqa-simulated-185",
+    "wixqa-simulated-167",
+    "wixqa-simulated-035",
+    "wixqa-simulated-105",
+    "wixqa-simulated-113",
+    "wixqa-simulated-088",
+    "wixqa-simulated-008",
+    "wixqa-simulated-128",
+    "wixqa-simulated-160",
+    "wixqa-simulated-071"
+   ],
+   "bm25_restore_log": [
+    "Restored 37571 chunks for tenant ext_wixqa from the persisted collection (BM25 + parent-expansion re-enabled)"
+   ],
+   "path_breaks": [],
+   "log_levels": {
+    "WARNING api.app": 1,
+    "WARNING db.audit": 1,
+    "WARNING vectordb.embedder_manifest": 1,
+    "WARNING vectordb.manager": 1
+   },
+   "memory": {
+    "samples": 1130,
+    "swap_used_mb": [
+     1719.25,
+     8351.75
+    ],
+    "free_mb_min": 4,
+    "max_rss_mb": {
+     "ollama": 3561,
+     "postgres": 30,
+     "python": 2053
+    }
+   }
+  },
+  {
+   "label": "v4-wixqa-b03",
+   "batch": 3,
+   "counted": true,
+   "launch": {
+    "label": "v4-wixqa-b03",
+    "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+    "model": "qwen3:4b-instruct-2507-q4_K_M",
+    "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+    "tenant": "ext_wixqa",
+    "chroma_dir": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-wixqa-b03.chroma",
+    "cases_file": "/Users/julia/RAG_new_external_s1/wixqa/cases.jsonl",
+    "started": "2026-10-24T15:31:17+00:00",
+    "api_ready": "2026-10-24T15:31:50+00:00",
+    "finished": "2026-10-24T16:40:09+00:00",
+    "status": "complete",
+    "client_cap_sec": "1020/1200",
+    "mode": "prod",
+    "overrides": {
+     "REQUEST_TIMEOUT_SEC": "3600",
+     "OLLAMA_REQUEST_TIMEOUT_SEC": "3600",
+     "STREAMING_TIMEOUT_SEC": "3600",
+     "RAG_DEVICE": "cpu"
+    },
+    "runner_exit": 0,
+    "error": null,
+    "api_killed": null,
+    "ollama_load_sec": 46.844,
+    "db_tickets_before": "94",
+    "db_tickets_after": "94",
+    "ollama_models_before": [],
+    "ollama_models_after": [
+     "qwen3:4b-instruct-2507-q4_K_M"
+    ],
+    "unloaded_models": [
+     "qwen3:4b-instruct-2507-q4_K_M"
+    ],
+    "pg_stop_error": null,
+    "unload_error": null
+   },
+   "settings": {
+    "llm_provider_profile": "local-first",
+    "ollama_model_name": "qwen3:4b-instruct-2507-q4_K_M",
+    "ollama_fast_model_name": "llama3.2:3b",
+    "model_routing_enabled": false,
+    "ollama_context_window": 4096,
+    "embedding_model": "BAAI/bge-m3",
+    "embedding_backend": "local",
+    "reranker_model": "BAAI/bge-reranker-v2-m3",
+    "rag_device": "cpu",
+    "vector_backend": "chroma",
+    "hybrid_search": true,
+    "retrieval_strategy": "hybrid",
+    "retrieval_top_k": 20,
+    "rerank_top_k": 5,
+    "hyde": false,
+    "graph_retrieval": "off",
+    "parent_expansion": true,
+    "self_rag_max_iterations": 2,
+    "fact_verification_enabled": true,
+    "streaming_enabled": false,
+    "streaming_rag_parity": false,
+    "streaming_quality_eval": true,
+    "streaming_timeout_sec": 3600.0,
+    "request_timeout_sec": 3600.0,
+    "ollama_request_timeout_sec": 3600.0,
+    "quality_threshold": 80,
+    "suggested_questions_enabled": true,
+    "llm_max_calls_per_request": 24,
+    "online_evaluators_enabled": true,
+    "max_concurrent_pipelines": 8,
+    "support_sink_backend": "local",
+    "tracing_db_path": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-wixqa-b03/traces.db",
+    "vectordb_chroma_dir": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-wixqa-b03.chroma"
+   },
+   "code": {
+    "workspace": "/Users/julia/RAG_new_chat_4f48fed",
+    "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+    "context_window_file": "/Users/julia/RAG_new_chat_4f48fed/agent/context_window.py",
+    "has_fit_all_context_docs": true
+   },
+   "settings_sha256": "869c07429bf92745f6b2c5c9f8dd4c0847b237243fc8d37f3ac60bb6a866facf",
+   "cases": [
+    "wixqa-simulated-187",
+    "wixqa-simulated-089",
+    "wixqa-simulated-025",
+    "wixqa-simulated-040",
+    "wixqa-simulated-100",
+    "wixqa-simulated-053",
+    "wixqa-simulated-194",
+    "wixqa-simulated-120",
+    "wixqa-simulated-195",
+    "wixqa-simulated-076"
+   ],
+   "bm25_restore_log": [
+    "Restored 37571 chunks for tenant ext_wixqa from the persisted collection (BM25 + parent-expansion re-enabled)"
+   ],
+   "path_breaks": [],
+   "log_levels": {
+    "WARNING api.app": 1,
+    "WARNING db.audit": 1,
+    "WARNING vectordb.embedder_manifest": 1,
+    "WARNING vectordb.manager": 1
+   },
+   "memory": {
+    "samples": 1327,
+    "swap_used_mb": [
+     1884.0,
+     7929.0
+    ],
+    "free_mb_min": 3,
+    "max_rss_mb": {
+     "ollama": 3735,
+     "postgres": 30,
+     "python": 2047
+    }
+   }
+  },
+  {
+   "label": "v4-wixqa-b04",
+   "batch": 4,
+   "counted": true,
+   "launch": {
+    "label": "v4-wixqa-b04",
+    "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+    "model": "qwen3:4b-instruct-2507-q4_K_M",
+    "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+    "tenant": "ext_wixqa",
+    "chroma_dir": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-wixqa-b04.chroma",
+    "cases_file": "/Users/julia/RAG_new_external_s1/wixqa/cases.jsonl",
+    "started": "2026-10-24T16:40:41+00:00",
+    "api_ready": "2026-10-24T16:41:24+00:00",
+    "finished": "2026-10-24T17:37:32+00:00",
+    "status": "complete",
+    "client_cap_sec": "1020/1200",
+    "mode": "prod",
+    "overrides": {
+     "REQUEST_TIMEOUT_SEC": "3600",
+     "OLLAMA_REQUEST_TIMEOUT_SEC": "3600",
+     "STREAMING_TIMEOUT_SEC": "3600",
+     "RAG_DEVICE": "cpu"
+    },
+    "runner_exit": 0,
+    "error": null,
+    "api_killed": null,
+    "ollama_load_sec": 53.14,
+    "db_tickets_before": "94",
+    "db_tickets_after": "94",
+    "ollama_models_before": [],
+    "ollama_models_after": [
+     "qwen3:4b-instruct-2507-q4_K_M"
+    ],
+    "unloaded_models": [
+     "qwen3:4b-instruct-2507-q4_K_M"
+    ],
+    "pg_stop_error": null,
+    "unload_error": null
+   },
+   "settings": {
+    "llm_provider_profile": "local-first",
+    "ollama_model_name": "qwen3:4b-instruct-2507-q4_K_M",
+    "ollama_fast_model_name": "llama3.2:3b",
+    "model_routing_enabled": false,
+    "ollama_context_window": 4096,
+    "embedding_model": "BAAI/bge-m3",
+    "embedding_backend": "local",
+    "reranker_model": "BAAI/bge-reranker-v2-m3",
+    "rag_device": "cpu",
+    "vector_backend": "chroma",
+    "hybrid_search": true,
+    "retrieval_strategy": "hybrid",
+    "retrieval_top_k": 20,
+    "rerank_top_k": 5,
+    "hyde": false,
+    "graph_retrieval": "off",
+    "parent_expansion": true,
+    "self_rag_max_iterations": 2,
+    "fact_verification_enabled": true,
+    "streaming_enabled": false,
+    "streaming_rag_parity": false,
+    "streaming_quality_eval": true,
+    "streaming_timeout_sec": 3600.0,
+    "request_timeout_sec": 3600.0,
+    "ollama_request_timeout_sec": 3600.0,
+    "quality_threshold": 80,
+    "suggested_questions_enabled": true,
+    "llm_max_calls_per_request": 24,
+    "online_evaluators_enabled": true,
+    "max_concurrent_pipelines": 8,
+    "support_sink_backend": "local",
+    "tracing_db_path": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-wixqa-b04/traces.db",
+    "vectordb_chroma_dir": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-wixqa-b04.chroma"
+   },
+   "code": {
+    "workspace": "/Users/julia/RAG_new_chat_4f48fed",
+    "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+    "context_window_file": "/Users/julia/RAG_new_chat_4f48fed/agent/context_window.py",
+    "has_fit_all_context_docs": true
+   },
+   "settings_sha256": "45a455140a3af0a6e4339f815cabd801a5cc38b9bf27aa2601e96ebbb0aa42cf",
+   "cases": [
+    "wixqa-simulated-098",
+    "wixqa-simulated-181",
+    "wixqa-simulated-096",
+    "wixqa-simulated-129",
+    "wixqa-simulated-114",
+    "wixqa-simulated-013",
+    "wixqa-simulated-121",
+    "wixqa-simulated-149",
+    "wixqa-simulated-170",
+    "wixqa-simulated-038"
+   ],
+   "bm25_restore_log": [
+    "Restored 37571 chunks for tenant ext_wixqa from the persisted collection (BM25 + parent-expansion re-enabled)"
+   ],
+   "path_breaks": [],
+   "log_levels": {
+    "WARNING api.app": 1,
+    "WARNING db.audit": 1,
+    "WARNING vectordb.embedder_manifest": 1,
+    "WARNING vectordb.manager": 1
+   },
+   "memory": {
+    "samples": 1091,
+    "swap_used_mb": [
+     2281.5,
+     9271.25
+    ],
+    "free_mb_min": 4,
+    "max_rss_mb": {
+     "ollama": 3661,
+     "postgres": 25,
+     "python": 2207
+    }
+   }
+  },
+  {
+   "label": "v4-wixqa-b05",
+   "batch": 5,
+   "counted": true,
+   "launch": {
+    "label": "v4-wixqa-b05",
+    "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+    "model": "qwen3:4b-instruct-2507-q4_K_M",
+    "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+    "tenant": "ext_wixqa",
+    "chroma_dir": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-wixqa-b05.chroma",
+    "cases_file": "/Users/julia/RAG_new_external_s1/wixqa/cases.jsonl",
+    "started": "2026-10-24T17:38:04+00:00",
+    "api_ready": "2026-10-24T17:38:38+00:00",
+    "finished": "2026-10-24T18:44:49+00:00",
+    "status": "complete",
+    "client_cap_sec": "1020/1200",
+    "mode": "prod",
+    "overrides": {
+     "REQUEST_TIMEOUT_SEC": "3600",
+     "OLLAMA_REQUEST_TIMEOUT_SEC": "3600",
+     "STREAMING_TIMEOUT_SEC": "3600",
+     "RAG_DEVICE": "cpu"
+    },
+    "runner_exit": 0,
+    "error": null,
+    "api_killed": null,
+    "ollama_load_sec": 43.175,
+    "db_tickets_before": "94",
+    "db_tickets_after": "94",
+    "ollama_models_before": [],
+    "ollama_models_after": [
+     "qwen3:4b-instruct-2507-q4_K_M"
+    ],
+    "unloaded_models": [
+     "qwen3:4b-instruct-2507-q4_K_M"
+    ],
+    "pg_stop_error": null,
+    "unload_error": null
+   },
+   "settings": {
+    "llm_provider_profile": "local-first",
+    "ollama_model_name": "qwen3:4b-instruct-2507-q4_K_M",
+    "ollama_fast_model_name": "llama3.2:3b",
+    "model_routing_enabled": false,
+    "ollama_context_window": 4096,
+    "embedding_model": "BAAI/bge-m3",
+    "embedding_backend": "local",
+    "reranker_model": "BAAI/bge-reranker-v2-m3",
+    "rag_device": "cpu",
+    "vector_backend": "chroma",
+    "hybrid_search": true,
+    "retrieval_strategy": "hybrid",
+    "retrieval_top_k": 20,
+    "rerank_top_k": 5,
+    "hyde": false,
+    "graph_retrieval": "off",
+    "parent_expansion": true,
+    "self_rag_max_iterations": 2,
+    "fact_verification_enabled": true,
+    "streaming_enabled": false,
+    "streaming_rag_parity": false,
+    "streaming_quality_eval": true,
+    "streaming_timeout_sec": 3600.0,
+    "request_timeout_sec": 3600.0,
+    "ollama_request_timeout_sec": 3600.0,
+    "quality_threshold": 80,
+    "suggested_questions_enabled": true,
+    "llm_max_calls_per_request": 24,
+    "online_evaluators_enabled": true,
+    "max_concurrent_pipelines": 8,
+    "support_sink_backend": "local",
+    "tracing_db_path": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-wixqa-b05/traces.db",
+    "vectordb_chroma_dir": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-wixqa-b05.chroma"
+   },
+   "code": {
+    "workspace": "/Users/julia/RAG_new_chat_4f48fed",
+    "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+    "context_window_file": "/Users/julia/RAG_new_chat_4f48fed/agent/context_window.py",
+    "has_fit_all_context_docs": true
+   },
+   "settings_sha256": "042ce344d6b68d0ed29bb772dc8fa7bddc6a60373afe27ff7e024e54bbf6b1c5",
+   "cases": [
+    "wixqa-simulated-069",
+    "wixqa-simulated-066",
+    "wixqa-simulated-119",
+    "wixqa-simulated-163",
+    "wixqa-simulated-026",
+    "wixqa-simulated-106",
+    "wixqa-simulated-168",
+    "wixqa-simulated-127",
+    "wixqa-simulated-155",
+    "wixqa-simulated-166"
+   ],
+   "bm25_restore_log": [
+    "Restored 37571 chunks for tenant ext_wixqa from the persisted collection (BM25 + parent-expansion re-enabled)"
+   ],
+   "path_breaks": [],
+   "log_levels": {
+    "WARNING api.app": 1,
+    "WARNING db.audit": 1,
+    "WARNING vectordb.embedder_manifest": 1,
+    "WARNING vectordb.manager": 1
+   },
+   "memory": {
+    "samples": 1280,
+    "swap_used_mb": [
+     1688.0,
+     9256.5
+    ],
+    "free_mb_min": 4,
+    "max_rss_mb": {
+     "ollama": 3587,
+     "postgres": 25,
+     "python": 2310
+    }
+   }
+  },
+  {
+   "label": "v4-wixqa-b06",
+   "batch": 6,
+   "counted": true,
+   "launch": {
+    "label": "v4-wixqa-b06",
+    "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+    "model": "qwen3:4b-instruct-2507-q4_K_M",
+    "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+    "tenant": "ext_wixqa",
+    "chroma_dir": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-wixqa-b06.chroma",
+    "cases_file": "/Users/julia/RAG_new_external_s1/wixqa/cases.jsonl",
+    "started": "2026-10-24T18:45:21+00:00",
+    "api_ready": "2026-10-24T18:45:53+00:00",
+    "finished": "2026-10-24T19:46:08+00:00",
+    "status": "complete",
+    "client_cap_sec": "1020/1200",
+    "mode": "prod",
+    "overrides": {
+     "REQUEST_TIMEOUT_SEC": "3600",
+     "OLLAMA_REQUEST_TIMEOUT_SEC": "3600",
+     "STREAMING_TIMEOUT_SEC": "3600",
+     "RAG_DEVICE": "cpu"
+    },
+    "runner_exit": 0,
+    "error": null,
+    "api_killed": null,
+    "ollama_load_sec": 39.37,
+    "db_tickets_before": "94",
+    "db_tickets_after": "94",
+    "ollama_models_before": [],
+    "ollama_models_after": [
+     "qwen3:4b-instruct-2507-q4_K_M"
+    ],
+    "unloaded_models": [
+     "qwen3:4b-instruct-2507-q4_K_M"
+    ],
+    "pg_stop_error": null,
+    "unload_error": null
+   },
+   "settings": {
+    "llm_provider_profile": "local-first",
+    "ollama_model_name": "qwen3:4b-instruct-2507-q4_K_M",
+    "ollama_fast_model_name": "llama3.2:3b",
+    "model_routing_enabled": false,
+    "ollama_context_window": 4096,
+    "embedding_model": "BAAI/bge-m3",
+    "embedding_backend": "local",
+    "reranker_model": "BAAI/bge-reranker-v2-m3",
+    "rag_device": "cpu",
+    "vector_backend": "chroma",
+    "hybrid_search": true,
+    "retrieval_strategy": "hybrid",
+    "retrieval_top_k": 20,
+    "rerank_top_k": 5,
+    "hyde": false,
+    "graph_retrieval": "off",
+    "parent_expansion": true,
+    "self_rag_max_iterations": 2,
+    "fact_verification_enabled": true,
+    "streaming_enabled": false,
+    "streaming_rag_parity": false,
+    "streaming_quality_eval": true,
+    "streaming_timeout_sec": 3600.0,
+    "request_timeout_sec": 3600.0,
+    "ollama_request_timeout_sec": 3600.0,
+    "quality_threshold": 80,
+    "suggested_questions_enabled": true,
+    "llm_max_calls_per_request": 24,
+    "online_evaluators_enabled": true,
+    "max_concurrent_pipelines": 8,
+    "support_sink_backend": "local",
+    "tracing_db_path": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-wixqa-b06/traces.db",
+    "vectordb_chroma_dir": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-wixqa-b06.chroma"
+   },
+   "code": {
+    "workspace": "/Users/julia/RAG_new_chat_4f48fed",
+    "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+    "context_window_file": "/Users/julia/RAG_new_chat_4f48fed/agent/context_window.py",
+    "has_fit_all_context_docs": true
+   },
+   "settings_sha256": "76c8c963bd007a164dfd34e0d3b8bd522572bd1258ecfa4b17fb008e65ca5343",
+   "cases": [
+    "wixqa-simulated-151",
+    "wixqa-simulated-157",
+    "wixqa-simulated-043",
+    "wixqa-simulated-190",
+    "wixqa-simulated-159",
+    "wixqa-simulated-037",
+    "wixqa-simulated-141",
+    "wixqa-simulated-082",
+    "wixqa-simulated-033",
+    "wixqa-simulated-154"
+   ],
+   "bm25_restore_log": [
+    "Restored 37571 chunks for tenant ext_wixqa from the persisted collection (BM25 + parent-expansion re-enabled)"
+   ],
+   "path_breaks": [],
+   "log_levels": {
+    "WARNING api.app": 1,
+    "WARNING db.audit": 1,
+    "WARNING vectordb.embedder_manifest": 1,
+    "WARNING vectordb.manager": 1
+   },
+   "memory": {
+    "samples": 1172,
+    "swap_used_mb": [
+     1716.25,
+     9379.5
+    ],
+    "free_mb_min": 3,
+    "max_rss_mb": {
+     "ollama": 3577,
+     "postgres": 24,
+     "python": 2438
+    }
+   }
+  },
+  {
+   "label": "v4-wixqa-b07",
+   "batch": 7,
+   "counted": true,
+   "launch": {
+    "label": "v4-wixqa-b07",
+    "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+    "model": "qwen3:4b-instruct-2507-q4_K_M",
+    "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+    "tenant": "ext_wixqa",
+    "chroma_dir": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-wixqa-b07.chroma",
+    "cases_file": "/Users/julia/RAG_new_external_s1/wixqa/cases.jsonl",
+    "started": "2026-10-24T19:46:39+00:00",
+    "api_ready": "2026-10-24T19:47:11+00:00",
+    "finished": "2026-10-24T20:27:35+00:00",
+    "status": "complete",
+    "client_cap_sec": "1020/1200",
+    "mode": "prod",
+    "overrides": {
+     "REQUEST_TIMEOUT_SEC": "3600",
+     "OLLAMA_REQUEST_TIMEOUT_SEC": "3600",
+     "STREAMING_TIMEOUT_SEC": "3600",
+     "RAG_DEVICE": "cpu"
+    },
+    "runner_exit": 0,
+    "error": null,
+    "api_killed": null,
+    "ollama_load_sec": 41.309,
+    "db_tickets_before": "94",
+    "db_tickets_after": "94",
+    "ollama_models_before": [],
+    "ollama_models_after": [
+     "qwen3:4b-instruct-2507-q4_K_M"
+    ],
+    "unloaded_models": [
+     "qwen3:4b-instruct-2507-q4_K_M"
+    ],
+    "pg_stop_error": null,
+    "unload_error": null
+   },
+   "settings": {
+    "llm_provider_profile": "local-first",
+    "ollama_model_name": "qwen3:4b-instruct-2507-q4_K_M",
+    "ollama_fast_model_name": "llama3.2:3b",
+    "model_routing_enabled": false,
+    "ollama_context_window": 4096,
+    "embedding_model": "BAAI/bge-m3",
+    "embedding_backend": "local",
+    "reranker_model": "BAAI/bge-reranker-v2-m3",
+    "rag_device": "cpu",
+    "vector_backend": "chroma",
+    "hybrid_search": true,
+    "retrieval_strategy": "hybrid",
+    "retrieval_top_k": 20,
+    "rerank_top_k": 5,
+    "hyde": false,
+    "graph_retrieval": "off",
+    "parent_expansion": true,
+    "self_rag_max_iterations": 2,
+    "fact_verification_enabled": true,
+    "streaming_enabled": false,
+    "streaming_rag_parity": false,
+    "streaming_quality_eval": true,
+    "streaming_timeout_sec": 3600.0,
+    "request_timeout_sec": 3600.0,
+    "ollama_request_timeout_sec": 3600.0,
+    "quality_threshold": 80,
+    "suggested_questions_enabled": true,
+    "llm_max_calls_per_request": 24,
+    "online_evaluators_enabled": true,
+    "max_concurrent_pipelines": 8,
+    "support_sink_backend": "local",
+    "tracing_db_path": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-wixqa-b07/traces.db",
+    "vectordb_chroma_dir": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-wixqa-b07.chroma"
+   },
+   "code": {
+    "workspace": "/Users/julia/RAG_new_chat_4f48fed",
+    "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+    "context_window_file": "/Users/julia/RAG_new_chat_4f48fed/agent/context_window.py",
+    "has_fit_all_context_docs": true
+   },
+   "settings_sha256": "b3799d622495ebcdbcd10bd01ccdc9ac06d98926a5b165842128fad179544615",
+   "cases": [
+    "wixqa-simulated-186",
+    "wixqa-simulated-183",
+    "wixqa-simulated-138",
+    "wixqa-simulated-143",
+    "wixqa-simulated-101",
+    "wixqa-simulated-011",
+    "wixqa-simulated-198",
+    "wixqa-simulated-049",
+    "wixqa-simulated-057",
+    "wixqa-simulated-136"
+   ],
+   "bm25_restore_log": [
+    "Restored 37571 chunks for tenant ext_wixqa from the persisted collection (BM25 + parent-expansion re-enabled)"
+   ],
+   "path_breaks": [],
+   "log_levels": {
+    "WARNING api.app": 1,
+    "WARNING db.audit": 1,
+    "WARNING vectordb.embedder_manifest": 1,
+    "WARNING vectordb.manager": 1
+   },
+   "memory": {
+    "samples": 791,
+    "swap_used_mb": [
+     1840.25,
+     8768.0
+    ],
+    "free_mb_min": 3,
+    "max_rss_mb": {
+     "ollama": 3590,
+     "postgres": 25,
+     "python": 2480
+    }
+   }
+  },
+  {
+   "label": "v4-wixqa-b08",
+   "batch": 8,
+   "counted": true,
+   "launch": {
+    "label": "v4-wixqa-b08",
+    "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+    "model": "qwen3:4b-instruct-2507-q4_K_M",
+    "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+    "tenant": "ext_wixqa",
+    "chroma_dir": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-wixqa-b08.chroma",
+    "cases_file": "/Users/julia/RAG_new_external_s1/wixqa/cases.jsonl",
+    "started": "2026-10-24T20:28:05+00:00",
+    "api_ready": "2026-10-24T20:28:32+00:00",
+    "finished": "2026-10-24T21:08:50+00:00",
+    "status": "complete",
+    "client_cap_sec": "1020/1200",
+    "mode": "prod",
+    "overrides": {
+     "REQUEST_TIMEOUT_SEC": "3600",
+     "OLLAMA_REQUEST_TIMEOUT_SEC": "3600",
+     "STREAMING_TIMEOUT_SEC": "3600",
+     "RAG_DEVICE": "cpu"
+    },
+    "runner_exit": 0,
+    "error": null,
+    "api_killed": null,
+    "ollama_load_sec": 41.588,
+    "db_tickets_before": "94",
+    "db_tickets_after": "94",
+    "ollama_models_before": [],
+    "ollama_models_after": [
+     "qwen3:4b-instruct-2507-q4_K_M"
+    ],
+    "unloaded_models": [
+     "qwen3:4b-instruct-2507-q4_K_M"
+    ],
+    "pg_stop_error": null,
+    "unload_error": null
+   },
+   "settings": {
+    "llm_provider_profile": "local-first",
+    "ollama_model_name": "qwen3:4b-instruct-2507-q4_K_M",
+    "ollama_fast_model_name": "llama3.2:3b",
+    "model_routing_enabled": false,
+    "ollama_context_window": 4096,
+    "embedding_model": "BAAI/bge-m3",
+    "embedding_backend": "local",
+    "reranker_model": "BAAI/bge-reranker-v2-m3",
+    "rag_device": "cpu",
+    "vector_backend": "chroma",
+    "hybrid_search": true,
+    "retrieval_strategy": "hybrid",
+    "retrieval_top_k": 20,
+    "rerank_top_k": 5,
+    "hyde": false,
+    "graph_retrieval": "off",
+    "parent_expansion": true,
+    "self_rag_max_iterations": 2,
+    "fact_verification_enabled": true,
+    "streaming_enabled": false,
+    "streaming_rag_parity": false,
+    "streaming_quality_eval": true,
+    "streaming_timeout_sec": 3600.0,
+    "request_timeout_sec": 3600.0,
+    "ollama_request_timeout_sec": 3600.0,
+    "quality_threshold": 80,
+    "suggested_questions_enabled": true,
+    "llm_max_calls_per_request": 24,
+    "online_evaluators_enabled": true,
+    "max_concurrent_pipelines": 8,
+    "support_sink_backend": "local",
+    "tracing_db_path": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-wixqa-b08/traces.db",
+    "vectordb_chroma_dir": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-wixqa-b08.chroma"
+   },
+   "code": {
+    "workspace": "/Users/julia/RAG_new_chat_4f48fed",
+    "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+    "context_window_file": "/Users/julia/RAG_new_chat_4f48fed/agent/context_window.py",
+    "has_fit_all_context_docs": true
+   },
+   "settings_sha256": "0f119e5505b8bb25f9dc2a445888bd254a7cdc003cf6eda1510d048c3eaa5b22",
+   "cases": [
+    "wixqa-simulated-093",
+    "wixqa-simulated-079",
+    "wixqa-simulated-060",
+    "wixqa-simulated-199",
+    "wixqa-simulated-002",
+    "wixqa-simulated-125",
+    "wixqa-simulated-158",
+    "wixqa-simulated-051",
+    "wixqa-simulated-099",
+    "wixqa-simulated-014"
+   ],
+   "bm25_restore_log": [
+    "Restored 37571 chunks for tenant ext_wixqa from the persisted collection (BM25 + parent-expansion re-enabled)"
+   ],
+   "path_breaks": [],
+   "log_levels": {
+    "WARNING api.app": 1,
+    "WARNING db.audit": 1,
+    "WARNING vectordb.embedder_manifest": 1,
+    "WARNING vectordb.manager": 1
+   },
+   "memory": {
+    "samples": 784,
+    "swap_used_mb": [
+     1749.75,
+     8173.25
+    ],
+    "free_mb_min": 3,
+    "max_rss_mb": {
+     "ollama": 3447,
+     "postgres": 10,
+     "python": 2393
+    }
+   }
+  },
+  {
+   "label": "v4-wixqa-b09",
+   "batch": 9,
+   "counted": true,
+   "launch": {
+    "label": "v4-wixqa-b09",
+    "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+    "model": "qwen3:4b-instruct-2507-q4_K_M",
+    "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+    "tenant": "ext_wixqa",
+    "chroma_dir": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-wixqa-b09.chroma",
+    "cases_file": "/Users/julia/RAG_new_external_s1/wixqa/cases.jsonl",
+    "started": "2026-10-24T21:09:21+00:00",
+    "api_ready": "2026-10-24T21:09:47+00:00",
+    "finished": "2026-10-24T21:53:09+00:00",
+    "status": "complete",
+    "client_cap_sec": "1020/1200",
+    "mode": "prod",
+    "overrides": {
+     "REQUEST_TIMEOUT_SEC": "3600",
+     "OLLAMA_REQUEST_TIMEOUT_SEC": "3600",
+     "STREAMING_TIMEOUT_SEC": "3600",
+     "RAG_DEVICE": "cpu"
+    },
+    "runner_exit": 0,
+    "error": null,
+    "api_killed": null,
+    "ollama_load_sec": 37.4,
+    "db_tickets_before": "94",
+    "db_tickets_after": "94",
+    "ollama_models_before": [],
+    "ollama_models_after": [
+     "qwen3:4b-instruct-2507-q4_K_M"
+    ],
+    "unloaded_models": [
+     "qwen3:4b-instruct-2507-q4_K_M"
+    ],
+    "pg_stop_error": null,
+    "unload_error": null
+   },
+   "settings": {
+    "llm_provider_profile": "local-first",
+    "ollama_model_name": "qwen3:4b-instruct-2507-q4_K_M",
+    "ollama_fast_model_name": "llama3.2:3b",
+    "model_routing_enabled": false,
+    "ollama_context_window": 4096,
+    "embedding_model": "BAAI/bge-m3",
+    "embedding_backend": "local",
+    "reranker_model": "BAAI/bge-reranker-v2-m3",
+    "rag_device": "cpu",
+    "vector_backend": "chroma",
+    "hybrid_search": true,
+    "retrieval_strategy": "hybrid",
+    "retrieval_top_k": 20,
+    "rerank_top_k": 5,
+    "hyde": false,
+    "graph_retrieval": "off",
+    "parent_expansion": true,
+    "self_rag_max_iterations": 2,
+    "fact_verification_enabled": true,
+    "streaming_enabled": false,
+    "streaming_rag_parity": false,
+    "streaming_quality_eval": true,
+    "streaming_timeout_sec": 3600.0,
+    "request_timeout_sec": 3600.0,
+    "ollama_request_timeout_sec": 3600.0,
+    "quality_threshold": 80,
+    "suggested_questions_enabled": true,
+    "llm_max_calls_per_request": 24,
+    "online_evaluators_enabled": true,
+    "max_concurrent_pipelines": 8,
+    "support_sink_backend": "local",
+    "tracing_db_path": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-wixqa-b09/traces.db",
+    "vectordb_chroma_dir": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-wixqa-b09.chroma"
+   },
+   "code": {
+    "workspace": "/Users/julia/RAG_new_chat_4f48fed",
+    "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+    "context_window_file": "/Users/julia/RAG_new_chat_4f48fed/agent/context_window.py",
+    "has_fit_all_context_docs": true
+   },
+   "settings_sha256": "3cc227d8491427cef00849154cb53ec63179641f74ebda9fd2be1c5502b26180",
+   "cases": [
+    "wixqa-simulated-001",
+    "wixqa-simulated-161",
+    "wixqa-simulated-095",
+    "wixqa-simulated-005",
+    "wixqa-simulated-092",
+    "wixqa-simulated-087",
+    "wixqa-simulated-075",
+    "wixqa-simulated-188",
+    "wixqa-simulated-034",
+    "wixqa-simulated-024"
+   ],
+   "bm25_restore_log": [
+    "Restored 37571 chunks for tenant ext_wixqa from the persisted collection (BM25 + parent-expansion re-enabled)"
+   ],
+   "path_breaks": [],
+   "log_levels": {
+    "WARNING api.app": 1,
+    "WARNING db.audit": 1,
+    "WARNING vectordb.embedder_manifest": 1,
+    "WARNING vectordb.manager": 1
+   },
+   "memory": {
+    "samples": 844,
+    "swap_used_mb": [
+     1840.75,
+     8411.25
+    ],
+    "free_mb_min": 3,
+    "max_rss_mb": {
+     "ollama": 3590,
+     "postgres": 10,
+     "python": 2794
+    }
+   }
+  },
+  {
+   "label": "v4-wixqa-b10",
+   "batch": 10,
+   "counted": true,
+   "launch": {
+    "label": "v4-wixqa-b10",
+    "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+    "model": "qwen3:4b-instruct-2507-q4_K_M",
+    "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+    "tenant": "ext_wixqa",
+    "chroma_dir": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-wixqa-b10.chroma",
+    "cases_file": "/Users/julia/RAG_new_external_s1/wixqa/cases.jsonl",
+    "started": "2026-10-24T21:53:38+00:00",
+    "api_ready": "2026-10-24T21:54:05+00:00",
+    "finished": "2026-10-24T22:37:39+00:00",
+    "status": "complete",
+    "client_cap_sec": "1020/1200",
+    "mode": "prod",
+    "overrides": {
+     "REQUEST_TIMEOUT_SEC": "3600",
+     "OLLAMA_REQUEST_TIMEOUT_SEC": "3600",
+     "STREAMING_TIMEOUT_SEC": "3600",
+     "RAG_DEVICE": "cpu"
+    },
+    "runner_exit": 0,
+    "error": null,
+    "api_killed": null,
+    "ollama_load_sec": 43.607,
+    "db_tickets_before": "94",
+    "db_tickets_after": "94",
+    "ollama_models_before": [],
+    "ollama_models_after": [
+     "qwen3:4b-instruct-2507-q4_K_M"
+    ],
+    "unloaded_models": [
+     "qwen3:4b-instruct-2507-q4_K_M"
+    ],
+    "pg_stop_error": null,
+    "unload_error": null
+   },
+   "settings": {
+    "llm_provider_profile": "local-first",
+    "ollama_model_name": "qwen3:4b-instruct-2507-q4_K_M",
+    "ollama_fast_model_name": "llama3.2:3b",
+    "model_routing_enabled": false,
+    "ollama_context_window": 4096,
+    "embedding_model": "BAAI/bge-m3",
+    "embedding_backend": "local",
+    "reranker_model": "BAAI/bge-reranker-v2-m3",
+    "rag_device": "cpu",
+    "vector_backend": "chroma",
+    "hybrid_search": true,
+    "retrieval_strategy": "hybrid",
+    "retrieval_top_k": 20,
+    "rerank_top_k": 5,
+    "hyde": false,
+    "graph_retrieval": "off",
+    "parent_expansion": true,
+    "self_rag_max_iterations": 2,
+    "fact_verification_enabled": true,
+    "streaming_enabled": false,
+    "streaming_rag_parity": false,
+    "streaming_quality_eval": true,
+    "streaming_timeout_sec": 3600.0,
+    "request_timeout_sec": 3600.0,
+    "ollama_request_timeout_sec": 3600.0,
+    "quality_threshold": 80,
+    "suggested_questions_enabled": true,
+    "llm_max_calls_per_request": 24,
+    "online_evaluators_enabled": true,
+    "max_concurrent_pipelines": 8,
+    "support_sink_backend": "local",
+    "tracing_db_path": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-wixqa-b10/traces.db",
+    "vectordb_chroma_dir": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-wixqa-b10.chroma"
+   },
+   "code": {
+    "workspace": "/Users/julia/RAG_new_chat_4f48fed",
+    "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+    "context_window_file": "/Users/julia/RAG_new_chat_4f48fed/agent/context_window.py",
+    "has_fit_all_context_docs": true
+   },
+   "settings_sha256": "3207e38fd83d5660379a79adf2c345eaa723b3a2d5d69bb248a11331a4b0f510",
+   "cases": [
+    "wixqa-simulated-094",
+    "wixqa-simulated-173",
+    "wixqa-simulated-058",
+    "wixqa-simulated-084",
+    "wixqa-simulated-077",
+    "wixqa-simulated-073",
+    "wixqa-simulated-165",
+    "wixqa-simulated-174",
+    "wixqa-simulated-177",
+    "wixqa-simulated-140"
+   ],
+   "bm25_restore_log": [
+    "Restored 37571 chunks for tenant ext_wixqa from the persisted collection (BM25 + parent-expansion re-enabled)"
+   ],
+   "path_breaks": [],
+   "log_levels": {
+    "WARNING api.app": 1,
+    "WARNING db.audit": 1,
+    "WARNING vectordb.embedder_manifest": 1,
+    "WARNING vectordb.manager": 1
+   },
+   "memory": {
+    "samples": 854,
+    "swap_used_mb": [
+     1881.5,
+     8731.25
+    ],
+    "free_mb_min": 3,
+    "max_rss_mb": {
+     "ollama": 3633,
+     "postgres": 10,
+     "python": 2412
+    }
+   }
+  }
+ ],
+ "aggregate": {
+  "registered": 100,
+  "measured": 100,
+  "missing": [],
+  "out_of_place": [],
+  "path_breaks": {},
+  "answered": 100,
+  "routes": {
+   "auto": 86,
+   "human": 14
+  },
+  "quality_below_80": 14,
+  "quality_sources": {
+   "llm": 100
+  },
+  "keywords": {
+   "None": 100
+  },
+  "retrievals_per_case": {
+   "1": 100
+  },
+  "rerank_status": {
+   "ok": 100
+  },
+  "pool_size": {
+   "n": 100,
+   "min": 26,
+   "median": 36.0,
+   "p90": 39.0,
+   "max": 40
+  },
+  "prompt_labels": {
+   "5": 95,
+   "4": 5
+  },
+  "with_marks": 93,
+  "marks_past_labels": 0,
+  "answer_script_vs_question": {
+   "latin->latin": 100
+  },
+  "times": {
+   "first_of_batch": {
+    "total_sec": {
+     "n": 10,
+     "min": 239.802,
+     "median": 383.911,
+     "p90": 515.598,
+     "max": 661.146
+    },
+    "first_token_sec": {
+     "n": 10,
+     "min": 158.296,
+     "median": 259.172,
+     "p90": 362.216,
+     "max": 507.588
+    },
+    "result_sec": {
+     "n": 10,
+     "min": 239.801,
+     "median": 383.909,
+     "p90": 515.505,
+     "max": 661.127
+    },
+    "retrieval_sec": {
+     "n": 10,
+     "min": 78.502,
+     "median": 163.015,
+     "p90": 260.597,
+     "max": 420.727
+    },
+    "rerank_sec": {
+     "n": 10,
+     "min": 48.197,
+     "median": 99.187,
+     "p90": 189.247,
+     "max": 362.883
+    },
+    "stream_sec": {
+     "n": 10,
+     "min": 63.28,
+     "median": 117.652,
+     "p90": 167.346,
+     "max": 180.513
+    }
+   },
+   "rest": {
+    "total_sec": {
+     "n": 90,
+     "min": 135.893,
+     "median": 293.213,
+     "p90": 451.819,
+     "max": 795.978
+    },
+    "first_token_sec": {
+     "n": 90,
+     "min": 73.82,
+     "median": 190.638,
+     "p90": 314.874,
+     "max": 592.837
+    },
+    "result_sec": {
+     "n": 90,
+     "min": 135.892,
+     "median": 293.211,
+     "p90": 451.802,
+     "max": 795.976
+    },
+    "retrieval_sec": {
+     "n": 90,
+     "min": 37.125,
+     "median": 127.65,
+     "p90": 239.711,
+     "max": 507.109
+    },
+    "rerank_sec": {
+     "n": 90,
+     "min": 24.928,
+     "median": 94.93,
+     "p90": 179.321,
+     "max": 421.573
+    },
+    "stream_sec": {
+     "n": 90,
+     "min": 43.007,
+     "median": 84.409,
+     "p90": 135.465,
+     "max": 249.26
+    }
+   }
+  },
+  "swap_used_mb_max": 9584.25
+ }
+}

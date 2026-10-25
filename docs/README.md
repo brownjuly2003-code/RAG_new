@@ -54,7 +54,8 @@ person; run as [`PLAN.md`](../PLAN.md) stages 2 and 3. [Stage 2](specs/stage2-fo
 — the four corpora measured on the chat path: the stand, the questions, the stop rules, the
 metrics and the judge, registered before the first request. [The answer prompt
 V4](specs/answer-prompt-v4.md) — stage 2b: three defects of the answer prompt V3, the fix, and
-its paired measurement against stage 2's answers, registered before the first request.
+its paired measurement against stage 2's answers, registered before the first request; its
+[record](evidence/answer-prompt-v4-record.md): adopted 2026-10-25.
 
 **Contracts the code keeps** — what the code must do, with tests behind each:
 

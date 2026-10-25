@@ -1,8 +1,8 @@
 # Current state — RAG_new
 
-2026-10-24 · The plan: [`PLAN.md`](PLAN.md), accepted by Julia on 2026-10-17 («принять») ·
-now: stage 2b — the answer prompt V4 against stage 2's answers (amended 2026-10-24); stage 3
-after it · previous version:
+2026-10-25 · The plan: [`PLAN.md`](PLAN.md), accepted by Julia on 2026-10-17 («принять») ·
+now: stage 3 — the handover signals on V4's answers; stage 2b closed 2026-10-25, V4 adopted ·
+previous version:
 [`archive/docs/state/current-state-through-2026-10-17.md`](archive/docs/state/current-state-through-2026-10-17.md).
 
 Read this file for *what is true now*; [`PLAN.md`](PLAN.md) for *what happens next and why*;
@@ -23,7 +23,7 @@ Retrieval: BM25 + BGE-M3, 20 candidates each, RRF, CPU bge-reranker-v2-m3 keeps 
 Chunks: markdown sections, 800 characters/200 overlap; DOCX/HTML/PDF converted by loaders;
 `[document › section]` headers, expansion up to two neighbours each side. English answer
 instructions request the question's language; actual language is measured. V3 (`4ca5ddd`)
-wrote every measured answer; V4 (stage 2b) replaces it in the code, measured before it stays.
+wrote stage 2's answers; V4 (`4f48fed`), adopted by stage 2b's record, is the code's prompt.
 
 **Production is `deproject-mac`** (Julia, 2026-10-14: «прод на маке»): i5-7500, 4 cores, 8 GB,
 Ollama 0.33.2 on the CPU. **The model is Qwen3-4B-Instruct-2507** (Julia, 2026-10-16; the code
@@ -47,15 +47,15 @@ limits: [`EVIDENCE_INDEX.md`](EVIDENCE_INDEX.md), [`PLAN.md`](PLAN.md) §3.
 | Earlier memory | swap up to 12,274 MB; runner +312 MB/request | same record; stage 4 investigates |
 | Retrieval alone | median 27.6 s, rerank 27.3 s | [record](reports/chat-live/33d4b42/); stage 4 investigates contention |
 | Engineering | 5,885 passed, 124 skipped on `96ee4e6`; static/security checks passed | Historical full gate; current slice's focused checks below |
-| Answer quality, chat path | M1 good: aircargo 69, ConditionalQA 31, WixQA 27, MultiHop-RAG 65 of 100; bad 14, 64, 63, 34 | [stage-2 record](docs/evidence/stage2-record.md); one model judges, no person; MultiHop-RAG's M2 `NOT_EVIDENCE` |
+| Answer quality, chat path, V3 | M1 good: aircargo 69, ConditionalQA 31, WixQA 27, MultiHop-RAG 65 of 100; bad 14, 64, 63, 34 | [stage-2 record](docs/evidence/stage2-record.md); one model judges, no person; MultiHop-RAG's M2 `NOT_EVIDENCE` |
+| Answer quality, V4 against V3 | M1 bad, paired: WixQA 63 → 51, ConditionalQA 64 → 57, aircargo 14 → 17; good 27 → 40, 31 → 35, 69 → 63 | [V4 record](docs/evidence/answer-prompt-v4-record.md): pooled bad −9.5 pp, detected; in sample |
 
-The stage-2 [retrieval baseline](docs/evidence/stage2-retrieval-baseline.md) is recorded at
-`7208ed2`: 415 questions, no path break, aircargo prompt parity 100/100. The
-[300 external answers](docs/evidence/stage2-external-answers.md): no path break, all in the
-question's language, prompt parity 100/100 per base, 84 routed to a person, median 266.9 s.
-The [stage-2 record](docs/evidence/stage2-record.md) (part 5) grades all 400 answers: aircargo's
-good share is above ConditionalQA's and WixQA's (+38.0, +42.0 pp, detected), not detected
-against MultiHop-RAG's; M2 agrees ConditionalQA 43/80, WixQA 29/100.
+Stage 2's [retrieval baseline](docs/evidence/stage2-retrieval-baseline.md) (`7208ed2`): 415
+questions, no path break, aircargo prompt parity 100/100. Its [300 external answers](docs/evidence/stage2-external-answers.md):
+no path break, all in the question's language, 84 routed to a person, median 266.9 s. Its
+[record](docs/evidence/stage2-record.md) grades all 400: aircargo's good share above
+ConditionalQA's and WixQA's (+38.0, +42.0 pp, detected), not MultiHop-RAG's; M2 agrees
+ConditionalQA 43/80, WixQA 29/100.
 
 ## Stage 1 — closed 2026-10-18
 
@@ -63,8 +63,7 @@ The 25 findings, their outcomes and the live checks: [`docs/specs/stage1-fixes.m
 records `reports/stage1/`, pinned by `tests/test_stage1_live_artifact.py`; one evidence row.
 
 - Loaders, headers, tables, overlap, language instructions and BM25 restoration fixed
-  (`8f94d84`…`4ca5ddd`). Second-generation indexes and V3 passed one live question per tenant.
-- Stage-2 runner, judge adapter, signal tool and external selections registered at `e5e135a`.
+  (`8f94d84`…`4ca5ddd`); new indexes and V3 passed one live question a tenant; stage-2 tools `e5e135a`.
 - **Left from the [audit of 2026-10-18](docs/operations/audit_fable_18_10_26.md):** S8, the
   answer's script, a signal candidate for stage 3; the audit's keys bound by a test (later).
 
@@ -79,24 +78,24 @@ Part 3 uses GR-3's archives; live graph measurement is stage 7. Judge amendment:
 **Done:** the judge — part 2's context plan (130 requests) and part 4's six plans (M1 without the reference, M2 with it; [amendment](docs/specs/stage2-four-corpora.md#the-judge), `575e24f`), 690 requests 2026-10-23 15:15 – 10-24 02:05 UTC, $122.45, six streams paced by the five-hour usage window; `p4-multihoprag-judge-m2` failed the stability rule (13/15, κ 0.59) and is `NOT_EVIDENCE`. Private folder `D:/RAG_new_stage2_private/p4/judge/`.
 **Done:** part 5 — `reports/stage2/5e308fe/stage2-record.json` by `stage2_record.py`, `tests/test_stage2_record_artifact.py`, the [capsule](docs/evidence/stage2-record.md) and its evidence row.
 
-## Stage 2b — in progress since 2026-10-24
+## Stage 2b — closed 2026-10-25: V4 adopted
 
-Stage 2's judge found three of V3's own instructions in the bad answers: a decline when the
-documents answer in part (WixQA 29 of 63 bad, ConditionalQA 13 of 64), advice to contact a
-specialist that no document holds (42 WixQA answers of 100), the placeholder «[N]» (25
-answers). V4 fixes the three; [`tests/test_chat_answer_prompt_e2e.py`](tests/test_chat_answer_prompt_e2e.py)
-proves the path's prompt. [Spec](docs/specs/answer-prompt-v4.md), registered in `4f48fed` before the
-first request: WixQA, ConditionalQA, aircargo paired with stage 2's V3 answers; a five-row decision
-table, bridges to stage 2's grades, the stand's environment, the reading's tools pinned by SHA-256.
+V4 fixes three of V3's own instructions found in stage 2's bad answers: a decline when the
+documents answer in part, advice to contact a specialist no document names, the placeholder
+«[N]»; [`tests/test_chat_answer_prompt_e2e.py`](tests/test_chat_answer_prompt_e2e.py) proves the
+path's prompt. By the [spec](docs/specs/answer-prompt-v4.md) registered in `4f48fed`: 300 V4
+answers on stand `4f48fed`, no path break, paired with stage 2's; stage 2's judge, all eight
+plans and bridges counted. The [record](docs/evidence/answer-prompt-v4-record.md): the pooled
+external bad share 127 → 108 of 200 (−9.5 pp, detected) — **adopted**; «[N]» and the referral
+gone. Close to the line, not harm by the table: ConditionalQA declines 4 of its 20 not
+answerable questions (V3 8); aircargo's nine good answers turned bad, eight by an unsupported claim.
 
 ## Next
 
-1. **Running, unattended:** WixQA's V4 answers on the stand `/Users/julia/RAG_new_chat_4f48fed`
-   (b01–b06 complete, path checks clean); then `v4_chain.sh` runs ConditionalQA and aircargo by
-   Julia's «Автозапуск на Mac» (the last answer ≈ 10-25 20:00–23:00 UTC). Logs, stop files and
-   the judge's steps a base: the [handoff](docs/operations/session-handoff-2026-10-24-v4-running.md).
-2. [`PLAN.md`](PLAN.md) stage 3 — the [handover plan](docs/specs/handover-signal.md)'s signals
-   on V4's 100 aircargo answers, or on stage 2's if the prompt returns to V3.
+1. [`PLAN.md`](PLAN.md) stage 3 — the [handover plan](docs/specs/handover-signal.md)'s signals
+   on V4's 100 aircargo answers (stand `4f48fed`); its S3 marks an unsupported claim.
+2. Before a push: the whole Mac suite, mypy, bandit and the dependency audits; the locks need
+   an update (pip-audit and npm audit failed on `fc74f04` on advisories newer than the locks).
 
 ## Julia's decisions in force
 
@@ -138,7 +137,8 @@ condition is formally met ([`PLAN.md`](PLAN.md) §9).
 - Tracked `origin/master`: `8fdbfee`, pushed 2026-10-24 at Julia's word («да») after the Mac
   suite (5,972 passed, 124 skipped), mypy and bandit; pip-audit and the npm audit, not rerun,
   failed on `fc74f04` (2026-10-23) on advisories newer than the locks. Local, not pushed:
-  `3422244` (risk review), `4f48fed` (V4; Mac suite 6,016 passed, 123 skipped; mypy clean), the handoff.
+  `3422244` (risk review), `4f48fed` (V4; Mac suite 6,016 passed, 123 skipped; mypy clean), the
+  handoff `c2c5a58`, the plans' hashes `410a642` and `d5f6e91`, stage 2b's record.
 - Private remote: `brownjuly2003-code/RAG_new`; HTTPS command in [`CLAUDE.md`](CLAUDE.md).
 
 ## Links

@@ -1,0 +1,1438 @@
+{
+ "part": "v4-aircargo",
+ "key": "aircargo",
+ "base": "aircargo",
+ "provenance": {
+  "code_sha": [
+   "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1"
+  ],
+  "model": [
+   "qwen3:4b-instruct-2507-q4_K_M"
+  ],
+  "model_digest": [
+   "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0"
+  ],
+  "settings_sha256": [
+   "54adf7455ed3993ba00d90662a2741b591b018b2539def9f2182cdb8bfd7f6eb",
+   "56e94f7e03fdff45f78475cc25c00278db8024d2434f3c305d79d40b33d3f4ce",
+   "61a08a76c523301ee6f95e1b5a48ca13c09fb3b800b6d76aba4b29a360a7daf1",
+   "77c507c61ec1f6c0c0fcb910ff61f31918426dc299db0ff77012b20dac71a803",
+   "82a76f24d6730770d85b6b4e6acad79dd910a90febdc499ffef3f2de1c33914c",
+   "84edb86247fc6b241a05ce21c0af5ec7ee8d2c90537065b22ad404eed815e8e5",
+   "a8ba6f5a2b66c677e99846dbf321f04c8433a1799672a811c0f4a674d2170556",
+   "b7693bed63d7c63bada378fabb2fc5b78e55a5b3e23ff040c21f1237e4793043",
+   "c4094b95503bc90c6404fa13cebab0c0446892ca7656638560d690a756790400",
+   "d23d758829fc55d8dd391b29bce3843951e793f0410bdd78d0e99c21bf2bfaca"
+  ],
+  "settings": {
+   "llm_provider_profile": "local-first",
+   "ollama_model_name": "qwen3:4b-instruct-2507-q4_K_M",
+   "ollama_fast_model_name": "llama3.2:3b",
+   "model_routing_enabled": false,
+   "ollama_context_window": 4096,
+   "embedding_model": "BAAI/bge-m3",
+   "embedding_backend": "local",
+   "reranker_model": "BAAI/bge-reranker-v2-m3",
+   "rag_device": "cpu",
+   "vector_backend": "chroma",
+   "hybrid_search": true,
+   "retrieval_strategy": "hybrid",
+   "retrieval_top_k": 20,
+   "rerank_top_k": 5,
+   "hyde": false,
+   "graph_retrieval": "off",
+   "parent_expansion": true,
+   "self_rag_max_iterations": 2,
+   "fact_verification_enabled": true,
+   "streaming_enabled": false,
+   "streaming_rag_parity": false,
+   "streaming_quality_eval": true,
+   "streaming_timeout_sec": 3600.0,
+   "request_timeout_sec": 3600.0,
+   "ollama_request_timeout_sec": 3600.0,
+   "quality_threshold": 80,
+   "suggested_questions_enabled": true,
+   "llm_max_calls_per_request": 24,
+   "online_evaluators_enabled": true,
+   "max_concurrent_pipelines": 8,
+   "support_sink_backend": "local",
+   "tracing_db_path": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-aircargo-b01/traces.db",
+   "vectordb_chroma_dir": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-aircargo-b01.chroma"
+  },
+  "code": {
+   "workspace": "/Users/julia/RAG_new_chat_4f48fed",
+   "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+   "context_window_file": "/Users/julia/RAG_new_chat_4f48fed/agent/context_window.py",
+   "has_fit_all_context_docs": true
+  },
+  "overrides": {
+   "REQUEST_TIMEOUT_SEC": "3600",
+   "OLLAMA_REQUEST_TIMEOUT_SEC": "3600",
+   "STREAMING_TIMEOUT_SEC": "3600",
+   "RAG_DEVICE": "cpu"
+  },
+  "data_root": "/Users/julia/RAG_new_external_s1",
+  "source_sha256": {
+   "corpus.manifest.json": "2b2e9232e69b4f52a55237f3ee620f34c91d1900383877c2310ba616c6590444",
+   "chunks-report.json": "bf01530e5a4cf33de44a7ce4aa1282805fc600a49b3a2f82b30b3b5715c6a714",
+   "index/index-receipt.json": "2dcc80e75d22e9dc34b31313c1db2724aa59c606203eb56c9ac7b84abb684666"
+  },
+  "cases_file": "/Users/julia/RAG_new_chat_4f48fed/evaluation/curated_cases_aircargo.jsonl",
+  "cases_file_sha256": "3737d694362d1867ca3d5983e3765d02c01110d2409145ba7e0f05c021d9c720",
+  "tools_sha256": {
+   "live_api.py": "43ff96f06af18538a2571d68a86e898ecfcdd5fcab47039f0d58bd245361a7b5",
+   "live_runner.py": "fd5f7d7b66e5be827cb1cbc23074d6b7955f64d18143a11a1f9cd4dbe9caf4d1",
+   "live_supervisor.py": "32e5a40552b62c37ee1e3cc387ae01a453b7729adadd7b9f790d73bb1906138c",
+   "stage2.sh": "8bde8bf050e814c284e688db209835501e389796b11e3f044e62ae5b831ae48c",
+   "stage2_cases.py": "17550c826764349a9ea654a18cfb107948dfcaa3474675a269695c78b572fb9d",
+   "stage2_common.py": "4d5241560ab5425faa0a1fe6c5b856454b3f8ee47e59187f0da6644b1bad48da",
+   "answers_summary.py": "b5b51f9cc913d59034e4d9cd8464410c544fe0876561eff31525e6ef7950c39d"
+  }
+ },
+ "driver_log": [
+  "2026-10-25T06:17:08Z PART v4-aircargo answers batches 1-1 of 10, cap 12180 s",
+  "2026-10-25T06:17:09Z START v4-aircargo-b01",
+  "2026-10-25T07:03:56Z LIVE_DONE v4-aircargo-b01 complete exit 0",
+  "2026-10-25T07:03:59Z PART_DONE",
+  "2026-10-25T07:13:00Z PART v4-aircargo answers batches 2-10 of 10, cap 109620 s",
+  "2026-10-25T07:13:00Z START v4-aircargo-b02",
+  "2026-10-25T07:59:07Z LIVE_DONE v4-aircargo-b02 complete exit 0",
+  "2026-10-25T07:59:35Z START v4-aircargo-b03",
+  "2026-10-25T08:51:13Z LIVE_DONE v4-aircargo-b03 complete exit 0",
+  "2026-10-25T08:51:41Z START v4-aircargo-b04",
+  "2026-10-25T09:40:01Z LIVE_DONE v4-aircargo-b04 complete exit 0",
+  "2026-10-25T09:40:24Z START v4-aircargo-b05",
+  "2026-10-25T10:39:10Z LIVE_DONE v4-aircargo-b05 complete exit 0",
+  "2026-10-25T10:39:37Z START v4-aircargo-b06",
+  "2026-10-25T11:42:11Z LIVE_DONE v4-aircargo-b06 complete exit 0",
+  "2026-10-25T11:42:39Z START v4-aircargo-b07",
+  "2026-10-25T12:27:34Z LIVE_DONE v4-aircargo-b07 complete exit 0",
+  "2026-10-25T12:28:01Z START v4-aircargo-b08",
+  "2026-10-25T13:21:09Z LIVE_DONE v4-aircargo-b08 complete exit 0",
+  "2026-10-25T13:21:36Z START v4-aircargo-b09",
+  "2026-10-25T14:06:08Z LIVE_DONE v4-aircargo-b09 complete exit 0",
+  "2026-10-25T14:06:37Z START v4-aircargo-b10",
+  "2026-10-25T15:06:37Z LIVE_DONE v4-aircargo-b10 complete exit 0",
+  "2026-10-25T15:06:39Z PART_DONE"
+ ],
+ "runs": [
+  {
+   "label": "v4-aircargo-b01",
+   "batch": 1,
+   "counted": true,
+   "launch": {
+    "label": "v4-aircargo-b01",
+    "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+    "model": "qwen3:4b-instruct-2507-q4_K_M",
+    "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+    "tenant": "aircargo",
+    "chroma_dir": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-aircargo-b01.chroma",
+    "cases_file": "/Users/julia/RAG_new_chat_4f48fed/evaluation/curated_cases_aircargo.jsonl",
+    "started": "2026-10-25T06:17:09+00:00",
+    "api_ready": "2026-10-25T06:17:39+00:00",
+    "finished": "2026-10-25T07:03:56+00:00",
+    "status": "complete",
+    "client_cap_sec": "1020/1200",
+    "mode": "prod",
+    "overrides": {
+     "REQUEST_TIMEOUT_SEC": "3600",
+     "OLLAMA_REQUEST_TIMEOUT_SEC": "3600",
+     "STREAMING_TIMEOUT_SEC": "3600",
+     "RAG_DEVICE": "cpu"
+    },
+    "runner_exit": 0,
+    "error": null,
+    "api_killed": null,
+    "ollama_load_sec": 51.001,
+    "db_tickets_before": "94",
+    "db_tickets_after": "94",
+    "ollama_models_before": [],
+    "ollama_models_after": [
+     "qwen3:4b-instruct-2507-q4_K_M"
+    ],
+    "unloaded_models": [
+     "qwen3:4b-instruct-2507-q4_K_M"
+    ],
+    "pg_stop_error": null,
+    "unload_error": null
+   },
+   "settings": {
+    "llm_provider_profile": "local-first",
+    "ollama_model_name": "qwen3:4b-instruct-2507-q4_K_M",
+    "ollama_fast_model_name": "llama3.2:3b",
+    "model_routing_enabled": false,
+    "ollama_context_window": 4096,
+    "embedding_model": "BAAI/bge-m3",
+    "embedding_backend": "local",
+    "reranker_model": "BAAI/bge-reranker-v2-m3",
+    "rag_device": "cpu",
+    "vector_backend": "chroma",
+    "hybrid_search": true,
+    "retrieval_strategy": "hybrid",
+    "retrieval_top_k": 20,
+    "rerank_top_k": 5,
+    "hyde": false,
+    "graph_retrieval": "off",
+    "parent_expansion": true,
+    "self_rag_max_iterations": 2,
+    "fact_verification_enabled": true,
+    "streaming_enabled": false,
+    "streaming_rag_parity": false,
+    "streaming_quality_eval": true,
+    "streaming_timeout_sec": 3600.0,
+    "request_timeout_sec": 3600.0,
+    "ollama_request_timeout_sec": 3600.0,
+    "quality_threshold": 80,
+    "suggested_questions_enabled": true,
+    "llm_max_calls_per_request": 24,
+    "online_evaluators_enabled": true,
+    "max_concurrent_pipelines": 8,
+    "support_sink_backend": "local",
+    "tracing_db_path": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-aircargo-b01/traces.db",
+    "vectordb_chroma_dir": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-aircargo-b01.chroma"
+   },
+   "code": {
+    "workspace": "/Users/julia/RAG_new_chat_4f48fed",
+    "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+    "context_window_file": "/Users/julia/RAG_new_chat_4f48fed/agent/context_window.py",
+    "has_fit_all_context_docs": true
+   },
+   "settings_sha256": "a8ba6f5a2b66c677e99846dbf321f04c8433a1799672a811c0f4a674d2170556",
+   "cases": [
+    "aircargo-probation-data",
+    "aircargo-probation-extend",
+    "aircargo-probation-dismissal",
+    "aircargo-dismissal-check",
+    "aircargo-dismissal-lawyer",
+    "aircargo-dismissal-order",
+    "aircargo-leave-sources",
+    "aircargo-leave-compensation",
+    "aircargo-leave-risk",
+    "aircargo-matliab-check"
+   ],
+   "bm25_restore_log": [
+    "Restored 5589 chunks for tenant aircargo from the persisted collection (BM25 + parent-expansion re-enabled)"
+   ],
+   "path_breaks": [],
+   "log_levels": {
+    "WARNING api.app": 1,
+    "WARNING db.audit": 1,
+    "WARNING vectordb.embedder_manifest": 1,
+    "WARNING vectordb.manager": 1
+   },
+   "memory": {
+    "samples": 905,
+    "swap_used_mb": [
+     1560.5,
+     9805.25
+    ],
+    "free_mb_min": 3,
+    "max_rss_mb": {
+     "ollama": 3626,
+     "postgres": 10,
+     "python": 2055
+    }
+   }
+  },
+  {
+   "label": "v4-aircargo-b02",
+   "batch": 2,
+   "counted": true,
+   "launch": {
+    "label": "v4-aircargo-b02",
+    "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+    "model": "qwen3:4b-instruct-2507-q4_K_M",
+    "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+    "tenant": "aircargo",
+    "chroma_dir": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-aircargo-b02.chroma",
+    "cases_file": "/Users/julia/RAG_new_chat_4f48fed/evaluation/curated_cases_aircargo.jsonl",
+    "started": "2026-10-25T07:13:01+00:00",
+    "api_ready": "2026-10-25T07:13:25+00:00",
+    "finished": "2026-10-25T07:59:07+00:00",
+    "status": "complete",
+    "client_cap_sec": "1020/1200",
+    "mode": "prod",
+    "overrides": {
+     "REQUEST_TIMEOUT_SEC": "3600",
+     "OLLAMA_REQUEST_TIMEOUT_SEC": "3600",
+     "STREAMING_TIMEOUT_SEC": "3600",
+     "RAG_DEVICE": "cpu"
+    },
+    "runner_exit": 0,
+    "error": null,
+    "api_killed": null,
+    "ollama_load_sec": 39.655,
+    "db_tickets_before": "94",
+    "db_tickets_after": "94",
+    "ollama_models_before": [],
+    "ollama_models_after": [
+     "qwen3:4b-instruct-2507-q4_K_M"
+    ],
+    "unloaded_models": [
+     "qwen3:4b-instruct-2507-q4_K_M"
+    ],
+    "pg_stop_error": null,
+    "unload_error": null
+   },
+   "settings": {
+    "llm_provider_profile": "local-first",
+    "ollama_model_name": "qwen3:4b-instruct-2507-q4_K_M",
+    "ollama_fast_model_name": "llama3.2:3b",
+    "model_routing_enabled": false,
+    "ollama_context_window": 4096,
+    "embedding_model": "BAAI/bge-m3",
+    "embedding_backend": "local",
+    "reranker_model": "BAAI/bge-reranker-v2-m3",
+    "rag_device": "cpu",
+    "vector_backend": "chroma",
+    "hybrid_search": true,
+    "retrieval_strategy": "hybrid",
+    "retrieval_top_k": 20,
+    "rerank_top_k": 5,
+    "hyde": false,
+    "graph_retrieval": "off",
+    "parent_expansion": true,
+    "self_rag_max_iterations": 2,
+    "fact_verification_enabled": true,
+    "streaming_enabled": false,
+    "streaming_rag_parity": false,
+    "streaming_quality_eval": true,
+    "streaming_timeout_sec": 3600.0,
+    "request_timeout_sec": 3600.0,
+    "ollama_request_timeout_sec": 3600.0,
+    "quality_threshold": 80,
+    "suggested_questions_enabled": true,
+    "llm_max_calls_per_request": 24,
+    "online_evaluators_enabled": true,
+    "max_concurrent_pipelines": 8,
+    "support_sink_backend": "local",
+    "tracing_db_path": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-aircargo-b02/traces.db",
+    "vectordb_chroma_dir": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-aircargo-b02.chroma"
+   },
+   "code": {
+    "workspace": "/Users/julia/RAG_new_chat_4f48fed",
+    "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+    "context_window_file": "/Users/julia/RAG_new_chat_4f48fed/agent/context_window.py",
+    "has_fit_all_context_docs": true
+   },
+   "settings_sha256": "61a08a76c523301ee6f95e1b5a48ca13c09fb3b800b6d76aba4b29a360a7daf1",
+   "cases": [
+    "aircargo-matliab-disputed",
+    "aircargo-templates-choose",
+    "aircargo-templates-checklist",
+    "aircargo-templates-insufficient",
+    "aircargo-secret-check",
+    "aircargo-secret-not-auto",
+    "aircargo-secret-disclosure",
+    "aircargo-pdp-scope",
+    "aircargo-pdp-data",
+    "aircargo-pdp-uncertain"
+   ],
+   "bm25_restore_log": [
+    "Restored 5589 chunks for tenant aircargo from the persisted collection (BM25 + parent-expansion re-enabled)"
+   ],
+   "path_breaks": [],
+   "log_levels": {
+    "WARNING api.app": 1,
+    "WARNING db.audit": 1,
+    "WARNING vectordb.embedder_manifest": 1,
+    "WARNING vectordb.manager": 1
+   },
+   "memory": {
+    "samples": 893,
+    "swap_used_mb": [
+     1766.75,
+     9681.0
+    ],
+    "free_mb_min": 3,
+    "max_rss_mb": {
+     "ollama": 3683,
+     "postgres": 10,
+     "python": 2453
+    }
+   }
+  },
+  {
+   "label": "v4-aircargo-b03",
+   "batch": 3,
+   "counted": true,
+   "launch": {
+    "label": "v4-aircargo-b03",
+    "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+    "model": "qwen3:4b-instruct-2507-q4_K_M",
+    "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+    "tenant": "aircargo",
+    "chroma_dir": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-aircargo-b03.chroma",
+    "cases_file": "/Users/julia/RAG_new_chat_4f48fed/evaluation/curated_cases_aircargo.jsonl",
+    "started": "2026-10-25T07:59:35+00:00",
+    "api_ready": "2026-10-25T08:00:04+00:00",
+    "finished": "2026-10-25T08:51:13+00:00",
+    "status": "complete",
+    "client_cap_sec": "1020/1200",
+    "mode": "prod",
+    "overrides": {
+     "REQUEST_TIMEOUT_SEC": "3600",
+     "OLLAMA_REQUEST_TIMEOUT_SEC": "3600",
+     "STREAMING_TIMEOUT_SEC": "3600",
+     "RAG_DEVICE": "cpu"
+    },
+    "runner_exit": 0,
+    "error": null,
+    "api_killed": null,
+    "ollama_load_sec": 37.448,
+    "db_tickets_before": "94",
+    "db_tickets_after": "94",
+    "ollama_models_before": [],
+    "ollama_models_after": [
+     "qwen3:4b-instruct-2507-q4_K_M"
+    ],
+    "unloaded_models": [
+     "qwen3:4b-instruct-2507-q4_K_M"
+    ],
+    "pg_stop_error": null,
+    "unload_error": null
+   },
+   "settings": {
+    "llm_provider_profile": "local-first",
+    "ollama_model_name": "qwen3:4b-instruct-2507-q4_K_M",
+    "ollama_fast_model_name": "llama3.2:3b",
+    "model_routing_enabled": false,
+    "ollama_context_window": 4096,
+    "embedding_model": "BAAI/bge-m3",
+    "embedding_backend": "local",
+    "reranker_model": "BAAI/bge-reranker-v2-m3",
+    "rag_device": "cpu",
+    "vector_backend": "chroma",
+    "hybrid_search": true,
+    "retrieval_strategy": "hybrid",
+    "retrieval_top_k": 20,
+    "rerank_top_k": 5,
+    "hyde": false,
+    "graph_retrieval": "off",
+    "parent_expansion": true,
+    "self_rag_max_iterations": 2,
+    "fact_verification_enabled": true,
+    "streaming_enabled": false,
+    "streaming_rag_parity": false,
+    "streaming_quality_eval": true,
+    "streaming_timeout_sec": 3600.0,
+    "request_timeout_sec": 3600.0,
+    "ollama_request_timeout_sec": 3600.0,
+    "quality_threshold": 80,
+    "suggested_questions_enabled": true,
+    "llm_max_calls_per_request": 24,
+    "online_evaluators_enabled": true,
+    "max_concurrent_pipelines": 8,
+    "support_sink_backend": "local",
+    "tracing_db_path": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-aircargo-b03/traces.db",
+    "vectordb_chroma_dir": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-aircargo-b03.chroma"
+   },
+   "code": {
+    "workspace": "/Users/julia/RAG_new_chat_4f48fed",
+    "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+    "context_window_file": "/Users/julia/RAG_new_chat_4f48fed/agent/context_window.py",
+    "has_fit_all_context_docs": true
+   },
+   "settings_sha256": "c4094b95503bc90c6404fa13cebab0c0446892ca7656638560d690a756790400",
+   "cases": [
+    "aircargo-claims-delay",
+    "aircargo-claims-damage",
+    "aircargo-claims-lawyer",
+    "aircargo-claims-forbidden",
+    "aircargo-expedition-vs-carrier",
+    "aircargo-expedition-mawb-hawb",
+    "aircargo-expedition-risks",
+    "aircargo-road-cutoff",
+    "aircargo-road-penalty",
+    "aircargo-road-seal"
+   ],
+   "bm25_restore_log": [
+    "Restored 5589 chunks for tenant aircargo from the persisted collection (BM25 + parent-expansion re-enabled)"
+   ],
+   "path_breaks": [],
+   "log_levels": {
+    "WARNING api.app": 1,
+    "WARNING db.audit": 1,
+    "WARNING vectordb.embedder_manifest": 1,
+    "WARNING vectordb.manager": 1
+   },
+   "memory": {
+    "samples": 1000,
+    "swap_used_mb": [
+     1969.25,
+     10150.75
+    ],
+    "free_mb_min": 4,
+    "max_rss_mb": {
+     "ollama": 3714,
+     "postgres": 10,
+     "python": 2549
+    }
+   }
+  },
+  {
+   "label": "v4-aircargo-b04",
+   "batch": 4,
+   "counted": true,
+   "launch": {
+    "label": "v4-aircargo-b04",
+    "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+    "model": "qwen3:4b-instruct-2507-q4_K_M",
+    "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+    "tenant": "aircargo",
+    "chroma_dir": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-aircargo-b04.chroma",
+    "cases_file": "/Users/julia/RAG_new_chat_4f48fed/evaluation/curated_cases_aircargo.jsonl",
+    "started": "2026-10-25T08:51:41+00:00",
+    "api_ready": "2026-10-25T08:52:09+00:00",
+    "finished": "2026-10-25T09:40:01+00:00",
+    "status": "complete",
+    "client_cap_sec": "1020/1200",
+    "mode": "prod",
+    "overrides": {
+     "REQUEST_TIMEOUT_SEC": "3600",
+     "OLLAMA_REQUEST_TIMEOUT_SEC": "3600",
+     "STREAMING_TIMEOUT_SEC": "3600",
+     "RAG_DEVICE": "cpu"
+    },
+    "runner_exit": 0,
+    "error": null,
+    "api_killed": null,
+    "ollama_load_sec": 37.408,
+    "db_tickets_before": "94",
+    "db_tickets_after": "94",
+    "ollama_models_before": [],
+    "ollama_models_after": [
+     "qwen3:4b-instruct-2507-q4_K_M"
+    ],
+    "unloaded_models": [
+     "qwen3:4b-instruct-2507-q4_K_M"
+    ],
+    "pg_stop_error": null,
+    "unload_error": null
+   },
+   "settings": {
+    "llm_provider_profile": "local-first",
+    "ollama_model_name": "qwen3:4b-instruct-2507-q4_K_M",
+    "ollama_fast_model_name": "llama3.2:3b",
+    "model_routing_enabled": false,
+    "ollama_context_window": 4096,
+    "embedding_model": "BAAI/bge-m3",
+    "embedding_backend": "local",
+    "reranker_model": "BAAI/bge-reranker-v2-m3",
+    "rag_device": "cpu",
+    "vector_backend": "chroma",
+    "hybrid_search": true,
+    "retrieval_strategy": "hybrid",
+    "retrieval_top_k": 20,
+    "rerank_top_k": 5,
+    "hyde": false,
+    "graph_retrieval": "off",
+    "parent_expansion": true,
+    "self_rag_max_iterations": 2,
+    "fact_verification_enabled": true,
+    "streaming_enabled": false,
+    "streaming_rag_parity": false,
+    "streaming_quality_eval": true,
+    "streaming_timeout_sec": 3600.0,
+    "request_timeout_sec": 3600.0,
+    "ollama_request_timeout_sec": 3600.0,
+    "quality_threshold": 80,
+    "suggested_questions_enabled": true,
+    "llm_max_calls_per_request": 24,
+    "online_evaluators_enabled": true,
+    "max_concurrent_pipelines": 8,
+    "support_sink_backend": "local",
+    "tracing_db_path": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-aircargo-b04/traces.db",
+    "vectordb_chroma_dir": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-aircargo-b04.chroma"
+   },
+   "code": {
+    "workspace": "/Users/julia/RAG_new_chat_4f48fed",
+    "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+    "context_window_file": "/Users/julia/RAG_new_chat_4f48fed/agent/context_window.py",
+    "has_fit_all_context_docs": true
+   },
+   "settings_sha256": "d23d758829fc55d8dd391b29bce3843951e793f0410bdd78d0e99c21bf2bfaca",
+   "cases": [
+    "aircargo-road-driver-pdn",
+    "aircargo-business-trip-advance-report",
+    "aircargo-business-trip-foreign-approval",
+    "aircargo-remote-work-monitoring-limits",
+    "aircargo-remote-work-equipment-compensation",
+    "aircargo-maternity-duration-normal",
+    "aircargo-maternity-dismissal-ban",
+    "aircargo-internal-transfer-consent",
+    "aircargo-internal-transfer-documents",
+    "aircargo-contract-termination-open-awb"
+   ],
+   "bm25_restore_log": [
+    "Restored 5589 chunks for tenant aircargo from the persisted collection (BM25 + parent-expansion re-enabled)"
+   ],
+   "path_breaks": [],
+   "log_levels": {
+    "WARNING api.app": 1,
+    "WARNING db.audit": 1,
+    "WARNING vectordb.embedder_manifest": 1,
+    "WARNING vectordb.manager": 1
+   },
+   "memory": {
+    "samples": 936,
+    "swap_used_mb": [
+     2057.75,
+     9378.0
+    ],
+    "free_mb_min": 3,
+    "max_rss_mb": {
+     "ollama": 3608,
+     "postgres": 10,
+     "python": 2778
+    }
+   }
+  },
+  {
+   "label": "v4-aircargo-b05",
+   "batch": 5,
+   "counted": true,
+   "launch": {
+    "label": "v4-aircargo-b05",
+    "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+    "model": "qwen3:4b-instruct-2507-q4_K_M",
+    "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+    "tenant": "aircargo",
+    "chroma_dir": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-aircargo-b05.chroma",
+    "cases_file": "/Users/julia/RAG_new_chat_4f48fed/evaluation/curated_cases_aircargo.jsonl",
+    "started": "2026-10-25T09:40:24+00:00",
+    "api_ready": "2026-10-25T09:40:56+00:00",
+    "finished": "2026-10-25T10:39:10+00:00",
+    "status": "complete",
+    "client_cap_sec": "1020/1200",
+    "mode": "prod",
+    "overrides": {
+     "REQUEST_TIMEOUT_SEC": "3600",
+     "OLLAMA_REQUEST_TIMEOUT_SEC": "3600",
+     "STREAMING_TIMEOUT_SEC": "3600",
+     "RAG_DEVICE": "cpu"
+    },
+    "runner_exit": 0,
+    "error": null,
+    "api_killed": null,
+    "ollama_load_sec": 36.222,
+    "db_tickets_before": "94",
+    "db_tickets_after": "94",
+    "ollama_models_before": [],
+    "ollama_models_after": [
+     "qwen3:4b-instruct-2507-q4_K_M"
+    ],
+    "unloaded_models": [
+     "qwen3:4b-instruct-2507-q4_K_M"
+    ],
+    "pg_stop_error": null,
+    "unload_error": null
+   },
+   "settings": {
+    "llm_provider_profile": "local-first",
+    "ollama_model_name": "qwen3:4b-instruct-2507-q4_K_M",
+    "ollama_fast_model_name": "llama3.2:3b",
+    "model_routing_enabled": false,
+    "ollama_context_window": 4096,
+    "embedding_model": "BAAI/bge-m3",
+    "embedding_backend": "local",
+    "reranker_model": "BAAI/bge-reranker-v2-m3",
+    "rag_device": "cpu",
+    "vector_backend": "chroma",
+    "hybrid_search": true,
+    "retrieval_strategy": "hybrid",
+    "retrieval_top_k": 20,
+    "rerank_top_k": 5,
+    "hyde": false,
+    "graph_retrieval": "off",
+    "parent_expansion": true,
+    "self_rag_max_iterations": 2,
+    "fact_verification_enabled": true,
+    "streaming_enabled": false,
+    "streaming_rag_parity": false,
+    "streaming_quality_eval": true,
+    "streaming_timeout_sec": 3600.0,
+    "request_timeout_sec": 3600.0,
+    "ollama_request_timeout_sec": 3600.0,
+    "quality_threshold": 80,
+    "suggested_questions_enabled": true,
+    "llm_max_calls_per_request": 24,
+    "online_evaluators_enabled": true,
+    "max_concurrent_pipelines": 8,
+    "support_sink_backend": "local",
+    "tracing_db_path": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-aircargo-b05/traces.db",
+    "vectordb_chroma_dir": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-aircargo-b05.chroma"
+   },
+   "code": {
+    "workspace": "/Users/julia/RAG_new_chat_4f48fed",
+    "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+    "context_window_file": "/Users/julia/RAG_new_chat_4f48fed/agent/context_window.py",
+    "has_fit_all_context_docs": true
+   },
+   "settings_sha256": "56e94f7e03fdff45f78475cc25c00278db8024d2434f3c305d79d40b33d3f4ce",
+   "cases": [
+    "aircargo-contract-termination-fields",
+    "aircargo-road-contract-aircargo-fields",
+    "aircargo-dangerous-goods-fields",
+    "aircargo-dangerous-goods-clearance",
+    "aircargo-customs-clearance-fields",
+    "aircargo-customs-special-cargo-manual-check",
+    "aircargo-waybill-first-mile-fields",
+    "aircargo-waybill-escalation-events",
+    "aircargo-trade-compliance-hold",
+    "aircargo-trade-compliance-screening"
+   ],
+   "bm25_restore_log": [
+    "Restored 5589 chunks for tenant aircargo from the persisted collection (BM25 + parent-expansion re-enabled)"
+   ],
+   "path_breaks": [],
+   "log_levels": {
+    "WARNING api.app": 1,
+    "WARNING db.audit": 1,
+    "WARNING vectordb.embedder_manifest": 1,
+    "WARNING vectordb.manager": 1
+   },
+   "memory": {
+    "samples": 1131,
+    "swap_used_mb": [
+     1975.75,
+     10060.75
+    ],
+    "free_mb_min": 3,
+    "max_rss_mb": {
+     "ollama": 3742,
+     "postgres": 10,
+     "python": 2593
+    }
+   }
+  },
+  {
+   "label": "v4-aircargo-b06",
+   "batch": 6,
+   "counted": true,
+   "launch": {
+    "label": "v4-aircargo-b06",
+    "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+    "model": "qwen3:4b-instruct-2507-q4_K_M",
+    "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+    "tenant": "aircargo",
+    "chroma_dir": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-aircargo-b06.chroma",
+    "cases_file": "/Users/julia/RAG_new_chat_4f48fed/evaluation/curated_cases_aircargo.jsonl",
+    "started": "2026-10-25T10:39:37+00:00",
+    "api_ready": "2026-10-25T10:40:05+00:00",
+    "finished": "2026-10-25T11:42:11+00:00",
+    "status": "complete",
+    "client_cap_sec": "1020/1200",
+    "mode": "prod",
+    "overrides": {
+     "REQUEST_TIMEOUT_SEC": "3600",
+     "OLLAMA_REQUEST_TIMEOUT_SEC": "3600",
+     "STREAMING_TIMEOUT_SEC": "3600",
+     "RAG_DEVICE": "cpu"
+    },
+    "runner_exit": 0,
+    "error": null,
+    "api_killed": null,
+    "ollama_load_sec": 39.643,
+    "db_tickets_before": "94",
+    "db_tickets_after": "94",
+    "ollama_models_before": [],
+    "ollama_models_after": [
+     "qwen3:4b-instruct-2507-q4_K_M"
+    ],
+    "unloaded_models": [
+     "qwen3:4b-instruct-2507-q4_K_M"
+    ],
+    "pg_stop_error": null,
+    "unload_error": null
+   },
+   "settings": {
+    "llm_provider_profile": "local-first",
+    "ollama_model_name": "qwen3:4b-instruct-2507-q4_K_M",
+    "ollama_fast_model_name": "llama3.2:3b",
+    "model_routing_enabled": false,
+    "ollama_context_window": 4096,
+    "embedding_model": "BAAI/bge-m3",
+    "embedding_backend": "local",
+    "reranker_model": "BAAI/bge-reranker-v2-m3",
+    "rag_device": "cpu",
+    "vector_backend": "chroma",
+    "hybrid_search": true,
+    "retrieval_strategy": "hybrid",
+    "retrieval_top_k": 20,
+    "rerank_top_k": 5,
+    "hyde": false,
+    "graph_retrieval": "off",
+    "parent_expansion": true,
+    "self_rag_max_iterations": 2,
+    "fact_verification_enabled": true,
+    "streaming_enabled": false,
+    "streaming_rag_parity": false,
+    "streaming_quality_eval": true,
+    "streaming_timeout_sec": 3600.0,
+    "request_timeout_sec": 3600.0,
+    "ollama_request_timeout_sec": 3600.0,
+    "quality_threshold": 80,
+    "suggested_questions_enabled": true,
+    "llm_max_calls_per_request": 24,
+    "online_evaluators_enabled": true,
+    "max_concurrent_pipelines": 8,
+    "support_sink_backend": "local",
+    "tracing_db_path": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-aircargo-b06/traces.db",
+    "vectordb_chroma_dir": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-aircargo-b06.chroma"
+   },
+   "code": {
+    "workspace": "/Users/julia/RAG_new_chat_4f48fed",
+    "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+    "context_window_file": "/Users/julia/RAG_new_chat_4f48fed/agent/context_window.py",
+    "has_fit_all_context_docs": true
+   },
+   "settings_sha256": "b7693bed63d7c63bada378fabb2fc5b78e55a5b3e23ff040c21f1237e4793043",
+   "cases": [
+    "aircargo-incident-response-bridge",
+    "aircargo-incident-response-required-fields",
+    "aircargo-access-control-need-to-know",
+    "aircargo-access-control-review",
+    "aircargo-employment-contract-essential-terms",
+    "aircargo-employment-contract-special-form",
+    "aircargo-driver-job-documents",
+    "aircargo-driver-dangerous-goods-refusal",
+    "aircargo-sick-leave-required-fields",
+    "aircargo-sick-leave-lawyer-escalation"
+   ],
+   "bm25_restore_log": [
+    "Restored 5589 chunks for tenant aircargo from the persisted collection (BM25 + parent-expansion re-enabled)"
+   ],
+   "path_breaks": [],
+   "log_levels": {
+    "WARNING api.app": 1,
+    "WARNING db.audit": 1,
+    "WARNING vectordb.embedder_manifest": 1,
+    "WARNING vectordb.manager": 1
+   },
+   "memory": {
+    "samples": 1208,
+    "swap_used_mb": [
+     1804.5,
+     9803.75
+    ],
+    "free_mb_min": 4,
+    "max_rss_mb": {
+     "ollama": 3673,
+     "postgres": 10,
+     "python": 1908
+    }
+   }
+  },
+  {
+   "label": "v4-aircargo-b07",
+   "batch": 7,
+   "counted": true,
+   "launch": {
+    "label": "v4-aircargo-b07",
+    "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+    "model": "qwen3:4b-instruct-2507-q4_K_M",
+    "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+    "tenant": "aircargo",
+    "chroma_dir": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-aircargo-b07.chroma",
+    "cases_file": "/Users/julia/RAG_new_chat_4f48fed/evaluation/curated_cases_aircargo.jsonl",
+    "started": "2026-10-25T11:42:39+00:00",
+    "api_ready": "2026-10-25T11:43:05+00:00",
+    "finished": "2026-10-25T12:27:34+00:00",
+    "status": "complete",
+    "client_cap_sec": "1020/1200",
+    "mode": "prod",
+    "overrides": {
+     "REQUEST_TIMEOUT_SEC": "3600",
+     "OLLAMA_REQUEST_TIMEOUT_SEC": "3600",
+     "STREAMING_TIMEOUT_SEC": "3600",
+     "RAG_DEVICE": "cpu"
+    },
+    "runner_exit": 0,
+    "error": null,
+    "api_killed": null,
+    "ollama_load_sec": 40.039,
+    "db_tickets_before": "94",
+    "db_tickets_after": "94",
+    "ollama_models_before": [],
+    "ollama_models_after": [
+     "qwen3:4b-instruct-2507-q4_K_M"
+    ],
+    "unloaded_models": [
+     "qwen3:4b-instruct-2507-q4_K_M"
+    ],
+    "pg_stop_error": null,
+    "unload_error": null
+   },
+   "settings": {
+    "llm_provider_profile": "local-first",
+    "ollama_model_name": "qwen3:4b-instruct-2507-q4_K_M",
+    "ollama_fast_model_name": "llama3.2:3b",
+    "model_routing_enabled": false,
+    "ollama_context_window": 4096,
+    "embedding_model": "BAAI/bge-m3",
+    "embedding_backend": "local",
+    "reranker_model": "BAAI/bge-reranker-v2-m3",
+    "rag_device": "cpu",
+    "vector_backend": "chroma",
+    "hybrid_search": true,
+    "retrieval_strategy": "hybrid",
+    "retrieval_top_k": 20,
+    "rerank_top_k": 5,
+    "hyde": false,
+    "graph_retrieval": "off",
+    "parent_expansion": true,
+    "self_rag_max_iterations": 2,
+    "fact_verification_enabled": true,
+    "streaming_enabled": false,
+    "streaming_rag_parity": false,
+    "streaming_quality_eval": true,
+    "streaming_timeout_sec": 3600.0,
+    "request_timeout_sec": 3600.0,
+    "ollama_request_timeout_sec": 3600.0,
+    "quality_threshold": 80,
+    "suggested_questions_enabled": true,
+    "llm_max_calls_per_request": 24,
+    "online_evaluators_enabled": true,
+    "max_concurrent_pipelines": 8,
+    "support_sink_backend": "local",
+    "tracing_db_path": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-aircargo-b07/traces.db",
+    "vectordb_chroma_dir": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-aircargo-b07.chroma"
+   },
+   "code": {
+    "workspace": "/Users/julia/RAG_new_chat_4f48fed",
+    "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+    "context_window_file": "/Users/julia/RAG_new_chat_4f48fed/agent/context_window.py",
+    "has_fit_all_context_docs": true
+   },
+   "settings_sha256": "54adf7455ed3993ba00d90662a2741b591b018b2539def9f2182cdb8bfd7f6eb",
+   "cases": [
+    "aircargo-cargo-loss-evidence-bundle",
+    "aircargo-cargo-loss-required-fields",
+    "aircargo-late-delivery-reply-evidence",
+    "aircargo-late-delivery-reply-no-admission",
+    "aircargo-driver-hours-required-fields",
+    "aircargo-driver-hours-terminal-discrepancy",
+    "aircargo-warehouse-3pl-required-fields",
+    "aircargo-warehouse-3pl-escalation",
+    "aircargo-perishable-temperature-controls",
+    "aircargo-perishable-special-cargo-evidence"
+   ],
+   "bm25_restore_log": [
+    "Restored 5589 chunks for tenant aircargo from the persisted collection (BM25 + parent-expansion re-enabled)"
+   ],
+   "path_breaks": [],
+   "log_levels": {
+    "WARNING api.app": 1,
+    "WARNING db.audit": 1,
+    "WARNING vectordb.embedder_manifest": 1,
+    "WARNING vectordb.manager": 1
+   },
+   "memory": {
+    "samples": 866,
+    "swap_used_mb": [
+     1921.25,
+     9539.5
+    ],
+    "free_mb_min": 3,
+    "max_rss_mb": {
+     "ollama": 3665,
+     "postgres": 10,
+     "python": 2439
+    }
+   }
+  },
+  {
+   "label": "v4-aircargo-b08",
+   "batch": 8,
+   "counted": true,
+   "launch": {
+    "label": "v4-aircargo-b08",
+    "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+    "model": "qwen3:4b-instruct-2507-q4_K_M",
+    "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+    "tenant": "aircargo",
+    "chroma_dir": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-aircargo-b08.chroma",
+    "cases_file": "/Users/julia/RAG_new_chat_4f48fed/evaluation/curated_cases_aircargo.jsonl",
+    "started": "2026-10-25T12:28:02+00:00",
+    "api_ready": "2026-10-25T12:28:29+00:00",
+    "finished": "2026-10-25T13:21:09+00:00",
+    "status": "complete",
+    "client_cap_sec": "1020/1200",
+    "mode": "prod",
+    "overrides": {
+     "REQUEST_TIMEOUT_SEC": "3600",
+     "OLLAMA_REQUEST_TIMEOUT_SEC": "3600",
+     "STREAMING_TIMEOUT_SEC": "3600",
+     "RAG_DEVICE": "cpu"
+    },
+    "runner_exit": 0,
+    "error": null,
+    "api_killed": null,
+    "ollama_load_sec": 36.059,
+    "db_tickets_before": "94",
+    "db_tickets_after": "94",
+    "ollama_models_before": [],
+    "ollama_models_after": [
+     "qwen3:4b-instruct-2507-q4_K_M"
+    ],
+    "unloaded_models": [
+     "qwen3:4b-instruct-2507-q4_K_M"
+    ],
+    "pg_stop_error": null,
+    "unload_error": null
+   },
+   "settings": {
+    "llm_provider_profile": "local-first",
+    "ollama_model_name": "qwen3:4b-instruct-2507-q4_K_M",
+    "ollama_fast_model_name": "llama3.2:3b",
+    "model_routing_enabled": false,
+    "ollama_context_window": 4096,
+    "embedding_model": "BAAI/bge-m3",
+    "embedding_backend": "local",
+    "reranker_model": "BAAI/bge-reranker-v2-m3",
+    "rag_device": "cpu",
+    "vector_backend": "chroma",
+    "hybrid_search": true,
+    "retrieval_strategy": "hybrid",
+    "retrieval_top_k": 20,
+    "rerank_top_k": 5,
+    "hyde": false,
+    "graph_retrieval": "off",
+    "parent_expansion": true,
+    "self_rag_max_iterations": 2,
+    "fact_verification_enabled": true,
+    "streaming_enabled": false,
+    "streaming_rag_parity": false,
+    "streaming_quality_eval": true,
+    "streaming_timeout_sec": 3600.0,
+    "request_timeout_sec": 3600.0,
+    "ollama_request_timeout_sec": 3600.0,
+    "quality_threshold": 80,
+    "suggested_questions_enabled": true,
+    "llm_max_calls_per_request": 24,
+    "online_evaluators_enabled": true,
+    "max_concurrent_pipelines": 8,
+    "support_sink_backend": "local",
+    "tracing_db_path": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-aircargo-b08/traces.db",
+    "vectordb_chroma_dir": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-aircargo-b08.chroma"
+   },
+   "code": {
+    "workspace": "/Users/julia/RAG_new_chat_4f48fed",
+    "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+    "context_window_file": "/Users/julia/RAG_new_chat_4f48fed/agent/context_window.py",
+    "has_fit_all_context_docs": true
+   },
+   "settings_sha256": "84edb86247fc6b241a05ce21c0af5ec7ee8d2c90537065b22ad404eed815e8e5",
+   "cases": [
+    "aircargo-oversized-permit-route",
+    "aircargo-oversized-manual-check",
+    "aircargo-data-retention-legal-hold",
+    "aircargo-data-retention-required-fields",
+    "aircargo-subject-rights-third-party-masking",
+    "aircargo-subject-rights-required-fields",
+    "aircargo-customs-broker-evidence",
+    "aircargo-customs-broker-escalation",
+    "aircargo-salary-payment-dates",
+    "aircargo-salary-bonus-conditions"
+   ],
+   "bm25_restore_log": [
+    "Restored 5589 chunks for tenant aircargo from the persisted collection (BM25 + parent-expansion re-enabled)"
+   ],
+   "path_breaks": [],
+   "log_levels": {
+    "WARNING api.app": 1,
+    "WARNING db.audit": 1,
+    "WARNING vectordb.embedder_manifest": 1,
+    "WARNING vectordb.manager": 1
+   },
+   "memory": {
+    "samples": 1026,
+    "swap_used_mb": [
+     1987.75,
+     10225.5
+    ],
+    "free_mb_min": 3,
+    "max_rss_mb": {
+     "ollama": 3778,
+     "postgres": 10,
+     "python": 2769
+    }
+   }
+  },
+  {
+   "label": "v4-aircargo-b09",
+   "batch": 9,
+   "counted": true,
+   "launch": {
+    "label": "v4-aircargo-b09",
+    "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+    "model": "qwen3:4b-instruct-2507-q4_K_M",
+    "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+    "tenant": "aircargo",
+    "chroma_dir": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-aircargo-b09.chroma",
+    "cases_file": "/Users/julia/RAG_new_chat_4f48fed/evaluation/curated_cases_aircargo.jsonl",
+    "started": "2026-10-25T13:21:36+00:00",
+    "api_ready": "2026-10-25T13:22:04+00:00",
+    "finished": "2026-10-25T14:06:08+00:00",
+    "status": "complete",
+    "client_cap_sec": "1020/1200",
+    "mode": "prod",
+    "overrides": {
+     "REQUEST_TIMEOUT_SEC": "3600",
+     "OLLAMA_REQUEST_TIMEOUT_SEC": "3600",
+     "STREAMING_TIMEOUT_SEC": "3600",
+     "RAG_DEVICE": "cpu"
+    },
+    "runner_exit": 0,
+    "error": null,
+    "api_killed": null,
+    "ollama_load_sec": 42.569,
+    "db_tickets_before": "94",
+    "db_tickets_after": "94",
+    "ollama_models_before": [],
+    "ollama_models_after": [
+     "qwen3:4b-instruct-2507-q4_K_M"
+    ],
+    "unloaded_models": [
+     "qwen3:4b-instruct-2507-q4_K_M"
+    ],
+    "pg_stop_error": null,
+    "unload_error": null
+   },
+   "settings": {
+    "llm_provider_profile": "local-first",
+    "ollama_model_name": "qwen3:4b-instruct-2507-q4_K_M",
+    "ollama_fast_model_name": "llama3.2:3b",
+    "model_routing_enabled": false,
+    "ollama_context_window": 4096,
+    "embedding_model": "BAAI/bge-m3",
+    "embedding_backend": "local",
+    "reranker_model": "BAAI/bge-reranker-v2-m3",
+    "rag_device": "cpu",
+    "vector_backend": "chroma",
+    "hybrid_search": true,
+    "retrieval_strategy": "hybrid",
+    "retrieval_top_k": 20,
+    "rerank_top_k": 5,
+    "hyde": false,
+    "graph_retrieval": "off",
+    "parent_expansion": true,
+    "self_rag_max_iterations": 2,
+    "fact_verification_enabled": true,
+    "streaming_enabled": false,
+    "streaming_rag_parity": false,
+    "streaming_quality_eval": true,
+    "streaming_timeout_sec": 3600.0,
+    "request_timeout_sec": 3600.0,
+    "ollama_request_timeout_sec": 3600.0,
+    "quality_threshold": 80,
+    "suggested_questions_enabled": true,
+    "llm_max_calls_per_request": 24,
+    "online_evaluators_enabled": true,
+    "max_concurrent_pipelines": 8,
+    "support_sink_backend": "local",
+    "tracing_db_path": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-aircargo-b09/traces.db",
+    "vectordb_chroma_dir": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-aircargo-b09.chroma"
+   },
+   "code": {
+    "workspace": "/Users/julia/RAG_new_chat_4f48fed",
+    "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+    "context_window_file": "/Users/julia/RAG_new_chat_4f48fed/agent/context_window.py",
+    "has_fit_all_context_docs": true
+   },
+   "settings_sha256": "77c507c61ec1f6c0c0fcb910ff61f31918426dc299db0ff77012b20dac71a803",
+   "cases": [
+    "aircargo-overtime-limits",
+    "aircargo-overtime-protected-categories",
+    "aircargo-harassment-complaint-data",
+    "aircargo-harassment-investigation-timeline",
+    "aircargo-conflict-interest-disclosure",
+    "aircargo-conflict-interest-sanctions",
+    "aircargo-cargo-insurance-evidence",
+    "aircargo-cargo-insurance-operational-limits",
+    "aircargo-fuel-supply-evidence",
+    "aircargo-fuel-supply-required-fields"
+   ],
+   "bm25_restore_log": [
+    "Restored 5589 chunks for tenant aircargo from the persisted collection (BM25 + parent-expansion re-enabled)"
+   ],
+   "path_breaks": [],
+   "log_levels": {
+    "WARNING api.app": 1,
+    "WARNING db.audit": 1,
+    "WARNING vectordb.embedder_manifest": 1,
+    "WARNING vectordb.manager": 1
+   },
+   "memory": {
+    "samples": 865,
+    "swap_used_mb": [
+     2047.25,
+     10428.0
+    ],
+    "free_mb_min": 3,
+    "max_rss_mb": {
+     "ollama": 3597,
+     "postgres": 10,
+     "python": 2675
+    }
+   }
+  },
+  {
+   "label": "v4-aircargo-b10",
+   "batch": 10,
+   "counted": true,
+   "launch": {
+    "label": "v4-aircargo-b10",
+    "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+    "model": "qwen3:4b-instruct-2507-q4_K_M",
+    "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+    "tenant": "aircargo",
+    "chroma_dir": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-aircargo-b10.chroma",
+    "cases_file": "/Users/julia/RAG_new_chat_4f48fed/evaluation/curated_cases_aircargo.jsonl",
+    "started": "2026-10-25T14:06:38+00:00",
+    "api_ready": "2026-10-25T14:07:06+00:00",
+    "finished": "2026-10-25T15:06:37+00:00",
+    "status": "complete",
+    "client_cap_sec": "1020/1200",
+    "mode": "prod",
+    "overrides": {
+     "REQUEST_TIMEOUT_SEC": "3600",
+     "OLLAMA_REQUEST_TIMEOUT_SEC": "3600",
+     "STREAMING_TIMEOUT_SEC": "3600",
+     "RAG_DEVICE": "cpu"
+    },
+    "runner_exit": 0,
+    "error": null,
+    "api_killed": null,
+    "ollama_load_sec": 44.178,
+    "db_tickets_before": "94",
+    "db_tickets_after": "94",
+    "ollama_models_before": [],
+    "ollama_models_after": [
+     "qwen3:4b-instruct-2507-q4_K_M"
+    ],
+    "unloaded_models": [
+     "qwen3:4b-instruct-2507-q4_K_M"
+    ],
+    "pg_stop_error": null,
+    "unload_error": null
+   },
+   "settings": {
+    "llm_provider_profile": "local-first",
+    "ollama_model_name": "qwen3:4b-instruct-2507-q4_K_M",
+    "ollama_fast_model_name": "llama3.2:3b",
+    "model_routing_enabled": false,
+    "ollama_context_window": 4096,
+    "embedding_model": "BAAI/bge-m3",
+    "embedding_backend": "local",
+    "reranker_model": "BAAI/bge-reranker-v2-m3",
+    "rag_device": "cpu",
+    "vector_backend": "chroma",
+    "hybrid_search": true,
+    "retrieval_strategy": "hybrid",
+    "retrieval_top_k": 20,
+    "rerank_top_k": 5,
+    "hyde": false,
+    "graph_retrieval": "off",
+    "parent_expansion": true,
+    "self_rag_max_iterations": 2,
+    "fact_verification_enabled": true,
+    "streaming_enabled": false,
+    "streaming_rag_parity": false,
+    "streaming_quality_eval": true,
+    "streaming_timeout_sec": 3600.0,
+    "request_timeout_sec": 3600.0,
+    "ollama_request_timeout_sec": 3600.0,
+    "quality_threshold": 80,
+    "suggested_questions_enabled": true,
+    "llm_max_calls_per_request": 24,
+    "online_evaluators_enabled": true,
+    "max_concurrent_pipelines": 8,
+    "support_sink_backend": "local",
+    "tracing_db_path": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-aircargo-b10/traces.db",
+    "vectordb_chroma_dir": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-aircargo-b10.chroma"
+   },
+   "code": {
+    "workspace": "/Users/julia/RAG_new_chat_4f48fed",
+    "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+    "context_window_file": "/Users/julia/RAG_new_chat_4f48fed/agent/context_window.py",
+    "has_fit_all_context_docs": true
+   },
+   "settings_sha256": "82a76f24d6730770d85b6b4e6acad79dd910a90febdc499ffef3f2de1c33914c",
+   "cases": [
+    "aircargo-gps-monitoring-required-fields",
+    "aircargo-gps-monitoring-scope",
+    "aircargo-weight-control-required-fields",
+    "aircargo-weight-control-discrepancy",
+    "aircargo-cross-border-required-fields",
+    "aircargo-cross-border-special-cargo",
+    "aircargo-breach-notification-required-fields",
+    "aircargo-breach-notification-participants",
+    "aircargo-cross-border-pdn-required-fields",
+    "aircargo-cross-border-pdn-no-transfer"
+   ],
+   "bm25_restore_log": [
+    "Restored 5589 chunks for tenant aircargo from the persisted collection (BM25 + parent-expansion re-enabled)"
+   ],
+   "path_breaks": [],
+   "log_levels": {
+    "WARNING api.app": 1,
+    "WARNING db.audit": 1,
+    "WARNING vectordb.embedder_manifest": 1,
+    "WARNING vectordb.manager": 1
+   },
+   "memory": {
+    "samples": 1161,
+    "swap_used_mb": [
+     2112.5,
+     9893.75
+    ],
+    "free_mb_min": 4,
+    "max_rss_mb": {
+     "ollama": 3725,
+     "postgres": 10,
+     "python": 2245
+    }
+   }
+  }
+ ],
+ "aggregate": {
+  "registered": 100,
+  "measured": 100,
+  "missing": [],
+  "out_of_place": [],
+  "path_breaks": {},
+  "answered": 100,
+  "routes": {
+   "auto": 97,
+   "human": 3
+  },
+  "quality_below_80": 3,
+  "quality_sources": {
+   "llm": 100
+  },
+  "keywords": {
+   "FULL": 55,
+   "PART": 22,
+   "MISS": 23
+  },
+  "retrievals_per_case": {
+   "1": 100
+  },
+  "rerank_status": {
+   "ok": 100
+  },
+  "pool_size": {
+   "n": 100,
+   "min": 23,
+   "median": 35.0,
+   "p90": 39.0,
+   "max": 40
+  },
+  "prompt_labels": {
+   "3": 48,
+   "4": 39,
+   "5": 13
+  },
+  "with_marks": 100,
+  "marks_past_labels": 0,
+  "answer_script_vs_question": {
+   "cyrillic->cyrillic": 91,
+   "cyrillic->latin": 7,
+   "latin->cyrillic": 1,
+   "latin->latin": 1
+  },
+  "times": {
+   "first_of_batch": {
+    "total_sec": {
+     "n": 10,
+     "min": 237.929,
+     "median": 356.849,
+     "p90": 442.147,
+     "max": 559.412
+    },
+    "first_token_sec": {
+     "n": 10,
+     "min": 147.72,
+     "median": 196.644,
+     "p90": 274.105,
+     "max": 457.374
+    },
+    "result_sec": {
+     "n": 10,
+     "min": 237.929,
+     "median": 356.848,
+     "p90": 442.143,
+     "max": 559.396
+    },
+    "retrieval_sec": {
+     "n": 10,
+     "min": 82.278,
+     "median": 130.01,
+     "p90": 201.607,
+     "max": 368.363
+    },
+    "rerank_sec": {
+     "n": 10,
+     "min": 47.932,
+     "median": 89.549,
+     "p90": 127.641,
+     "max": 192.056
+    },
+    "stream_sec": {
+     "n": 10,
+     "min": 67.722,
+     "median": 95.08,
+     "p90": 163.423,
+     "max": 183.476
+    }
+   },
+   "rest": {
+    "total_sec": {
+     "n": 90,
+     "min": 184.944,
+     "median": 295.245,
+     "p90": 365.446,
+     "max": 581.559
+    },
+    "first_token_sec": {
+     "n": 90,
+     "min": 93.425,
+     "median": 187.02,
+     "p90": 253.129,
+     "max": 356.19
+    },
+    "result_sec": {
+     "n": 90,
+     "min": 184.93,
+     "median": 295.244,
+     "p90": 365.445,
+     "max": 581.492
+    },
+    "retrieval_sec": {
+     "n": 90,
+     "min": 30.966,
+     "median": 121.035,
+     "p90": 186.826,
+     "max": 263.603
+    },
+    "rerank_sec": {
+     "n": 90,
+     "min": 19.383,
+     "median": 82.59,
+     "p90": 146.563,
+     "max": 230.54
+    },
+    "stream_sec": {
+     "n": 90,
+     "min": 63.939,
+     "median": 85.341,
+     "p90": 128.525,
+     "max": 190.998
+    }
+   }
+  },
+  "swap_used_mb_max": 10428.0
+ }
+}
