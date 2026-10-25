@@ -11,17 +11,18 @@ Session `5ec44b60`, 2026-10-25 08:54 UTC – (open). The laptop's clock and Juli
   answers by 19:11 UTC (≈ 5.5 min each, read with step 1's command), so done about 02:40–03:30
   UTC on 10-26. Check it first ([Next actions](#next-actions), step 1). If it dies it resumes
   after the last answer row: the same command again.
-- **Web research, two queues side by side, one run at a time in each** (Julia, 18:41–19:06
-  UTC): three research runs by a Claude subagent, each repeated by Codex (profile cw,
-  `gpt-6-astra`, effort `xhigh`) as a second opinion. All six are done and compared in
-  [their own document](research-2026-10-25/README.md), with a proposal for her decision:
-  [Research](#research-three-runs-each-twice).
+- **Web research, two queues side by side, one run at a time in each** (Julia, 18:41–21:46
+  UTC): five research runs by a Claude subagent, each repeated by Codex (profile cw,
+  `gpt-6-astra`, effort `xhigh`) as a second opinion, and two more by Codex alone (6 and 7,
+  at her word of 21:46 that Codex's budget may be spent and mine kept). Runs 1–5 are done and
+  compared in [their own document](research-2026-10-25/README.md), with a proposal for her
+  decision: [Research](#research-three-runs-each-twice).
 - **While the signal run measures:** no `sync.py`, no `remote.py`, no tests on the Mac — the
   record publishes the seconds each signal adds, and they count only from an idle Mac. Never
   stop another project's process. At 19:13 UTC the Mac ran only our `llama-server` (373 % CPU,
   all four cores; no pytest; 72 % memory free), so nothing makes this run faster without
-  changing its frozen conditions (Julia asked at ≈19:14; answered so).
-- **Pushed ≈19:25 UTC at Julia's word** («закомить и запуш все, что сделано», 19:20), up to
+  changing its frozen conditions (Julia asked at 19:12; answered so).
+- **Pushed 19:23 UTC at Julia's word** («закомить и запуш все, что сделано», 19:17), up to
   this file's commit, **without the Mac suite** (the Mac was measuring); laptop checks passed.
   Step 6 lists what still has to run on the Mac once the signal run ends.
 - **Stage 2b is closed: V4 adopted** ([record](../evidence/answer-prompt-v4-record.md)). Stage 3
@@ -62,30 +63,42 @@ stage 2b adopted it today.
   года и методы. … Если согласен, запусти последовательно. Вероятно решение о3-ем рисерче
   стоит принять перед его запуском.» Answered: yes, each base has a paper with baselines, not
   directly comparable (other models, metrics, subsets); research 1 launched at 18:51.
-- ≈18:52 — «и вероятно все это стоит оставить для следующей сессии … стоит все прописать в
+- 18:50 — «и вероятно все это стоит оставить для следующей сессии … стоит все прописать в
   доке - про текущий запуск на маке и про рисерчи». This file is that record.
-- ≈18:53 — «вижу, что ты уже запустил первый рисерч - конечно не останавливай его».
+- 18:51 — «вижу, что ты уже запустил первый рисерч - конечно не останавливай его».
 - 19:06 — «что думаешь, если в этой сессии сделать все три рисерча + их дубль на кодекс (модель
   gpt astra 6 xhigh)? если согласен - нагрузи кодекс, тоже по одному рисерчу последовательно».
   Agreed; this replaces «оставить для следующей сессии» for the research. Research 2 now runs
   before stage 3's outcome — the literature does not depend on it; the brief asks each option
   to be rated for both outcomes, and the choice of a treatment still waits for the outcome
   (her 18:41 words).
-- ≈19:14 — «а можно как-то ускорить процесс на маке?» Answered: no, see «Read this first».
-- ≈19:20 — «закомить и запуш все, что сделано». Done: the record tool committed (`5049430`),
+- 19:12 — «а можно как-то ускорить процесс на маке?» Answered: no, see «Read this first».
+- 19:17 — «закомить и запуш все, что сделано». Done: the record tool committed (`5049430`),
   its test held back (it fails until the record exists), the laptop's checks run (CI's two
   mypy commands, `ruff check`, bandit, pip-audit, DEP-01 — all clean), pushed. The Mac suite
   could not run: the signal run measures there.
-- ≈19:50 — «что еще важно. проверь доку на ее оптимальность»: the research document audited
+- 19:43 — «что еще важно. проверь доку на ее оптимальность»: the research document audited
   against its reports and three primary sources, rewritten (`9284a6e`).
-- ≈20:02 — the Mac's fans are loud; asked whether the noise can be cut. Answered: only by
+- 19:59 — the Mac's fans are loud; asked whether the noise can be cut. Answered: only by
   slowing the run (fewer threads, Turbo off: the remaining answers' times would not match
-  the first 28) or pausing it overnight. Her word: «Нет, ничего не снижаем. Если убрать шум
+  the first 28) or pausing it overnight. Her word (20:05): «Нет, ничего не снижаем. Если убрать шум
   никак - пусть шумит. Важно закрыть задачу» — the run goes on unchanged, no pause.
-- ≈20:20 — «Для моего понимания от тебя ценно получить оценку качества рисерча от астры».
+- 20:10 — «Для моего понимания от тебя ценно получить оценку качества рисерча от астры».
   Answered with ten claims checked against their sources and every link opened: Codex the
   more reliable on facts, Claude the broader and more concrete on cost — the research
   folder's «How good the two reports are».
+- 20:56 — «может стоит еще рисечи запустить на основе полученных?» Answered: not a broad
+  round — the next steps need measurements, not literature — but one narrow run where the
+  literature can still change a decision: a fast checker that reads Russian (the router for
+  aircargo under either stage 3 outcome). 21:07 — «Давай узкий раунд»: research 4 launched,
+  Claude and Codex side by side (brief `.tmp/research/brief-r4-russian-checker.md`, package
+  `D:/cx-research-rag/r4/`).
+- 21:26 — «А может стоит запустить рисерч на посик оптимальной локальной модели под
+  зачачу». Answered: yes, as preparation for her decision on the model (§9: «явное решение
+  Юли с числами»), with the bar stated (Little Brains, Vectara) and the cost of a change (every
+  published number measured again). Her «да» (21:28): research 5 — Claude's launched at once,
+  Codex's after its research 4 (brief `.tmp/research/brief-r5-local-model.md`, package
+  `D:/cx-research-rag/r5/`).
 
 ## My choices, not hers
 
@@ -219,12 +232,12 @@ proposal for Julia's decision. In short:
 Codex's queue: research 1 done (thread `01a17478-…`, 19:10–19:28 UTC), research 2 done
 (`01a17489-…`, 19:29–19:49), research 3 done (`01a1749c-…`, 19:50–20:14). All six reports
 are compared in that document, with ten claims checked against their sources and every link
-opened; its «How good the two reports are» answers Julia's question of ≈20:20 UTC on the
+opened; its «How good the two reports are» answers Julia's question of 20:10 UTC on the
 quality of Codex's research.
 
 ## State now
 
-- **Commits since the push `8fdbfee`, all pushed ≈19:25 UTC:** before this session `3422244`
+- **Commits since the push `8fdbfee`, all pushed 19:23 UTC:** before this session `3422244`
   (risk review), `4f48fed` (V4), `c2c5a58` (handoff); this session `410a642`, `d5f6e91`
   (plans' hashes), `df60777` (stage 2b's record), `d260d95` (S8), `b7ad62a` (the signal plan),
   `f520cde` (S7's rule), `b557082` (the locks; the risky moves are filelock's major version
@@ -308,11 +321,13 @@ quality of Codex's research.
    `remote.py` without `--site`; on the laptop bandit as CI runs it (ci.yml line 278), CI's
    pip-audit command (ci.yml lines 280–307) and `npm run audit:deps` in `docs-site/` — then ask.
    Only CI installs the Linux lock; say so when asking.
-7. **Research — done.** All six reports and their comparison are in the
-   [research folder](research-2026-10-25/README.md); the companion brokers of
-   `D:/cx-research-rag/*` were stopped at ≈20:25 UTC by an explicit list (four trees, all of
-   this session). What is left is Julia's: the proposal's items 2, 3, 4 (outcome B), 6 and 6a
-   need her word; item 1 (the published rules, no model call) needs none and fits beside the
+7. **Research — runs 1–5 done, 6 and 7 on Codex.** The reports and their comparison are in
+   the [research folder](research-2026-10-25/README.md); the companion brokers of runs 1–3
+   were stopped at ≈20:30 UTC by an explicit list (four trees, all of this session). If runs 6
+   and 7 (`D:/cx-research-rag/r6`, `r7`; briefs `.tmp/research/brief-r6-*`, `brief-r7-*`) are
+   not in the folder yet: save each with `save_cx_report.py`, check its rollout, compare, then
+   stop the brokers of `r4`–`r7` by an explicit list. What is left is Julia's: the proposal's
+   items 2, 3, 4 (outcome B, or the encoder test), 6 and 6a need her word; item 1 (the published rules, no model call) needs none and fits beside the
    signal run. To repeat a Codex run: `save_cx_report.py` and `build_cx_brief.py` in `.tmp/research/`, and
    the launch command of `D:/cx-research-rag/<run>` in this file's history (`git log -p`).
 
