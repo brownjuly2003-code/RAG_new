@@ -14,8 +14,8 @@ Session `5ec44b60`, 2026-10-25 08:54 UTC – (open). The laptop's clock and Juli
 - **Web research, two queues side by side, one run at a time in each** (Julia, 18:41–19:06
   UTC): three research runs by a Claude subagent, each repeated by Codex (profile cw,
   `gpt-6-astra`, effort `xhigh`) as a second opinion. Claude's three and Codex's research 1
-  are done, in [their own document](research-2026-10-25/README.md); what runs and what is
-  next: [Research](#research-three-runs-each-twice).
+  and 2 are done, in [their own document](research-2026-10-25/README.md); what runs and what
+  is next: [Research](#research-three-runs-each-twice).
 - **While the signal run measures:** no `sync.py`, no `remote.py`, no tests on the Mac — the
   record publishes the seconds each signal adds, and they count only from an idle Mac. Never
   stop another project's process. At 19:13 UTC the Mac ran only our `llama-server` (373 % CPU,
@@ -206,9 +206,10 @@ proposal for Julia's decision. In short:
    a CPU, how production support measures the handover — nobody publishes escalation precision
    and recall; its reading of our gap as a retrieval loss conflicts with the table above.
 
-Codex's queue: research 1 done (thread `01a17478-…`, 19:10–19:28 UTC), research 2 running
-since ≈19:29 UTC, research 3 after it; each report is saved by step 7's command and compared
-in that document.
+Codex's queue: research 1 done (thread `01a17478-…`, 19:10–19:28 UTC), research 2 done
+(`01a17489-…`, 19:29–19:49), research 3 running since ≈19:50 UTC (stream
+`.tmp/research/cx-r3-stream.txt`); each report is saved by step 7's command and compared in
+that document.
 
 ## State now
 

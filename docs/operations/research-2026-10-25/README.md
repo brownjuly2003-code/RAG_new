@@ -14,7 +14,9 @@ no number below is ours unless it says so. Session `5ec44b60`; its
 - **Our loss is mainly generation.** Our judge's rows show unsupported claims and, on WixQA,
   wrong declines; research 3 guessed retrieval without those rows.
 - **First, measure by the published rules.** That costs no Mac time and few or no judge calls.
-  Then treat the declines. The router waits for stage 3. Most treatments touch the frozen
+  Then test an evidence-first answer, with an explicit answered / partly / declined status.
+  It is the one prompt-only method with a measured effect: more supported claims, a little
+  less recall. The router waits for stage 3. Most treatments touch the frozen
   prompt or retrieval, so each needs a `PLAN.md` amendment — Julia's decision.
 - **No fast grounding checker reads Russian.**
 
@@ -47,15 +49,16 @@ one run at a time.
 - **What I checked:**
   - Every number below appears in the report it is credited to; the check was
     `.tmp/research/_audit/verify.py`.
-  - Two claims were checked against their primary source. One is MultiHop-RAG's
-    `retrieval_evaluate.py`, which corrected Claude's research 1. The other is the Trust-Align
-    paper (arXiv 2409.11242), which corrected Claude's research 2.
+  - Three claims were checked against their primary source:
+    - MultiHop-RAG's `retrieval_evaluate.py`, which corrected Claude's research 1;
+    - the Trust-Align paper (arXiv 2409.11242), which corrected Claude's research 2;
+    - ReClaim (arXiv 2407.01796, table 2), which confirmed Codex's research 2.
   - The rest is the reports' word; their links are in the reports.
 
 | Run | Brief | Claude's report | Codex's report |
 |---|---|---|---|
 | 1 — results on our three bases, current metrics | [brief](brief-1-bases-and-metrics.md) | [report](claude-1-bases-and-metrics.md): 24.6k characters, 33 sources, 18:51–19:02 UTC | [report](codex-1-bases-and-metrics.md): 35.3k characters, 33 sources, 19:10–19:28 UTC, thread `01a17478-b668-7293-8418-91c299d212db` |
-| 2 — how to treat claims, declines, retrieval, routing | [brief](brief-2-treatment.md) | [report](claude-2-treatment.md): 23.9k characters, 56 sources, 19:10–19:24 UTC | running |
+| 2 — how to treat claims, declines, retrieval, routing | [brief](brief-2-treatment.md) | [report](claude-2-treatment.md): 23.9k characters, 56 sources, 19:10–19:24 UTC | [report](codex-2-treatment.md): 33.8k characters, 32 sources, 19:29–19:49 UTC, thread `01a17489-8e72-7221-b9b6-c62c53d49ddb` |
 | 3 — the state of RAG, October 2026 | [brief](brief-3-state-of-rag.md) | [report](claude-3-state-of-rag.md): 27.2k characters, 72 sources, 19:30–19:36 UTC | after Codex's run 2 |
 
 ## Research 1 — are our numbers low against others?
@@ -108,7 +111,7 @@ excluded by D11: no person in the quality process.
 - **The original MAP@10.** Codex alone found that a later work recomputed the original
   voyage-02 MAP@10 as .2718 instead of the published .4795.
 
-## Research 2 — how to treat it (Claude's; Codex's is running)
+## Research 2 — how to treat it
 
 Claude's ranking, each with its cost on this Mac:
 
@@ -138,6 +141,39 @@ experiment, but no measured effect elsewhere backs it.
   remains for Russian is an XNLI model never measured on grounding, and the 4B's own check.
 - **Routing signals.** Token log-probabilities give AUC ≈ 0.51 on RAGTruth. Semantic entropy
   needs ~10 generations, which is out of reach.
+
+**Codex's report agrees on four points:**
+
+- MultiHop-RAG must be recomputed before retrieval is changed.
+- Repair needs a working independent trigger first.
+- Training or another generator is Julia's decision.
+- No checker has a measured CPU time on our load; HHEM's figure is from an unnamed processor.
+
+**Codex differs on three:**
+
+- **Its first content experiment is an evidence-first answer in the same call.** The answer
+  first quotes the evidence for each part of the question, then states only supported claims.
+  - The training-free ReClaim prompt (Llama3-8B, ASQA, checked in the paper) raised the share
+    of correctly attributed sentences (CAS) from 54.7 to 77.7. EM recall fell from 55.2 to
+    50.7.
+  - Our prompt already allows a partial answer, so Codex would change how it is carried out,
+    not add «answer partly» again. That is a direct objection to Claude's second pass.
+- **False declines need their own answerability check.** A decline has no claim for a claim
+  check to test, so the answer needs an explicit answered / partial / declined status.
+  - With an oracle context, declines were 24 % of Qwen2.5-7B's errors (one 2026 preprint).
+- **Deleting sentences.** Codex found no comparable result for it; Claude's one 2026 preprint
+  is the only number.
+
+Codex's order of measurement:
+
+1. Finish scoring the widget's check on the saved answers. This is stage 3's run.
+2. Compare independent checkers on the same answers, Russian and English apart. Thresholds
+   are chosen on one part and reported on another.
+3. Run a paired test of the evidence-first prompt on a fixed context. It measures claim
+   faithfulness, nugget recall and declines together, so that fewer bad answers do not come
+   from poorer ones.
+4. Recompute MultiHop-RAG, then measure each candidate's full cost: cold and warm, peak memory,
+   inside the 3,600-s ceiling.
 
 ## Research 3 — the frame (Claude's; Codex's follows)
 
@@ -213,10 +249,10 @@ checker in item 4.
 |---|---|---|---|---|
 | 1 | **Measure by the published rules, no model call:** MultiHop-RAG's Hits@K and MAP@10 by the official script; the decline matrix and the CRAG-style score from M1/M2. MultiHop-RAG needs the top-K texts in the stage 2 retrieval records, or a retrieval-only rerun on the Mac. | «Параллельно, без Mac»: processing of records | rule (c) once published | no |
 | 2 | **Judge metrics that make us comparable:** WixQA's own Context Recall and Factuality prompts (~200 calls); nugget recall: ~100 calls a base to split the references, then ~2 an answer — ≈ 1,200 calls for four bases, ≈ 0.12 of a weekly window at §4.4's rate | judge, from the laptop | rule (c) | the judge budget beyond §4.4 |
-| 3 | **Wrong declines:** the answer flag and a second pass for declines only, measured paired on WixQA's open part (§4.2: not the locked part) | a prompt change — §9 allows only stage 1's fixes, V4 and stage 4's levers | rule (c); (a) if adopted | yes: an amendment |
+| 3 | **Generation:** an evidence-first answer in the same call, with an answered / partial / declined status (Codex; ReClaim's measured gain), or Claude's second pass for declines only. Measured paired on a fixed context on WixQA's and ConditionalQA's open parts (§4.2: not the locked parts), by claim faithfulness, nugget recall and declines together | a prompt change — §9 allows only stage 1's fixes, V4 and stage 4's levers | rule (c); (a) if adopted | yes: an amendment |
 | 4 | **The router:** stage 3's outcome on the Mac decides. Outcome B: how to fit a check of minutes into the chat is hers. Outcome C: an English checker covers the English bases only, and Russian has no proven fast checker | stage 3, step 3 | (a) when wired | yes for B, and for any new model |
 | 5 | **Shorter context:** research 3's context pruning supports stage 4's «Промпт короче» lever | stage 4, step 4 | (a), (c) | no: already planned |
 | 6 | **Retrieval:** one query rewrite or decomposition, after item 1 shows the real gap. BGE-M3's multi-vector mode would change the vector store (ADR 0007) and the embedder | a new mechanism — stage 7 takes only code that exists; the vector store and the embedder are frozen | (c), then (a) | yes |
 | 7 | **Not worth our hardware:** graph-RAG frameworks (also ADR 0001), long context, RL training, large reasoning rerankers (a reranker swap is hers anyway), semantic entropy | stop-list §9 | — | — |
 
-The Codex reports of runs 2 and 3, once in, are compared here the same way.
+Codex's report of run 3, once in, is compared here the same way.
