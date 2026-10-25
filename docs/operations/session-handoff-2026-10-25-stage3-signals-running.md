@@ -14,7 +14,9 @@ Session `5ec44b60`, 2026-10-25 08:54 UTC – (open). The laptop's clock and Juli
   (`scripts/chat_signals.py run`) on V4's 100 aircargo answers, started 17:26:57 UTC.
   - 51 answers by 22:19 UTC, slowing: about 5.5 min each at first, the last ten 4.5–10.6 min
     (mean ≈ 7.5), with swap at 2.1 of 3 GB.
-  - So `end` comes about 04:00–05:00 UTC on 10-26. An answer over 1,149 s writes a `stop` row
+  - 60 by 23:12 UTC (nine in 53 min, ≈ 5.9 each), 0 Tracebacks; swap 5.1 of 7 GB, llama-server
+    3.1 GB resident, 413 GB of disk free.
+  - So `end` comes about 03:30–05:00 UTC on 10-26. An answer over 1,149 s writes a `stop` row
     (step 1); the slowest so far took 634 s.
   - Check it first ([Next actions](#next-actions), step 1). If it dies it resumes after the
     last answer row: the same command again.
