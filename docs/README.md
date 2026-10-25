@@ -92,6 +92,9 @@ P2 reference samples ([Astra](specs/p2-astra-reference-sample.md),
   [stage 2 answers collected](operations/session-handoff-2026-10-23-stage2-collected.md), the
   [resume from 140 answers](operations/session-handoff-2026-10-22-stage2-resume.md) and the
   [pause checkpoint](operations/session-handoff-2026-10-22-stage2-paused.md), all preserved.
+- [Web research of 2026-10-25](operations/research-2026-10-25/README.md) — three runs, each by
+  Claude and by Codex: our bases against published results, how to treat our failures, the
+  state of RAG; literature, not our measurement, and a proposal for Julia's decision.
 - [Project audit of 2026-10-18](operations/audit_fable_18_10_26.md) (Fable 5.1) — the state
   against the plan, the status files' claims checked, findings F-1…F-10; kept in `operations/`
   because `docs/audits/` is publishable (earlier audits: `../archive/docs/audits/`).

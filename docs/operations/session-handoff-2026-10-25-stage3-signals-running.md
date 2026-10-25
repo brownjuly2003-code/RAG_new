@@ -13,8 +13,9 @@ Session `5ec44b60`, 2026-10-25 08:54 UTC – (open). The laptop's clock and Juli
   after the last answer row: the same command again.
 - **Web research, two queues side by side, one run at a time in each** (Julia, 18:41–19:06
   UTC): three research runs by a Claude subagent, each repeated by Codex (profile cw,
-  `gpt-6-astra`, effort `xhigh`) as a second opinion. Claude's research 1 is done; what runs
-  and what is next: [Research](#research-three-runs-each-twice).
+  `gpt-6-astra`, effort `xhigh`) as a second opinion. Claude's three and Codex's research 1
+  are done, in [their own document](research-2026-10-25/README.md); what runs and what is
+  next: [Research](#research-three-runs-each-twice).
 - **While the signal run measures:** no `sync.py`, no `remote.py`, no tests on the Mac — the
   record publishes the seconds each signal adds, and they count only from an idle Mac. Never
   stop another project's process. At 19:13 UTC the Mac ran only our `llama-server` (373 % CPU,
@@ -120,7 +121,7 @@ stage 2b adopted it today.
 6. **Locks, `b557082`:** six Python floors and five npm floors past the advisories of
    2026-10-24/25; CI's pip-audit command on `requirements.lock` «No known vulnerabilities
    found, 5 ignored», npm audit 0, DEP-01 PASS — all on the laptop.
-7. **Research 1** and the second-opinion runs — [Research](#research-three-runs-each-twice).
+7. **Research 1–3** and the second-opinion runs — [Research](#research-three-runs-each-twice).
 
 ## What is already known (no model call needed)
 
@@ -184,62 +185,30 @@ root: the cheap signals do not see an unsupported claim, so a claim check could 
 answer to a person and repair it — that is the question research 2 has to answer at this
 Mac's cost.
 
-**How the runs are made.** Claude's: a `deep-researcher` subagent on the session's model (Opus
-— D12 allows it: a subagent, not another model), read-only web, its Russian report written to
-`.tmp/research/`. Codex's: the same brief wrapped by `.tmp/research/build_cx_brief.py` into
-`D:/cx-research-rag/<run>/BRIEF.md` — a package folder outside the repository holding only the
-brief — run read-only through the companion (command in step 7); the report is its final
-message, saved to `.tmp/research/cx-<run>-….md`. This is the second-opinion role Julia brought
-back on 2026-10-19 (`PLAN.md` §8.1): it reads a package, writes no code, grades nothing, gets
-no data of an external base — the briefs hold counts only, no questions, documents or
-personal data. Each queue runs one research at a time. Every number in a report needs its
-source, date and setup; `.tmp/` is git-ignored, so the backup branch keeps the briefs and the
-reports.
+**The runs and what they found** are in their own document,
+[web research of 2026-10-25](research-2026-10-25/README.md): the three briefs, Claude's and
+Codex's reports, how they were made (Claude: a `deep-researcher` subagent on the session's
+model; Codex: profile cw, `gpt-6-astra`, `xhigh`, read-only, in a package folder holding only
+the brief — the second-opinion role of `PLAN.md` §8.1), where they agree and differ, and a
+proposal for Julia's decision. In short:
 
-1. **Research 1 — results published on WixQA, ConditionalQA and MultiHop-RAG, and the RAG
-   metrics in use in 2025 – October 2026.** Brief `.tmp/research/brief-r1-bases-and-metrics.md`;
-   Claude's report `.tmp/research/r1-bases-and-metrics.md` (its title says «R1» — the run, not
-   the defect), done 18:51–19:02 UTC: 24.6k characters, 33 sources. Codex's: launched ≈19:09
-   UTC, package `D:/cx-research-rag/r1/`, stream `.tmp/research/cx-r1-stream.txt`.
+1. **Research 1** (our bases, the metrics in use): nothing published matches our setup, so
+   «низкий» is not shown to be low; three metrics to add from what we record — claim-level
+   faithfulness, nugget recall in the answer and in the context, decline quality. Claude's
+   report misread MultiHop-RAG's Hits@K: the official `retrieval_evaluate.py` (read with
+   WebFetch ≈19:30 UTC) counts a hit when *any one* gold fact is in a top-K chunk, so our 10/70
+   and 0.49 are stricter and not comparable until recomputed by that rule.
+2. **Research 2** («как лечить»): first the free recompute, then an answer flag and a second
+   pass for declines only (WixQA's 22), then a claim check as the router; the seconds-fast
+   checkers read English only.
+3. **Research 3** (the state of RAG; its scope decided ≈19:28 UTC after reading 1 and 2, as her
+   18:48 words asked): the levels by system size, the method families that transfer to a 4B on
+   a CPU, how production support measures the handover — nobody publishes escalation precision
+   and recall; its reading of our gap as a retrieval loss conflicts with the table above.
 
-   **What Claude's found** (the report's words; I checked the structure and the links, and
-   MultiHop-RAG's table against my reading of the paper, nothing else):
-   - *Our M1 classes have no published counterpart*, and M2 compares badly: WixQA's own paper
-     (2505.08643, 05.2025) reports a graded Factuality (GPT-4o judge, 1–5 → 0–1) of 0.63–0.77
-     on Simulated with frontier API models; one metric on one subset gives 0.80 in one paper
-     and 0.47 in another, so the judge moves the number more than the system. ConditionalQA is
-     published only with the document given (FiD EM/F1 44.4/50.8; Mistral-7B with oracle
-     passages 55.5/63.8); none with whole-corpus retrieval, none for not answerable alone.
-   - *The one closely comparable number is lower than published:* MultiHop-RAG's Hit@4 is the
-     share of evidence in the top 4 — our evidence recall — 0.64 with bge-large and a reranker
-     (2024), Recall@4 0.62 with BGE-M3 and bge-reranker-v2-m3 (2026); ours is 0.49. The report
-     says check first how we match evidence to chunks. My caveat: ours is inference queries
-     only, 70, five 800-character chunks — not the same subset or chunking.
-   - MultiHop-RAG's official answer accuracy counts a single shared token, so its 0.95–0.99 on
-     inference and null queries is very lax (one source).
-   - *Three metrics proposed:* claim-level faithfulness split into hallucination and
-     self-knowledge (RAGChecker), from the recorded claim support plus ~100 judge calls a base;
-     nugget recall against the reference for the answer and for the context, with context
-     utilization, ~2 judge calls an answer — it separates retrieval and generation failures,
-     WixQA's 22 declines included; a CRAG-style score (+1 right, 0 decline, −1 wrong) with
-     abstention recall and precision, free from the current classes.
-   - **Reading (mine):** «низкий» is not shown to be low against others — nothing published
-     matches our setup; the retrieval gap on MultiHop-RAG is the cheap thing to check first, and
-     the nugget split is the measurement research 2's options would be scored by.
-2. **Research 2 — «как лечить»**: unsupported claims and wrong declines in a small model on a
-   CPU; checkers that run in seconds; multi-hop retrieval; cheap predictors for routing; a
-   ranking of 5–8 options by gain, cost on this Mac and universality, a model, vector-store or
-   reranker swap marked as Julia's decision, each rated for both stage-3 outcomes. Brief
-   `.tmp/research/brief-r2-treatment.md` (it carries research 1's findings); Claude's report
-   `.tmp/research/r2-treatment.md`, launched ≈19:10 UTC. Codex's: after its research 1.
-3. **Research 3 — the general state of RAG as of October 2026**, the numbers reached and the
-   methods. Decided before its launch (her 18:48 words), after reading research 1 and 2: what
-   it adds that they do not, and so its brief's scope; Julia asked for all three in this
-   session (19:06), so the decision is its scope, said to her with the reason.
-
-After them: a proposed `PLAN.md` amendment for her decision. A report she keeps goes to
-`docs/operations/` with a line in `docs/README.md` (`docs/audits/` is published; the root is
-capped at 9 files).
+Codex's queue: research 1 done (thread `01a17478-…`, 19:10–19:28 UTC), research 2 running
+since ≈19:29 UTC, research 3 after it; each report is saved by step 7's command and compared
+in that document.
 
 ## State now
 
@@ -328,19 +297,18 @@ capped at 9 files).
    pip-audit command (ci.yml lines 280–307) and `npm run audit:deps` in `docs-site/` — then ask.
    Only CI installs the Linux lock; say so when asking.
 7. **Research** ([above](#research-three-runs-each-twice)), independent of steps 1–6.
-   - When a Claude run ends: check its report (size in characters, sections, links on the key
-     numbers), add its findings above, launch the next Claude run.
-   - When a Codex run ends (the background command prints its final message and `EXIT 0`):
-     save the report part of `.tmp/research/cx-<run>-stream.txt` as `.tmp/research/cx-<run>-….md`,
-     check the rollout `C:/Users/uedom/.codex-work/sessions/2026/10/2?/rollout-*-<thread>.jsonl`
-     says `gpt-6-astra` and `xhigh`, then launch the next:
+   - Claude's three runs are done. When a Codex run ends (the stream ends with `EXIT 0`):
+     `python -I -X utf8 D:/RAG_new/.tmp/research/save_cx_report.py D:/RAG_new/.tmp/research/cx-<run>-stream.txt D:/RAG_new/.tmp/research/cx-<run>-….md`
+     saves the final message and prints the rollout's model, effort and sandbox (they must say
+     `gpt-6-astra`, `xhigh`, `read-only`); copy it to the research folder as `codex-<n>-….md`
+     and add its comparison there. Then launch the next:
      `python -I -X utf8 D:/RAG_new/.tmp/research/build_cx_brief.py D:/RAG_new/.tmp/research/brief-<run>.md D:/cx-research-rag/<run>/BRIEF.md`,
      then in the background
      `env -u CODEX_COMPANION_APP_SERVER_ENDPOINT CODEX_HOME='C:\Users\uedom\.codex-work' CLAUDE_PLUGIN_DATA='D:\RAG_new\.tmp\cx-work-state' node "C:/Users/uedom/.claude/plugins/cache/openai-codex/codex/1.0.4/scripts/codex-companion.mjs" task --cwd "D:/cx-research-rag/<run>" --model gpt-6-astra --effort xhigh --prompt-file "D:/cx-research-rag/<run>/BRIEF.md" > D:/RAG_new/.tmp/research/cx-<run>-stream.txt 2>&1`
      (first `powershell -NoLogo -NoProfile -ExecutionPolicy Bypass -File 'C:/Users/uedom/.codex/scripts/codex-account-launcher.ps1' work -PrepareOnly` once a session).
-   - Research 3's brief after both research 2 reports; then a comparison of each pair (where
-     they agree, where they differ, which sources only one found), the `PLAN.md` proposal,
-     and at the session's end the companion brokers of `D:/cx-research-rag/*` stopped (only
+   - Research 3's brief is built (`D:/cx-research-rag/r3/BRIEF.md`). After the last report:
+     the comparison of each pair in the research folder (where they agree, where they differ,
+     which sources only one found), and at the session's end the companion brokers of `D:/cx-research-rag/*` stopped (only
      those trees, by an explicit list — never `taskkill /T`).
 
 ## Do not
