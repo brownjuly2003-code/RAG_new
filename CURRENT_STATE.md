@@ -93,8 +93,8 @@ answerable questions (V3 8); aircargo's nine good answers turned bad, eight by a
 ## Next
 
 1. [`PLAN.md`](PLAN.md) stage 3 — the [handover plan](docs/specs/handover-signal.md)'s signals on V4's 100 aircargo answers:
-   plan `b7ad62a`, on the Mac since 10-25 17:27 UTC, end about 03:00–04:00 UTC 10-26.
-2. Julia's three web research runs, one after another (2026-10-25): research 1 running, 2 after stage 3's outcome, 3 decided before its launch — [handoff](docs/operations/session-handoff-2026-10-25-stage3-signals-running.md#research-three-runs-one-after-another).
+   plan `b7ad62a`, on the Mac since 10-25 17:27 UTC, end about 02:40–03:30 UTC 10-26.
+2. Julia's three web research runs (2026-10-25), each repeated by Codex as a second opinion, one at a time in each queue: research 1 by Claude done — [handoff](docs/operations/session-handoff-2026-10-25-stage3-signals-running.md#research-three-runs-each-twice).
 3. Before a push: the whole Mac suite, mypy, bandit and the audits; locks refreshed 2026-10-25, audits clean on the laptop, the site build waits ([`BACKLOG.md`](BACKLOG.md)).
 
 ## Julia's decisions in force
@@ -135,10 +135,10 @@ condition is formally met ([`PLAN.md`](PLAN.md) §9).
 - Run 34359692687 on `69a5140` verified the CVE-2026-9856 floor `transformers>=5.10.0` under
   `--require-hashes`, pip-audit clean; both locks still pin it.
 - Tracked `origin/master`: `8fdbfee`, pushed 2026-10-24 at Julia's word («да») after the Mac
-  suite (5,972 passed, 124 skipped), mypy and bandit; pip-audit and the npm audit, not rerun,
-  failed on `fc74f04` (2026-10-23) on advisories newer than the locks. Local, not pushed:
-  `3422244` (risk review), `4f48fed` (V4; Mac suite 6,016 passed, 123 skipped; mypy clean), the
-  handoff `c2c5a58`, the plans' hashes `410a642` and `d5f6e91`, stage 2b's record.
+  suite (5,972 passed, 124 skipped), mypy and bandit. Local, not pushed: `3422244` (risk review),
+  `4f48fed` (V4; Mac suite 6,016 passed, 123 skipped; mypy clean), `c2c5a58`, `410a642`, `d5f6e91`,
+  `df60777` (stage 2b's record), `d260d95`, `b7ad62a`, `f520cde` (stage 3), `b557082` (locks: pip-audit
+  and npm audit clean on the laptop), handoffs `a383318`, `8047d40`, `d3e165c` and later.
 - Private remote: `brownjuly2003-code/RAG_new`; HTTPS command in [`CLAUDE.md`](CLAUDE.md).
 
 ## Links
