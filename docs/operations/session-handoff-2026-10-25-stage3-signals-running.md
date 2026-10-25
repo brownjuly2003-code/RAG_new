@@ -6,17 +6,26 @@ Session `5ec44b60`, 2026-10-25 08:54 UTC – (open). The laptop's clock and Juli
 
 ## Read this first
 
+- **The next session analyses the research and amends the plan** (Julia, 22:22 UTC) — see
+  [Next session](#next-session-the-research-analysed-then-the-plan-amended): when to start
+  it, the order, the inputs, the output. This session changed no line of `PLAN.md`.
 - **A measurement is running on the Mac with no session watching it** — stage 3's signals
-  (`scripts/chat_signals.py run`) on V4's 100 aircargo answers, started 17:26:57 UTC; 19
-  answers by 19:11 UTC (≈ 5.5 min each, read with step 1's command), so done about 02:40–03:30
-  UTC on 10-26. Check it first ([Next actions](#next-actions), step 1). If it dies it resumes
-  after the last answer row: the same command again.
-- **Web research, two queues side by side, one run at a time in each** (Julia, 18:41–21:46
-  UTC): five research runs by a Claude subagent, each repeated by Codex (profile cw,
-  `gpt-6-astra`, effort `xhigh`) as a second opinion, and two more by Codex alone (6 and 7,
-  at her word of 21:46 that Codex's budget may be spent and mine kept). Runs 1–5 are done and
-  compared in [their own document](research-2026-10-25/README.md), with a proposal for her
-  decision: [Research](#research-three-runs-each-twice).
+  (`scripts/chat_signals.py run`) on V4's 100 aircargo answers, started 17:26:57 UTC.
+  - 51 answers by 22:19 UTC, slowing: about 5.5 min each at first, the last ten 4.5–10.6 min
+    (mean ≈ 7.5), with swap at 2.1 of 3 GB.
+  - So `end` comes about 04:00–05:00 UTC on 10-26. An answer over 1,149 s writes a `stop` row
+    (step 1); the slowest so far took 634 s.
+  - Check it first ([Next actions](#next-actions), step 1). If it dies it resumes after the
+    last answer row: the same command again.
+- **Web research, seven runs** (Julia, 18:41–21:46 UTC).
+  - Five were run by a Claude subagent, each repeated by Codex (profile cw, `gpt-6-astra`,
+    effort `xhigh`) as a second opinion.
+  - Two more were run by Codex alone, 6 and 7, at her word of 21:46 that Codex's budget may
+    be spent and mine kept.
+  - They are compared in [their own document](research-2026-10-25/README.md), with a proposal
+    for her decision: [Research](#research-seven-runs).
+  - Her «Давай попробуем» (22:18) is on research 6's speed checks and levers. They go into
+    `PLAN.md` stage 4 in the next session.
 - **While the signal run measures:** no `sync.py`, no `remote.py`, no tests on the Mac — the
   record publishes the seconds each signal adds, and they count only from an idle Mac. Never
   stop another project's process. At 19:13 UTC the Mac ran only our `llama-server` (373 % CPU,
@@ -28,6 +37,130 @@ Session `5ec44b60`, 2026-10-25 08:54 UTC – (open). The laptop's clock and Juli
 - **Stage 2b is closed: V4 adopted** ([record](../evidence/answer-prompt-v4-record.md)). Stage 3
   reads V4's answers by the [handover plan](../specs/handover-signal.md) — its «Reading» is
   frozen since 2026-10-17 (Julia: «давай так»), S7's threshold rule since `f520cde`.
+
+## Next session: the research analysed, then the plan amended
+
+Julia, 22:22 UTC: «Напиши для след сессии детальный анализ рисерчев и внесение изменений в
+общий план. Это все в след сессии». This session wrote the reports and compared them. It
+changed no line of `PLAN.md`; the next session does both, in this order.
+
+**When to start.** Start any time after this session closes; the analysis needs no Mac. The
+best moment is after the signal run's `end`, forecast for about 04:00–05:00 UTC on 10-26
+(00:00–01:00 EDT), so tomorrow morning is safe.
+
+**Order.**
+
+1. Step 1 of [Next actions](#next-actions) first (is the run done?).
+   - **If it has ended:** do steps 2–4 (the rows, the record, the capsule, one commit; about
+     1 h, mostly the laptop) before the analysis. Research 2 and 4 rate every option for both
+     stage 3 outcomes, so the analysis needs the letter.
+   - **If not:** the analysis first, and the outcome is added when the record exists.
+2. The analysis.
+3. The amendment.
+4. One message to Julia: the outcome (step 5), the analysis in short, and the amendment's
+   items that need her word.
+
+**Inputs.**
+
+- [The research folder](research-2026-10-25/README.md):
+  - seven runs — 1–5 by Claude and by Codex, 6–7 by Codex alone;
+  - their comparison, the claims checked against sources, and the proposal table.
+  - Research 7 is saved there and summarised, but not yet checked: spot-check its key
+    numbers first.
+- Our numbers: [Research](#research-seven-runs) below — V4's results, and where the bad answers
+  come from.
+- [What the Mac's log shows](#what-the-macs-log-shows) below: the speed diagnostics already
+  read.
+- `PLAN.md`:
+  - §5: stages 3, 4 and 7;
+  - §8.1: her words;
+  - §8.3: what is open for her;
+  - §9: the stop-list.
+
+**The analysis** — one document,
+`docs/operations/research-2026-10-25/analysis.md`. Link it from the folder's README and
+from `docs/README.md`.
+
+1. **Every proposal item** (1–7, 5a, 6a) and every finding that could change our work. For
+   each:
+   - its evidence: a checked claim, a report's word or my estimate — say which;
+   - what it would change in our numbers or our time;
+   - its cost in Mac hours and judge calls;
+   - its risk;
+   - whether it is universal: any corpus, no dictionaries.
+2. **Against `PLAN.md`:**
+   - its stage;
+   - whether it is already planned (stage 4's levers), frozen (§9) or new;
+   - which slice rule it can meet: (a), (b) or (c).
+3. **What stays open:**
+   - the conflicts between the reports, settled by the source (the README's table);
+   - the claims not checked yet, as a list of checks: the Reddit i5-7500 number, OpenVINO's
+     Intel macOS, Gemma-3's 67 % answer rate, research 7's numbers.
+4. **A ranked short list,** chosen by the product goal, with the reason for each place:
+   - now;
+   - after stage 3;
+   - in stage 4;
+   - later;
+   - not at all.
+
+**The amendment of `PLAN.md`.** Edit it in place, with her words in §8.1.
+
+- **What her words already cover — apply:**
+  - §8.1 gets three entries of 2026-10-25 (below, «Julia's words»):
+    - 21:46 — Codex's budget for research; mine kept;
+    - 22:18 — «Давай попробуем»: research 6's speed checks and levers in stage 4;
+    - 22:22 — this task.
+  - Stage 4 gets a step 0 of diagnostics before the levers ([Next actions](#next-actions),
+    step 8). It also gets research 6's levers, each with its own timing:
+    - the instructions kept cached between answers;
+    - a cap on the host prompt cache's memory;
+    - n-gram decoding;
+    - INT8 of the same reranker. It needs ONNX Runtime ≤ 1.23: 1.24 needs macOS 14, and the
+      Mac runs 13.7.8;
+    - repacking of the weights, if it is off.
+  - The stage 4 row of `ROADMAP.md` grows by those hours.
+  - §9's «Другие реранкеры» row: INT8 of the same reranker becomes a stage-4 experiment; its
+    adoption stays hers.
+- **What needs her word — propose, do not apply:**
+  - every other move the analysis makes;
+  - for example: the encoder-checker test of research 4 under stage 3; an evidence-first
+    prompt (an amendment); a generator pilot; a retrieval-model test (research 7).
+  - Only proposal item 1 (the published rules, no model call) needs no word.
+- **Then:**
+  - the status files: `CURRENT_STATE.md` Next, `ROADMAP.md` rows 3–4;
+  - the docs checks — on the Mac after the run's `end`, or the laptop stand-in
+    `.tmp/v4/docs_check.py` before it;
+  - one commit;
+  - the push at her word.
+
+## What the Mac's log shows
+
+Read at 22:20 UTC, read-only (`ps`, `lsof` and a 4-MB tail of the log), while the signal run
+measured. These are the signal run's requests — its two calls per answer, the grader's and
+the claim check's — not the chat's.
+
+- **How llama-server is started.** Ollama 0.33.2 runs it with `-c 4096 -np 1 -b 512 -ub 512
+  --flash-attn auto --context-shift --keep 4 --load-mode none`.
+  - That means one slot and no mmap.
+  - There is no `-t`, so the thread count is llama.cpp's default.
+  - The source is `ps` of pid 1376. `ollama serve` is pid 12377, up 42 days.
+  - Ollama's log is `/Users/julia/gr2_bench/ollama_serve.log`, 355 MB.
+- **Almost no prefix is reused.** Every request starts with «cached n_tokens = 3» (once 118).
+  - So all ~2,200 tokens are read again: 54–58 s at 39–40 tokens/s.
+  - Generation runs at 4.35–4.74 tokens/s.
+- **The host prompt cache.** llama-server keeps one in RAM: 9 prompts, 1,826 → 2,098 MiB,
+  limit 8,192 MiB. One update took 1.6 s.
+  - (mine, not measured) A cache allowed 8 GiB on an 8-GB Mac is a swap risk. It may be why
+    swap and answer times grow over a series: here 2.1 of 3 GB of swap at 22:19, and answers
+    from ~4 min to 6–10 min; in a series of 10-16, swap went from 764 to 4,117 MB.
+- **No limit is passed.** Ollama 0.33.2 passes no `--cache-ram` (its `llm/llama_server.go`,
+  read 22:20), so the limit is llama.cpp's default.
+  - Whether `LLAMA_ARG_CACHE_RAM` in `ollama serve`'s environment reaches the child is not
+    checked.
+  - Setting it means restarting `ollama serve`. That is hers (`PLAN.md` stage 4, step 5); in
+    my reading her 22:18 word covers it for the experiment.
+- **The chat may differ.** The chat's answer prompt starts with fixed instructions, so its
+  prefix reuse has to be read on chat requests (step 8).
 
 ## Why this stage exists
 
@@ -49,7 +182,7 @@ stage 2b adopted it today.
   процесс». Answered: no restart needed — the judge driver waits for the window's reset by
   itself; it resumed at 13:59 UTC on its own.
 - 18:28 — «можно ли сейчас вывести текущие метрики по проекту?» Answered from the committed
-  records (the V4 table in [Research](#research-three-runs-each-twice)).
+  records (the V4 table in [Research](#research-seven-runs)).
 - 18:37 — «а почему передача опреатору так хромает?» Answered: the self-score is the chat's
   only signal and it does not see the main error, an unsupported claim; its thresholds were
   never calibrated; the strict claim check exists only in the widget and takes minutes.
@@ -99,6 +232,24 @@ stage 2b adopted it today.
   published number measured again). Her «да» (21:28): research 5 — Claude's launched at once,
   Codex's after its research 4 (brief `.tmp/research/brief-r5-local-model.md`, package
   `D:/cx-research-rag/r5/`).
+- 21:46 — «Есть еще вероятно рисерчи, которые бы стоило запустить. Тут жалко твой ресурс.
+  Но ресурс кодекс можно потратить - разрешаю, реши сам». Done: two more runs on Codex alone,
+  chosen by me.
+  - Research 6: speed levers that keep the models, for stage 4.
+  - Research 7: faster retrieval models that read Russian.
+  - None more: the other topics are covered by research 1–3 or lie outside the plan, and
+    a pilot's sample size is arithmetic, not literature.
+- 22:18 — «Давай попробуем. Внеси все тщательно в доку. Напиши, когда стоит начать след
+  сессию». It answers research 6's proposal: two checks of minutes, then the levers one at
+  a time, with `ollama serve`'s settings and the reranker's runtime hers.
+  - My reading: her word to try them in stage 4 — the checks first, then each lever as an
+    experiment. `ollama serve`'s settings are included and restored after.
+  - Adopting a lever into the path still goes by its numbers. INT8 of the reranker sits at
+    the stop-list's border, so its adoption takes her word too.
+- 22:22 — «Напиши для след сессии детальный анализ рисерчев и внесение изменений в общий
+  план. Это все в след сессии». So the analysis and the amendment of `PLAN.md` are the next
+  session's first task ([Next session](#next-session-the-research-analysed-then-the-plan-amended)).
+  This session changed no plan text.
 
 ## My choices, not hers
 
@@ -116,6 +267,10 @@ stage 2b adopted it today.
 - S5 and S8 were not changed after their counts were seen (S5 marks 0, S8 8 — see below).
 - The two research queues side by side (Claude's and Codex's), one run at a time in each — my
   reading of «тоже по одному рисерчу последовательно».
+- The topics of research 6 and 7, at her «реши сам» (21:46).
+- The read-only look at the Mac during the run (22:20 UTC): `ps`, `lsof`, a 4-MB `tail` of
+  Ollama's log. It took seconds and wrote nothing, and the run's timing rows are its own
+  answers' seconds.
 
 ## What happened
 
@@ -144,7 +299,7 @@ stage 2b adopted it today.
 6. **Locks, `b557082`:** six Python floors and five npm floors past the advisories of
    2026-10-24/25; CI's pip-audit command on `requirements.lock` «No known vulnerabilities
    found, 5 ignored», npm audit 0, DEP-01 PASS — all on the laptop.
-7. **Research 1–3** and the second-opinion runs — [Research](#research-three-runs-each-twice).
+7. **Research 1–3** and the second-opinion runs — [Research](#research-seven-runs).
 
 ## What is already known (no model call needed)
 
@@ -178,7 +333,7 @@ First five rows (each: grader s, claim check s, total s; all routed `retry` by S
 errors): 145/202/347, 289/229/518, 302/81/383, 83/235/318, then total 403. The cap is now
 3 × 383 = 1,149 s an answer.
 
-## Research: three runs, each twice
+## Research: seven runs
 
 **Why.** V4's answers, judged by M1 ([V4 record](../evidence/answer-prompt-v4-record.md);
 MultiHop-RAG was not in V4's run, its row is V3's from [stage 2](../evidence/stage2-record.md)):
@@ -228,12 +383,23 @@ proposal for Julia's decision. In short:
    18:48 words asked): the levels by system size, the method families that transfer to a 4B on
    a CPU, how production support measures the handover — nobody publishes escalation precision
    and recall; its reading of our gap as a retrieval loss conflicts with the table above.
+4. **Research 4** (a fast checker that reads Russian, 21:07): none has a measured Russian
+   grounding quality. Three multilingual encoders of 0.1–0.3B are candidates, and
+   RusHallu-RAG is a Russian human-labelled test for them.
+5. **Research 5** (the best local generator, 21:28): no candidate is shown to beat the 4B.
+   Qwen3.5-4B and Gemma 4 E2B are worth a pilot of 80 paired answers, and Qwen3.5-4B is
+   likely slower here.
+6. **Research 6** (speed levers that keep the models; Codex alone): diagnose before any
+   lever. The levers are the instructions kept cached, n-gram decoding, INT8 of the same
+   reranker (about 1.8×), and repacking if it is off. Our log adds the host prompt cache
+   ([below](#what-the-macs-log-shows)).
+7. **Research 7** (faster retrieval models that read Russian; Codex alone, ended 22:48): no
+   faster model is shown to keep quality; first to test offline are no reranker, ONNX of the
+   present one and `gte-multilingual-reranker-base`. Its numbers are not checked yet.
 
-Codex's queue: research 1 done (thread `01a17478-…`, 19:10–19:28 UTC), research 2 done
-(`01a17489-…`, 19:29–19:49), research 3 done (`01a1749c-…`, 19:50–20:14). All six reports
-are compared in that document, with ten claims checked against their sources and every link
-opened; its «How good the two reports are» answers Julia's question of 20:10 UTC on the
-quality of Codex's research.
+The threads, times and sizes of every run are in the folder's table. The reports are compared
+there, with the claims checked against their sources and every link opened. Its «How good the
+two reports are» answers Julia's question of 20:10 UTC on the quality of Codex's research.
 
 ## State now
 
@@ -242,7 +408,8 @@ quality of Codex's research.
   (plans' hashes), `df60777` (stage 2b's record), `d260d95` (S8), `b7ad62a` (the signal plan),
   `f520cde` (S7's rule), `b557082` (the locks; the risky moves are filelock's major version
   3 → 4 and astro 7.2 → 7.3, whose site build has not run), `5049430` (the record tool), and
-  the handoff commits `a383318`, `8047d40`, `d3e165c`, `6c9e51a` and this file's.
+  the handoff commits `a383318`, `8047d40`, `d3e165c`, `6c9e51a` and this file's. Later pushes:
+  `dc3ec6e` at 20:33 UTC and `81ff58a` at 22:02 (the research), both docs only.
 - **Uncommitted, in the tree:** `tests/test_handover_signal_record_artifact.py` — it waits for
   the rows (it reads `signals.jsonl` and `record.json`); the tool it tests is committed, ruff
   clean, not yet run on real rows. Also untracked and not this session's:
@@ -321,15 +488,32 @@ quality of Codex's research.
    `remote.py` without `--site`; on the laptop bandit as CI runs it (ci.yml line 278), CI's
    pip-audit command (ci.yml lines 280–307) and `npm run audit:deps` in `docs-site/` — then ask.
    Only CI installs the Linux lock; say so when asking.
-7. **Research — runs 1–5 done, 6 and 7 on Codex.** The reports and their comparison are in
-   the [research folder](research-2026-10-25/README.md); the companion brokers of runs 1–3
-   were stopped at ≈20:30 UTC by an explicit list (four trees, all of this session). If runs 6
-   and 7 (`D:/cx-research-rag/r6`, `r7`; briefs `.tmp/research/brief-r6-*`, `brief-r7-*`) are
-   not in the folder yet: save each with `save_cx_report.py`, check its rollout, compare, then
-   stop the brokers of `r4`–`r7` by an explicit list. What is left is Julia's: the proposal's
-   items 2, 3, 4 (outcome B, or the encoder test), 6 and 6a need her word; item 1 (the published rules, no model call) needs none and fits beside the
+7. **Research — seven runs.** The reports and their comparison are in the
+   [research folder](research-2026-10-25/README.md).
+   - The companion brokers were stopped by explicit lists: runs 1–3 at ≈20:30 UTC, runs 4–5
+     at ≈22:05, runs 6–7 at ≈22:55 (all of this session; `D:/_tmp/nlsql-r1-astra`'s broker
+     is another session's and stays).
+   - Research 7 is in the folder (rollout checked: `gpt-6-astra`, `xhigh`, read-only), its
+     links open, and its key numbers are not yet checked against their sources. That check is
+     the analysis's first step.
+   - Then the analysis
+     ([Next session](#next-session-the-research-analysed-then-the-plan-amended)).
+   - What is left is Julia's: the proposal's items 2, 3, 4 (outcome B, or the encoder
+     test), 6 and 6a need her word; item 1 (the published rules, no model call) needs none and fits beside the
    signal run. To repeat a Codex run: `save_cx_report.py` and `build_cx_brief.py` in `.tmp/research/`, and
    the launch command of `D:/cx-research-rag/<run>` in this file's history (`git log -p`).
+8. **Speed: stage 4's step 0** (her «Давай попробуем», 22:18). It comes after the amendment,
+   on an idle Mac, and changes no setting.
+   - **A short chat series.** Three to five aircargo questions on the chat path, by the chat
+     test's rules: production limits, one question first. For each request, read
+     `cached n_tokens`, `print_timing` and `cache state` in
+     `/Users/julia/gr2_bench/ollama_serve.log` (a `tail -c` of it). Does the answer reuse
+     the instructions, and do the scoring and hints calls evict them?
+   - **During generation:** `vm_stat 5` (page-ins and page-outs), `sysctl vm.swapusage`,
+     llama-server's RSS and the cache state.
+   - **At the model's load:** which `libggml-cpu-*.so` the log names (`haswell` carries
+     AVX2), and any repack line.
+   - Then the levers, one at a time, by the amended stage 4.
 
 ## Do not
 
@@ -351,6 +535,12 @@ quality of Codex's research.
   (`chat_signals [r]un`) and read the process line.
 - **Look before the reading is final, not after:** the cheap signals' counts were read once
   the plan was frozen; nothing about them was changed.
+- **A brief must give our measured speeds, not only whole-answer times.** Research 5's
+  Codex set a conditional 155 s beside our 250–300 s whole answer. It did not have our
+  4.3 tokens/s, and by the same formula our model takes 125 s.
+- **Read the runner's own log before planning speed levers.** In a minute it showed what
+  two research runs could only guess: 3 tokens of prefix reused, and a host prompt cache
+  allowed 8 GiB.
 - **A cold read finds what the writer cannot:** this file's first version had a stale commit
   count, an unfixed pgrep check and no rule for a `stop` row; a fresh agent's read found them.
 
@@ -364,8 +554,8 @@ quality of Codex's research.
 - **R1, R2, R3** — the [handover plan](../specs/handover-signal.md)'s suspected widget defects
   (R1: production routes every answer `human`; R2: an answer with no claims becomes a gap; R3:
   a claim counts only with a cited `[N]`); not the research runs.
-- **Research 1–3** — the web research Julia asked for on 2026-10-25
-  ([Research](#research-three-runs-each-twice)).
+- **Research 1–7** — the web research Julia asked for on 2026-10-25
+  ([Research](#research-seven-runs)).
 - **M1 / M2** — the judge's two grades: M1 without the reference answer (good / partial / bad
   by the retrieved documents), M2 with it (does the answer agree with the gold answer).
 - **Stability rule, bridge, κ** — a judge plan counts when its 15 retest pairs agree: quadratic

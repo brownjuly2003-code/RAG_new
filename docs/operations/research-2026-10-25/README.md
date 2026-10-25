@@ -25,6 +25,13 @@ no number below is ours unless it says so. Session `5ec44b60`; its
 - **No local model is shown to beat ours.** Qwen3.5-4B and Gemma 4 E2B are worth a pilot of
   80 paired answers (≈ 20 h of Mac), and Qwen3.5-4B is likely slower on our CPU. No
   candidate has a Russian number on answering from documents (research 5).
+- **Speed: diagnose before any lever.** Ollama 0.33.2 already reuses the prompt prefix. Two
+  checks of minutes come first: are the instructions read again after the scoring call, and
+  does generation wait on memory? INT8 of the same reranker is the one lever measured on the
+  same model, about 1.8× (research 6).
+- **Retrieval: no faster model is shown to keep quality.** No reranker, ONNX of the present
+  one and `gte-multilingual-reranker-base` are the first to test offline on the saved
+  candidate lists (research 7, not checked yet).
 
 ## Why
 
@@ -58,7 +65,7 @@ for the task (research 5). At 21:46 she gave Codex's budget to more runs, chosen
 - **What I checked:**
   - Every number below appears in the report it is credited to; the check was
     `.tmp/research/_audit/verify.py`.
-  - Nineteen claims were checked against their primary source, chosen where the reports
+  - Twenty-two claims were checked against their primary source, chosen where the reports
     disagree or where a proposal leans on them. The results are in
     [How good the two reports are](#how-good-the-two-reports-are).
   - Every link was opened by `.tmp/research/_audit/links.py`.
@@ -71,6 +78,8 @@ for the task (research 5). At 21:46 she gave Codex's budget to more runs, chosen
 | 3 — the state of RAG, October 2026 | [brief](brief-3-state-of-rag.md) | [report](claude-3-state-of-rag.md): 27.2k characters, 46 sources, 19:30–19:36 UTC | [report](codex-3-state-of-rag.md): 34.6k characters, 47 sources, 19:50–20:14 UTC, thread `01a1749c-834a-7772-b74d-9e5d0dd258d3` |
 | 4 — a fast checker that reads Russian | [brief](brief-4-russian-checker.md) | [report](claude-4-russian-checker.md): 24.4k characters, 46 sources, 21:08–21:23 UTC | [report](codex-4-russian-checker.md): 29.0k characters, 34 sources, 21:08–21:30 UTC, thread `01a174e4-fbf1-7e83-b6f2-6839965950fd` |
 | 5 — the best local generator for this machine | [brief](brief-5-local-model.md) | [report](claude-5-local-model.md): 25.0k characters, 40 sources, 21:29–21:46 UTC | [report](codex-5-local-model.md): 29.7k characters, 52 sources, 21:31–21:54 UTC, thread `01a174f9-7ab6-7253-b056-44f7c02ba2f7` |
+| 6 — speed levers that keep the models | [brief](brief-6-speed-levers.md) | — (Codex alone) | [report](codex-6-speed-levers.md): 33.7k characters, 34 sources, 21:55–22:13 UTC, thread `01a1750f-6f74-7a01-99c0-d31e8c6656cf` |
+| 7 — faster retrieval models that read Russian | [brief](brief-7-retrieval-models.md) | — (Codex alone) | [report](codex-7-retrieval-models.md): 30.0k characters, 43 sources, 22:14–22:48 UTC, thread `01a17520-85bf-7033-b10f-ee5572476dd8` |
 
 ## Research 1 — are our numbers low against others?
 
@@ -415,9 +424,106 @@ Julia asked for it at 21:28 UTC. It prepares her model decision (`PLAN.md` §9: 
 - The speed question comes first, and it is research 6's. The answer helps the present model
   and any later one.
 
+## Research 6 — speed levers that keep the models (Codex alone)
+
+Julia gave Codex's budget to more runs at 21:46 UTC and left the choice to me. I chose this
+topic because stage 4 tests speed levers one at a time, and research 5 put the speed question
+before any model swap. Only Codex ran it, so no second report checks it; my checks are below.
+
+**What it found:**
+
+- **Prefix reuse is already on.** Ollama 0.33.2 runs llama-server and sends
+  `cache_prompt: true` with every request (`llm/llama_server.go` at `v0.33.2`, checked). A new
+  saving can come only from more cache hits, not from switching it on.
+  - Codex notes that a scoring call with another start may evict the fixed instructions from
+    the slot.
+  - (mine, not measured) Our chat runs the scoring and the hints calls between two answers.
+    If they evict the instructions, the next answer reads them again. The cost is the
+    instructions' tokens / 34 s, and the llama-server log shows the cached tokens of each
+    request.
+- **4.3 tokens/s of generation can be called neither normal nor a misconfiguration.**
+  - The one i5-7500 number found is a Reddit comment, not checked because Reddit refuses
+    scripts. It gives Llama-3.2-3B Q8_0 at 36.67 tokens/s for prompt reading and 7.06 for
+    generation.
+  - (mine) That model reads about 3.4 GB of weights per token; ours reads 2.5 GB. At the same
+    memory speed ours would run near 9–10 tokens/s.
+  - With Claude's estimate in research 5, this points at memory pressure or threads before any
+    lever.
+  - Codex's first checks:
+    - page-ins during each stage;
+    - the CPU backend and the repacking in the load log;
+    - the real threads, batch, context, flash attention, KV type and parallel slots;
+    - the CPU frequency under load;
+    - the time split by stage.
+- **Its top five are conditional scenarios, not forecasts:**
+  1. more prefix reuse: «H / 34 s», where H is the newly cached tokens;
+  2. draft-free n-gram decoding: 14–42 s, if a laptop's 2.5× on an editing task holds. The
+     same test shows the default n-gram slower (24.0 against 32.0 tokens/s) and no gain on a
+     free answer. Ollama has no switch for it; llama-server has one;
+  3. a small draft model: 10–29 s at a measured 1.72× on an i7-8700. The extra RAM may eat
+     the gain;
+  4. repacking Q4_K_M, if it is not already active: about 25 s of the 67 s. If it works now,
+     0;
+  5. dynamic INT8 of the same reranker, about 1.8× (the card, checked).
+     - The card's test was an AVX2 CPU with 4 threads, 2 questions × 32 passages.
+     - Top-8 overlap with fp32 was 1.00, Kendall τ ≈ 0.91.
+     - RAM was not reduced.
+     - It takes the reranker alone from 27 s to about 15 s.
+- **Codex would test INT8 first**: it is the one lever measured on the same model.
+- **A runtime trap on this Mac.** ONNX Runtime 1.24.1 (06.02.2026) ships no x86_64 macOS
+  binaries and needs macOS 14 (the release notes, checked). OpenVINO 2026.0 drops Intel macOS
+  (not checked). The INT8 path needs an older ONNX Runtime here.
+- Flash attention, a quantised KV cache and FP16 are not sure speed-ups on an old CPU.
+
+**Our own log already answers part of it** (read 22:20 UTC; the session handoff's «What the
+Mac's log shows»):
+
+- the signal run's requests reuse 3 tokens of prefix;
+- llama-server runs with one slot (`-np 1`);
+- its host prompt cache held 9 prompts, about 2 GiB, against a limit of 8,192 MiB — a
+  suspect for the growing swap, not measured.
+
+**What it gives the plan (mine):**
+
+- **Two checks of minutes, before any lever.** Both fit stage 4's items 1 and 4 and need an
+  idle Mac after stage 3:
+  - the cached tokens per request over a short series — does the scoring call evict the
+    instructions?
+  - page-ins during generation and the backend line of the load log.
+- **New levers for stage 4, each separate:**
+  - **keeping the instructions cached between answers.** Changing the order of calls is code.
+    A second slot changes `ollama serve`'s settings, which is hers (stage 4, item 5);
+  - **n-gram decoding.** It needs llama-server without Ollama;
+  - **INT8 of the same reranker in ONNX Runtime.** Whether a new runtime still counts as «the
+    same reranker» is hers: the stop-list forbids a reranker swap.
+
+## Research 7 — faster retrieval models that read Russian (Codex alone)
+
+These are the report's own conclusions. They are not checked yet: the next session checks them
+in its analysis.
+
+- **No replacement is shown to be both as good and faster on our CPU,** in Russian and in
+  English.
+- **Test these first:**
+  - no reranker at all;
+  - an ONNX version of the present BGE reranker;
+  - `gte-multilingual-reranker-base`.
+- **INT8 of the same reranker** gives the same 1.8× (the card checked under research 6). It has
+  no public relevance test and saves almost no RAM.
+- **`gte-multilingual-reranker-base`** matches BGE on Russian in one protocol and trails it on
+  the multilingual average in another.
+- **`ru-reranker-edge-150m`** looks good on public Russian tasks. Its English quality and CPU
+  speed are unknown.
+- **BGE-M3's own multi-vector scores,** with the documents' vectors stored ahead, deserve a
+  separate test: no cross-encoder would be needed then. (mine) That changes the vector store
+  (ADR 0007), so it is hers.
+- **No embedder is shown better than BGE-M3** on Russian retrieval at the same or a lower cost.
+- **No study of a hybrid like ours** that varies the rerank depth was found. An offline test
+  on the saved candidate lists decides; it needs no new answers.
+
 ## How good the two reports are
 
-Checked on 2026-10-25 against the primary sources. The nineteen claims were chosen where the
+Checked on 2026-10-25 against the primary sources. The twenty-two claims were chosen where the
 reports disagree or where a proposal leans on them, so the sample is small and not random.
 
 | Claim | Report | Source says | Verdict |
@@ -438,13 +544,17 @@ reports disagree or where a proposal leans on them, so the sample is small and n
 | i7-10700, 8 threads: Qwen3.5-4B 44.0 / 10.3, Gemma 4 E2B 96.2 / 18.2, its QAT Q4_0 93.2 / 19.2 tokens/s | Codex 5 | `local-llm-lab` `reports/cpu.md`, June 2026, the same; no Qwen3-4B row | exact; the ≈155 s set beside our whole answer misleads |
 | ESG RAG: faithfulness 0.719 / 0.796 / 0.784, correctness 0.449 / 0.405 / 0.423 (qwen3-4b-instruct, gemma4 e4b, e2b) | Claude 5 | 2609.15242 table III, the same; judge qwen3:4b-instruct | exact; Codex 5 missed it |
 | OCC-RAG-1.7B: MIT, en and ru, ConFiQA 81.4, MuSiQue-Un 87.2 | Claude 5 | the card, the same; Qwen3-4B with thinking 74.1 / 84.0, HotpotQA 60.9 against 67.1 | exact where checked |
+| Ollama 0.33.2 sends `cache_prompt: true` to llama-server | Codex 6 | `llm/llama_server.go` at `v0.33.2`, both request paths | exact |
+| ONNX Runtime 1.24.1 ships no x86_64 macOS binaries | Codex 6 | the release notes, the same; macOS 14.0 at least | exact |
+| bge-reranker-v2-m3 INT8: about 1.8× on AVX2, 4 threads; RAM not reduced | Codex 6 | the card: the same; 2 questions × 32 passages, top-8 overlap 1.00, Kendall τ ≈ 0.91 | exact |
+| i5-7500: Llama-3.2-3B Q8_0 at 36.67 / 7.06 tokens/s | Codex 6 | a Reddit comment; Reddit refuses scripts | not checked |
 | Little Brains: Qwen3-4B Q5_K_M 0.71 / 0.80, Qwen3-8B 0.72 / 0.83, GPT-5-mini 0.73 / 0.89; CPU, 16 GB, context given | Claude 3 | 2606.30062 table 3, the same | exact; Codex 3 missed the paper |
 | Airbnb's A/B: hard escalation 5.60 → 3.08 %, handoff 8.56 → 8.20 % | Codex 3 | 2609.05758 §6.3, the same | exact |
 | LongPAS: Qwen3-4B FRAMES 46.81 → 64.90, GPT-5-Nano 73.54; an RL method | Codex 3 | 2601.12465 table 1, the same | exact |
 
 **Links:**
 
-- Codex: all 198 links open (research 1–5).
+- Codex: 274 of 275 open (research 1–7); one is Reddit, which refuses scripts.
 - Claude: 214 of 221 open (research 1–5). One is a 404 (an ACL Anthology preview path), one
   site refuses scripts (406), and four are blocked (403 or 429), which does not make them
   dead. One more is cut by the checker at a bracket in the address; the page opens.
@@ -460,7 +570,8 @@ reports disagree or where a proposal leans on them, so the sample is small and n
   - Its research 2 ranks for both stage 3 outcomes and orders the measurements much as
     `PLAN.md` does.
 - **Codex's weak side is use.**
-  - It breaks the size contract: 35k, 34k, 35k, 29k and 30k characters against ≤ ~25k.
+  - It breaks the size contract: 35k, 34k, 35k, 29k, 30k, 34k and 30k characters against
+    ≤ ~25k.
   - It is dense, with many English terms.
   - It often finds no CPU cost.
   - It took 18–24 minutes a run against Claude's 6–15.
@@ -494,11 +605,12 @@ Every item is universal — no dictionaries; any corpus and language.
 | 3 | **Generation:** an evidence-first answer in the same call, with an answered / partial / declined status (Codex; ReClaim's measured gain), or Claude's second pass for declines only. Measured paired on a fixed context on WixQA's and ConditionalQA's open parts (§4.2: not the locked parts), by claim faithfulness, nugget recall and declines together | a prompt change — §9 allows only stage 1's fixes, V4 and stage 4's levers | rule (c); (a) if adopted | yes: an amendment |
 | 4 | **The router:** stage 3's outcome on the Mac decides. Outcome B: how to fit a check of minutes into the chat is hers. Outcome C, or a B too slow: research 4's offline test of three encoder checkers on the saved answers, against RusHallu-RAG's human labels and our judge's, with their time on the Mac | stage 3, step 3; a new signal is outside the frozen signal plan | (c) for the test, (a) when wired | yes for B, for the test and for any new model |
 | 5 | **Shorter context:** research 3's context pruning supports stage 4's «Промпт короче» lever | stage 4, step 4 | (a), (c) | no: already planned |
+| 5a | **Speed, research 6:** first the two checks (the cached tokens per request; page-ins and the backend line), then one lever at a time — the instructions kept cached, n-gram decoding, INT8 of the same reranker | stage 4, steps 1, 4 and 5 | (a), (c) | no for the checks; yes for `ollama serve`'s settings and the reranker's runtime |
 | 6 | **Retrieval:** one query rewrite or decomposition, after item 1 shows the real gap. BGE-M3's multi-vector mode would change the vector store (ADR 0007) and the embedder | a new mechanism — stage 7 takes only code that exists; the vector store and the embedder are frozen | (c), then (a) | yes |
 | 6a | **Another generator** (research 5): no candidate is shown to beat the 4B. If she wants a pilot: Qwen3.5-4B and Gemma 4 E2B, 80 paired answers each on saved contexts (≈ 20 h of Mac), after a feasibility check; then a reader trained for grounding and refusal (Trust-Align, OCC-RAG; English-tested). Coverage beside quality | a model swap — §9: «явное решение Юли с числами» | (c) | yes |
 | 7 | **Not worth our hardware:** graph-RAG frameworks (also ADR 0001), long context, RL training, large reasoning rerankers (a reranker swap is hers anyway), semantic entropy | stop-list §9 | — | — |
 
-Research 6 (speed levers that keep the models, for stage 4) and research 7 (faster retrieval
-models that read Russian) run on Codex alone, one after the other, at Julia's word of
-21:46 UTC («ресурс кодекс можно потратить - разрешаю, реши сам»). Their reports are added
-here when they end.
+All seven runs have ended. Research 6 and 7 ran on Codex alone, at Julia's word of 21:46 UTC
+(«ресурс кодекс можно потратить - разрешаю, реши сам»). The detailed analysis of all seven,
+and the changes to `PLAN.md`, are the next session's task (Julia, 22:22 UTC). It is set out in
+the [session handoff](../session-handoff-2026-10-25-stage3-signals-running.md#next-session-the-research-analysed-then-the-plan-amended).
