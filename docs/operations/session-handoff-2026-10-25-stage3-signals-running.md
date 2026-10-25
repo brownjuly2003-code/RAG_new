@@ -76,6 +76,12 @@ stage 2b adopted it today.
   its test held back (it fails until the record exists), the laptop's checks run (CI's two
   mypy commands, `ruff check`, bandit, pip-audit, DEP-01 — all clean), pushed. The Mac suite
   could not run: the signal run measures there.
+- ≈19:50 — «что еще важно. проверь доку на ее оптимальность»: the research document audited
+  against its reports and three primary sources, rewritten (`9284a6e`).
+- ≈20:02 — the Mac's fans are loud; asked whether the noise can be cut. Answered: only by
+  slowing the run (fewer threads, Turbo off: the remaining answers' times would not match
+  the first 28) or pausing it overnight. Her word: «Нет, ничего не снижаем. Если убрать шум
+  никак - пусть шумит. Важно закрыть задачу» — the run goes on unchanged, no pause.
 
 ## My choices, not hers
 
