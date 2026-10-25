@@ -6,7 +6,8 @@ Session `5ec44b60`, 2026-10-25 08:54 UTC – (open). The laptop's clock and Juli
 
 ## Read this first
 
-- **The next session analyses the research and amends the plan** (Julia, 22:22 UTC) — see
+- **The next session analyses the research and amends the plan first,** before the run's
+  record (Julia, 22:22 and ≈23:05 UTC) — see
   [Next session](#next-session-the-research-analysed-then-the-plan-amended): when to start
   it, the order, the inputs, the output. This session changed no line of `PLAN.md`.
 - **A measurement is running on the Mac with no session watching it** — stage 3's signals
@@ -44,21 +45,28 @@ Julia, 22:22 UTC: «Напиши для след сессии детальный
 общий план. Это все в след сессии». This session wrote the reports and compared them. It
 changed no line of `PLAN.md`; the next session does both, in this order.
 
-**When to start.** Start any time after this session closes; the analysis needs no Mac. The
-best moment is after the signal run's `end`, forecast for about 04:00–05:00 UTC on 10-26
-(00:00–01:00 EDT), so tomorrow morning is safe.
+**When to start.** Any time after this session closes: the analysis and the amendment need
+neither the Mac nor the run's result. The run's `end` is forecast for about 04:00–05:00 UTC
+on 10-26 (00:00–01:00 EDT); a session started tomorrow morning also finds the record ready to
+build.
 
-**Order.**
+**Order — the plan first** (Julia, ≈23:05 UTC: «Так может, первый пункт для след сессии -
+поменять план разработки?»; agreed).
 
-1. Step 1 of [Next actions](#next-actions) first (is the run done?).
-   - **If it has ended:** do steps 2–4 (the rows, the record, the capsule, one commit; about
-     1 h, mostly the laptop) before the analysis. Research 2 and 4 rate every option for both
-     stage 3 outcomes, so the analysis needs the letter.
-   - **If not:** the analysis first, and the outcome is added when the record exists.
+1. Step 1 of [Next actions](#next-actions), for the run's health only: alive, a `stop` row, or
+   `end`; resume it if it died. Do not read its signals and do not build the record yet.
 2. The analysis.
-3. The amendment.
-4. One message to Julia: the outcome (step 5), the analysis in short, and the amendment's
-   items that need her word.
+3. The amendment, committed before the run's result is read.
+   - Stage 3's outcome is not known then, so its part is written for both outcomes, B and C.
+     Research 2 and 4 already rate every option for both.
+   - Stage 3's pre-registered decision rule is not touched; the amendment only adds what
+     follows each outcome.
+   - Why first: every later task runs by the amended plan, and a plan fixed before the result
+     cannot bend to it — the rule a pre-registered spec keeps.
+4. If the run has ended: steps 2–4 (the rows, the record, the capsule, one commit; about 1 h,
+   mostly the laptop). The record's letter picks the branch. If not: they wait for `end`.
+5. One message to Julia: the outcome (step 5) if there is one, the analysis in short, and the
+   amendment's items that need her word.
 
 **Inputs.**
 
@@ -250,6 +258,9 @@ stage 2b adopted it today.
   план. Это все в след сессии». So the analysis and the amendment of `PLAN.md` are the next
   session's first task ([Next session](#next-session-the-research-analysed-then-the-plan-amended)).
   This session changed no plan text.
+- ≈23:05 — «Так может, первый пункт для след сессии - поменять план разработки?» Agreed: the
+  amendment goes before the signal run's record, and stage 3's part is written for both
+  outcomes.
 
 ## My choices, not hers
 
