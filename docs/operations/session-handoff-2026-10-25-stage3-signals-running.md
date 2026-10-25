@@ -106,7 +106,9 @@ errors): 145/202/347, 289/229/518, 302/81/383, 83/235/318, then total 403. The c
 ## State now
 
 - **Commits this session (local):** `410a642`, `d5f6e91` (plans' hashes), `df60777` (stage
-  2b's record), `d260d95` (S8), `b7ad62a` (the signal plan), `f520cde` (S7's rule).
+  2b's record), `d260d95` (S8), `b7ad62a` (the signal plan), `f520cde` (S7's rule), `a383318`
+  (this handoff), `b557082` (the locks refreshed: CI's pip-audit clean on `requirements.lock`,
+  the npm gate DEP-01 PASS; filelock 3 → 4 and astro 7.2 → 7.3 are the risky moves).
 - **Uncommitted, in the tree:** `reports/handover-signal/tools/signal_record.py` and
   `tests/test_handover_signal_record_artifact.py` — they wait for the rows; ruff clean, not yet
   run on real rows. Also untracked and not this session's: `demo/phase-e-raw.webm`,
@@ -147,8 +149,11 @@ errors): 145/202/347, 289/229/518, 302/81/383, 83/235/318, then total 403. The c
    no signal finds them on this Mac with the 4B, and her options (a line under every answer, a
    route by topic, a stronger checker elsewhere). R1 and R2 are widget defects fixed with a
    test on her word; `PLAN.md` stage 3 step 4 adds ten widget answers on the 4B.
-6. **Before any push:** update the locks (`BACKLOG.md`: pip-audit 26 advisories, npm 19), then
-   the whole Mac suite, both CI mypy commands, bandit, pip-audit, npm audit — and ask.
+6. **Before any push:** on the idle Mac, `b557082`'s guards (`tests/test_pip_audit_floors.py`,
+   `test_npm_audit_floors.py`, `test_docs_site_npm_audit.py`) and the site build on astro 7.3
+   (`npm ci && npm run check && npm run build` in `docs-site/`, Chromium from the Playwright
+   folder); then the whole Mac suite, both CI mypy commands, bandit, pip-audit, npm audit — and
+   ask. Only CI installs the Linux lock; say so when asking.
 
 ## Do not
 
