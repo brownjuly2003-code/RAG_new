@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""The handover signals S1-S7 on the chat's answers (docs/specs/handover-signal.md, stage 1.0).
+"""The handover signals S1-S8 on the chat's answers (docs/specs/handover-signal.md, stage 1.0).
 
 Each signal says yes or no — "mark this answer for a person" — and each is computed by the
 repository's code, none re-implemented:
@@ -19,10 +19,13 @@ repository's code, none re-implemented:
 - S7 — retrieval's confidence: the reranker's top score, recorded live by the stand
   (``reports/stage1/tools/live_api.py``) for the very retrieval whose documents the answer
   prompt holds — counted only when the prompt's sources are the reranked ones in order; its
-  threshold is chosen on stage 1 (``summary --s7-threshold``).
+  threshold is chosen on stage 1 (``summary --s7-threshold``);
+- S8 — the answer's script: marked when fewer than half of the answer's letters are in the
+  question's script, counted by Unicode ranges as ``reports/stage1/tools/audit_summary.py``
+  counts them; no model call, no word list.
 
 ``plan`` reads run records and freezes, before the first model call, the answers in order, the
-digests of their prompts and answers, the signals that need no model (S1, S1', S5, S7), the
+digests of their prompts and answers, the signals that need no model (S1, S1', S5, S7, S8), the
 forecast and the stop rule; it holds no question, document or answer text, so it can be
 committed for any corpus. ``run`` computes S2, S3, S4 and S6 with the 4B the code defaults
 serve, appending one row per answer; it stops at 3x the forecast (Julia's rule) and unloads the
@@ -44,6 +47,7 @@ import hashlib
 import json
 import math
 import os
+import re
 import statistics
 import sys
 import time
@@ -82,7 +86,7 @@ CHOICE_ENV = (
     "MIN_RELEVANCE_FOR_AUTO",
     "MIN_FACTUALITY_FOR_AUTO",
 )
-SIGNALS = ("S1", "S1p", "S2", "S3", "S4", "S5", "S6", "S7")
+SIGNALS = ("S1", "S1p", "S2", "S3", "S4", "S5", "S6", "S7", "S8")
 # A node of the widget's graph: a state in, the state with its fields out.
 Node = Callable[[Any], Any]
 
@@ -101,6 +105,22 @@ def is_decline(answer: str) -> bool:
 
     lone: Any = {"context_docs": [{}, {}], "factuality_score": None, "answer": answer}
     return _is_knowledge_gap(lone) or PROMPT_DECLINE in answer.lower()
+
+
+def letters(text: str) -> dict[str, int]:
+    """Cyrillic and Latin letters, by audit_summary.py's ranges."""
+    return {
+        "cyrillic": len(re.findall("[а-яА-ЯёЁ]", text)),
+        "latin": len(re.findall("[a-zA-Z]", text)),
+    }
+
+
+def other_script(question: str, answer: str) -> bool:
+    """S8: fewer than half of the answer's letters in the script most of the question's are."""
+    asked = letters(question)
+    script = "cyrillic" if asked["cyrillic"] > asked["latin"] else "latin"
+    answered = letters(answer)
+    return answered[script] < sum(answered.values()) / 2
 
 
 def retrievals(stages: Path) -> dict[str, dict[str, Any]]:
@@ -176,12 +196,13 @@ def build_plan(runs: Mapping[str, Path], code_sha: str) -> dict[str, Any]:
                     "S1p": source == "llm" and quality is not None and quality < 100,
                     "S5": is_decline(text),
                     "S7": s7,
+                    "S8": other_script(answer["question"], text),
                     "empty_answer": not text,
                 }
             )
     return {
         "named": _now(),
-        "what": "handover signals S1-S7 on chat answers (docs/specs/handover-signal.md)",
+        "what": "handover signals S1-S8 on chat answers (docs/specs/handover-signal.md)",
         "code_sha": code_sha,
         "model": MODEL,
         "runs": records,
@@ -433,6 +454,7 @@ def marks(
         "S1": item["S1"],
         "S1p": item["S1p"],
         "S5": item["S5"],
+        "S8": item["S8"],
         "S7": (
             None
             if threshold is None or s7["status"] != "ok"

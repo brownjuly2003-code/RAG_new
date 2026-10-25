@@ -159,8 +159,8 @@ defaults, `RAG_ENV` development; none is re-implemented. Each is a yes/no "mark 
   answers in the other script, and the chat's rule sent two of them `auto`, each scored 100:
   S1's self-score missed both, and S2–S7 do not look at the script. On those records S8 marks
   2 of 4 answers before the fixes, 1 of 4 on V2 and 0 of 4 on V3
-  (`tests/test_stage1_live_artifact.py`). `scripts/chat_signals.py` does not compute it yet;
-  it is added before 1.3.
+  (`tests/test_stage1_live_artifact.py`). `scripts/chat_signals.py` computes it in `plan`
+  since 2026-10-25, before 1.3, by that test's rule (`tests/test_chat_signals.py`).
 
 ## Stages
 

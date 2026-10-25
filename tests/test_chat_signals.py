@@ -65,10 +65,13 @@ def test_the_plan_freezes_the_signals_without_a_model_and_holds_no_text(tmp_path
     first, second = plan["items"]
     assert (first["S1"], first["S1p"], first["S5"]) == (False, False, False)
     assert first["S7"] == {"status": "ok", "top_score": 0.91}
+    assert not first["S8"]
     # The second answer declines in the V2 prompt's words and scored 60; its prompt holds two
     # documents but the rerank recorded one: S7 does not read a score it cannot tie to them.
     assert (second["S1"], second["S1p"], second["S5"]) == (True, True, True)
     assert second["S7"] == {"status": "order_differs", "top_score": None}
+    # It is asked in Latin letters and answered in Cyrillic ones: S8 marks it.
+    assert second["S8"]
     text = json.dumps(plan, ensure_ascii=False)
     for secret in (QUESTION, "Storage costs ten a day", "ответить нельзя."):
         assert secret not in text
@@ -153,6 +156,8 @@ def test_the_summary_counts_what_each_signal_catches(tmp_path: Path) -> None:
     assert (s5["target"], s5["caught"], s5["over_marked"]) == (1, 1, 0)
     assert summary["signals"]["S4"]["computed"] == 1
     assert summary["signals"]["S4"]["over_marked"] == 1
+    s8 = summary["signals"]["S8"]
+    assert (s8["computed"], s8["target"], s8["caught"], s8["over_marked"]) == (2, 1, 1, 0)
     assert summary["signals"]["S7"] == {
         "computed": 1,
         "marked": 0,
@@ -163,6 +168,17 @@ def test_the_summary_counts_what_each_signal_catches(tmp_path: Path) -> None:
         "over_marked": 0,
         "over_marked_wilson95": [0.0, 0.7935],
     }
+
+
+def test_the_answer_script_counts_letters_not_words() -> None:
+    """S8 by the rule stage 1's records were read with (tests/test_stage1_live_artifact.py)."""
+    assert not signals.other_script("Сколько стоит хранение?", "Хранение стоит 10 USD в день.")
+    assert signals.other_script("Сколько стоит хранение?", "Storage costs ten a day.")
+    # Half the letters in the question's script is not fewer than half; no letters mark nothing.
+    assert not signals.other_script("abcd?", "ab вг")
+    assert not signals.other_script("Who signs?", "")
+    # A question with as many Cyrillic as Latin letters counts as Latin, as stage 1 counted it.
+    assert signals.other_script("ab вг", "только кириллица")
 
 
 def test_wilson_bounds() -> None:
