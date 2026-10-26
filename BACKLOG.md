@@ -7,9 +7,9 @@ stage and the frozen streams with their unfreeze conditions are [`ROADMAP.md`](R
 ## Current queue
 
 - **[`PLAN.md`](PLAN.md) stage 3 after outcome C** ([signal record](docs/evidence/handover-signal-v4-aircargo.md)): Julia's
-  option under C; at her word, the [handover plan](docs/specs/handover-signal.md)'s stage 2 for
-  S3 (in between) or the encoder test (§8.3 item 13); without a word, step 4 — R1 and ten widget
-  answers on the idle Mac. One measurement on the Mac at a time.
+  «да» (2026-10-26) — the handover line under every answer, done; no stage 2 for S3. Next: the
+  encoder-checker test (§8.3 item 13, spec first), step 4 — R1 and ten widget answers; then
+  stage 3б, the evidence-first prompt V5 (spec first). One measurement on the Mac at a time.
 - **Dated:** 2026-11-24 — review the three ChromaDB CVE ignores (ADR 0008; 2026-10-24: no
   fixed release). The npm exception GHSA-ch52-4w7c-c8xp was removed 2026-10-24 with
   `http-cache-semantics` 4.3.0, not a fix but outside its range (ADR 0009's log).

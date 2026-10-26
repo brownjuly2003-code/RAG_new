@@ -22,6 +22,7 @@
             // As the web chat says it: the answer did not come in time, or did not come.
             var TIMEOUT_TEXT = 'Ответ не пришёл вовремя. Повторите вопрос или передайте его оператору.';
             var ERROR_TEXT = 'Не удалось получить ответ. Повторите вопрос или передайте его оператору.';
+            var TICKET_ROUTES = ['human', 'error', 'error_escalation'];
 
             function isValidOrigin(value) {
                 if (!value || value === 'null' || value === '*') {
@@ -125,6 +126,28 @@
                         escalate(question, reason, row, escalateBtn);
                     });
                 }
+                node.appendChild(row);
+                scrollMessages();
+                scheduleResize();
+            }
+
+            // No automatic signal tells a bad answer from a good one on this Mac (PLAN.md
+            // stage 3, outcome C): the client is told so under the answer and hands the
+            // question over in one click; the ticket's reason is the answer's route.
+            function addHandoverLine(node, question, reason) {
+                var row = document.createElement('div');
+                row.className = 'widget-handover';
+                var note = document.createElement('span');
+                note.textContent = 'Ответ составлен автоматически и может ошибаться.';
+                row.appendChild(note);
+                var button = document.createElement('button');
+                button.type = 'button';
+                button.className = 'widget-handover-btn';
+                button.textContent = 'Передать оператору';
+                button.addEventListener('click', function() {
+                    escalate(question, reason, row, button);
+                });
+                row.appendChild(button);
                 node.appendChild(row);
                 scrollMessages();
                 scheduleResize();
@@ -274,6 +297,8 @@
                 var node = addMessage('assistant', reply.text);
                 if (reply.retry || reply.reason) {
                     addReplyActions(node, question, reply.reason, reply.retry);
+                } else if (reply.handover) {
+                    addHandoverLine(node, question, reply.handover);
                 }
             }
 
@@ -316,7 +341,11 @@
                     // The graph's own deadline: its apology, and /api/ask opens no ticket.
                     return { text: data.answer || TIMEOUT_TEXT, reason: 'route=timeout', retry: true };
                 }
-                return { text: data.answer || 'Нет ответа', reason: '', retry: false };
+                // /api/ask opens the ticket itself on a human or error route; any other
+                // answer offers the operator under it.
+                var route = String(data.route || 'auto');
+                var handover = TICKET_ROUTES.indexOf(route) === -1 ? 'route=' + route : '';
+                return { text: data.answer || 'Нет ответа', reason: '', retry: false, handover: handover };
             }
 
             closeBtn.addEventListener('click', function() {

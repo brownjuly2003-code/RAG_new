@@ -11,7 +11,10 @@ fallback finds the deadline spent and the client gets the apology routed
 ``timeout``, as the chat on the production Mac did on 2026-10-14. An answer
 the model scores 40, below the threshold of 80, comes back routed ``human``.
 Neither opens a ticket by itself; the button does, through the chat's operator
-dialog and ``/api/escalate``. Requires Python Playwright and Chromium and skips
+dialog and ``/api/escalate``. An answer scored 90 is routed ``auto`` and carries
+the handover line instead: on this Mac no automatic signal tells a bad answer
+from a good one (PLAN.md stage 3, outcome C, 2026-10-26), so every answer says
+it may be wrong and offers the operator through the same dialog. Requires Python Playwright and Chromium and skips
 without them; a skip is not evidence — run it with ``-rs``.
 """
 
@@ -42,6 +45,9 @@ SESSION_ID = "11111111-2222-4333-8444-555555555555"
 TIMEOUT_QUESTION = "Сколько дней груз хранится на складе бесплатно?"
 HUMAN_QUESTION = "Как подать претензию о повреждении груза?"
 HUMAN_ANSWER = "Претензию подают в письменной форме перевозчику [1]."
+AUTO_QUESTION = "Куда отправить акт о повреждении груза?"
+AUTO_ANSWER = "Акт отправляют перевозчику вместе с претензией [1]."
+HANDOVER_NOTE = "Ответ составлен автоматически и может ошибаться."
 # The limit the timeout test sets, and how long its model stays silent.
 REQUEST_LIMIT_SEC = 8.0
 SILENT_SEC = 60.0
@@ -56,11 +62,13 @@ PATH_ENV = ("STREAMING_RAG_PARITY", "STREAMING_QUALITY_EVAL", "LLM_PROVIDER_PROF
 def _reply(payload: dict[str, Any]) -> _fake_ollama.Reply:
     prompt = str(payload.get("prompt") or "")
     if SELF_EVAL_MARKER in prompt:
-        return _fake_ollama.Reply(["40"])
+        return _fake_ollama.Reply(["90" if AUTO_QUESTION in prompt else "40"])
     if SUGGESTIONS_MARKER in prompt:
         return _fake_ollama.Reply(["Какие документы приложить?"])
     if TIMEOUT_QUESTION in prompt:
         return _fake_ollama.Reply(["Поздно."], first_token_after=SILENT_SEC)
+    if AUTO_QUESTION in prompt:
+        return _fake_ollama.Reply([AUTO_ANSWER])
     return _fake_ollama.Reply([HUMAN_ANSWER])
 
 
@@ -230,6 +238,8 @@ def test_timeout_offers_retry_and_the_operator(chat_stand) -> None:
             assert REQUEST_LIMIT_SEC <= elapsed < SILENT_SEC, elapsed
             assert "слишком много времени" in message.inner_text()
             assert message.locator(".badge-route").inner_text() == "Маршрут: timeout"
+            # The operator is offered once: by the action, not again by the handover line.
+            assert message.locator(".answer-handover").count() == 0
             assert message.locator(".btn-retry").inner_text() == "Повторить"
             assert message.locator(".btn-escalate-action").inner_text() == "Передать оператору"
             _expect_actions_shown(message)
@@ -269,6 +279,7 @@ def test_human_answer_offers_the_operator_without_a_ticket(chat_stand) -> None:
             assert message.locator(".badge-route").inner_text() == "Маршрут: human"
             assert message.locator(".btn-escalate-action").inner_text() == "Передать оператору"
             assert message.locator(".btn-retry").count() == 0
+            assert message.locator(".answer-handover").count() == 0
             _expect_actions_shown(message)
             # The chat opens no ticket on its own for a `human` answer.
             assert stand.escalations == []
@@ -329,3 +340,43 @@ def test_stream_error_offers_retry_and_the_operator(chat_stand, route, detail, t
     assert [(e["question"], e["reason"]) for e in stand.escalations] == [
         (TIMEOUT_QUESTION, f"route={route}")
     ]
+
+
+def test_every_other_answer_carries_the_handover_line(chat_stand) -> None:
+    stand = chat_stand(600.0)
+    with sync_playwright() as p:
+        browser = p.chromium.launch()
+        try:
+            page = browser.new_page()
+            streams = _ask(page, stand.base, AUTO_QUESTION)
+            message = page.locator(".message.bot", has=page.locator(".answer-handover"))
+            message.wait_for(timeout=60_000)
+
+            assert len(streams) == 1 and streams[0].endswith(STREAM_PATHS), streams
+            assert AUTO_ANSWER in message.inner_text()
+            assert message.locator(".badge-route").inner_text() == "Маршрут: auto"
+            line = message.locator(".answer-handover")
+            # Shown at once, not on hover: the line is outside the hidden actions row.
+            expect(line).to_be_visible()
+            expect(line).to_contain_text(HANDOVER_NOTE)
+            expect(line.locator(".btn-handover")).to_have_text("Передать оператору")
+            assert message.locator(".btn-escalate-action").count() == 0
+            assert stand.escalations == []
+
+            line.locator(".btn-handover").click()
+            page.wait_for_selector("#escalateModal.active")
+            expect(page.locator("#escalateCancel")).to_be_focused()
+            page.click("#escalateConfirm")
+            page.locator(".message.bot", has_text="Запрос передан оператору.").wait_for()
+            # The operator's own reply offers the operator no second time.
+            confirmed = page.locator(".message.bot", has_text="Запрос передан оператору.")
+            assert confirmed.locator(".answer-handover").count() == 0
+        finally:
+            browser.close()
+
+    assert len(stand.escalations) == 1, stand.escalations
+    escalation = stand.escalations[0]
+    assert escalation["question"] == AUTO_QUESTION
+    assert escalation["reason"] == "route=auto"
+    assert escalation["source"] == "manual"
+    assert escalation["session_id"] == SESSION_ID

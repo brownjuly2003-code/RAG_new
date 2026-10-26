@@ -546,6 +546,31 @@
             color: #b45309;
         }
 
+        .answer-handover {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: baseline;
+            gap: 4px 8px;
+            margin-top: 6px;
+            font-size: 12px;
+            color: var(--text-secondary, #777);
+        }
+
+        .btn-handover {
+            border: none;
+            background: none;
+            padding: 0;
+            font: inherit;
+            color: var(--accent, #4a90d9);
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        .btn-handover:hover,
+        .btn-handover:focus-visible {
+            color: var(--text-primary, #333);
+        }
+
         .msg-timestamp {
             font-size: 11px;
             color: var(--text-secondary, #999);

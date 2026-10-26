@@ -591,11 +591,13 @@
 
                 // Add bot message. The answer that did not come in time and the one the
                 // model routed to a human offer the operator; neither opens a ticket by itself.
+                // Every other answer carries the handover line (stage 3, outcome C).
                 let resultActions = [];
                 if (data.route === 'timeout') resultActions = ['retry', 'escalate'];
                 else if (data.route === 'human') resultActions = ['escalate'];
                 addMessage('bot', data.answer, {
                     actions: resultActions,
+                    handover: resultActions.length === 0,
                     originalQuestion: question,
                     escalationReason: 'route=' + data.route,
                     quality: data.quality_score,
@@ -738,6 +740,31 @@
                 }
 
                 content.appendChild(badges);
+
+                // No automatic signal tells a bad answer from a good one on this Mac
+                // (PLAN.md stage 3, outcome C): the client is told so under the answer and
+                // hands the question over in one click, through the same dialog.
+                if (meta.handover) {
+                    const handover = document.createElement('div');
+                    handover.className = 'answer-handover';
+                    const note = document.createElement('span');
+                    note.textContent = 'Ответ составлен автоматически и может ошибаться.';
+                    const handoverBtn = document.createElement('button');
+                    handoverBtn.className = 'btn-handover';
+                    handoverBtn.type = 'button';
+                    handoverBtn.textContent = 'Передать оператору';
+                    handoverBtn.setAttribute('aria-label', 'Передать вопрос оператору');
+                    handoverBtn.addEventListener('click', function() {
+                        questionInput.value = meta.originalQuestion || '';
+                        pendingEscalationReason = meta.escalationReason || null;
+                        activeModalTrigger = handoverBtn;
+                        escalateModal.classList.add('active');
+                        escalateCancel.focus();
+                    });
+                    handover.appendChild(note);
+                    handover.appendChild(handoverBtn);
+                    content.appendChild(handover);
+                }
 
                 const citations = Array.isArray(meta.citations) && meta.citations.length > 0
                     ? meta.citations

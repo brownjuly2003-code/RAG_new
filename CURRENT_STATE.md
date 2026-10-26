@@ -1,9 +1,8 @@
 # Current state — RAG_new
 
 2026-10-26 · The plan: [`PLAN.md`](PLAN.md), accepted by Julia on 2026-10-17 («принять») ·
-now: stage 3 — its signal record read outcome C, S3 in between; V4 adopted 2026-10-25 ·
-previous version:
-[`archive/docs/state/current-state-through-2026-10-17.md`](archive/docs/state/current-state-through-2026-10-17.md).
+now: stage 3 — outcome C, the handover line under every answer (her «да»); stage 3б next ·
+previous version: [`archive/docs/state/current-state-through-2026-10-17.md`](archive/docs/state/current-state-through-2026-10-17.md).
 
 Read this file for *what is true now*; [`PLAN.md`](PLAN.md) for *what happens next and why*;
 [`ROADMAP.md`](ROADMAP.md) for *what each stage has delivered*; [`docs/README.md`](docs/README.md)
@@ -18,6 +17,9 @@ its sources (RAG). Two answer paths:
   questions. This is what a customer uses, and what every measurement of the plan uses;
 - **the widget** — `/api/ask`: an agent graph with query rewriting, document grading, claim
   checking, up to two retries and a ticket to a person.
+
+Under every answer not already routed to a person, both say it was written automatically and
+may be wrong, beside «Передать оператору» (stage 3, outcome C; Julia's «да», 2026-10-26).
 
 Retrieval: BM25 + BGE-M3, 20 candidates each, RRF, CPU bge-reranker-v2-m3 keeps five.
 Chunks: markdown sections, 800 characters/200 overlap; DOCX/HTML/PDF converted by loaders;
@@ -65,8 +67,7 @@ records `reports/stage1/`, pinned by `tests/test_stage1_live_artifact.py`; one e
 
 - Loaders, headers, tables, overlap, language instructions and BM25 restoration fixed
   (`8f94d84`…`4ca5ddd`); new indexes and V3 passed one live question a tenant; stage-2 tools `e5e135a`.
-- **Left from the [audit of 2026-10-18](docs/operations/audit_fable_18_10_26.md):** S8, the
-  answer's script, a signal candidate for stage 3; the audit's keys bound by a test (later).
+- **Left from the [audit of 2026-10-18](docs/operations/audit_fable_18_10_26.md):** the audit's keys bound by a test (later); S8 read in stage 3.
 
 ## Stage 2 — closed 2026-10-24
 
@@ -92,9 +93,9 @@ answerable questions (V3 8); aircargo's nine good answers turned bad, eight by a
 
 ## Next
 
-1. [`PLAN.md`](PLAN.md) stage 3 — the [signal record](docs/evidence/handover-signal-v4-aircargo.md) on V4's 100 aircargo answers (run ended 10-26 05:31 UTC, one stop resumed under the same cap): **outcome C** — none worth wiring; S3 in between.
-   Julia's word: her option under C, the handover plan's stage 2 for S3 (5–17 h of the Mac a hundred), the encoder test (§8.3 item 13). Stage 3 step 4 (R1, ten widget answers) needs none.
-2. Julia's web research (2026-10-25), seven runs — literature, not our measurement: [research](docs/operations/research-2026-10-25/README.md). Analysed 2026-10-26 against our records ([analysis](docs/operations/research-2026-10-25/analysis.md)), and `PLAN.md` amended before the run's record: stage 3's follow-ups, stage 4's step 0 and levers (her «Давай попробуем», 22:18 UTC), §9's stop-list. Proposed for her word: §8.3 items 12–17.
+1. [`PLAN.md`](PLAN.md) stage 3 — **outcome C** ([signal record](docs/evidence/handover-signal-v4-aircargo.md)): no signal worth wiring, S3 in between. Her «да» (2026-10-26): the handover line — done; no stage 2 for S3.
+   Next in stage 3: the encoder-checker test (§8.3 item 13; its spec before the first call), step 4 (R1, ten widget answers); stage 4's no-reranker point, saved lists, no model.
+2. Stage 3б (her «да»): the evidence-first prompt V5 paired against V4's answers, spec before the first request; then stage 4. Research of 2026-10-25 and its [analysis](docs/operations/research-2026-10-25/analysis.md): §8.3 items 15–17 deferred.
 3. Before a push: the whole Mac suite, mypy, bandit and the audits; locks refreshed 2026-10-25, audits clean on the laptop, the site build waits ([`BACKLOG.md`](BACKLOG.md)).
 
 ## Julia's decisions in force
@@ -107,13 +108,11 @@ on 2026-10-23 Julia: «Да, запускай судью». No replacement judge
 
 ## Open for Julia
 
-[`PLAN.md`](PLAN.md) §8.3, by stage: the widget's suspected defects R1/R2 and outcome B of the
-[handover plan](docs/specs/handover-signal.md) (stage 3); removing
+[`PLAN.md`](PLAN.md) §8.3, by stage: fixes of the widget's R1/R2 if confirmed (stage 3); removing
 self-evaluation with its «Качество: N» badge, an `ollama serve` restart, the SLO (stage 4);
 the service on her Mac and whether it counts as a deployment (stage 6); the locked parts
 (stage 7); publication (stage 8). Any time: GitHub billing; Q2b (`PLAN.md` writes Q2б) — 100 real shipment-bound
-requests (without them phase B stays blocked); Mac hours a day for runs; frozen items whose
-condition is formally met ([`PLAN.md`](PLAN.md) §9).
+requests (without them phase B stays blocked); Mac hours a day for runs; frozen items whose condition is formally met ([`PLAN.md`](PLAN.md) §9).
 
 ## Accepted open risks
 
@@ -138,7 +137,7 @@ condition is formally met ([`PLAN.md`](PLAN.md) §9).
   the Mac was measuring stage 3. Passed on the laptop: CI's two mypy commands, `ruff check`, bandit, pip-audit on `requirements.lock`
   (5 ignored), DEP-01. Not run yet: the Mac suite (last: `4f48fed`, 6,016 passed, 123 skipped), `b557082`'s guards on the Mac, the
   docs-site build on astro 7.3, the Linux lock install (CI only; billing). The push before, `8fdbfee` (2026-10-24), had the Mac suite.
-  Not pushed: `tests/test_handover_signal_record_artifact.py`, which needs the stage-3 record.
+  Not pushed since: `3ef8b54`…this file's commit — the research analysis, coverage, the stage-3 record, the handover line.
 - Private remote: `brownjuly2003-code/RAG_new`; HTTPS command in [`CLAUDE.md`](CLAUDE.md).
 
 ## Links

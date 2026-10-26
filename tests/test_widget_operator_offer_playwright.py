@@ -16,6 +16,12 @@ say the answer did not come in time and offer «Повторить» and «Пе�
 ``route=error``, as ``/api/ask`` names its own tickets, and fetches a new token
 once when the old one expired during a long wait. Requires Python Playwright
 and Chromium and skips without them; a skip is not evidence — run it with ``-rs``.
+
+Every other answer carries the handover line: on this Mac no automatic signal
+tells a bad answer from a good one (PLAN.md stage 3, outcome C, 2026-10-26), so
+the answer says it may be wrong and offers the operator, whose ticket's reason
+is the answer's route. A ``human`` or ``error`` answer gets no line: ``/api/ask``
+has opened its ticket already.
 """
 
 from __future__ import annotations
@@ -49,6 +55,7 @@ ANSWER = "Претензию подают в письменной форме п�
 TIMEOUT_TEXT = "Ответ не пришёл вовремя. Повторите вопрос или передайте его оператору."
 ERROR_TEXT = "Не удалось получить ответ. Повторите вопрос или передайте его оператору."
 ESCALATED = "Запрос передан оператору."
+HANDOVER_NOTE = "Ответ составлен автоматически и может ошибаться."
 # The limit a timeout test sets, and how long its model stays silent.
 LIMIT_SEC = 8.0
 SILENT_SEC = 60.0
@@ -332,6 +339,10 @@ def test_failed_answer_offers_retry_and_the_operator(widget_stand) -> None:
             # The graph routes the fake model's answer by its own checks; a `human` answer
             # is ticketed by /api/ask itself, so the widget adds no button to it.
             assert answer["route"] in {"auto", "human"}, answer
+            retried_answer = page.locator(".widget-msg.assistant", has_text=ANSWER)
+            expect(retried_answer.locator(".widget-handover")).to_have_count(
+                1 if answer["route"] == "auto" else 0
+            )
             opened = [(e["source"], e["reason"]) for e in stand.escalations]
             assert opened == (
                 [("human_route", "route=human")] if answer["route"] == "human" else []
@@ -353,3 +364,48 @@ def test_failed_answer_offers_retry_and_the_operator(widget_stand) -> None:
     assert [(e["question"], e["reason"], e["session_id"]) for e in manual] == [
         (SECOND_QUESTION, "route=error", SESSION_ID)
     ]
+
+
+def _answer(route: Any, body: dict[str, Any]) -> None:
+    route.fulfill(status=200, content_type="application/json", body=json.dumps(body))
+
+
+def test_every_other_answer_carries_the_handover_line(widget_stand) -> None:
+    """``/api/ask``'s reply is set, routed ``auto`` and then ``human``: whether the graph
+    routes the fake model's answer ``auto`` depends on its own checks (the test above);
+    the widget's token, the operator's call and its ticket are real."""
+    stand = widget_stand(600.0)
+    auto = {"answer": ANSWER, "route": "auto", "session_id": SESSION_ID, "ticket_id": None}
+    human = {"answer": ANSWER, "route": "human", "session_id": SESSION_ID, "ticket_id": "T-9"}
+    with sync_playwright() as p:
+        browser = p.chromium.launch()
+        try:
+            page = browser.new_page()
+            _open(page, stand.base)
+            page.route("**/api/ask", lambda r: _answer(r, auto), times=1)
+            _ask(page, QUESTION)
+            message = page.locator(".widget-msg.assistant", has_text=ANSWER)
+            message.wait_for(timeout=30_000)
+            line = message.locator(".widget-handover")
+            expect(line).to_be_visible()
+            expect(line).to_contain_text(HANDOVER_NOTE)
+            expect(line.locator(".widget-handover-btn")).to_have_text("Передать оператору")
+            expect(message.locator(".widget-actions")).to_have_count(0)
+            assert stand.escalations == []
+
+            line.locator(".widget-handover-btn").click()
+            page.locator(".widget-msg.assistant", has_text=ESCALATED).wait_for()
+            expect(page.locator(".widget-handover")).to_have_count(0)
+
+            page.route("**/api/ask", lambda r: _answer(r, human), times=1)
+            _ask(page, SECOND_QUESTION)
+            expect(page.locator(".widget-msg.assistant", has_text=ANSWER)).to_have_count(2)
+            # /api/ask ticketed the `human` answer itself: no line, no second ticket.
+            expect(page.locator(".widget-handover")).to_have_count(0)
+            expect(page.locator(".widget-escalate")).to_have_count(0)
+        finally:
+            browser.close()
+
+    assert [
+        (e["question"], e["reason"], e["source"], e["session_id"]) for e in stand.escalations
+    ] == [(QUESTION, "route=auto", "manual", SESSION_ID)]
