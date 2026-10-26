@@ -96,7 +96,8 @@ P2 reference samples ([Astra](specs/p2-astra-reference-sample.md),
   Claude and by Codex, and two by Codex alone: our bases against published results, how to
   treat our failures, the state of RAG, a checker that reads Russian, a local generator, speed
   levers, faster retrieval models; literature, not our measurement, and a proposal for Julia's
-  decision.
+  decision. Its [analysis](operations/research-2026-10-25/analysis.md) of 2026-10-26 reads
+  every item against our own records and `PLAN.md`, and ranks them.
 - [Project audit of 2026-10-18](operations/audit_fable_18_10_26.md) (Fable 5.1) — the state
   against the plan, the status files' claims checked, findings F-1…F-10; kept in `operations/`
   because `docs/audits/` is publishable (earlier audits: `../archive/docs/audits/`).

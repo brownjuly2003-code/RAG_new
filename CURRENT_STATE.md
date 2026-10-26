@@ -93,8 +93,8 @@ answerable questions (V3 8); aircargo's nine good answers turned bad, eight by a
 ## Next
 
 1. [`PLAN.md`](PLAN.md) stage 3 — the [handover plan](docs/specs/handover-signal.md)'s signals on V4's 100 aircargo answers:
-   plan `b7ad62a`, on the Mac since 10-25 17:27 UTC; 60 of 100 by 23:12 UTC, end about 03:30–05:00 UTC 10-26. Its record comes after item 2's amendment.
-2. **The next session starts here.** Julia's web research (2026-10-25), seven runs — 1–5 by Claude and by Codex as a second opinion, 6 (speed levers keeping the models) and 7 (faster retrieval models reading Russian) by Codex alone; literature, not our measurement: [research](docs/operations/research-2026-10-25/README.md). Her «Давай попробуем» (22:18 UTC) is on research 6's speed checks and levers; the next session first analyses all seven in detail and amends `PLAN.md`, before the run's record (her words of 22:22 and ≈23:05; [handoff](docs/operations/session-handoff-2026-10-25-stage3-signals-running.md#next-session-the-research-analysed-then-the-plan-amended)).
+   plan `b7ad62a`, on the Mac since 10-25 17:27 UTC; 86 of 100 by 02:32 UTC 10-26, no Traceback, end about 04:00–04:30 UTC. Its record comes after item 2's amendment, committed first.
+2. Julia's web research (2026-10-25), seven runs — literature, not our measurement: [research](docs/operations/research-2026-10-25/README.md). Analysed 2026-10-26 against our records ([analysis](docs/operations/research-2026-10-25/analysis.md)), and `PLAN.md` amended before the run's record: stage 3's follow-ups, stage 4's step 0 and levers (her «Давай попробуем», 22:18 UTC), §9's stop-list. Proposed for her word: §8.3 items 12–17.
 3. Before a push: the whole Mac suite, mypy, bandit and the audits; locks refreshed 2026-10-25, audits clean on the laptop, the site build waits ([`BACKLOG.md`](BACKLOG.md)).
 
 ## Julia's decisions in force

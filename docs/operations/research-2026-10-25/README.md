@@ -499,8 +499,9 @@ Mac's log shows»):
 
 ## Research 7 — faster retrieval models that read Russian (Codex alone)
 
-These are the report's own conclusions. They are not checked yet: the next session checks them
-in its analysis.
+These are the report's own conclusions. Their numbers were spot-checked on 2026-10-26 against
+the primary sources: exact but one (USER-bge-m3's ruMTEB score is not in the paper); the table
+is in the [analysis](analysis.md#3-what-stays-open).
 
 - **No replacement is shown to be both as good and faster on our CPU,** in Russian and in
   English.
@@ -611,6 +612,7 @@ Every item is universal — no dictionaries; any corpus and language.
 | 7 | **Not worth our hardware:** graph-RAG frameworks (also ADR 0001), long context, RL training, large reasoning rerankers (a reranker swap is hers anyway), semantic entropy | stop-list §9 | — | — |
 
 All seven runs have ended. Research 6 and 7 ran on Codex alone, at Julia's word of 21:46 UTC
-(«ресурс кодекс можно потратить - разрешаю, реши сам»). The detailed analysis of all seven,
-and the changes to `PLAN.md`, are the next session's task (Julia, 22:22 UTC). It is set out in
-the [session handoff](../session-handoff-2026-10-25-stage3-signals-running.md#next-session-the-research-analysed-then-the-plan-amended).
+(«ресурс кодекс можно потратить - разрешаю, реши сам»). The detailed analysis of all seven —
+[`analysis.md`](analysis.md), 2026-10-26, at Julia's word of 22:22 UTC — reads every item
+against our own records, ranks them, and lists what the same day's amendment of `PLAN.md`
+applied and what it only proposes for her word.
