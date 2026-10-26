@@ -146,4 +146,5 @@ def test_the_gold_is_the_m2_export_of_the_same_side():
     for key, sides in cov.GOLD.items():
         assert key in cov.EXTERNAL and set(sides) == set(cov.INPUTS[key])
         for name, path in sides.items():
-            assert path == cov.INPUTS[key][name].replace("-judge-m1.", "-judge-m2.") != path
+            m1 = cov.INPUTS[key][name]
+            assert path == m1.replace("-judge-m1.", "-judge-m2.") and path != m1

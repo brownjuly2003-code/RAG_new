@@ -6,10 +6,10 @@ stage and the frozen streams with their unfreeze conditions are [`ROADMAP.md`](R
 
 ## Current queue
 
-- **[`PLAN.md`](PLAN.md) stage 3 — the handover signals** on V4's 100 aircargo answers (stage
-  2b closed 2026-10-25, V4 adopted: [its record](docs/evidence/answer-prompt-v4-record.md)),
-  by the [handover plan](docs/specs/handover-signal.md) and the V4 spec's «Then»; S3 reads
-  aircargo's unsupported claims. One measurement on the Mac at a time.
+- **[`PLAN.md`](PLAN.md) stage 3 after outcome C** ([signal record](docs/evidence/handover-signal-v4-aircargo.md)): Julia's
+  option under C; at her word, the [handover plan](docs/specs/handover-signal.md)'s stage 2 for
+  S3 (in between) or the encoder test (§8.3 item 13); without a word, step 4 — R1 and ten widget
+  answers on the idle Mac. One measurement on the Mac at a time.
 - **Dated:** 2026-11-24 — review the three ChromaDB CVE ignores (ADR 0008; 2026-10-24: no
   fixed release). The npm exception GHSA-ch52-4w7c-c8xp was removed 2026-10-24 with
   `http-cache-semantics` 4.3.0, not a fix but outside its range (ADR 0009's log).

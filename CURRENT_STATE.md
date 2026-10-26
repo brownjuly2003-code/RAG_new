@@ -1,7 +1,7 @@
 # Current state — RAG_new
 
-2026-10-25 · The plan: [`PLAN.md`](PLAN.md), accepted by Julia on 2026-10-17 («принять») ·
-now: stage 3 — the handover signals on V4's answers; stage 2b closed 2026-10-25, V4 adopted ·
+2026-10-26 · The plan: [`PLAN.md`](PLAN.md), accepted by Julia on 2026-10-17 («принять») ·
+now: stage 3 — its signal record read outcome C, S3 in between; V4 adopted 2026-10-25 ·
 previous version:
 [`archive/docs/state/current-state-through-2026-10-17.md`](archive/docs/state/current-state-through-2026-10-17.md).
 
@@ -49,6 +49,7 @@ limits: [`EVIDENCE_INDEX.md`](EVIDENCE_INDEX.md), [`PLAN.md`](PLAN.md) §3.
 | Engineering | 5,885 passed, 124 skipped on `96ee4e6`; static/security checks passed | Historical full gate; current slice's focused checks below |
 | Answer quality, chat path, V3 | M1 good: aircargo 69, ConditionalQA 31, WixQA 27, MultiHop-RAG 65 of 100; bad 14, 64, 63, 34 | [stage-2 record](docs/evidence/stage2-record.md); one model judges, no person; MultiHop-RAG's M2 `NOT_EVIDENCE` |
 | Answer quality, V4 against V3 | M1 bad, paired: WixQA 63 → 51, ConditionalQA 64 → 57, aircargo 14 → 17; good 27 → 40, 31 → 35, 69 → 63 | [V4 record](docs/evidence/answer-prompt-v4-record.md): pooled bad −9.5 pp, detected; in sample |
+| Handover signals, V4 aircargo | of 17 bad answers: S2 and S6 catch 16 but mark 34 and 43 of 63 good; S3 catches 11, marks 28 good (in between); the cheap ones catch 0–4 | [record](docs/evidence/handover-signal-v4-aircargo.md): outcome C; one model judges, no person |
 | Coverage beside quality, V3 → V4 | answered: WixQA 67 → 73, ConditionalQA 81 → 91, aircargo 98 → 100 of 100; CRAG score −0.020 → 0.105, −0.195 → −0.150, 0.655 → 0.560 | [coverage record](docs/evidence/coverage-metrics-record.md): unpaired, no model call; on ConditionalQA more wrong answers given out than right |
 
 Stage 2's [retrieval baseline](docs/evidence/stage2-retrieval-baseline.md) (`7208ed2`): 415 questions,
@@ -70,8 +71,7 @@ records `reports/stage1/`, pinned by `tests/test_stage1_live_artifact.py`; one e
 ## Stage 2 — closed 2026-10-24
 
 By [`docs/specs/stage2-four-corpora.md`](docs/specs/stage2-four-corpora.md) on stand `5e308fe`:
-100 aircargo answers, retrieval on 415 questions, 300 external answers, the judge, the record.
-Part 3 uses GR-3's archives; live graph measurement is stage 7. Judge amendment: the spec.
+100 aircargo answers, retrieval on 415 questions, 300 external answers, the judge, the record. Part 3 uses GR-3's archives; live graph measurement is stage 7. Judge amendment: the spec.
 **Done:** part 1 — 100 answers in ten batches (`p1-aircargo-b01`…`b10`), all complete, no path break; judge record and frozen-plan hash in `reports/stage2/5e308fe/` (115 requests, 15 retests).
 **Done:** part 2 — all 415 questions completed 2026-10-20; immutable export `reports/stage2/retrieval-20261021/`, provenance/derivation tests passed on the Mac (41 focused checks including docs).
 **Done:** part 4 — 300 external answers, 30 counted batches, completed 2026-10-23 04:32 UTC after the pause and resume of 2026-10-22; immutable export `reports/stage2/external-answers-20261023/`, raw answers private in `D:/RAG_new_stage2_private/p4/resume-20261022/` (1,356 hashes verified).
@@ -92,8 +92,8 @@ answerable questions (V3 8); aircargo's nine good answers turned bad, eight by a
 
 ## Next
 
-1. [`PLAN.md`](PLAN.md) stage 3 — the [handover plan](docs/specs/handover-signal.md)'s signals on V4's 100 aircargo answers:
-   plan `b7ad62a`, on the Mac since 10-25 17:27 UTC; 86 of 100 by 02:32 UTC 10-26, no Traceback, end about 04:00–04:30 UTC. Its record comes after item 2's amendment, committed first.
+1. [`PLAN.md`](PLAN.md) stage 3 — the [signal record](docs/evidence/handover-signal-v4-aircargo.md) on V4's 100 aircargo answers (run ended 10-26 05:31 UTC, one stop resumed under the same cap): **outcome C** — none worth wiring; S3 in between.
+   Julia's word: her option under C, the handover plan's stage 2 for S3 (5–17 h of the Mac a hundred), the encoder test (§8.3 item 13). Stage 3 step 4 (R1, ten widget answers) needs none.
 2. Julia's web research (2026-10-25), seven runs — literature, not our measurement: [research](docs/operations/research-2026-10-25/README.md). Analysed 2026-10-26 against our records ([analysis](docs/operations/research-2026-10-25/analysis.md)), and `PLAN.md` amended before the run's record: stage 3's follow-ups, stage 4's step 0 and levers (her «Давай попробуем», 22:18 UTC), §9's stop-list. Proposed for her word: §8.3 items 12–17.
 3. Before a push: the whole Mac suite, mypy, bandit and the audits; locks refreshed 2026-10-25, audits clean on the laptop, the site build waits ([`BACKLOG.md`](BACKLOG.md)).
 

@@ -50,7 +50,8 @@ intent, and the code and [`CURRENT_STATE.md`](../CURRENT_STATE.md) for what runs
 ## Specs — `specs/`
 
 **In use by the plan:** [handover signal](specs/handover-signal.md) — which answers go to a
-person; run as [`PLAN.md`](../PLAN.md) stages 2 and 3. [Stage 2](specs/stage2-four-corpora.md)
+person; run as [`PLAN.md`](../PLAN.md) stages 2 and 3; its
+[record](evidence/handover-signal-v4-aircargo.md) on V4's answers: outcome C, S3 in between. [Stage 2](specs/stage2-four-corpora.md)
 — the four corpora measured on the chat path: the stand, the questions, the stop rules, the
 metrics and the judge, registered before the first request. [The answer prompt
 V4](specs/answer-prompt-v4.md) — stage 2b: three defects of the answer prompt V3, the fix, and
