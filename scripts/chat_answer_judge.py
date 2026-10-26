@@ -3,8 +3,8 @@
 
 The chat's path chooses each answer's documents itself, so a judge of chat answers reads, per
 answer, the documents the chat's model read: the stand saves every prompt it sends
-(``reports/stage1/tools/live_api.py``), and the answer prompt (``QA_PROMPT_V3``, ``V4``) holds the
-question and the numbered documents. Decision D12 leaves one judge, the session's model, asked
+(``reports/stage1/tools/live_api.py``), and the answer prompt (``QA_PROMPT_V3``, ``V4``, ``V5``) holds
+the question and the numbered documents. Decision D12 leaves one judge, the session's model, asked
 in stateless requests by the registered route (``evaluation.isolated_request``), as
 ``scripts/generator_answer_judge.py`` asks it; the rules here name no domain and no language —
 the answer is due in the question's language — so one prompt serves every corpus.
@@ -67,6 +67,8 @@ CLI_TIMEOUT_S = 1200.0
 PROMPT_IDS = {
     "QA_PROMPT_V3": "add [N] right after it,",
     "QA_PROMPT_V4": "[1] for the first document in the context list,",
+    # Stage 3b's evidence-first prompt (docs/specs/answer-prompt-v5.md), replayed on V4's contexts.
+    "QA_PROMPT_V5": "[1] for the context's first document,",
 }
 # Their common frame: the stand saves the prompt after "USER:".
 CONTEXT_START = "CONTEXT:\n"

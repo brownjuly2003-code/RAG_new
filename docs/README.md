@@ -64,6 +64,10 @@ reranker's, on stage 2's saved lists, with the product's own expansion and no mo
 encoder checkers](specs/encoder-checkers.md) — three small models that read Russian, their
 thresholds chosen on RusHallu-RAG and V4's English answers, read once on the 100 aircargo ones;
 its [record](evidence/encoder-checkers-record.md): all three in between, none worth wiring.
+[The widget on the 4B](specs/widget-4b.md) — stage 3's step 4: R1 under `RAG_ENV=production`
+and ten widget answers through `/api/ask`, their routes, passes and seconds. [The answer prompt
+V5](specs/answer-prompt-v5.md) — stage 3b: evidence first, replayed on V4's saved contexts and
+judged against V4's answers, registered before the first request.
 
 **Contracts the code keeps** — what the code must do, with tests behind each:
 
