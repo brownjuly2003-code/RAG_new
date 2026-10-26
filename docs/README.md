@@ -60,7 +60,9 @@ its paired measurement against stage 2's answers, registered before the first re
 metrics](specs/coverage-metrics.md) — coverage beside quality among the answered, the CRAG
 score and the decline matrices, read from the committed judge records with no model call. [The
 no-reranker point](specs/no-rerank-point.md) — the fused order's first five against the
-reranker's, on stage 2's saved lists, with the product's own expansion and no model.
+reranker's, on stage 2's saved lists, with the product's own expansion and no model. [The
+encoder checkers](specs/encoder-checkers.md) — three small models that read Russian, their
+thresholds chosen on RusHallu-RAG and V4's English answers, read once on the 100 aircargo ones.
 
 **Contracts the code keeps** — what the code must do, with tests behind each:
 
