@@ -95,7 +95,7 @@ answerable questions (V3 8); aircargo's nine good answers turned bad, eight by a
 ## Next
 
 1. [`PLAN.md`](PLAN.md) stage 3 — **outcome C** ([signal record](docs/evidence/handover-signal-v4-aircargo.md)): no signal worth wiring, S3 in between. Her «да» (2026-10-26): the handover line — done; no stage 2 for S3.
-   Next in stage 3: the encoder-checker test (§8.3 item 13; its spec before the first call), step 4 (R1, ten widget answers). Stage 4's no-reranker point read 2026-10-26: the reranker stays.
+   Stage 3's encoder test read 2026-10-26: all three in between, none worth wiring; H catches 10 of 17 marking 8 of 63 ([record](docs/evidence/encoder-checkers-record.md)). Next in stage 3: Horizon guard base under an amendment, then the best read on V5's aircargo answers; step 4 (R1, ten widget answers). Stage 4's no-reranker point read 2026-10-26: the reranker stays.
 2. Stage 3б (her «да»): the evidence-first prompt V5 paired against V4's answers, spec before the first request; then stage 4. Research of 2026-10-25 and its [analysis](docs/operations/research-2026-10-25/analysis.md): §8.3 items 15–17 deferred.
 3. Before a push: the whole Mac suite, mypy, bandit and the audits; locks refreshed 2026-10-25, audits clean on the laptop, the site build waits ([`BACKLOG.md`](BACKLOG.md)).
 

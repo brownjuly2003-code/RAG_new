@@ -1,0 +1,338 @@
+{
+ "spec": "docs/specs/encoder-checkers.md",
+ "tool_sha256": "fa226d384f7dc0e997be0e69ba3cd1de5c9312770fae64d155fcd32380a2a49e",
+ "parity": {
+  "pairs": 12,
+  "onnxruntime": "1.23.2",
+  "H": {
+   "onnx_sha256": "df0903129ded24c145ace2a8e2219b8796f8f150dc59f10098f5cdcadd402f60",
+   "max_abs_difference": 1.2960123156324777e-06,
+   "same_top_label": true,
+   "tokens": [
+    33,
+    1734
+   ],
+   "passed": true
+  },
+  "N": {
+   "onnx_sha256": "e9238a33e07411eae1d1cef1d5f22e5f556717ce586c827581bb59598a45fe37",
+   "max_abs_difference": 3.3160791163555636e-06,
+   "same_top_label": true,
+   "tokens": [
+    35,
+    512
+   ],
+   "passed": true
+  },
+  "L": {
+   "config_matches_file": true
+  },
+  "passed": true,
+  "tool_sha256": "fa226d384f7dc0e997be0e69ba3cd1de5c9312770fae64d155fcd32380a2a49e",
+  "measured_at_head": "af7503919b7447f2345f36cab2975615ecfa7688"
+ },
+ "checkers": {
+  "H": {
+   "repo": "Horizon-Labs/hallucination-guard-small",
+   "revision": "7c015323d2a1f755de0a3aac62b729ecad6da607",
+   "planned": {
+    "reading": 100,
+    "EN": 183,
+    "RU": 300
+   },
+   "reached": {
+    "reading": 100,
+    "EN": 183,
+    "RU": 300
+   },
+   "segments": 1,
+   "stopped": false,
+   "threshold": {
+    "threshold": 0.5850683450698853,
+    "candidates": 483,
+    "caught_share": 0.4944974321349963,
+    "over_marked_share": 0.2905738298797276
+   },
+   "calibration": {
+    "EN": {
+     "caught": 74,
+     "target": 116,
+     "over_marked": 23,
+     "good_not_declining": 67
+    },
+    "RU": {
+     "caught": 33,
+     "target": 94,
+     "over_marked": 49,
+     "good_not_declining": 206
+    }
+   },
+   "reading": {
+    "caught": 10,
+    "target": 17,
+    "over_marked": 8,
+    "good_not_declining": 63,
+    "reading": "in between"
+   },
+   "not_evidence_because": [],
+   "auroc": {
+    "reading": 0.8048552754435108,
+    "EN": 0.6457797220792589,
+    "RU": 0.5712662673001446
+   },
+   "ru_types": {
+    "grounding": {
+     "target": 37,
+     "caught": 10
+    },
+    "other": {
+     "target": 62,
+     "caught": 24
+    }
+   },
+   "seconds": {
+    "reading": {
+     "n": 100,
+     "median": 2.2875,
+     "p90": 18.6126
+    },
+    "EN": {
+     "n": 183,
+     "median": 7.779,
+     "p90": 21.223200000000002
+    },
+    "RU": {
+     "n": 300,
+     "median": 1.2985,
+     "p90": 7.007199999999999
+    }
+   },
+   "truncated": {
+    "reading": 6,
+    "EN": 211,
+    "RU": 14
+   },
+   "unscored": {
+    "reading": 0,
+    "EN": 0,
+    "RU": 0
+   },
+   "peak_rss_bytes": 1289920512,
+   "load": [
+    [
+     1.904296875,
+     1.54443359375,
+     1.5234375
+    ],
+    [
+     4.40283203125,
+     4.6357421875,
+     4.93701171875
+    ]
+   ],
+   "seconds_total": 3488.410999999998
+  },
+  "L": {
+   "repo": "KRLabsOrg/lettucedect-v2-mmbert-base",
+   "revision": "8831ce063dff760b01efe4519b4188f5ee2456f2",
+   "planned": {
+    "reading": 100,
+    "EN": 183,
+    "RU": 300
+   },
+   "reached": {
+    "reading": 100,
+    "EN": 183,
+    "RU": 300
+   },
+   "segments": 1,
+   "stopped": false,
+   "threshold": {
+    "threshold": 0.7811336815357208,
+    "candidates": 483,
+    "caught_share": 0.4716617754952311,
+    "over_marked_share": 0.3321982321402695
+   },
+   "calibration": {
+    "EN": {
+     "caught": 65,
+     "target": 116,
+     "over_marked": 25,
+     "good_not_declining": 67
+    },
+    "RU": {
+     "caught": 36,
+     "target": 94,
+     "over_marked": 60,
+     "good_not_declining": 206
+    }
+   },
+   "reading": {
+    "caught": 6,
+    "target": 17,
+    "over_marked": 8,
+    "good_not_declining": 63,
+    "reading": "in between"
+   },
+   "not_evidence_because": [],
+   "auroc": {
+    "reading": 0.7329598506069094,
+    "EN": 0.6219763252702007,
+    "RU": 0.6323073745093989
+   },
+   "ru_types": {
+    "grounding": {
+     "target": 37,
+     "caught": 17
+    },
+    "other": {
+     "target": 62,
+     "caught": 20
+    }
+   },
+   "seconds": {
+    "reading": {
+     "n": 100,
+     "median": 4.5925,
+     "p90": 5.862
+    },
+    "EN": {
+     "n": 183,
+     "median": 4.814,
+     "p90": 6.480199999999999
+    },
+    "RU": {
+     "n": 300,
+     "median": 2.2394999999999996,
+     "p90": 4.1273
+    }
+   },
+   "truncated": {
+    "reading": 0,
+    "EN": 0,
+    "RU": 0
+   },
+   "unscored": {
+    "reading": 0,
+    "EN": 0,
+    "RU": 0
+   },
+   "peak_rss_bytes": 2113642496,
+   "load": [
+    [
+     3.70361328125,
+     4.47265625,
+     4.873046875
+    ],
+    [
+     4.43603515625,
+     4.736328125,
+     4.724609375
+    ]
+   ],
+   "seconds_total": 2039.4100000000012
+  },
+  "N": {
+   "repo": "MoritzLaurer/mDeBERTa-v3-base-xnli-multilingual-nli-2mil7",
+   "revision": "b5113eb38ab63efdd7f280f8c144ea8b13f978ce",
+   "planned": {
+    "reading": 100,
+    "EN": 183,
+    "RU": 300
+   },
+   "reached": {
+    "reading": 100,
+    "EN": 183,
+    "RU": 300
+   },
+   "segments": 1,
+   "stopped": false,
+   "threshold": {
+    "threshold": 0.21742314100265503,
+    "candidates": 483,
+    "caught_share": 0.35794203961848864,
+    "over_marked_share": 0.32969859440660776
+   },
+   "calibration": {
+    "EN": {
+     "caught": 67,
+     "target": 116,
+     "over_marked": 38,
+     "good_not_declining": 67
+    },
+    "RU": {
+     "caught": 13,
+     "target": 94,
+     "over_marked": 19,
+     "good_not_declining": 206
+    }
+   },
+   "reading": {
+    "caught": 5,
+    "target": 17,
+    "over_marked": 7,
+    "good_not_declining": 63,
+    "reading": "in between"
+   },
+   "not_evidence_because": [],
+   "auroc": {
+    "reading": 0.6526610644257703,
+    "EN": 0.531008749356665,
+    "RU": 0.6036975831439785
+   },
+   "ru_types": {
+    "grounding": {
+     "target": 37,
+     "caught": 4
+    },
+    "other": {
+     "target": 62,
+     "caught": 10
+    }
+   },
+   "seconds": {
+    "reading": {
+     "n": 100,
+     "median": 6.2605,
+     "p90": 38.543099999999995
+    },
+    "EN": {
+     "n": 183,
+     "median": 15.345,
+     "p90": 33.868399999999994
+    },
+    "RU": {
+     "n": 300,
+     "median": 3.7889999999999997,
+     "p90": 20.721200000000003
+    }
+   },
+   "truncated": {
+    "reading": 0,
+    "EN": 0,
+    "RU": 0
+   },
+   "unscored": {
+    "reading": 0,
+    "EN": 0,
+    "RU": 0
+   },
+   "peak_rss_bytes": 2635071488,
+   "load": [
+    [
+     3.6005859375,
+     4.5361328125,
+     4.65283203125
+    ],
+    [
+     5.61181640625,
+     5.9345703125,
+     5.71142578125
+    ]
+   ],
+   "seconds_total": 7369.117999999992
+  }
+ },
+ "decision": "in between: H, L, N",
+ "worth_wiring": null
+}

@@ -1,0 +1,30 @@
+{
+ "pairs": 12,
+ "onnxruntime": "1.23.2",
+ "H": {
+  "onnx_sha256": "df0903129ded24c145ace2a8e2219b8796f8f150dc59f10098f5cdcadd402f60",
+  "max_abs_difference": 1.2960123156324777e-06,
+  "same_top_label": true,
+  "tokens": [
+   33,
+   1734
+  ],
+  "passed": true
+ },
+ "N": {
+  "onnx_sha256": "e9238a33e07411eae1d1cef1d5f22e5f556717ce586c827581bb59598a45fe37",
+  "max_abs_difference": 3.3160791163555636e-06,
+  "same_top_label": true,
+  "tokens": [
+   35,
+   512
+  ],
+  "passed": true
+ },
+ "L": {
+  "config_matches_file": true
+ },
+ "passed": true,
+ "tool_sha256": "fa226d384f7dc0e997be0e69ba3cd1de5c9312770fae64d155fcd32380a2a49e",
+ "measured_at_head": "af7503919b7447f2345f36cab2975615ecfa7688"
+}

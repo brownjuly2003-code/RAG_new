@@ -62,7 +62,8 @@ score and the decline matrices, read from the committed judge records with no mo
 no-reranker point](specs/no-rerank-point.md) — the fused order's first five against the
 reranker's, on stage 2's saved lists, with the product's own expansion and no model. [The
 encoder checkers](specs/encoder-checkers.md) — three small models that read Russian, their
-thresholds chosen on RusHallu-RAG and V4's English answers, read once on the 100 aircargo ones.
+thresholds chosen on RusHallu-RAG and V4's English answers, read once on the 100 aircargo ones;
+its [record](evidence/encoder-checkers-record.md): all three in between, none worth wiring.
 
 **Contracts the code keeps** — what the code must do, with tests behind each:
 
