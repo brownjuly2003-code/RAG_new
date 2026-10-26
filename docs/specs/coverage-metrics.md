@@ -46,8 +46,9 @@ Per key and side:
    mapped once: grade `good` and answered 1; `partial_ok` 0.5; declined or empty 0; every other
    answered −1. The mean over the graded.
 5. **The decline matrices**, counts: the judge's `context_has_answer` (true, false) against
-   declined, answered; and, on the external bases, `has_reference` (the base's own gold)
-   against declined, answered, empty. From each: **decline precision** — of the declines, those
+   declined, answered; and, on the external bases, the base's own gold against declined,
+   answered, empty — the same side's M2 export's `has_reference` (amended 2026-10-26, see
+   below). From each: **decline precision** — of the declines, those
    where the answer is not there (`false`) — and **decline recall** — of the questions where it
    is not there, those declined.
 
@@ -62,6 +63,15 @@ It prints V3 and V4 side by side, unpaired; a paired reading is V4's record's. B
 of number 2 are named here, before the count, and both are printed. Rule (c) of
 [`CLAUDE.md`](../../CLAUDE.md) on publication: the input files' SHA-256, the tool's, and the
 commits of the stands that made them.
+
+**Amended 2026-10-26, after the first build, before publication.** The registered text took
+the base's gold from the M1 rows' `has_reference`. M1 withholds the reference, so that field is
+false on every M1 row, and the first build's reference matrix held every question in its
+«false» row. The gold is now the same side's M2 export's `has_reference`, from the references
+file each plan was frozen with: ConditionalQA 80 with a reference and 20 without, MultiHop-RAG
+70 and 30, WixQA 100 and 0. Only that field is read from M2, never a verdict; MultiHop-RAG's M2
+plan is `NOT_EVIDENCE` as a judge reading, not as a list of the base's references. No
+definition and no other number changed.
 
 ## Records
 

@@ -49,13 +49,13 @@ limits: [`EVIDENCE_INDEX.md`](EVIDENCE_INDEX.md), [`PLAN.md`](PLAN.md) §3.
 | Engineering | 5,885 passed, 124 skipped on `96ee4e6`; static/security checks passed | Historical full gate; current slice's focused checks below |
 | Answer quality, chat path, V3 | M1 good: aircargo 69, ConditionalQA 31, WixQA 27, MultiHop-RAG 65 of 100; bad 14, 64, 63, 34 | [stage-2 record](docs/evidence/stage2-record.md); one model judges, no person; MultiHop-RAG's M2 `NOT_EVIDENCE` |
 | Answer quality, V4 against V3 | M1 bad, paired: WixQA 63 → 51, ConditionalQA 64 → 57, aircargo 14 → 17; good 27 → 40, 31 → 35, 69 → 63 | [V4 record](docs/evidence/answer-prompt-v4-record.md): pooled bad −9.5 pp, detected; in sample |
+| Coverage beside quality, V3 → V4 | answered: WixQA 67 → 73, ConditionalQA 81 → 91, aircargo 98 → 100 of 100; CRAG score −0.020 → 0.105, −0.195 → −0.150, 0.655 → 0.560 | [coverage record](docs/evidence/coverage-metrics-record.md): unpaired, no model call; on ConditionalQA more wrong answers given out than right |
 
-Stage 2's [retrieval baseline](docs/evidence/stage2-retrieval-baseline.md) (`7208ed2`): 415
-questions, no path break, aircargo prompt parity 100/100. Its [300 external answers](docs/evidence/stage2-external-answers.md):
-no path break, all in the question's language, 84 routed to a person, median 266.9 s. Its
-[record](docs/evidence/stage2-record.md) grades all 400: aircargo's good share above
-ConditionalQA's and WixQA's (+38.0, +42.0 pp, detected), not MultiHop-RAG's; M2 agrees
-ConditionalQA 43/80, WixQA 29/100.
+Stage 2's [retrieval baseline](docs/evidence/stage2-retrieval-baseline.md) (`7208ed2`): 415 questions,
+no path break, aircargo prompt parity 100/100. Its [300 external answers](docs/evidence/stage2-external-answers.md):
+no path break, all in the question's language, 84 routed to a person, median 266.9 s. Its [record](docs/evidence/stage2-record.md)
+grades all 400: aircargo's good share above ConditionalQA's and WixQA's (+38.0, +42.0 pp, detected),
+not MultiHop-RAG's; M2 agrees ConditionalQA 43/80, WixQA 29/100.
 
 ## Stage 1 — closed 2026-10-18
 

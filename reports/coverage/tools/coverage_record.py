@@ -9,10 +9,11 @@ judge exports its «Inputs» name - V3's of stage 2 (reports/stage2/5e308fe/), V
 Writes OUT, by default reports/coverage/coverage-record.json: the SHA-256 of each input and of
 this tool, the stands' commits, and per key and side the spec's numbers - coverage, good and good
 or partial_ok among the answered, unsupported among the answered, the CRAG score, the decline
-matrices by the judge's `context_has_answer` and, on an external base, by `has_reference`, with
-decline precision and recall from each. A share carries Wilson's 95 % interval and, on an
-external base, the cluster bootstrap over stage 2's clusters; the CRAG mean the bootstrap only,
-each aircargo question its own cluster.
+matrices by the judge's `context_has_answer` and, on an external base, by the base's gold (the
+same side's M2 export's `has_reference`; M1 withholds it), with decline precision and recall
+from each. A share carries Wilson's 95 % interval and, on an external base, the cluster
+bootstrap over stage 2's clusters; the CRAG mean the bootstrap only, each aircargo question its
+own cluster.
 """
 
 import json
@@ -49,6 +50,14 @@ INPUTS = {
     "multihoprag": {"V3": "reports/stage2/5e308fe/p4-multihoprag-judge-m1.cases.jsonl"},
 }
 EXTERNAL = ("wixqa", "conditionalqa", "multihoprag")
+# M1 withholds the reference, so its rows' has_reference is false throughout; the base's own
+# gold is the same side's M2 export's has_reference, from the references file its plan was
+# frozen with. Only that field is read from it, never a verdict.
+GOLD = {
+    key: {name: path.replace("-judge-m1.", "-judge-m2.") for name, path in sides.items()}
+    for key, sides in INPUTS.items()
+    if key in EXTERNAL
+}
 GRADES = ("good", "partial_ok", "bad")
 
 
@@ -95,8 +104,8 @@ def matrix(rows, truth):
     }
 
 
-def side(key, rows):
-    """The spec's numbers for one key and side."""
+def side(key, rows, gold=None):
+    """The spec's numbers for one key and side; gold: case -> the base's has_reference."""
     unknown = sorted({row["grade"] for row in rows} - set(GRADES) - {None})
     if unknown:
         raise SystemExit(f"{key}: grades the spec does not name: {unknown}")
@@ -149,19 +158,24 @@ def side(key, rows):
         ),
     }
     if key in EXTERNAL:
-        out["by_reference"] = matrix(graded, lambda row: row["has_reference"])
+        if gold is None or set(gold) != {row["case_id"] for row in rows}:
+            raise SystemExit(f"{key}: the gold does not hold the same questions")
+        out["by_reference"] = matrix(graded, lambda row: gold[row["case_id"]])
     return out
 
 
 def build():
     record = {"spec": SPEC, "tool_sha256": sha256(Path(__file__)), "stands": STANDS}
-    record["inputs"] = {
-        path: sha256(WS / path) for sides in INPUTS.values() for path in sides.values()
-    }
-    record["keys"] = {
-        key: {name: side(key, load_jsonl(WS / path)) for name, path in sides.items()}
-        for key, sides in INPUTS.items()
-    }
+    paths = [path for table in (INPUTS, GOLD) for s in table.values() for path in s.values()]
+    record["inputs"] = {path: sha256(WS / path) for path in paths}
+    record["keys"] = {}
+    for key, sides in INPUTS.items():
+        record["keys"][key] = {}
+        for name, path in sides.items():
+            gold = None
+            if key in GOLD:
+                gold = {r["case_id"]: r["has_reference"] for r in load_jsonl(WS / GOLD[key][name])}
+            record["keys"][key][name] = side(key, load_jsonl(WS / path), gold)
     return record
 
 

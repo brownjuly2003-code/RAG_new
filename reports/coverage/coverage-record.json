@@ -1,0 +1,724 @@
+{
+ "inputs": {
+  "reports/answer-prompt-v4/4f48fed/v4-aircargo-judge.cases.jsonl": "a1413cbadc5b7f1e629f9ad16ca77c7baba36870122c21a678a5dfd57b1b6718",
+  "reports/answer-prompt-v4/4f48fed/v4-conditionalqa-judge-m1.cases.jsonl": "3343cd8d1d13a4c3a29df6f9a187c6fa8a9b8a9f6ce8071ca2b6aa1f07a8d4de",
+  "reports/answer-prompt-v4/4f48fed/v4-conditionalqa-judge-m2.cases.jsonl": "774be0c155f972180b006a2d95630c51d073d93929dd2b2a530ff9c85f71e391",
+  "reports/answer-prompt-v4/4f48fed/v4-wixqa-judge-m1.cases.jsonl": "c89107cf5a5ae0eb7468011ffe7cbe0eaf60a39bfa279ce9715474210568098a",
+  "reports/answer-prompt-v4/4f48fed/v4-wixqa-judge-m2.cases.jsonl": "d0594074957610ed1bdeb8d67b740217d8cc659b8f6edee4ad8be15a53a92c78",
+  "reports/stage2/5e308fe/p1-aircargo-judge.cases.jsonl": "f34903285e1b9ae672d5c350394b17266d34d9e5386ea38526b0942e83e66c51",
+  "reports/stage2/5e308fe/p4-conditionalqa-judge-m1.cases.jsonl": "7df46a44a2dfc01f13b61edd14e94ac9e68949c418e95ffa56327014e913ce56",
+  "reports/stage2/5e308fe/p4-conditionalqa-judge-m2.cases.jsonl": "274723d8c7fde046f7a4657349e18f940cfa53e5378d4d9fc8ac43bda3090e9d",
+  "reports/stage2/5e308fe/p4-multihoprag-judge-m1.cases.jsonl": "4b148decb8722d726ca318e1b39fa58fb18e7dd495a2946c1c011afa7f819dbb",
+  "reports/stage2/5e308fe/p4-multihoprag-judge-m2.cases.jsonl": "4f1e3db0aecdcf0778ead3d9b030d542c4721eaf145ac2148fc1774ce398103c",
+  "reports/stage2/5e308fe/p4-wixqa-judge-m1.cases.jsonl": "30a7f99b53a96026e2883915dabdffc2eb2c9daaa5a02fa7e145a31bf7b89868",
+  "reports/stage2/5e308fe/p4-wixqa-judge-m2.cases.jsonl": "9265702e4e1c6534163c9d48bdf995d65561029af35da5faebc74146acb147fe"
+ },
+ "keys": {
+  "aircargo": {
+   "V3": {
+    "by_context": {
+     "counts": {
+      "false": {
+       "answered": 0,
+       "declined": 0,
+       "empty": 0
+      },
+      "true": {
+       "answered": 98,
+       "declined": 2,
+       "empty": 0
+      }
+     },
+     "decline_precision": 0.0,
+     "decline_recall": null
+    },
+    "coverage": {
+     "hits": 98,
+     "n": 100,
+     "share": 0.98,
+     "wilson95": [
+      0.93,
+      0.9945
+     ]
+    },
+    "crag": {
+     "cluster95": [
+      0.52,
+      0.78
+     ],
+     "clusters": 100,
+     "levels": {
+      "-1": 12,
+      "0": 2,
+      "0.5": 17,
+      "1": 69
+     },
+     "mean": 0.655
+    },
+    "good_among_answered": {
+     "hits": 69,
+     "n": 98,
+     "share": 0.7041,
+     "wilson95": [
+      0.6074,
+      0.7854
+     ]
+    },
+    "good_or_partial_among_answered": {
+     "hits": 86,
+     "n": 98,
+     "share": 0.8776,
+     "wilson95": [
+      0.7981,
+      0.9285
+     ]
+    },
+    "graded": 100,
+    "kinds": {
+     "answered": 98,
+     "declined": 2,
+     "empty": 0
+    },
+    "missing": [],
+    "rows": 100,
+    "unsupported_among_answered": {
+     "hits": 10,
+     "n": 98,
+     "share": 0.102,
+     "wilson95": [
+      0.0564,
+      0.1777
+     ]
+    }
+   },
+   "V4": {
+    "by_context": {
+     "counts": {
+      "false": {
+       "answered": 0,
+       "declined": 0,
+       "empty": 0
+      },
+      "true": {
+       "answered": 100,
+       "declined": 0,
+       "empty": 0
+      }
+     },
+     "decline_precision": null,
+     "decline_recall": null
+    },
+    "coverage": {
+     "hits": 100,
+     "n": 100,
+     "share": 1.0,
+     "wilson95": [
+      0.963,
+      1.0
+     ]
+    },
+    "crag": {
+     "cluster95": [
+      0.415,
+      0.7
+     ],
+     "clusters": 100,
+     "levels": {
+      "-1": 17,
+      "0": 0,
+      "0.5": 20,
+      "1": 63
+     },
+     "mean": 0.56
+    },
+    "good_among_answered": {
+     "hits": 63,
+     "n": 100,
+     "share": 0.63,
+     "wilson95": [
+      0.5322,
+      0.7182
+     ]
+    },
+    "good_or_partial_among_answered": {
+     "hits": 83,
+     "n": 100,
+     "share": 0.83,
+     "wilson95": [
+      0.7445,
+      0.8911
+     ]
+    },
+    "graded": 100,
+    "kinds": {
+     "answered": 100,
+     "declined": 0,
+     "empty": 0
+    },
+    "missing": [],
+    "rows": 100,
+    "unsupported_among_answered": {
+     "hits": 14,
+     "n": 100,
+     "share": 0.14,
+     "wilson95": [
+      0.0853,
+      0.2214
+     ]
+    }
+   }
+  },
+  "conditionalqa": {
+   "V3": {
+    "by_context": {
+     "counts": {
+      "false": {
+       "answered": 1,
+       "declined": 6,
+       "empty": 0
+      },
+      "true": {
+       "answered": 80,
+       "declined": 13,
+       "empty": 0
+      }
+     },
+     "decline_precision": 0.3158,
+     "decline_recall": 0.8571
+    },
+    "by_reference": {
+     "counts": {
+      "false": {
+       "answered": 12,
+       "declined": 8,
+       "empty": 0
+      },
+      "true": {
+       "answered": 69,
+       "declined": 11,
+       "empty": 0
+      }
+     },
+     "decline_precision": 0.4211,
+     "decline_recall": 0.4
+    },
+    "coverage": {
+     "cluster95": [
+      0.7327,
+      0.88
+     ],
+     "hits": 81,
+     "n": 100,
+     "share": 0.81,
+     "wilson95": [
+      0.7222,
+      0.8749
+     ]
+    },
+    "crag": {
+     "cluster95": [
+      -0.3627,
+      -0.0245
+     ],
+     "clusters": 60,
+     "levels": {
+      "-1": 49,
+      "0": 19,
+      "0.5": 5,
+      "1": 27
+     },
+     "mean": -0.195
+    },
+    "good_among_answered": {
+     "cluster95": [
+      0.2299,
+      0.4416
+     ],
+     "hits": 27,
+     "n": 81,
+     "share": 0.3333,
+     "wilson95": [
+      0.2403,
+      0.4415
+     ]
+    },
+    "good_or_partial_among_answered": {
+     "cluster95": [
+      0.2875,
+      0.506
+     ],
+     "hits": 32,
+     "n": 81,
+     "share": 0.3951,
+     "wilson95": [
+      0.2957,
+      0.5039
+     ]
+    },
+    "graded": 100,
+    "kinds": {
+     "answered": 81,
+     "declined": 19,
+     "empty": 0
+    },
+    "missing": [],
+    "rows": 100,
+    "unsupported_among_answered": {
+     "cluster95": [
+      0.4737,
+      0.6875
+     ],
+     "hits": 47,
+     "n": 81,
+     "share": 0.5802,
+     "wilson95": [
+      0.4715,
+      0.6817
+     ]
+    }
+   },
+   "V4": {
+    "by_context": {
+     "counts": {
+      "false": {
+       "answered": 3,
+       "declined": 3,
+       "empty": 0
+      },
+      "true": {
+       "answered": 88,
+       "declined": 6,
+       "empty": 0
+      }
+     },
+     "decline_precision": 0.3333,
+     "decline_recall": 0.5
+    },
+    "by_reference": {
+     "counts": {
+      "false": {
+       "answered": 16,
+       "declined": 4,
+       "empty": 0
+      },
+      "true": {
+       "answered": 75,
+       "declined": 5,
+       "empty": 0
+      }
+     },
+     "decline_precision": 0.4444,
+     "decline_recall": 0.2
+    },
+    "coverage": {
+     "cluster95": [
+      0.85,
+      0.9608
+     ],
+     "hits": 91,
+     "n": 100,
+     "share": 0.91,
+     "wilson95": [
+      0.8377,
+      0.9519
+     ]
+    },
+    "crag": {
+     "cluster95": [
+      -0.3465,
+      0.0539
+     ],
+     "clusters": 60,
+     "levels": {
+      "-1": 51,
+      "0": 9,
+      "0.5": 8,
+      "1": 32
+     },
+     "mean": -0.15
+    },
+    "good_among_answered": {
+     "cluster95": [
+      0.2471,
+      0.4667
+     ],
+     "hits": 32,
+     "n": 91,
+     "share": 0.3516,
+     "wilson95": [
+      0.2614,
+      0.4539
+     ]
+    },
+    "good_or_partial_among_answered": {
+     "cluster95": [
+      0.3295,
+      0.5581
+     ],
+     "hits": 40,
+     "n": 91,
+     "share": 0.4396,
+     "wilson95": [
+      0.3421,
+      0.5419
+     ]
+    },
+    "graded": 100,
+    "kinds": {
+     "answered": 91,
+     "declined": 9,
+     "empty": 0
+    },
+    "missing": [],
+    "rows": 100,
+    "unsupported_among_answered": {
+     "cluster95": [
+      0.4318,
+      0.6596
+     ],
+     "hits": 50,
+     "n": 91,
+     "share": 0.5495,
+     "wilson95": [
+      0.4473,
+      0.6476
+     ]
+    }
+   }
+  },
+  "multihoprag": {
+   "V3": {
+    "by_context": {
+     "counts": {
+      "false": {
+       "answered": 0,
+       "declined": 27,
+       "empty": 0
+      },
+      "true": {
+       "answered": 66,
+       "declined": 7,
+       "empty": 0
+      }
+     },
+     "decline_precision": 0.7941,
+     "decline_recall": 1.0
+    },
+    "by_reference": {
+     "counts": {
+      "false": {
+       "answered": 1,
+       "declined": 29,
+       "empty": 0
+      },
+      "true": {
+       "answered": 65,
+       "declined": 5,
+       "empty": 0
+      }
+     },
+     "decline_precision": 0.8529,
+     "decline_recall": 0.9667
+    },
+    "coverage": {
+     "cluster95": [
+      0.2608,
+      0.8325
+     ],
+     "hits": 66,
+     "n": 100,
+     "share": 0.66,
+     "wilson95": [
+      0.5628,
+      0.7454
+     ]
+    },
+    "crag": {
+     "cluster95": [
+      -0.1251,
+      0.3212
+     ],
+     "clusters": 45,
+     "levels": {
+      "-1": 23,
+      "0": 34,
+      "0.5": 1,
+      "1": 42
+     },
+     "mean": 0.195
+    },
+    "good_among_answered": {
+     "cluster95": [
+      0.2778,
+      0.713
+     ],
+     "hits": 42,
+     "n": 66,
+     "share": 0.6364,
+     "wilson95": [
+      0.5158,
+      0.7419
+     ]
+    },
+    "good_or_partial_among_answered": {
+     "cluster95": [
+      0.35,
+      0.7213
+     ],
+     "hits": 43,
+     "n": 66,
+     "share": 0.6515,
+     "wilson95": [
+      0.5311,
+      0.7552
+     ]
+    },
+    "graded": 100,
+    "kinds": {
+     "answered": 66,
+     "declined": 34,
+     "empty": 0
+    },
+    "missing": [],
+    "rows": 100,
+    "unsupported_among_answered": {
+     "cluster95": [
+      0.2647,
+      0.5789
+     ],
+     "hits": 22,
+     "n": 66,
+     "share": 0.3333,
+     "wilson95": [
+      0.2316,
+      0.4534
+     ]
+    }
+   }
+  },
+  "wixqa": {
+   "V3": {
+    "by_context": {
+     "counts": {
+      "false": {
+       "answered": 3,
+       "declined": 4,
+       "empty": 0
+      },
+      "true": {
+       "answered": 64,
+       "declined": 29,
+       "empty": 0
+      }
+     },
+     "decline_precision": 0.1212,
+     "decline_recall": 0.5714
+    },
+    "by_reference": {
+     "counts": {
+      "false": {
+       "answered": 0,
+       "declined": 0,
+       "empty": 0
+      },
+      "true": {
+       "answered": 67,
+       "declined": 33,
+       "empty": 0
+      }
+     },
+     "decline_precision": 0.0,
+     "decline_recall": null
+    },
+    "coverage": {
+     "cluster95": [
+      0.5638,
+      0.7632
+     ],
+     "hits": 67,
+     "n": 100,
+     "share": 0.67,
+     "wilson95": [
+      0.5731,
+      0.7544
+     ]
+    },
+    "crag": {
+     "cluster95": [
+      -0.1526,
+      0.1082
+     ],
+     "clusters": 77,
+     "levels": {
+      "-1": 32,
+      "0": 33,
+      "0.5": 10,
+      "1": 25
+     },
+     "mean": -0.02
+    },
+    "good_among_answered": {
+     "cluster95": [
+      0.2581,
+      0.4839
+     ],
+     "hits": 25,
+     "n": 67,
+     "share": 0.3731,
+     "wilson95": [
+      0.2672,
+      0.4928
+     ]
+    },
+    "good_or_partial_among_answered": {
+     "cluster95": [
+      0.4179,
+      0.6212
+     ],
+     "hits": 35,
+     "n": 67,
+     "share": 0.5224,
+     "wilson95": [
+      0.4048,
+      0.6375
+     ]
+    },
+    "graded": 100,
+    "kinds": {
+     "answered": 67,
+     "declined": 33,
+     "empty": 0
+    },
+    "missing": [],
+    "rows": 100,
+    "unsupported_among_answered": {
+     "cluster95": [
+      0.3286,
+      0.5385
+     ],
+     "hits": 29,
+     "n": 67,
+     "share": 0.4328,
+     "wilson95": [
+      0.321,
+      0.5519
+     ]
+    }
+   },
+   "V4": {
+    "by_context": {
+     "counts": {
+      "false": {
+       "answered": 3,
+       "declined": 5,
+       "empty": 0
+      },
+      "true": {
+       "answered": 70,
+       "declined": 22,
+       "empty": 0
+      }
+     },
+     "decline_precision": 0.1852,
+     "decline_recall": 0.625
+    },
+    "by_reference": {
+     "counts": {
+      "false": {
+       "answered": 0,
+       "declined": 0,
+       "empty": 0
+      },
+      "true": {
+       "answered": 73,
+       "declined": 27,
+       "empty": 0
+      }
+     },
+     "decline_precision": 0.0,
+     "decline_recall": null
+    },
+    "coverage": {
+     "cluster95": [
+      0.6346,
+      0.8132
+     ],
+     "hits": 73,
+     "n": 100,
+     "share": 0.73,
+     "wilson95": [
+      0.6357,
+      0.8073
+     ]
+    },
+    "crag": {
+     "cluster95": [
+      -0.045,
+      0.2576
+     ],
+     "clusters": 77,
+     "levels": {
+      "-1": 29,
+      "0": 27,
+      "0.5": 9,
+      "1": 35
+     },
+     "mean": 0.105
+    },
+    "good_among_answered": {
+     "cluster95": [
+      0.369,
+      0.5938
+     ],
+     "hits": 35,
+     "n": 73,
+     "share": 0.4795,
+     "wilson95": [
+      0.3688,
+      0.5922
+     ]
+    },
+    "good_or_partial_among_answered": {
+     "cluster95": [
+      0.494,
+      0.7143
+     ],
+     "hits": 44,
+     "n": 73,
+     "share": 0.6027,
+     "wilson95": [
+      0.4881,
+      0.7071
+     ]
+    },
+    "graded": 100,
+    "kinds": {
+     "answered": 73,
+     "declined": 27,
+     "empty": 0
+    },
+    "missing": [],
+    "rows": 100,
+    "unsupported_among_answered": {
+     "cluster95": [
+      0.2857,
+      0.506
+     ],
+     "hits": 29,
+     "n": 73,
+     "share": 0.3973,
+     "wilson95": [
+      0.2929,
+      0.5119
+     ]
+    }
+   }
+  }
+ },
+ "spec": "docs/specs/coverage-metrics.md",
+ "stands": {
+  "V3": "5e308fe48cca0955c3007057a574a425f71e2a6a",
+  "V4": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1"
+ },
+ "tool_sha256": "deee0861c79c5a328b6ff9cb33f29f124872833c492121970ef16d52ab969f28"
+}

@@ -100,7 +100,8 @@ def test_side_shares_leave_missing_out_and_name_both_quality_lines():
         empty("e", cluster="c3"),
         {"case_id": "f", "grade": None, "missing": True, "has_reference": True, "cluster": "c3"},
     ]
-    out = cov.side("wixqa", rows)
+    gold = {"a": True, "b": True, "c": True, "d": False, "e": True, "f": True}
+    out = cov.side("wixqa", rows, gold)
     assert out["missing"] == ["f"] and out["graded"] == 5
     assert out["kinds"] == {"answered": 3, "declined": 1, "empty": 1}
     assert (out["coverage"]["hits"], out["coverage"]["n"]) == (3, 5)
@@ -110,6 +111,9 @@ def test_side_shares_leave_missing_out_and_name_both_quality_lines():
     assert out["crag"]["mean"] == pytest.approx((1 + 0.5 - 1 + 0 + 0) / 5)
     assert out["crag"]["levels"] == {"1": 1, "0.5": 1, "0": 2, "-1": 1}
     assert "cluster95" in out["coverage"] and "by_reference" in out
+    # The base's gold, not the M1 row's has_reference (false where M1 withholds it).
+    assert out["by_reference"]["counts"]["false"] == {"declined": 1, "answered": 0, "empty": 0}
+    assert out["by_reference"]["decline_precision"] == 1.0
     # The empty answer has no verdict: it stays out of the context matrix.
     assert sum(sum(c.values()) for c in out["by_context"]["counts"].values()) == 4
 
@@ -126,6 +130,20 @@ def test_aircargo_has_no_reference_matrix_and_no_cluster_interval():
 
 def test_side_refuses_an_unnamed_grade_and_a_doubled_question():
     with pytest.raises(SystemExit):
-        cov.side("wixqa", [row("a", "none")])
+        cov.side("wixqa", [row("a", "none")], {"a": True})
     with pytest.raises(SystemExit):
-        cov.side("wixqa", [row("a", "good"), row("a", "bad")])
+        cov.side("wixqa", [row("a", "good"), row("a", "bad")], {"a": True})
+
+
+def test_an_external_base_needs_the_gold_of_the_same_questions():
+    with pytest.raises(SystemExit):
+        cov.side("wixqa", [row("a", "good")])
+    with pytest.raises(SystemExit):
+        cov.side("wixqa", [row("a", "good")], {"b": True})
+
+
+def test_the_gold_is_the_m2_export_of_the_same_side():
+    for key, sides in cov.GOLD.items():
+        assert key in cov.EXTERNAL and set(sides) == set(cov.INPUTS[key])
+        for name, path in sides.items():
+            assert path == cov.INPUTS[key][name].replace("-judge-m1.", "-judge-m2.") != path
