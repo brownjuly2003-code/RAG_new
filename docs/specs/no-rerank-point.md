@@ -1,7 +1,8 @@
 # The no-reranker point: the fused order's first five against the reranker's, on stage 2's lists
 
 Status 2026-10-26: **registered before the count**, with the tool that reads it and its test
-([Records](#records)). [`PLAN.md`](../../PLAN.md) stage 4, step 3: «по тем же сохранённым
+([Records](#records)), in `f7492d5`; read the same day — **the reranker earns its place**
+([record](../evidence/no-rerank-point-record.md)). [`PLAN.md`](../../PLAN.md) stage 4, step 3: «по тем же сохранённым
 спискам, без модели, — точка «без реранка»» (the amendment of 2026-10-26); §8.3, item 14; the
 [research analysis](../operations/research-2026-10-25/analysis.md), item 6b (i). No model
 call, no new retrieval; Julia's «да» of 2026-10-26 took it as a free check.
@@ -93,6 +94,6 @@ difference, as the expansion already restores what the rerank drops there.
   run on the Mac in the gate checkout; it writes `record.json` and `rows.jsonl` — ids, flags,
   counts, never a text of a question or a document.
 - Tests: `tests/test_no_rerank_point.py` (the reading on hand-made rows);
-  the record's artifact test once it exists.
+  `tests/test_no_rerank_point_artifact.py` (the record read again from its rows and the export).
 - The record: `reports/no-rerank/5e308fe/`, its capsule in `docs/evidence/`, one row in
   [`EVIDENCE_INDEX.md`](../../EVIDENCE_INDEX.md).
