@@ -58,7 +58,9 @@ V4](specs/answer-prompt-v4.md) — stage 2b: three defects of the answer prompt 
 its paired measurement against stage 2's answers, registered before the first request; its
 [record](evidence/answer-prompt-v4-record.md): adopted 2026-10-25. [Coverage
 metrics](specs/coverage-metrics.md) — coverage beside quality among the answered, the CRAG
-score and the decline matrices, read from the committed judge records with no model call.
+score and the decline matrices, read from the committed judge records with no model call. [The
+no-reranker point](specs/no-rerank-point.md) — the fused order's first five against the
+reranker's, on stage 2's saved lists, with the product's own expansion and no model.
 
 **Contracts the code keeps** — what the code must do, with tests behind each:
 
