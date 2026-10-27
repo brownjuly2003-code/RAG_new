@@ -232,3 +232,8 @@ changes, and where they may stop.
 - **The week:** the judge pauses when the week's window reaches 0.70 used or the five hours'
   0.90, read by one isolated request between chunks, and resumes after the reset. A pause stops
   nothing and changes no plan.
+
+  On 2026-10-27, ≈ 20:40 UTC, the week at 0.63 and the core half graded, Julia: «этот проект
+  очень важен, расходуем лимит под него». The week's pause moved from 0.70 to 0.95, and on a stop
+  aircargo's plan and its bridge are graded at once, not after the reset. No rule of the step or
+  the table changed.
