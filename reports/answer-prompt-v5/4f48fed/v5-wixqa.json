@@ -1,0 +1,267 @@
+{
+ "key": "wixqa",
+ "launches": [
+  {
+   "label": "v5-wixqa-b01",
+   "replay_of": "v4-wixqa-b01",
+   "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+   "model": "qwen3:4b-instruct-2507-q4_K_M",
+   "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+   "prompt_id": "QA_PROMPT_V5",
+   "tools_sha256": {
+    "replay.py": "ca954c59710e93925cc923f5b2a7f175ce86f7e1fa7b96a46d3b3bbeec4d6eed",
+    "qa_prompt_v5.txt": "835b0f2cf1ac7bc86ad30605367d81457b02e7436a5a5071642a5b881471c276",
+    "v5_chain.sh": "52b9f5f77881db021e802942ed0608c87438a3b32fe259406f3ad23991c03f1b"
+   },
+   "params": {
+    "temperature": 0.2,
+    "max_tokens": 1024
+   },
+   "budget_sec": 3600.0,
+   "started": "2026-10-27T13:56:28+00:00",
+   "finished": "2026-10-27T14:17:49+00:00",
+   "status": "complete",
+   "cases": 10,
+   "ollama_load_sec": 39.797,
+   "tenant": "ext_wixqa",
+   "orphan_prompts": 0,
+   "model_errors": 0
+  },
+  {
+   "label": "v5-wixqa-b02",
+   "replay_of": "v4-wixqa-b02",
+   "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+   "model": "qwen3:4b-instruct-2507-q4_K_M",
+   "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+   "prompt_id": "QA_PROMPT_V5",
+   "tools_sha256": {
+    "replay.py": "ca954c59710e93925cc923f5b2a7f175ce86f7e1fa7b96a46d3b3bbeec4d6eed",
+    "qa_prompt_v5.txt": "835b0f2cf1ac7bc86ad30605367d81457b02e7436a5a5071642a5b881471c276",
+    "v5_chain.sh": "52b9f5f77881db021e802942ed0608c87438a3b32fe259406f3ad23991c03f1b"
+   },
+   "params": {
+    "temperature": 0.2,
+    "max_tokens": 1024
+   },
+   "budget_sec": 3600.0,
+   "started": "2026-10-27T14:17:49+00:00",
+   "finished": "2026-10-27T14:36:34+00:00",
+   "status": "complete",
+   "cases": 10,
+   "ollama_load_sec": null,
+   "tenant": "ext_wixqa",
+   "orphan_prompts": 0,
+   "model_errors": 0
+  },
+  {
+   "label": "v5-wixqa-b03",
+   "replay_of": "v4-wixqa-b03",
+   "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+   "model": "qwen3:4b-instruct-2507-q4_K_M",
+   "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+   "prompt_id": "QA_PROMPT_V5",
+   "tools_sha256": {
+    "replay.py": "ca954c59710e93925cc923f5b2a7f175ce86f7e1fa7b96a46d3b3bbeec4d6eed",
+    "qa_prompt_v5.txt": "835b0f2cf1ac7bc86ad30605367d81457b02e7436a5a5071642a5b881471c276",
+    "v5_chain.sh": "52b9f5f77881db021e802942ed0608c87438a3b32fe259406f3ad23991c03f1b"
+   },
+   "params": {
+    "temperature": 0.2,
+    "max_tokens": 1024
+   },
+   "budget_sec": 3600.0,
+   "started": "2026-10-27T14:36:34+00:00",
+   "finished": "2026-10-27T14:51:55+00:00",
+   "status": "complete",
+   "cases": 10,
+   "ollama_load_sec": null,
+   "tenant": "ext_wixqa",
+   "orphan_prompts": 0,
+   "model_errors": 0
+  },
+  {
+   "label": "v5-wixqa-b04",
+   "replay_of": "v4-wixqa-b04",
+   "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+   "model": "qwen3:4b-instruct-2507-q4_K_M",
+   "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+   "prompt_id": "QA_PROMPT_V5",
+   "tools_sha256": {
+    "replay.py": "ca954c59710e93925cc923f5b2a7f175ce86f7e1fa7b96a46d3b3bbeec4d6eed",
+    "qa_prompt_v5.txt": "835b0f2cf1ac7bc86ad30605367d81457b02e7436a5a5071642a5b881471c276",
+    "v5_chain.sh": "52b9f5f77881db021e802942ed0608c87438a3b32fe259406f3ad23991c03f1b"
+   },
+   "params": {
+    "temperature": 0.2,
+    "max_tokens": 1024
+   },
+   "budget_sec": 3600.0,
+   "started": "2026-10-27T14:51:55+00:00",
+   "finished": "2026-10-27T15:10:10+00:00",
+   "status": "complete",
+   "cases": 10,
+   "ollama_load_sec": null,
+   "tenant": "ext_wixqa",
+   "orphan_prompts": 0,
+   "model_errors": 0
+  },
+  {
+   "label": "v5-wixqa-b05",
+   "replay_of": "v4-wixqa-b05",
+   "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+   "model": "qwen3:4b-instruct-2507-q4_K_M",
+   "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+   "prompt_id": "QA_PROMPT_V5",
+   "tools_sha256": {
+    "replay.py": "ca954c59710e93925cc923f5b2a7f175ce86f7e1fa7b96a46d3b3bbeec4d6eed",
+    "qa_prompt_v5.txt": "835b0f2cf1ac7bc86ad30605367d81457b02e7436a5a5071642a5b881471c276",
+    "v5_chain.sh": "52b9f5f77881db021e802942ed0608c87438a3b32fe259406f3ad23991c03f1b"
+   },
+   "params": {
+    "temperature": 0.2,
+    "max_tokens": 1024
+   },
+   "budget_sec": 3600.0,
+   "started": "2026-10-27T15:10:10+00:00",
+   "finished": "2026-10-27T15:26:41+00:00",
+   "status": "complete",
+   "cases": 10,
+   "ollama_load_sec": null,
+   "tenant": "ext_wixqa",
+   "orphan_prompts": 0,
+   "model_errors": 0
+  },
+  {
+   "label": "v5-wixqa-b06",
+   "replay_of": "v4-wixqa-b06",
+   "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+   "model": "qwen3:4b-instruct-2507-q4_K_M",
+   "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+   "prompt_id": "QA_PROMPT_V5",
+   "tools_sha256": {
+    "replay.py": "ca954c59710e93925cc923f5b2a7f175ce86f7e1fa7b96a46d3b3bbeec4d6eed",
+    "qa_prompt_v5.txt": "835b0f2cf1ac7bc86ad30605367d81457b02e7436a5a5071642a5b881471c276",
+    "v5_chain.sh": "52b9f5f77881db021e802942ed0608c87438a3b32fe259406f3ad23991c03f1b"
+   },
+   "params": {
+    "temperature": 0.2,
+    "max_tokens": 1024
+   },
+   "budget_sec": 3600.0,
+   "started": "2026-10-27T15:26:41+00:00",
+   "finished": "2026-10-27T15:44:48+00:00",
+   "status": "complete",
+   "cases": 10,
+   "ollama_load_sec": null,
+   "tenant": "ext_wixqa",
+   "orphan_prompts": 0,
+   "model_errors": 0
+  },
+  {
+   "label": "v5-wixqa-b07",
+   "replay_of": "v4-wixqa-b07",
+   "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+   "model": "qwen3:4b-instruct-2507-q4_K_M",
+   "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+   "prompt_id": "QA_PROMPT_V5",
+   "tools_sha256": {
+    "replay.py": "ca954c59710e93925cc923f5b2a7f175ce86f7e1fa7b96a46d3b3bbeec4d6eed",
+    "qa_prompt_v5.txt": "835b0f2cf1ac7bc86ad30605367d81457b02e7436a5a5071642a5b881471c276",
+    "v5_chain.sh": "52b9f5f77881db021e802942ed0608c87438a3b32fe259406f3ad23991c03f1b"
+   },
+   "params": {
+    "temperature": 0.2,
+    "max_tokens": 1024
+   },
+   "budget_sec": 3600.0,
+   "started": "2026-10-27T15:44:48+00:00",
+   "finished": "2026-10-27T16:04:17+00:00",
+   "status": "complete",
+   "cases": 10,
+   "ollama_load_sec": null,
+   "tenant": "ext_wixqa",
+   "orphan_prompts": 0,
+   "model_errors": 0
+  },
+  {
+   "label": "v5-wixqa-b08",
+   "replay_of": "v4-wixqa-b08",
+   "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+   "model": "qwen3:4b-instruct-2507-q4_K_M",
+   "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+   "prompt_id": "QA_PROMPT_V5",
+   "tools_sha256": {
+    "replay.py": "ca954c59710e93925cc923f5b2a7f175ce86f7e1fa7b96a46d3b3bbeec4d6eed",
+    "qa_prompt_v5.txt": "835b0f2cf1ac7bc86ad30605367d81457b02e7436a5a5071642a5b881471c276",
+    "v5_chain.sh": "52b9f5f77881db021e802942ed0608c87438a3b32fe259406f3ad23991c03f1b"
+   },
+   "params": {
+    "temperature": 0.2,
+    "max_tokens": 1024
+   },
+   "budget_sec": 3600.0,
+   "started": "2026-10-27T16:04:17+00:00",
+   "finished": "2026-10-27T16:23:29+00:00",
+   "status": "complete",
+   "cases": 10,
+   "ollama_load_sec": null,
+   "tenant": "ext_wixqa",
+   "orphan_prompts": 0,
+   "model_errors": 0
+  },
+  {
+   "label": "v5-wixqa-b09",
+   "replay_of": "v4-wixqa-b09",
+   "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+   "model": "qwen3:4b-instruct-2507-q4_K_M",
+   "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+   "prompt_id": "QA_PROMPT_V5",
+   "tools_sha256": {
+    "replay.py": "ca954c59710e93925cc923f5b2a7f175ce86f7e1fa7b96a46d3b3bbeec4d6eed",
+    "qa_prompt_v5.txt": "835b0f2cf1ac7bc86ad30605367d81457b02e7436a5a5071642a5b881471c276",
+    "v5_chain.sh": "52b9f5f77881db021e802942ed0608c87438a3b32fe259406f3ad23991c03f1b"
+   },
+   "params": {
+    "temperature": 0.2,
+    "max_tokens": 1024
+   },
+   "budget_sec": 3600.0,
+   "started": "2026-10-27T16:23:29+00:00",
+   "finished": "2026-10-27T16:41:57+00:00",
+   "status": "complete",
+   "cases": 10,
+   "ollama_load_sec": null,
+   "tenant": "ext_wixqa",
+   "orphan_prompts": 0,
+   "model_errors": 0
+  },
+  {
+   "label": "v5-wixqa-b10",
+   "replay_of": "v4-wixqa-b10",
+   "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+   "model": "qwen3:4b-instruct-2507-q4_K_M",
+   "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+   "prompt_id": "QA_PROMPT_V5",
+   "tools_sha256": {
+    "replay.py": "ca954c59710e93925cc923f5b2a7f175ce86f7e1fa7b96a46d3b3bbeec4d6eed",
+    "qa_prompt_v5.txt": "835b0f2cf1ac7bc86ad30605367d81457b02e7436a5a5071642a5b881471c276",
+    "v5_chain.sh": "52b9f5f77881db021e802942ed0608c87438a3b32fe259406f3ad23991c03f1b"
+   },
+   "params": {
+    "temperature": 0.2,
+    "max_tokens": 1024
+   },
+   "budget_sec": 3600.0,
+   "started": "2026-10-27T16:41:57+00:00",
+   "finished": "2026-10-27T17:00:01+00:00",
+   "status": "complete",
+   "cases": 10,
+   "ollama_load_sec": null,
+   "tenant": "ext_wixqa",
+   "orphan_prompts": 0,
+   "model_errors": 0
+  }
+ ],
+ "answers": 100,
+ "whole": true
+}

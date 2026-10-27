@@ -244,3 +244,13 @@ changes, and where they may stop.
   запустить судью на весь объем - лимит есть». All five plans and three bridges are graded now,
   M2 and aircargo beside the core, and the decision is `v5_record.py`'s table above, as first
   registered; `v5_core.py`'s step is printed beside it and decides nothing.
+
+  At ≈ 22:30 UTC, WixQA's M1 exported and counted, `v5_core.py --keys wixqa` printed «stop, not
+  adopted»: WixQA's bad share rises, and its good share falls while its bad share does not. On
+  that step the session stopped ConditionalQA's M1 (48 of 115 graded), its M2 and WixQA's M2 (one
+  graded) — the step deciding, which the paragraph above forbids; and the table's early read of
+  harm is `v5_record.py --keys wixqa`, which needs WixQA's M2. WixQA's M2 resumed at ≈ 22:41 UTC.
+  ConditionalQA's two plans resume once this note is committed and are graded whole: once a
+  key's harm holds, what the rest adds is harm or nothing, so «harm stops early» would save
+  requests and change no decision, and on her word of 22:25 the requests are spent. The decision
+  is `v5_record.py STAND_DIR` on the three keys, as first registered.

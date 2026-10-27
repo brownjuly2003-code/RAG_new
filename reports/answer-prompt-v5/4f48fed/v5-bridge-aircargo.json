@@ -1,0 +1,518 @@
+{
+ "plan": "v5-bridge-aircargo",
+ "status": "counted",
+ "judge": "answers",
+ "base": "aircargo",
+ "provenance": {
+  "plan_sha256": "f4e646b9904b2c6d419dab423155efa0bea52ae2105c416f9d1054c557e366cf",
+  "verdicts_sha256": "65a751503aa773d1a027e498026f3a6d704a0a32f7d50b3dc3dbc0b12788492c",
+  "references_sha256": null,
+  "references_withheld": false,
+  "salt": "chat-answer-judge-2026-10-18",
+  "prompt_id": "QA_PROMPT_V4",
+  "instructions_sha256": "fd015e742c835a17b17704ad629df90a34a61ac600762e8c74e52aababdcc9c2",
+  "route": {
+   "model": "claude-opus-5-5",
+   "effort": "max",
+   "tools": "none",
+   "session": "safe mode: no instruction file, memory, hook, skill, plugin or MCP server; no tools; an empty working directory; nothing stored; one turn",
+   "system_prompt_sha256": "5a0b99f2d4f3fc17efe27aa24440a3ec8ff7e9e45e9a299019ba4516f4fa5859"
+  },
+  "runs": {
+   "v4-aircargo-b01": {
+    "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+    "model": "qwen3:4b-instruct-2507-q4_K_M",
+    "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+    "tenant": "aircargo",
+    "chroma_dir": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-aircargo-b01.chroma",
+    "cases_file": "/Users/julia/RAG_new_chat_4f48fed/evaluation/curated_cases_aircargo.jsonl"
+   },
+   "v4-aircargo-b02": {
+    "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+    "model": "qwen3:4b-instruct-2507-q4_K_M",
+    "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+    "tenant": "aircargo",
+    "chroma_dir": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-aircargo-b02.chroma",
+    "cases_file": "/Users/julia/RAG_new_chat_4f48fed/evaluation/curated_cases_aircargo.jsonl"
+   },
+   "v4-aircargo-b03": {
+    "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+    "model": "qwen3:4b-instruct-2507-q4_K_M",
+    "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+    "tenant": "aircargo",
+    "chroma_dir": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-aircargo-b03.chroma",
+    "cases_file": "/Users/julia/RAG_new_chat_4f48fed/evaluation/curated_cases_aircargo.jsonl"
+   },
+   "v4-aircargo-b04": {
+    "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+    "model": "qwen3:4b-instruct-2507-q4_K_M",
+    "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+    "tenant": "aircargo",
+    "chroma_dir": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-aircargo-b04.chroma",
+    "cases_file": "/Users/julia/RAG_new_chat_4f48fed/evaluation/curated_cases_aircargo.jsonl"
+   },
+   "v4-aircargo-b05": {
+    "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+    "model": "qwen3:4b-instruct-2507-q4_K_M",
+    "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+    "tenant": "aircargo",
+    "chroma_dir": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-aircargo-b05.chroma",
+    "cases_file": "/Users/julia/RAG_new_chat_4f48fed/evaluation/curated_cases_aircargo.jsonl"
+   },
+   "v4-aircargo-b06": {
+    "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+    "model": "qwen3:4b-instruct-2507-q4_K_M",
+    "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+    "tenant": "aircargo",
+    "chroma_dir": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-aircargo-b06.chroma",
+    "cases_file": "/Users/julia/RAG_new_chat_4f48fed/evaluation/curated_cases_aircargo.jsonl"
+   },
+   "v4-aircargo-b07": {
+    "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+    "model": "qwen3:4b-instruct-2507-q4_K_M",
+    "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+    "tenant": "aircargo",
+    "chroma_dir": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-aircargo-b07.chroma",
+    "cases_file": "/Users/julia/RAG_new_chat_4f48fed/evaluation/curated_cases_aircargo.jsonl"
+   },
+   "v4-aircargo-b08": {
+    "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+    "model": "qwen3:4b-instruct-2507-q4_K_M",
+    "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+    "tenant": "aircargo",
+    "chroma_dir": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-aircargo-b08.chroma",
+    "cases_file": "/Users/julia/RAG_new_chat_4f48fed/evaluation/curated_cases_aircargo.jsonl"
+   },
+   "v4-aircargo-b09": {
+    "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+    "model": "qwen3:4b-instruct-2507-q4_K_M",
+    "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+    "tenant": "aircargo",
+    "chroma_dir": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-aircargo-b09.chroma",
+    "cases_file": "/Users/julia/RAG_new_chat_4f48fed/evaluation/curated_cases_aircargo.jsonl"
+   },
+   "v4-aircargo-b10": {
+    "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+    "model": "qwen3:4b-instruct-2507-q4_K_M",
+    "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+    "tenant": "aircargo",
+    "chroma_dir": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/v4-aircargo-b10.chroma",
+    "cases_file": "/Users/julia/RAG_new_chat_4f48fed/evaluation/curated_cases_aircargo.jsonl"
+   }
+  },
+  "adapter_sha256": "cdb2be82d3341afe0b1aba4e560f56eac4e2dec9cce69d0e038a18da4f2c7788",
+  "tool_sha256": "d2a69975de960791c2b1aca8d93d58f75ef01c92c16686e12646473aea069193",
+  "replies_counted_per_request": 6,
+  "reading": {
+   "source": "docs/specs/handover-signal.md",
+   "commit": "96ee4e666061124062e3efa7e2579896a32f823a",
+   "section": "Reading — frozen in stage 1's `plan.json`, before its first verdict",
+   "text": "In the chat a marked answer is still shown, with the operator button; an unmarked bad answer\nreaches the client with no hint. A miss costs more than a needless button, so the reading puts\ncatching first. The session proposed it and Julia accepted it on 2026-10-17 («давай так»):\n\n- **no reading** if fewer than 15 of the 100 answers are target answers: stage 2 adds answers\n  first;\n- **worth wiring:** caught at least 2 of 3 with the Wilson lower bound at least 1 of 3, and\n  over-marked at most 1 of 3;\n- **useless:** the Wilson upper bound of caught below 1 of 2, or over-marked above 1 of 2;\n- **in between:** a candidate for stage 2.\n\nA threshold chosen on stage 1's answers (a self-score of 100, a rerank score) stays a\ncandidate until stage 2 confirms it on other answers. The forecast written now, so that the\nresult can surprise it: S1 marks almost nothing — 0 of the 51 live answers scored below 80,\nand S1′ would have marked 2."
+  }
+ },
+ "replies": {
+  "rows": 30,
+  "statuses": {
+   "valid": 30
+  },
+  "past_the_limit": 0,
+  "models": {
+   "claude-opus-5-5": 30
+  },
+  "admitted_at_reply": {
+   "1": 30
+  },
+  "admitted_cli": {
+   "2.1.310": 15,
+   "2.1.312": 15
+  },
+  "cost_usd": 4.8221
+ },
+ "questions": 15,
+ "requests_valid": 30,
+ "missing": [],
+ "per_run": {
+  "v4-aircargo-b01": {
+   "answers": 0,
+   "graded": 0,
+   "missing": 0,
+   "classes": {
+    "good": 0,
+    "partial_ok": 0,
+    "bad": 0
+   },
+   "routes": {},
+   "defects": {},
+   "reference": {},
+   "marks_listed": 0,
+   "marks_supported": 0,
+   "marks_unlisted": 0,
+   "context_has_answer": 0,
+   "answer_without_context": 0
+  },
+  "v4-aircargo-b02": {
+   "answers": 1,
+   "graded": 1,
+   "missing": 0,
+   "classes": {
+    "good": 1,
+    "partial_ok": 0,
+    "bad": 0
+   },
+   "routes": {
+    "auto": 1
+   },
+   "defects": {
+    "none": 1
+   },
+   "reference": {
+    "none": 1
+   },
+   "marks_listed": 1,
+   "marks_supported": 1,
+   "marks_unlisted": 0,
+   "context_has_answer": 1,
+   "answer_without_context": 0
+  },
+  "v4-aircargo-b03": {
+   "answers": 2,
+   "graded": 2,
+   "missing": 0,
+   "classes": {
+    "good": 2,
+    "partial_ok": 0,
+    "bad": 0
+   },
+   "routes": {
+    "auto": 2
+   },
+   "defects": {
+    "none": 2
+   },
+   "reference": {
+    "none": 2
+   },
+   "marks_listed": 2,
+   "marks_supported": 2,
+   "marks_unlisted": 0,
+   "context_has_answer": 2,
+   "answer_without_context": 0
+  },
+  "v4-aircargo-b04": {
+   "answers": 1,
+   "graded": 1,
+   "missing": 0,
+   "classes": {
+    "good": 0,
+    "partial_ok": 0,
+    "bad": 1
+   },
+   "routes": {
+    "auto": 1
+   },
+   "defects": {
+    "none": 1
+   },
+   "reference": {
+    "none": 1
+   },
+   "marks_listed": 3,
+   "marks_supported": 2,
+   "marks_unlisted": 0,
+   "context_has_answer": 1,
+   "answer_without_context": 0
+  },
+  "v4-aircargo-b05": {
+   "answers": 1,
+   "graded": 1,
+   "missing": 0,
+   "classes": {
+    "good": 0,
+    "partial_ok": 1,
+    "bad": 0
+   },
+   "routes": {
+    "auto": 1
+   },
+   "defects": {
+    "none": 1
+   },
+   "reference": {
+    "none": 1
+   },
+   "marks_listed": 1,
+   "marks_supported": 1,
+   "marks_unlisted": 0,
+   "context_has_answer": 1,
+   "answer_without_context": 0
+  },
+  "v4-aircargo-b06": {
+   "answers": 2,
+   "graded": 2,
+   "missing": 0,
+   "classes": {
+    "good": 1,
+    "partial_ok": 1,
+    "bad": 0
+   },
+   "routes": {
+    "auto": 2
+   },
+   "defects": {
+    "none": 2
+   },
+   "reference": {
+    "none": 2
+   },
+   "marks_listed": 4,
+   "marks_supported": 3,
+   "marks_unlisted": 0,
+   "context_has_answer": 2,
+   "answer_without_context": 0
+  },
+  "v4-aircargo-b07": {
+   "answers": 1,
+   "graded": 1,
+   "missing": 0,
+   "classes": {
+    "good": 0,
+    "partial_ok": 1,
+    "bad": 0
+   },
+   "routes": {
+    "auto": 1
+   },
+   "defects": {
+    "none": 1
+   },
+   "reference": {
+    "none": 1
+   },
+   "marks_listed": 1,
+   "marks_supported": 1,
+   "marks_unlisted": 0,
+   "context_has_answer": 1,
+   "answer_without_context": 0
+  },
+  "v4-aircargo-b08": {
+   "answers": 3,
+   "graded": 3,
+   "missing": 0,
+   "classes": {
+    "good": 1,
+    "partial_ok": 2,
+    "bad": 0
+   },
+   "routes": {
+    "auto": 3
+   },
+   "defects": {
+    "none": 3
+   },
+   "reference": {
+    "none": 3
+   },
+   "marks_listed": 8,
+   "marks_supported": 7,
+   "marks_unlisted": 0,
+   "context_has_answer": 3,
+   "answer_without_context": 0
+  },
+  "v4-aircargo-b09": {
+   "answers": 3,
+   "graded": 3,
+   "missing": 0,
+   "classes": {
+    "good": 2,
+    "partial_ok": 0,
+    "bad": 1
+   },
+   "routes": {
+    "auto": 3
+   },
+   "defects": {
+    "none": 2,
+    "copied_context": 1
+   },
+   "reference": {
+    "none": 3
+   },
+   "marks_listed": 5,
+   "marks_supported": 4,
+   "marks_unlisted": 0,
+   "context_has_answer": 3,
+   "answer_without_context": 0
+  },
+  "v4-aircargo-b10": {
+   "answers": 1,
+   "graded": 1,
+   "missing": 0,
+   "classes": {
+    "good": 1,
+    "partial_ok": 0,
+    "bad": 0
+   },
+   "routes": {
+    "auto": 1
+   },
+   "defects": {
+    "none": 1
+   },
+   "reference": {
+    "none": 1
+   },
+   "marks_listed": 1,
+   "marks_supported": 1,
+   "marks_unlisted": 0,
+   "context_has_answer": 1,
+   "answer_without_context": 0
+  }
+ },
+ "shares": {
+  "bad": {
+   "n": 15,
+   "hits": 2,
+   "share": 0.1333,
+   "wilson95": [
+    0.0374,
+    0.3788
+   ]
+  },
+  "partial_ok": {
+   "n": 15,
+   "hits": 5,
+   "share": 0.3333,
+   "wilson95": [
+    0.1518,
+    0.5829
+   ]
+  },
+  "good": {
+   "n": 15,
+   "hits": 8,
+   "share": 0.5333,
+   "wilson95": [
+    0.3012,
+    0.7519
+   ]
+  }
+ },
+ "retest": {
+  "planned": 15,
+  "scale": [
+   "bad",
+   "partial_ok",
+   "good"
+  ],
+  "pairs": 15,
+  "pairs_list": [
+   [
+    1,
+    1
+   ],
+   [
+    1,
+    1
+   ],
+   [
+    1,
+    1
+   ],
+   [
+    0,
+    0
+   ],
+   [
+    2,
+    2
+   ],
+   [
+    2,
+    2
+   ],
+   [
+    2,
+    2
+   ],
+   [
+    2,
+    2
+   ],
+   [
+    2,
+    2
+   ],
+   [
+    0,
+    0
+   ],
+   [
+    1,
+    2
+   ],
+   [
+    2,
+    2
+   ],
+   [
+    2,
+    2
+   ],
+   [
+    2,
+    2
+   ],
+   [
+    1,
+    1
+   ]
+  ],
+  "pairs_ids": [
+   "38a1603f88f48253",
+   "ea3368b3cb353f8d",
+   "78e695e229785525",
+   "d6c517cf97e18552",
+   "462d7c91ee7efeaa",
+   "e6f380d5991ede0d",
+   "416436e9aaaeef50",
+   "fe61920ccac6d21a",
+   "43e57f7e2bb5a9b2",
+   "487e8ab24405b6a9",
+   "7d892dac36c71fe6",
+   "2a5df5f95b1a954e",
+   "fdc3ef78eec98ccd",
+   "14612d0dc655a5fb",
+   "c294cf0a7bf4c43c"
+  ],
+  "agree": 14,
+  "two_steps_apart": 0,
+  "quadratic_kappa": 0.9351,
+  "ci95": [
+   0.6667,
+   1.0
+  ],
+  "resamples_undefined": 0,
+  "passes_by_kappa": true,
+  "passes_by_agreement": true,
+  "enough_pairs": true,
+  "passed": true,
+  "field_agreement": {
+   "reference": {
+    "agree": 0,
+    "of": 0
+   },
+   "answers_question": {
+    "agree": 14,
+    "of": 15
+   },
+   "context_has_answer": {
+    "agree": 15,
+    "of": 15
+   },
+   "defect": {
+    "agree": 15,
+    "of": 15
+   }
+  }
+ }
+}
