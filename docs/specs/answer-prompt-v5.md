@@ -194,3 +194,41 @@ and the tools' test answer each.
 
 Adopted: the product commit above, then stage 4 on V5's path. Not adopted: stage 4 goes on with
 V4, and the record says which row decided.
+
+## Amendment 1, 2026-10-27: the judge in two steps
+
+Registered before V5's first grade, on Julia's word of 2026-10-27 («хорошо, давай по твоему
+плану»): the judge account's week was 0.57 used with its reset four days off, and the 620
+requests at effort `max` cost about 12–14 % of a week. The judge, its route, salt and
+instructions, the five plans, the bridges and the table above stay; only the order of the grades
+changes, and where they may stop.
+
+- **The core first:** WixQA, then ConditionalQA; of each, its bridge, then its
+  `v5-<base>-judge-m1` — 2 × (15 + 115) = 260 requests, ≈ 5–6 % of the week. The five plans are
+  still frozen after their key's tenth batch, their SHA-256 committed before the first grade.
+- **The step,** after each base: `v5_core.py STAND_DIR OUT --keys <judged>`, the tool
+  `reports/answer-prompt-v5/tools/v5_core.py`, SHA-256 `9df9af4f8be470198c1c7a6a3eef12abe0907a613fd1ff43a3933002587f0b4d`, its test
+  `tests/test_answer_prompt_v5_core.py`, SHA-256 `7f60d25cf697a07fbdd33629928ecef4b0aa3bf6f21c47a789a051c5ef8eb8bb`. It reads the core by
+  `v5_record.py`'s own checks and numbers, that tool unchanged; the first that holds decides:
+  1. stop, not adopted — harm on M1, as row 1 reads it: a base's bad share rises; its good share
+     falls while its bad share does not; ConditionalQA's declines among its not answerable fall;
+     the pooled bad share rises;
+  2. stop, `NOT_EVIDENCE` — a plan of the core not counted; a bridge not counted stops its base
+     before its M1 is graded;
+  3. wait — ConditionalQA not judged yet;
+  4. go on — the pooled bad share falls;
+  5. stop, not adopted — no gain.
+
+  Each stop is where the table can no longer adopt V5: its row 3 needs the pooled bad share to
+  fall, that share is read on the two bases' M1 alone, and what the rest adds is harm or
+  `NOT_EVIDENCE`. The test checks it over every direction of the core and every grade of the
+  rest.
+- **Go on:** M2 of both bases, then aircargo's plan with its bridge — 2 × 115 + 115 + 15 = 360
+  requests; `v5_record.py` decides by the table above, as registered.
+- **A stop** is stage 3b's outcome, recorded in `v5-core.json` beside the plans, and V4 stays;
+  M2 is not graded. Aircargo's plan and its bridge stay frozen and are graded after the week's
+  reset for the encoders' Part 2 alone ([`encoder-checkers.md`](encoder-checkers.md),
+  Amendment 1); their verdicts change no step.
+- **The week:** the judge pauses when the week's window reaches 0.70 used or the five hours'
+  0.90, read by one isolated request between chunks, and resumes after the reset. A pause stops
+  nothing and changes no plan.
