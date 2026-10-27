@@ -1,8 +1,7 @@
 # Current state — RAG_new
 
-2026-10-26 · The plan: [`PLAN.md`](PLAN.md), accepted by Julia on 2026-10-17 («принять») ·
-now: stage 3 — outcome C, the handover line under every answer (her «да»); stage 3б next ·
-previous version: [`archive/docs/state/current-state-through-2026-10-17.md`](archive/docs/state/current-state-through-2026-10-17.md).
+2026-10-27 · The plan: [`PLAN.md`](PLAN.md), accepted by Julia on 2026-10-17 («принять») ·
+now: stage 3 — outcome C, the widget read (R1 confirmed); stage 3б next · previous version: [`archive/docs/state/current-state-through-2026-10-17.md`](archive/docs/state/current-state-through-2026-10-17.md).
 
 Read this file for *what is true now*; [`PLAN.md`](PLAN.md) for *what happens next and why*;
 [`ROADMAP.md`](ROADMAP.md) for *what each stage has delivered*; [`docs/README.md`](docs/README.md)
@@ -53,6 +52,7 @@ limits: [`EVIDENCE_INDEX.md`](EVIDENCE_INDEX.md), [`PLAN.md`](PLAN.md) §3.
 | Answer quality, chat path, V3 | M1 good: aircargo 69, ConditionalQA 31, WixQA 27, MultiHop-RAG 65 of 100; bad 14, 64, 63, 34 | [stage-2 record](docs/evidence/stage2-record.md); one model judges, no person; MultiHop-RAG's M2 `NOT_EVIDENCE` |
 | Answer quality, V4 against V3 | M1 bad, paired: WixQA 63 → 51, ConditionalQA 64 → 57, aircargo 14 → 17; good 27 → 40, 31 → 35, 69 → 63 | [V4 record](docs/evidence/answer-prompt-v4-record.md): pooled bad −9.5 pp, detected; in sample |
 | Handover signals, V4 aircargo | of 17 bad answers: S2 and S6 catch 16 but mark 34 and 43 of 63 good; S3 catches 11, marks 28 good (in between); the cheap ones catch 0–4 | [record](docs/evidence/handover-signal-v4-aircargo.md): outcome C; one model judges, no person |
+| Widget on the 4B, `/api/ask` | ten aircargo questions: auto 3, human 2, error_escalation 5; none of 7 retries finished inside the 24-call budget; median 31.1 min on a loaded Mac; production routes `human` (R1) | [record](docs/evidence/widget-4b-record.md): no judge; a fix is her word |
 | Coverage beside quality, V3 → V4 | answered: WixQA 67 → 73, ConditionalQA 81 → 91, aircargo 98 → 100 of 100; CRAG score −0.020 → 0.105, −0.195 → −0.150, 0.655 → 0.560 | [coverage record](docs/evidence/coverage-metrics-record.md): unpaired, no model call; on ConditionalQA more wrong answers given out than right |
 
 Stage 2's [retrieval baseline](docs/evidence/stage2-retrieval-baseline.md) (`7208ed2`): 415 questions,
@@ -95,7 +95,7 @@ answerable questions (V3 8); aircargo's nine good answers turned bad, eight by a
 ## Next
 
 1. [`PLAN.md`](PLAN.md) stage 3 — **outcome C** ([signal record](docs/evidence/handover-signal-v4-aircargo.md)): no signal worth wiring, S3 in between. Her «да» (2026-10-26): the handover line — done; no stage 2 for S3.
-   Stage 3's encoder test read 2026-10-26: all three in between, none worth wiring; H catches 10 of 17 marking 8 of 63 ([record](docs/evidence/encoder-checkers-record.md)). Next in stage 3: Horizon guard base under an amendment, then the best read on V5's aircargo answers; step 4 (R1, ten widget answers). Stage 4's no-reranker point read 2026-10-26: the reranker stays.
+   Stage 3's encoder test read 2026-10-26: all three in between, none worth wiring; H catches 10 of 17 marking 8 of 63 ([record](docs/evidence/encoder-checkers-record.md)). Next in stage 3: Horizon guard base under an amendment, then the best read on V5's aircargo answers. Step 4 read 2026-10-26: R1 confirmed, R2 not seen, no retry finished inside the call budget ([widget record](docs/evidence/widget-4b-record.md)). Stage 4's no-reranker point read 2026-10-26: the reranker stays.
 2. Stage 3б (her «да»): the evidence-first prompt V5 paired against V4's answers, spec before the first request; then stage 4. Research of 2026-10-25 and its [analysis](docs/operations/research-2026-10-25/analysis.md): §8.3 items 15–17 deferred.
 3. Before a push: the whole Mac suite, mypy, bandit and the audits; locks refreshed 2026-10-25, audits clean on the laptop, the site build waits ([`BACKLOG.md`](BACKLOG.md)).
 
@@ -109,7 +109,7 @@ on 2026-10-23 Julia: «Да, запускай судью». No replacement judge
 
 ## Open for Julia
 
-[`PLAN.md`](PLAN.md) §8.3, by stage: fixes of the widget's R1/R2 if confirmed (stage 3); removing
+[`PLAN.md`](PLAN.md) §8.3, by stage: fixes of the widget's R1 (confirmed) and of its retry's call budget (stage 3); removing
 self-evaluation with its «Качество: N» badge, an `ollama serve` restart, the SLO (stage 4);
 the service on her Mac and whether it counts as a deployment (stage 6); the locked parts
 (stage 7); publication (stage 8). Any time: GitHub billing; Q2b (`PLAN.md` writes Q2б) — 100 real shipment-bound
@@ -147,4 +147,4 @@ requests (without them phase B stays blocked); Mac hours a day for runs; frozen 
   [`EVIDENCE_INDEX.md`](EVIDENCE_INDEX.md) · documents map — [`docs/README.md`](docs/README.md)
 - Agent conventions — [`CLAUDE.md`](CLAUDE.md), [`AGENT_STATE.md`](AGENT_STATE.md) · queue for
   automation — [`BACKLOG.md`](BACKLOG.md) · module layout — [`DEPRECATIONS.md`](DEPRECATIONS.md)
-- Last session — [stage 2b closed, stage 3's signals running](docs/operations/session-handoff-2026-10-25-stage3-signals-running.md)
+- Last session — [four items under her «да», the widget running](docs/operations/session-handoff-2026-10-26-widget-running.md)

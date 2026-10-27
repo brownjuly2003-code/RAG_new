@@ -1,0 +1,184 @@
+{
+ "spec": "docs/specs/widget-4b.md",
+ "stand": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+ "model": "qwen3:4b-instruct-2507-q4_K_M",
+ "rows_sha256": "98ef634ad09c0eebffa35d8af437c6799b89b567b51a22d2cc76dcd1124784b9",
+ "plan_sha256": "30e0a598e6f6edabd7d72ac64b4ce4923655ed9845c5852f02107e345e9df16e",
+ "judge_sha256": "a1413cbadc5b7f1e629f9ad16ca77c7baba36870122c21a678a5dfd57b1b6718",
+ "runs": {
+  "widget-production": {
+   "env": "production",
+   "status": "complete",
+   "planned": 1,
+   "reached": 1,
+   "delivered": 1,
+   "tickets_made": 1,
+   "load": {
+    "median": 6.22,
+    "max": 7.24
+   }
+  },
+  "widget-development": {
+   "env": "development",
+   "status": "complete",
+   "planned": 10,
+   "reached": 10,
+   "delivered": 10,
+   "tickets_made": 7,
+   "load": {
+    "median": 6.5,
+    "max": 60.77
+   }
+  }
+ },
+ "r1": {
+  "reading": "confirmed",
+  "seen": {
+   "production_route": "human",
+   "production_evaluations": [
+    {
+     "status": "unavailable",
+     "reason": "no_independent_judge",
+     "quality": 0,
+     "source": "unmeasured"
+    }
+   ],
+   "production_lines": [
+    {
+     "independent": false,
+     "require": true
+    }
+   ],
+   "development_no_judge": 0
+  }
+ },
+ "r2": {
+  "reading": "not seen on these ten",
+  "cases": []
+ },
+ "grader": {
+  "passes": 20,
+  "defects": 5,
+  "outcomes": {
+   "grader_error": 2,
+   "ok": 15,
+   "partial_grader_error": 3
+  }
+ },
+ "ten": {
+  "reached": 10,
+  "routes": {
+   "auto": 3,
+   "error_escalation": 5,
+   "human": 2
+  },
+  "tickets": 7,
+  "retries": 9,
+  "seconds": {
+   "median": 1864.8,
+   "max": 2594.5
+  },
+  "questions": [
+   {
+    "case_id": "aircargo-probation-data",
+    "route": "human",
+    "ticket": true,
+    "seconds": 1464.33,
+    "passes": 2,
+    "model_calls": 24,
+    "chat_grade": "bad",
+    "chat_class": "target"
+   },
+   {
+    "case_id": "aircargo-probation-extend",
+    "route": "error_escalation",
+    "ticket": true,
+    "seconds": 2355.695,
+    "passes": 2,
+    "model_calls": 26,
+    "chat_grade": "bad",
+    "chat_class": "target"
+   },
+   {
+    "case_id": "aircargo-probation-dismissal",
+    "route": "error_escalation",
+    "ticket": true,
+    "seconds": 2594.52,
+    "passes": 2,
+    "model_calls": 26,
+    "chat_grade": "good",
+    "chat_class": "good"
+   },
+   {
+    "case_id": "aircargo-dismissal-check",
+    "route": "error_escalation",
+    "ticket": true,
+    "seconds": 2448.966,
+    "passes": 2,
+    "model_calls": 25,
+    "chat_grade": "good",
+    "chat_class": "good"
+   },
+   {
+    "case_id": "aircargo-dismissal-lawyer",
+    "route": "auto",
+    "ticket": false,
+    "seconds": 963.011,
+    "passes": 1,
+    "model_calls": 17,
+    "chat_grade": "good",
+    "chat_class": "good"
+   },
+   {
+    "case_id": "aircargo-dismissal-order",
+    "route": "auto",
+    "ticket": false,
+    "seconds": 1021.033,
+    "passes": 1,
+    "model_calls": 19,
+    "chat_grade": "good",
+    "chat_class": "good"
+   },
+   {
+    "case_id": "aircargo-leave-sources",
+    "route": "auto",
+    "ticket": false,
+    "seconds": 1144.31,
+    "passes": 1,
+    "model_calls": 18,
+    "chat_grade": "good",
+    "chat_class": "good"
+   },
+   {
+    "case_id": "aircargo-leave-compensation",
+    "route": "human",
+    "ticket": true,
+    "seconds": 2265.308,
+    "passes": 2,
+    "model_calls": 26,
+    "chat_grade": "good",
+    "chat_class": "good"
+   },
+   {
+    "case_id": "aircargo-leave-risk",
+    "route": "error_escalation",
+    "ticket": true,
+    "seconds": 2336.819,
+    "passes": 3,
+    "model_calls": 24,
+    "chat_grade": "good",
+    "chat_class": "good"
+   },
+   {
+    "case_id": "aircargo-matliab-check",
+    "route": "error_escalation",
+    "ticket": true,
+    "seconds": 1367.539,
+    "passes": 3,
+    "model_calls": 24,
+    "chat_grade": "good",
+    "chat_class": "good"
+   }
+  ]
+ }
+}
