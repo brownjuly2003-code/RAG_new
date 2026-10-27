@@ -236,4 +236,6 @@ changes, and where they may stop.
   On 2026-10-27, ≈ 20:40 UTC, the week at 0.63 and the core half graded, Julia: «этот проект
   очень важен, расходуем лимит под него». The week's pause moved from 0.70 to 0.95, and on a stop
   aircargo's plan and its bridge are graded at once, not after the reset. No rule of the step or
-  the table changed.
+  the table changed. At ≈ 21:30 UTC, the five hours at 0.89: «тратить лимит можно до полного
+  упора» — both windows are spent to their cap (0.99 of the week; the five hours until the route
+  refuses, then waited out to the reset).
