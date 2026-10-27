@@ -7,6 +7,9 @@ reads it and its test ([Records](#records)). [`PLAN.md`](../../PLAN.md) stage 3,
 читается один раз на этих 100 ответах по замороженному чтению»; §8.3, item 13; the
 [research analysis](../operations/research-2026-10-25/analysis.md), item 4. Julia's «да» of
 2026-10-26 took it as the fourth of four items. No generation, no judge call.
+[Amendment 1](#amendment-1-2026-10-26-horizon-guard-base-then-fresh-answers), 2026-10-26, after
+the [record](../evidence/encoder-checkers-record.md) and before its own first call: a fourth
+checker, then the four read once more on answers no choice has touched.
 
 ## Why
 
@@ -122,6 +125,75 @@ the answers not reached are counted and left out. A run broken otherwise resumes
 ended, the same tool, weights and inputs. A checker whose reading set is not whole, or whose RU or EN half keeps
 fewer than 30 good or 15 targets, is `NOT_EVIDENCE`. Another project's runs on the shared Mac
 are not stopped; the load average is recorded at each checker's start and end.
+
+## Amendment 1, 2026-10-26: Horizon guard base, then fresh answers
+
+Registered before B's first call and before V5's first aircargo answer; the rules above stay,
+and the registered tool runs unchanged (SHA-256 `fa226d384f7dc0e997be0e69ba3cd1de5c9312770fae64d155fcd32380a2a49e`).
+
+**Why.** All three read *in between* ([record](../evidence/encoder-checkers-record.md)); H came
+closest, 10 of 17 caught while marking 8 of 63. Julia asked on 2026-10-26 whether better
+checkers should be sought. Research 4's next pick, if the small one separates too little, is its
+larger sibling. Nothing newer fits: on the authors' pages on 2026-10-26, LFM2.5-Encoder-350M's
+detector names no Russian and has its own licence; LettuceDetect v2 on Qwen 2B (2.27B) names no
+Russian and would take tens of seconds an answer on the Mac. And the record's weak link is the
+threshold's transfer: every checker separated the aircargo answers better (H's AUROC 0.805)
+than the calibration ones it was chosen on (0.646 and 0.571) — so a second read, on answers the
+thresholds and this choice never saw, decides.
+
+**Part 1 — B.** `Horizon-Labs/hallucination-guard-base` (mmBERT-base) at `f0aaaac7` (v1.1,
+2026-09-26), 308M, Apache-2.0, Russian among its 30 training languages; its card gives a
+balanced accuracy at 0.5 of 0.729 on HaluEval translated into six languages (small 0.714) and
+0.829 on RAGTruth (small 0.798), and no Russian grounding number. B is scored as H, by the same
+card's use, with H's scorer: each sentence against the source, 2,048 tokens, the minimum over
+sentences. Everything else as above: the same answers in the same order, the same threshold
+rule, the same reading. The loading check: B's PyTorch path against its authors'
+`onnx/model.onnx` on the tool's 12 pairs, within 0.01 and the same top label, and its loaded
+config holding its file's rope bases; B is scored only on the weights that check read. Each
+segment of B's rows starts right after a row naming this amendment's tool, and holds H's answers
+(H's inputs, their SHA-256, the planned counts, RusHallu-RAG's commit). The outcome over the
+four by the rule above; H's, L's and N's rows are the committed ones, not scored again. Part 1
+proposes nothing alone: a checker goes to Julia only through Part 2.
+
+**Part 2 — fresh answers.** After stage 3b's aircargo judge, its record committed
+([`answer-prompt-v5.md`](answer-prompt-v5.md)), each of the four scores V5's 100 aircargo
+answers (`v5-aircargo-bNN` in the stand's `v5/runs`) against the documents of each answer's own
+prompt, by its use above, in the replay summary's order. The classes are V5's aircargo judge's
+(`reports/answer-prompt-v5/4f48fed/v5-aircargo-judge.cases.jsonl`) by the rule above, where
+an empty answer is a target, as the judge's export grades it bad, and a missing verdict leaves it
+unclassed: scored, counted apart. Each answer is found once, its prompt SHA-256 the judge row's
+and the replay summary's; its row holds the SHA-256 of the request the judge was sent for it,
+checked against the judge's plan, which the judge record names by its SHA-256. Each checker's
+threshold is the one frozen in its record (H, L, N in `4f48fed/record.json`, B in Part 1's), the
+reading the same. A V5 answer quotes its evidence: every sentence is scored, quotes included; a
+passage copied word for word scores as supported, and the minimum over sentences is set by the
+answer's own. All four are read, so no choice among them is made on the aircargo answers.
+
+- **The outcome:** a checker is *worth wiring* when its fresh read is and its read on V4's 80
+  is neither useless nor NOT_EVIDENCE; among those, the best by the rule above. Otherwise
+  `NOT_EVIDENCE` if a checker's fresh read is: it did not reach every answer, or fewer than 10
+  targets or 30 good among the classed; else the checkers *in between* on the fresh read, listed
+  (a fresh *worth wiring* over a V4 read that is useless or `NOT_EVIDENCE` is held back, named in
+  the record and counted in between); else none.
+  *Worth wiring* is a new model in the product: Julia's word (§9), then its E2E test and its
+  seconds on the chat's path.
+- **No V5 aircargo answers** — the harm rule of stage 3b stopping the key before it is
+  replayed — or answers not whole, or a judge plan not counted, leaves Part 2 `NOT_EVIDENCE`
+  with nothing scored, and stage 3 at outcome C.
+- **Forecast, written before the first call:** Part 1 — B *in between*, 9–12 of 17 caught; it
+  costs about 3.5 times H's arithmetic (hidden size 768 against 384, the same 22 layers): ≈ 200
+  min of the Mac, an aircargo answer ≈ 8 s at the median. Part 2 — none *worth wiring*; a V5
+  answer holds about twice V4's sentences: H ≈ 25 min, L ≈ 15, N ≈ 50, B ≈ 80.
+- **Order and stop** as above, one checker at a time, each in its own process, never beside
+  another measurement on the Mac: B's forecast 200 min (stop at 600); in Part 2 H, L, N, B, each
+  stopped at three times its forecast.
+- **Records:** tool [`reports/encoder-checkers/tools/encoder_checkers_amend.py`](../../reports/encoder-checkers/tools/encoder_checkers_amend.py),
+  which loads the registered tool and adds only B and Part 2; its test
+  `tests/test_encoder_checkers_amend.py`. Part 1 in `reports/encoder-checkers/4f48fed-base/`
+  (`parity-B.json`, `scores-B.jsonl`, `record.json`), Part 2 in
+  `reports/encoder-checkers/4f48fed-fresh/` (`fresh-<checker>.jsonl`, `record.json`); rows as
+  above, ids, labels, scores, counts and seconds, and an answer's and its request's SHA-256.
+  At registration the tool's SHA-256 is `f927b619af17988fafaa69f59324203c23fe0c7de2d6155e3b1670c1ba825571`, its test's `2e775655ae397e60fb65b133f62ab327c917b4ceb068ca54a72007d900928cb7`.
 
 ## Records
 
