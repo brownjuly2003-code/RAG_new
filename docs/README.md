@@ -98,9 +98,10 @@ P2 reference samples ([Astra](specs/p2-astra-reference-sample.md),
 
 - [`evidence/`](evidence/) — one write-up per measured slice; the register with provenance is
   [`EVIDENCE_INDEX.md`](../EVIDENCE_INDEX.md). The records themselves are in `../reports/`.
-- [Latest handoff: four items under her «да», the widget running](operations/session-handoff-2026-10-26-widget-running.md)
-  — the handover line, the no-reranker point, the encoders and Amendment 1, V5 and the widget
-  registered, the widget's run on the Mac. Before it:
+- [Latest handoff: the widget read, V5 running](operations/session-handoff-2026-10-27-v5-running.md)
+  — R1 confirmed and the retry's call budget, Amendment 1 committed, B downloaded, V5's chain
+  on the Mac. Before it:
+  [four items under her «да», the widget running](operations/session-handoff-2026-10-26-widget-running.md),
   [stage 2b closed, stage 3's signals running](operations/session-handoff-2026-10-25-stage3-signals-running.md),
   [V4 running unattended](operations/session-handoff-2026-10-24-v4-running.md), the
   [stage 2 answers collected](operations/session-handoff-2026-10-23-stage2-collected.md), the

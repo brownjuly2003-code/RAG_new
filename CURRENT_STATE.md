@@ -96,7 +96,7 @@ answerable questions (V3 8); aircargo's nine good answers turned bad, eight by a
 
 1. [`PLAN.md`](PLAN.md) stage 3 — **outcome C** ([signal record](docs/evidence/handover-signal-v4-aircargo.md)): no signal worth wiring, S3 in between. Her «да» (2026-10-26): the handover line — done; no stage 2 for S3.
    Stage 3's encoder test read 2026-10-26: all three in between, none worth wiring; H catches 10 of 17 marking 8 of 63 ([record](docs/evidence/encoder-checkers-record.md)). Next in stage 3: Horizon guard base under an amendment, then the best read on V5's aircargo answers. Step 4 read 2026-10-26: R1 confirmed, R2 not seen, no retry finished inside the call budget ([widget record](docs/evidence/widget-4b-record.md)). Stage 4's no-reranker point read 2026-10-26: the reranker stays.
-2. Stage 3б (her «да»): the evidence-first prompt V5 paired against V4's answers, spec before the first request; then stage 4. Research of 2026-10-25 and its [analysis](docs/operations/research-2026-10-25/analysis.md): §8.3 items 15–17 deferred.
+2. Stage 3б (her «да»): the evidence-first prompt V5 paired against V4's answers, spec `47e2d71`; its 300 answers running on the Mac since 2026-10-27 13:56 UTC (≈ 10.5 h), the judge (620 requests, ≈ $116–130) waits for her word; then stage 4. Research of 2026-10-25 and its [analysis](docs/operations/research-2026-10-25/analysis.md): §8.3 items 15–17 deferred.
 3. Before a push: the whole Mac suite, mypy, bandit and the audits; locks refreshed 2026-10-25, audits clean on the laptop, the site build waits ([`BACKLOG.md`](BACKLOG.md)).
 
 ## Julia's decisions in force
@@ -147,4 +147,4 @@ requests (without them phase B stays blocked); Mac hours a day for runs; frozen 
   [`EVIDENCE_INDEX.md`](EVIDENCE_INDEX.md) · documents map — [`docs/README.md`](docs/README.md)
 - Agent conventions — [`CLAUDE.md`](CLAUDE.md), [`AGENT_STATE.md`](AGENT_STATE.md) · queue for
   automation — [`BACKLOG.md`](BACKLOG.md) · module layout — [`DEPRECATIONS.md`](DEPRECATIONS.md)
-- Last session — [four items under her «да», the widget running](docs/operations/session-handoff-2026-10-26-widget-running.md)
+- Last session — [the widget read, V5 running](docs/operations/session-handoff-2026-10-27-v5-running.md)
