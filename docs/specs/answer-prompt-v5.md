@@ -239,3 +239,8 @@ changes, and where they may stop.
   the table changed. At ≈ 21:30 UTC, the five hours at 0.89: «тратить лимит можно до полного
   упора» — both windows are spent to their cap (0.99 of the week; the five hours until the route
   refuses, then waited out to the reset).
+
+  At ≈ 22:25 UTC, the bridges of both bases counted and no M1 verdict exported or read: «можно
+  запустить судью на весь объем - лимит есть». All five plans and three bridges are graded now,
+  M2 and aircargo beside the core, and the decision is `v5_record.py`'s table above, as first
+  registered; `v5_core.py`'s step is printed beside it and decides nothing.
