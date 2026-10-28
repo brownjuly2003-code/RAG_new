@@ -83,7 +83,10 @@ step 0](specs/stage4-step0-diagnostics.md) — diagnostics before the levers: ll
 prompt cache, the Mac's paging and the reused prefix over five aircargo answers on V4's stand,
 read from the server's log and a sampler, nothing changed; registered before the first request; its
 [record](evidence/stage4-step0-record.md): the cache is the 4B's growth, nothing restored, the weights
-repacked, 2026-10-28. [Stage 6, item 4](specs/stage6-throughput.md) — the
+repacked, 2026-10-28. [Stage 4, step 1](specs/stage4-step1-rerank-memory.md) — where the rerank's
+102 s go: four aircargo questions on V4's stand, each asked with the model resident (A) and with it
+unloaded before the question (B), in two runs, BABA and ABAB, beside step 0's sampler; registered
+before the first request. [Stage 6, item 4](specs/stage6-throughput.md) — the
 service's questions an hour and what a second client sees: a draft, registered with its tools once
 the service is installed.
 
