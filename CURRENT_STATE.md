@@ -1,7 +1,7 @@
 # Current state — RAG_new
 
 2026-10-28 · The plan: [`PLAN.md`](PLAN.md), accepted by Julia on 2026-10-17 («принять») ·
-now: stage 3б closed — V5 not adopted, V4 stays; stage 4 next · previous version: [`archive/docs/state/current-state-through-2026-10-17.md`](archive/docs/state/current-state-through-2026-10-17.md).
+now: stage 4 — step 0 read, step 1 measured, step 3's timing registered · previous version: [`archive/docs/state/current-state-through-2026-10-17.md`](archive/docs/state/current-state-through-2026-10-17.md).
 
 Read this file for *what is true now*; [`PLAN.md`](PLAN.md) for *what happens next and why*;
 [`ROADMAP.md`](ROADMAP.md) for *what each stage has delivered*; [`docs/README.md`](docs/README.md)
@@ -96,8 +96,8 @@ answerable questions (V3 8); aircargo's nine good answers turned bad, eight by a
 
 1. [`PLAN.md`](PLAN.md) stage 3 — **outcome C** ([signal record](docs/evidence/handover-signal-v4-aircargo.md)): no signal worth wiring, S3 in between. Her «да» (2026-10-26): the handover line — done; no stage 2 for S3.
    Stage 3's encoder test read 2026-10-26: all three in between, none worth wiring; H catches 10 of 17 marking 8 of 63 ([record](docs/evidence/encoder-checkers-record.md)); its Amendment 1 read 2026-10-28: Horizon guard base in between too, 7 of 17 marking 7 of 63, and its read on V5's fresh answers `NOT_EVIDENCE` — stage 3 stays at outcome C. Step 4 read 2026-10-26: R1 confirmed, R2 not seen, no retry finished inside the call budget ([widget record](docs/evidence/widget-4b-record.md)). Stage 4's no-reranker point read 2026-10-26: the reranker stays.
-2. Stage 3б closed 2026-10-28 — **V5 not adopted** ([record](docs/evidence/answer-prompt-v5-record.md)): harm on WixQA by the table's first row; three of five judge plans `NOT_EVIDENCE`, the judge wavering on the visible Evidence / Answer / Status scaffold, which it graded «other» or «copied_context» in 63–75 of V5's 100 answers a base. V4 stays. Next: [`PLAN.md`](PLAN.md) stage 4 with V4. Step 0 read 2026-10-28 ([record](docs/evidence/stage4-step0-record.md)): the host prompt cache is the 4B's growth, 280.69 MiB a request with no state restored; generation does not wait on memory; the weights repacked; item 5's cap on the cache waits for her word. Step 3's K curve, read 2026-10-28 without a model ([record](docs/evidence/k-curve-record.md)): the smallest K without a detected loss is 14, the forecast 6; its live timing against K = 20 comes next, with step 1. Research of 2026-10-25 and its [analysis](docs/operations/research-2026-10-25/analysis.md): §8.3 items 15–17 deferred.
-3. Pushed 2026-10-28 through `7caaf21` after ci_local PASS ([CI and pushes](#ci-and-pushes)); before the next push its full run again. pip-audit is clean since both locks moved `authlib` 1.7.0 → 1.9.1 (7 advisories).
+2. Stage 3б closed 2026-10-28 — **V5 not adopted** ([record](docs/evidence/answer-prompt-v5-record.md)): harm on WixQA by the table's first row; three of five judge plans `NOT_EVIDENCE`, the judge wavering on the visible Evidence / Answer / Status scaffold, which it graded «other» or «copied_context» in 63–75 of V5's 100 answers a base. V4 stays. Next: [`PLAN.md`](PLAN.md) stage 4 with V4. Step 0 read 2026-10-28 ([record](docs/evidence/stage4-step0-record.md)): the host prompt cache is the 4B's growth, 280.69 MiB a request with no state restored; generation does not wait on memory; the weights repacked; item 5's cap on the cache waits for her word. Step 3's K curve, read 2026-10-28 without a model ([record](docs/evidence/k-curve-record.md)): the smallest K without a detected loss is 14, the forecast 6; its live timing against K = 20, without a model, registered 2026-10-28 in `3fc8ce7` ([spec](docs/specs/stage4-step3-k-timing.md)), its runs next. Step 1 measured 2026-10-28 ([spec](docs/specs/stage4-step1-rerank-memory.md); its record on the Mac, the capsule next): with the model unloaded the rerank takes a median 0.26 of its time with the model resident, on 4 pairs — contention yes; net faster by the sign alone (a median −47 s, within the spec's 90 s of zero), on a 2–2 split. Research of 2026-10-25 and its [analysis](docs/operations/research-2026-10-25/analysis.md): §8.3 items 15–17 deferred.
+3. Pushed 2026-10-28 through `7caaf21` after ci_local PASS ([CI and pushes](#ci-and-pushes)); the 14 commits after it are local, the push her word; before it ci_local's full run again. pip-audit is clean since both locks moved `authlib` 1.7.0 → 1.9.1 (7 advisories).
 
 ## Julia's decisions in force
 
@@ -112,7 +112,7 @@ on 2026-10-23 Julia: «Да, запускай судью». No replacement judge
 [`PLAN.md`](PLAN.md) §8.3, by stage: fixes of the widget's R1 (confirmed) and of its retry's call budget (stage 3); removing
 self-evaluation with its «Качество: N» badge, an `ollama serve` restart, the SLO (stage 4);
 the service on her Mac and whether it counts as a deployment (stage 6); the locked parts
-(stage 7); publication (stage 8). Any time: GitHub billing; Q2b (`PLAN.md` writes Q2б) — 100 real shipment-bound
+(stage 7), and whether stage 7 measures P1b alone (offered 2026-10-28); publication (stage 8). Any time: GitHub billing; Q2b (`PLAN.md` writes Q2б) — 100 real shipment-bound
 requests (without them phase B stays blocked); Mac hours a day for runs; frozen items whose condition is formally met ([`PLAN.md`](PLAN.md) §9).
 
 ## Accepted open risks
@@ -147,4 +147,4 @@ requests (without them phase B stays blocked); Mac hours a day for runs; frozen 
   [`EVIDENCE_INDEX.md`](EVIDENCE_INDEX.md) · documents map — [`docs/README.md`](docs/README.md)
 - Agent conventions — [`CLAUDE.md`](CLAUDE.md), [`AGENT_STATE.md`](AGENT_STATE.md) · queue for
   automation — [`BACKLOG.md`](BACKLOG.md) · module layout — [`DEPRECATIONS.md`](DEPRECATIONS.md)
-- Last session — [V5 not adopted, the encoders' Amendment 1](docs/operations/session-handoff-2026-10-28-v5-record.md)
+- Last session — [stage 4: step 0 read, step 1 measured, step 3 registered](docs/operations/session-handoff-2026-10-28-stage4-step1.md)

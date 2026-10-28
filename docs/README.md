@@ -122,9 +122,10 @@ P2 reference samples ([Astra](specs/p2-astra-reference-sample.md),
 
 - [`evidence/`](evidence/) — one write-up per measured slice; the register with provenance is
   [`EVIDENCE_INDEX.md`](../EVIDENCE_INDEX.md). The records themselves are in `../reports/`.
-- [Latest handoff: V5 not adopted, the encoders' Amendment 1](operations/session-handoff-2026-10-28-v5-record.md)
-  — V5's 300 answers and its whole judge, the record and why three plans do not count; Horizon
-  guard base; stage 4 next. Before it:
+- [Latest handoff: stage 4 — step 0 read, step 1 measured, step 3 registered](operations/session-handoff-2026-10-28-stage4-step1.md)
+  — step 0's record, step 1's two runs and its reading (contention yes, net faster on a 2–2
+  split), step 3's timing registered, stage 6 prepared. Before it:
+  [V5 not adopted, the encoders' Amendment 1](operations/session-handoff-2026-10-28-v5-record.md),
   [the widget read, V5 running](operations/session-handoff-2026-10-27-v5-running.md),
   [four items under her «да», the widget running](operations/session-handoff-2026-10-26-widget-running.md),
   [stage 2b closed, stage 3's signals running](operations/session-handoff-2026-10-25-stage3-signals-running.md),
