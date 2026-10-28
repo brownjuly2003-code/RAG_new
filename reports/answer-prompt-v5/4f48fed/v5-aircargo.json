@@ -1,0 +1,267 @@
+{
+ "key": "aircargo",
+ "launches": [
+  {
+   "label": "v5-aircargo-b01",
+   "replay_of": "v4-aircargo-b01",
+   "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+   "model": "qwen3:4b-instruct-2507-q4_K_M",
+   "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+   "prompt_id": "QA_PROMPT_V5",
+   "tools_sha256": {
+    "replay.py": "ca954c59710e93925cc923f5b2a7f175ce86f7e1fa7b96a46d3b3bbeec4d6eed",
+    "qa_prompt_v5.txt": "835b0f2cf1ac7bc86ad30605367d81457b02e7436a5a5071642a5b881471c276",
+    "v5_chain.sh": "52b9f5f77881db021e802942ed0608c87438a3b32fe259406f3ad23991c03f1b"
+   },
+   "params": {
+    "temperature": 0.2,
+    "max_tokens": 1024
+   },
+   "budget_sec": 3600.0,
+   "started": "2026-10-27T20:21:27+00:00",
+   "finished": "2026-10-27T20:39:37+00:00",
+   "status": "complete",
+   "cases": 10,
+   "ollama_load_sec": 61.651,
+   "tenant": "aircargo",
+   "orphan_prompts": 0,
+   "model_errors": 0
+  },
+  {
+   "label": "v5-aircargo-b02",
+   "replay_of": "v4-aircargo-b02",
+   "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+   "model": "qwen3:4b-instruct-2507-q4_K_M",
+   "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+   "prompt_id": "QA_PROMPT_V5",
+   "tools_sha256": {
+    "replay.py": "ca954c59710e93925cc923f5b2a7f175ce86f7e1fa7b96a46d3b3bbeec4d6eed",
+    "qa_prompt_v5.txt": "835b0f2cf1ac7bc86ad30605367d81457b02e7436a5a5071642a5b881471c276",
+    "v5_chain.sh": "52b9f5f77881db021e802942ed0608c87438a3b32fe259406f3ad23991c03f1b"
+   },
+   "params": {
+    "temperature": 0.2,
+    "max_tokens": 1024
+   },
+   "budget_sec": 3600.0,
+   "started": "2026-10-27T20:39:37+00:00",
+   "finished": "2026-10-27T20:53:30+00:00",
+   "status": "complete",
+   "cases": 10,
+   "ollama_load_sec": null,
+   "tenant": "aircargo",
+   "orphan_prompts": 0,
+   "model_errors": 0
+  },
+  {
+   "label": "v5-aircargo-b03",
+   "replay_of": "v4-aircargo-b03",
+   "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+   "model": "qwen3:4b-instruct-2507-q4_K_M",
+   "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+   "prompt_id": "QA_PROMPT_V5",
+   "tools_sha256": {
+    "replay.py": "ca954c59710e93925cc923f5b2a7f175ce86f7e1fa7b96a46d3b3bbeec4d6eed",
+    "qa_prompt_v5.txt": "835b0f2cf1ac7bc86ad30605367d81457b02e7436a5a5071642a5b881471c276",
+    "v5_chain.sh": "52b9f5f77881db021e802942ed0608c87438a3b32fe259406f3ad23991c03f1b"
+   },
+   "params": {
+    "temperature": 0.2,
+    "max_tokens": 1024
+   },
+   "budget_sec": 3600.0,
+   "started": "2026-10-27T20:53:30+00:00",
+   "finished": "2026-10-27T21:14:56+00:00",
+   "status": "complete",
+   "cases": 10,
+   "ollama_load_sec": null,
+   "tenant": "aircargo",
+   "orphan_prompts": 0,
+   "model_errors": 0
+  },
+  {
+   "label": "v5-aircargo-b04",
+   "replay_of": "v4-aircargo-b04",
+   "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+   "model": "qwen3:4b-instruct-2507-q4_K_M",
+   "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+   "prompt_id": "QA_PROMPT_V5",
+   "tools_sha256": {
+    "replay.py": "ca954c59710e93925cc923f5b2a7f175ce86f7e1fa7b96a46d3b3bbeec4d6eed",
+    "qa_prompt_v5.txt": "835b0f2cf1ac7bc86ad30605367d81457b02e7436a5a5071642a5b881471c276",
+    "v5_chain.sh": "52b9f5f77881db021e802942ed0608c87438a3b32fe259406f3ad23991c03f1b"
+   },
+   "params": {
+    "temperature": 0.2,
+    "max_tokens": 1024
+   },
+   "budget_sec": 3600.0,
+   "started": "2026-10-27T21:14:56+00:00",
+   "finished": "2026-10-27T21:30:58+00:00",
+   "status": "complete",
+   "cases": 10,
+   "ollama_load_sec": null,
+   "tenant": "aircargo",
+   "orphan_prompts": 0,
+   "model_errors": 0
+  },
+  {
+   "label": "v5-aircargo-b05",
+   "replay_of": "v4-aircargo-b05",
+   "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+   "model": "qwen3:4b-instruct-2507-q4_K_M",
+   "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+   "prompt_id": "QA_PROMPT_V5",
+   "tools_sha256": {
+    "replay.py": "ca954c59710e93925cc923f5b2a7f175ce86f7e1fa7b96a46d3b3bbeec4d6eed",
+    "qa_prompt_v5.txt": "835b0f2cf1ac7bc86ad30605367d81457b02e7436a5a5071642a5b881471c276",
+    "v5_chain.sh": "52b9f5f77881db021e802942ed0608c87438a3b32fe259406f3ad23991c03f1b"
+   },
+   "params": {
+    "temperature": 0.2,
+    "max_tokens": 1024
+   },
+   "budget_sec": 3600.0,
+   "started": "2026-10-27T21:30:58+00:00",
+   "finished": "2026-10-27T21:54:09+00:00",
+   "status": "complete",
+   "cases": 10,
+   "ollama_load_sec": null,
+   "tenant": "aircargo",
+   "orphan_prompts": 0,
+   "model_errors": 0
+  },
+  {
+   "label": "v5-aircargo-b06",
+   "replay_of": "v4-aircargo-b06",
+   "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+   "model": "qwen3:4b-instruct-2507-q4_K_M",
+   "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+   "prompt_id": "QA_PROMPT_V5",
+   "tools_sha256": {
+    "replay.py": "ca954c59710e93925cc923f5b2a7f175ce86f7e1fa7b96a46d3b3bbeec4d6eed",
+    "qa_prompt_v5.txt": "835b0f2cf1ac7bc86ad30605367d81457b02e7436a5a5071642a5b881471c276",
+    "v5_chain.sh": "52b9f5f77881db021e802942ed0608c87438a3b32fe259406f3ad23991c03f1b"
+   },
+   "params": {
+    "temperature": 0.2,
+    "max_tokens": 1024
+   },
+   "budget_sec": 3600.0,
+   "started": "2026-10-27T21:54:09+00:00",
+   "finished": "2026-10-27T22:11:19+00:00",
+   "status": "complete",
+   "cases": 10,
+   "ollama_load_sec": null,
+   "tenant": "aircargo",
+   "orphan_prompts": 0,
+   "model_errors": 0
+  },
+  {
+   "label": "v5-aircargo-b07",
+   "replay_of": "v4-aircargo-b07",
+   "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+   "model": "qwen3:4b-instruct-2507-q4_K_M",
+   "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+   "prompt_id": "QA_PROMPT_V5",
+   "tools_sha256": {
+    "replay.py": "ca954c59710e93925cc923f5b2a7f175ce86f7e1fa7b96a46d3b3bbeec4d6eed",
+    "qa_prompt_v5.txt": "835b0f2cf1ac7bc86ad30605367d81457b02e7436a5a5071642a5b881471c276",
+    "v5_chain.sh": "52b9f5f77881db021e802942ed0608c87438a3b32fe259406f3ad23991c03f1b"
+   },
+   "params": {
+    "temperature": 0.2,
+    "max_tokens": 1024
+   },
+   "budget_sec": 3600.0,
+   "started": "2026-10-27T22:11:19+00:00",
+   "finished": "2026-10-27T22:36:09+00:00",
+   "status": "complete",
+   "cases": 10,
+   "ollama_load_sec": null,
+   "tenant": "aircargo",
+   "orphan_prompts": 0,
+   "model_errors": 0
+  },
+  {
+   "label": "v5-aircargo-b08",
+   "replay_of": "v4-aircargo-b08",
+   "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+   "model": "qwen3:4b-instruct-2507-q4_K_M",
+   "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+   "prompt_id": "QA_PROMPT_V5",
+   "tools_sha256": {
+    "replay.py": "ca954c59710e93925cc923f5b2a7f175ce86f7e1fa7b96a46d3b3bbeec4d6eed",
+    "qa_prompt_v5.txt": "835b0f2cf1ac7bc86ad30605367d81457b02e7436a5a5071642a5b881471c276",
+    "v5_chain.sh": "52b9f5f77881db021e802942ed0608c87438a3b32fe259406f3ad23991c03f1b"
+   },
+   "params": {
+    "temperature": 0.2,
+    "max_tokens": 1024
+   },
+   "budget_sec": 3600.0,
+   "started": "2026-10-27T22:36:09+00:00",
+   "finished": "2026-10-27T22:55:59+00:00",
+   "status": "complete",
+   "cases": 10,
+   "ollama_load_sec": null,
+   "tenant": "aircargo",
+   "orphan_prompts": 0,
+   "model_errors": 0
+  },
+  {
+   "label": "v5-aircargo-b09",
+   "replay_of": "v4-aircargo-b09",
+   "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+   "model": "qwen3:4b-instruct-2507-q4_K_M",
+   "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+   "prompt_id": "QA_PROMPT_V5",
+   "tools_sha256": {
+    "replay.py": "ca954c59710e93925cc923f5b2a7f175ce86f7e1fa7b96a46d3b3bbeec4d6eed",
+    "qa_prompt_v5.txt": "835b0f2cf1ac7bc86ad30605367d81457b02e7436a5a5071642a5b881471c276",
+    "v5_chain.sh": "52b9f5f77881db021e802942ed0608c87438a3b32fe259406f3ad23991c03f1b"
+   },
+   "params": {
+    "temperature": 0.2,
+    "max_tokens": 1024
+   },
+   "budget_sec": 3600.0,
+   "started": "2026-10-27T22:55:59+00:00",
+   "finished": "2026-10-27T23:18:07+00:00",
+   "status": "complete",
+   "cases": 10,
+   "ollama_load_sec": null,
+   "tenant": "aircargo",
+   "orphan_prompts": 0,
+   "model_errors": 0
+  },
+  {
+   "label": "v5-aircargo-b10",
+   "replay_of": "v4-aircargo-b10",
+   "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+   "model": "qwen3:4b-instruct-2507-q4_K_M",
+   "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+   "prompt_id": "QA_PROMPT_V5",
+   "tools_sha256": {
+    "replay.py": "ca954c59710e93925cc923f5b2a7f175ce86f7e1fa7b96a46d3b3bbeec4d6eed",
+    "qa_prompt_v5.txt": "835b0f2cf1ac7bc86ad30605367d81457b02e7436a5a5071642a5b881471c276",
+    "v5_chain.sh": "52b9f5f77881db021e802942ed0608c87438a3b32fe259406f3ad23991c03f1b"
+   },
+   "params": {
+    "temperature": 0.2,
+    "max_tokens": 1024
+   },
+   "budget_sec": 3600.0,
+   "started": "2026-10-27T23:18:07+00:00",
+   "finished": "2026-10-27T23:44:46+00:00",
+   "status": "complete",
+   "cases": 10,
+   "ollama_load_sec": null,
+   "tenant": "aircargo",
+   "orphan_prompts": 0,
+   "model_errors": 0
+  }
+ ],
+ "answers": 100,
+ "whole": true
+}

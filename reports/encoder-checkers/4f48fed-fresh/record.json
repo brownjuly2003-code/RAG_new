@@ -1,0 +1,12 @@
+{
+ "spec": "docs/specs/encoder-checkers.md",
+ "amendment": 1,
+ "part": 2,
+ "registered_sha256": "fa226d384f7dc0e997be0e69ba3cd1de5c9312770fae64d155fcd32380a2a49e",
+ "amendment_sha256": "f927b619af17988fafaa69f59324203c23fe0c7de2d6155e3b1670c1ba825571",
+ "not_evidence_because": [
+  "V5's aircargo judge plan is not counted"
+ ],
+ "decision": "NOT_EVIDENCE: V5's aircargo judge plan is not counted",
+ "worth_wiring": null
+}

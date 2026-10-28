@@ -98,3 +98,44 @@ on cut sources. No answer of any set went unscored.
   RusHallu-RAG's own. One draw of each checker, on the shared Mac.
 - Wiring a checker would be a new model in the product (Julia's word, §9), then its E2E test
   and its seconds on the chat's path; nothing here wires one.
+
+## Amendment 1: Horizon guard base, then V5's fresh answers — 2026-10-28
+
+[Amendment 1](../specs/encoder-checkers.md#amendment-1-2026-10-26-horizon-guard-base-then-fresh-answers),
+registered before B's first call: Horizon guard base (`Horizon-Labs/hallucination-guard-base`
+at `f0aaaac7`) as a fourth checker B, scored as H by the registered tool; then the four frozen
+thresholds read once on V5's 100 aircargo answers. Records: Part 1 in
+[`4f48fed-base/`](../../reports/encoder-checkers/4f48fed-base/record.json) (B's loading check,
+rows and record), Part 2 in [`4f48fed-fresh/`](../../reports/encoder-checkers/4f48fed-fresh/record.json),
+both written by [`encoder_checkers_amend.py`](../../reports/encoder-checkers/tools/encoder_checkers_amend.py).
+Checked by [`tests/test_encoder_checkers_amend_artifact.py`](../../tests/test_encoder_checkers_amend_artifact.py):
+Part 1 is the tool's output of B's rows, Part 2 its reading of the committed V5 judge record,
+and B's rows below are built from Part 1's record.
+
+B's loading path matched its authors' ONNX export on the 12 pairs (largest difference 1.0e-6,
+the same top label) before any score. The score ran alone on the Mac, 2026-10-27 23:51 –
+2026-10-28 01:51 UTC: 119 min against a forecast of 200, every planned answer reached.
+
+| Checker | Threshold | EN caught | EN over-marked | RU caught | RU over-marked | AUROC EN | AUROC RU |
+|---|---|---|---|---|---|---|---|
+| Horizon guard base | 0.4964 | 91 of 116 | 26 of 67 | 36 of 94 | 53 of 206 | 0.687 | 0.598 |
+
+| Checker | Caught of 17 | Over-marked of 63 | Reading | AUROC | Seconds an answer, median (p90) | Peak memory, GB |
+|---|---|---|---|---|---|---|
+| Horizon guard base | 7 | 7 | in between | 0.763 | 6.4 (53.7) | 1.80 |
+
+| Checker | RU grounding types caught | RU other types caught | Pairs cut: reading / EN / RU |
+|---|---|---|---|
+| Horizon guard base | 16 of 37 | 21 of 62 | 6 / 211 / 14 |
+
+**Part 1: in between: H, L, N, B.**
+
+B catches 7 of 17 — fewer than H's 10, below its forecast of 9–12 — while marking 7 of 63 good:
+the larger model reads no better on these answers. Part 1 proposes nothing alone.
+
+**Part 2: NOT_EVIDENCE: V5's aircargo judge plan is not counted.**
+
+The classes of V5's aircargo answers are its judge's, and that plan fails the stability rule:
+12 of 15 retests agree, 2 two steps apart, κ −0.06 (the [V5 record](answer-prompt-v5-record.md)).
+By the amendment nothing is scored, and stage 3 stays at outcome C: the handover line under
+every answer that already ships remains stage 3's result.

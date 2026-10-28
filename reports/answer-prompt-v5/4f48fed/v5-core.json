@@ -1,0 +1,328 @@
+{
+ "spec": "docs/specs/answer-prompt-v5.md",
+ "amendment": "Amendment 1, 2026-10-27: the judge in two steps",
+ "stand": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+ "keys": [
+  "wixqa"
+ ],
+ "tools": {
+  "replay.py": "ca954c59710e93925cc923f5b2a7f175ce86f7e1fa7b96a46d3b3bbeec4d6eed",
+  "qa_prompt_v5.txt": "835b0f2cf1ac7bc86ad30605367d81457b02e7436a5a5071642a5b881471c276",
+  "v5_chain.sh": "52b9f5f77881db021e802942ed0608c87438a3b32fe259406f3ad23991c03f1b",
+  "v5_record.py": "1e77dd35f011d274a165e7fda606d54fafbfd27a45c66154e791a645a23f7620",
+  "v5_core.py": "9df9af4f8be470198c1c7a6a3eef12abe0907a613fd1ff43a3933002587f0b4d"
+ },
+ "disclosure": [
+  "V5 was written after reading V4's answers, so the comparison is on the same questions (in-sample).",
+  "V5 answered on V4's saved contexts, never more of them: the record compares the prompts, not two paths; its longer template can leave a shorter context, unless the pair shows the same context.",
+  "One answer a side: the 4B samples without a seed; one draw of the judge, whose frozen instructions predate V5's quoted evidence; the judge and V5's author are the session's model (D12).",
+  "No self-evaluation, route, widget answer or follow-up turn was replayed: they change with V5 unmeasured."
+ ],
+ "inputs": {
+  "reports/answer-prompt-v4/4f48fed/v4-wixqa-judge-m1.cases.jsonl": "c89107cf5a5ae0eb7468011ffe7cbe0eaf60a39bfa279ce9715474210568098a",
+  "reports/answer-prompt-v4/4f48fed/v4-wixqa-judge-m1.json": "83b28dec4c90d309dad9d5a54998c2a7431446822a71aa191b9bf1abe80ff2d2",
+  "reports/answer-prompt-v5/4f48fed/v5-bridge-wixqa.cases.jsonl": "6c6d0a9bb8cbfe497d13236fc382a5581631fce53cf20c5bed79654324527f4a",
+  "reports/answer-prompt-v5/4f48fed/v5-bridge-wixqa.json": "00494a7bbad7988ae1dea1de4e9cb3a9c22da293493f0ac0a8e53dedccc7f2e9",
+  "reports/answer-prompt-v5/4f48fed/v5-environment.jsonl": "7923636922184301614a99874a920c461a6b63a75ed2bb24f8160cd7ceb5f926",
+  "reports/answer-prompt-v5/4f48fed/v5-wixqa-judge-m1.cases.jsonl": "0d711e30692d459d9feccb5e56d8c873e33486c7ce2f2aa8b9af36cdcc172ef8",
+  "reports/answer-prompt-v5/4f48fed/v5-wixqa-judge-m1.json": "674b5f6a73c661f61d3265dcee4f305de70b24247a98a691a5fc42e2ac8ebfd8",
+  "reports/answer-prompt-v5/4f48fed/v5-wixqa.cases.jsonl": "a5d6d8459e6ffb33716fb15320e873487d8b59f7f3780f7e39ab1fed03263fb3",
+  "reports/answer-prompt-v5/4f48fed/v5-wixqa.check.jsonl": "ba7b97f26ed61067bad700d7e61e67a7bb89e6ad0349d11baf74cac97de14683",
+  "reports/answer-prompt-v5/4f48fed/v5-wixqa.json": "856241388506ccbb20127b6d9d58bd4a9fa139d0d286e279c251911f8f4caa71"
+ },
+ "environment": {
+  "snapshots": 4,
+  "taken": [
+   "2026-10-27T13:56:18+00:00",
+   "2026-10-27T23:44:50+00:00"
+  ],
+  "ollama": "0.33.2",
+  "servers": [
+   {
+    "pid": 12377,
+    "started": "2026-09-13T16:37:06+00:00",
+    "binary": "/Users/julia/RAG_new_tools_ollama_v0.33.2/ollama"
+   }
+  ],
+  "freeze_sha256": "ed8fe1c2142b1a9ff7f1c80db891a0887860ba939131bf5cd3cbde324b161ada",
+  "newest": {
+   "name": "huggingface-hub",
+   "changed": "2026-05-30T14:51:39+00:00"
+  },
+  "versions": {
+   "langchain": "1.3.2",
+   "langchain-chroma": "1.1.0",
+   "langchain-classic": "1.0.7",
+   "langchain-community": "0.4.2",
+   "langchain-core": "1.4.0",
+   "langchain-experimental": "0.4.2",
+   "langchain-protocol": "0.0.16",
+   "langchain-text-splitters": "1.1.2"
+  }
+ },
+ "primary": {
+  "indicator": "bad",
+  "keys": [
+   "wixqa"
+  ],
+  "n": 100,
+  "table": {
+   "a": 46,
+   "b": 5,
+   "c": 40,
+   "d": 9
+  },
+  "difference": 0.35,
+  "clusters": 77,
+  "cluster95": [
+   0.234,
+   0.4537
+  ],
+  "newcombe95": [
+   0.2303,
+   0.4564
+  ],
+  "read95": [
+   0.2303,
+   0.4564
+  ],
+  "detected": true,
+  "direction": "rises",
+  "v4": 0.51,
+  "v5": 0.86
+ },
+ "same_context": {
+  "indicator": "bad",
+  "keys": [
+   "wixqa"
+  ],
+  "n": 81,
+  "table": {
+   "a": 38,
+   "b": 5,
+   "c": 32,
+   "d": 6
+  },
+  "difference": 0.3333,
+  "clusters": 63,
+  "cluster95": [
+   0.2078,
+   0.4512
+  ],
+  "newcombe95": [
+   0.1961,
+   0.4544
+  ],
+  "read95": [
+   0.1961,
+   0.4544
+  ],
+  "detected": true,
+  "direction": "rises",
+  "v4": 0.5309,
+  "v5": 0.8642
+ },
+ "corpora": {
+  "wixqa": {
+   "pairs": 100,
+   "unpaired": {
+    "count": 0,
+    "case_ids": []
+   },
+   "bad": {
+    "n": 100,
+    "table": {
+     "a": 46,
+     "b": 5,
+     "c": 40,
+     "d": 9
+    },
+    "difference": 0.35,
+    "clusters": 77,
+    "cluster95": [
+     0.234,
+     0.4537
+    ],
+    "newcombe95": [
+     0.2303,
+     0.4564
+    ],
+    "read95": [
+     0.2303,
+     0.4564
+    ],
+    "detected": true,
+    "direction": "rises",
+    "v4": 0.51,
+    "v5": 0.86
+   },
+   "good": {
+    "n": 100,
+    "table": {
+     "a": 4,
+     "b": 36,
+     "c": 0,
+     "d": 60
+    },
+    "difference": -0.36,
+    "clusters": 77,
+    "cluster95": [
+     -0.4483,
+     -0.2703
+    ],
+    "newcombe95": [
+     -0.4562,
+     -0.2624
+    ],
+    "read95": [
+     -0.4562,
+     -0.2624
+    ],
+    "detected": true,
+    "direction": "falls",
+    "v4": 0.4,
+    "v5": 0.04
+   },
+   "transitions": {
+    "good": {
+     "good": 4,
+     "partial_ok": 4,
+     "bad": 32
+    },
+    "partial_ok": {
+     "good": 0,
+     "partial_ok": 1,
+     "bad": 8
+    },
+    "bad": {
+     "good": 0,
+     "partial_ok": 5,
+     "bad": 46
+    }
+   },
+   "wrong_declines": {
+    "v4": 22,
+    "v5": 10
+   },
+   "context_has_answer": {
+    "same": 97,
+    "lost": 0,
+    "gained": 3
+   },
+   "claims_supported": {
+    "v4": {
+     "supported": 438,
+     "total": 484,
+     "share": 0.905
+    },
+    "v5": {
+     "supported": 555,
+     "total": 586,
+     "share": 0.9471
+    }
+   },
+   "defects": {
+    "v4": {
+     "empty": 0,
+     "citation_only": 0,
+     "wrong_language": 0,
+     "copied_context": 0,
+     "cut_off": 0,
+     "repetition": 0,
+     "other": 0
+    },
+    "v5": {
+     "empty": 0,
+     "citation_only": 0,
+     "wrong_language": 0,
+     "copied_context": 12,
+     "cut_off": 0,
+     "repetition": 4,
+     "other": 63
+    }
+   },
+   "answers": 100,
+   "same_context": 81,
+   "quoted": {
+    "v4": 59,
+    "v5": 96
+   },
+   "truncated": 0,
+   "at_token_cap": {
+    "v4": 0,
+    "v5": 0
+   },
+   "stream_sec": {
+    "v4": {
+     "n": 100,
+     "min": 43.007,
+     "median": 85.262,
+     "p90": 146.176,
+     "max": 249.26
+    },
+    "v5": {
+     "n": 100,
+     "min": 50.331,
+     "median": 103.392,
+     "p90": 145.71,
+     "max": 256.81
+    }
+   },
+   "chunks": {
+    "v4": {
+     "n": 100,
+     "min": 9,
+     "median": 105.0,
+     "p90": 206.8,
+     "max": 419
+    },
+    "v5": {
+     "n": 100,
+     "min": 44,
+     "median": 201.5,
+     "p90": 406.0,
+     "max": 586
+    }
+   }
+  }
+ },
+ "plans": {
+  "v5-bridge-wixqa": {
+   "status": "counted",
+   "retest_passed": true,
+   "admitted_cli": {
+    "2.1.310": 15,
+    "2.1.311": 15
+   }
+  },
+  "v4-wixqa-judge-m1": {
+   "status": "counted",
+   "retest_passed": true,
+   "admitted_cli": {
+    "2.1.310": 115
+   }
+  },
+  "v5-wixqa-judge-m1": {
+   "status": "counted",
+   "retest_passed": true,
+   "admitted_cli": {
+    "2.1.311": 95,
+    "2.1.312": 20
+   }
+  }
+ },
+ "step": {
+  "step": "stop",
+  "decision": "not adopted",
+  "v5_replaces_v4": false,
+  "reasons": [
+   "wixqa: the bad share rises",
+   "wixqa: the good share falls, the bad share does not"
+  ],
+  "harm": [
+   "wixqa: the bad share rises",
+   "wixqa: the good share falls, the bad share does not"
+  ],
+  "not_counted": {}
+ }
+}

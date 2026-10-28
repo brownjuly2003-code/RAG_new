@@ -1,0 +1,926 @@
+{
+ "stand": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+ "keys": [
+  "wixqa",
+  "conditionalqa",
+  "aircargo"
+ ],
+ "prompts": {
+  "v4": "QA_PROMPT_V4",
+  "v5": "QA_PROMPT_V5",
+  "v4_sha256": "9276aff5a3a44bc9ff1adb7a52b7b11a06e8f4b0f7fe79a5dc6b20262db3a515",
+  "v5_sha256": "835b0f2cf1ac7bc86ad30605367d81457b02e7436a5a5071642a5b881471c276",
+  "template_delta": 178
+ },
+ "tools": {
+  "replay.py": "ca954c59710e93925cc923f5b2a7f175ce86f7e1fa7b96a46d3b3bbeec4d6eed",
+  "qa_prompt_v5.txt": "835b0f2cf1ac7bc86ad30605367d81457b02e7436a5a5071642a5b881471c276",
+  "v5_chain.sh": "52b9f5f77881db021e802942ed0608c87438a3b32fe259406f3ad23991c03f1b",
+  "v5_record.py": "1e77dd35f011d274a165e7fda606d54fafbfd27a45c66154e791a645a23f7620"
+ },
+ "disclosure": [
+  "V5 was written after reading V4's answers, so the comparison is on the same questions (in-sample).",
+  "V5 answered on V4's saved contexts, never more of them: the record compares the prompts, not two paths; its longer template can leave a shorter context, unless the pair shows the same context.",
+  "One answer a side: the 4B samples without a seed; one draw of the judge, whose frozen instructions predate V5's quoted evidence; the judge and V5's author are the session's model (D12).",
+  "No self-evaluation, route, widget answer or follow-up turn was replayed: they change with V5 unmeasured."
+ ],
+ "inputs": {
+  "reports/answer-prompt-v4/4f48fed/v4-aircargo-judge.cases.jsonl": "a1413cbadc5b7f1e629f9ad16ca77c7baba36870122c21a678a5dfd57b1b6718",
+  "reports/answer-prompt-v4/4f48fed/v4-aircargo-judge.json": "12dd4032a477cc853f2c6bae00506b43091ff5bb872ddfa90fbeee5a23889ac1",
+  "reports/answer-prompt-v4/4f48fed/v4-conditionalqa-judge-m1.cases.jsonl": "3343cd8d1d13a4c3a29df6f9a187c6fa8a9b8a9f6ce8071ca2b6aa1f07a8d4de",
+  "reports/answer-prompt-v4/4f48fed/v4-conditionalqa-judge-m1.json": "ffafd5fd342376e91f0a27ca26a08eb5713f9487c7b2dd16a6735bc16163dd13",
+  "reports/answer-prompt-v4/4f48fed/v4-conditionalqa-judge-m2.cases.jsonl": "774be0c155f972180b006a2d95630c51d073d93929dd2b2a530ff9c85f71e391",
+  "reports/answer-prompt-v4/4f48fed/v4-conditionalqa-judge-m2.json": "25f979003fd40452844511779d78ff3dd9b2b6a832147905c4b122341114c9c0",
+  "reports/answer-prompt-v4/4f48fed/v4-wixqa-judge-m1.cases.jsonl": "c89107cf5a5ae0eb7468011ffe7cbe0eaf60a39bfa279ce9715474210568098a",
+  "reports/answer-prompt-v4/4f48fed/v4-wixqa-judge-m1.json": "83b28dec4c90d309dad9d5a54998c2a7431446822a71aa191b9bf1abe80ff2d2",
+  "reports/answer-prompt-v4/4f48fed/v4-wixqa-judge-m2.cases.jsonl": "d0594074957610ed1bdeb8d67b740217d8cc659b8f6edee4ad8be15a53a92c78",
+  "reports/answer-prompt-v4/4f48fed/v4-wixqa-judge-m2.json": "6cdf0f69d1dd192fe770687b357184acf87f66de847261967c5a1a3f48d0bc52",
+  "reports/answer-prompt-v5/4f48fed/v5-aircargo-judge.cases.jsonl": "1c2656f3b8aef6f5a702448f309407771d47b7a8fe74c5a252fbc228d6a6030c",
+  "reports/answer-prompt-v5/4f48fed/v5-aircargo-judge.json": "587baa508c5e1950b8d050e5d7f59015a1196a8fa074bc4f6ef71c3b72d6ee8e",
+  "reports/answer-prompt-v5/4f48fed/v5-aircargo.cases.jsonl": "94ab50776214021a56015abc00a243ec5dfc16b5b3c1588f758568ff8f5642c9",
+  "reports/answer-prompt-v5/4f48fed/v5-aircargo.check.jsonl": "810750e22727a3b91d40bf87fb4ee1c3cb836c972ed14a4e60040afb6fd40196",
+  "reports/answer-prompt-v5/4f48fed/v5-aircargo.json": "0ddcab69fa9279981af35785ccdc7309bd1ac4e1d6cc305c71f522094766f94e",
+  "reports/answer-prompt-v5/4f48fed/v5-bridge-aircargo.cases.jsonl": "c9511bba6717d92a1874d9f09affcea4232c9d6d3baf0ff1b868fdc94aca9070",
+  "reports/answer-prompt-v5/4f48fed/v5-bridge-aircargo.json": "56e231846ac3acc85f852137baebfe3eeae184615f8f83f69956a2e7146853ed",
+  "reports/answer-prompt-v5/4f48fed/v5-bridge-conditionalqa.cases.jsonl": "86346c6e0e3b7f9a1528b58d6afb9f7cae0a6826f88c387d3549397f5df01463",
+  "reports/answer-prompt-v5/4f48fed/v5-bridge-conditionalqa.json": "e7ec1c84fad65012b4c1f9845f5877a28e0081e546c88672ef8db4ec8352e2a5",
+  "reports/answer-prompt-v5/4f48fed/v5-bridge-wixqa.cases.jsonl": "6c6d0a9bb8cbfe497d13236fc382a5581631fce53cf20c5bed79654324527f4a",
+  "reports/answer-prompt-v5/4f48fed/v5-bridge-wixqa.json": "00494a7bbad7988ae1dea1de4e9cb3a9c22da293493f0ac0a8e53dedccc7f2e9",
+  "reports/answer-prompt-v5/4f48fed/v5-conditionalqa-judge-m1.cases.jsonl": "2bf3aa1cfabb0bce63414aeba62eab76548fe75876c8e09063bc322d5419e659",
+  "reports/answer-prompt-v5/4f48fed/v5-conditionalqa-judge-m1.json": "3a11cb5471a9bb9c915396f5932cd3a13ff32a71d3662b6ab5fa2c112c562393",
+  "reports/answer-prompt-v5/4f48fed/v5-conditionalqa-judge-m2.cases.jsonl": "e04fb2e13cf5aba8a17e67f7bafa64924f1cdae3131859dcfa3e06045f70defb",
+  "reports/answer-prompt-v5/4f48fed/v5-conditionalqa-judge-m2.json": "2e931402ace60318feda43af636d5b72331109d4235ed54ea748f46d2bfc4b28",
+  "reports/answer-prompt-v5/4f48fed/v5-conditionalqa.cases.jsonl": "42ddebe8e70ba4a7bedbf53e18df02f5da83b6a17561a5e3edc3bf8b74b2e22f",
+  "reports/answer-prompt-v5/4f48fed/v5-conditionalqa.check.jsonl": "c7542d8e954a255482b7ad62c117bba6318b2d8d92a49fcffcfd4cefc7d30573",
+  "reports/answer-prompt-v5/4f48fed/v5-conditionalqa.json": "72f1da51853171fc7b8a14409404e15b79d5700a2c44e97bf3a06f9d8b4e1de0",
+  "reports/answer-prompt-v5/4f48fed/v5-environment.jsonl": "7923636922184301614a99874a920c461a6b63a75ed2bb24f8160cd7ceb5f926",
+  "reports/answer-prompt-v5/4f48fed/v5-wixqa-judge-m1.cases.jsonl": "0d711e30692d459d9feccb5e56d8c873e33486c7ce2f2aa8b9af36cdcc172ef8",
+  "reports/answer-prompt-v5/4f48fed/v5-wixqa-judge-m1.json": "674b5f6a73c661f61d3265dcee4f305de70b24247a98a691a5fc42e2ac8ebfd8",
+  "reports/answer-prompt-v5/4f48fed/v5-wixqa-judge-m2.cases.jsonl": "93277ac8d4fe91f2b47652470e68c4dcb094b006c4152daba5e6e535e607761e",
+  "reports/answer-prompt-v5/4f48fed/v5-wixqa-judge-m2.json": "940e0215e81354c68b9d50d369451c0e518b3b23d342a78569a11b58305a3572",
+  "reports/answer-prompt-v5/4f48fed/v5-wixqa.cases.jsonl": "a5d6d8459e6ffb33716fb15320e873487d8b59f7f3780f7e39ab1fed03263fb3",
+  "reports/answer-prompt-v5/4f48fed/v5-wixqa.check.jsonl": "ba7b97f26ed61067bad700d7e61e67a7bb89e6ad0349d11baf74cac97de14683",
+  "reports/answer-prompt-v5/4f48fed/v5-wixqa.json": "856241388506ccbb20127b6d9d58bd4a9fa139d0d286e279c251911f8f4caa71"
+ },
+ "environment": {
+  "snapshots": 4,
+  "taken": [
+   "2026-10-27T13:56:18+00:00",
+   "2026-10-27T23:44:50+00:00"
+  ],
+  "ollama": "0.33.2",
+  "servers": [
+   {
+    "pid": 12377,
+    "started": "2026-09-13T16:37:06+00:00",
+    "binary": "/Users/julia/RAG_new_tools_ollama_v0.33.2/ollama"
+   }
+  ],
+  "freeze_sha256": "ed8fe1c2142b1a9ff7f1c80db891a0887860ba939131bf5cd3cbde324b161ada",
+  "newest": {
+   "name": "huggingface-hub",
+   "changed": "2026-05-30T14:51:39+00:00"
+  },
+  "versions": {
+   "langchain": "1.3.2",
+   "langchain-chroma": "1.1.0",
+   "langchain-classic": "1.0.7",
+   "langchain-community": "0.4.2",
+   "langchain-core": "1.4.0",
+   "langchain-experimental": "0.4.2",
+   "langchain-protocol": "0.0.16",
+   "langchain-text-splitters": "1.1.2"
+  }
+ },
+ "primary": {
+  "indicator": "bad",
+  "keys": [
+   "wixqa",
+   "conditionalqa"
+  ],
+  "n": 200,
+  "table": {
+   "a": 99,
+   "b": 9,
+   "c": 68,
+   "d": 24
+  },
+  "difference": 0.295,
+  "clusters": 137,
+  "cluster95": [
+   0.2222,
+   0.3676
+  ],
+  "newcombe95": [
+   0.2166,
+   0.3686
+  ],
+  "read95": [
+   0.2166,
+   0.3686
+  ],
+  "detected": true,
+  "direction": "rises",
+  "v4": 0.54,
+  "v5": 0.835
+ },
+ "same_context": {
+  "indicator": "bad",
+  "keys": [
+   "wixqa",
+   "conditionalqa"
+  ],
+  "n": 164,
+  "table": {
+   "a": 81,
+   "b": 9,
+   "c": 55,
+   "d": 19
+  },
+  "difference": 0.2805,
+  "clusters": 116,
+  "cluster95": [
+   0.1933,
+   0.3642
+  ],
+  "newcombe95": [
+   0.1917,
+   0.3634
+  ],
+  "read95": [
+   0.1917,
+   0.3642
+  ],
+  "detected": true,
+  "direction": "rises",
+  "v4": 0.5488,
+  "v5": 0.8293
+ },
+ "recall": {
+  "indicator": "agrees",
+  "keys": [
+   "wixqa",
+   "conditionalqa"
+  ],
+  "n": 180,
+  "table": {
+   "a": 69,
+   "b": 13,
+   "c": 9,
+   "d": 89
+  },
+  "difference": -0.0222,
+  "clusters": 117,
+  "cluster95": [
+   -0.0798,
+   0.0331
+  ],
+  "newcombe95": [
+   -0.0737,
+   0.0296
+  ],
+  "read95": [
+   -0.0798,
+   0.0331
+  ],
+  "detected": false,
+  "direction": "not detected",
+  "v4": 0.4556,
+  "v5": 0.4333
+ },
+ "corpora": {
+  "wixqa": {
+   "pairs": 100,
+   "unpaired": {
+    "count": 0,
+    "case_ids": []
+   },
+   "bad": {
+    "n": 100,
+    "table": {
+     "a": 46,
+     "b": 5,
+     "c": 40,
+     "d": 9
+    },
+    "difference": 0.35,
+    "clusters": 77,
+    "cluster95": [
+     0.234,
+     0.4537
+    ],
+    "newcombe95": [
+     0.2303,
+     0.4564
+    ],
+    "read95": [
+     0.2303,
+     0.4564
+    ],
+    "detected": true,
+    "direction": "rises",
+    "v4": 0.51,
+    "v5": 0.86
+   },
+   "good": {
+    "n": 100,
+    "table": {
+     "a": 4,
+     "b": 36,
+     "c": 0,
+     "d": 60
+    },
+    "difference": -0.36,
+    "clusters": 77,
+    "cluster95": [
+     -0.4483,
+     -0.2703
+    ],
+    "newcombe95": [
+     -0.4562,
+     -0.2624
+    ],
+    "read95": [
+     -0.4562,
+     -0.2624
+    ],
+    "detected": true,
+    "direction": "falls",
+    "v4": 0.4,
+    "v5": 0.04
+   },
+   "transitions": {
+    "good": {
+     "good": 4,
+     "partial_ok": 4,
+     "bad": 32
+    },
+    "partial_ok": {
+     "good": 0,
+     "partial_ok": 1,
+     "bad": 8
+    },
+    "bad": {
+     "good": 0,
+     "partial_ok": 5,
+     "bad": 46
+    }
+   },
+   "wrong_declines": {
+    "v4": 22,
+    "v5": 10
+   },
+   "context_has_answer": {
+    "same": 97,
+    "lost": 0,
+    "gained": 3
+   },
+   "claims_supported": {
+    "v4": {
+     "supported": 438,
+     "total": 484,
+     "share": 0.905
+    },
+    "v5": {
+     "supported": 555,
+     "total": 586,
+     "share": 0.9471
+    }
+   },
+   "defects": {
+    "v4": {
+     "empty": 0,
+     "citation_only": 0,
+     "wrong_language": 0,
+     "copied_context": 0,
+     "cut_off": 0,
+     "repetition": 0,
+     "other": 0
+    },
+    "v5": {
+     "empty": 0,
+     "citation_only": 0,
+     "wrong_language": 0,
+     "copied_context": 12,
+     "cut_off": 0,
+     "repetition": 4,
+     "other": 63
+    }
+   },
+   "answers": 100,
+   "same_context": 81,
+   "quoted": {
+    "v4": 59,
+    "v5": 96
+   },
+   "truncated": 0,
+   "at_token_cap": {
+    "v4": 0,
+    "v5": 0
+   },
+   "stream_sec": {
+    "v4": {
+     "n": 100,
+     "min": 43.007,
+     "median": 85.262,
+     "p90": 146.176,
+     "max": 249.26
+    },
+    "v5": {
+     "n": 100,
+     "min": 50.331,
+     "median": 103.392,
+     "p90": 145.71,
+     "max": 256.81
+    }
+   },
+   "chunks": {
+    "v4": {
+     "n": 100,
+     "min": 9,
+     "median": 105.0,
+     "p90": 206.8,
+     "max": 419
+    },
+    "v5": {
+     "n": 100,
+     "min": 44,
+     "median": 201.5,
+     "p90": 406.0,
+     "max": 586
+    }
+   },
+   "m2": {
+    "with_reference": {
+     "questions": 100,
+     "pairs": 100,
+     "unpaired": {
+      "count": 0,
+      "case_ids": []
+     },
+     "agrees": {
+      "n": 100,
+      "table": {
+       "a": 26,
+       "b": 8,
+       "c": 3,
+       "d": 63
+      },
+      "difference": -0.05,
+      "clusters": 77,
+      "cluster95": [
+       -0.1188,
+       0.0104
+      ],
+      "newcombe95": [
+       -0.1173,
+       0.0174
+      ],
+      "read95": [
+       -0.1188,
+       0.0174
+      ],
+      "detected": false,
+      "direction": "not detected",
+      "v4": 0.34,
+      "v5": 0.29
+     }
+    },
+    "without_reference": {
+     "questions": 0,
+     "pairs": 0,
+     "unpaired": {
+      "count": 0,
+      "case_ids": []
+     },
+     "right": {
+      "v4": 0,
+      "v5": 0
+     }
+    }
+   }
+  },
+  "conditionalqa": {
+   "pairs": 100,
+   "unpaired": {
+    "count": 0,
+    "case_ids": []
+   },
+   "bad": {
+    "n": 100,
+    "table": {
+     "a": 53,
+     "b": 4,
+     "c": 28,
+     "d": 15
+    },
+    "difference": 0.24,
+    "clusters": 60,
+    "cluster95": [
+     0.1485,
+     0.3367
+    ],
+    "newcombe95": [
+     0.1352,
+     0.3382
+    ],
+    "read95": [
+     0.1352,
+     0.3382
+    ],
+    "detected": true,
+    "direction": "rises",
+    "v4": 0.57,
+    "v5": 0.81
+   },
+   "good": {
+    "n": 100,
+    "table": {
+     "a": 11,
+     "b": 24,
+     "c": 6,
+     "d": 59
+    },
+    "difference": -0.18,
+    "clusters": 60,
+    "cluster95": [
+     -0.2772,
+     -0.09
+    ],
+    "newcombe95": [
+     -0.281,
+     -0.075
+    ],
+    "read95": [
+     -0.281,
+     -0.075
+    ],
+    "detected": true,
+    "direction": "falls",
+    "v4": 0.35,
+    "v5": 0.17
+   },
+   "transitions": {
+    "good": {
+     "good": 11,
+     "partial_ok": 1,
+     "bad": 23
+    },
+    "partial_ok": {
+     "good": 2,
+     "partial_ok": 1,
+     "bad": 5
+    },
+    "bad": {
+     "good": 4,
+     "partial_ok": 0,
+     "bad": 53
+    }
+   },
+   "wrong_declines": {
+    "v4": 6,
+    "v5": 5
+   },
+   "context_has_answer": {
+    "same": 99,
+    "lost": 0,
+    "gained": 1
+   },
+   "claims_supported": {
+    "v4": {
+     "supported": 328,
+     "total": 414,
+     "share": 0.7923
+    },
+    "v5": {
+     "supported": 523,
+     "total": 591,
+     "share": 0.8849
+    }
+   },
+   "defects": {
+    "v4": {
+     "empty": 0,
+     "citation_only": 0,
+     "wrong_language": 0,
+     "copied_context": 0,
+     "cut_off": 0,
+     "repetition": 1,
+     "other": 4
+    },
+    "v5": {
+     "empty": 0,
+     "citation_only": 0,
+     "wrong_language": 0,
+     "copied_context": 8,
+     "cut_off": 0,
+     "repetition": 2,
+     "other": 55
+    }
+   },
+   "answers": 100,
+   "same_context": 83,
+   "quoted": {
+    "v4": 70,
+    "v5": 99
+   },
+   "truncated": 0,
+   "at_token_cap": {
+    "v4": 0,
+    "v5": 0
+   },
+   "stream_sec": {
+    "v4": {
+     "n": 100,
+     "min": 34.035,
+     "median": 76.501,
+     "p90": 98.986,
+     "max": 152.291
+    },
+    "v5": {
+     "n": 100,
+     "min": 42.698,
+     "median": 100.511,
+     "p90": 161.562,
+     "max": 294.049
+    }
+   },
+   "chunks": {
+    "v4": {
+     "n": 100,
+     "min": 27,
+     "median": 118.5,
+     "p90": 183.1,
+     "max": 316
+    },
+    "v5": {
+     "n": 100,
+     "min": 54,
+     "median": 233.5,
+     "p90": 399.9,
+     "max": 692
+    }
+   },
+   "declines_without_answer": {
+    "n": 20,
+    "table": {
+     "a": 4,
+     "b": 0,
+     "c": 0,
+     "d": 16
+    },
+    "difference": 0.0,
+    "clusters": 20,
+    "cluster95": [
+     0.0,
+     0.0
+    ],
+    "newcombe95": [
+     -0.1319,
+     0.1319
+    ],
+    "read95": [
+     -0.1319,
+     0.1319
+    ],
+    "detected": false,
+    "direction": "not detected",
+    "v4": 0.2,
+    "v5": 0.2
+   },
+   "m2": {
+    "with_reference": {
+     "questions": 80,
+     "pairs": 80,
+     "unpaired": {
+      "count": 0,
+      "case_ids": []
+     },
+     "agrees": {
+      "n": 80,
+      "table": {
+       "a": 43,
+       "b": 5,
+       "c": 6,
+       "d": 26
+      },
+      "difference": 0.0125,
+      "clusters": 40,
+      "cluster95": [
+       -0.075,
+       0.1125
+      ],
+      "newcombe95": [
+       -0.0711,
+       0.0958
+      ],
+      "read95": [
+       -0.075,
+       0.1125
+      ],
+      "detected": false,
+      "direction": "not detected",
+      "v4": 0.6,
+      "v5": 0.6125
+     }
+    },
+    "without_reference": {
+     "questions": 20,
+     "pairs": 20,
+     "unpaired": {
+      "count": 0,
+      "case_ids": []
+     },
+     "right": {
+      "v4": 4,
+      "v5": 4
+     }
+    }
+   }
+  },
+  "aircargo": {
+   "pairs": 100,
+   "unpaired": {
+    "count": 0,
+    "case_ids": []
+   },
+   "bad": {
+    "n": 100,
+    "table": {
+     "a": 17,
+     "b": 0,
+     "c": 72,
+     "d": 11
+    },
+    "difference": 0.72,
+    "clusters": 100,
+    "cluster95": [
+     0.63,
+     0.81
+    ],
+    "newcombe95": [
+     0.6122,
+     0.7928
+    ],
+    "read95": [
+     0.6122,
+     0.81
+    ],
+    "detected": true,
+    "direction": "rises",
+    "v4": 0.17,
+    "v5": 0.89
+   },
+   "good": {
+    "n": 100,
+    "table": {
+     "a": 8,
+     "b": 55,
+     "c": 0,
+     "d": 37
+    },
+    "difference": -0.55,
+    "clusters": 100,
+    "cluster95": [
+     -0.65,
+     -0.45
+    ],
+    "newcombe95": [
+     -0.6394,
+     -0.441
+    ],
+    "read95": [
+     -0.65,
+     -0.441
+    ],
+    "detected": true,
+    "direction": "falls",
+    "v4": 0.63,
+    "v5": 0.08
+   },
+   "transitions": {
+    "good": {
+     "good": 8,
+     "partial_ok": 0,
+     "bad": 55
+    },
+    "partial_ok": {
+     "good": 0,
+     "partial_ok": 3,
+     "bad": 17
+    },
+    "bad": {
+     "good": 0,
+     "partial_ok": 0,
+     "bad": 17
+    }
+   },
+   "wrong_declines": {
+    "v4": 0,
+    "v5": 0
+   },
+   "context_has_answer": {
+    "same": 100,
+    "lost": 0,
+    "gained": 0
+   },
+   "claims_supported": {
+    "v4": {
+     "supported": 505,
+     "total": 522,
+     "share": 0.9674
+    },
+    "v5": {
+     "supported": 413,
+     "total": 441,
+     "share": 0.9365
+    }
+   },
+   "defects": {
+    "v4": {
+     "empty": 0,
+     "citation_only": 0,
+     "wrong_language": 0,
+     "copied_context": 2,
+     "cut_off": 0,
+     "repetition": 0,
+     "other": 1
+    },
+    "v5": {
+     "empty": 0,
+     "citation_only": 0,
+     "wrong_language": 11,
+     "copied_context": 14,
+     "cut_off": 1,
+     "repetition": 10,
+     "other": 51
+    }
+   },
+   "answers": 100,
+   "same_context": 36,
+   "quoted": {
+    "v4": 77,
+    "v5": 94
+   },
+   "truncated": 0,
+   "at_token_cap": {
+    "v4": 0,
+    "v5": 1
+   },
+   "stream_sec": {
+    "v4": {
+     "n": 100,
+     "min": 63.939,
+     "median": 85.701,
+     "p90": 131.696,
+     "max": 190.998
+    },
+    "v5": {
+     "n": 100,
+     "min": 70.099,
+     "median": 104.036,
+     "p90": 192.632,
+     "max": 333.518
+    }
+   },
+   "chunks": {
+    "v4": {
+     "n": 100,
+     "min": 21,
+     "median": 80.5,
+     "p90": 235.3,
+     "max": 468
+    },
+    "v5": {
+     "n": 100,
+     "min": 63,
+     "median": 182.5,
+     "p90": 512.8,
+     "max": 1024
+    }
+   }
+  }
+ },
+ "plans": {
+  "v5-bridge-wixqa": {
+   "status": "counted",
+   "retest_passed": true,
+   "admitted_cli": {
+    "2.1.310": 15,
+    "2.1.311": 15
+   }
+  },
+  "v4-wixqa-judge-m1": {
+   "status": "counted",
+   "retest_passed": true,
+   "admitted_cli": {
+    "2.1.310": 115
+   }
+  },
+  "v4-wixqa-judge-m2": {
+   "status": "counted",
+   "retest_passed": true,
+   "admitted_cli": {
+    "2.1.310": 115
+   }
+  },
+  "v5-wixqa-judge-m1": {
+   "status": "counted",
+   "retest_passed": true,
+   "admitted_cli": {
+    "2.1.311": 95,
+    "2.1.312": 20
+   }
+  },
+  "v5-wixqa-judge-m2": {
+   "status": "NOT_EVIDENCE",
+   "retest_passed": false,
+   "admitted_cli": {
+    "2.1.312": 115
+   }
+  },
+  "v5-bridge-conditionalqa": {
+   "status": "counted",
+   "retest_passed": true,
+   "admitted_cli": {
+    "2.1.310": 15,
+    "2.1.311": 15
+   }
+  },
+  "v4-conditionalqa-judge-m1": {
+   "status": "counted",
+   "retest_passed": true,
+   "admitted_cli": {
+    "2.1.310": 115
+   }
+  },
+  "v4-conditionalqa-judge-m2": {
+   "status": "counted",
+   "retest_passed": true,
+   "admitted_cli": {
+    "2.1.310": 115
+   }
+  },
+  "v5-conditionalqa-judge-m1": {
+   "status": "NOT_EVIDENCE",
+   "retest_passed": false,
+   "admitted_cli": {
+    "2.1.311": 6,
+    "2.1.312": 109
+   }
+  },
+  "v5-conditionalqa-judge-m2": {
+   "status": "counted",
+   "retest_passed": true,
+   "admitted_cli": {
+    "2.1.312": 115
+   }
+  },
+  "v5-bridge-aircargo": {
+   "status": "counted",
+   "retest_passed": true,
+   "admitted_cli": {
+    "2.1.310": 15,
+    "2.1.312": 15
+   }
+  },
+  "v4-aircargo-judge": {
+   "status": "counted",
+   "retest_passed": true,
+   "admitted_cli": {
+    "2.1.310": 115
+   }
+  },
+  "v5-aircargo-judge": {
+   "status": "NOT_EVIDENCE",
+   "retest_passed": false,
+   "admitted_cli": {
+    "2.1.312": 115
+   }
+  }
+ },
+ "decision": {
+  "decision": "not adopted",
+  "v5_replaces_v4": false,
+  "reasons": [
+   "wixqa: the bad share rises",
+   "wixqa: the good share falls, the bad share does not"
+  ],
+  "harm": [
+   "wixqa: the bad share rises",
+   "wixqa: the good share falls, the bad share does not"
+  ],
+  "not_counted": {
+   "wixqa": [
+    "v5-wixqa-judge-m2"
+   ],
+   "conditionalqa": [
+    "v5-conditionalqa-judge-m1"
+   ],
+   "aircargo": [
+    "v5-aircargo-judge"
+   ]
+  },
+  "not_run": []
+ }
+}
