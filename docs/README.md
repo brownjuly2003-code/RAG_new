@@ -86,7 +86,10 @@ read from the server's log and a sampler, nothing changed; registered before the
 repacked, 2026-10-28. [Stage 4, step 1](specs/stage4-step1-rerank-memory.md) — where the rerank's
 102 s go: four aircargo questions on V4's stand, each asked with the model resident (A) and with it
 unloaded before the question (B), in two runs, BABA and ABAB, beside step 0's sampler; registered
-before the first request. [Stage 6, item 4](specs/stage6-throughput.md) — the
+before the first request. [Stage 4, step 3's timing](specs/stage4-step3-k-timing.md) — K = 14
+against 20 with the retrieval alone: thirteen aircargo questions on V4's stand with no model, four
+runs ABBA, the rerank's seconds paired a question at a time; registered before the first request.
+[Stage 6, item 4](specs/stage6-throughput.md) — the
 service's questions an hour and what a second client sees: a draft, registered with its tools once
 the service is installed.
 
