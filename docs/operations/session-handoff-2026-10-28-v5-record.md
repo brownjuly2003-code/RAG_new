@@ -75,7 +75,8 @@ model and glossary still hold: [the widget read, V5 running](session-handoff-202
    `vm_stat`, swap and RSS, the stop), by the chat-test rules of the memory note: the real path
    at production limits, one question first. Check the Mac is idle before it (other projects).
 2. **A push** only on her word, after the whole Mac suite, mypy, bandit, pip-audit and DEP-01.
-   On 2026-10-28 mypy and DEP-01 passed; pip-audit found 7 new advisories in `authlib` 1.7.0,
+   On 2026-10-28 the Mac's unit suite (6,258 passed, 123 skipped, on `9b769f5`'s code), both
+   mypy commands, bandit and DEP-01 passed; pip-audit found 7 new advisories in `authlib` 1.7.0,
    fixed in 1.9.1 — raise the floor and refresh both locks first ([`BACKLOG.md`](../../BACKLOG.md)).
 3. **Her word pending:** the widget's R1 and retry-budget fixes (§8.3, item 1); stage 4's
    self-evaluation badge, `ollama serve` settings and SLO (item 2).

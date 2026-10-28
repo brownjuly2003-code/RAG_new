@@ -16,7 +16,8 @@ stage and the frozen streams with their unfreeze conditions are [`ROADMAP.md`](R
   `http-cache-semantics` 4.3.0, not a fix but outside its range (ADR 0009's log).
 - **Before the next push, 2026-10-28:** CI's `pip-audit` on `requirements.lock` finds 7 new
   advisories in `authlib` 1.7.0, fixed in 1.9.1 (`auth/oidc.py` imports it): raise the floor in
-  `requirements.txt` and refresh both locks. Both CI mypy commands and DEP-01 pass.
+  `requirements.txt` and refresh both locks. The Mac's unit suite, both CI mypy commands, bandit
+  and DEP-01 pass.
 - **Locks refreshed 2026-10-25, local:** CI's `pip-audit` on `requirements.lock` clean (aiohttp,
   certifi, filelock 3 → 4, opentelemetry, pypdf, setuptools), the npm gate DEP-01 PASS (astro
   7.2 → 7.3 with markdown-remark, dompurify, fast-uri, undici, vite, zod). Before the push: the
