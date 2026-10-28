@@ -1,0 +1,136 @@
+{
+ "spec": "docs/specs/encoder-checkers.md",
+ "amendment": 1,
+ "part": 1,
+ "registered_sha256": "fa226d384f7dc0e997be0e69ba3cd1de5c9312770fae64d155fcd32380a2a49e",
+ "amendment_sha256": "f927b619af17988fafaa69f59324203c23fe0c7de2d6155e3b1670c1ba825571",
+ "amendments": [
+  "f927b619af17988fafaa69f59324203c23fe0c7de2d6155e3b1670c1ba825571"
+ ],
+ "orphan_amendment_rows": 0,
+ "parity": {
+  "pairs": 12,
+  "onnxruntime": "1.23.2",
+  "B": {
+   "weights_sha256": "f8ac683b0574fc44d8973765f18cb1baac3a04f13f743e67857bfbca047e1b76",
+   "onnx_sha256": "b9847954a62534c3699ee691050eedc6ef83c6465897bd17ea90ec8e9a6e4944",
+   "max_abs_difference": 1.0250023758651139e-06,
+   "same_top_label": true,
+   "tokens": [
+    33,
+    1734
+   ],
+   "config_matches_file": true,
+   "passed": true
+  },
+  "passed": true,
+  "registered_sha256": "fa226d384f7dc0e997be0e69ba3cd1de5c9312770fae64d155fcd32380a2a49e",
+  "amendment_sha256": "f927b619af17988fafaa69f59324203c23fe0c7de2d6155e3b1670c1ba825571",
+  "measured_at_head": "62f33c74e877544df5ce360bfd9fd046ac465b2d"
+ },
+ "checkers": {
+  "B": {
+   "repo": "Horizon-Labs/hallucination-guard-base",
+   "revision": "f0aaaac7c39073b4528191261e874d9664f14254",
+   "planned": {
+    "reading": 100,
+    "EN": 183,
+    "RU": 300
+   },
+   "reached": {
+    "reading": 100,
+    "EN": 183,
+    "RU": 300
+   },
+   "segments": 1,
+   "stopped": false,
+   "threshold": {
+    "threshold": 0.4963696599006653,
+    "candidates": 483,
+    "caught_share": 0.5837307410124725,
+    "over_marked_share": 0.3226706274452978
+   },
+   "calibration": {
+    "EN": {
+     "caught": 91,
+     "target": 116,
+     "over_marked": 26,
+     "good_not_declining": 67
+    },
+    "RU": {
+     "caught": 36,
+     "target": 94,
+     "over_marked": 53,
+     "good_not_declining": 206
+    }
+   },
+   "reading": {
+    "caught": 7,
+    "target": 17,
+    "over_marked": 7,
+    "good_not_declining": 63,
+    "reading": "in between"
+   },
+   "not_evidence_because": [],
+   "auroc": {
+    "reading": 0.7628384687208216,
+    "EN": 0.6872104992279979,
+    "RU": 0.5979136542036769
+   },
+   "ru_types": {
+    "grounding": {
+     "target": 37,
+     "caught": 16
+    },
+    "other": {
+     "target": 62,
+     "caught": 21
+    }
+   },
+   "seconds": {
+    "reading": {
+     "n": 100,
+     "median": 6.4315,
+     "p90": 53.6754
+    },
+    "EN": {
+     "n": 183,
+     "median": 16.363,
+     "p90": 34.64919999999999
+    },
+    "RU": {
+     "n": 300,
+     "median": 2.6845,
+     "p90": 14.338199999999997
+    }
+   },
+   "truncated": {
+    "reading": 6,
+    "EN": 211,
+    "RU": 14
+   },
+   "unscored": {
+    "reading": 0,
+    "EN": 0,
+    "RU": 0
+   },
+   "peak_rss_bytes": 1803866112,
+   "load": [
+    [
+     1.85009765625,
+     2.83203125,
+     4.55908203125
+    ],
+    [
+     5.09326171875,
+     4.84423828125,
+     4.724609375
+    ]
+   ],
+   "seconds_total": 7153.814000000001
+  }
+ },
+ "decision": "in between: H, L, N, B",
+ "worth_wiring": null,
+ "proposes": false
+}

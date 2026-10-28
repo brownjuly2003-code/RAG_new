@@ -1,0 +1,20 @@
+{
+ "pairs": 12,
+ "onnxruntime": "1.23.2",
+ "B": {
+  "weights_sha256": "f8ac683b0574fc44d8973765f18cb1baac3a04f13f743e67857bfbca047e1b76",
+  "onnx_sha256": "b9847954a62534c3699ee691050eedc6ef83c6465897bd17ea90ec8e9a6e4944",
+  "max_abs_difference": 1.0250023758651139e-06,
+  "same_top_label": true,
+  "tokens": [
+   33,
+   1734
+  ],
+  "config_matches_file": true,
+  "passed": true
+ },
+ "passed": true,
+ "registered_sha256": "fa226d384f7dc0e997be0e69ba3cd1de5c9312770fae64d155fcd32380a2a49e",
+ "amendment_sha256": "f927b619af17988fafaa69f59324203c23fe0c7de2d6155e3b1670c1ba825571",
+ "measured_at_head": "62f33c74e877544df5ce360bfd9fd046ac465b2d"
+}
