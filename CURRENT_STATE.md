@@ -97,7 +97,7 @@ answerable questions (V3 8); aircargo's nine good answers turned bad, eight by a
 1. [`PLAN.md`](PLAN.md) stage 3 — **outcome C** ([signal record](docs/evidence/handover-signal-v4-aircargo.md)): no signal worth wiring, S3 in between. Her «да» (2026-10-26): the handover line — done; no stage 2 for S3.
    Stage 3's encoder test read 2026-10-26: all three in between, none worth wiring; H catches 10 of 17 marking 8 of 63 ([record](docs/evidence/encoder-checkers-record.md)); its Amendment 1 read 2026-10-28: Horizon guard base in between too, 7 of 17 marking 7 of 63, and its read on V5's fresh answers `NOT_EVIDENCE` — stage 3 stays at outcome C. Step 4 read 2026-10-26: R1 confirmed, R2 not seen, no retry finished inside the call budget ([widget record](docs/evidence/widget-4b-record.md)). Stage 4's no-reranker point read 2026-10-26: the reranker stays.
 2. Stage 3б closed 2026-10-28 — **V5 not adopted** ([record](docs/evidence/answer-prompt-v5-record.md)): harm on WixQA by the table's first row; three of five judge plans `NOT_EVIDENCE`, the judge wavering on the visible Evidence / Answer / Status scaffold, which it graded «other» or «copied_context» in 63–75 of V5's 100 answers a base. V4 stays. Next: [`PLAN.md`](PLAN.md) stage 4 with V4, step 0 first (diagnostics, ≈ 1 h of the Mac, changes nothing). Research of 2026-10-25 and its [analysis](docs/operations/research-2026-10-25/analysis.md): §8.3 items 15–17 deferred.
-3. Before a push: the whole Mac suite, mypy, bandit and the audits; on 2026-10-28 the suite, mypy, bandit and DEP-01 pass, pip-audit clean after both locks moved `authlib` 1.7.0 → 1.9.1 (7 advisories); the site build waits ([`BACKLOG.md`](BACKLOG.md)).
+3. Pushed 2026-10-28 through `7caaf21` after ci_local PASS ([CI and pushes](#ci-and-pushes)); before the next push its full run again. pip-audit is clean since both locks moved `authlib` 1.7.0 → 1.9.1 (7 advisories).
 
 ## Julia's decisions in force
 
@@ -130,15 +130,15 @@ requests (without them phase B stays blocked); Mac hours a day for runs; frozen 
 
 ## CI and pushes
 
-- Last green CI: `45a417a`, 2026-10-03, 11/11 jobs. Since `e81f0c5` (2026-10-16), billing
-  prevents jobs starting. Before a push: full Mac unit suite, mypy, bandit and dependency audits.
+- Last green GitHub CI: `45a417a`, 2026-10-03, 11/11 jobs; since `e81f0c5` (2026-10-16) billing
+  prevents jobs starting. The gate since: ci_local, the workflows in a Linux container on the Mac.
 - Run 34359692687 on `69a5140` verified the CVE-2026-9856 floor `transformers>=5.10.0` under
   `--require-hashes`, pip-audit clean; both locks still pin it.
-- Pushed 2026-10-25 ≈19:25 UTC at Julia's word («закомить и запуш все, что сделано»): `8fdbfee`..this file's commit, without the Mac suite —
-  the Mac was measuring stage 3. Passed on the laptop: CI's two mypy commands, `ruff check`, bandit, pip-audit on `requirements.lock`
-  (5 ignored), DEP-01. Not run yet: the Mac suite (last: `4f48fed`, 6,016 passed, 123 skipped), `b557082`'s guards on the Mac, the
-  docs-site build on astro 7.3, the Linux lock install (CI only; billing). The push before, `8fdbfee` (2026-10-24), had the Mac suite.
-  Not pushed since: `3ef8b54`…this file's commit — the research analysis, coverage, the stage-3 record, the handover line, the no-reranker point, the encoders, the widget read, V5.
+- Pushed 2026-10-28 12:47 UTC at Julia's «да»: `43009ac..7caaf21`, 28 commits (the research analysis, coverage, the stage-3 record,
+  the handover line, the no-reranker point, the encoders, the widget read, V5, `authlib` 1.9.1). ci_local on `7caaf21`'s tree: the full
+  run PASS, 17 steps (lint, type-check, unit 3.11 and 3.13, integration ×2, pre-commit, security; the Linux lock installed), and `ci/helm`
+  with its kind cluster PASS on master. Migrations and the docs-site build passed on `727b6e9`, which differs only in `tests/conftest.py`
+  and two reports' spaces. Not covered: `ci/regression-eval` (`hashFiles()` at run time). The first run had failed on Python 3.13's `sum()`.
 - Private remote: `brownjuly2003-code/RAG_new`; HTTPS command in [`CLAUDE.md`](CLAUDE.md).
 
 ## Links

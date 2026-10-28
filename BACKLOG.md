@@ -17,11 +17,11 @@ stage and the frozen streams with their unfreeze conditions are [`ROADMAP.md`](R
 - **Locks refreshed 2026-10-28:** CI's `pip-audit` found 7 new advisories in `authlib` 1.7.0;
   the floor `authlib>=1.9.1` moved both locks to 1.9.1 alone, and the audit is clean again
   (5 ignored). The OIDC and auth tests and a client smoke passed on authlib 1.9.1 on the Mac;
-  the Mac's unit suite, both CI mypy commands, bandit and DEP-01 pass.
-- **Locks refreshed 2026-10-25, local:** CI's `pip-audit` on `requirements.lock` clean (aiohttp,
+  the Mac's unit suite, both CI mypy commands, bandit and DEP-01 pass. Pushed 2026-10-28 with
+  `7caaf21` after ci_local PASS: the Linux lock installed and the site build on astro 7.3 passed.
+- **Locks refreshed 2026-10-25:** CI's `pip-audit` on `requirements.lock` clean (aiohttp,
   certifi, filelock 3 → 4, opentelemetry, pypdf, setuptools), the npm gate DEP-01 PASS (astro
-  7.2 → 7.3 with markdown-remark, dompurify, fast-uri, undici, vite, zod). Before the push: the
-  Mac's guard tests and the site build; CI alone installs the Linux lock. Not gated: the dev
+  7.2 → 7.3 with markdown-remark, dompurify, fast-uri, undici, vite, zod). Not gated: the dev
   lock's test-only `httpx2==2.10.0` (three advisories); `CVE-2025-3000` matches nothing.
 - **Blocked on data, not on work:** phase B needs real shipment-bound requests (Q2b,
   [`PLAN.md`](PLAN.md) §6). Do not manufacture fixture cases to make a gate pass.

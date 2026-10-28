@@ -1,7 +1,7 @@
 # Session handoff 2026-10-28 — V5 not adopted, the encoders' Amendment 1 read
 
-Session of 2026-10-27 ≈ 14:20 – 2026-10-28 ≈ 04:00 UTC, the same session as the previous
-handoff; all times UTC (the laptop's clock is EDT, the Mac's UTC+3). The previous handoff, whose
+Session of 2026-10-27 ≈ 14:20 – 2026-10-28 ≈ 04:00 UTC, continued to ≈ 13:00 ([After the
+report](#after-the-report)), the same session as the previous handoff; all times UTC (the laptop's clock is EDT, the Mac's UTC+3). The previous handoff, whose
 model and glossary still hold: [the widget read, V5 running](session-handoff-2026-10-27-v5-running.md).
 
 ## Read this first
@@ -17,11 +17,13 @@ model and glossary still hold: [the widget read, V5 running](session-handoff-202
 - **The encoders' Amendment 1 is read:** Part 1, Horizon guard base, in between — 7 of 17 caught,
   7 of 63 over-marked (`5ba14bd`); Part 2 `NOT_EVIDENCE` with nothing scored, because V5's aircargo
   plan does not count. Stage 3 stays at outcome C.
-- **Nothing runs.** The V5 chain ended `CHAIN_DONE` at 23:44:50; the judge's last stream ended
-  03:45:05; B's score ended 01:51:18. No judge, `claude -p` or Mac process of this session is
-  left. The Mac is free for stage 4.
-- **Nothing is pushed:** 23 commits after `origin/master` (`43009ac`) plus this file's. A push
-  needs her word and the checks of the CI-parity memory note.
+- **Nothing of this session runs on the Mac.** The V5 chain ended `CHAIN_DONE` at 23:44:50; the
+  judge's last stream ended 03:45:05; B's score ended 01:51:18; the last ci_local run 12:45. No
+  judge, `claude -p` or Mac process of this session is left. The Mac is free for stage 4. Two
+  agents of this session write stage 4's specs on the laptop ([After the report](#after-the-report)).
+- **Pushed 2026-10-28 12:47:** `43009ac..7caaf21`, 28 commits, after ci_local PASS
+  ([`CURRENT_STATE.md`](../../CURRENT_STATE.md#ci-and-pushes)). Commits after `7caaf21` are not
+  pushed; a push needs her word and ci_local's full run.
 
 ## What this session did
 
@@ -52,6 +54,10 @@ model and glossary still hold: [the widget read, V5 running](session-handoff-202
   0 → 0.09, this session's own use included.
 - 2026-10-28, after the report — asked whether to refresh the locks (`authlib` → 1.9.1) and push
   the 26 commits: «да».
+- ≈ 08:40–09:50 «что сейчас занимает мак?», «а сейчас сколько на маке памяти свободно?» —
+  answered: macOS, Chrome, Yandex and the `atv2` job; ci_local waited for 4 GB.
+- ≈ 10:10 «есть по плану шаги, которые можно запустить сейчас? Если да, запусти трех агентов
+  параллельно», then «продолжи работу», «параллельно»; ≈ 12:45 «продолжи работу», «продолжи».
 
 ## What the record found, for the message to Julia
 
@@ -76,11 +82,8 @@ model and glossary still hold: [the widget read, V5 running](session-handoff-202
    A short spec before the first request (the questions, what is read from the llama-server log,
    `vm_stat`, swap and RSS, the stop), by the chat-test rules of the memory note: the real path
    at production limits, one question first. Check the Mac is idle before it (other projects).
-2. **A push** only on her word, after the whole Mac suite, mypy, bandit, pip-audit and DEP-01.
-   On 2026-10-28 the Mac's unit suite (6,258 passed, 123 skipped, on `9b769f5`'s code), both
-   mypy commands, bandit and DEP-01 passed; pip-audit found 7 new advisories in `authlib` 1.7.0,
-   fixed in 1.9.1. On her «да» the floor and both locks moved to 1.9.1 and the audit is clean
-   ([`BACKLOG.md`](../../BACKLOG.md)).
+2. **Pushed** on her «да», 12:47, through `7caaf21` ([After the report](#after-the-report)).
+   The next push: her word and ci_local's full run on a checkout that sits on master.
 3. **Her word pending:** the widget's R1 and retry-budget fixes (§8.3, item 1); stage 4's
    self-evaluation badge, `ollama serve` settings and SLO (item 2).
 4. **Not planned, an idea only:** V5's evidence kept from the user (the answer shown alone).
@@ -91,6 +94,32 @@ Kept as they are: the stand `/Users/julia/RAG_new_chat_4f48fed` with its `v5/` r
 records' source); the judge's private folders `D:/RAG_new_stage2_private/v5/judge/`; the
 helpers in `.tmp/v5/` (git-ignored). Never commit `demo/phase-e-raw.webm` or `reports/ask100/`
 — not this session's.
+
+## After the report
+
+| UTC | What |
+|---|---|
+| 08:31 | `727b6e9` — the floor `authlib>=1.9.1`, both locks at 1.9.1 alone |
+| 08:37–09:55 | ci_local waits: the Mac held 3.1–3.5 GB of the 4 GB its VM needs |
+| 09:55–10:58 | ci_local's full run, FAIL: unit 3.13 (four exact re-derivations of the encoder records), pre-commit (two trailing spaces), `ci/helm` (ci_local's own gap) |
+| 10:15 | three agents on her word: A stage 4 step 0's spec and tools, B the K curve (step 3), C MultiHop-RAG's official metrics; no commits, no Mac |
+| 11:15 | `7caaf21` — conftest skips the four on Python 3.12+; the spaces gone |
+| 11:35–12:17 | ci_local on a clean worktree of `7caaf21`: PASS, but detached — master's jobs not run |
+| 12:24–12:45 | `ci/helm` on master with `--docker`: PASS, kind included |
+| 12:47 | the push `43009ac..7caaf21` |
+
+- **Python 3.13's failure** is in the records, not the code: the encoder records' `seconds_total`
+  was summed by Python 3.11's `sum()`, left to right; since 3.12 `sum()` compensates the
+  rounding, so the exact re-derivation is 1e-12 off (H 3488.410999999998 against 3488.411).
+  The tools are registered and stay; the exact check runs on 3.11 (CI's 3.11 leg, the Mac gate).
+- **Julia's global `ci_local.py` changed** (outside the repository): it now exports
+  `RUNNER_TOOL_CACHE` beside `RUNNER_TEMP`, as GitHub does; `helm/kind-action` exits without it.
+- **The agents' state at ≈ 13:00:** B is done — `docs/specs/k-curve-expanded.md`,
+  `reports/k-curve/tools/k_curve.py`, `tests/test_k_curve_tool.py`, untracked; ruff and mypy
+  clean; its tests not run yet (the Mac). Then: its test on the Mac, the three files committed
+  before the count, the count on the Mac (no model, minutes), the record. Forecast in the spec:
+  the smallest K without a detected loss is 6. A and C stopped on a network error at ≈ 12:40
+  and were resumed; their files are drafts. Their briefs and rules: `.tmp/agents/` (git-ignored).
 
 ## Glossary added
 
@@ -116,3 +145,11 @@ helpers in `.tmp/v5/` (git-ignored). Never commit `demo/phase-e-raw.webm` or `re
   unchanged. The probe between chunks saw it; a forecast would not have.
 - **A watch re-armed near an end can miss the end:** B's `ALLDONE` came just before the re-armed
   Monitor started and counted as already seen; read the log itself when re-arming late.
+- **A CI run on a detached HEAD is not the push's run.** ci_local takes the ref from HEAD, and
+  the jobs gated on `refs/heads/master` (migrations, helm, regression-eval) and the site build
+  do not start. A clean checkout for CI sits on the branch:
+  `git checkout --ignore-other-worktrees master` in the worktree.
+- **A record that re-derives a float sum exactly is pinned to the Python that summed it.** Since
+  3.12 `sum()` rounds differently; such records state their interpreter, or sum by `math.fsum`.
+- **One job alone may run without Docker.** ci_local mounts the socket when a planned job has
+  services or a docker build; kind needs it too and is not seen, so `--job ci/helm` takes `--docker`.
