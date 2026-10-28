@@ -174,7 +174,7 @@ Encodechka прямо сообщает, что не содержит retrieval/r
 | **4** | **Multilingual MiniLM** | Старый дешёвый контроль; отдельной RU-оценки нет, опубликованный BEIR хуже BGE | **≈2 с — грубая архитектурная оценка**, не замер | FP32-веса ≈**0,47 ГБ**; Apache-2.0. Основной риск — потеря релевантных документов |
 | **5** | **Edge, только RU-ветка эксперимента** | Близок учителю на опубликованных RU-задачах; доказательств для EN нет | **Не найдено** | FP32-веса ≈**0,60 ГБ**; Apache-2.0. Совместимость ModernBERT с эффективным CPU-инференсом требует проверки |
 
-Происхождение расчётных времён GTE/MiniLM: для одинаковой длины использована грубая стоимость transformer-блоков  
+Происхождение расчётных времён GTE/MiniLM: для одинаковой длины использована грубая стоимость transformer-блоков
 `C ∝ число_слоёв × (12 × L × d² + 2 × L² × d)`, с опорой на ваши **27 с** и `L ≈ 300`.
 
 Конфигурации: BGE — **24 слоя, d=1024**; GTE — **12, d=768**; MiniLM — **12, d=384**. Источники: [BGE config](https://huggingface.co/BAAI/bge-reranker-v2-m3/blob/main/config.json), [GTE config](https://huggingface.co/Alibaba-NLP/gte-multilingual-reranker-base/blob/main/config.json), [MiniLM config](https://huggingface.co/cross-encoder/mmarco-mMiniLMv2-L12-H384-v1/blob/main/config.json), доступ 25.10.2026.
