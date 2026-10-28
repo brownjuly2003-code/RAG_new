@@ -72,7 +72,8 @@ judged against V4's answers, registered before the first request; its
 [record](evidence/answer-prompt-v5-record.md): not adopted 2026-10-28. [The K curve after
 expansion](specs/k-curve-expanded.md) — stage 4's step 3: each lane's first K, 5 to 20, through
 the product's fusion, rerank cut and expansion on stage 2's saved lists, against K = 20, with no
-model; registered before the count.
+model; registered before the count; its [record](evidence/k-curve-record.md): the smallest K
+without a detected loss is 14, 2026-10-28.
 
 **Contracts the code keeps** — what the code must do, with tests behind each:
 

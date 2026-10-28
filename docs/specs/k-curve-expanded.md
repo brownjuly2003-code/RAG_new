@@ -1,10 +1,12 @@
 # The K curve after expansion: how many candidates a lane gives the reranker, on stage 2's lists
 
 Status 2026-10-28: **registered before the count**, with the tool that reads it and its test
-([Records](#records)); not counted yet. [`PLAN.md`](../../PLAN.md) stage 4, step 3: «Качество
-для K от 5 до 20 считается без Mac по оценкам этапа 2, на четырёх корпусах», and since the
-[no-reranker point](no-rerank-point.md) «кривая K здесь и INT8 (п. 5а), каждый по эталону после
-расширения на тех же списках». No model call, no new retrieval; the live timing comes after.
+([Records](#records)), in `0b4a439`; read the same day — **the smallest K without a detected
+loss is 14**, the forecast 6 ([record](../evidence/k-curve-record.md)). [`PLAN.md`](../../PLAN.md)
+stage 4, step 3: «Качество для K от 5 до 20 считается без Mac по оценкам этапа 2, на четырёх
+корпусах», and since the [no-reranker point](no-rerank-point.md) «кривая K здесь и INT8
+(п. 5а), каждый по эталону после расширения на тех же списках». No model call, no new
+retrieval; the live timing comes after.
 
 ## Why
 
