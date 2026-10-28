@@ -73,7 +73,10 @@ judged against V4's answers, registered before the first request; its
 expansion](specs/k-curve-expanded.md) — stage 4's step 3: each lane's first K, 5 to 20, through
 the product's fusion, rerank cut and expansion on stage 2's saved lists, against K = 20, with no
 model; registered before the count; its [record](evidence/k-curve-record.md): the smallest K
-without a detected loss is 14, 2026-10-28.
+without a detected loss is 14, 2026-10-28. [MultiHop-RAG's retrieval by the official
+rule](specs/multihop-official-retrieval.md) — the recount by the published rules: the
+benchmark's `retrieval_evaluate.py` on stage 2's lists, Hits@4, Hits@10, MRR@10 and MAP@10
+beside stage 2's own and the published band, with no model; registered before the count.
 
 **Contracts the code keeps** — what the code must do, with tests behind each:
 
