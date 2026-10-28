@@ -69,7 +69,10 @@ Horizon guard base, its Amendment 1, in between too.
 and ten widget answers through `/api/ask`, their routes, passes and seconds. [The answer prompt
 V5](specs/answer-prompt-v5.md) — stage 3b: evidence first, replayed on V4's saved contexts and
 judged against V4's answers, registered before the first request; its
-[record](evidence/answer-prompt-v5-record.md): not adopted 2026-10-28.
+[record](evidence/answer-prompt-v5-record.md): not adopted 2026-10-28. [The K curve after
+expansion](specs/k-curve-expanded.md) — stage 4's step 3: each lane's first K, 5 to 20, through
+the product's fusion, rerank cut and expansion on stage 2's saved lists, against K = 20, with no
+model; registered before the count.
 
 **Contracts the code keeps** — what the code must do, with tests behind each:
 
