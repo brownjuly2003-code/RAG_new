@@ -1,7 +1,9 @@
 # MultiHop-RAG's retrieval by the official rule, beside stage 2's, on stage 2's lists
 
 Status 2026-10-28: **registered before the count**, with the tool that reads it and its test
-([Records](#records)); not yet read. [`PLAN.md`](../../PLAN.md), «Параллельно, без Mac», the
+([Records](#records)), in `6ce7a77`; read the same day — **all four official numbers above the
+band**, Hits@4 0.8714 ([record](../evidence/multihop-official-record.md)).
+[`PLAN.md`](../../PLAN.md), «Параллельно, без Mac», the
 recount by the published rules (the amendment of 2026-10-26): «Лёгким скриптом на Mac между
 замерами, без модели (тексты остаются на Mac), — Hits@K и MAP@10 MultiHop-RAG по официальному
 `retrieval_evaluate.py` … Свои и официальные числа печатаются рядом, и те и другие названы до

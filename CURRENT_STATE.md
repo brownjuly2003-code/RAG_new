@@ -57,7 +57,7 @@ limits: [`EVIDENCE_INDEX.md`](EVIDENCE_INDEX.md), [`PLAN.md`](PLAN.md) §3.
 | Coverage beside quality, V3 → V4 | answered: WixQA 67 → 73, ConditionalQA 81 → 91, aircargo 98 → 100 of 100; CRAG score −0.020 → 0.105, −0.195 → −0.150, 0.655 → 0.560 | [coverage record](docs/evidence/coverage-metrics-record.md): unpaired, no model call; on ConditionalQA more wrong answers given out than right |
 
 Stage 2's [retrieval baseline](docs/evidence/stage2-retrieval-baseline.md) (`7208ed2`): 415 questions,
-no path break, aircargo prompt parity 100/100. Its [300 external answers](docs/evidence/stage2-external-answers.md):
+no path break, aircargo prompt parity 100/100; MultiHop-RAG by the benchmark's own rule Hits@4 0.8714, above every published row ([record](docs/evidence/multihop-official-record.md)). Its [300 external answers](docs/evidence/stage2-external-answers.md):
 no path break, all in the question's language, 84 routed to a person, median 266.9 s. Its [record](docs/evidence/stage2-record.md)
 grades all 400: aircargo's good share above ConditionalQA's and WixQA's (+38.0, +42.0 pp, detected), not MultiHop-RAG's; M2 agrees ConditionalQA 43/80, WixQA 29/100.
 

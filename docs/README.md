@@ -76,7 +76,8 @@ model; registered before the count; its [record](evidence/k-curve-record.md): th
 without a detected loss is 14, 2026-10-28. [MultiHop-RAG's retrieval by the official
 rule](specs/multihop-official-retrieval.md) — the recount by the published rules: the
 benchmark's `retrieval_evaluate.py` on stage 2's lists, Hits@4, Hits@10, MRR@10 and MAP@10
-beside stage 2's own and the published band, with no model; registered before the count.
+beside stage 2's own and the published band, with no model; registered before the count; its
+[record](evidence/multihop-official-record.md): all four above the band, 2026-10-28.
 
 **Contracts the code keeps** — what the code must do, with tests behind each:
 
