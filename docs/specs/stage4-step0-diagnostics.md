@@ -1,7 +1,8 @@
 # Stage 4, step 0: the 4B's prompt cache, memory and reused prefix, before any lever
 
 Status 2026-10-28: **registered before the first request**, with the sampler and the reader that
-read it and their test ([Records](#records)). [`PLAN.md`](../../PLAN.md) stage 4, item 0
+read it and their test ([Records](#records)). **Read 2026-10-28** in two runs, run 1's gate
+passed: [the record](../evidence/stage4-step0-record.md). [`PLAN.md`](../../PLAN.md) stage 4, item 0
 («Диагностика до рычагов», ≈ 1 h, changing nothing: the amendment of 2026-10-26); the [research
 analysis](../operations/research-2026-10-25/analysis.md#item-5a--speed-research-6--and-what-our-log-and-arithmetic-add),
 step 0. The one value filled in at launch is `<c>`, the commit that registers this spec.

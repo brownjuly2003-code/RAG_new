@@ -1,0 +1,585 @@
+{
+ "corpus": null,
+ "log": "/Users/julia/gr2_bench/ollama_serve.log",
+ "parts": [
+  {
+   "gin": {
+    "GET /api/ps 200": 3,
+    "GET /api/tags 200": 2,
+    "POST /api/generate 200": 5
+   },
+   "notes": [],
+   "page_size": 4096,
+   "pid": 1619,
+   "processes": [
+    {
+     "index": 0,
+     "load": {
+      "backends": [],
+      "buffers": [
+       {
+        "at": "load_tensors",
+        "kind": "model",
+        "mib": 692.63,
+        "type": "CPU"
+       },
+       {
+        "at": "load_tensors",
+        "kind": "model",
+        "mib": 1683.28,
+        "type": "CPU_REPACK"
+       },
+       {
+        "at": "llama_context",
+        "kind": "output",
+        "mib": 0.58,
+        "type": "CPU"
+       },
+       {
+        "at": "llama_kv_cache",
+        "kind": "KV",
+        "mib": 576.0,
+        "type": "CPU"
+       },
+       {
+        "at": "sched_reserve",
+        "kind": "compute",
+        "mib": 84.01,
+        "type": "CPU"
+       }
+      ],
+      "build": null,
+      "commit": null,
+      "lines": 6,
+      "load_mode": "load_mode = none",
+      "notes": [
+       "no build line",
+       "no system_info line",
+       "no load_backend line"
+      ],
+      "system_info": null
+     },
+     "notes": [],
+     "requests": [
+      {
+       "base_f_keep": -1.0,
+       "base_f_sim": 0.0,
+       "best_candidate_lcp": null,
+       "cache_est": 8589934592,
+       "cache_limit_mib": 8192.0,
+       "cache_limit_reduced_mib": null,
+       "cache_limit_tokens": 4096,
+       "cache_mib": 0.0,
+       "cache_prompts": 0,
+       "cache_update_ms": 0.07,
+       "cache_updated": true,
+       "cached_tokens": 0,
+       "call": 0,
+       "candidates": 0,
+       "case_id": "aircargo-probation-data",
+       "complete": true,
+       "eval_ms": 118447.36,
+       "eval_tokens": 254,
+       "eval_tps": 2.144,
+       "first_end": 362033563,
+       "first_line_by": 3961008.662,
+       "generation_window": {
+        "cmprs_peak_mib": 912.0,
+        "compressions": 1643376,
+        "decompressions": 1310874,
+        "faulted_mib": 5520.656,
+        "faulted_mib_per_token": 23.409,
+        "from": 3961085.211,
+        "mem_peak_mib": 3181.0,
+        "pageins": 102414,
+        "pageouts": 491,
+        "rss_peak_mib": 2879.043,
+        "samples": 23,
+        "sec": 109.998,
+        "swap_used_mib": 86.25,
+        "swapins": 654,
+        "swapouts": 21755,
+        "to": 3961198.656
+       },
+       "mem_after_state_mib": 3049.0,
+       "n_ctx_slot": 4096,
+       "n_keep": 4,
+       "n_tokens": 2105,
+       "notes": [],
+       "obsolete_entries": 0,
+       "process": 0,
+       "prompt_ms": 74133.22,
+       "prompt_ms_per_token": 35.218,
+       "prompt_tokens": 2105,
+       "prompt_window": {
+        "cmprs_peak_mib": 2343.0,
+        "compressions": 43347,
+        "decompressions": 473231,
+        "faulted_mib": 2042.785,
+        "from": 3961011.077,
+        "mem_peak_mib": 3179.0,
+        "pageins": 49722,
+        "pageouts": 232,
+        "rss_peak_mib": 2524.434,
+        "samples": 14,
+        "sec": 65.001,
+        "swap_used_mib": -267.5,
+        "swapins": 661,
+        "swapouts": 0,
+        "to": 3961080.209
+       },
+       "release_after": 3961198.656,
+       "release_end": 362038509,
+       "release_n_tokens": 2358,
+       "release_start": 362038425,
+       "removed_entries": 0,
+       "removed_mib": 0.0,
+       "request_window": {
+        "cmprs_peak_mib": 2997.0,
+        "compressions": 2336410,
+        "decompressions": 2383963,
+        "faulted_mib": 10056.469,
+        "mem_peak_mib": 3511.0,
+        "pageins": 190493,
+        "pageouts": 759,
+        "rss_peak_mib": 2879.043,
+        "samples": 41,
+        "sec": 200.003,
+        "swap_used_mib": -248.5,
+        "swapins": 1563,
+        "swapouts": 22125
+       },
+       "restored": false,
+       "role": "answer",
+       "saved_mib": null,
+       "saved_tokens": null,
+       "selected_by": "LRU",
+       "sim_f": null,
+       "sim_lcp": null,
+       "sim_n": null,
+       "skipped_saves": 0,
+       "start_byte": 362033492,
+       "state_end": 362033797,
+       "state_start": 362033689,
+       "summary_end": 362038139,
+       "summary_start": 362038003,
+       "task": 0,
+       "total_ms": 192580.57,
+       "total_tokens": 2359,
+       "truncated": 0
+      },
+      {
+       "base_f_keep": 0.003,
+       "base_f_sim": 0.003,
+       "best_candidate_lcp": 7,
+       "cache_est": 58249,
+       "cache_limit_mib": 8192.0,
+       "cache_limit_reduced_mib": null,
+       "cache_limit_tokens": 4096,
+       "cache_mib": 331.622,
+       "cache_prompts": 1,
+       "cache_update_ms": 1083.84,
+       "cache_updated": true,
+       "cached_tokens": 7,
+       "call": 1,
+       "candidates": 1,
+       "case_id": "aircargo-probation-data",
+       "complete": true,
+       "eval_ms": 2327.57,
+       "eval_tokens": 4,
+       "eval_tps": 1.719,
+       "first_end": 362038758,
+       "first_line_by": 3961203.658,
+       "generation_window": {
+        "faulted_mib_per_token": null,
+        "from": 3961301.33,
+        "samples": 0,
+        "to": 3961298.66
+       },
+       "mem_after_state_mib": 3511.0,
+       "n_ctx_slot": 4096,
+       "n_keep": 4,
+       "n_tokens": 2388,
+       "notes": [],
+       "obsolete_entries": 0,
+       "process": 0,
+       "prompt_ms": 97169.08,
+       "prompt_ms_per_token": 40.81,
+       "prompt_tokens": 2381,
+       "prompt_window": {
+        "cmprs_peak_mib": 1957.0,
+        "compressions": 882153,
+        "decompressions": 1087345,
+        "faulted_mib": 4642.906,
+        "from": 3961204.161,
+        "mem_peak_mib": 3512.0,
+        "pageins": 101239,
+        "pageouts": 1457,
+        "rss_peak_mib": 2539.262,
+        "samples": 18,
+        "sec": 85.002,
+        "swap_used_mib": 463.25,
+        "swapins": 26033,
+        "swapouts": 135039,
+        "to": 3961296.332
+       },
+       "release_after": 3961298.66,
+       "release_end": 362041826,
+       "release_n_tokens": 2391,
+       "release_start": 362041740,
+       "removed_entries": 0,
+       "removed_mib": 0.0,
+       "request_window": {
+        "cmprs_peak_mib": 1957.0,
+        "compressions": 1626572,
+        "decompressions": 1700383,
+        "faulted_mib": 7078.895,
+        "mem_peak_mib": 3847.0,
+        "pageins": 111814,
+        "pageouts": 1493,
+        "rss_peak_mib": 3262.938,
+        "samples": 22,
+        "sec": 105.002,
+        "swap_used_mib": 433.25,
+        "swapins": 28145,
+        "swapouts": 135531
+       },
+       "restored": false,
+       "role": "self_eval",
+       "saved_mib": 331.622,
+       "saved_tokens": 2358,
+       "selected_by": "LRU",
+       "sim_f": 0.003,
+       "sim_lcp": 7,
+       "sim_n": 2388,
+       "skipped_saves": 0,
+       "start_byte": 362038680,
+       "state_end": 362039271,
+       "state_start": 362039166,
+       "summary_end": 362041448,
+       "summary_start": 362041310,
+       "task": 259,
+       "total_ms": 99496.65,
+       "total_tokens": 2385,
+       "truncated": 0
+      },
+      {
+       "base_f_keep": 0.002,
+       "base_f_sim": 0.012,
+       "best_candidate_lcp": 5,
+       "cache_est": 58249,
+       "cache_limit_mib": 8192.0,
+       "cache_limit_reduced_mib": null,
+       "cache_limit_tokens": 4096,
+       "cache_mib": 667.884,
+       "cache_prompts": 2,
+       "cache_update_ms": 214.91,
+       "cache_updated": true,
+       "cached_tokens": 5,
+       "call": 2,
+       "candidates": 2,
+       "case_id": "aircargo-probation-data",
+       "complete": true,
+       "eval_ms": 16735.9,
+       "eval_tokens": 45,
+       "eval_tps": 2.689,
+       "first_end": 362042074,
+       "first_line_by": 3961303.658,
+       "generation_window": {
+        "cmprs_peak_mib": 783.0,
+        "compressions": 146847,
+        "decompressions": 111512,
+        "faulted_mib": 463.465,
+        "faulted_mib_per_token": 17.237,
+        "from": 3961316.926,
+        "mem_peak_mib": 3847.0,
+        "pageins": 7135,
+        "pageouts": 88,
+        "rss_peak_mib": 3262.996,
+        "samples": 3,
+        "sec": 9.999,
+        "swap_used_mib": 125.25,
+        "swapins": 1979,
+        "swapouts": 31932,
+        "to": 3961328.657
+       },
+       "mem_after_state_mib": 3847.0,
+       "n_ctx_slot": 4096,
+       "n_keep": 4,
+       "n_tokens": 405,
+       "notes": [],
+       "obsolete_entries": 0,
+       "process": 0,
+       "prompt_ms": 13250.15,
+       "prompt_ms_per_token": 33.125,
+       "prompt_tokens": 400,
+       "prompt_window": {
+        "from": 3961303.676,
+        "samples": 1,
+        "to": 3961311.921
+       },
+       "release_after": 3961328.657,
+       "release_end": 362044545,
+       "release_n_tokens": 449,
+       "release_start": 362044460,
+       "removed_entries": 0,
+       "removed_mib": 0.0,
+       "request_window": {
+        "cmprs_peak_mib": 960.0,
+        "compressions": 176600,
+        "decompressions": 226563,
+        "faulted_mib": 965.734,
+        "mem_peak_mib": 3847.0,
+        "pageins": 20665,
+        "pageouts": 286,
+        "rss_peak_mib": 3262.996,
+        "samples": 8,
+        "sec": 35.002,
+        "swap_used_mib": 61.25,
+        "swapins": 10145,
+        "swapouts": 31932
+       },
+       "restored": false,
+       "role": "suggestions",
+       "saved_mib": 336.263,
+       "saved_tokens": 2391,
+       "selected_by": "LRU",
+       "sim_f": 0.012,
+       "sim_lcp": 5,
+       "sim_n": 405,
+       "skipped_saves": 0,
+       "start_byte": 362041997,
+       "state_end": 362042684,
+       "state_start": 362042579,
+       "summary_end": 362044073,
+       "summary_start": 362043935,
+       "task": 268,
+       "total_ms": 29986.05,
+       "total_tokens": 445,
+       "truncated": 0
+      }
+     ]
+    }
+   ],
+   "run": {
+    "calls": [
+     {
+      "case_id": "aircargo-probation-data",
+      "end": 3961201.31735541,
+      "failed": false,
+      "index": 0,
+      "max_tokens": 1024,
+      "prompt_est_tokens": 2463,
+      "role": "answer",
+      "stage": "ollama.generate_stream",
+      "start": 3961002.972207329,
+      "task": 0
+     },
+     {
+      "case_id": "aircargo-probation-data",
+      "end": 3961302.349656646,
+      "failed": false,
+      "index": 1,
+      "max_tokens": 128,
+      "prompt_est_tokens": 2807,
+      "role": "self_eval",
+      "stage": "ollama.generate",
+      "start": 3961201.369665064,
+      "task": 259
+     },
+     {
+      "case_id": "aircargo-probation-data",
+      "end": 3961332.729746374,
+      "failed": false,
+      "index": 2,
+      "max_tokens": null,
+      "prompt_est_tokens": 479,
+      "role": "suggestions",
+      "stage": "ollama.generate",
+      "start": 3961302.393919053,
+      "task": 268
+     }
+    ],
+    "cases": [
+     {
+      "case_id": "aircargo-probation-data",
+      "client_error": false,
+      "drain_error": false,
+      "drain_sec": 0.177,
+      "route": "auto",
+      "sha256": "df61b603e8124da11cdd1e1b8dbd466ab3e7e7569669c488ec5c636a4fbc9a59",
+      "t0_monotonic": 3960681.940780796,
+      "tokens": 253,
+      "total_sec": 651.879
+     }
+    ],
+    "dir": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/s0-first",
+    "drivers_sha256": {
+     "launch.py": "3098a60df73f86d349a2c9619666340503f13d1f3113fb0b23a1eb1475da7531",
+     "live_api.py": "43ff96f06af18538a2571d68a86e898ecfcdd5fcab47039f0d58bd245361a7b5",
+     "live_runner.py": "fd5f7d7b66e5be827cb1cbc23074d6b7955f64d18143a11a1f9cd4dbe9caf4d1",
+     "live_supervisor.py": "32e5a40552b62c37ee1e3cc387ae01a453b7729adadd7b9f790d73bb1906138c"
+    },
+    "joined": {
+     "calls": 3,
+     "matched": 3,
+     "requests": 3
+    },
+    "launch": {
+     "cases": [
+      "aircargo-probation-data"
+     ],
+     "cases_file": "/Users/julia/RAG_new_chat_4f48fed/evaluation/curated_cases_aircargo.jsonl",
+     "chroma_dir": "/Users/julia/RAG_new_chat_4f48fed/chatlive/runs/s0-first.chroma",
+     "client_cap_sec": "1020/1200",
+     "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+     "label": "s0-first",
+     "mode": "prod",
+     "model": "qwen3:4b-instruct-2507-q4_K_M",
+     "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+     "ollama_load_sec": 41.407,
+     "ollama_models_after": [
+      "qwen3:4b-instruct-2507-q4_K_M"
+     ],
+     "ollama_models_before": [],
+     "overrides": {
+      "OLLAMA_REQUEST_TIMEOUT_SEC": "3600",
+      "RAG_DEVICE": "cpu",
+      "REQUEST_TIMEOUT_SEC": "3600",
+      "STREAMING_TIMEOUT_SEC": "3600"
+     },
+     "runner_exit": 0,
+     "started": "2026-10-28T15:40:26+00:00",
+     "status": "complete",
+     "tenant": "aircargo",
+     "workspace": "/Users/julia/RAG_new_chat_4f48fed"
+    },
+    "sha256": {
+     "effective_settings.json": "03e1ef5a0ba0a6f040c18fe3fed900afeb40f715f5e0095e3eaf0e5a971449f1",
+     "launch.json": "08e4b589a8666cce368deca5b95c1e8e0f0c98a12e0a2be7a3df609f2bd8c7c2",
+     "stages.jsonl": "12551091fe72520fd40b0c09536290c3b25a577daec7bff5a40d6963e4359292"
+    }
+   },
+   "samples": {
+    "every_sec": 5.0,
+    "file": "s0-first.samples.jsonl",
+    "first_utc": "2026-10-28T15:40:20.817Z",
+    "last_utc": "2026-10-28T15:53:08.380Z",
+    "sample_notes": {
+     "ps: no process named llama-server": 15
+    },
+    "samples": 155,
+    "schema": "stage4-step0-samples/v1",
+    "sha256": "600edd5e487026acaf44132744dda8310d609984c2039e1e0503506a0dff7eea",
+    "stop_reason": "stop file"
+   },
+   "slice": {
+    "bytes": 27995,
+    "end": 362044857,
+    "lines": 355,
+    "sha256": "318cf1fd7d929e6e39b3aaf30a1fa7cdc0e7af9e49a914b1cc2232f7fdadc5d4",
+    "start": 362016862
+   }
+  }
+ ],
+ "readings": {
+  "q1_cache_growth": {
+   "accounts": true,
+   "answer": "NOT_EVIDENCE",
+   "cache_delta_mib": 336.262,
+   "deltas_mib": [
+    331.622,
+    336.262
+   ],
+   "footprint_delta_mib": 336.0,
+   "grows": null,
+   "growth_per_request_mib": 333.942,
+   "median_delta_mib": 333.942,
+   "ratio": 0.999,
+   "removed_entries": 0,
+   "requests_spanned": 2,
+   "restored": 0,
+   "saved_mib": [
+    331.622,
+    336.263
+   ],
+   "skipped_saves": 0
+  },
+  "q2_memory_wait": {
+   "answer": "no",
+   "median_faulted_mib_per_token": 20.323,
+   "requests": [
+    {
+     "eval_tps": 2.144,
+     "faulted_mib": 5520.656,
+     "faulted_mib_per_token": 23.409,
+     "pageouts": 491,
+     "role": "answer",
+     "samples": 23,
+     "sec": 109.998,
+     "swap_used_mib": 86.25,
+     "swapins": 654,
+     "task": 0
+    },
+    {
+     "eval_tps": 1.719,
+     "faulted_mib": null,
+     "faulted_mib_per_token": null,
+     "pageouts": null,
+     "role": "self_eval",
+     "samples": 0,
+     "sec": null,
+     "swap_used_mib": null,
+     "swapins": null,
+     "task": 259
+    },
+    {
+     "eval_tps": 2.689,
+     "faulted_mib": 463.465,
+     "faulted_mib_per_token": 17.237,
+     "pageouts": 88,
+     "role": "suggestions",
+     "samples": 3,
+     "sec": 9.999,
+     "swap_used_mib": 125.25,
+     "swapins": 1979,
+     "task": 268
+    }
+   ],
+   "windows": 2
+  },
+  "q3_prefix_reuse": {
+   "answer": "NOT_EVIDENCE",
+   "answers": [],
+   "lever": "NOT_EVIDENCE",
+   "median_cached_tokens": null,
+   "median_saving_ms": null,
+   "self_eval": [
+    {
+     "best_prefix": 7,
+     "cached_tokens": 7,
+     "task": 259
+    }
+   ],
+   "unreadable_answers": 0
+  },
+  "repack": {
+   "answer": "on",
+   "backends": null,
+   "build": null,
+   "load_mode": "load_mode = none",
+   "model_buffers": [
+    "CPU",
+    "CPU_REPACK"
+   ],
+   "n_threads": null,
+   "system_info_repack": null
+  }
+ },
+ "schema": "stage4-step0/v1",
+ "spec": "docs/specs/stage4-step0-diagnostics.md",
+ "tools_sha256": {
+  "step0_reader.py": "655d7c22698b0f9e7eb308c5efa4d714ffceec78fd9a32d82d6d6f9d4db8b5ed",
+  "step0_sampler.py": "a0b3e53d78584f454d252770898efb884b77aa80f0fff1729992ec1a37c6d18c"
+ }
+}

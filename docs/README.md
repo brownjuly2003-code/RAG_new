@@ -80,7 +80,9 @@ beside stage 2's own and the published band, with no model; registered before th
 [record](evidence/multihop-official-record.md): all four above the band, 2026-10-28. [Stage 4,
 step 0](specs/stage4-step0-diagnostics.md) — diagnostics before the levers: llama-server's host
 prompt cache, the Mac's paging and the reused prefix over five aircargo answers on V4's stand,
-read from the server's log and a sampler, nothing changed; registered before the first request.
+read from the server's log and a sampler, nothing changed; registered before the first request; its
+[record](evidence/stage4-step0-record.md): the cache is the 4B's growth, nothing restored, the weights
+repacked, 2026-10-28.
 
 **Contracts the code keeps** — what the code must do, with tests behind each:
 
