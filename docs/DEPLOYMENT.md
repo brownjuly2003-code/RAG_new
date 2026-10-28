@@ -1,6 +1,8 @@
 # Deployment — RAG Support Assistant
 
 > Moved out of the top-level README to keep it scannable; this is the full deployment reference.
+> The chat on the production Mac as a launchd service, a draft installed only on Julia's word:
+> [macOS service](operations/macos-service.md).
 
 ## Dependency lock
 

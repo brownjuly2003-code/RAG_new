@@ -31,6 +31,7 @@ History — superseded plans, audits, session handoffs, dated experiment logs �
 | Resolution database roles | [PostgreSQL roles](operations/resolution-postgres-roles.md) |
 | Helm chart | [Helm lint](operations/helm-lint.md) |
 | A live GraceKelly smoke (explicit opt-in only) | [GraceKelly smoke](operations/gracekelly-smoke.md) |
+| The chat as a launchd service on the Mac (a draft; installed only on Julia's word) | [macOS service](operations/macos-service.md) |
 
 ## How it is built — `architecture/` and `adr/`
 
@@ -82,7 +83,9 @@ step 0](specs/stage4-step0-diagnostics.md) — diagnostics before the levers: ll
 prompt cache, the Mac's paging and the reused prefix over five aircargo answers on V4's stand,
 read from the server's log and a sampler, nothing changed; registered before the first request; its
 [record](evidence/stage4-step0-record.md): the cache is the 4B's growth, nothing restored, the weights
-repacked, 2026-10-28.
+repacked, 2026-10-28. [Stage 6, item 4](specs/stage6-throughput.md) — the
+service's questions an hour and what a second client sees: a draft, registered with its tools once
+the service is installed.
 
 **Contracts the code keeps** — what the code must do, with tests behind each:
 

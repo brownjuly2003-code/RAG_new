@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  The RAG_new chat as a LaunchAgent of the Mac user julia (PLAN.md stage 6, item 1).
+  A draft: nothing is installed. docs/operations/macos-service.md installs, checks, stops
+  and removes it; it goes on the shared Mac only on Julia's word.
+
+  start.py, run with the stands' interpreter, reads ~/.config/rag-new/chat-service.env and
+  refuses to start while the memory policy of stage 4 is not named there. A refusal exits 0,
+  so launchd leaves it stopped; a dependency that is not up yet (PostgreSQL, Ollama) exits 1,
+  and launchd tries again after ThrottleInterval. A crash is restarted the same way. The logs
+  live outside the repository, beside the dedicated PostgreSQL cluster's
+  (docs/operations/resolution-postgres-roles.md).
+-->
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.rag-new.chat</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/Users/julia/RAG_Support_Assistant/.venv/bin/python</string>
+    <string>-I</string>
+    <string>/Users/julia/RAG_new_service/deploy/macos/start.py</string>
+  </array>
+  <key>WorkingDirectory</key>
+  <string>/Users/julia/RAG_new_service</string>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>KeepAlive</key>
+  <dict>
+    <key>SuccessfulExit</key>
+    <false/>
+  </dict>
+  <key>ThrottleInterval</key>
+  <integer>60</integer>
+  <key>ExitTimeOut</key>
+  <integer>60</integer>
+  <key>ProcessType</key>
+  <string>Interactive</string>
+  <key>StandardOutPath</key>
+  <string>/Users/julia/Library/Logs/RAG_new/chat-service.out.log</string>
+  <key>StandardErrorPath</key>
+  <string>/Users/julia/Library/Logs/RAG_new/chat-service.err.log</string>
+</dict>
+</plist>
