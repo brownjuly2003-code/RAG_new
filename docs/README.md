@@ -77,7 +77,10 @@ without a detected loss is 14, 2026-10-28. [MultiHop-RAG's retrieval by the offi
 rule](specs/multihop-official-retrieval.md) — the recount by the published rules: the
 benchmark's `retrieval_evaluate.py` on stage 2's lists, Hits@4, Hits@10, MRR@10 and MAP@10
 beside stage 2's own and the published band, with no model; registered before the count; its
-[record](evidence/multihop-official-record.md): all four above the band, 2026-10-28.
+[record](evidence/multihop-official-record.md): all four above the band, 2026-10-28. [Stage 4,
+step 0](specs/stage4-step0-diagnostics.md) — diagnostics before the levers: llama-server's host
+prompt cache, the Mac's paging and the reused prefix over five aircargo answers on V4's stand,
+read from the server's log and a sampler, nothing changed; registered before the first request.
 
 **Contracts the code keeps** — what the code must do, with tests behind each:
 
