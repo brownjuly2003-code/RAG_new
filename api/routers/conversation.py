@@ -1054,7 +1054,7 @@ async def _persist_ask_messages(
             await asyncio.wait_for(db.commit(), timeout=timeout)
             _app._db_cooldown.clear(tenant_id)
     except Exception as exc:
-        _app._db_cooldown.trip(tenant_id)
+        _app._db_cooldown.record_failure(tenant_id)
         try:
             prometheus_metrics.record_message_persist_failure(path)
         except Exception:

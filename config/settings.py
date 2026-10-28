@@ -934,6 +934,13 @@ class Settings:
     db_cooldown_max_tenants: int = field(
         default_factory=lambda: int(os.getenv("DB_COOLDOWN_MAX_TENANTS", "512"))
     )
+    # Consecutive database failures of one tenant, with no success between
+    # them, before that cooldown starts. One call past db_persist_timeout_sec
+    # under swap, or on a cold connection after a restart, is a latency tail;
+    # at 1 it closed the store for the whole window (PLAN.md stage 6, item 3).
+    db_cooldown_failure_threshold: int = field(
+        default_factory=lambda: int(os.getenv("DB_COOLDOWN_FAILURE_THRESHOLD", "3"))
+    )
     regression_gate_max_regressions: int = field(
         default_factory=lambda: int(os.getenv("REGRESSION_GATE_MAX_REGRESSIONS", "2"))
     )

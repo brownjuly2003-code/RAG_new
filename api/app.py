@@ -289,9 +289,20 @@ class _TenantDbCooldown:
 
     Locked, because the endpoints run on an event loop but the test client and
     the reaper reach these paths from threads.
+
+    Counted, because one slow call is a latency tail, not an outage. On the
+    8 GB Mac a call that waits on swap, or on a cold connection after a
+    restart, outlasts `db_persist_timeout_sec`, and one such tail closed the
+    tenant's store for the whole window: every caller-supplied session id
+    that was not in memory got 503 for a minute (PLAN.md stage 6, item 3).
+    `record_failure` starts the cooldown only after `failure_threshold`
+    failures with no success between them. Until then each call still tries
+    the database, and a call that fails still refuses an unverified
+    caller-supplied id; only the minute of skipping waits for the count.
+    `trip` still closes at once.
     """
 
-    __slots__ = ("_capacity", "_deadlines", "_duration", "_lock")
+    __slots__ = ("_capacity", "_deadlines", "_duration", "_failures", "_lock", "_threshold")
 
     # Longest tenant id the map will key on. `sessions.tenant_id` is
     # `String(50)`, so anything longer can never own a row; truncating bounds
@@ -299,10 +310,18 @@ class _TenantDbCooldown:
     # first 64 characters share only a retry, never data.
     _MAX_KEY_LENGTH = 64
 
-    def __init__(self, *, duration_sec: float = 60.0, capacity: int = 512) -> None:
+    def __init__(
+        self,
+        *,
+        duration_sec: float = 60.0,
+        capacity: int = 512,
+        failure_threshold: int = 1,
+    ) -> None:
         self._duration = float(duration_sec)
         self._capacity = max(1, int(capacity))
+        self._threshold = max(1, int(failure_threshold))
         self._deadlines: OrderedDict[str, float] = OrderedDict()
+        self._failures: OrderedDict[str, int] = OrderedDict()
         self._lock = threading.Lock()
 
     @classmethod
@@ -327,32 +346,65 @@ class _TenantDbCooldown:
         window = self._duration if duration_sec is None else float(duration_sec)
         key = self._key(tenant_id)
         with self._lock:
-            self._evict_locked(key)
-            self._deadlines[key] = time.monotonic() + window
-            self._deadlines.move_to_end(key)
+            self._trip_locked(key, window)
+
+    def record_failure(self, tenant_id: Any) -> bool:
+        """Count a failed database call; start the cooldown at the threshold.
+
+        Returns True when this failure started the cooldown. The trip does not
+        reset the count; a success (`clear`) or `reset` does. So once the
+        window runs out, the next failure with no success in between closes
+        the store again at once, as a breaker's half-open probe would.
+        """
+        key = self._key(tenant_id)
+        with self._lock:
+            count = self._failures.pop(key, 0) + 1
+            self._failures[key] = count
+            while len(self._failures) > self._capacity:
+                # The head failed longest ago; forgetting its count only
+                # delays a trip.
+                self._failures.popitem(last=False)
+            if count < self._threshold:
+                return False
+            self._trip_locked(key, self._duration)
+            return True
 
     def clear(self, tenant_id: Any) -> None:
         """Forget this tenant's cooldown after a database call succeeded."""
+        key = self._key(tenant_id)
         with self._lock:
-            self._deadlines.pop(self._key(tenant_id), None)
+            self._deadlines.pop(key, None)
+            self._failures.pop(key, None)
 
     def reset(self) -> None:
         """Forget every cooldown (startup and tests)."""
         with self._lock:
             self._deadlines.clear()
+            self._failures.clear()
 
-    def configure(self, *, duration_sec: float, capacity: int) -> None:
-        """Take the window and the bound from settings at startup.
+    def configure(
+        self,
+        *,
+        duration_sec: float,
+        capacity: int,
+        failure_threshold: int | None = None,
+    ) -> None:
+        """Take the window, the bound and the threshold from settings at startup.
 
         Read here rather than at each trip because a cooldown that changes
         length between the failure and the retry is harder to reason about
-        than one fixed when the process started.
+        than one fixed when the process started. A threshold left out keeps
+        the one already set.
         """
         with self._lock:
             self._duration = max(0.0, float(duration_sec))
             self._capacity = max(1, int(capacity))
+            if failure_threshold is not None:
+                self._threshold = max(1, int(failure_threshold))
             while len(self._deadlines) > self._capacity:
                 self._deadlines.popitem(last=False)
+            while len(self._failures) > self._capacity:
+                self._failures.popitem(last=False)
 
     def tripped_tenants(self) -> int:
         """How many tenants are in cooldown right now."""
@@ -368,6 +420,11 @@ class _TenantDbCooldown:
         if deadline is None or time.monotonic() >= deadline:
             return 0.0
         return deadline
+
+    def _trip_locked(self, key: str, window: float) -> None:
+        self._evict_locked(key)
+        self._deadlines[key] = time.monotonic() + window
+        self._deadlines.move_to_end(key)
 
     def _evict_locked(self, incoming: str) -> None:
         if incoming in self._deadlines or len(self._deadlines) < self._capacity:
@@ -1178,7 +1235,7 @@ async def _get_or_create_session(
             # Client validation / ownership rejection is not an infra failure.
             raise
         except Exception as exc:
-            _db_cooldown.trip(tenant_id)
+            _db_cooldown.record_failure(tenant_id)
             try:
                 prometheus_metrics.record_message_persist_failure("session_lookup")
             except Exception:
@@ -1604,6 +1661,7 @@ async def _lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     _db_cooldown.configure(
         duration_sec=float(getattr(settings, "db_cooldown_sec", 60.0)),
         capacity=int(getattr(settings, "db_cooldown_max_tenants", 512)),
+        failure_threshold=int(getattr(settings, "db_cooldown_failure_threshold", 3)),
     )
 
     try:

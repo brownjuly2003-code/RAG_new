@@ -301,7 +301,7 @@ async def get_session_history(
                 if messages:
                     return HistoryResponse(session_id=session_id, messages=messages)
         except Exception as exc:
-            _app._db_cooldown.trip(user_tenant)
+            _app._db_cooldown.record_failure(user_tenant)
             logger.warning("DB history fallback: %s", exc)
 
     if session_id in _app._sessions:
@@ -369,7 +369,7 @@ async def list_sessions(
                     )
                 _app._db_cooldown.clear(user_tenant)
         except Exception as exc:
-            _app._db_cooldown.trip(user_tenant)
+            _app._db_cooldown.record_failure(user_tenant)
             logger.warning("DB sessions fallback: %s", exc)
 
     for sid, session in list(_app._sessions.items()):
@@ -447,7 +447,7 @@ async def clear_session(
                     found = True
                 _app._db_cooldown.clear(user_tenant)
         except Exception as exc:
-            _app._db_cooldown.trip(user_tenant)
+            _app._db_cooldown.record_failure(user_tenant)
             logger.warning("DB clear session fallback: %s", exc)
 
     if not found:
