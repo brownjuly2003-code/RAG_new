@@ -88,13 +88,18 @@ INT = r"(\d+)"
 SLOT = re.compile(r"^slot\s+\S+:\s+id\s+\d+\s+\|\s+task\s+(-?\d+)\s+\|\s?(.*)$")
 SRV = re.compile(r"^srv\s+\S+:\s?(.*)$")
 GIN = re.compile(r'^\[GIN\][^|]*\|\s*(\d{3})\s*\|[^|]*\|[^|]*\|\s*([A-Z]+)\s+"([^"?]*)')
+# Ollama 0.33.2's llama-server prints common's lines after a tag, "cmn  common_param: ", and its
+# build as "common_params_print_info: build N (commit)" (error fix after run 1, 2026-10-28).
+CMN = r"(?:cmn\s+\S+:\s+)?"
 # Lines only a starting llama-server prints: after requests, a new process.
-STARTS = re.compile(r"^(?:load_backend|build|system_info|load_tensors):")
+STARTS = re.compile(
+    rf"^{CMN}(?:load_backend|build|system_info|load_tensors):|^{CMN}common_params_print_info: build "
+)
 REPACKED = ("CPU_REPACK", "CPU_AARCH64")  # ggml-cpu's repacked weights, its name and the old one
 PLAIN = ("CPU", "CPU_Mapped")  # host buffers: the weights as the file holds them
-BUILD = re.compile(r"^build: (\d+) \(([0-9a-f]+)\)")
+BUILD = re.compile(rf"^{CMN}(?:build:|common_params_print_info: build) (\d+) \(([0-9a-f]+)\)")
 SYSTEM_INFO = re.compile(
-    r"^system_info: n_threads = (\d+)(?: \(n_threads_batch = (\d+)\))? / (\d+) \|(.*)$"
+    rf"^{CMN}system_info: n_threads = (\d+)(?: \(n_threads_batch = (\d+)\))? / (\d+) \|(.*)$"
 )
 FLAG = re.compile(r"(\w+) = (\w+)")
 BACKEND = re.compile(r"^load_backend: loaded (\S+) backend from (.+?)\s*$")

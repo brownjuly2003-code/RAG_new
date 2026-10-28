@@ -152,9 +152,16 @@ changes); its record gets a row in [`EVIDENCE_INDEX.md`](../../EVIDENCE_INDEX.md
 reads it again. The tools and their test are committed with this spec, each SHA-256 below checked
 by the test; a later change is a marked error fix that updates this list:
 
-- `reports/stage4-step0/tools/step0_reader.py` `655d7c22698b0f9e7eb308c5efa4d714ffceec78fd9a32d82d6d6f9d4db8b5ed`
+- `reports/stage4-step0/tools/step0_reader.py` `2bdca7e9288b41857651d1a91ec823c2437d7ed8b6305da183148dc3df95e978`
 - `reports/stage4-step0/tools/step0_sampler.py` `a0b3e53d78584f454d252770898efb884b77aa80f0fff1729992ec1a37c6d18c`
-- `tests/test_stage4_step0_tools.py` `744aab323d6eca67fa042a965129004869143e3013f790c4ae805fedce4008fd`
+- `tests/test_stage4_step0_tools.py` `c30676c3e4e278e4509bad3e3547c290a4b53753accd7303c6b668cebaaa2218`
+
+**Error fix after run 1** (2026-10-28, its gate passed on all four points): this llama-server
+prints its build and `system_info` lines after common's tag, `cmn  common_param: `, the build as
+`common_params_print_info: build N (commit)`, and no `load_backend` line, so run 1's read left
+both null with a note. The reader now reads both shapes (`step0_reader.py` was `655d7c22…b8b5ed`,
+the test `744aab32…4008fd`); no reading's rule or threshold changed, and the gate does not read
+the load lines. Run 1's gate file stays as it was read; step 6's record is read by the fixed reader.
 
 ## Not said
 

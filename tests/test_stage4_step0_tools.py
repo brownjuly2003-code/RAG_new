@@ -279,7 +279,7 @@ OLLAMA = (  # Ollama's own line with a command line: never in a record
     'time=2026-10-28T09:00:02.300+03:00 level=INFO source=server.go:431 msg="starting runner" '
     'cmd="/fake/bin/llama-server --model /fake/blobs/sha256-0000 --api-key SECRET-0000"'
 )
-LOAD = (  # llama.cpp's sources; the Mac's log has not shown these
+LOAD = (  # llama.cpp's sources; the Mac's llama-server tags two of them (LOAD_OLLAMA)
     "load_backend: loaded CPU backend from /fake/lib/ollama/libggml-cpu-haswell.so",
     "build: 7001 (abc1234) with Apple clang version 15.0.0 for x86_64-apple-darwin22.6.0",
     "system info: n_threads = 4, n_threads_batch = 4, total_threads = 4",
@@ -786,6 +786,46 @@ def test_requests_cut_by_the_slice_and_new_processes_are_kept_apart() -> None:
         "no build line" in third["load"]["notes"]
         and "no model buffer line" in third["load"]["notes"]
     )
+
+
+LOAD_OLLAMA = (  # the shapes of Ollama 0.33.2's llama-server in run 1's log, 2026-10-28
+    "cmn  common_param: common_params_print_info: build 1 (abc1234) with AppleClang 21.0.0 for "
+    "Darwin x86_64",
+    "cmn  common_param: common_params_print_info: verbosity = 4 (adjust with the `-lv N` CLI arg)",
+    "cmn  common_param: system_info: n_threads = 4 (n_threads_batch = 4) / 4 | CPU : SSE3 = 1 | "
+    "AVX2 = 1 | FMA = 1 | REPACK = 1 | ",
+    srv("load_model", "loading model '/fake/blobs/sha256-0000'"),
+    "cmn  common_init_: fitting params to device memory ...",
+    "load_tensors: loading model tensors, this can take a while... (load_mode = none)",
+    "load_tensors:          CPU model buffer size =   692.63 MiB",
+    "load_tensors:   CPU_REPACK model buffer size =  1683.28 MiB",
+)
+
+
+def test_the_tagged_build_and_system_info_lines_are_read_and_start_a_process() -> None:
+    log = reader.Reader()
+    begun = slot(0, "operator()", "new prompt, n_ctx_slot = 4096, n_keep = 4, task.n_tokens = 99")
+    feed(log, [*LOAD_OLLAMA, begun, *LOAD_OLLAMA])
+    first, second = log.processes
+    assert [row["task"] for row in first["requests"]] == [0] and second["requests"] == []
+    for process in (first, second):
+        load = process["load"]
+        assert (load["lines"], load["build"], load["commit"], load["load_mode"]) == (
+            5,
+            1,
+            "abc1234",
+            "load_mode = none",
+        )
+        assert load["system_info"] == {
+            "n_threads": 4,
+            "n_threads_batch": 4,
+            "hw_threads": 4,
+            "flags": {"SSE3": "1", "AVX2": "1", "FMA": "1", "REPACK": "1"},
+        }
+        assert load["backends"] == [] and load["notes"] == ["no load_backend line"]
+    repack = reader.repack([first])
+    assert (repack["answer"], repack["system_info_repack"], repack["n_threads"]) == ("on", "1", 4)
+    assert repack["build"] == 1 and repack["backends"] is None
 
 
 def test_a_slice_drops_the_lines_it_cuts(tmp_path: Path) -> None:
