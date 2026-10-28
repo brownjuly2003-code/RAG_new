@@ -50,6 +50,8 @@ model and glossary still hold: [the widget read, V5 running](session-handoff-202
   The weekly window had dropped from 0.67 to 0 at 22:15 with its reset date unchanged
   (2026-10-31 21:00); at 03:10 it read 0.09. While the judge ran the week went 0.58 → 0.67, then
   0 → 0.09, this session's own use included.
+- 2026-10-28, after the report — asked whether to refresh the locks (`authlib` → 1.9.1) and push
+  the 26 commits: «да».
 
 ## What the record found, for the message to Julia
 
@@ -77,7 +79,8 @@ model and glossary still hold: [the widget read, V5 running](session-handoff-202
 2. **A push** only on her word, after the whole Mac suite, mypy, bandit, pip-audit and DEP-01.
    On 2026-10-28 the Mac's unit suite (6,258 passed, 123 skipped, on `9b769f5`'s code), both
    mypy commands, bandit and DEP-01 passed; pip-audit found 7 new advisories in `authlib` 1.7.0,
-   fixed in 1.9.1 — raise the floor and refresh both locks first ([`BACKLOG.md`](../../BACKLOG.md)).
+   fixed in 1.9.1. On her «да» the floor and both locks moved to 1.9.1 and the audit is clean
+   ([`BACKLOG.md`](../../BACKLOG.md)).
 3. **Her word pending:** the widget's R1 and retry-budget fixes (§8.3, item 1); stage 4's
    self-evaluation badge, `ollama serve` settings and SLO (item 2).
 4. **Not planned, an idea only:** V5's evidence kept from the user (the answer shown alone).

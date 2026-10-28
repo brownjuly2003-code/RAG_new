@@ -1,5 +1,5 @@
 """Guard the pip-audit floors (six raised on 2026-10-03, three on 2026-10-15, six on
-2026-10-25) and the caps below major lines nothing here has run on."""
+2026-10-25, one on 2026-10-28) and the caps below major lines nothing here has run on."""
 
 from __future__ import annotations
 
@@ -35,6 +35,7 @@ FIXED_IN = {
     "certifi": (Version("2026.10.19"), ("PYSEC-2026-4320",)),
     "filelock": (Version("4.2.1"), ("CVE-2026-112907", "112913", "112940")),
     "opentelemetry-api": (Version("1.45.1"), ("CVE-2026-114603",)),
+    "authlib": (Version("1.9.1"), ("CVE-2026-96760", "CVE-2026-114614..114618", "114620")),
 }
 # Major lines kept out of the locks; requirements.txt says why beside each cap.
 CAPS = {"sentence-transformers": Version("6"), "multidict": Version("7")}

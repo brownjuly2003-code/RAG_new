@@ -14,10 +14,10 @@ stage and the frozen streams with their unfreeze conditions are [`ROADMAP.md`](R
 - **Dated:** 2026-11-24 — review the three ChromaDB CVE ignores (ADR 0008; 2026-10-24: no
   fixed release). The npm exception GHSA-ch52-4w7c-c8xp was removed 2026-10-24 with
   `http-cache-semantics` 4.3.0, not a fix but outside its range (ADR 0009's log).
-- **Before the next push, 2026-10-28:** CI's `pip-audit` on `requirements.lock` finds 7 new
-  advisories in `authlib` 1.7.0, fixed in 1.9.1 (`auth/oidc.py` imports it): raise the floor in
-  `requirements.txt` and refresh both locks. The Mac's unit suite, both CI mypy commands, bandit
-  and DEP-01 pass.
+- **Locks refreshed 2026-10-28:** CI's `pip-audit` found 7 new advisories in `authlib` 1.7.0;
+  the floor `authlib>=1.9.1` moved both locks to 1.9.1 alone, and the audit is clean again
+  (5 ignored). The OIDC and auth tests and a client smoke passed on authlib 1.9.1 on the Mac;
+  the Mac's unit suite, both CI mypy commands, bandit and DEP-01 pass.
 - **Locks refreshed 2026-10-25, local:** CI's `pip-audit` on `requirements.lock` clean (aiohttp,
   certifi, filelock 3 → 4, opentelemetry, pypdf, setuptools), the npm gate DEP-01 PASS (astro
   7.2 → 7.3 with markdown-remark, dompurify, fast-uri, undici, vite, zod). Before the push: the
