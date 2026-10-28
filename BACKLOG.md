@@ -6,13 +6,17 @@ stage and the frozen streams with their unfreeze conditions are [`ROADMAP.md`](R
 
 ## Current queue
 
-- **[`PLAN.md`](PLAN.md) stage 3 after outcome C** ([signal record](docs/evidence/handover-signal-v4-aircargo.md)): Julia's
-  «да» (2026-10-26) — the handover line under every answer, done; no stage 2 for S3. Next: the
-  encoder-checker test (§8.3 item 13, spec first), step 4 — R1 and ten widget answers; then
-  stage 3б, the evidence-first prompt V5 (spec first). One measurement on the Mac at a time.
+- **[`PLAN.md`](PLAN.md) stage 4 with V4, step 0 first** (diagnostics, spec first): stage 3
+  stays at outcome C — the handover line under every answer; the encoders and Horizon guard base
+  in between ([record](docs/evidence/encoder-checkers-record.md)); stage 3б closed 2026-10-28,
+  V5 not adopted ([record](docs/evidence/answer-prompt-v5-record.md)). The widget's R1 and
+  retry-budget fixes wait for her word. One measurement on the Mac at a time.
 - **Dated:** 2026-11-24 — review the three ChromaDB CVE ignores (ADR 0008; 2026-10-24: no
   fixed release). The npm exception GHSA-ch52-4w7c-c8xp was removed 2026-10-24 with
   `http-cache-semantics` 4.3.0, not a fix but outside its range (ADR 0009's log).
+- **Before the next push, 2026-10-28:** CI's `pip-audit` on `requirements.lock` finds 7 new
+  advisories in `authlib` 1.7.0, fixed in 1.9.1 (`auth/oidc.py` imports it): raise the floor in
+  `requirements.txt` and refresh both locks. Both CI mypy commands and DEP-01 pass.
 - **Locks refreshed 2026-10-25, local:** CI's `pip-audit` on `requirements.lock` clean (aiohttp,
   certifi, filelock 3 → 4, opentelemetry, pypdf, setuptools), the npm gate DEP-01 PASS (astro
   7.2 → 7.3 with markdown-remark, dompurify, fast-uri, undici, vite, zod). Before the push: the

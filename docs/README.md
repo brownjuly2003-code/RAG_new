@@ -63,11 +63,13 @@ no-reranker point](specs/no-rerank-point.md) — the fused order's first five ag
 reranker's, on stage 2's saved lists, with the product's own expansion and no model. [The
 encoder checkers](specs/encoder-checkers.md) — three small models that read Russian, their
 thresholds chosen on RusHallu-RAG and V4's English answers, read once on the 100 aircargo ones;
-its [record](evidence/encoder-checkers-record.md): all three in between, none worth wiring.
+its [record](evidence/encoder-checkers-record.md): all three in between, none worth wiring;
+Horizon guard base, its Amendment 1, in between too.
 [The widget on the 4B](specs/widget-4b.md) — stage 3's step 4: R1 under `RAG_ENV=production`
 and ten widget answers through `/api/ask`, their routes, passes and seconds. [The answer prompt
 V5](specs/answer-prompt-v5.md) — stage 3b: evidence first, replayed on V4's saved contexts and
-judged against V4's answers, registered before the first request.
+judged against V4's answers, registered before the first request; its
+[record](evidence/answer-prompt-v5-record.md): not adopted 2026-10-28.
 
 **Contracts the code keeps** — what the code must do, with tests behind each:
 
@@ -98,9 +100,10 @@ P2 reference samples ([Astra](specs/p2-astra-reference-sample.md),
 
 - [`evidence/`](evidence/) — one write-up per measured slice; the register with provenance is
   [`EVIDENCE_INDEX.md`](../EVIDENCE_INDEX.md). The records themselves are in `../reports/`.
-- [Latest handoff: the widget read, V5 running](operations/session-handoff-2026-10-27-v5-running.md)
-  — R1 confirmed and the retry's call budget, Amendment 1 committed, B downloaded, V5's chain
-  on the Mac. Before it:
+- [Latest handoff: V5 not adopted, the encoders' Amendment 1](operations/session-handoff-2026-10-28-v5-record.md)
+  — V5's 300 answers and its whole judge, the record and why three plans do not count; Horizon
+  guard base; stage 4 next. Before it:
+  [the widget read, V5 running](operations/session-handoff-2026-10-27-v5-running.md),
   [four items under her «да», the widget running](operations/session-handoff-2026-10-26-widget-running.md),
   [stage 2b closed, stage 3's signals running](operations/session-handoff-2026-10-25-stage3-signals-running.md),
   [V4 running unattended](operations/session-handoff-2026-10-24-v4-running.md), the

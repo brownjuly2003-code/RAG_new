@@ -1,7 +1,7 @@
 # Current state — RAG_new
 
-2026-10-27 · The plan: [`PLAN.md`](PLAN.md), accepted by Julia on 2026-10-17 («принять») ·
-now: stage 3 — outcome C, the widget read (R1 confirmed); stage 3б next · previous version: [`archive/docs/state/current-state-through-2026-10-17.md`](archive/docs/state/current-state-through-2026-10-17.md).
+2026-10-28 · The plan: [`PLAN.md`](PLAN.md), accepted by Julia on 2026-10-17 («принять») ·
+now: stage 3б closed — V5 not adopted, V4 stays; stage 4 next · previous version: [`archive/docs/state/current-state-through-2026-10-17.md`](archive/docs/state/current-state-through-2026-10-17.md).
 
 Read this file for *what is true now*; [`PLAN.md`](PLAN.md) for *what happens next and why*;
 [`ROADMAP.md`](ROADMAP.md) for *what each stage has delivered*; [`docs/README.md`](docs/README.md)
@@ -25,7 +25,7 @@ its place: without it the expanded five hold gold in 121 of 250 questions, not 1
 Chunks: markdown sections, 800 characters/200 overlap; DOCX/HTML/PDF converted by loaders;
 `[document › section]` headers, expansion up to two neighbours each side. English answer
 instructions request the question's language; actual language is measured. V3 (`4ca5ddd`)
-wrote stage 2's answers; V4 (`4f48fed`), adopted by stage 2b's record, is the code's prompt.
+wrote stage 2's answers; V4 (`4f48fed`), adopted by stage 2b's record, is the code's prompt; V5, evidence first, was not adopted (stage 3б).
 
 **Production is `deproject-mac`** (Julia, 2026-10-14: «прод на маке»): i5-7500, 4 cores, 8 GB,
 Ollama 0.33.2 on the CPU. **The model is Qwen3-4B-Instruct-2507** (Julia, 2026-10-16; the code
@@ -51,6 +51,7 @@ limits: [`EVIDENCE_INDEX.md`](EVIDENCE_INDEX.md), [`PLAN.md`](PLAN.md) §3.
 | Engineering | 5,885 passed, 124 skipped on `96ee4e6`; static/security checks passed | Historical full gate; current slice's focused checks below |
 | Answer quality, chat path, V3 | M1 good: aircargo 69, ConditionalQA 31, WixQA 27, MultiHop-RAG 65 of 100; bad 14, 64, 63, 34 | [stage-2 record](docs/evidence/stage2-record.md); one model judges, no person; MultiHop-RAG's M2 `NOT_EVIDENCE` |
 | Answer quality, V4 against V3 | M1 bad, paired: WixQA 63 → 51, ConditionalQA 64 → 57, aircargo 14 → 17; good 27 → 40, 31 → 35, 69 → 63 | [V4 record](docs/evidence/answer-prompt-v4-record.md): pooled bad −9.5 pp, detected; in sample |
+| Answer quality, V5 against V4 | M1 bad, paired: WixQA 51 → 86, ConditionalQA 57 → 81, aircargo 17 → 89; good 40 → 4, 35 → 17, 63 → 8 | [V5 record](docs/evidence/answer-prompt-v5-record.md): not adopted, harm on WixQA; ConditionalQA's M1 and aircargo's plan `NOT_EVIDENCE`; in sample |
 | Handover signals, V4 aircargo | of 17 bad answers: S2 and S6 catch 16 but mark 34 and 43 of 63 good; S3 catches 11, marks 28 good (in between); the cheap ones catch 0–4 | [record](docs/evidence/handover-signal-v4-aircargo.md): outcome C; one model judges, no person |
 | Widget on the 4B, `/api/ask` | ten aircargo questions: auto 3, human 2, error_escalation 5; none of 7 retries finished inside the 24-call budget; median 31.1 min on a loaded Mac; production routes `human` (R1) | [record](docs/evidence/widget-4b-record.md): no judge; a fix is her word |
 | Coverage beside quality, V3 → V4 | answered: WixQA 67 → 73, ConditionalQA 81 → 91, aircargo 98 → 100 of 100; CRAG score −0.020 → 0.105, −0.195 → −0.150, 0.655 → 0.560 | [coverage record](docs/evidence/coverage-metrics-record.md): unpaired, no model call; on ConditionalQA more wrong answers given out than right |
@@ -58,8 +59,7 @@ limits: [`EVIDENCE_INDEX.md`](EVIDENCE_INDEX.md), [`PLAN.md`](PLAN.md) §3.
 Stage 2's [retrieval baseline](docs/evidence/stage2-retrieval-baseline.md) (`7208ed2`): 415 questions,
 no path break, aircargo prompt parity 100/100. Its [300 external answers](docs/evidence/stage2-external-answers.md):
 no path break, all in the question's language, 84 routed to a person, median 266.9 s. Its [record](docs/evidence/stage2-record.md)
-grades all 400: aircargo's good share above ConditionalQA's and WixQA's (+38.0, +42.0 pp, detected),
-not MultiHop-RAG's; M2 agrees ConditionalQA 43/80, WixQA 29/100.
+grades all 400: aircargo's good share above ConditionalQA's and WixQA's (+38.0, +42.0 pp, detected), not MultiHop-RAG's; M2 agrees ConditionalQA 43/80, WixQA 29/100.
 
 ## Stage 1 — closed 2026-10-18
 
@@ -95,9 +95,9 @@ answerable questions (V3 8); aircargo's nine good answers turned bad, eight by a
 ## Next
 
 1. [`PLAN.md`](PLAN.md) stage 3 — **outcome C** ([signal record](docs/evidence/handover-signal-v4-aircargo.md)): no signal worth wiring, S3 in between. Her «да» (2026-10-26): the handover line — done; no stage 2 for S3.
-   Stage 3's encoder test read 2026-10-26: all three in between, none worth wiring; H catches 10 of 17 marking 8 of 63 ([record](docs/evidence/encoder-checkers-record.md)). Next in stage 3: Horizon guard base under an amendment, then the best read on V5's aircargo answers. Step 4 read 2026-10-26: R1 confirmed, R2 not seen, no retry finished inside the call budget ([widget record](docs/evidence/widget-4b-record.md)). Stage 4's no-reranker point read 2026-10-26: the reranker stays.
-2. Stage 3б (her «да»): the evidence-first prompt V5 paired against V4's answers, spec `47e2d71`; its 300 answers running on the Mac since 2026-10-27 13:56 UTC (≈ 10.5 h), the judge in two steps on her word of 2026-10-27 ([amendment](docs/specs/answer-prompt-v5.md#amendment-1-2026-10-27-the-judge-in-two-steps), `c919a77`): the core of 260 requests first, the rest only if V5 can still be adopted; then stage 4. Research of 2026-10-25 and its [analysis](docs/operations/research-2026-10-25/analysis.md): §8.3 items 15–17 deferred.
-3. Before a push: the whole Mac suite, mypy, bandit and the audits; locks refreshed 2026-10-25, audits clean on the laptop, the site build waits ([`BACKLOG.md`](BACKLOG.md)).
+   Stage 3's encoder test read 2026-10-26: all three in between, none worth wiring; H catches 10 of 17 marking 8 of 63 ([record](docs/evidence/encoder-checkers-record.md)); its Amendment 1 read 2026-10-28: Horizon guard base in between too, 7 of 17 marking 7 of 63, and its read on V5's fresh answers `NOT_EVIDENCE` — stage 3 stays at outcome C. Step 4 read 2026-10-26: R1 confirmed, R2 not seen, no retry finished inside the call budget ([widget record](docs/evidence/widget-4b-record.md)). Stage 4's no-reranker point read 2026-10-26: the reranker stays.
+2. Stage 3б closed 2026-10-28 — **V5 not adopted** ([record](docs/evidence/answer-prompt-v5-record.md)): harm on WixQA by the table's first row; three of five judge plans `NOT_EVIDENCE`, the judge wavering on the visible Evidence / Answer / Status scaffold, which it graded «other» or «copied_context» in 63–75 of V5's 100 answers a base. V4 stays. Next: [`PLAN.md`](PLAN.md) stage 4 with V4, step 0 first (diagnostics, ≈ 1 h of the Mac, changes nothing). Research of 2026-10-25 and its [analysis](docs/operations/research-2026-10-25/analysis.md): §8.3 items 15–17 deferred.
+3. Before a push: the whole Mac suite, mypy, bandit and the audits; on 2026-10-28 mypy and DEP-01 pass, pip-audit finds 7 new advisories in `authlib` 1.7.0 (fixed in 1.9.1) — the locks need a refresh; the site build waits ([`BACKLOG.md`](BACKLOG.md)).
 
 ## Julia's decisions in force
 
@@ -138,7 +138,7 @@ requests (without them phase B stays blocked); Mac hours a day for runs; frozen 
   the Mac was measuring stage 3. Passed on the laptop: CI's two mypy commands, `ruff check`, bandit, pip-audit on `requirements.lock`
   (5 ignored), DEP-01. Not run yet: the Mac suite (last: `4f48fed`, 6,016 passed, 123 skipped), `b557082`'s guards on the Mac, the
   docs-site build on astro 7.3, the Linux lock install (CI only; billing). The push before, `8fdbfee` (2026-10-24), had the Mac suite.
-  Not pushed since: `3ef8b54`…this file's commit — the research analysis, coverage, the stage-3 record, the handover line, the no-reranker point.
+  Not pushed since: `3ef8b54`…this file's commit — the research analysis, coverage, the stage-3 record, the handover line, the no-reranker point, the encoders, the widget read, V5.
 - Private remote: `brownjuly2003-code/RAG_new`; HTTPS command in [`CLAUDE.md`](CLAUDE.md).
 
 ## Links
@@ -147,4 +147,4 @@ requests (without them phase B stays blocked); Mac hours a day for runs; frozen 
   [`EVIDENCE_INDEX.md`](EVIDENCE_INDEX.md) · documents map — [`docs/README.md`](docs/README.md)
 - Agent conventions — [`CLAUDE.md`](CLAUDE.md), [`AGENT_STATE.md`](AGENT_STATE.md) · queue for
   automation — [`BACKLOG.md`](BACKLOG.md) · module layout — [`DEPRECATIONS.md`](DEPRECATIONS.md)
-- Last session — [the widget read, V5 running](docs/operations/session-handoff-2026-10-27-v5-running.md)
+- Last session — [V5 not adopted, the encoders' Amendment 1](docs/operations/session-handoff-2026-10-28-v5-record.md)
