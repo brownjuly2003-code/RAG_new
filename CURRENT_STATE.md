@@ -1,7 +1,7 @@
 # Current state — RAG_new
 
 2026-10-28 · The plan: [`PLAN.md`](PLAN.md), accepted by Julia on 2026-10-17 («принять») ·
-now: stage 4 — steps 0, 1 and 3 read; step 2, the self-eval as the answer's next turn, next · previous version: [`archive/docs/state/current-state-through-2026-10-17.md`](archive/docs/state/current-state-through-2026-10-17.md).
+now: stage 4 — steps 0, 1 and 3 read; step 2, the self-eval as the answer's next turn, registered, its run next · previous version: [`archive/docs/state/current-state-through-2026-10-17.md`](archive/docs/state/current-state-through-2026-10-17.md).
 
 Read this file for *what is true now*; [`PLAN.md`](PLAN.md) for *what happens next and why*;
 [`ROADMAP.md`](ROADMAP.md) for *what each stage has delivered*; [`docs/README.md`](docs/README.md)

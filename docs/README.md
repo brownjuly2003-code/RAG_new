@@ -91,7 +91,10 @@ by its sign alone, no lever adopted, 2026-10-28. [Stage 4, step 3's timing](spec
 against 20 with the retrieval alone: thirteen aircargo questions on V4's stand with no model, four
 runs ABBA, the rerank's seconds paired a question at a time; registered before the first request;
 its [record](evidence/stage4-step3-record.md): K = 14 faster on 12 of 12, a median 0.528 of K = 20's
-rerank seconds (14.566 s less), no K adopted, 2026-10-28.
+rerank seconds (14.566 s less), no K adopted, 2026-10-28. [Stage 4, step 2](specs/stage4-step2-self-eval-continuation.md) —
+the self-eval as the answer chat's next turn: thirteen aircargo questions on a stand of the
+new code, mode both, the continuation's score and seconds paired with the classic's;
+registered before the first request.
 [Stage 6, item 4](specs/stage6-throughput.md) — the
 service's questions an hour and what a second client sees: a draft, registered with its tools once
 the service is installed.
