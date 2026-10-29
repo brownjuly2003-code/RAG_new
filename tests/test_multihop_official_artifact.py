@@ -32,6 +32,15 @@ def _load():
 
 
 mo = _load()
+
+
+@pytest.fixture(autouse=True)
+def _stage2_tools_on_path(monkeypatch: pytest.MonkeyPatch) -> None:
+    """The tool imports judge_export when a test asks for clusters or intervals; a test module
+    that ends earlier, tests/test_judge_export.py, takes reports/stage2/tools off sys.path."""
+    monkeypatch.syspath_prepend(str(ROOT / "reports" / "stage2" / "tools"))
+
+
 record = json.loads(RECORD.read_text(encoding="utf-8"))
 rows = [json.loads(line) for line in ROWS.read_text(encoding="utf-8").splitlines() if line]
 evaluated = [r for r in rows if r["evaluated"]]
