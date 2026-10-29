@@ -109,6 +109,10 @@ G2 stops the entity lane if 11,231 chunks × the upper bound of the mean pass 24
 95 of the 100 outputs are valid; registered before the first request in `52dd160`. Read
 2026-10-29: G2 failed at the first look, 25.1 h at the lower bound, and E stops; its
 [record](evidence/stage7-entity-probe-record.md).
+[Stage 4, step 4](specs/stage4-step4-prompt-budget.md) — a shorter answer prompt: stage 2's 400
+questions fitted at num_ctx 4,096 down to 2,304 under today's `QA_PROMPT_V4`, without a model;
+gold at «sent» against 4,096 by an exact McNemar, per base and pooled, and the smallest window
+without a detected loss read from the top; registered before the count in `b192fb0`.
 [Stage 6, item 4](specs/stage6-throughput.md) — the
 service's questions an hour and what a second client sees: a draft, registered with its tools once
 the service is installed.

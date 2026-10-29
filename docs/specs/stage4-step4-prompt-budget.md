@@ -1,7 +1,7 @@
 # Stage 4, step 4: a shorter answer prompt — num_ctx below 4,096, read at «sent» on stage 2's lists
 
 Status 2026-10-29: **registered before the count**, with the tool that reads it and its test
-([Records](#records)), in `<c>`. [`PLAN.md`](../../PLAN.md) stage 4, item 4: «**Промпт короче**
+([Records](#records)), in `b192fb0`. [`PLAN.md`](../../PLAN.md) stage 4, item 4: «**Промпт короче**
 (67 с на 2 270 токенах) и **подсказки** (13 с) — ≈ 1 ч». This is the prompt's half, offline: no
 model call, no new retrieval. The live timing and the hints come after
 ([What comes after](#what-comes-after)).
