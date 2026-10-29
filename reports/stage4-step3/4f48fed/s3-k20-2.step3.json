@@ -1,0 +1,805 @@
+{
+ "pairs": [
+  {
+   "case_id": "aircargo-probation-extend",
+   "k14_pool": [],
+   "k14_rerank": [],
+   "k14_retrieval": [],
+   "k14_same_five": false,
+   "k14_same_pool": false,
+   "k14_vector": [],
+   "k20_pool": [
+    36
+   ],
+   "k20_rerank": [
+    50.989
+   ],
+   "k20_retrieval": [
+    51.65
+   ],
+   "k20_same_five": true,
+   "k20_same_pool": true,
+   "k20_vector": [
+    0.642
+   ],
+   "k_curve_candidates": [
+    24,
+    36
+   ],
+   "position": 2,
+   "readable": false,
+   "why": [
+    "0 read asks at K = 14, not two",
+    "1 read asks at K = 20, not two"
+   ]
+  },
+  {
+   "case_id": "aircargo-probation-dismissal",
+   "k14_pool": [],
+   "k14_rerank": [],
+   "k14_retrieval": [],
+   "k14_same_five": false,
+   "k14_same_pool": false,
+   "k14_vector": [],
+   "k20_pool": [
+    37
+   ],
+   "k20_rerank": [
+    48.268
+   ],
+   "k20_retrieval": [
+    48.609
+   ],
+   "k20_same_five": true,
+   "k20_same_pool": true,
+   "k20_vector": [
+    0.327
+   ],
+   "k_curve_candidates": [
+    25,
+    37
+   ],
+   "position": 3,
+   "readable": false,
+   "why": [
+    "0 read asks at K = 14, not two",
+    "1 read asks at K = 20, not two"
+   ]
+  },
+  {
+   "case_id": "aircargo-dismissal-check",
+   "k14_pool": [],
+   "k14_rerank": [],
+   "k14_retrieval": [],
+   "k14_same_five": false,
+   "k14_same_pool": false,
+   "k14_vector": [],
+   "k20_pool": [
+    35
+   ],
+   "k20_rerank": [
+    32.058
+   ],
+   "k20_retrieval": [
+    32.332
+   ],
+   "k20_same_five": true,
+   "k20_same_pool": true,
+   "k20_vector": [
+    0.262
+   ],
+   "k_curve_candidates": [
+    24,
+    35
+   ],
+   "position": 4,
+   "readable": false,
+   "why": [
+    "0 read asks at K = 14, not two",
+    "1 read asks at K = 20, not two"
+   ]
+  },
+  {
+   "case_id": "aircargo-dismissal-lawyer",
+   "k14_pool": [],
+   "k14_rerank": [],
+   "k14_retrieval": [],
+   "k14_same_five": false,
+   "k14_same_pool": false,
+   "k14_vector": [],
+   "k20_pool": [
+    35
+   ],
+   "k20_rerank": [
+    31.958
+   ],
+   "k20_retrieval": [
+    32.214
+   ],
+   "k20_same_five": true,
+   "k20_same_pool": true,
+   "k20_vector": [
+    0.243
+   ],
+   "k_curve_candidates": [
+    23,
+    35
+   ],
+   "position": 5,
+   "readable": false,
+   "why": [
+    "0 read asks at K = 14, not two",
+    "1 read asks at K = 20, not two"
+   ]
+  },
+  {
+   "case_id": "aircargo-dismissal-order",
+   "k14_pool": [],
+   "k14_rerank": [],
+   "k14_retrieval": [],
+   "k14_same_five": false,
+   "k14_same_pool": false,
+   "k14_vector": [],
+   "k20_pool": [
+    30
+   ],
+   "k20_rerank": [
+    28.277
+   ],
+   "k20_retrieval": [
+    28.551
+   ],
+   "k20_same_five": true,
+   "k20_same_pool": true,
+   "k20_vector": [
+    0.263
+   ],
+   "k_curve_candidates": [
+    22,
+    30
+   ],
+   "position": 6,
+   "readable": false,
+   "why": [
+    "0 read asks at K = 14, not two",
+    "1 read asks at K = 20, not two"
+   ]
+  },
+  {
+   "case_id": "aircargo-leave-sources",
+   "k14_pool": [],
+   "k14_rerank": [],
+   "k14_retrieval": [],
+   "k14_same_five": false,
+   "k14_same_pool": false,
+   "k14_vector": [],
+   "k20_pool": [
+    39
+   ],
+   "k20_rerank": [
+    41.737
+   ],
+   "k20_retrieval": [
+    42.017
+   ],
+   "k20_same_five": true,
+   "k20_same_pool": true,
+   "k20_vector": [
+    0.267
+   ],
+   "k_curve_candidates": [
+    27,
+    39
+   ],
+   "position": 7,
+   "readable": false,
+   "why": [
+    "0 read asks at K = 14, not two",
+    "1 read asks at K = 20, not two"
+   ]
+  },
+  {
+   "case_id": "aircargo-leave-compensation",
+   "k14_pool": [],
+   "k14_rerank": [],
+   "k14_retrieval": [],
+   "k14_same_five": false,
+   "k14_same_pool": false,
+   "k14_vector": [],
+   "k20_pool": [
+    37
+   ],
+   "k20_rerank": [
+    32.515
+   ],
+   "k20_retrieval": [
+    32.787
+   ],
+   "k20_same_five": true,
+   "k20_same_pool": true,
+   "k20_vector": [
+    0.26
+   ],
+   "k_curve_candidates": [
+    25,
+    37
+   ],
+   "position": 8,
+   "readable": false,
+   "why": [
+    "0 read asks at K = 14, not two",
+    "1 read asks at K = 20, not two"
+   ]
+  },
+  {
+   "case_id": "aircargo-leave-risk",
+   "k14_pool": [],
+   "k14_rerank": [],
+   "k14_retrieval": [],
+   "k14_same_five": false,
+   "k14_same_pool": false,
+   "k14_vector": [],
+   "k20_pool": [
+    39
+   ],
+   "k20_rerank": [
+    40.333
+   ],
+   "k20_retrieval": [
+    41.873
+   ],
+   "k20_same_five": true,
+   "k20_same_pool": true,
+   "k20_vector": [
+    1.527
+   ],
+   "k_curve_candidates": [
+    27,
+    39
+   ],
+   "position": 9,
+   "readable": false,
+   "why": [
+    "0 read asks at K = 14, not two",
+    "1 read asks at K = 20, not two"
+   ]
+  },
+  {
+   "case_id": "aircargo-matliab-check",
+   "k14_pool": [],
+   "k14_rerank": [],
+   "k14_retrieval": [],
+   "k14_same_five": false,
+   "k14_same_pool": false,
+   "k14_vector": [],
+   "k20_pool": [
+    28
+   ],
+   "k20_rerank": [
+    24.469
+   ],
+   "k20_retrieval": [
+    24.622
+   ],
+   "k20_same_five": true,
+   "k20_same_pool": true,
+   "k20_vector": [
+    0.142
+   ],
+   "k_curve_candidates": [
+    20,
+    28
+   ],
+   "position": 10,
+   "readable": false,
+   "why": [
+    "0 read asks at K = 14, not two",
+    "1 read asks at K = 20, not two"
+   ]
+  },
+  {
+   "case_id": "aircargo-matliab-disputed",
+   "k14_pool": [],
+   "k14_rerank": [],
+   "k14_retrieval": [],
+   "k14_same_five": false,
+   "k14_same_pool": false,
+   "k14_vector": [],
+   "k20_pool": [
+    29
+   ],
+   "k20_rerank": [
+    25.364
+   ],
+   "k20_retrieval": [
+    25.552
+   ],
+   "k20_same_five": true,
+   "k20_same_pool": true,
+   "k20_vector": [
+    0.178
+   ],
+   "k_curve_candidates": [
+    21,
+    29
+   ],
+   "position": 11,
+   "readable": false,
+   "why": [
+    "0 read asks at K = 14, not two",
+    "1 read asks at K = 20, not two"
+   ]
+  },
+  {
+   "case_id": "aircargo-templates-choose",
+   "k14_pool": [],
+   "k14_rerank": [],
+   "k14_retrieval": [],
+   "k14_same_five": false,
+   "k14_same_pool": false,
+   "k14_vector": [],
+   "k20_pool": [
+    37
+   ],
+   "k20_rerank": [
+    33.091
+   ],
+   "k20_retrieval": [
+    33.256
+   ],
+   "k20_same_five": true,
+   "k20_same_pool": true,
+   "k20_vector": [
+    0.152
+   ],
+   "k_curve_candidates": [
+    25,
+    37
+   ],
+   "position": 12,
+   "readable": false,
+   "why": [
+    "0 read asks at K = 14, not two",
+    "1 read asks at K = 20, not two"
+   ]
+  },
+  {
+   "case_id": "aircargo-templates-checklist",
+   "k14_pool": [],
+   "k14_rerank": [],
+   "k14_retrieval": [],
+   "k14_same_five": false,
+   "k14_same_pool": false,
+   "k14_vector": [],
+   "k20_pool": [
+    39
+   ],
+   "k20_rerank": [
+    50.077
+   ],
+   "k20_retrieval": [
+    50.236
+   ],
+   "k20_same_five": true,
+   "k20_same_pool": true,
+   "k20_vector": [
+    0.148
+   ],
+   "k_curve_candidates": [
+    27,
+    39
+   ],
+   "position": 13,
+   "readable": false,
+   "why": [
+    "0 read asks at K = 14, not two",
+    "1 read asks at K = 20, not two"
+   ]
+  }
+ ],
+ "readings": {
+  "answer": "NOT_EVIDENCE",
+  "k14_faster": 0,
+  "k14_slower": 0,
+  "median_rerank_ratio": null,
+  "median_rerank_saving_sec": null,
+  "printed_deciding_nothing": {
+   "median_rerank_sec": {
+    "k14": null,
+    "k20": null
+   },
+   "median_retrieval_saving_sec": null,
+   "median_vector_saving_sec": null,
+   "pools_as_k_curve": {
+    "k14": 0,
+    "k20": 0
+   },
+   "same_five_both_asks": {
+    "k14": 0,
+    "k20": 0
+   },
+   "same_k_spread": {
+    "k14": null,
+    "k20": null
+   },
+   "same_pool_both_asks": {
+    "k14": 0,
+    "k20": 0
+   }
+  },
+  "readable_questions": 0,
+  "sign_p": 1.0
+ },
+ "runs": [
+  {
+   "asks": [
+    {
+     "case_id": "aircargo-probation-data",
+     "index": 1,
+     "lanes": {
+      "bm25": 20,
+      "vector": 20
+     },
+     "merged": 32,
+     "pool": 32,
+     "pool_sha256": "621d605f52e3f0fadd59a74145b50710224475450f56d600c4f79e77ec3a44f6",
+     "prompt_est_tokens": 2463,
+     "ranked": 5,
+     "ranked_sha256": "fd6769b3b41e7fba1ce4fc230ae2292337839da6bb185386814920b26654f802",
+     "read": true,
+     "rerank": 51.82,
+     "rerank_status": "ok",
+     "reranker_ok": true,
+     "retrieval": 53.941,
+     "sent": 3,
+     "sha256": "8fc4ff67764ea6899b640cfedc14cc65b593780ef407f0a38bfc55d6cabdc253",
+     "unread": [],
+     "vector": 2.108
+    },
+    {
+     "case_id": "aircargo-probation-extend",
+     "index": 2,
+     "lanes": {
+      "bm25": 20,
+      "vector": 20
+     },
+     "merged": 36,
+     "pool": 36,
+     "pool_sha256": "5ce2ed9adf4e884d4d01a4c64e590a02f7581b90d65b8428707a892392116848",
+     "prompt_est_tokens": 2596,
+     "ranked": 5,
+     "ranked_sha256": "cdb60002dd12ea14ac2313194d97104c857af735b4b0d195c646b5c3f6c7019d",
+     "read": true,
+     "rerank": 50.989,
+     "rerank_status": "ok",
+     "reranker_ok": true,
+     "retrieval": 51.65,
+     "sent": 3,
+     "sha256": "ac739969177d44cecec8bbfa309090ec613b4ba893a86bfed9bad7f840835904",
+     "unread": [],
+     "vector": 0.642
+    },
+    {
+     "case_id": "aircargo-probation-dismissal",
+     "index": 3,
+     "lanes": {
+      "bm25": 20,
+      "vector": 20
+     },
+     "merged": 37,
+     "pool": 37,
+     "pool_sha256": "bf95586bf4bfa516f73100332926017904f339118416757e8790f87581d14b28",
+     "prompt_est_tokens": 2628,
+     "ranked": 5,
+     "ranked_sha256": "b7d2bf1e3bae90b3365847efeae482911f7c6e738b7f58b2cdac00f77d0518b7",
+     "read": true,
+     "rerank": 48.268,
+     "rerank_status": "ok",
+     "reranker_ok": true,
+     "retrieval": 48.609,
+     "sent": 4,
+     "sha256": "b451e77cebf2f1d7f1032c4ac916c7e0766977a3f10255a41cf72f529a1b6b17",
+     "unread": [],
+     "vector": 0.327
+    },
+    {
+     "case_id": "aircargo-dismissal-check",
+     "index": 4,
+     "lanes": {
+      "bm25": 20,
+      "vector": 20
+     },
+     "merged": 35,
+     "pool": 35,
+     "pool_sha256": "6766eb7becb089321421b2ea2da14dd7731f91f89a260fe06f665f2a4279afaa",
+     "prompt_est_tokens": 2605,
+     "ranked": 5,
+     "ranked_sha256": "50946f7c3180694a6954223c1b730fdf754fee8d25454289aec8de6b11bac664",
+     "read": true,
+     "rerank": 32.058,
+     "rerank_status": "ok",
+     "reranker_ok": true,
+     "retrieval": 32.332,
+     "sent": 3,
+     "sha256": "346a53957f2e1b232417931a136107969b293d9e6e7ada80a86f8d6bb01ac40c",
+     "unread": [],
+     "vector": 0.262
+    },
+    {
+     "case_id": "aircargo-dismissal-lawyer",
+     "index": 5,
+     "lanes": {
+      "bm25": 20,
+      "vector": 20
+     },
+     "merged": 35,
+     "pool": 35,
+     "pool_sha256": "821395642faa57399d4ee53e1fc8d27c3f16231ed76ad2a5107fb5fb363b46ad",
+     "prompt_est_tokens": 2589,
+     "ranked": 5,
+     "ranked_sha256": "fd3586c2ae92cb6d083a1de89ccfaafe9aa9ac5c81f4a74972175ef3f58a4345",
+     "read": true,
+     "rerank": 31.958,
+     "rerank_status": "ok",
+     "reranker_ok": true,
+     "retrieval": 32.214,
+     "sent": 4,
+     "sha256": "d2271c2e877946d6fc7ddba4a7c6522f680d03e937c0c4451ab4e53556417b06",
+     "unread": [],
+     "vector": 0.243
+    },
+    {
+     "case_id": "aircargo-dismissal-order",
+     "index": 6,
+     "lanes": {
+      "bm25": 20,
+      "vector": 20
+     },
+     "merged": 30,
+     "pool": 30,
+     "pool_sha256": "339733b11aa493eb6bb4c0fa7bf90989d51325fd7c8ca0a59e7d7a29cbd2a637",
+     "prompt_est_tokens": 2594,
+     "ranked": 5,
+     "ranked_sha256": "7edc97695125ac71a33668097edae36d4ac533d52e4b8dff1ea9fb505af2fe43",
+     "read": true,
+     "rerank": 28.277,
+     "rerank_status": "ok",
+     "reranker_ok": true,
+     "retrieval": 28.551,
+     "sent": 4,
+     "sha256": "babe4c83b88076019b8167203d58eb2eebdabaf636d85ae8bf3cbacb528af2d2",
+     "unread": [],
+     "vector": 0.263
+    },
+    {
+     "case_id": "aircargo-leave-sources",
+     "index": 7,
+     "lanes": {
+      "bm25": 20,
+      "vector": 20
+     },
+     "merged": 39,
+     "pool": 39,
+     "pool_sha256": "8581460f976e36f92cbcbddd7642cc6ee274825256359872d5e476cc93d66875",
+     "prompt_est_tokens": 2609,
+     "ranked": 5,
+     "ranked_sha256": "cbcf3df4876a539aae90cf5e901926ac48b6ffb48704855a61afbe2102019839",
+     "read": true,
+     "rerank": 41.737,
+     "rerank_status": "ok",
+     "reranker_ok": true,
+     "retrieval": 42.017,
+     "sent": 3,
+     "sha256": "3e1f02a7379c2a60431cbe9e4de68c4881fd9cf548a1d5f032c16131403568fb",
+     "unread": [],
+     "vector": 0.267
+    },
+    {
+     "case_id": "aircargo-leave-compensation",
+     "index": 8,
+     "lanes": {
+      "bm25": 20,
+      "vector": 20
+     },
+     "merged": 37,
+     "pool": 37,
+     "pool_sha256": "3ff82de8a048962c94f4ba67aab74dc552370257914329c9e4cf71319eb77984",
+     "prompt_est_tokens": 2600,
+     "ranked": 5,
+     "ranked_sha256": "61495997291f89999e8c1daea2b2e545c58039aec6cf229e0c0c049950fa8598",
+     "read": true,
+     "rerank": 32.515,
+     "rerank_status": "ok",
+     "reranker_ok": true,
+     "retrieval": 32.787,
+     "sent": 3,
+     "sha256": "81c95d977783473576173e2afeb00f1e85fdfff867e05cdd96d00d619a6b5b5a",
+     "unread": [],
+     "vector": 0.26
+    },
+    {
+     "case_id": "aircargo-leave-risk",
+     "index": 9,
+     "lanes": {
+      "bm25": 20,
+      "vector": 20
+     },
+     "merged": 39,
+     "pool": 39,
+     "pool_sha256": "11f5924e79ca1dc5398cff0ea871c4ca16551cf908b33346921edace16f9c70e",
+     "prompt_est_tokens": 2550,
+     "ranked": 5,
+     "ranked_sha256": "8f2d3b1cc1d38d0673209950c2bb2866a8639818f9ff681fce0fce3cf5a8a34f",
+     "read": true,
+     "rerank": 40.333,
+     "rerank_status": "ok",
+     "reranker_ok": true,
+     "retrieval": 41.873,
+     "sent": 3,
+     "sha256": "a857aad93eba2c942bfe4b6d51f04c8c81a0db7d4a7d395efcf06de986465fb0",
+     "unread": [],
+     "vector": 1.527
+    },
+    {
+     "case_id": "aircargo-matliab-check",
+     "index": 10,
+     "lanes": {
+      "bm25": 20,
+      "vector": 20
+     },
+     "merged": 28,
+     "pool": 28,
+     "pool_sha256": "873f317e5e5eee856bd7212f367003ecdfe6d30a5de3c87f12cf9c7f8f4dfb92",
+     "prompt_est_tokens": 2636,
+     "ranked": 5,
+     "ranked_sha256": "b2a3388fa337e3615050d925c8d8feeb0076198bb518b15957e884599be37512",
+     "read": true,
+     "rerank": 24.469,
+     "rerank_status": "ok",
+     "reranker_ok": true,
+     "retrieval": 24.622,
+     "sent": 5,
+     "sha256": "d703b386c5ce8371c95e57fd82e69c682f6e69a02e0cea6183b61def57f67895",
+     "unread": [],
+     "vector": 0.142
+    },
+    {
+     "case_id": "aircargo-matliab-disputed",
+     "index": 11,
+     "lanes": {
+      "bm25": 20,
+      "vector": 20
+     },
+     "merged": 29,
+     "pool": 29,
+     "pool_sha256": "de7da0564845e8e11a8d9c24ae6d7ee3833f26c768cf1258f1810f06abc336fd",
+     "prompt_est_tokens": 2636,
+     "ranked": 5,
+     "ranked_sha256": "b659a8593fa252a259748a5c0c731122d7c2ef2ccd5d3dd57b228b780ec5a774",
+     "read": true,
+     "rerank": 25.364,
+     "rerank_status": "ok",
+     "reranker_ok": true,
+     "retrieval": 25.552,
+     "sent": 4,
+     "sha256": "b273e4205de240b5ad79f958787218b2aee996cef2c3ae79a55ced5c38b3f7d9",
+     "unread": [],
+     "vector": 0.178
+    },
+    {
+     "case_id": "aircargo-templates-choose",
+     "index": 12,
+     "lanes": {
+      "bm25": 20,
+      "vector": 20
+     },
+     "merged": 37,
+     "pool": 37,
+     "pool_sha256": "1b3d42fe02aedd7442be6a81f29ba61eb5cf8a685bad352561f3fbe6d295eb3f",
+     "prompt_est_tokens": 2591,
+     "ranked": 5,
+     "ranked_sha256": "41154be101e307dd4f7b60ee112b20b25ed5e314c72c16cd1b7583b7ebf7a446",
+     "read": true,
+     "rerank": 33.091,
+     "rerank_status": "ok",
+     "reranker_ok": true,
+     "retrieval": 33.256,
+     "sent": 5,
+     "sha256": "db4e0097cd980b45a91bc8d49b28b734cf832ca55eaf399ffded56d42e6e1391",
+     "unread": [],
+     "vector": 0.152
+    },
+    {
+     "case_id": "aircargo-templates-checklist",
+     "index": 13,
+     "lanes": {
+      "bm25": 20,
+      "vector": 20
+     },
+     "merged": 39,
+     "pool": 39,
+     "pool_sha256": "d5b4ce1955e73ef53f7e09659e89b5c0eeb0130a729acd74383344df3075b7f4",
+     "prompt_est_tokens": 2632,
+     "ranked": 5,
+     "ranked_sha256": "5fa61f925257aa236c404406d9a6eb2b91b5dd02962265a963da3d9a5fe56b4f",
+     "read": true,
+     "rerank": 50.077,
+     "rerank_status": "ok",
+     "reranker_ok": true,
+     "retrieval": 50.236,
+     "sent": 4,
+     "sha256": "a7fd52384c4dc3016a1b1342ea6d2194c1c965c05aac56320d55c760a407de79",
+     "unread": [],
+     "vector": 0.148
+    }
+   ],
+   "drivers_sha256": {
+    "live_api.py": "43ff96f06af18538a2571d68a86e898ecfcdd5fcab47039f0d58bd245361a7b5",
+    "live_retrieval.py": "9e41910d371630ec7b215c8649d5c1a124da16ff5c0977d89c291f5de371e916",
+    "live_supervisor.py": "915ffa9e22e3165f56cd54194fe20e89c8e4146f5a10170f32094a03138fe536",
+    "stage2_common.py": "4d5241560ab5425faa0a1fe6c5b856454b3f8ee47e59187f0da6644b1bad48da"
+   },
+   "gate": {
+    "asks": true,
+    "drivers": true,
+    "launch": true,
+    "passed": true,
+    "settings": true,
+    "summary": true
+   },
+   "k": 20,
+   "label": "s3-k20-2",
+   "launch": {
+    "cases": [
+     "aircargo-probation-data",
+     "aircargo-probation-extend",
+     "aircargo-probation-dismissal",
+     "aircargo-dismissal-check",
+     "aircargo-dismissal-lawyer",
+     "aircargo-dismissal-order",
+     "aircargo-leave-sources",
+     "aircargo-leave-compensation",
+     "aircargo-leave-risk",
+     "aircargo-matliab-check",
+     "aircargo-matliab-disputed",
+     "aircargo-templates-choose",
+     "aircargo-templates-checklist"
+    ],
+    "client_cap_sec": "1400",
+    "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+    "k_override": null,
+    "label": "s3-k20-2",
+    "mode": "retrieval",
+    "model": "qwen3:4b-instruct-2507-q4_K_M",
+    "ollama_models_after": [],
+    "ollama_models_before": [],
+    "started": "2026-10-28T22:57:02+00:00",
+    "status": "complete",
+    "tenant": "aircargo",
+    "variant_order": [
+     "cpu"
+    ],
+    "variants": {
+     "cpu": 0
+    }
+   },
+   "notes": [],
+   "retriever_build_sec": 14.864,
+   "settings": {
+    "rag_device": "cpu",
+    "rerank_top_k": 5,
+    "retrieval_top_k": 20
+   },
+   "sha256": {
+    "effective_settings.json": "6b75cc7ee84a49cfbd1151013eab2d5dff0dbc105069e9f5b2f02866f7aebc09",
+    "launch.json": "71c300f73c0b783776273c6cb09c9a3fe5a1bb9cbf54b3209d85c33c2987f033",
+    "retrieval-cpu.json": "6955d2e3b3e59bb3c7661989ef536d463e33ed451956ae78316aa78c94d98f89"
+   }
+  }
+ ],
+ "schema": "stage4-step3/v1",
+ "spec": "docs/specs/stage4-step3-k-timing.md",
+ "tools_sha256": {
+  "step3_reader.py": "7fe8b2672773e3618da480368d6e2526af3adc3e0530f4edf3aa8e580577b8d9"
+ }
+}

@@ -6,8 +6,8 @@ stage and the frozen streams with their unfreeze conditions are [`ROADMAP.md`](R
 
 ## Current queue
 
-- **[`PLAN.md`](PLAN.md) stage 4 with V4: step 1's capsule, then step 3's runs** (step 0
-  read, step 1 measured, step 3 registered 2026-10-28; [the handoff](docs/operations/session-handoff-2026-10-28-stage4-step1.md)): stage 3
+- **[`PLAN.md`](PLAN.md) stage 4 with V4: step 2, the self-eval as the answer's next turn**
+  (steps 0, 1 and 3 read 2026-10-28; [the handoff](docs/operations/session-handoff-2026-10-28-stage4-step1.md)): stage 3
   stays at outcome C — the handover line under every answer; the encoders and Horizon guard base
   in between ([record](docs/evidence/encoder-checkers-record.md)); stage 3б closed 2026-10-28,
   V5 not adopted ([record](docs/evidence/answer-prompt-v5-record.md)). The widget's R1 and

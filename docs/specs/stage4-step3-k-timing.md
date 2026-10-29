@@ -1,8 +1,9 @@
 # Stage 4, step 3: K = 14 against 20, timed — the rerank's seconds with the retrieval alone
 
 Status 2026-10-28: **registered before the first request**, with the reader and its test
-([Records](#records)). [`PLAN.md`](../../PLAN.md) stage 4, item 3: «Время — живой замер
-одного-двух K (≈ 1,5 ч)», after [the K curve](k-curve-expanded.md) and
+([Records](#records)), in `3fc8ce7`; **read 2026-10-28**, four runs, all four gates passed:
+[the record](../evidence/stage4-step3-record.md). [`PLAN.md`](../../PLAN.md) stage 4, item 3:
+«Время — живой замер одного-двух K (≈ 1,5 ч)», after [the K curve](k-curve-expanded.md) and
 [its record](../evidence/k-curve-record.md): the smallest K without a detected loss after
 expansion is 14. It runs on [step 0](stage4-step0-diagnostics.md)'s and
 [step 1](stage4-step1-rerank-memory.md)'s stand, with step 1's supervisor, unchanged. The one

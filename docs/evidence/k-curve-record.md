@@ -159,7 +159,8 @@ Each cell lists four bases in order: WixQA / ConditionalQA / MultiHop-RAG / airc
 ## What follows
 
 The step's live timing measures K = 14 against 20 on the Mac (≈ 1.5 h, after step 0): the
-reranker's seconds with about 30 % fewer candidates. «В путь рычаг входит по своим числам;
+reranker's seconds with about 30 % fewer candidates. Read 2026-10-28:
+[its record](stage4-step3-record.md). «В путь рычаг входит по своим числам;
 настройки прода и рантайм реранкера — её словом (§8.3)». If K changes, step 6 answers the 100
 aircargo questions again, judged by M1 and M3. The other lever on the same reranker, INT8 in
 ONNX Runtime (step 5a), is read against these lists the same way.
