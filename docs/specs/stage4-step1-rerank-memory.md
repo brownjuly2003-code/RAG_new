@@ -1,7 +1,8 @@
 # Stage 4, step 1: where the rerank's 102 s go — the retrieval beside the resident model and without it
 
 Status 2026-10-28: **registered before the first request**, with the two driver copies, the reader
-and their test ([Records](#records)). [`PLAN.md`](../../PLAN.md) stage 4, item 1 («Куда уходят
+and their test ([Records](#records)). **Read 2026-10-28** in two runs, both gates passed:
+[the record](../evidence/stage4-step1-record.md). [`PLAN.md`](../../PLAN.md) stage 4, item 1 («Куда уходят
 102 с реранка», ≈ 1 h): «проверка гипотезы о борьбе за память — сравнить порядок «реранк, затем
 загрузка модели» с нынешним». It follows [step 0](stage4-step0-diagnostics.md) and
 [its record](../evidence/stage4-step0-record.md), on the same stand, with step 0's sampler, idle

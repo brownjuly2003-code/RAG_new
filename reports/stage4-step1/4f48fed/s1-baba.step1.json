@@ -1,0 +1,724 @@
+{
+ "corpus": null,
+ "pairs": [
+  {
+   "case_id": "aircargo-dismissal-order",
+   "readable": false,
+   "why": [
+    "0 asks in A and 1 in B, not one each"
+   ]
+  },
+  {
+   "case_id": "aircargo-leave-compensation",
+   "readable": false,
+   "why": [
+    "0 asks in A and 1 in B, not one each"
+   ]
+  },
+  {
+   "case_id": "aircargo-leave-risk",
+   "readable": false,
+   "why": [
+    "1 asks in A and 0 in B, not one each"
+   ]
+  },
+  {
+   "case_id": "aircargo-leave-sources",
+   "readable": false,
+   "why": [
+    "1 asks in A and 0 in B, not one each"
+   ]
+  }
+ ],
+ "readings": {
+  "contention": {
+   "answer": "NOT_EVIDENCE",
+   "median_rerank_ratio": null,
+   "readable_pairs": 0,
+   "rerank_ratios": {}
+  },
+  "net": {
+   "answer": "NOT_EVIDENCE",
+   "median_whole_diff_sec": null,
+   "readable_pairs": 0,
+   "whole_diffs_sec": {}
+  },
+  "printed_deciding_nothing": {
+   "median_a_llama_mem_at_rerank_mib": null,
+   "median_action_sec": {
+    "a": null,
+    "b": null
+   },
+   "median_answer_offset_diff_sec": null,
+   "median_first_chunk_diff_sec": null,
+   "median_first_chunk_sec": {
+    "a": null,
+    "b": null
+   },
+   "median_first_token_diff_sec": null,
+   "median_rerank_faulted_mib": {
+    "a": null,
+    "b": null
+   },
+   "median_rerank_faulted_mib_per_sec": {
+    "a": null,
+    "b": null
+   },
+   "median_retrieval_diff_sec": null,
+   "median_retrieval_ratio": null,
+   "median_total_diff_sec": null,
+   "median_vector_ratio": null
+  }
+ },
+ "runs": [
+  {
+   "asks": [
+    {
+     "answer_call": {
+      "error": null,
+      "first_chunk_sec": 100.522,
+      "offset_sec": 232.431,
+      "prompt_est_tokens": 2594,
+      "wall_sec": 140.294
+     },
+     "answered": true,
+     "arm": "B",
+     "arm_action": {
+      "arm": "B",
+      "done_monotonic": 3974334.510495274,
+      "error": null,
+      "llama_servers": 0,
+      "polls": 1,
+      "ps_after": [],
+      "ps_before": [
+       "qwen3:4b-instruct-2507-q4_K_M"
+      ],
+      "sec": 0.308
+     },
+     "arm_held": true,
+     "arm_not_held": [],
+     "at_rerank_start": {
+      "ago_sec": 3.17,
+      "compressor_mib": 898.32,
+      "free_mib": 748.102,
+      "llama_mem_mib": null,
+      "llama_pids": [],
+      "swap_used_mib": 1529.5
+     },
+     "build_sec": 4.04,
+     "case_id": "aircargo-dismissal-order",
+     "first_token_sec": 332.958,
+     "http_status": 200,
+     "index": 1,
+     "model_calls": 3,
+     "path": {
+      "candidates": {
+       "bm25": 20,
+       "merged": 30,
+       "vector": 20
+      },
+      "kind": "hybrid",
+      "rerank_status": "ok",
+      "timings_ms": {
+       "pools": 104081.267,
+       "rerank": 120948.898,
+       "total": 225032.119
+      }
+     },
+     "pool": {
+      "candidates": 30,
+      "pool_sha256": "339733b11aa493eb6bb4c0fa7bf90989d51325fd7c8ca0a59e7d7a29cbd2a637",
+      "rerank_k": 5
+     },
+     "read": true,
+     "rerank_sec": 120.949,
+     "reranker_ok": true,
+     "retrieval_offset_sec": 7.317,
+     "retrieval_sec": 225.034,
+     "route": "auto",
+     "sha256": "53febf10de9f8b3b92dd380e519471d4b904524705c4dda5de560aa32326eeda",
+     "spans": {
+      "hybrid._rerank_scored_with_status": 1,
+      "hybrid._vector_search": 1,
+      "hybrid.get_relevant_documents_with_path": 1,
+      "hybrid.rerank_pool": 1,
+      "ollama.generate": 2,
+      "ollama.generate_stream": 1,
+      "vectordb.manager.get_retriever": 1
+     },
+     "tokens": 140,
+     "total_sec": 478.18,
+     "unread": [],
+     "vector_sec": 104.014,
+     "whole_sec": 478.488,
+     "windows": {
+      "rerank": {
+       "compressions": 312823,
+       "decompressions": 81041,
+       "faulted_mib": 1588.262,
+       "faulted_mib_per_sec": 13.812,
+       "from": 3974445.91,
+       "llama_pids": [],
+       "one_llama_each": false,
+       "pageins": 325554,
+       "pageouts": 1284,
+       "ps_read": 24,
+       "samples": 24,
+       "sec": 114.993,
+       "swapins": 444,
+       "swapouts": 0,
+       "to": 3974566.859,
+       "with_llama": 0
+      },
+      "retrieval": {
+       "compressions": 312823,
+       "decompressions": 203216,
+       "faulted_mib": 3392.102,
+       "faulted_mib_per_sec": 15.419,
+       "from": 3974341.828,
+       "llama_pids": [],
+       "one_llama_each": false,
+       "pageins": 665162,
+       "pageouts": 1284,
+       "ps_read": 45,
+       "samples": 45,
+       "sec": 219.992,
+       "swapins": 4987,
+       "swapouts": 0,
+       "to": 3974566.862,
+       "with_llama": 0
+      },
+      "vector": {
+       "compressions": 0,
+       "decompressions": 116387,
+       "faulted_mib": 1696.398,
+       "faulted_mib_per_sec": 16.964,
+       "from": 3974341.829,
+       "llama_pids": [],
+       "one_llama_each": false,
+       "pageins": 317891,
+       "pageouts": 0,
+       "ps_read": 21,
+       "samples": 21,
+       "sec": 99.999,
+       "swapins": 4543,
+       "swapouts": 0,
+       "to": 3974445.843,
+       "with_llama": 0
+      }
+     }
+    },
+    {
+     "answer_call": {
+      "error": null,
+      "first_chunk_sec": 62.256,
+      "offset_sec": 186.467,
+      "prompt_est_tokens": 2609,
+      "wall_sec": 74.818
+     },
+     "answered": true,
+     "arm": "A",
+     "arm_action": {
+      "arm": "A",
+      "done_monotonic": 3974812.776787459,
+      "error": null,
+      "llama_servers": null,
+      "polls": 0,
+      "ps_after": [
+       "qwen3:4b-instruct-2507-q4_K_M"
+      ],
+      "ps_before": [
+       "qwen3:4b-instruct-2507-q4_K_M"
+      ],
+      "sec": 0.008
+     },
+     "arm_held": true,
+     "arm_not_held": [],
+     "at_rerank_start": {
+      "ago_sec": 1.344,
+      "compressor_mib": 4075.105,
+      "free_mib": 30.625,
+      "llama_mem_mib": 3871.0,
+      "llama_pids": [
+       31722
+      ],
+      "swap_used_mib": 2324.25
+     },
+     "build_sec": 0.001,
+     "case_id": "aircargo-leave-sources",
+     "first_token_sec": 248.734,
+     "http_status": 200,
+     "index": 2,
+     "model_calls": 3,
+     "path": {
+      "candidates": {
+       "bm25": 20,
+       "merged": 39,
+       "vector": 20
+      },
+      "kind": "hybrid",
+      "rerank_status": "ok",
+      "timings_ms": {
+       "pools": 71248.6,
+       "rerank": 115040.277,
+       "total": 186369.38
+      }
+     },
+     "pool": {
+      "candidates": 39,
+      "pool_sha256": "8581460f976e36f92cbcbddd7642cc6ee274825256359872d5e476cc93d66875",
+      "rerank_k": 5
+     },
+     "read": true,
+     "rerank_sec": 115.038,
+     "reranker_ok": true,
+     "retrieval_offset_sec": 0.058,
+     "retrieval_sec": 186.372,
+     "route": "auto",
+     "sha256": "c241cb16789b00e8d9cf844a535df7247e0c257ab96fedaa0eb977e49f680b78",
+     "spans": {
+      "hybrid._rerank_scored_with_status": 1,
+      "hybrid._vector_search": 1,
+      "hybrid.get_relevant_documents_with_path": 1,
+      "hybrid.rerank_pool": 1,
+      "ollama.generate": 2,
+      "ollama.generate_stream": 1,
+      "vectordb.manager.get_retriever": 1
+     },
+     "tokens": 46,
+     "total_sec": 341.995,
+     "unread": [],
+     "vector_sec": 70.495,
+     "whole_sec": 342.003,
+     "windows": {
+      "rerank": {
+       "compressions": 129115,
+       "decompressions": 168362,
+       "faulted_mib": 1940.25,
+       "faulted_mib_per_sec": 17.64,
+       "from": 3974884.085,
+       "llama_pids": [
+        31722
+       ],
+       "one_llama_each": true,
+       "pageins": 328342,
+       "pageouts": 279,
+       "ps_read": 23,
+       "samples": 23,
+       "sec": 109.994,
+       "swapins": 118317,
+       "swapouts": 121165,
+       "to": 3974999.123,
+       "with_llama": 23
+      },
+      "retrieval": {
+       "compressions": 700649,
+       "decompressions": 366651,
+       "faulted_mib": 3898.289,
+       "faulted_mib_per_sec": 21.658,
+       "from": 3974812.835,
+       "llama_pids": [
+        31722
+       ],
+       "one_llama_each": true,
+       "pageins": 631311,
+       "pageouts": 996,
+       "ps_read": 37,
+       "samples": 37,
+       "sec": 179.994,
+       "swapins": 232601,
+       "swapouts": 231159,
+       "to": 3974999.208,
+       "with_llama": 37
+      },
+      "vector": {
+       "compressions": 525375,
+       "decompressions": 151344,
+       "faulted_mib": 1758.852,
+       "faulted_mib_per_sec": 27.059,
+       "from": 3974812.836,
+       "llama_pids": [
+        31722
+       ],
+       "one_llama_each": true,
+       "pageins": 298922,
+       "pageouts": 710,
+       "ps_read": 14,
+       "samples": 14,
+       "sec": 65.0,
+       "swapins": 81446,
+       "swapouts": 109546,
+       "to": 3974883.331,
+       "with_llama": 14
+      }
+     }
+    },
+    {
+     "answer_call": {
+      "error": null,
+      "first_chunk_sec": 93.687,
+      "offset_sec": 100.39,
+      "prompt_est_tokens": 2600,
+      "wall_sec": 104.035
+     },
+     "answered": true,
+     "arm": "B",
+     "arm_action": {
+      "arm": "B",
+      "done_monotonic": 3975155.389934854,
+      "error": null,
+      "llama_servers": 0,
+      "polls": 1,
+      "ps_after": [],
+      "ps_before": [
+       "qwen3:4b-instruct-2507-q4_K_M"
+      ],
+      "sec": 0.443
+     },
+     "arm_held": true,
+     "arm_not_held": [],
+     "at_rerank_start": {
+      "ago_sec": 4.554,
+      "compressor_mib": 371.406,
+      "free_mib": 2789.473,
+      "llama_mem_mib": null,
+      "llama_pids": [],
+      "swap_used_mib": 2472.0
+     },
+     "build_sec": 0.001,
+     "case_id": "aircargo-leave-compensation",
+     "first_token_sec": 194.081,
+     "http_status": 200,
+     "index": 3,
+     "model_calls": 3,
+     "path": {
+      "candidates": {
+       "bm25": 20,
+       "merged": 37,
+       "vector": 20
+      },
+      "kind": "hybrid",
+      "rerank_status": "ok",
+      "timings_ms": {
+       "pools": 66762.812,
+       "rerank": 33467.519,
+       "total": 100232.883
+      }
+     },
+     "pool": {
+      "candidates": 37,
+      "pool_sha256": "3ff82de8a048962c94f4ba67aab74dc552370257914329c9e4cf71319eb77984",
+      "rerank_k": 5
+     },
+     "read": true,
+     "rerank_sec": 33.467,
+     "reranker_ok": true,
+     "retrieval_offset_sec": 0.141,
+     "retrieval_sec": 100.235,
+     "route": "auto",
+     "sha256": "54b8dfe7334faa1368506e2a2175fa3c62f6f23b576614bb244e9116a0095d3e",
+     "spans": {
+      "hybrid._rerank_scored_with_status": 1,
+      "hybrid._vector_search": 1,
+      "hybrid.get_relevant_documents_with_path": 1,
+      "hybrid.rerank_pool": 1,
+      "ollama.generate": 2,
+      "ollama.generate_stream": 1,
+      "vectordb.manager.get_retriever": 1
+     },
+     "tokens": 43,
+     "total_sec": 281.667,
+     "unread": [],
+     "vector_sec": 66.654,
+     "whole_sec": 282.11,
+     "windows": {
+      "rerank": {
+       "compressions": 0,
+       "decompressions": 4199,
+       "faulted_mib": 116.223,
+       "faulted_mib_per_sec": 3.875,
+       "from": 3975222.295,
+       "llama_pids": [],
+       "one_llama_each": false,
+       "pageins": 25554,
+       "pageouts": 0,
+       "ps_read": 7,
+       "samples": 7,
+       "sec": 29.992,
+       "swapins": 1990,
+       "swapouts": 0,
+       "to": 3975255.762,
+       "with_llama": 0
+      },
+      "retrieval": {
+       "compressions": 0,
+       "decompressions": 47650,
+       "faulted_mib": 1435.848,
+       "faulted_mib_per_sec": 15.115,
+       "from": 3975155.532,
+       "llama_pids": [],
+       "one_llama_each": false,
+       "pageins": 319927,
+       "pageouts": 0,
+       "ps_read": 20,
+       "samples": 20,
+       "sec": 94.992,
+       "swapins": 36003,
+       "swapouts": 0,
+       "to": 3975255.766,
+       "with_llama": 0
+      },
+      "vector": {
+       "compressions": 0,
+       "decompressions": 22547,
+       "faulted_mib": 1154.473,
+       "faulted_mib_per_sec": 19.241,
+       "from": 3975155.532,
+       "llama_pids": [],
+       "one_llama_each": false,
+       "pageins": 272998,
+       "pageouts": 0,
+       "ps_read": 13,
+       "samples": 13,
+       "sec": 60.0,
+       "swapins": 15598,
+       "swapouts": 0,
+       "to": 3975222.186,
+       "with_llama": 0
+      }
+     }
+    },
+    {
+     "answer_call": {
+      "error": null,
+      "first_chunk_sec": 135.09,
+      "offset_sec": 475.873,
+      "prompt_est_tokens": 2550,
+      "wall_sec": 165.09
+     },
+     "answered": true,
+     "arm": "A",
+     "arm_action": {
+      "arm": "A",
+      "done_monotonic": 3975437.171760365,
+      "error": null,
+      "llama_servers": null,
+      "polls": 0,
+      "ps_after": [
+       "qwen3:4b-instruct-2507-q4_K_M"
+      ],
+      "ps_before": [
+       "qwen3:4b-instruct-2507-q4_K_M"
+      ],
+      "sec": 0.041
+     },
+     "arm_held": true,
+     "arm_not_held": [],
+     "at_rerank_start": {
+      "ago_sec": 2.287,
+      "compressor_mib": 1961.602,
+      "free_mib": 22.105,
+      "llama_mem_mib": 3838.0,
+      "llama_pids": [
+       34077
+      ],
+      "swap_used_mib": 2610.75
+     },
+     "build_sec": 0.001,
+     "case_id": "aircargo-leave-risk",
+     "first_token_sec": 610.995,
+     "http_status": 200,
+     "index": 4,
+     "model_calls": 3,
+     "path": {
+      "candidates": {
+       "bm25": 20,
+       "merged": 39,
+       "vector": 20
+      },
+      "kind": "hybrid",
+      "rerank_status": "ok",
+      "timings_ms": {
+       "pools": 97796.388,
+       "rerank": 377868.443,
+       "total": 475721.309
+      }
+     },
+     "pool": {
+      "candidates": 39,
+      "pool_sha256": "11f5924e79ca1dc5398cff0ea871c4ca16551cf908b33346921edace16f9c70e",
+      "rerank_k": 5
+     },
+     "read": true,
+     "rerank_sec": 377.868,
+     "reranker_ok": true,
+     "retrieval_offset_sec": 0.06,
+     "retrieval_sec": 475.722,
+     "route": "auto",
+     "sha256": "0a6617e97d8d983d9fd81c9e5215344283271984d4d3e11de8b939fccbd73043",
+     "spans": {
+      "hybrid._rerank_scored_with_status": 1,
+      "hybrid._vector_search": 1,
+      "hybrid.get_relevant_documents_with_path": 1,
+      "hybrid.rerank_pool": 1,
+      "ollama.generate": 2,
+      "ollama.generate_stream": 1,
+      "vectordb.manager.get_retriever": 1
+     },
+     "tokens": 49,
+     "total_sec": 715.807,
+     "unread": [],
+     "vector_sec": 97.66,
+     "whole_sec": 715.848,
+     "windows": {
+      "rerank": {
+       "compressions": 1137180,
+       "decompressions": 435968,
+       "faulted_mib": 4785.652,
+       "faulted_mib_per_sec": 12.762,
+       "from": 3975535.028,
+       "llama_pids": [
+        34077
+       ],
+       "one_llama_each": true,
+       "pageins": 789159,
+       "pageouts": 1121,
+       "ps_read": 76,
+       "samples": 76,
+       "sec": 375.0,
+       "swapins": 198121,
+       "swapouts": 223061,
+       "to": 3975912.896,
+       "with_llama": 76
+      },
+      "retrieval": {
+       "compressions": 1615111,
+       "decompressions": 473228,
+       "faulted_mib": 6270.035,
+       "faulted_mib_per_sec": 13.2,
+       "from": 3975437.231,
+       "llama_pids": [
+        34077
+       ],
+       "one_llama_each": true,
+       "pageins": 1131901,
+       "pageouts": 1296,
+       "ps_read": 96,
+       "samples": 96,
+       "sec": 475.0,
+       "swapins": 247087,
+       "swapouts": 223061,
+       "to": 3975912.954,
+       "with_llama": 96
+      },
+      "vector": {
+       "compressions": 410673,
+       "decompressions": 16797,
+       "faulted_mib": 1354.18,
+       "faulted_mib_per_sec": 14.255,
+       "from": 3975437.232,
+       "llama_pids": [
+        34077
+       ],
+       "one_llama_each": true,
+       "pageins": 329873,
+       "pageouts": 165,
+       "ps_read": 20,
+       "samples": 20,
+       "sec": 95.0,
+       "swapins": 29443,
+       "swapouts": 0,
+       "to": 3975534.892,
+       "with_llama": 20
+      }
+     }
+    }
+   ],
+   "dir": "/Users/julia/RAG_new_chat_4f48fed/step1/runs/s1-baba",
+   "drivers_sha256": {
+    "live_api.py": "43ff96f06af18538a2571d68a86e898ecfcdd5fcab47039f0d58bd245361a7b5",
+    "live_runner.py": "c87838014a0517d5e6a3dde0402ed0b067a9e0148aaf5d842ffe272ca451a072",
+    "live_supervisor.py": "915ffa9e22e3165f56cd54194fe20e89c8e4146f5a10170f32094a03138fe536"
+   },
+   "gate": {
+    "actions": true,
+    "asks": true,
+    "b_held": true,
+    "drivers": true,
+    "launch": true,
+    "passed": true,
+    "samples": true,
+    "settings": true
+   },
+   "label": "s1-baba",
+   "launch": {
+    "arm": "BABA",
+    "cases": [
+     "aircargo-dismissal-order",
+     "aircargo-leave-sources",
+     "aircargo-leave-compensation",
+     "aircargo-leave-risk"
+    ],
+    "cases_file": "/Users/julia/RAG_new_chat_4f48fed/evaluation/curated_cases_aircargo.jsonl",
+    "chroma_dir": "/Users/julia/RAG_new_chat_4f48fed/step1/runs/s1-baba.chroma",
+    "client_cap_sec": "1965/1320",
+    "code_sha": "4f48fed5d8d1ed534c47f1eedb7b0fec4c124cb1",
+    "label": "s1-baba",
+    "mode": "prod",
+    "model": "qwen3:4b-instruct-2507-q4_K_M",
+    "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+    "ollama_load_sec": 51.087,
+    "ollama_models_after": [
+     "qwen3:4b-instruct-2507-q4_K_M"
+    ],
+    "ollama_models_before": [],
+    "overrides": {
+     "OLLAMA_REQUEST_TIMEOUT_SEC": "3600",
+     "RAG_DEVICE": "cpu",
+     "REQUEST_TIMEOUT_SEC": "3600",
+     "STREAMING_TIMEOUT_SEC": "3600"
+    },
+    "runner_exit": 0,
+    "started": "2026-10-28T19:27:46+00:00",
+    "status": "complete",
+    "tenant": "aircargo",
+    "unloaded_models": [
+     "qwen3:4b-instruct-2507-q4_K_M"
+    ],
+    "workspace": "/Users/julia/RAG_new_chat_4f48fed"
+   },
+   "llama_pids_seen": 3,
+   "notes": [],
+   "samples": {
+    "every_sec": 5.0,
+    "file": "s1-baba.samples.jsonl",
+    "first_utc": "2026-10-28T19:27:39.852Z",
+    "last_utc": "2026-10-28T20:00:16.416Z",
+    "loud_notes": {},
+    "sample_notes": {
+     "ps: no process named llama-server": 83
+    },
+    "samples": 393,
+    "schema": "stage4-step0-samples/v1",
+    "sha256": "1271d4358c7ab011efb4106875e838a633d7395a7b0790e36ae62d02b11e82d5",
+    "stop_reason": "stop file"
+   },
+   "settings": {
+    "rag_device": "cpu",
+    "rerank_top_k": 5,
+    "retrieval_top_k": 20
+   },
+   "sha256": {
+    "effective_settings.json": "242aaea2d1d43972203283a2e162addc7fa4ac11dced855189a3c993a74989ff",
+    "launch.json": "766e49a69dba4abdc69a554545819c5be05415937d54ab4624c791528368e7d4",
+    "stages.jsonl": "8d22a551a3deb64842645e2931c83b9c7d3258561628ca075915177626876367"
+   }
+  }
+ ],
+ "schema": "stage4-step1/v1",
+ "spec": "docs/specs/stage4-step1-rerank-memory.md",
+ "tools_sha256": {
+  "step0_sampler.py": "a0b3e53d78584f454d252770898efb884b77aa80f0fff1729992ec1a37c6d18c",
+  "step1_reader.py": "38f0abfe20143085ad593b361377ee09f5a59d30ca0c3ed69a75863ec288ea3b"
+ }
+}
