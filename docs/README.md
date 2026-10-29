@@ -112,7 +112,9 @@ G2 stops the entity lane if 11,231 chunks × the upper bound of the mean pass 24
 [Stage 4, step 4](specs/stage4-step4-prompt-budget.md) — a shorter answer prompt: stage 2's 400
 questions fitted at num_ctx 4,096 down to 2,304 under today's `QA_PROMPT_V4`, without a model;
 gold at «sent» against 4,096 by an exact McNemar, per base and pooled, and the smallest window
-without a detected loss read from the top; registered before the count in `b192fb0`.
+without a detected loss read from the top; registered before the count in `b192fb0`. Read
+2026-10-29: 3,584, not the forecast's 3,328, and aircargo's prompt a median 456 estimated
+tokens shorter there; its [record](evidence/stage4-step4-record.md).
 [Stage 6, item 4](specs/stage6-throughput.md) — the
 service's questions an hour and what a second client sees: a draft, registered with its tools once
 the service is installed.
