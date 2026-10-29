@@ -94,7 +94,11 @@ its [record](evidence/stage4-step3-record.md): K = 14 faster on 12 of 12, a medi
 rerank seconds (14.566 s less), no K adopted, 2026-10-28. [Stage 4, step 2](specs/stage4-step2-self-eval-continuation.md) —
 the self-eval as the answer chat's next turn: thirteen aircargo questions on a stand of the
 new code, mode both, the continuation's score and seconds paired with the classic's;
-registered before the first request.
+registered before the first request. [Stage 4, step 2b](specs/stage4-step2b-continuation-labels.md) —
+the continuation asked cold: first on step 2's 25 warm-scored answers, whose routes it must keep
+(the bridge), then on stage 3's 80 labelled aircargo answers beside the classic's saved scores:
+catches of the 17, over-marks of the 63, answers without a score; registered before the first
+request, run because step 2's candidate is the continuation.
 [Stage 6, item 4](specs/stage6-throughput.md) — the
 service's questions an hour and what a second client sees: a draft, registered with its tools once
 the service is installed.
