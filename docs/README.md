@@ -103,6 +103,10 @@ catches of the 17, over-marks of the 63, answers without a score; registered bef
 request, run because step 2's candidate is the continuation. Read 2026-10-29, not held: the
 bridge held, the catches not — 0 of the 17 flagged, the classic's 2 — and the default stays
 `classic`; its [record](evidence/stage4-step2b-record.md).
+[Stage 7's entity probe](specs/stage7-entity-probe.md) — the entity extraction's cost: an
+English prompt on 100 MultiHop-RAG chunks, the product's own JSON-schema call with the 4B; gate
+G2 stops the entity lane if 11,231 chunks × the upper bound of the mean pass 24 h or fewer than
+95 of the 100 outputs are valid; registered before the first request in `52dd160`.
 [Stage 6, item 4](specs/stage6-throughput.md) — the
 service's questions an hour and what a second client sees: a draft, registered with its tools once
 the service is installed.

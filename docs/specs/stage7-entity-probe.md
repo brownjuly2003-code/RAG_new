@@ -4,7 +4,8 @@ Status 2026-10-29: **registered before the first request**, with the probe and i
 SHA-256 are listed under [Records](#records); revised before that after
 [a second opinion and its second pass](#a-second-opinion). It
 follows [`PLAN.md`](../../PLAN.md) stage 7 and Julia's word of 2026-10-28 («P1b и граф»: both
-arms stay, the entity extraction's cost measured first). `<c>` is the commit that registers it.
+arms stay, the entity extraction's cost measured first). `52dd160` is the commit that registers
+it; the next one wrote its hash where the registered text had a placeholder.
 
 ## Why
 
@@ -29,7 +30,7 @@ arms stay, the entity extraction's cost measured first). `<c>` is the commit tha
 
 ## The stand
 
-- **Code:** `reports/stage7/tools/entity_probe.py` at `<c>`, the standard library only, run by
+- **Code:** `reports/stage7/tools/entity_probe.py` at `52dd160`, the standard library only, run by
   `PY=/Users/julia/RAG_Support_Assistant/.venv/bin/python` (3.11) with `-I`. It imports nothing
   of the product and sends what the product's extraction sends
   (`scripts/extract_graph_entities.py` through `llm/providers/pinned_ollama.py`).
@@ -169,7 +170,7 @@ On the Mac, `T=/Users/julia/RAG_new_stage7/entity-probe` and `PY` above. The run
 so ssh returns at once (`;`, never `&&`, before `nohup`).
 
 1. **Tools:** `mkdir -p $T/runs`; from the laptop, `git -C D:/RAG_new show
-   <c>:reports/stage7/tools/entity_probe.py | ssh deproject-mac "cat >
+   52dd160:reports/stage7/tools/entity_probe.py | ssh deproject-mac "cat >
    /Users/julia/RAG_new_stage7/entity-probe/entity_probe.py"`; on the Mac, `shasum -a 256
    $T/entity_probe.py /Users/julia/RAG_new_external_s1/multihoprag/chunks.json.gz` prints the
    probe's SHA-256 below and the archive's above.
@@ -186,7 +187,7 @@ so ssh returns at once (`;`, never `&&`, before `nohup`).
    or stopped, 3 refused (nothing written), 5 broken.
 4. **The read:** `$PY -I $T/entity_probe.py read $T/e1.probe.json $T/runs/e1`.
 5. **The record:** `$T/runs/e1/`'s three files, `$T/runs/e1.log` and `$T/e1.probe.json`, copied
-   to the laptop as bytes into `reports/stage7/entity-probe/<c>/`.
+   to the laptop as bytes into `reports/stage7/entity-probe/52dd160/`.
 
 ### Stops
 
@@ -237,7 +238,7 @@ so ssh returns at once (`;`, never `&&`, before `nohup`).
 
 ## Records
 
-`reports/stage7/entity-probe/<c>/`: `launch.json`, `chunks.jsonl`, `end.json`, the log and
+`reports/stage7/entity-probe/52dd160/`: `launch.json`, `chunks.jsonl`, `end.json`, the log and
 `e1.probe.json`: numbers, enums, ids, the model's name and digest, the paths named here and
 SHA-256 strings, never a chunk's text, an output's text, a source name, a host name, a command
 line or the filled prompt. The probe is no slice by the acceptance rule: it changes no
