@@ -1,0 +1,286 @@
+{
+ "corpus": null,
+ "first_ask": {
+  "case_id": "aircargo-probation-data",
+  "continuation_not_held": [],
+  "counters": {
+   "classic": {
+    "eval_sec": null,
+    "eval_tokens": null,
+    "prompt_sec": null,
+    "prompt_tokens": null
+   },
+   "continuation": {
+    "eval_sec": 0.759778,
+    "eval_tokens": 4,
+    "prompt_sec": 8.104117,
+    "prompt_tokens": 2660
+   }
+  },
+  "memory": {
+   "llama_rss_mib_max": 3682.1,
+   "samples": 188,
+   "swap_used_mib": [
+    1938.5,
+    2170.25
+   ],
+   "swapouts": 238985
+  },
+  "ratio": 0.1359,
+  "score": {
+   "classic": 100,
+   "continuation": 100
+  },
+  "sec": {
+   "classic": 66.487,
+   "continuation": 9.035
+  },
+  "stop": false,
+  "unread": [],
+  "why": []
+ },
+ "pairs": [
+  {
+   "case_id": "aircargo-probation-data",
+   "index": 1,
+   "readable": false,
+   "unreadable": [
+    "the run's gate did not pass"
+   ]
+  }
+ ],
+ "readings": {
+  "candidate": {
+   "answer": "NOT_EVIDENCE"
+  },
+  "printed_deciding_nothing": {
+   "classic_routes": {},
+   "continuation_routes": {},
+   "continuation_scored": {
+    "higher": 0,
+    "lower": 0,
+    "same": 0
+   },
+   "median_answer_wall_sec": null,
+   "median_classic_call_wall_sec": null,
+   "median_classic_sec": null,
+   "median_cost_sec": null,
+   "median_counters": {
+    "classic": {
+     "eval_sec": null,
+     "eval_tokens": null,
+     "prompt_sec": null,
+     "prompt_tokens": null
+    },
+    "continuation": {
+     "eval_sec": null,
+     "eval_tokens": null,
+     "prompt_sec": null,
+     "prompt_tokens": null
+    }
+   },
+   "median_first_token_sec": null,
+   "median_score": {
+    "classic": null,
+    "continuation": null
+   },
+   "median_score_diff": null,
+   "median_suggestions_wall_sec": null,
+   "median_total_sec": null,
+   "memory": {
+    "llama_rss_mib_max": null,
+    "swap_used_mib_max": null,
+    "swapouts": null
+   },
+   "scores": {},
+   "total_saving_sec": null,
+   "worst_saving_sec": null
+  },
+  "routes": {
+   "answer": "NOT_EVIDENCE",
+   "compared_pairs": 0,
+   "differ": 0,
+   "differing": []
+  },
+  "scores": {
+   "answer": "NOT_EVIDENCE",
+   "missed": 0,
+   "misses": [],
+   "readable_pairs": 0
+  },
+  "speed": {
+   "answer": "NOT_EVIDENCE",
+   "continuation_faster": 0,
+   "continuation_slower": 0,
+   "median_ratio": null,
+   "ratios": {},
+   "readable_pairs": 0,
+   "savings_sec": {},
+   "sign_p": 1.0,
+   "ties": 0
+  },
+  "useful": {
+   "answer": "NOT_EVIDENCE",
+   "least_median_saving_sec": 30.0,
+   "median_saving_sec": null
+  }
+ },
+ "run": {
+  "asks": [
+   {
+    "after_answer": [
+     {
+      "call": "classic",
+      "error": null,
+      "max_tokens": 128,
+      "offset_sec": 9.072,
+      "prompt_est_tokens": 2866,
+      "wall_sec": 66.47
+     },
+     {
+      "call": "other",
+      "error": null,
+      "max_tokens": null,
+      "offset_sec": 75.558,
+      "prompt_est_tokens": 479,
+      "wall_sec": 13.923
+     }
+    ],
+    "answer_call": {
+     "error": null,
+     "first_chunk_sec": 83.244,
+     "offset_sec": 308.593,
+     "prompt_est_tokens": 2463,
+     "wall_sec": 178.159
+    },
+    "answer_source": "stream",
+    "answered": true,
+    "case_id": "aircargo-probation-data",
+    "continuation_held": true,
+    "continuation_not_held": [],
+    "first_token_sec": 391.84,
+    "generation_source": "stream",
+    "http_status": 200,
+    "index": 1,
+    "memory": {
+     "llama_rss_mib_max": 3682.1,
+     "samples": 188,
+     "swap_used_mib": [
+      1938.5,
+      2170.25
+     ],
+     "swapouts": 238985
+    },
+    "quality_score": 100,
+    "quality_source": "llm",
+    "read": true,
+    "route": "auto",
+    "self_eval": {
+     "classic": {
+      "eval_sec": null,
+      "eval_tokens": null,
+      "prompt_sec": null,
+      "prompt_tokens": null,
+      "score": 100,
+      "sec": 66.487
+     },
+     "continuation": {
+      "eval_sec": 0.759778,
+      "eval_tokens": 4,
+      "prompt_sec": 8.104117,
+      "prompt_tokens": 2660,
+      "score": 100,
+      "sec": 9.035
+     }
+    },
+    "sha256": "c8c47faac45ac888267ad083e6c95f289fa205724ccfef485ee7327ce7c71da1",
+    "spans": {
+     "ollama.generate": 2,
+     "ollama.generate_stream": 1
+    },
+    "suggested": 3,
+    "tokens": 312,
+    "total_sec": 576.606,
+    "unread": []
+   }
+  ],
+  "dir": "/Users/julia/RAG_new_chat_57420db/step2/runs/s2-both",
+  "drivers_sha256": {
+   "live_api.py": "43ff96f06af18538a2571d68a86e898ecfcdd5fcab47039f0d58bd245361a7b5",
+   "live_runner.py": "c87838014a0517d5e6a3dde0402ed0b067a9e0148aaf5d842ffe272ca451a072",
+   "live_supervisor.py": "0de222a762085f49f2455e813a50895fd88826f687683be2d6cb814926da9132"
+  },
+  "gate": {
+   "asks": false,
+   "drivers": true,
+   "launch": false,
+   "passed": false,
+   "settings": true
+  },
+  "label": "s2-both",
+  "launch": {
+   "cases": [
+    "aircargo-probation-data",
+    "aircargo-probation-extend",
+    "aircargo-probation-dismissal",
+    "aircargo-dismissal-check",
+    "aircargo-dismissal-lawyer",
+    "aircargo-dismissal-order",
+    "aircargo-leave-sources",
+    "aircargo-leave-compensation",
+    "aircargo-leave-risk",
+    "aircargo-matliab-check",
+    "aircargo-matliab-disputed",
+    "aircargo-templates-choose",
+    "aircargo-templates-checklist"
+   ],
+   "cases_file": "/Users/julia/RAG_new_chat_57420db/evaluation/curated_cases_aircargo.jsonl",
+   "chroma_dir": "/Users/julia/RAG_new_chat_57420db/step2/runs/s2-both.chroma",
+   "client_cap_sec": "2010/1365",
+   "code_sha": "57420db746e0510465bb5a08b7610e092b32e650",
+   "label": "s2-both",
+   "mode": "prod",
+   "model": "qwen3:4b-instruct-2507-q4_K_M",
+   "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+   "ollama_load_sec": 52.809,
+   "ollama_models_before": [],
+   "overrides": {
+    "OLLAMA_REQUEST_TIMEOUT_SEC": "3600",
+    "RAG_DEVICE": "cpu",
+    "REQUEST_TIMEOUT_SEC": "3600",
+    "STREAMING_SELF_EVAL_MODE": "both",
+    "STREAMING_TIMEOUT_SEC": "3600"
+   },
+   "started": "2026-10-29T08:37:29+00:00",
+   "status": "running",
+   "tenant": "aircargo",
+   "workspace": "/Users/julia/RAG_new_chat_57420db"
+  },
+  "notes": [],
+  "settings": {
+   "code_sha": "57420db746e0510465bb5a08b7610e092b32e650",
+   "ollama_model_name": "qwen3:4b-instruct-2507-q4_K_M",
+   "quality_threshold": 80,
+   "rag_device": "cpu",
+   "rerank_top_k": 5,
+   "retrieval_top_k": 20,
+   "streaming_quality_eval": true,
+   "streaming_self_eval_mode": "both"
+  },
+  "settings_printed": {
+   "ollama_context_window": 4096,
+   "suggested_questions_enabled": true
+  },
+  "sha256": {
+   "effective_settings.json": "4b99fa86d4529d693a8f2ba5e709c1425cbd8cd98035ebcfc83419c601beee05",
+   "launch.json": "ebbeeaf5f17886614f5f2fe1f0ed749ee9c2a6b246018259ed362793c6f4a1ca",
+   "resources.jsonl": "46dcaa6facb4094539305e4418c3030a5845954954195bf659a2f07d21b03ffc",
+   "stages.jsonl": "e18155c41b008a540e58ec2726f2d2fb1e914a10741d2cc5e6590a9086b176f5"
+  }
+ },
+ "schema": "stage4-step2/v1",
+ "spec": "docs/specs/stage4-step2-self-eval-continuation.md",
+ "tools_sha256": {
+  "step2_reader.py": "dc19cae35e451a445c89834b5b1b5b314d92e512c9e5a622cfd89f52437169c1"
+ }
+}

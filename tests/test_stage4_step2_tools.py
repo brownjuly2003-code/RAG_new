@@ -572,6 +572,7 @@ OVERRIDES = {"RAG_DEVICE": "cpu", "REQUEST_TIMEOUT_SEC": "3600"}
         {"model": "qwen2.5:7b"},
         {"ollama_models_before": [MODEL]},  # the model was not loaded by this run
         {"arm": "A" * 13},
+        {"arm": "B" * 13},  # amendment 1: only the rerun unloads
         {"overrides": OVERRIDES},  # the stand's default mode, classic
         {"overrides": {**OVERRIDES, "STREAMING_SELF_EVAL_MODE": "continuation"}},
         {
@@ -590,6 +591,25 @@ def test_the_gate_reads_the_launch(
     folder = reader_stand(tmp_path, monkeypatch)
     gate = read(tmp_path, write_run(folder, "s2-both", fast(), launch=launch))["run"]["gate"]
     assert not gate["launch"] and not gate["passed"]
+
+
+@pytest.mark.parametrize(
+    ("arm", "passed"),
+    [("B" * 13, True), (None, False), ("A" * 13, False), ("B" * 12 + "A", False)],
+)
+def test_the_rerun_unloads_the_model_before_each_question(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, arm: str | None, passed: bool
+) -> None:
+    """Amendment 1: s2-both-r2 carries step 1's arm B on each of the thirteen questions, and
+    its readings are the registered ones."""
+    folder = reader_stand(tmp_path, monkeypatch)
+    launch = {} if arm is None else {"arm": arm}
+    record = read(tmp_path, write_run(folder, "s2-both-r2", fast(), launch=launch), "r2.json")
+    gate = record["run"]["gate"]
+    assert (gate["launch"], gate["passed"]) == (passed, passed)
+    assert gate["settings"] and gate["drivers"] and gate["asks"]
+    candidate = "continuation" if passed else reader.NOT_EVIDENCE
+    assert record["readings"]["candidate"] == {"answer": candidate}
 
 
 @pytest.mark.parametrize(

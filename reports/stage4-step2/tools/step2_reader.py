@@ -70,6 +70,9 @@ CASES = (
     "aircargo-templates-checklist",
 )
 LABELS = ("s2-both", "s2-both-r2")
+# Amendment 1, registered before the rerun's first request: s2-both-r2 unloads the model before
+# each question, step 1's arm B on each of the thirteen; s2-both has no arm.
+RERUN_ARM = "B" * len(CASES)
 MODE = "both"
 # What the run must have run, two levels above its directory: V4's live_api.py, step 1's
 # live_runner.py and this folder's live_supervisor.py.
@@ -518,7 +521,7 @@ def read_run(run_dir: Path) -> dict[str, Any]:
         and kept.get("tenant") == TENANT
         and kept.get("cases") == list(CASES)
         and kept.get("ollama_models_before") == []
-        and "arm" not in kept
+        and (kept.get("arm") == RERUN_ARM if kept.get("label") == LABELS[1] else "arm" not in kept)
         and overrides.get("STREAMING_SELF_EVAL_MODE") == MODE
         and overrides.get("RAG_RETRIEVAL_TOP_K", "20") == "20",
         "settings": settings

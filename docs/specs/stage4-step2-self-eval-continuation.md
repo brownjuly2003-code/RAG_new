@@ -8,6 +8,9 @@ and their test ([Records](#records)). [`PLAN.md`](../../PLAN.md) stage 4, item 2
 [step 1](stage4-step1-rerank-memory.md), with step 0's idle rule, on a stand of its own, the commit
 that holds the continuation's code ([The stand](#the-stand)). The one value filled in at launch is
 `<g>`, the commit that registers this spec.
+[Amendment 1](#amendment-1-2026-10-29-the-rerun-unloads-the-model-before-each-question),
+2026-10-29, after `s2-both` stopped at its thirteenth question and before `s2-both-r2`'s first
+request: the rerun unloads the model before each question.
 
 ## Why
 
@@ -164,7 +167,8 @@ By `step2_reader.readings`, over the pairs `step2_reader.pair_of` forms:
 
 1. `launch`: `code_sha` `57420db746e0510465bb5a08b7610e092b32e650`; label `s2-both` or `s2-both-r2`;
    status `complete` with runner exit 0; mode `prod`; the default model; tenant `aircargo`; the
-   thirteen questions; no model in Ollama before the preload; no arm;
+   thirteen questions; no model in Ollama before the preload; no arm, but for `s2-both-r2`
+   step 1's arm `B` on each of the thirteen ([Amendment 1](#amendment-1-2026-10-29-the-rerun-unloads-the-model-before-each-question));
    `STREAMING_SELF_EVAL_MODE=both`; K unset or 20.
 2. `settings`, in `effective_settings.json`: K = 20, five kept, `cpu`, the stream's
    self-evaluation on at 80, the model, mode `both` and code
@@ -268,7 +272,8 @@ in `# stage4-step2`. The test checks that the unmarked lines are the original's,
 `reports/stage4-step2/57420db/` holds:
 - `step2.json`: the run, its pairs and the readings;
 - the first question's read, `s2-both.q1.step2.json`;
-- `environment.jsonl`.
+- `environment.jsonl`;
+- for a rerun, `step2.s2-both-r2.json` and `s2-both-r2.q1.step2.json`, beside `s2-both`'s.
 
 They hold numbers, enums, ids, model names, the paths named here and SHA-256 strings. They never
 hold a question, answer, prompt, source name, log line, command line or environment, and of an
@@ -283,8 +288,10 @@ SHA-256 below; a later change is a marked error fix that updates this list:
 - `reports/stage4-step1/tools/live_runner.py` `c87838014a0517d5e6a3dde0402ed0b067a9e0148aaf5d842ffe272ca451a072`
 - `reports/stage4-step1/tools/live_supervisor.py` `915ffa9e22e3165f56cd54194fe20e89c8e4146f5a10170f32094a03138fe536`
 - `reports/stage4-step2/tools/live_supervisor.py` `0de222a762085f49f2455e813a50895fd88826f687683be2d6cb814926da9132`
-- `reports/stage4-step2/tools/step2_reader.py` `dc19cae35e451a445c89834b5b1b5b314d92e512c9e5a622cfd89f52437169c1`
-- `tests/test_stage4_step2_tools.py` `10e449d3bdd13ea318cd937d4a70fc693590daeeee7780401253c7026ff4c5bf`
+- `reports/stage4-step2/tools/step2_reader.py` `18a7aaa26237dc370bf22d8831968248663fc5c926de1b144dddaf5f05157b28`
+  (Amendment 1; registered as `dc19cae35e451a445c89834b5b1b5b314d92e512c9e5a622cfd89f52437169c1`, which read `s2-both`)
+- `tests/test_stage4_step2_tools.py` `9d3cc48577ef3a58f059404fc811b8456c61cc6893af12ca5b1093ac25b4bc58`
+  (Amendment 1; registered as `10e449d3bdd13ea318cd937d4a70fc693590daeeee7780401253c7026ff4c5bf`)
 
 ## A second opinion
 
@@ -328,3 +335,62 @@ tests): «Live run as is: go».
 - The window check estimates the three messages' tokens, as the answer's own fitting does, with
   its 10 % margin: a long answer after a full prompt is refused and scored by the classic, and a
   truncation Ollama would make silently is not read token by token either.
+
+## Amendment 1, 2026-10-29: the rerun unloads the model before each question
+
+Registered before `s2-both-r2`'s first request, after `s2-both` was read. The questions, their
+order, the forecasts, the caps, the stops, the drivers and the readings stay as above. The
+reader's gate changes in one point, with its test; [Records](#records) lists their new SHA-256.
+
+**What `s2-both` gave.** It ran 08:37–11:21 UTC on 2026-10-29. Its first twelve questions
+delivered their answers. The thirteenth, `aircargo-templates-checklist`, ran past its 1,365-s
+cap with its first token at 1,281 s, and the supervisor stopped the run: `failed`, exit 5. The
+reader's gate failed on its launch point alone, so no pair is read and every reading is
+`NOT_EVIDENCE` (`reports/stage4-step2/57420db/step2.json`). Both environment lines name Ollama
+0.33.2 and one server.
+
+**Why it stopped,** read from the run's files on the Mac, outside the frozen reading, deciding
+nothing:
+- The time went to the retrieval. The rerank took 166–266 s in eight questions and 458–760 s in
+  the other five, the vector search 61–334 s, the answer's stream 75–204 s.
+- The swap used rose from 1,836 MiB at the first question's start to 11,608 MiB in the twelfth,
+  ≈ 750 MiB a question, and stayed there, while llama-server's resident memory stayed at
+  3,357–3,741 MiB. So grows step 0's host prompt cache with no cap: a state saved a request, none
+  restored (item 5).
+- Step 1 found the rerank waiting on the resident model's memory: with the model unloaded it took
+  a median 0.26 of its time.
+- Other projects' processes ran beside it, among them two pytest suites over the third to the
+  fifth question and a headless browser over the twelfth and the thirteenth.
+
+A rerun as registered meets the same growth at the same questions, and each of its later
+questions is one contention away from its cap.
+
+**The change.** `s2-both-r2` runs with step 1's arm `B` on each of the thirteen questions,
+`ARM=BBBBBBBBBBBBB`, which the registered supervisor and runner take as they are.
+- Before each question the runner unloads the model and waits until Ollama holds none and no
+  llama-server is left. An unload not done within 120 s stops the series with exit 6, which
+  fails the gate.
+- The host cache goes with its process, so no question starts on the states of the ones before
+  it, and each retrieval runs without the model resident, as in step 1's arm B.
+- The reader's gate wants that arm on `s2-both-r2` and no arm on `s2-both`.
+
+**What stays.** A pair is still two self-evaluations of one answer in one llama-server process:
+the answer's call loads the model, and the continuation's slot is the answer's own. The first
+question's read and its stop are `s2-both-r2`'s own, as step 5 and [Stops](#stops) say for
+`s2-both`.
+
+**Forecast.** Step 1's B asks took 282–479 s, the classic among them. With the continuation's
+≈ 10 s: ≈ 1 h 10 min – 1 h 30 min for the thirteen on an idle Mac, then ≈ 10 min of reads and
+copies.
+
+**Running it:** steps 2–6 of [Running it](#running-it) with `L=s2-both-r2`, and
+`,ARM=BBBBBBBBBBBBB` added to the supervisor's settings after `STREAMING_SELF_EVAL_MODE=both`.
+The reader writes `$T/step2.s2-both-r2.json`. A second failure of the gate is `NOT_EVIDENCE`, as
+step 6 says.
+
+**Not said, added.**
+- `s2-both-r2`'s totals and first tokens are a stand's that unloads the model before each
+  question: its retrieval runs without the model resident, and its answer pays the model's load.
+  They say nothing of production's pace, which keeps the model resident.
+- The host cache's growth over a series is item 5's. `s2-both`'s samples show it here and decide
+  nothing.
