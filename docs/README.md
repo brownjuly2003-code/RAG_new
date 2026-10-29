@@ -128,9 +128,10 @@ P2 reference samples ([Astra](specs/p2-astra-reference-sample.md),
 
 - [`evidence/`](evidence/) — one write-up per measured slice; the register with provenance is
   [`EVIDENCE_INDEX.md`](../EVIDENCE_INDEX.md). The records themselves are in `../reports/`.
-- [Latest handoff: stage 4 — step 0 read, step 1 measured, step 3 registered](operations/session-handoff-2026-10-28-stage4-step1.md)
-  — step 0's record, step 1's two runs and its reading (contention yes, net faster on a 2–2
-  split), step 3's timing registered, stage 6 prepared. Before it:
+- [Latest handoff: stage 4 — step 2 running on the Mac; stage 7 and step 2b drafted](operations/session-handoff-2026-10-29-stage4-step2-running.md)
+  — step 1's and step 3's records, the continuation's code and step 2's spec, step 2's first
+  question read, the stage 7 drafts and step 2b's tools on the laptop. Before it:
+  [stage 4: step 0 read, step 1 measured, step 3 registered](operations/session-handoff-2026-10-28-stage4-step1.md),
   [V5 not adopted, the encoders' Amendment 1](operations/session-handoff-2026-10-28-v5-record.md),
   [the widget read, V5 running](operations/session-handoff-2026-10-27-v5-running.md),
   [four items under her «да», the widget running](operations/session-handoff-2026-10-26-widget-running.md),
@@ -145,6 +146,10 @@ P2 reference samples ([Astra](specs/p2-astra-reference-sample.md),
   levers, faster retrieval models; literature, not our measurement, and a proposal for Julia's
   decision. Its [analysis](operations/research-2026-10-25/analysis.md) of 2026-10-26 reads
   every item against our own records and `PLAN.md`, and ranks them.
+- [Web research of 2026-10-29](operations/research-2026-10-29/README.md) — five facts about
+  Ollama 0.33.2 and its llama-server, read from the sources by Codex and partly checked: what
+  `/api/ps` reports, cancellation on a closed connection, unloading, `LLAMA_ARG_CACHE_RAM`
+  and the extraction output's bound; for the stage 7 probe, the host-cache cap and step 2.
 - [Project audit of 2026-10-18](operations/audit_fable_18_10_26.md) (Fable 5.1) — the state
   against the plan, the status files' claims checked, findings F-1…F-10; kept in `operations/`
   because `docs/audits/` is publishable (earlier audits: `../archive/docs/audits/`).
