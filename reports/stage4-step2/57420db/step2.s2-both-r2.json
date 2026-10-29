@@ -1,0 +1,2021 @@
+{
+ "corpus": {
+  "dir": "/Users/julia/RAG_new_external_s1/aircargo",
+  "sha256": {
+   "chunks-report.json": "bf01530e5a4cf33de44a7ce4aa1282805fc600a49b3a2f82b30b3b5715c6a714",
+   "corpus.manifest.json": "2b2e9232e69b4f52a55237f3ee620f34c91d1900383877c2310ba616c6590444",
+   "index/index-receipt.json": "2dcc80e75d22e9dc34b31313c1db2724aa59c606203eb56c9ac7b84abb684666"
+  }
+ },
+ "first_ask": {
+  "case_id": "aircargo-probation-data",
+  "continuation_not_held": [],
+  "counters": {
+   "classic": {
+    "eval_sec": null,
+    "eval_tokens": null,
+    "prompt_sec": null,
+    "prompt_tokens": null
+   },
+   "continuation": {
+    "eval_sec": 0.742822,
+    "eval_tokens": 4,
+    "prompt_sec": 7.633211,
+    "prompt_tokens": 2558
+   }
+  },
+  "memory": {
+   "llama_rss_mib_max": 3525.6,
+   "samples": 117,
+   "swap_used_mib": [
+    1810.25,
+    2127.25
+   ],
+   "swapouts": 89316
+  },
+  "ratio": 0.1373,
+  "score": {
+   "classic": 100,
+   "continuation": 100
+  },
+  "sec": {
+   "classic": 61.775,
+   "continuation": 8.483
+  },
+  "stop": false,
+  "unread": [],
+  "why": []
+ },
+ "pairs": [
+  {
+   "case_id": "aircargo-probation-data",
+   "compared": true,
+   "cost_sec": 8.483,
+   "held": true,
+   "index": 1,
+   "printed": {
+    "answer_wall_sec": 141.44,
+    "classic_call_wall_sec": 61.753,
+    "counters": {
+     "classic": {
+      "eval_sec": null,
+      "eval_tokens": null,
+      "prompt_sec": null,
+      "prompt_tokens": null
+     },
+     "continuation": {
+      "eval_sec": 0.742822,
+      "eval_tokens": 4,
+      "prompt_sec": 7.633211,
+      "prompt_tokens": 2558
+     }
+    },
+    "first_token_sec": 226.787,
+    "memory": {
+     "llama_rss_mib_max": 3525.6,
+     "samples": 117,
+     "swap_used_mib": [
+      1810.25,
+      2127.25
+     ],
+     "swapouts": 89316
+    },
+    "suggestions_wall_sec": null,
+    "total_sec": 361.224
+   },
+   "ratio": 0.1373,
+   "readable": true,
+   "routes": {
+    "classic": "auto",
+    "continuation": "auto"
+   },
+   "routes_differ": false,
+   "saving_sec": 53.292,
+   "score": {
+    "classic": 100,
+    "continuation": 100
+   },
+   "score_diff": 0,
+   "sec": {
+    "classic": 61.775,
+    "continuation": 8.483
+   },
+   "uncompared": [],
+   "unreadable": []
+  },
+  {
+   "case_id": "aircargo-probation-extend",
+   "compared": true,
+   "cost_sec": 8.57,
+   "held": true,
+   "index": 2,
+   "printed": {
+    "answer_wall_sec": 171.87,
+    "classic_call_wall_sec": 76.298,
+    "counters": {
+     "classic": {
+      "eval_sec": null,
+      "eval_tokens": null,
+      "prompt_sec": null,
+      "prompt_tokens": null
+     },
+     "continuation": {
+      "eval_sec": 0.567747,
+      "eval_tokens": 3,
+      "prompt_sec": 7.905746,
+      "prompt_tokens": 2832
+     }
+    },
+    "first_token_sec": 245.988,
+    "memory": {
+     "llama_rss_mib_max": 3587.3,
+     "samples": 130,
+     "swap_used_mib": [
+      2127.25,
+      2779.0
+     ],
+     "swapouts": 166633
+    },
+    "suggestions_wall_sec": null,
+    "total_sec": 398.255
+   },
+   "ratio": 0.1123,
+   "readable": true,
+   "routes": {
+    "classic": "human",
+    "continuation": "auto"
+   },
+   "routes_differ": true,
+   "saving_sec": 67.758,
+   "score": {
+    "classic": 60,
+    "continuation": 90
+   },
+   "score_diff": 30,
+   "sec": {
+    "classic": 76.328,
+    "continuation": 8.57
+   },
+   "uncompared": [],
+   "unreadable": []
+  },
+  {
+   "case_id": "aircargo-probation-dismissal",
+   "compared": true,
+   "cost_sec": 8.635,
+   "held": true,
+   "index": 3,
+   "printed": {
+    "answer_wall_sec": 124.164,
+    "classic_call_wall_sec": 75.864,
+    "counters": {
+     "classic": {
+      "eval_sec": null,
+      "eval_tokens": null,
+      "prompt_sec": null,
+      "prompt_tokens": null
+     },
+     "continuation": {
+      "eval_sec": 0.752732,
+      "eval_tokens": 4,
+      "prompt_sec": 7.748312,
+      "prompt_tokens": 2677
+     }
+    },
+    "first_token_sec": 137.087,
+    "memory": {
+     "llama_rss_mib_max": 3552.4,
+     "samples": 84,
+     "swap_used_mib": [
+      2747.0,
+      2963.25
+     ],
+     "swapouts": 185965
+    },
+    "suggestions_wall_sec": null,
+    "total_sec": 259.615
+   },
+   "ratio": 0.1138,
+   "readable": true,
+   "routes": {
+    "classic": "auto",
+    "continuation": "auto"
+   },
+   "routes_differ": false,
+   "saving_sec": 67.259,
+   "score": {
+    "classic": 95,
+    "continuation": 100
+   },
+   "score_diff": 5,
+   "sec": {
+    "classic": 75.894,
+    "continuation": 8.635
+   },
+   "uncompared": [],
+   "unreadable": []
+  },
+  {
+   "case_id": "aircargo-dismissal-check",
+   "compared": true,
+   "cost_sec": 12.789,
+   "held": true,
+   "index": 4,
+   "printed": {
+    "answer_wall_sec": 155.553,
+    "classic_call_wall_sec": 79.188,
+    "counters": {
+     "classic": {
+      "eval_sec": null,
+      "eval_tokens": null,
+      "prompt_sec": null,
+      "prompt_tokens": null
+     },
+     "continuation": {
+      "eval_sec": 0.79259,
+      "eval_tokens": 4,
+      "prompt_sec": 11.858518,
+      "prompt_tokens": 2718
+     }
+    },
+    "first_token_sec": 131.07,
+    "memory": {
+     "llama_rss_mib_max": 3358.5,
+     "samples": 95,
+     "swap_used_mib": [
+      2931.25,
+      3251.0
+     ],
+     "swapouts": 293894
+    },
+    "suggestions_wall_sec": null,
+    "total_sec": 291.144
+   },
+   "ratio": 0.1614,
+   "readable": true,
+   "routes": {
+    "classic": "auto",
+    "continuation": "auto"
+   },
+   "routes_differ": false,
+   "saving_sec": 66.457,
+   "score": {
+    "classic": 100,
+    "continuation": 100
+   },
+   "score_diff": 0,
+   "sec": {
+    "classic": 79.246,
+    "continuation": 12.789
+   },
+   "uncompared": [],
+   "unreadable": []
+  },
+  {
+   "case_id": "aircargo-dismissal-lawyer",
+   "compared": true,
+   "cost_sec": 13.853,
+   "held": true,
+   "index": 5,
+   "printed": {
+    "answer_wall_sec": 134.28,
+    "classic_call_wall_sec": 69.438,
+    "counters": {
+     "classic": {
+      "eval_sec": null,
+      "eval_tokens": null,
+      "prompt_sec": null,
+      "prompt_tokens": null
+     },
+     "continuation": {
+      "eval_sec": 2.976637,
+      "eval_tokens": 4,
+      "prompt_sec": 10.706025,
+      "prompt_tokens": 2593
+     }
+    },
+    "first_token_sec": 138.672,
+    "memory": {
+     "llama_rss_mib_max": 3658.4,
+     "samples": 83,
+     "swap_used_mib": [
+      3187.0,
+      3190.0
+     ],
+     "swapouts": 155967
+    },
+    "suggestions_wall_sec": null,
+    "total_sec": 256.308
+   },
+   "ratio": 0.1994,
+   "readable": true,
+   "routes": {
+    "classic": "auto",
+    "continuation": "auto"
+   },
+   "routes_differ": false,
+   "saving_sec": 55.614,
+   "score": {
+    "classic": 100,
+    "continuation": 100
+   },
+   "score_diff": 0,
+   "sec": {
+    "classic": 69.467,
+    "continuation": 13.853
+   },
+   "uncompared": [],
+   "unreadable": []
+  },
+  {
+   "case_id": "aircargo-dismissal-order",
+   "compared": true,
+   "cost_sec": 8.782,
+   "held": true,
+   "index": 6,
+   "printed": {
+    "answer_wall_sec": 150.173,
+    "classic_call_wall_sec": 64.69,
+    "counters": {
+     "classic": {
+      "eval_sec": null,
+      "eval_tokens": null,
+      "prompt_sec": null,
+      "prompt_tokens": null
+     },
+     "continuation": {
+      "eval_sec": 0.749654,
+      "eval_tokens": 4,
+      "prompt_sec": 7.656211,
+      "prompt_tokens": 2671
+     }
+    },
+    "first_token_sec": 141.426,
+    "memory": {
+     "llama_rss_mib_max": 3546.4,
+     "samples": 85,
+     "swap_used_mib": [
+      3126.0,
+      3449.75
+     ],
+     "swapouts": 115367
+    },
+    "suggestions_wall_sec": null,
+    "total_sec": 261.274
+   },
+   "ratio": 0.1357,
+   "readable": true,
+   "routes": {
+    "classic": "auto",
+    "continuation": "auto"
+   },
+   "routes_differ": false,
+   "saving_sec": 55.934,
+   "score": {
+    "classic": 100,
+    "continuation": 100
+   },
+   "score_diff": 0,
+   "sec": {
+    "classic": 64.716,
+    "continuation": 8.782
+   },
+   "uncompared": [],
+   "unreadable": []
+  },
+  {
+   "case_id": "aircargo-leave-sources",
+   "compared": true,
+   "cost_sec": 8.764,
+   "held": true,
+   "index": 7,
+   "printed": {
+    "answer_wall_sec": 81.285,
+    "classic_call_wall_sec": 62.207,
+    "counters": {
+     "classic": {
+      "eval_sec": null,
+      "eval_tokens": null,
+      "prompt_sec": null,
+      "prompt_tokens": null
+     },
+     "continuation": {
+      "eval_sec": 0.744113,
+      "eval_tokens": 4,
+      "prompt_sec": 7.66302,
+      "prompt_tokens": 2590
+     }
+    },
+    "first_token_sec": 128.968,
+    "memory": {
+     "llama_rss_mib_max": 3534.8,
+     "samples": 72,
+     "swap_used_mib": [
+      3385.75,
+      3518.75
+     ],
+     "swapouts": 131842
+    },
+    "suggestions_wall_sec": null,
+    "total_sec": 222.823
+   },
+   "ratio": 0.1408,
+   "readable": true,
+   "routes": {
+    "classic": "auto",
+    "continuation": "auto"
+   },
+   "routes_differ": false,
+   "saving_sec": 53.459,
+   "score": {
+    "classic": 100,
+    "continuation": 100
+   },
+   "score_diff": 0,
+   "sec": {
+    "classic": 62.223,
+    "continuation": 8.764
+   },
+   "uncompared": [],
+   "unreadable": []
+  },
+  {
+   "case_id": "aircargo-leave-compensation",
+   "compared": true,
+   "cost_sec": 8.997,
+   "held": true,
+   "index": 8,
+   "printed": {
+    "answer_wall_sec": 81.246,
+    "classic_call_wall_sec": 61.262,
+    "counters": {
+     "classic": {
+      "eval_sec": null,
+      "eval_tokens": null,
+      "prompt_sec": null,
+      "prompt_tokens": null
+     },
+     "continuation": {
+      "eval_sec": 0.783123,
+      "eval_tokens": 4,
+      "prompt_sec": 7.761787,
+      "prompt_tokens": 2570
+     }
+    },
+    "first_token_sec": 114.908,
+    "memory": {
+     "llama_rss_mib_max": 3541.5,
+     "samples": 69,
+     "swap_used_mib": [
+      3486.75,
+      3515.0
+     ],
+     "swapouts": 88689
+    },
+    "suggestions_wall_sec": null,
+    "total_sec": 210.88
+   },
+   "ratio": 0.1468,
+   "readable": true,
+   "routes": {
+    "classic": "auto",
+    "continuation": "auto"
+   },
+   "routes_differ": false,
+   "saving_sec": 52.283,
+   "score": {
+    "classic": 95,
+    "continuation": 100
+   },
+   "score_diff": 5,
+   "sec": {
+    "classic": 61.28,
+    "continuation": 8.997
+   },
+   "uncompared": [],
+   "unreadable": []
+  },
+  {
+   "case_id": "aircargo-leave-risk",
+   "compared": true,
+   "cost_sec": 8.527,
+   "held": true,
+   "index": 9,
+   "printed": {
+    "answer_wall_sec": 77.143,
+    "classic_call_wall_sec": 59.466,
+    "counters": {
+     "classic": {
+      "eval_sec": null,
+      "eval_tokens": null,
+      "prompt_sec": null,
+      "prompt_tokens": null
+     },
+     "continuation": {
+      "eval_sec": 0.69983,
+      "eval_tokens": 4,
+      "prompt_sec": 7.559547,
+      "prompt_tokens": 2493
+     }
+    },
+    "first_token_sec": 116.637,
+    "memory": {
+     "llama_rss_mib_max": 3520.9,
+     "samples": 68,
+     "swap_used_mib": [
+      3451.0,
+      3467.0
+     ],
+     "swapouts": 52911
+    },
+    "suggestions_wall_sec": null,
+    "total_sec": 208.504
+   },
+   "ratio": 0.1433,
+   "readable": true,
+   "routes": {
+    "classic": "auto",
+    "continuation": "auto"
+   },
+   "routes_differ": false,
+   "saving_sec": 50.964,
+   "score": {
+    "classic": 100,
+    "continuation": 100
+   },
+   "score_diff": 0,
+   "sec": {
+    "classic": 59.491,
+    "continuation": 8.527
+   },
+   "uncompared": [],
+   "unreadable": []
+  },
+  {
+   "case_id": "aircargo-matliab-check",
+   "compared": true,
+   "cost_sec": 8.429,
+   "held": true,
+   "index": 10,
+   "printed": {
+    "answer_wall_sec": 76.238,
+    "classic_call_wall_sec": 59.663,
+    "counters": {
+     "classic": {
+      "eval_sec": null,
+      "eval_tokens": null,
+      "prompt_sec": null,
+      "prompt_tokens": null
+     },
+     "continuation": {
+      "eval_sec": 0.699893,
+      "eval_tokens": 4,
+      "prompt_sec": 7.553394,
+      "prompt_tokens": 2492
+     }
+    },
+    "first_token_sec": 106.409,
+    "memory": {
+     "llama_rss_mib_max": 3526.8,
+     "samples": 63,
+     "swap_used_mib": [
+      3435.0,
+      3370.75
+     ],
+     "swapouts": 40742
+    },
+    "suggestions_wall_sec": null,
+    "total_sec": 194.069
+   },
+   "ratio": 0.1409,
+   "readable": true,
+   "routes": {
+    "classic": "auto",
+    "continuation": "auto"
+   },
+   "routes_differ": false,
+   "saving_sec": 51.404,
+   "score": {
+    "classic": 100,
+    "continuation": 100
+   },
+   "score_diff": 0,
+   "sec": {
+    "classic": 59.833,
+    "continuation": 8.429
+   },
+   "uncompared": [],
+   "unreadable": []
+  },
+  {
+   "case_id": "aircargo-matliab-disputed",
+   "compared": true,
+   "cost_sec": 8.526,
+   "held": true,
+   "index": 11,
+   "printed": {
+    "answer_wall_sec": 80.296,
+    "classic_call_wall_sec": 62.936,
+    "counters": {
+     "classic": {
+      "eval_sec": null,
+      "eval_tokens": null,
+      "prompt_sec": null,
+      "prompt_tokens": null
+     },
+     "continuation": {
+      "eval_sec": 0.738548,
+      "eval_tokens": 4,
+      "prompt_sec": 7.646151,
+      "prompt_tokens": 2570
+     }
+    },
+    "first_token_sec": 112.042,
+    "memory": {
+     "llama_rss_mib_max": 3772.1,
+     "samples": 67,
+     "swap_used_mib": [
+      3338.75,
+      3416.0
+     ],
+     "swapouts": 101243
+    },
+    "suggestions_wall_sec": null,
+    "total_sec": 207.247
+   },
+   "ratio": 0.1354,
+   "readable": true,
+   "routes": {
+    "classic": "auto",
+    "continuation": "auto"
+   },
+   "routes_differ": false,
+   "saving_sec": 54.459,
+   "score": {
+    "classic": 100,
+    "continuation": 100
+   },
+   "score_diff": 0,
+   "sec": {
+    "classic": 62.985,
+    "continuation": 8.526
+   },
+   "uncompared": [],
+   "unreadable": []
+  },
+  {
+   "case_id": "aircargo-templates-choose",
+   "compared": true,
+   "cost_sec": 8.449,
+   "held": true,
+   "index": 12,
+   "printed": {
+    "answer_wall_sec": 78.84,
+    "classic_call_wall_sec": 59.734,
+    "counters": {
+     "classic": {
+      "eval_sec": null,
+      "eval_tokens": null,
+      "prompt_sec": null,
+      "prompt_tokens": null
+     },
+     "continuation": {
+      "eval_sec": 0.758285,
+      "eval_tokens": 4,
+      "prompt_sec": 7.629043,
+      "prompt_tokens": 2505
+     }
+    },
+    "first_token_sec": 138.25,
+    "memory": {
+     "llama_rss_mib_max": 3536.2,
+     "samples": 75,
+     "swap_used_mib": [
+      3384.0,
+      3565.25
+     ],
+     "swapouts": 111629
+    },
+    "suggestions_wall_sec": null,
+    "total_sec": 230.048
+   },
+   "ratio": 0.1414,
+   "readable": true,
+   "routes": {
+    "classic": "auto",
+    "continuation": "auto"
+   },
+   "routes_differ": false,
+   "saving_sec": 51.3,
+   "score": {
+    "classic": 100,
+    "continuation": 100
+   },
+   "score_diff": 0,
+   "sec": {
+    "classic": 59.749,
+    "continuation": 8.449
+   },
+   "uncompared": [],
+   "unreadable": []
+  },
+  {
+   "case_id": "aircargo-templates-checklist",
+   "compared": true,
+   "cost_sec": 8.682,
+   "held": true,
+   "index": 13,
+   "printed": {
+    "answer_wall_sec": 91.588,
+    "classic_call_wall_sec": 62.664,
+    "counters": {
+     "classic": {
+      "eval_sec": null,
+      "eval_tokens": null,
+      "prompt_sec": null,
+      "prompt_tokens": null
+     },
+     "continuation": {
+      "eval_sec": 0.823079,
+      "eval_tokens": 4,
+      "prompt_sec": 7.772546,
+      "prompt_tokens": 2611
+     }
+    },
+    "first_token_sec": 138.958,
+    "memory": {
+     "llama_rss_mib_max": 3540.0,
+     "samples": 80,
+     "swap_used_mib": [
+      3533.25,
+      3524.0
+     ],
+     "swapouts": 111723
+    },
+    "suggestions_wall_sec": null,
+    "total_sec": 246.674
+   },
+   "ratio": 0.1385,
+   "readable": true,
+   "routes": {
+    "classic": "auto",
+    "continuation": "auto"
+   },
+   "routes_differ": false,
+   "saving_sec": 54.009,
+   "score": {
+    "classic": 100,
+    "continuation": 100
+   },
+   "score_diff": 0,
+   "sec": {
+    "classic": 62.691,
+    "continuation": 8.682
+   },
+   "uncompared": [],
+   "unreadable": []
+  }
+ ],
+ "readings": {
+  "candidate": {
+   "answer": "continuation"
+  },
+  "printed_deciding_nothing": {
+   "classic_routes": {
+    "auto": 12,
+    "human": 1
+   },
+   "continuation_routes": {
+    "auto": 13
+   },
+   "continuation_scored": {
+    "higher": 3,
+    "lower": 0,
+    "same": 10
+   },
+   "median_answer_wall_sec": 91.588,
+   "median_classic_call_wall_sec": 62.664,
+   "median_classic_sec": 62.691,
+   "median_cost_sec": 8.635,
+   "median_counters": {
+    "classic": {
+     "eval_sec": null,
+     "eval_tokens": null,
+     "prompt_sec": null,
+     "prompt_tokens": null
+    },
+    "continuation": {
+     "eval_sec": 0.75,
+     "eval_tokens": 4,
+     "prompt_sec": 7.663,
+     "prompt_tokens": 2590
+    }
+   },
+   "median_first_token_sec": 137.087,
+   "median_score": {
+    "classic": 100,
+    "continuation": 100
+   },
+   "median_score_diff": 0,
+   "median_suggestions_wall_sec": null,
+   "median_total_sec": 246.674,
+   "memory": {
+    "llama_rss_mib_max": 3772.1,
+    "swap_used_mib_max": 3565.25,
+    "swapouts": 1645921
+   },
+   "scores": {
+    "aircargo-dismissal-check": {
+     "classic": 100,
+     "continuation": 100
+    },
+    "aircargo-dismissal-lawyer": {
+     "classic": 100,
+     "continuation": 100
+    },
+    "aircargo-dismissal-order": {
+     "classic": 100,
+     "continuation": 100
+    },
+    "aircargo-leave-compensation": {
+     "classic": 95,
+     "continuation": 100
+    },
+    "aircargo-leave-risk": {
+     "classic": 100,
+     "continuation": 100
+    },
+    "aircargo-leave-sources": {
+     "classic": 100,
+     "continuation": 100
+    },
+    "aircargo-matliab-check": {
+     "classic": 100,
+     "continuation": 100
+    },
+    "aircargo-matliab-disputed": {
+     "classic": 100,
+     "continuation": 100
+    },
+    "aircargo-probation-data": {
+     "classic": 100,
+     "continuation": 100
+    },
+    "aircargo-probation-dismissal": {
+     "classic": 95,
+     "continuation": 100
+    },
+    "aircargo-probation-extend": {
+     "classic": 60,
+     "continuation": 90
+    },
+    "aircargo-templates-checklist": {
+     "classic": 100,
+     "continuation": 100
+    },
+    "aircargo-templates-choose": {
+     "classic": 100,
+     "continuation": 100
+    }
+   },
+   "total_saving_sec": 734.192,
+   "worst_saving_sec": 50.964
+  },
+  "routes": {
+   "answer": "agree",
+   "compared_pairs": 13,
+   "differ": 1,
+   "differing": [
+    "aircargo-probation-extend"
+   ]
+  },
+  "scores": {
+   "answer": "held",
+   "missed": 0,
+   "misses": [],
+   "readable_pairs": 13
+  },
+  "speed": {
+   "answer": "faster",
+   "continuation_faster": 13,
+   "continuation_slower": 0,
+   "median_ratio": 0.1408,
+   "ratios": {
+    "aircargo-dismissal-check": 0.1614,
+    "aircargo-dismissal-lawyer": 0.1994,
+    "aircargo-dismissal-order": 0.1357,
+    "aircargo-leave-compensation": 0.1468,
+    "aircargo-leave-risk": 0.1433,
+    "aircargo-leave-sources": 0.1408,
+    "aircargo-matliab-check": 0.1409,
+    "aircargo-matliab-disputed": 0.1354,
+    "aircargo-probation-data": 0.1373,
+    "aircargo-probation-dismissal": 0.1138,
+    "aircargo-probation-extend": 0.1123,
+    "aircargo-templates-checklist": 0.1385,
+    "aircargo-templates-choose": 0.1414
+   },
+   "readable_pairs": 13,
+   "savings_sec": {
+    "aircargo-dismissal-check": 66.457,
+    "aircargo-dismissal-lawyer": 55.614,
+    "aircargo-dismissal-order": 55.934,
+    "aircargo-leave-compensation": 52.283,
+    "aircargo-leave-risk": 50.964,
+    "aircargo-leave-sources": 53.459,
+    "aircargo-matliab-check": 51.404,
+    "aircargo-matliab-disputed": 54.459,
+    "aircargo-probation-data": 53.292,
+    "aircargo-probation-dismissal": 67.259,
+    "aircargo-probation-extend": 67.758,
+    "aircargo-templates-checklist": 54.009,
+    "aircargo-templates-choose": 51.3
+   },
+   "sign_p": 0.000244,
+   "ties": 0
+  },
+  "useful": {
+   "answer": "useful",
+   "least_median_saving_sec": 30.0,
+   "median_saving_sec": 54.009
+  }
+ },
+ "run": {
+  "asks": [
+   {
+    "after_answer": [
+     {
+      "call": "classic",
+      "error": null,
+      "max_tokens": 128,
+      "offset_sec": 8.53,
+      "prompt_est_tokens": 2773,
+      "wall_sec": 61.753
+     },
+     {
+      "call": "other",
+      "error": null,
+      "max_tokens": null,
+      "offset_sec": 70.308,
+      "prompt_est_tokens": 479,
+      "wall_sec": 18.381
+     }
+    ],
+    "answer_call": {
+     "error": null,
+     "first_chunk_sec": 96.158,
+     "offset_sec": 130.624,
+     "prompt_est_tokens": 2463,
+     "wall_sec": 141.44
+    },
+    "answer_source": "stream",
+    "answered": true,
+    "case_id": "aircargo-probation-data",
+    "continuation_held": true,
+    "continuation_not_held": [],
+    "first_token_sec": 226.787,
+    "generation_source": "stream",
+    "http_status": 200,
+    "index": 1,
+    "memory": {
+     "llama_rss_mib_max": 3525.6,
+     "samples": 117,
+     "swap_used_mib": [
+      1810.25,
+      2127.25
+     ],
+     "swapouts": 89316
+    },
+    "quality_score": 100,
+    "quality_source": "llm",
+    "read": true,
+    "route": "auto",
+    "self_eval": {
+     "classic": {
+      "eval_sec": null,
+      "eval_tokens": null,
+      "prompt_sec": null,
+      "prompt_tokens": null,
+      "score": 100,
+      "sec": 61.775
+     },
+     "continuation": {
+      "eval_sec": 0.742822,
+      "eval_tokens": 4,
+      "prompt_sec": 7.633211,
+      "prompt_tokens": 2558,
+      "score": 100,
+      "sec": 8.483
+     }
+    },
+    "sha256": "352c2a1bb8589fb674c84555323972804f8d0c3313fc5c743d5c38c7239c5dac",
+    "spans": {
+     "ollama.generate": 2,
+     "ollama.generate_stream": 1
+    },
+    "suggested": 3,
+    "tokens": 210,
+    "total_sec": 361.224,
+    "unread": []
+   },
+   {
+    "after_answer": [
+     {
+      "call": "classic",
+      "error": null,
+      "max_tokens": 128,
+      "offset_sec": 8.667,
+      "prompt_est_tokens": 2907,
+      "wall_sec": 76.298
+     },
+     {
+      "call": "other",
+      "error": null,
+      "max_tokens": null,
+      "offset_sec": 84.994,
+      "prompt_est_tokens": 474,
+      "wall_sec": 17.104
+     }
+    ],
+    "answer_call": {
+     "error": null,
+     "first_chunk_sec": 121.717,
+     "offset_sec": 124.27,
+     "prompt_est_tokens": 2596,
+     "wall_sec": 171.87
+    },
+    "answer_source": "stream",
+    "answered": true,
+    "case_id": "aircargo-probation-extend",
+    "continuation_held": true,
+    "continuation_not_held": [],
+    "first_token_sec": 245.988,
+    "generation_source": "stream",
+    "http_status": 200,
+    "index": 2,
+    "memory": {
+     "llama_rss_mib_max": 3587.3,
+     "samples": 130,
+     "swap_used_mib": [
+      2127.25,
+      2779.0
+     ],
+     "swapouts": 166633
+    },
+    "quality_score": 90,
+    "quality_source": "llm",
+    "read": true,
+    "route": "auto",
+    "self_eval": {
+     "classic": {
+      "eval_sec": null,
+      "eval_tokens": null,
+      "prompt_sec": null,
+      "prompt_tokens": null,
+      "score": 60,
+      "sec": 76.328
+     },
+     "continuation": {
+      "eval_sec": 0.567747,
+      "eval_tokens": 3,
+      "prompt_sec": 7.905746,
+      "prompt_tokens": 2832,
+      "score": 90,
+      "sec": 8.57
+     }
+    },
+    "sha256": "a3fa56fcb69124df5ba7426101ba0b79525f0ab4ae4fb1cd560ce00d2b284f7d",
+    "spans": {
+     "ollama.generate": 2,
+     "ollama.generate_stream": 1
+    },
+    "suggested": 3,
+    "tokens": 209,
+    "total_sec": 398.255,
+    "unread": []
+   },
+   {
+    "after_answer": [
+     {
+      "call": "classic",
+      "error": null,
+      "max_tokens": 128,
+      "offset_sec": 8.685,
+      "prompt_est_tokens": 2811,
+      "wall_sec": 75.864
+     },
+     {
+      "call": "other",
+      "error": null,
+      "max_tokens": null,
+      "offset_sec": 84.614,
+      "prompt_est_tokens": 420,
+      "wall_sec": 14.135
+     }
+    ],
+    "answer_call": {
+     "error": null,
+     "first_chunk_sec": 100.622,
+     "offset_sec": 36.417,
+     "prompt_est_tokens": 2628,
+     "wall_sec": 124.164
+    },
+    "answer_source": "stream",
+    "answered": true,
+    "case_id": "aircargo-probation-dismissal",
+    "continuation_held": true,
+    "continuation_not_held": [],
+    "first_token_sec": 137.087,
+    "generation_source": "stream",
+    "http_status": 200,
+    "index": 3,
+    "memory": {
+     "llama_rss_mib_max": 3552.4,
+     "samples": 84,
+     "swap_used_mib": [
+      2747.0,
+      2963.25
+     ],
+     "swapouts": 185965
+    },
+    "quality_score": 100,
+    "quality_source": "llm",
+    "read": true,
+    "route": "auto",
+    "self_eval": {
+     "classic": {
+      "eval_sec": null,
+      "eval_tokens": null,
+      "prompt_sec": null,
+      "prompt_tokens": null,
+      "score": 95,
+      "sec": 75.894
+     },
+     "continuation": {
+      "eval_sec": 0.752732,
+      "eval_tokens": 4,
+      "prompt_sec": 7.748312,
+      "prompt_tokens": 2677,
+      "score": 100,
+      "sec": 8.635
+     }
+    },
+    "sha256": "9d84f9fdc0286f786ed3f06197f81f83fdb14c9efe6b2664399af8174396de66",
+    "spans": {
+     "ollama.generate": 2,
+     "ollama.generate_stream": 1
+    },
+    "suggested": 3,
+    "tokens": 102,
+    "total_sec": 259.615,
+    "unread": []
+   },
+   {
+    "after_answer": [
+     {
+      "call": "classic",
+      "error": null,
+      "max_tokens": 128,
+      "offset_sec": 12.924,
+      "prompt_est_tokens": 2883,
+      "wall_sec": 79.188
+     },
+     {
+      "call": "other",
+      "error": null,
+      "max_tokens": null,
+      "offset_sec": 92.163,
+      "prompt_est_tokens": 480,
+      "wall_sec": 16.524
+     }
+    ],
+    "answer_call": {
+     "error": null,
+     "first_chunk_sec": 104.31,
+     "offset_sec": 26.751,
+     "prompt_est_tokens": 2605,
+     "wall_sec": 155.553
+    },
+    "answer_source": "stream",
+    "answered": true,
+    "case_id": "aircargo-dismissal-check",
+    "continuation_held": true,
+    "continuation_not_held": [],
+    "first_token_sec": 131.07,
+    "generation_source": "stream",
+    "http_status": 200,
+    "index": 4,
+    "memory": {
+     "llama_rss_mib_max": 3358.5,
+     "samples": 95,
+     "swap_used_mib": [
+      2931.25,
+      3251.0
+     ],
+     "swapouts": 293894
+    },
+    "quality_score": 100,
+    "quality_source": "llm",
+    "read": true,
+    "route": "auto",
+    "self_eval": {
+     "classic": {
+      "eval_sec": null,
+      "eval_tokens": null,
+      "prompt_sec": null,
+      "prompt_tokens": null,
+      "score": 100,
+      "sec": 79.246
+     },
+     "continuation": {
+      "eval_sec": 0.79259,
+      "eval_tokens": 4,
+      "prompt_sec": 11.858518,
+      "prompt_tokens": 2718,
+      "score": 100,
+      "sec": 12.789
+     }
+    },
+    "sha256": "6508310260ff528012e823f7aca4e9332634dce8743a6eedf514a4812ac2414f",
+    "spans": {
+     "ollama.generate": 2,
+     "ollama.generate_stream": 1
+    },
+    "suggested": 3,
+    "tokens": 196,
+    "total_sec": 291.144,
+    "unread": []
+   },
+   {
+    "after_answer": [
+     {
+      "call": "classic",
+      "error": null,
+      "max_tokens": 128,
+      "offset_sec": 14.0,
+      "prompt_est_tokens": 2729,
+      "wall_sec": 69.438
+     },
+     {
+      "call": "other",
+      "error": null,
+      "max_tokens": null,
+      "offset_sec": 83.467,
+      "prompt_est_tokens": 367,
+      "wall_sec": 12.936
+     }
+    ],
+    "answer_call": {
+     "error": null,
+     "first_chunk_sec": 113.069,
+     "offset_sec": 25.599,
+     "prompt_est_tokens": 2589,
+     "wall_sec": 134.28
+    },
+    "answer_source": "stream",
+    "answered": true,
+    "case_id": "aircargo-dismissal-lawyer",
+    "continuation_held": true,
+    "continuation_not_held": [],
+    "first_token_sec": 138.672,
+    "generation_source": "stream",
+    "http_status": 200,
+    "index": 5,
+    "memory": {
+     "llama_rss_mib_max": 3658.4,
+     "samples": 83,
+     "swap_used_mib": [
+      3187.0,
+      3190.0
+     ],
+     "swapouts": 155967
+    },
+    "quality_score": 100,
+    "quality_source": "llm",
+    "read": true,
+    "route": "auto",
+    "self_eval": {
+     "classic": {
+      "eval_sec": null,
+      "eval_tokens": null,
+      "prompt_sec": null,
+      "prompt_tokens": null,
+      "score": 100,
+      "sec": 69.467
+     },
+     "continuation": {
+      "eval_sec": 2.976637,
+      "eval_tokens": 4,
+      "prompt_sec": 10.706025,
+      "prompt_tokens": 2593,
+      "score": 100,
+      "sec": 13.853
+     }
+    },
+    "sha256": "55a5114e307ad1a16de44557a82666aeb412ae6bdb88af64128ec0c745cbd787",
+    "spans": {
+     "ollama.generate": 2,
+     "ollama.generate_stream": 1
+    },
+    "suggested": 3,
+    "tokens": 70,
+    "total_sec": 256.308,
+    "unread": []
+   },
+   {
+    "after_answer": [
+     {
+      "call": "classic",
+      "error": null,
+      "max_tokens": 128,
+      "offset_sec": 8.845,
+      "prompt_est_tokens": 2803,
+      "wall_sec": 64.69
+     },
+     {
+      "call": "other",
+      "error": null,
+      "max_tokens": null,
+      "offset_sec": 73.583,
+      "prompt_est_tokens": 444,
+      "wall_sec": 14.706
+     }
+    ],
+    "answer_call": {
+     "error": null,
+     "first_chunk_sec": 118.786,
+     "offset_sec": 22.59,
+     "prompt_est_tokens": 2594,
+     "wall_sec": 150.173
+    },
+    "answer_source": "stream",
+    "answered": true,
+    "case_id": "aircargo-dismissal-order",
+    "continuation_held": true,
+    "continuation_not_held": [],
+    "first_token_sec": 141.426,
+    "generation_source": "stream",
+    "http_status": 200,
+    "index": 6,
+    "memory": {
+     "llama_rss_mib_max": 3546.4,
+     "samples": 85,
+     "swap_used_mib": [
+      3126.0,
+      3449.75
+     ],
+     "swapouts": 115367
+    },
+    "quality_score": 100,
+    "quality_source": "llm",
+    "read": true,
+    "route": "auto",
+    "self_eval": {
+     "classic": {
+      "eval_sec": null,
+      "eval_tokens": null,
+      "prompt_sec": null,
+      "prompt_tokens": null,
+      "score": 100,
+      "sec": 64.716
+     },
+     "continuation": {
+      "eval_sec": 0.749654,
+      "eval_tokens": 4,
+      "prompt_sec": 7.656211,
+      "prompt_tokens": 2671,
+      "score": 100,
+      "sec": 8.782
+     }
+    },
+    "sha256": "39ca39d12268f21e4581f7b8668023b7aa0450bcbd58a8e0c5d20351133b7e56",
+    "spans": {
+     "ollama.generate": 2,
+     "ollama.generate_stream": 1
+    },
+    "suggested": 3,
+    "tokens": 132,
+    "total_sec": 261.274,
+    "unread": []
+   },
+   {
+    "after_answer": [
+     {
+      "call": "classic",
+      "error": null,
+      "max_tokens": 128,
+      "offset_sec": 8.842,
+      "prompt_est_tokens": 2722,
+      "wall_sec": 62.207
+     },
+     {
+      "call": "other",
+      "error": null,
+      "max_tokens": null,
+      "offset_sec": 71.075,
+      "prompt_est_tokens": 346,
+      "wall_sec": 12.022
+     }
+    ],
+    "answer_call": {
+     "error": null,
+     "first_chunk_sec": 70.67,
+     "offset_sec": 58.271,
+     "prompt_est_tokens": 2609,
+     "wall_sec": 81.285
+    },
+    "answer_source": "stream",
+    "answered": true,
+    "case_id": "aircargo-leave-sources",
+    "continuation_held": true,
+    "continuation_not_held": [],
+    "first_token_sec": 128.968,
+    "generation_source": "stream",
+    "http_status": 200,
+    "index": 7,
+    "memory": {
+     "llama_rss_mib_max": 3534.8,
+     "samples": 72,
+     "swap_used_mib": [
+      3385.75,
+      3518.75
+     ],
+     "swapouts": 131842
+    },
+    "quality_score": 100,
+    "quality_source": "llm",
+    "read": true,
+    "route": "auto",
+    "self_eval": {
+     "classic": {
+      "eval_sec": null,
+      "eval_tokens": null,
+      "prompt_sec": null,
+      "prompt_tokens": null,
+      "score": 100,
+      "sec": 62.223
+     },
+     "continuation": {
+      "eval_sec": 0.744113,
+      "eval_tokens": 4,
+      "prompt_sec": 7.66302,
+      "prompt_tokens": 2590,
+      "score": 100,
+      "sec": 8.764
+     }
+    },
+    "sha256": "b9e0272be736aebffc0abdce277b6800fb1e074d577f5c524068391e9ec72449",
+    "spans": {
+     "ollama.generate": 2,
+     "ollama.generate_stream": 1
+    },
+    "suggested": 3,
+    "tokens": 46,
+    "total_sec": 222.823,
+    "unread": []
+   },
+   {
+    "after_answer": [
+     {
+      "call": "classic",
+      "error": null,
+      "max_tokens": 128,
+      "offset_sec": 9.131,
+      "prompt_est_tokens": 2722,
+      "wall_sec": 61.262
+     },
+     {
+      "call": "other",
+      "error": null,
+      "max_tokens": null,
+      "offset_sec": 70.416,
+      "prompt_est_tokens": 351,
+      "wall_sec": 13.721
+     }
+    ],
+    "answer_call": {
+     "error": null,
+     "first_chunk_sec": 69.467,
+     "offset_sec": 45.367,
+     "prompt_est_tokens": 2600,
+     "wall_sec": 81.246
+    },
+    "answer_source": "stream",
+    "answered": true,
+    "case_id": "aircargo-leave-compensation",
+    "continuation_held": true,
+    "continuation_not_held": [],
+    "first_token_sec": 114.908,
+    "generation_source": "stream",
+    "http_status": 200,
+    "index": 8,
+    "memory": {
+     "llama_rss_mib_max": 3541.5,
+     "samples": 69,
+     "swap_used_mib": [
+      3486.75,
+      3515.0
+     ],
+     "swapouts": 88689
+    },
+    "quality_score": 100,
+    "quality_source": "llm",
+    "read": true,
+    "route": "auto",
+    "self_eval": {
+     "classic": {
+      "eval_sec": null,
+      "eval_tokens": null,
+      "prompt_sec": null,
+      "prompt_tokens": null,
+      "score": 95,
+      "sec": 61.28
+     },
+     "continuation": {
+      "eval_sec": 0.783123,
+      "eval_tokens": 4,
+      "prompt_sec": 7.761787,
+      "prompt_tokens": 2570,
+      "score": 100,
+      "sec": 8.997
+     }
+    },
+    "sha256": "809fa5aec7f40b3f5d1791a52a68001471c534cd87005dd20032597ecedffed4",
+    "spans": {
+     "ollama.generate": 2,
+     "ollama.generate_stream": 1
+    },
+    "suggested": 3,
+    "tokens": 51,
+    "total_sec": 210.88,
+    "unread": []
+   },
+   {
+    "after_answer": [
+     {
+      "call": "classic",
+      "error": null,
+      "max_tokens": 128,
+      "offset_sec": 8.745,
+      "prompt_est_tokens": 2665,
+      "wall_sec": 59.466
+     },
+     {
+      "call": "other",
+      "error": null,
+      "max_tokens": null,
+      "offset_sec": 68.246,
+      "prompt_est_tokens": 343,
+      "wall_sec": 12.878
+     }
+    ],
+    "answer_call": {
+     "error": null,
+     "first_chunk_sec": 66.606,
+     "offset_sec": 49.979,
+     "prompt_est_tokens": 2550,
+     "wall_sec": 77.143
+    },
+    "answer_source": "stream",
+    "answered": true,
+    "case_id": "aircargo-leave-risk",
+    "continuation_held": true,
+    "continuation_not_held": [],
+    "first_token_sec": 116.637,
+    "generation_source": "stream",
+    "http_status": 200,
+    "index": 9,
+    "memory": {
+     "llama_rss_mib_max": 3520.9,
+     "samples": 68,
+     "swap_used_mib": [
+      3451.0,
+      3467.0
+     ],
+     "swapouts": 52911
+    },
+    "quality_score": 100,
+    "quality_source": "llm",
+    "read": true,
+    "route": "auto",
+    "self_eval": {
+     "classic": {
+      "eval_sec": null,
+      "eval_tokens": null,
+      "prompt_sec": null,
+      "prompt_tokens": null,
+      "score": 100,
+      "sec": 59.491
+     },
+     "continuation": {
+      "eval_sec": 0.69983,
+      "eval_tokens": 4,
+      "prompt_sec": 7.559547,
+      "prompt_tokens": 2493,
+      "score": 100,
+      "sec": 8.527
+     }
+    },
+    "sha256": "250a0a8a86ec3caafa4b26a392686363506f8cc025562135bb855d43768939ca",
+    "spans": {
+     "ollama.generate": 2,
+     "ollama.generate_stream": 1
+    },
+    "suggested": 3,
+    "tokens": 49,
+    "total_sec": 208.504,
+    "unread": []
+   },
+   {
+    "after_answer": [
+     {
+      "call": "classic",
+      "error": null,
+      "max_tokens": 128,
+      "offset_sec": 8.479,
+      "prompt_est_tokens": 2746,
+      "wall_sec": 59.663
+     },
+     {
+      "call": "other",
+      "error": null,
+      "max_tokens": null,
+      "offset_sec": 68.291,
+      "prompt_est_tokens": 341,
+      "wall_sec": 10.956
+     }
+    ],
+    "answer_call": {
+     "error": null,
+     "first_chunk_sec": 67.929,
+     "offset_sec": 38.453,
+     "prompt_est_tokens": 2636,
+     "wall_sec": 76.238
+    },
+    "answer_source": "stream",
+    "answered": true,
+    "case_id": "aircargo-matliab-check",
+    "continuation_held": true,
+    "continuation_not_held": [],
+    "first_token_sec": 106.409,
+    "generation_source": "stream",
+    "http_status": 200,
+    "index": 10,
+    "memory": {
+     "llama_rss_mib_max": 3526.8,
+     "samples": 63,
+     "swap_used_mib": [
+      3435.0,
+      3370.75
+     ],
+     "swapouts": 40742
+    },
+    "quality_score": 100,
+    "quality_source": "llm",
+    "read": true,
+    "route": "auto",
+    "self_eval": {
+     "classic": {
+      "eval_sec": null,
+      "eval_tokens": null,
+      "prompt_sec": null,
+      "prompt_tokens": null,
+      "score": 100,
+      "sec": 59.833
+     },
+     "continuation": {
+      "eval_sec": 0.699893,
+      "eval_tokens": 4,
+      "prompt_sec": 7.553394,
+      "prompt_tokens": 2492,
+      "score": 100,
+      "sec": 8.429
+     }
+    },
+    "sha256": "de8401b1c806d0f65d707d8085b4f0f3c7b557c66ea48f1934e46b621376898c",
+    "spans": {
+     "ollama.generate": 2,
+     "ollama.generate_stream": 1
+    },
+    "suggested": 3,
+    "tokens": 38,
+    "total_sec": 194.069,
+    "unread": []
+   },
+   {
+    "after_answer": [
+     {
+      "call": "classic",
+      "error": null,
+      "max_tokens": 128,
+      "offset_sec": 8.727,
+      "prompt_est_tokens": 2755,
+      "wall_sec": 62.936
+     },
+     {
+      "call": "other",
+      "error": null,
+      "max_tokens": null,
+      "offset_sec": 71.733,
+      "prompt_est_tokens": 348,
+      "wall_sec": 11.594
+     }
+    ],
+    "answer_call": {
+     "error": null,
+     "first_chunk_sec": 70.812,
+     "offset_sec": 41.226,
+     "prompt_est_tokens": 2636,
+     "wall_sec": 80.296
+    },
+    "answer_source": "stream",
+    "answered": true,
+    "case_id": "aircargo-matliab-disputed",
+    "continuation_held": true,
+    "continuation_not_held": [],
+    "first_token_sec": 112.042,
+    "generation_source": "stream",
+    "http_status": 200,
+    "index": 11,
+    "memory": {
+     "llama_rss_mib_max": 3772.1,
+     "samples": 67,
+     "swap_used_mib": [
+      3338.75,
+      3416.0
+     ],
+     "swapouts": 101243
+    },
+    "quality_score": 100,
+    "quality_source": "llm",
+    "read": true,
+    "route": "auto",
+    "self_eval": {
+     "classic": {
+      "eval_sec": null,
+      "eval_tokens": null,
+      "prompt_sec": null,
+      "prompt_tokens": null,
+      "score": 100,
+      "sec": 62.985
+     },
+     "continuation": {
+      "eval_sec": 0.738548,
+      "eval_tokens": 4,
+      "prompt_sec": 7.646151,
+      "prompt_tokens": 2570,
+      "score": 100,
+      "sec": 8.526
+     }
+    },
+    "sha256": "a7aebb4c7557777d20aa49691178174c46bf065c94626b1a856214dafc9a83d6",
+    "spans": {
+     "ollama.generate": 2,
+     "ollama.generate_stream": 1
+    },
+    "suggested": 3,
+    "tokens": 41,
+    "total_sec": 207.247,
+    "unread": []
+   },
+   {
+    "after_answer": [
+     {
+      "call": "classic",
+      "error": null,
+      "max_tokens": 128,
+      "offset_sec": 8.49,
+      "prompt_est_tokens": 2711,
+      "wall_sec": 59.734
+     },
+     {
+      "call": "other",
+      "error": null,
+      "max_tokens": null,
+      "offset_sec": 68.244,
+      "prompt_est_tokens": 350,
+      "wall_sec": 13.037
+     }
+    ],
+    "answer_call": {
+     "error": null,
+     "first_chunk_sec": 68.391,
+     "offset_sec": 69.857,
+     "prompt_est_tokens": 2591,
+     "wall_sec": 78.84
+    },
+    "answer_source": "stream",
+    "answered": true,
+    "case_id": "aircargo-templates-choose",
+    "continuation_held": true,
+    "continuation_not_held": [],
+    "first_token_sec": 138.25,
+    "generation_source": "stream",
+    "http_status": 200,
+    "index": 12,
+    "memory": {
+     "llama_rss_mib_max": 3536.2,
+     "samples": 75,
+     "swap_used_mib": [
+      3384.0,
+      3565.25
+     ],
+     "swapouts": 111629
+    },
+    "quality_score": 100,
+    "quality_source": "llm",
+    "read": true,
+    "route": "auto",
+    "self_eval": {
+     "classic": {
+      "eval_sec": null,
+      "eval_tokens": null,
+      "prompt_sec": null,
+      "prompt_tokens": null,
+      "score": 100,
+      "sec": 59.749
+     },
+     "continuation": {
+      "eval_sec": 0.758285,
+      "eval_tokens": 4,
+      "prompt_sec": 7.629043,
+      "prompt_tokens": 2505,
+      "score": 100,
+      "sec": 8.449
+     }
+    },
+    "sha256": "7a9a11528f71147f68387fa1f5469160f2156f848fb7f78d9ad41d1bbfe28415",
+    "spans": {
+     "ollama.generate": 2,
+     "ollama.generate_stream": 1
+    },
+    "suggested": 3,
+    "tokens": 48,
+    "total_sec": 230.048,
+    "unread": []
+   },
+   {
+    "after_answer": [
+     {
+      "call": "classic",
+      "error": null,
+      "max_tokens": 128,
+      "offset_sec": 8.725,
+      "prompt_est_tokens": 2822,
+      "wall_sec": 62.664
+     },
+     {
+      "call": "other",
+      "error": null,
+      "max_tokens": null,
+      "offset_sec": 71.415,
+      "prompt_est_tokens": 397,
+      "wall_sec": 13.1
+     }
+    ],
+    "answer_call": {
+     "error": null,
+     "first_chunk_sec": 68.459,
+     "offset_sec": 70.495,
+     "prompt_est_tokens": 2632,
+     "wall_sec": 91.588
+    },
+    "answer_source": "stream",
+    "answered": true,
+    "case_id": "aircargo-templates-checklist",
+    "continuation_held": true,
+    "continuation_not_held": [],
+    "first_token_sec": 138.958,
+    "generation_source": "stream",
+    "http_status": 200,
+    "index": 13,
+    "memory": {
+     "llama_rss_mib_max": 3540.0,
+     "samples": 80,
+     "swap_used_mib": [
+      3533.25,
+      3524.0
+     ],
+     "swapouts": 111723
+    },
+    "quality_score": 100,
+    "quality_source": "llm",
+    "read": true,
+    "route": "auto",
+    "self_eval": {
+     "classic": {
+      "eval_sec": null,
+      "eval_tokens": null,
+      "prompt_sec": null,
+      "prompt_tokens": null,
+      "score": 100,
+      "sec": 62.691
+     },
+     "continuation": {
+      "eval_sec": 0.823079,
+      "eval_tokens": 4,
+      "prompt_sec": 7.772546,
+      "prompt_tokens": 2611,
+      "score": 100,
+      "sec": 8.682
+     }
+    },
+    "sha256": "003388ad8d9d7a2cad6da6a27c2777169842db0a7b2ae67a058e51c14afcda06",
+    "spans": {
+     "ollama.generate": 2,
+     "ollama.generate_stream": 1
+    },
+    "suggested": 3,
+    "tokens": 102,
+    "total_sec": 246.674,
+    "unread": []
+   }
+  ],
+  "dir": "/Users/julia/RAG_new_chat_57420db/step2/runs/s2-both-r2",
+  "drivers_sha256": {
+   "live_api.py": "43ff96f06af18538a2571d68a86e898ecfcdd5fcab47039f0d58bd245361a7b5",
+   "live_runner.py": "c87838014a0517d5e6a3dde0402ed0b067a9e0148aaf5d842ffe272ca451a072",
+   "live_supervisor.py": "0de222a762085f49f2455e813a50895fd88826f687683be2d6cb814926da9132"
+  },
+  "gate": {
+   "asks": true,
+   "drivers": true,
+   "launch": true,
+   "passed": true,
+   "settings": true
+  },
+  "label": "s2-both-r2",
+  "launch": {
+   "arm": "BBBBBBBBBBBBB",
+   "cases": [
+    "aircargo-probation-data",
+    "aircargo-probation-extend",
+    "aircargo-probation-dismissal",
+    "aircargo-dismissal-check",
+    "aircargo-dismissal-lawyer",
+    "aircargo-dismissal-order",
+    "aircargo-leave-sources",
+    "aircargo-leave-compensation",
+    "aircargo-leave-risk",
+    "aircargo-matliab-check",
+    "aircargo-matliab-disputed",
+    "aircargo-templates-choose",
+    "aircargo-templates-checklist"
+   ],
+   "cases_file": "/Users/julia/RAG_new_chat_57420db/evaluation/curated_cases_aircargo.jsonl",
+   "chroma_dir": "/Users/julia/RAG_new_chat_57420db/step2/runs/s2-both-r2.chroma",
+   "client_cap_sec": "2010/1365",
+   "code_sha": "57420db746e0510465bb5a08b7610e092b32e650",
+   "label": "s2-both-r2",
+   "mode": "prod",
+   "model": "qwen3:4b-instruct-2507-q4_K_M",
+   "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+   "ollama_load_sec": 41.139,
+   "ollama_models_after": [
+    "qwen3:4b-instruct-2507-q4_K_M"
+   ],
+   "ollama_models_before": [],
+   "overrides": {
+    "OLLAMA_REQUEST_TIMEOUT_SEC": "3600",
+    "RAG_DEVICE": "cpu",
+    "REQUEST_TIMEOUT_SEC": "3600",
+    "STREAMING_SELF_EVAL_MODE": "both",
+    "STREAMING_TIMEOUT_SEC": "3600"
+   },
+   "runner_exit": 0,
+   "started": "2026-10-29T17:13:05+00:00",
+   "status": "complete",
+   "tenant": "aircargo",
+   "unloaded_models": [
+    "qwen3:4b-instruct-2507-q4_K_M"
+   ],
+   "workspace": "/Users/julia/RAG_new_chat_57420db"
+  },
+  "notes": [],
+  "settings": {
+   "code_sha": "57420db746e0510465bb5a08b7610e092b32e650",
+   "ollama_model_name": "qwen3:4b-instruct-2507-q4_K_M",
+   "quality_threshold": 80,
+   "rag_device": "cpu",
+   "rerank_top_k": 5,
+   "retrieval_top_k": 20,
+   "streaming_quality_eval": true,
+   "streaming_self_eval_mode": "both"
+  },
+  "settings_printed": {
+   "ollama_context_window": 4096,
+   "suggested_questions_enabled": true
+  },
+  "sha256": {
+   "effective_settings.json": "45b33a52d66d6b012757a3b9d9867b68c48a2d4417dae69b1978466bd2c8e025",
+   "launch.json": "40a60225195bbf4c01d9986548fc89f5c0fb5c11c785bbce4e0b1c59200195ae",
+   "resources.jsonl": "1709e0a62c942eae1ad979873cffa3b4557a020592b64bec37392d6b30a89b43",
+   "stages.jsonl": "2e49754c2d418fb68da1bf193b8d5deca41d6db1fec5b2ee34c5b7a07cd3f4b2"
+  }
+ },
+ "schema": "stage4-step2/v1",
+ "spec": "docs/specs/stage4-step2-self-eval-continuation.md",
+ "tools_sha256": {
+  "step2_reader.py": "18a7aaa26237dc370bf22d8831968248663fc5c926de1b144dddaf5f05157b28"
+ }
+}
