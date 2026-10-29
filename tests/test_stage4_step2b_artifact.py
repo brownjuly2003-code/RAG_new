@@ -432,3 +432,346 @@ def file_rows() -> list[str]:
         f"| `{name}` | {(RECORDS / name).stat().st_size:,} | `{sha(RECORDS / name)}` |"
         for name in FILES
     ]
+
+
+printed_80 = got["printed_deciding_nothing"]
+printed_bridge = got["bridge"]["printed_deciding_nothing"]
+
+
+def test_the_readings_against_the_forecast() -> None:
+    bridged = got["bridge"]
+    assert (bridged["answer"], bridged["readable_pairs"], bridged["routes_differ"]) == (
+        "held",
+        25,
+        0,
+    )
+    assert (bridged["min_pairs"], bridged["max_routes_differ"], bridged["differ"]) == (10, 1, [])
+    assert got["scores"] == {
+        "answer": "held",
+        "readable_pairs": 80,
+        "no_score": 0,
+        "max_no_score": 6,
+        "no_score_answers": [],
+        "no_score_targets": 0,
+        "by_outcome": {"scored": 80},
+    }
+    assert got["catches"] == {
+        "answer": "not held",
+        "of": 17,
+        "classic": 2,
+        "effective": 0,
+        "caught": {"classic": [2, 6], "effective": []},
+    }
+    assert got["over_marks"] == {
+        "answer": "held",
+        "of": 63,
+        "classic": 0,
+        "effective": 0,
+        "margin": 1,
+        "over_marked": {"classic": [], "effective": []},
+    }
+    assert got["signal"] == {
+        "answer": "not held",
+        "of": {"bridge": "held", "scores": "held", "catches": "not held", "over_marks": "held"},
+    }
+    # the classic's two catches are the plan's saved scores under 80, stage 3's S1
+    caught = {pair["n"]: pair["score"]["classic"] for pair in pairs if pair["flagged"]["classic"]}
+    assert caught == {2: 60, 6: 40}
+    # every answer scored, so the effective score is the continuation's on all 80
+    assert all(pair["score"]["effective"] == pair["score"]["continuation"] for pair in pairs)
+    # the forecast: none of the 25 nor of the 80 scored under 90, the prompt read cold at under
+    # ≈ 28 ms a token
+    assert min(pair["score"]["cold"] for pair in bridge_pairs) == 90
+    assert min(pair["score"]["continuation"] for pair in pairs) == 90
+    counters = printed_80["median_counters"]
+    assert counters["prompt_sec"] / counters["prompt_tokens"] < 0.028
+    # the McNemar tests decide nothing: two catches lost and none gained give p = 0.5
+    paired = printed_80["paired"]
+    assert (paired["catches"]["classic_only"], paired["catches"]["exact_p"]) == ([2, 6], 0.5)
+    assert (paired["over_marks"]["exact_p"], paired["over_marks"]["found"]) == (
+        1.0,
+        "no difference",
+    )
+    assert printed_80["reloads"]["before"] == list(range(6, 80, 5))
+
+
+def counts(scores: dict[str, int]) -> str:
+    return ", ".join(
+        f"{score} × {n}" for score, n in sorted(scores.items(), key=lambda x: -int(x[0]))
+    )
+
+
+def yes(flag: bool) -> str:
+    return "yes" if flag else "no"
+
+
+def readings_rows() -> list[str]:
+    bridged, catches, over = got["bridge"], got["catches"], got["over_marks"]
+    caught = " and ".join(str(n) for n in catches["caught"]["classic"])
+    return [
+        "| The bridge: at least 10 of the 25 readable and the cold route the warm one on all but at"
+        f" most 1 | **{bridged['answer']}** | {bridged['readable_pairs']} readable, the cold route"
+        f" another on {bridged['routes_differ']} | held |",
+        f"| Scores: at most 6 of the 80 without a score | **{got['scores']['answer']}**"
+        f" | {got['scores']['no_score']} of {got['scores']['readable_pairs']} without a score"
+        " | held |",
+        "| Catches: at least the classic's 2 of the 17 targets flagged by the effective score"
+        f" | **{catches['answer']}** | {catches['effective']} of {catches['of']}; the classic's"
+        f" {catches['classic']}, n = {caught} | the least certain of the three |",
+        "| Over-marks: at most one of the 63 goods more than the classic's 0 flagged"
+        f" | **{over['answer']}** | {over['effective']} of {over['of']}; the classic's"
+        f" {over['classic']} | held |",
+        "| The signal: held when the bridge and the three hold, not held when any is not held"
+        f" | **{got['signal']['answer']}** | on the catches | not held, on the catches, with low"
+        " confidence |",
+    ]
+
+
+def target_rows() -> list[str]:
+    out = []
+    for pair in pairs:
+        if pair["class"] != "target":
+            continue
+        sec, counters = pair["printed"]["sec"], pair["printed"]["counters"]
+        score, flagged = pair["score"], pair["flagged"]
+        out.append(
+            f"| {pair['n']} | `{pair['case_id']}` | `{pair['run']}` | {score['classic']}"
+            f" / {score['continuation']} | {yes(flagged['classic'])} / {yes(flagged['effective'])}"
+            f" | {fmt(sec)} | {counters['prompt_tokens']:,} / {fmt(counters['prompt_sec'])} |"
+        )
+    return out
+
+
+SIDES = {"classic": "the classic, saved", "continuation": "the continuation, cold"}
+
+
+def class_rows() -> list[str]:
+    out = []
+    for name in reader.CLASSES:
+        members = [pair for pair in pairs if pair["class"] == name]
+        for side, said in SIDES.items():
+            under_80 = sum(pair["flagged"][side] for pair in members)
+            under_100 = sum(pair["flagged_under_100"][side] for pair in members)
+            out.append(
+                f"| {name}s, {len(members)} | {said} | {counts(printed_80['scores'][name][side])}"
+                f" | {printed_80['median_score'][name][side]} | {under_80} | {under_100} |"
+            )
+    return out
+
+
+def paired_rows() -> list[str]:
+    out = []
+    for name, said in (
+        ("catches", "Catches, of the 17 targets"),
+        ("over_marks", "Over-marks, of the 63 goods"),
+    ):
+        test = printed_80["paired"][name]
+        out.append(
+            f"| {said} | {len(test['both'])} | {len(test['classic_only'])}"
+            f" | {len(test['effective_only'])} | {test['exact_p']} | {test['found']} |"
+        )
+    return out
+
+
+def printed_rows() -> list[str]:
+    under, wilson, alone = (
+        printed_80["under_100"],
+        printed_80["wilson"],
+        printed_80["continuation_alone"],
+    )
+    higher, counters, est = (
+        printed_80["continuation_scored"],
+        printed_80["median_counters"],
+        printed_80["est_input_tokens"],
+    )
+    sec, reloads = printed_80["sec"], printed_80["reloads"]
+    before = reloads["before"]
+
+    def interval(values: list[float]) -> str:
+        return f"{values[0]:.4f}–{values[1]:.4f}"
+
+    return [
+        "| Flagged under 100, S1′'s cut: catches, the classic / the effective score"
+        f" | {under['catches']['classic']} / {under['catches']['effective']} |",
+        "| Flagged under 100: over-marks, the classic / the effective score"
+        f" | {under['over_marks']['classic']} / {under['over_marks']['effective']} |",
+        "| The continuation's own flags where it scored: targets; goods"
+        f" | {alone['targets']['flagged']} of {alone['targets']['scored']};"
+        f" {alone['goods']['flagged']} of {alone['goods']['scored']} |",
+        "| Wilson's 95 % interval of the share of targets caught: the classic; the effective score"
+        f" | {interval(wilson['caught']['classic'])}; {interval(wilson['caught']['effective'])} |",
+        "| Wilson's 95 % interval of the share of goods over-marked: the classic; the effective"
+        f" score | {interval(wilson['over_marked']['classic'])};"
+        f" {interval(wilson['over_marked']['effective'])} |",
+        "| The continuation scored higher / the same / lower than the classic, the median"
+        f" difference | {higher['higher']} / {higher['same']} / {higher['lower']},"
+        f" {higher['median_diff']} |",
+        "| Seconds an answer: a median, the longest, summed"
+        f" | {fmt(sec['median'])}, {fmt(sec['max'])}, {sec['total']:,.3f} |",
+        "| Counters, medians: prompt tokens, prompt s, generated tokens, generated s"
+        f" | {counters['prompt_tokens']:,.0f}, {fmt(counters['prompt_sec'])},"
+        f" {counters['eval_tokens']:.0f}, {fmt(counters['eval_sec'])} |",
+        "| The chat's estimate of the input, tokens: a median, at most"
+        f" | {est['median']:,}, {est['max']:,} |",
+        "| Done reasons | "
+        + ", ".join(f"{k} {n}" for k, n in printed_80["done_reasons"].items())
+        + " |",
+        "| The replies by their length in characters | "
+        + ", ".join(f"{k}: {n}" for k, n in sorted(printed_80["reply_chars"].items(), reverse=True))
+        + " |",
+        f"| Reloads, before answers n = {before[0]}, {before[1]}, …, {before[-1]} | {len(before)} |",
+        "| A reload's load, s: a median, at most"
+        f" | {fmt(reloads['load_sec']['median'])}, {fmt(reloads['load_sec']['max'])} |",
+        "| A reload's unload, s: a median, at most"
+        f" | {fmt(reloads['unload_sec']['median'])}, {fmt(reloads['unload_sec']['max'])} |",
+    ]
+
+
+# the spec's forecasts, in its words
+FORECAST = (
+    "the bridge **held**: a cold continuation reads the same tokens the warm one held in its slot,"
+    " and the 25 warm scores, 90–100, are far from 80",
+    "Scores held: warm, the continuation scored every one of the 25.",
+    "Over-marks held: it scored none of them under 90.",
+    "Catches are the least certain of the three: two catches of 17 leave no room for a lost one",
+    "The forecast signal: **not held**, on the catches, with low confidence.",
+    "a cold continuation reads ≈ 2,370–3,130 tokens (median ≈ 2,665): 64–85 s an answer at ≈ 28 ms"
+    " a token, 92–124 s at 41 ms",
+    "the bridge: its 25 answers ≈ 31 min, its two loads and four reloads ≈ 5 min — ≈ 40 min,"
+    " ≈ 50 min at the slower pace",
+    "the 80: ≈ 1 h 36 min, ≈ 2 h 19 min at the slower pace, its load and fifteen reloads ≈ 12 min"
+    " at step 2's loads of 31–55 s — ≈ 1 h 48 min, ≈ 2 h 31 min at the slower pace",
+    "≈ 2 h 45 min in all, ≈ 3 h 35 min at the slower pace",
+)
+
+
+def segment_minutes(phase: str) -> float:
+    return sum(
+        (when(segment["finished"]) - when(segment["started"])).total_seconds() / 60
+        for segment in record[phase]["launch"]["segments"]
+    )
+
+
+def forecast_rows() -> list[str]:
+    bridged, counters = got["bridge"], printed_80["median_counters"]
+    (lower,) = [pair for pair in bridge_pairs if pair["score"]["cold"] < pair["score"]["warm"]]
+    tokens = [pair["printed"]["counters"]["prompt_tokens"] for pair in pairs]
+    secs = [pair["printed"]["sec"] for pair in pairs]
+    lowest = min(pair["score"]["continuation"] for pair in pairs)
+    flagged = sum(pair["flagged"]["effective"] for pair in pairs if pair["class"] == "good")
+    taken = [when(line["taken"]) for line in environment]
+    whole = (taken[-1] - taken[0]).total_seconds() / 60
+    (segment,) = labels["launch"]["segments"]
+    measured = (
+        f"**{bridged['answer']}**: the cold route the warm one on"
+        f" {bridged['readable_pairs'] - bridged['routes_differ']} of {bridged['readable_pairs']};"
+        f" {printed_bridge['equal']} equal scores, one lower ({lower['score']['warm']} →"
+        f" {lower['score']['cold']})",
+        f"**{got['scores']['answer']}**: the continuation scored all {got['scores']['readable_pairs']},"
+        f" and all {bridged['readable_pairs']} of the bridge",
+        f"**{got['over_marks']['answer']}**: {flagged} of {got['over_marks']['of']} goods flagged;"
+        f" none of the 80 scored under {lowest}",
+        f"**{got['catches']['answer']}**: {got['catches']['effective']} of {got['catches']['of']}"
+        f" flagged, the classic's {got['catches']['classic']}",
+        f"**{got['signal']['answer']}**, on the catches",
+        f"a median {counters['prompt_tokens']:,.0f} tokens read in {fmt(counters['prompt_sec'])} s,"
+        f" {counters['prompt_sec'] / counters['prompt_tokens'] * 1000:.1f} ms a token, at most"
+        f" {max(tokens):,}; {span(secs)} s an answer",
+        f"{hours(minutes(bridge))} from the bridge's launch to its end, its two segments"
+        f" {segment_minutes('bridge'):.1f} min",
+        f"{hours(minutes(labels))} in one segment, its load {fmt(segment['ollama_load_sec'])} s and"
+        f" fifteen reloads a median {fmt(printed_80['reloads']['load_sec']['median'])} s",
+        f"{hours(whole)} from the first environment line to the third",
+    )
+    return [f"| {said} | {seen} |" for said, seen in zip(FORECAST, measured, strict=True)]
+
+
+def test_the_capsule_tables_are_the_records() -> None:
+    lines = CAPSULE.read_text(encoding="utf-8").splitlines()
+    tables = {
+        readings_rows: 5,
+        target_rows: 17,
+        class_rows: 4,
+        paired_rows: 2,
+        printed_rows: 14,
+        bridge_rows: 25,
+        bridge_printed_rows: 10,
+        segment_rows: 3,
+        forecast_rows: 9,
+        file_rows: 4,
+    }
+    for build, count in tables.items():
+        rows = build()
+        assert len(rows) == count, build.__name__
+        for row in rows:
+            assert row in lines, row
+
+
+# the capsule's own words for its limits and its reading; each sits on one line of it
+PHRASES = (
+    "The record holds no question, answer, prompt, document, reply, log line, command line or"
+    " process environment.",
+    "in `1e0600a` before the first request;",
+    "**The default stays `classic`**",
+    "No other prompt for the continuation was tried.",
+    "The 80 were scored cold;",
+    "The labels are the judge's, a model's grades from stage 3, not people's.",
+    "Step 2b counts by the acceptance rule's (c):",
+)
+
+
+def computed_phrases() -> list[str]:
+    starts = [when(record[phase]["launch"]["started"]) for phase in reader.PHASES]
+    by_n = {pair["n"]: pair for pair in pairs}
+    caught = [by_n[n] for n in got["catches"]["caught"]["classic"]]
+    (lower,) = [pair for pair in bridge_pairs if pair["score"]["cold"] < pair["score"]["warm"]]
+    bridged = printed_bridge
+    higher = printed_80["continuation_scored"]
+    under = printed_80["under_100"]
+    scores = printed_80["scores"]
+    return [
+        f"The bridge ran from {starts[0]:%H:%M} and the 80 from {starts[1]:%H:%M} UTC on"
+        " 2026-10-29.",
+        f"the classic scored {caught[0]['score']['classic']} and {caught[1]['score']['classic']},"
+        f" the continuation {caught[0]['score']['continuation']} and"
+        f" {caught[1]['score']['continuation']}",
+        f"`{caught[0]['case_id']}` and `{caught[1]['case_id']}`",
+        f"on the 17 targets {counts(scores['target']['continuation'])}; on the 63 goods"
+        f" {counts(scores['good']['continuation'])}",
+        f"the classic's targets {counts(scores['target']['classic'])}; its goods"
+        f" {counts(scores['good']['classic'])}",
+        f"higher on {higher['higher']}, lower on {higher['lower']} and the same on {higher['same']}",
+        f"{bridged['equal']} equal scores and one lower, `{lower['case_id']}` of `{lower['run']}`,"
+        f" {lower['score']['warm']} → {lower['score']['cold']}",
+        f"a median {fmt(bridged['cold']['median_sec'])} s cold against"
+        f" {fmt(bridged['warm']['median_sec'])} s warm",
+        f"a median {fmt(printed_80['sec']['median'])} s an answer, the longest"
+        f" {fmt(printed_80['sec']['max'])} s",
+        f"the classic catches {under['catches']['classic']} and over-marks"
+        f" {under['over_marks']['classic']}, the effective score {under['catches']['effective']}"
+        f" and {under['over_marks']['effective']}",
+        f"exact p {printed_80['paired']['catches']['exact_p']}",
+    ]
+
+
+def test_the_capsule_states_its_limits_and_the_records_numbers_each_on_one_line() -> None:
+    text = CAPSULE.read_text(encoding="utf-8")
+    assert not re.search("[Ѐ-ӿ]", text)
+    lines = text.splitlines()
+    built = computed_phrases()
+    assert len(built) == 11
+    for phrase in (*PHRASES, *built):
+        assert any(phrase in line for line in lines), phrase
+
+
+def test_the_spec_names_this_record_and_its_forecasts_as_the_capsule_quotes_them() -> None:
+    spec = SPEC.read_text(encoding="utf-8")
+    assert "registered before the first request" in spec
+    assert "[the record](../evidence/stage4-step2b-record.md)" in spec
+    flat = " ".join(spec.split())
+    for said in FORECAST:
+        assert said in flat, said
+    # what follows a reading not held, in the spec's words and the capsule's
+    capsule = " ".join(CAPSULE.read_text(encoding="utf-8").split())
+    said = "**not held** or `NOT_EVIDENCE`: the default stays `classic`"
+    assert said in flat and said in capsule

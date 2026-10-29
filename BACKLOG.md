@@ -7,8 +7,9 @@ stage and the frozen streams with their unfreeze conditions are [`ROADMAP.md`](R
 ## Current queue
 
 - **[`PLAN.md`](PLAN.md) stage 4 with V4: step 2b, the continuation on stage 3's 80 labelled
-  answers, read 2026-10-29 — not held on the catches, the default stays `classic`; next its
-  record, stage 7's probe, item 4** (steps 0–3 read; [the handoff](docs/operations/session-handoff-2026-10-29-stage4-step2b-read.md)): stage 3
+  answers, read 2026-10-29 — not held on the catches, the default stays `classic`
+  ([record](docs/evidence/stage4-step2b-record.md)); next stage 7's probe, item 4, then item 5
+  under her cap `cache-ram = 1024` («да», 2026-10-29)** (steps 0–3 read; [the handoff](docs/operations/session-handoff-2026-10-29-stage4-step2b-read.md)): stage 3
   stays at outcome C — the handover line under every answer; the encoders and Horizon guard base
   in between ([record](docs/evidence/encoder-checkers-record.md)); stage 3б closed 2026-10-28,
   V5 not adopted ([record](docs/evidence/answer-prompt-v5-record.md)). The widget's R1 and

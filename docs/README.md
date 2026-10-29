@@ -102,7 +102,7 @@ the continuation asked cold: first on step 2's 25 warm-scored answers, whose rou
 catches of the 17, over-marks of the 63, answers without a score; registered before the first
 request, run because step 2's candidate is the continuation. Read 2026-10-29, not held: the
 bridge held, the catches not — 0 of the 17 flagged, the classic's 2 — and the default stays
-`classic`.
+`classic`; its [record](evidence/stage4-step2b-record.md).
 [Stage 6, item 4](specs/stage6-throughput.md) — the
 service's questions an hour and what a second client sees: a draft, registered with its tools once
 the service is installed.

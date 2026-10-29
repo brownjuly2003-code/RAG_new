@@ -1,7 +1,9 @@
 # Stage 4, step 2b: the continuation read cold, beside step 2's warm one and on stage 3's 80 labelled answers
 
 Status 2026-10-29: **registered before the first request**, with its tools and their test
-([Records](#records)). It runs only because step 2's candidate is the continuation
+([Records](#records)); **read 2026-10-29**, both gates passed, the signal not held, on the
+catches: the default stays `classic` ([the record](../evidence/stage4-step2b-record.md)).
+It runs only because step 2's candidate is the continuation
 ([step 2](stage4-step2-self-eval-continuation.md), «The candidate»: its rerun `s2-both-r2` passed
 its gate, faster on 13 of 13, a median saving of 54 s). [`PLAN.md`](../../PLAN.md) stage 4,
 item 2. Its stand is step 2's ([The stand](#the-stand)); the one value filled in at launch is
