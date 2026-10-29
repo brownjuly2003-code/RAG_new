@@ -1,7 +1,9 @@
 # Stage 4, step 2: the self-evaluation as the answer's next turn, beside the classic one
 
 Status 2026-10-28: **registered before the first request**, with the supervisor's copy, the reader
-and their test ([Records](#records)). [`PLAN.md`](../../PLAN.md) stage 4, item 2 («Самооценка
+and their test ([Records](#records)); **read 2026-10-29**, the rerun's gate passed, the candidate
+the continuation: [the record](../evidence/stage4-step2-record.md).
+[`PLAN.md`](../../PLAN.md) stage 4, item 2 («Самооценка
 (68 с)»): «Если значок остаётся — опыт: самооценка как продолжение промпта ответа, чтобы его
 ≈ 2 300 токенов брались из кэша». Julia's word of 2026-10-28 on the badge «Качество: N»:
 «Оставить, но ускорить». It follows [step 0](stage4-step0-diagnostics.md) and

@@ -1,0 +1,3148 @@
+{
+ "bridge": {
+  "dir": "/Users/julia/RAG_new_chat_57420db/step2b/bridge",
+  "failures": [],
+  "gate": {
+   "environment": false,
+   "failures": true,
+   "first": true,
+   "inputs": true,
+   "launch": false,
+   "lines": false,
+   "passed": false,
+   "segments": false,
+   "step2": true,
+   "tools": true
+  },
+  "launch": {
+   "answer_stop_sec": 255.0,
+   "answers": 1,
+   "code_sha": "57420db746e0510465bb5a08b7610e092b32e650",
+   "finished": null,
+   "input_limit": 3443,
+   "inputs_sha256": {},
+   "instruction_sha256": "5062156de04ad24c573d9d6161a81aeb34fae4c82ba49e7f537dabff4104000c",
+   "key": "aircargo",
+   "model": "qwen3:4b-instruct-2507-q4_K_M",
+   "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+   "model_errors": 0,
+   "num_ctx": 4096,
+   "params": {
+    "max_tokens": 128,
+    "temperature": 0.0
+   },
+   "phase": "bridge",
+   "planned": {
+    "s2-both": 12,
+    "s2-both-r2": 13
+   },
+   "prompt_id": "SELF_EVAL_CONTINUATION_V1",
+   "reload_every": 5,
+   "runs": "/Users/julia/RAG_new_chat_57420db/step2/runs",
+   "schema": "stage4-step2b/v1",
+   "segments": [
+    {
+     "crash": null,
+     "final_unload": {
+      "polls": 1,
+      "unload_sec": 0.314
+     },
+     "final_unload_error": null,
+     "finished": "2026-10-29T19:04:53+00:00",
+     "first": true,
+     "from_n": 1,
+     "llama_servers_before": 0,
+     "load_error": null,
+     "ollama_load_sec": 14.428,
+     "ollama_models_before": [],
+     "started": "2026-10-29T19:03:24+00:00",
+     "status": "first",
+     "unload_error": null
+    }
+   ],
+   "spec": "docs/specs/stage4-step2b-continuation-labels.md",
+   "started": "2026-10-29T19:03:24+00:00",
+   "status": "first",
+   "stream_path": "provider",
+   "tools_sha256": {
+    "qa_prompt_v5.txt": "835b0f2cf1ac7bc86ad30605367d81457b02e7436a5a5071642a5b881471c276",
+    "replay.py": "ca954c59710e93925cc923f5b2a7f175ce86f7e1fa7b96a46d3b3bbeec4d6eed",
+    "step2b_replay.py": "7d0b46bb26943c5c2209bdfc7b827a720fcdb67365902d70d3eb49d21b21ff19"
+   }
+  },
+  "lines": [
+   {
+    "answer_chars": 978,
+    "answer_sha256": "299ddadf2e7ce78f97e58b9ca7fc4157fcc668d93c52bafc349618e4bc84282d",
+    "case_file": "01-aircargo-probation-data.json",
+    "case_id": "aircargo-probation-data",
+    "case_sha256": "c8c47faac45ac888267ad083e6c95f289fa205724ccfef485ee7327ce7c71da1",
+    "checks": {
+     "answer": true,
+     "files": true,
+     "sent": true,
+     "stream": true
+    },
+    "class": null,
+    "done_reason": "stop",
+    "error": null,
+    "est_input_tokens": 3084,
+    "eval_sec": 0.752567,
+    "eval_tokens": 4,
+    "finished": "2026-10-29T19:04:53+00:00",
+    "input_limit": 3443,
+    "item": null,
+    "n": 1,
+    "num_ctx": 4096,
+    "outcome": "scored",
+    "phase": "bridge",
+    "prompt_file": "001-stream.txt",
+    "prompt_sec": 69.773293,
+    "prompt_sha256": "536c03e570b661c28842a7bd9760803010d9b59e44e45b04c2cd70655df3a48e",
+    "prompt_tokens": 2660,
+    "reload": null,
+    "reply_chars": 3,
+    "run": "s2-both",
+    "score": 100,
+    "sec": 74.294,
+    "segment": 1,
+    "sent_answer_sha256": "299ddadf2e7ce78f97e58b9ca7fc4157fcc668d93c52bafc349618e4bc84282d",
+    "started": "2026-10-29T19:03:38+00:00",
+    "stream_path": "provider",
+    "warm": {
+     "eval_sec": 0.759778,
+     "eval_tokens": 4,
+     "prompt_sec": 8.104117,
+     "prompt_tokens": 2660,
+     "score": 100,
+     "sec": 9.035
+    }
+   }
+  ],
+  "notes": [
+   "bridge: 1 lines for 25 answers",
+   "bridge segments: the last segment, and it alone, is not the complete one",
+   "bridge environment: fewer than two environment lines",
+   "bridge environment: no environment line after the phase"
+  ],
+  "sha256": {
+   "continuations.jsonl": "d4c3a29cc4575cbae0f3f038e3e4ca10fdf6b731914e598b46f1f50509db58bc",
+   "failures.jsonl": null,
+   "launch.json": "7603b7a6f3922569294ec2b9db14d9f87f2fb576e23a908e43b152024ce73d03"
+  }
+ },
+ "bridge_pairs": [
+  {
+   "case_id": "aircargo-probation-data",
+   "n": 1,
+   "readable": false,
+   "run": "s2-both",
+   "unreadable": [
+    "the bridge's gate did not pass"
+   ]
+  },
+  {
+   "case_id": "aircargo-probation-extend",
+   "n": 2,
+   "readable": false,
+   "run": "s2-both",
+   "unreadable": [
+    "the bridge's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-probation-dismissal",
+   "n": 3,
+   "readable": false,
+   "run": "s2-both",
+   "unreadable": [
+    "the bridge's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-dismissal-check",
+   "n": 4,
+   "readable": false,
+   "run": "s2-both",
+   "unreadable": [
+    "the bridge's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-dismissal-lawyer",
+   "n": 5,
+   "readable": false,
+   "run": "s2-both",
+   "unreadable": [
+    "the bridge's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-dismissal-order",
+   "n": 6,
+   "readable": false,
+   "run": "s2-both",
+   "unreadable": [
+    "the bridge's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-leave-sources",
+   "n": 7,
+   "readable": false,
+   "run": "s2-both",
+   "unreadable": [
+    "the bridge's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-leave-compensation",
+   "n": 8,
+   "readable": false,
+   "run": "s2-both",
+   "unreadable": [
+    "the bridge's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-leave-risk",
+   "n": 9,
+   "readable": false,
+   "run": "s2-both",
+   "unreadable": [
+    "the bridge's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-matliab-check",
+   "n": 10,
+   "readable": false,
+   "run": "s2-both",
+   "unreadable": [
+    "the bridge's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-matliab-disputed",
+   "n": 11,
+   "readable": false,
+   "run": "s2-both",
+   "unreadable": [
+    "the bridge's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-templates-choose",
+   "n": 12,
+   "readable": false,
+   "run": "s2-both",
+   "unreadable": [
+    "the bridge's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-probation-data",
+   "n": 13,
+   "readable": false,
+   "run": "s2-both-r2",
+   "unreadable": [
+    "the bridge's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-probation-extend",
+   "n": 14,
+   "readable": false,
+   "run": "s2-both-r2",
+   "unreadable": [
+    "the bridge's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-probation-dismissal",
+   "n": 15,
+   "readable": false,
+   "run": "s2-both-r2",
+   "unreadable": [
+    "the bridge's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-dismissal-check",
+   "n": 16,
+   "readable": false,
+   "run": "s2-both-r2",
+   "unreadable": [
+    "the bridge's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-dismissal-lawyer",
+   "n": 17,
+   "readable": false,
+   "run": "s2-both-r2",
+   "unreadable": [
+    "the bridge's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-dismissal-order",
+   "n": 18,
+   "readable": false,
+   "run": "s2-both-r2",
+   "unreadable": [
+    "the bridge's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-leave-sources",
+   "n": 19,
+   "readable": false,
+   "run": "s2-both-r2",
+   "unreadable": [
+    "the bridge's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-leave-compensation",
+   "n": 20,
+   "readable": false,
+   "run": "s2-both-r2",
+   "unreadable": [
+    "the bridge's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-leave-risk",
+   "n": 21,
+   "readable": false,
+   "run": "s2-both-r2",
+   "unreadable": [
+    "the bridge's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-matliab-check",
+   "n": 22,
+   "readable": false,
+   "run": "s2-both-r2",
+   "unreadable": [
+    "the bridge's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-matliab-disputed",
+   "n": 23,
+   "readable": false,
+   "run": "s2-both-r2",
+   "unreadable": [
+    "the bridge's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-templates-choose",
+   "n": 24,
+   "readable": false,
+   "run": "s2-both-r2",
+   "unreadable": [
+    "the bridge's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-templates-checklist",
+   "n": 25,
+   "readable": false,
+   "run": "s2-both-r2",
+   "unreadable": [
+    "the bridge's gate did not pass",
+    "no line"
+   ]
+  }
+ ],
+ "environment": [
+  {
+   "app_changed": null,
+   "server_error": null,
+   "server_version": "0.33.2",
+   "servers": [
+    {
+     "binary_changed": "2026-08-28T20:09:07+00:00",
+     "pid": 12377,
+     "started": "2026-09-13T16:37:06+00:00"
+    }
+   ],
+   "taken": "2026-10-29T19:00:02+00:00"
+  }
+ ],
+ "first_answer": {
+  "case_id": "aircargo-probation-data",
+  "counters": {
+   "eval_sec": 0.752567,
+   "eval_tokens": 4,
+   "prompt_sec": 69.773293,
+   "prompt_tokens": 2660
+  },
+  "est_input_tokens": 3084,
+  "n": 1,
+  "outcome": "scored",
+  "run": "s2-both",
+  "score": 100,
+  "sec": 74.294,
+  "stop": false,
+  "warm": {
+   "eval_sec": 0.759778,
+   "eval_tokens": 4,
+   "prompt_sec": 8.104117,
+   "prompt_tokens": 2660,
+   "score": 100,
+   "sec": 9.035
+  },
+  "why": []
+ },
+ "inputs": {
+  "answers": [
+   {
+    "answer_sha256": "57a3d712dee1a4a539426ee295f34c0de4c3ee01c486b81f809ddb52bfeba608",
+    "case_file": "01-aircargo-probation-data.json",
+    "case_id": "aircargo-probation-data",
+    "class": "target",
+    "classic": {
+     "score": 100,
+     "source": "llm"
+    },
+    "item": 1,
+    "n": 1,
+    "prompt_file": "001-stream.txt",
+    "prompt_sha256": "536c03e570b661c28842a7bd9760803010d9b59e44e45b04c2cd70655df3a48e",
+    "run": "v4-aircargo-b01"
+   },
+   {
+    "answer_sha256": "151a5e9f470f903dcf6327dcd442fb64c613e0230b2ca3a55dc0aada378c7436",
+    "case_file": "02-aircargo-probation-extend.json",
+    "case_id": "aircargo-probation-extend",
+    "class": "target",
+    "classic": {
+     "score": 60,
+     "source": "llm"
+    },
+    "item": 2,
+    "n": 2,
+    "prompt_file": "004-stream.txt",
+    "prompt_sha256": "ecf031f8eaa92008e31cab94d15bac790bfa450ad3934e9ee67ed28c087eb446",
+    "run": "v4-aircargo-b01"
+   },
+   {
+    "answer_sha256": "9037a5e621fe120f125b97283ec511ad2c593e5898c2ec503c76425e1f1d1947",
+    "case_file": "05-aircargo-secret-check.json",
+    "case_id": "aircargo-secret-check",
+    "class": "target",
+    "classic": {
+     "score": 100,
+     "source": "llm"
+    },
+    "item": 15,
+    "n": 3,
+    "prompt_file": "013-stream.txt",
+    "prompt_sha256": "60391478cf2e1d5379bed8823dd96c2338ca5cbd32e0a035101f3aac5c071df6",
+    "run": "v4-aircargo-b02"
+   },
+   {
+    "answer_sha256": "e2ed1461222f555dd39af1a7174aff28443bd571506b3f84102dddb8564f2b2c",
+    "case_file": "10-aircargo-contract-termination-open-awb.json",
+    "case_id": "aircargo-contract-termination-open-awb",
+    "class": "target",
+    "classic": {
+     "score": 100,
+     "source": "llm"
+    },
+    "item": 40,
+    "n": 4,
+    "prompt_file": "028-stream.txt",
+    "prompt_sha256": "76e65ef6a3214519e18da1b330eedd7187510dd3e9d34634bc1e875035863dfe",
+    "run": "v4-aircargo-b04"
+   },
+   {
+    "answer_sha256": "187d5090f6326b94199d7c6f178a3041ba58775fd84db6edb4136710bd242be4",
+    "case_file": "01-aircargo-contract-termination-fields.json",
+    "case_id": "aircargo-contract-termination-fields",
+    "class": "target",
+    "classic": {
+     "score": 100,
+     "source": "llm"
+    },
+    "item": 41,
+    "n": 5,
+    "prompt_file": "001-stream.txt",
+    "prompt_sha256": "e988ca976b7ae955ae54e42c19f9c9a8f9a0f493706fcedfc84dd46db92a6fc2",
+    "run": "v4-aircargo-b05"
+   },
+   {
+    "answer_sha256": "a0d63352129b973880c4dffcb0015b8a63a2029fd129ddfbd13d9ca96767916f",
+    "case_file": "02-aircargo-road-contract-aircargo-fields.json",
+    "case_id": "aircargo-road-contract-aircargo-fields",
+    "class": "target",
+    "classic": {
+     "score": 40,
+     "source": "llm"
+    },
+    "item": 42,
+    "n": 6,
+    "prompt_file": "004-stream.txt",
+    "prompt_sha256": "d79e164498c250b023abee789d2b8e66cae9a91b4e2347f2d0e8748b3930afaa",
+    "run": "v4-aircargo-b05"
+   },
+   {
+    "answer_sha256": "54fcca00be5e65789c7626a025bdb24e1bbdde76e88b98933a141386af7435eb",
+    "case_file": "04-aircargo-dangerous-goods-clearance.json",
+    "case_id": "aircargo-dangerous-goods-clearance",
+    "class": "target",
+    "classic": {
+     "score": 95,
+     "source": "llm"
+    },
+    "item": 44,
+    "n": 7,
+    "prompt_file": "009-stream.txt",
+    "prompt_sha256": "4e6556af8f4f2eef7bf21c07f49eb900b643c12f1e31eaef10f22f253377c949",
+    "run": "v4-aircargo-b05"
+   },
+   {
+    "answer_sha256": "60943ade472426d30ec461b40874ab3390558b13ddcf678fb7ca6ec1a7f3a678",
+    "case_file": "07-aircargo-waybill-first-mile-fields.json",
+    "case_id": "aircargo-waybill-first-mile-fields",
+    "class": "target",
+    "classic": {
+     "score": 100,
+     "source": "llm"
+    },
+    "item": 47,
+    "n": 8,
+    "prompt_file": "018-stream.txt",
+    "prompt_sha256": "059d76c4a64e9e4188331d12564568ff02f8de3ef9b2d96bf8bb7b5167ab9893",
+    "run": "v4-aircargo-b05"
+   },
+   {
+    "answer_sha256": "0986d7fea1318602d516106be2af23924258d4720488c95fbca7ad93ee28ba31",
+    "case_file": "09-aircargo-sick-leave-required-fields.json",
+    "case_id": "aircargo-sick-leave-required-fields",
+    "class": "target",
+    "classic": {
+     "score": 100,
+     "source": "llm"
+    },
+    "item": 59,
+    "n": 9,
+    "prompt_file": "024-stream.txt",
+    "prompt_sha256": "dab4a715cfb588a8dab396fa5e6af65b3b79d72999114b7c4762990393b39cc8",
+    "run": "v4-aircargo-b06"
+   },
+   {
+    "answer_sha256": "d81179875d7803353602b90aef31065d482adaa1c007d2cb775fb9f4c240e42c",
+    "case_file": "05-aircargo-driver-hours-required-fields.json",
+    "case_id": "aircargo-driver-hours-required-fields",
+    "class": "target",
+    "classic": {
+     "score": 100,
+     "source": "llm"
+    },
+    "item": 65,
+    "n": 10,
+    "prompt_file": "013-stream.txt",
+    "prompt_sha256": "96be2661cedf587da2a33d8adda0781fc517de88e83424ad7f15906dcf77e9ef",
+    "run": "v4-aircargo-b07"
+   },
+   {
+    "answer_sha256": "ef679470636dbb31ad0c59025a619ce45f39491570a0a2d3b47b3c6991d00931",
+    "case_file": "01-aircargo-oversized-permit-route.json",
+    "case_id": "aircargo-oversized-permit-route",
+    "class": "target",
+    "classic": {
+     "score": 100,
+     "source": "llm"
+    },
+    "item": 71,
+    "n": 11,
+    "prompt_file": "001-stream.txt",
+    "prompt_sha256": "1affdc48703fb92b9d6f1399b4998f5fea7cba1fdb19a9ab826a2e093e3441b3",
+    "run": "v4-aircargo-b08"
+   },
+   {
+    "answer_sha256": "bca7afb41e85718b379cf562dd1cb53af493a24a8c92e3f4104441af380fe730",
+    "case_file": "02-aircargo-oversized-manual-check.json",
+    "case_id": "aircargo-oversized-manual-check",
+    "class": "target",
+    "classic": {
+     "score": 100,
+     "source": "llm"
+    },
+    "item": 72,
+    "n": 12,
+    "prompt_file": "004-stream.txt",
+    "prompt_sha256": "eece8bd18c7ac303bfbed3c60e7a3b75b79119ec8b3713af4238c2d6cb40c1c6",
+    "run": "v4-aircargo-b08"
+   },
+   {
+    "answer_sha256": "ef0f1737187d255a03be9d4d20302982d9ad393d7c2585a148b8ffcd81429546",
+    "case_file": "07-aircargo-customs-broker-evidence.json",
+    "case_id": "aircargo-customs-broker-evidence",
+    "class": "target",
+    "classic": {
+     "score": 100,
+     "source": "llm"
+    },
+    "item": 77,
+    "n": 13,
+    "prompt_file": "019-stream.txt",
+    "prompt_sha256": "6b7ff30813d61e66c00ae3c30af0f1fd3e7d59ff92fb84da693ae9f52a19dc7c",
+    "run": "v4-aircargo-b08"
+   },
+   {
+    "answer_sha256": "f5e1666a1d21cc9f6dbb8c4acbc17fc8d5694e43265ffce2227ed8f05ad77acd",
+    "case_file": "07-aircargo-cargo-insurance-evidence.json",
+    "case_id": "aircargo-cargo-insurance-evidence",
+    "class": "target",
+    "classic": {
+     "score": 100,
+     "source": "llm"
+    },
+    "item": 87,
+    "n": 14,
+    "prompt_file": "019-stream.txt",
+    "prompt_sha256": "8667347e8767806297b4a0a6c5d01174050ab801f869ca24bc9dbda0bee11d8f",
+    "run": "v4-aircargo-b09"
+   },
+   {
+    "answer_sha256": "db7db56f5d1738447f1f371a943d8a949b602650fd0ce59cf28325709c54ff25",
+    "case_file": "01-aircargo-gps-monitoring-required-fields.json",
+    "case_id": "aircargo-gps-monitoring-required-fields",
+    "class": "target",
+    "classic": {
+     "score": 100,
+     "source": "llm"
+    },
+    "item": 91,
+    "n": 15,
+    "prompt_file": "001-stream.txt",
+    "prompt_sha256": "21b4c4ea66918158a075da52f54e97f8b893c10b4813d3a2154ebdda26079cfe",
+    "run": "v4-aircargo-b10"
+   },
+   {
+    "answer_sha256": "abd5ad85e015ba8c03e4a97e6cc4477bff8fa679c49568051e4c7e317c29e7b4",
+    "case_file": "03-aircargo-weight-control-required-fields.json",
+    "case_id": "aircargo-weight-control-required-fields",
+    "class": "target",
+    "classic": {
+     "score": 100,
+     "source": "llm"
+    },
+    "item": 93,
+    "n": 16,
+    "prompt_file": "007-stream.txt",
+    "prompt_sha256": "f3bf4cfab955765fb8e92188bcc7e8ef17f336ccc153b9dd77717e2a34b91f35",
+    "run": "v4-aircargo-b10"
+   },
+   {
+    "answer_sha256": "4b637e050f25e0d76c3d40a3411fdf5cba8ccbb3772a9ecbe5a03e9589a8660c",
+    "case_file": "06-aircargo-cross-border-special-cargo.json",
+    "case_id": "aircargo-cross-border-special-cargo",
+    "class": "target",
+    "classic": {
+     "score": 100,
+     "source": "llm"
+    },
+    "item": 96,
+    "n": 17,
+    "prompt_file": "016-stream.txt",
+    "prompt_sha256": "2141dec1214ec9a1e7ea886d94058e63f283721fe36e228ccf8d2fb3a39760b1",
+    "run": "v4-aircargo-b10"
+   },
+   {
+    "answer_sha256": "56c3ebf5e7afbac792a8de7e5c3238af1ff3c7859beb11b5078cb682c84d2d06",
+    "case_file": "03-aircargo-probation-dismissal.json",
+    "case_id": "aircargo-probation-dismissal",
+    "class": "good",
+    "classic": {
+     "score": 100,
+     "source": "llm"
+    },
+    "item": 3,
+    "n": 18,
+    "prompt_file": "006-stream.txt",
+    "prompt_sha256": "28cba2dc6e994f1ab677fcb20a938f2648702dfcfd5c2e1dbce8e1a067b711c8",
+    "run": "v4-aircargo-b01"
+   },
+   {
+    "answer_sha256": "d6b5beebd6001732b433ee718fb81eedcf328718ff6162b2ff53e3e768ff2425",
+    "case_file": "04-aircargo-dismissal-check.json",
+    "case_id": "aircargo-dismissal-check",
+    "class": "good",
+    "classic": {
+     "score": 100,
+     "source": "llm"
+    },
+    "item": 4,
+    "n": 19,
+    "prompt_file": "009-stream.txt",
+    "prompt_sha256": "34e8804a6226911866bd58e31f2ecc5478fe29085d8a0e2d9ba275e0cc4271b1",
+    "run": "v4-aircargo-b01"
+   },
+   {
+    "answer_sha256": "f4b7b094447a3e002a6f6f9f08528ee2390c1e852137dc8b4e4b5f6788d02a14",
+    "case_file": "05-aircargo-dismissal-lawyer.json",
+    "case_id": "aircargo-dismissal-lawyer",
+    "class": "good",
+    "classic": {
+     "score": 100,
+     "source": "llm"
+    },
+    "item": 5,
+    "n": 20,
+    "prompt_file": "012-stream.txt",
+    "prompt_sha256": "9de707cf177733321eefe30024aaf943da91fd9f35cf4a2a51e4afa2b31c99f6",
+    "run": "v4-aircargo-b01"
+   },
+   {
+    "answer_sha256": "ccd8c5f470c875a4bd953f470345c41e941550a014edcea5dbff4be82fa9acdd",
+    "case_file": "06-aircargo-dismissal-order.json",
+    "case_id": "aircargo-dismissal-order",
+    "class": "good",
+    "classic": {
+     "score": 100,
+     "source": "llm"
+    },
+    "item": 6,
+    "n": 21,
+    "prompt_file": "015-stream.txt",
+    "prompt_sha256": "6d097c36636d18c777146342bb5acf137e32146483c7ef69901dd4d4282ece63",
+    "run": "v4-aircargo-b01"
+   },
+   {
+    "answer_sha256": "4b2885c0edde951386c7aaafe8ee74ac06ec88b2b93ee1ac47d6ababbbf2c243",
+    "case_file": "07-aircargo-leave-sources.json",
+    "case_id": "aircargo-leave-sources",
+    "class": "good",
+    "classic": {
+     "score": 100,
+     "source": "llm"
+    },
+    "item": 7,
+    "n": 22,
+    "prompt_file": "018-stream.txt",
+    "prompt_sha256": "d8a751e80192da673b0e5afb9be95ccae7ad85727d3d6ef2d3369f7e47d6fc04",
+    "run": "v4-aircargo-b01"
+   },
+   {
+    "answer_sha256": "bf03ab852465d4a1a8896a7d9a963dda35d0f09f9836ff52da97cd698a7fd300",
+    "case_file": "08-aircargo-leave-compensation.json",
+    "case_id": "aircargo-leave-compensation",
+    "class": "good",
+    "classic": {
+     "score": 95,
+     "source": "llm"
+    },
+    "item": 8,
+    "n": 23,
+    "prompt_file": "021-stream.txt",
+    "prompt_sha256": "d645cfc764684137d83d3dbc4619db2eb79d65140e81e1df3bc7bb09238f3906",
+    "run": "v4-aircargo-b01"
+   },
+   {
+    "answer_sha256": "99c5e5df8e92ebccd565908bcfa1e3e482d659d3a57758964980e35776ccddf3",
+    "case_file": "09-aircargo-leave-risk.json",
+    "case_id": "aircargo-leave-risk",
+    "class": "good",
+    "classic": {
+     "score": 100,
+     "source": "llm"
+    },
+    "item": 9,
+    "n": 24,
+    "prompt_file": "024-stream.txt",
+    "prompt_sha256": "4cba8311415a6473427021914a7e8aef13910c7bb772ffaf7631ddf9e471b8e0",
+    "run": "v4-aircargo-b01"
+   },
+   {
+    "answer_sha256": "8aeefc68ab1e8d4eda1d483f1dc42c4254989e9dd8991bce0fe97cd6385aecd2",
+    "case_file": "10-aircargo-matliab-check.json",
+    "case_id": "aircargo-matliab-check",
+    "class": "good",
+    "classic": {
+     "score": 100,
+     "source": "llm"
+    },
+    "item": 10,
+    "n": 25,
+    "prompt_file": "027-stream.txt",
+    "prompt_sha256": "a7b11636b22b7868aeb334ed2bc7df7b4430d0b31dff80ec64721d5b3bdd1777",
+    "run": "v4-aircargo-b01"
+   },
+   {
+    "answer_sha256": "415b680522c532c8e0c5489fc4db0e26eff6d64c7956e31a66c3b091b8fc13fa",
+    "case_file": "01-aircargo-matliab-disputed.json",
+    "case_id": "aircargo-matliab-disputed",
+    "class": "good",
+    "classic": {
+     "score": 100,
+     "source": "llm"
+    },
+    "item": 11,
+    "n": 26,
+    "prompt_file": "001-stream.txt",
+    "prompt_sha256": "9720b11c2ce9f06d1caeb047f279eedd36cf9456d08ef0fe60521f7285c439c6",
+    "run": "v4-aircargo-b02"
+   },
+   {
+    "answer_sha256": "753a4bf19f6bc58abc3b8c08a2fd21f0531af1f4f5bd44a8d4a4977c5e709595",
+    "case_file": "02-aircargo-templates-choose.json",
+    "case_id": "aircargo-templates-choose",
+    "class": "good",
+    "classic": {
+     "score": 100,
+     "source": "llm"
+    },
+    "item": 12,
+    "n": 27,
+    "prompt_file": "004-stream.txt",
+    "prompt_sha256": "a58d608ce3db24d35313c517c14f344b95bd3867be91a008d6bd4ca0e832f39d",
+    "run": "v4-aircargo-b02"
+   },
+   {
+    "answer_sha256": "ffb8a73b302478f4068a77fa2aaa942e6709efbc10480931feb1dcad54b04083",
+    "case_file": "04-aircargo-templates-insufficient.json",
+    "case_id": "aircargo-templates-insufficient",
+    "class": "good",
+    "classic": {
+     "score": 100,
+     "source": "llm"
+    },
+    "item": 14,
+    "n": 28,
+    "prompt_file": "010-stream.txt",
+    "prompt_sha256": "9ea43f5b54b042ca3202cd56692f7238fd48487cc861a67abc6ecf15730f66a8",
+    "run": "v4-aircargo-b02"
+   },
+   {
+    "answer_sha256": "edb9e7f87abf416fdbe8e30f8f0b36cc2ddefd10b3482bb6a57ed9f3c987e12e",
+    "case_file": "06-aircargo-secret-not-auto.json",
+    "case_id": "aircargo-secret-not-auto",
+    "class": "good",
+    "classic": {
+     "score": 100,
+     "source": "llm"
+    },
+    "item": 16,
+    "n": 29,
+    "prompt_file": "016-stream.txt",
+    "prompt_sha256": "5e5dfd341e99bedd55bff52dc71e4706eea1c9948733ab5902878ed09bc7a618",
+    "run": "v4-aircargo-b02"
+   },
+   {
+    "answer_sha256": "bb19acd25ad8ca8cc94f96773c290cbdb50ae449affc2112db9f95922db6c373",
+    "case_file": "07-aircargo-secret-disclosure.json",
+    "case_id": "aircargo-secret-disclosure",
+    "class": "good",
+    "classic": {
+     "score": 100,
+     "source": "llm"
+    },
+    "item": 17,
+    "n": 30,
+    "prompt_file": "019-stream.txt",
+    "prompt_sha256": "32c4b54005a92ba58b2e9967b5346df9d5409d166b52305ae4c6d38e5a3dc33d",
+    "run": "v4-aircargo-b02"
+   },
+   {
+    "answer_sha256": "bdaba7d388d025c349586e7cc03a16e2a81a3db1fa33e14a940fcf0ba2b17428",
+    "case_file": "08-aircargo-pdp-scope.json",
+    "case_id": "aircargo-pdp-scope",
+    "class": "good",
+    "classic": {
+     "score": 100,
+     "source": "llm"
+    },
+    "item": 18,
+    "n": 31,
+    "prompt_file": "022-stream.txt",
+    "prompt_sha256": "494f7c0e3ef7329f5d69773f7fa8e7d4d23c30b8a28aa4901a946b5546711f2a",
+    "run": "v4-aircargo-b02"
+   },
+   {
+    "answer_sha256": "4871dc07852161c7d3f6cb88f97415d8b3e3ad840fe02bae2f92e5cf5260024e",
+    "case_file": "09-aircargo-pdp-data.json",
+    "case_id": "aircargo-pdp-data",
+    "class": "good",
+    "classic": {
+     "score": 100,
+     "source": "llm"
+    },
+    "item": 19,
+    "n": 32,
+    "prompt_file": "025-stream.txt",
+    "prompt_sha256": "215d3ab3c0ceb822ca5800d6259dcde1dc0d8f06492f843a7bf000e3b478370e",
+    "run": "v4-aircargo-b02"
+   },
+   {
+    "answer_sha256": "3652261c5e231f67054da53a67b0ef8fdd6c6cff862976069292783ef3a2d295",
+    "case_file": "10-aircargo-pdp-uncertain.json",
+    "case_id": "aircargo-pdp-uncertain",
+    "class": "good",
+    "classic": {
+     "score": 100,
+     "source": "llm"
+    },
+    "item": 20,
+    "n": 33,
+    "prompt_file": "028-stream.txt",
+    "prompt_sha256": "12ba7242849d4e4dd9cb89ec16decb8593324f518f4d93f10a9b9bb1f52d21fe",
+    "run": "v4-aircargo-b02"
+   },
+   {
+    "answer_sha256": "ce9da9fd7ebab5a5a0221753c81e215f1a0945fbad31d169f5b6fefcb4fb1e42",
+    "case_file": "01-aircargo-claims-delay.json",
+    "case_id": "aircargo-claims-delay",
+    "class": "good",
+    "classic": {
+     "score": 100,
+     "source": "llm"
+    },
+    "item": 21,
+    "n": 34,
+    "prompt_file": "001-stream.txt",
+    "prompt_sha256": "24556f33b05286740397a982625133fd46d8490449ee612cb227327172112c11",
+    "run": "v4-aircargo-b03"
+   },
+   {
+    "answer_sha256": "5d05b269087f525edbc692f65c097ac7176a8f3eac4e87fd67818fea46f8a1b3",
+    "case_file": "02-aircargo-claims-damage.json",
+    "case_id": "aircargo-claims-damage",
+    "class": "good",
+    "classic": {
+     "score": 100,
+     "source": "llm"
+    },
+    "item": 22,
+    "n": 35,
+    "prompt_file": "004-stream.txt",
+    "prompt_sha256": "df4417124a8e96574de3d73da189edd878e9cbbae12c685414203bc8247cf799",
+    "run": "v4-aircargo-b03"
+   },
+   {
+    "answer_sha256": "7e7a8518e9999a24041b9454c4b93878b75c22690c472745f835d15aba22de51",
+    "case_file": "03-aircargo-claims-lawyer.json",
+    "case_id": "aircargo-claims-lawyer",
+    "class": "good",
+    "classic": {
+     "score": 100,
+     "source": "llm"
+    },
+    "item": 23,
+    "n": 36,
+    "prompt_file": "007-stream.txt",
+    "prompt_sha256": "685583f0497ae08609914e71ac3a3c6b1d0b538ccbaee27810bc7fcd24d344c0",
+    "run": "v4-aircargo-b03"
+   },
+   {
+    "answer_sha256": "3e576722d7a84ee41295af96ac69812e7c5d9161809d8ae73945d4f51316f5af",
+    "case_file": "04-aircargo-claims-forbidden.json",
+    "case_id": "aircargo-claims-forbidden",
+    "class": "good",
+    "classic": {
+     "score": 100,
+     "source": "llm"
+    },
+    "item": 24,
+    "n": 37,
+    "prompt_file": "010-stream.txt",
+    "prompt_sha256": "ae555bfbb363f7a62e2aaee5f8ed03b9fa7eb391e47ecbc78aa13739a2493253",
+    "run": "v4-aircargo-b03"
+   },
+   {
+    "answer_sha256": "da0a67cc1cb39bae70d53758c00e6630da89ff2d6c90e6db7323b5a28f31ec1b",
+    "case_file": "05-aircargo-expedition-vs-carrier.json",
+    "case_id": "aircargo-expedition-vs-carrier",
+    "class": "good",
+    "classic": {
+     "score": 100,
+     "source": "llm"
+    },
+    "item": 25,
+    "n": 38,
+    "prompt_file": "013-stream.txt",
+    "prompt_sha256": "82b32adbf88e36da399ca79233a0c146262ef1dcd83887a1615b595044e98c29",
+    "run": "v4-aircargo-b03"
+   },
+   {
+    "answer_sha256": "e877baebea7bcd9fab58163825caefc6d05554ba1b9de4039485bcd94f3a5e58",
+    "case_file": "06-aircargo-expedition-mawb-hawb.json",
+    "case_id": "aircargo-expedition-mawb-hawb",
+    "class": "good",
+    "classic": {
+     "score": 100,
+     "source": "llm"
+    },
+    "item": 26,
+    "n": 39,
+    "prompt_file": "016-stream.txt",
+    "prompt_sha256": "1adeac8c01852a00951ff875422651576fe207ab748bc42d1635d044495390df",
+    "run": "v4-aircargo-b03"
+   },
+   {
+    "answer_sha256": "8e6b9f3146c33d1ae062fe013b1c876f6b5eca9125774270002eb98d3d981776",
+    "case_file": "07-aircargo-expedition-risks.json",
+    "case_id": "aircargo-expedition-risks",
+    "class": "good",
+    "classic": {
+     "score": 100,
+     "source": "llm"
+    },
+    "item": 27,
+    "n": 40,
+    "prompt_file": "019-stream.txt",
+    "prompt_sha256": "89a3eb611e35a4fdd59c5408ab07826cfd997d575a294b81deaf8bb4d413ae45",
+    "run": "v4-aircargo-b03"
+   },
+   {
+    "answer_sha256": "8f5542f367895e477c00746683919bab761392e97dee008a106456c3934f3597",
+    "case_file": "08-aircargo-road-cutoff.json",
+    "case_id": "aircargo-road-cutoff",
+    "class": "good",
+    "classic": {
+     "score": 100,
+     "source": "llm"
+    },
+    "item": 28,
+    "n": 41,
+    "prompt_file": "022-stream.txt",
+    "prompt_sha256": "ce3398e9f736543d2269b563a3ac915fb45a15a0496865e302abc271d02e5c22",
+    "run": "v4-aircargo-b03"
+   },
+   {
+    "answer_sha256": "305d93d3ed37e3d889688e7b1f666f5d3414582013341535aefdeddbab458f5b",
+    "case_file": "09-aircargo-road-penalty.json",
+    "case_id": "aircargo-road-penalty",
+    "class": "good",
+    "classic": {
+     "score": 100,
+     "source": "llm"
+    },
+    "item": 29,
+    "n": 42,
+    "prompt_file": "025-stream.txt",
+    "prompt_sha256": "d7b29f0057581e02d7d8e8939f9d89a3dc0c6334072a4b6247c91eb0f38dfcc2",
+    "run": "v4-aircargo-b03"
+   },
+   {
+    "answer_sha256": "379f4a18913acaf2f99d5eecbf0fc5f2a18977712eed42048eeb74b5216011fa",
+    "case_file": "10-aircargo-road-seal.json",
+    "case_id": "aircargo-road-seal",
+    "class": "good",
+    "classic": {
+     "score": 100,
+     "source": "llm"
+    },
+    "item": 30,
+    "n": 43,
+    "prompt_file": "028-stream.txt",
+    "prompt_sha256": "2ecc6537697ca5ca3489ec24595eb8e57a67b4cb798550d145011004e5f2dcbc",
+    "run": "v4-aircargo-b03"
+   },
+   {
+    "answer_sha256": "21dfe81d4d91bae5fb30063fd0adb047bb700f47067d3edd8fc764b201d73443",
+    "case_file": "03-aircargo-business-trip-foreign-approval.json",
+    "case_id": "aircargo-business-trip-foreign-approval",
+    "class": "good",
+    "classic": {
+     "score": 100,
+     "source": "llm"
+    },
+    "item": 33,
+    "n": 44,
+    "prompt_file": "007-stream.txt",
+    "prompt_sha256": "088d7b1e23a1a94076236fd52b71b57620eeda64651ee72096210824a7acc528",
+    "run": "v4-aircargo-b04"
+   },
+   {
+    "answer_sha256": "765c55f280ad3dbbdcc89e163e064bb3180698c542870b2c46840990ad138bb2",
+    "case_file": "04-aircargo-remote-work-monitoring-limits.json",
+    "case_id": "aircargo-remote-work-monitoring-limits",
+    "class": "good",
+    "classic": {
+     "score": 100,
+     "source": "llm"
+    },
+    "item": 34,
+    "n": 45,
+    "prompt_file": "010-stream.txt",
+    "prompt_sha256": "b4acdc36435a873bca1f0230d05a0dba661a08766d8f1fe2570ea92162bb6c81",
+    "run": "v4-aircargo-b04"
+   },
+   {
+    "answer_sha256": "215084d9655e75bfedb825bf9e4420853a6eedb9d60fad3437730870d5f39e4e",
+    "case_file": "05-aircargo-remote-work-equipment-compensation.json",
+    "case_id": "aircargo-remote-work-equipment-compensation",
+    "class": "good",
+    "classic": {
+     "score": 100,
+     "source": "llm"
+    },
+    "item": 35,
+    "n": 46,
+    "prompt_file": "013-stream.txt",
+    "prompt_sha256": "c0bd563f01753bc0dca83cfc76d8291f9880217b5f06df04ca93ca71b6541b53",
+    "run": "v4-aircargo-b04"
+   },
+   {
+    "answer_sha256": "3e6967e844a132dad0c1dab3e48999cf9af6a9ae0fd86a1bcbb09a7fb5205c25",
+    "case_file": "06-aircargo-maternity-duration-normal.json",
+    "case_id": "aircargo-maternity-duration-normal",
+    "class": "good",
+    "classic": {
+     "score": 100,
+     "source": "llm"
+    },
+    "item": 36,
+    "n": 47,
+    "prompt_file": "016-stream.txt",
+    "prompt_sha256": "a9bda8b03135767b9188e98534778c3cab871613c4b0dcd534a1bcb8ec19fdd6",
+    "run": "v4-aircargo-b04"
+   },
+   {
+    "answer_sha256": "f349f87ba30a19d2ca27d28cdb2d2bd9f5f661915cbd3ebf62639f130af36042",
+    "case_file": "07-aircargo-maternity-dismissal-ban.json",
+    "case_id": "aircargo-maternity-dismissal-ban",
+    "class": "good",
+    "classic": {
+     "score": 100,
+     "source": "llm"
+    },
+    "item": 37,
+    "n": 48,
+    "prompt_file": "019-stream.txt",
+    "prompt_sha256": "b9b249226f9493d155657b4db10fe2084bfc3a3b8d8908ffafabde29e23feec6",
+    "run": "v4-aircargo-b04"
+   },
+   {
+    "answer_sha256": "ec088170bb306738d5917dc259fdbc39168b2d22d3c383d2ae6add613ff00a9f",
+    "case_file": "08-aircargo-internal-transfer-consent.json",
+    "case_id": "aircargo-internal-transfer-consent",
+    "class": "good",
+    "classic": {
+     "score": 100,
+     "source": "llm"
+    },
+    "item": 38,
+    "n": 49,
+    "prompt_file": "022-stream.txt",
+    "prompt_sha256": "505c219251660dfd81a3afacab38c7c933af5ff2fd625678bfc20552fa5d556a",
+    "run": "v4-aircargo-b04"
+   },
+   {
+    "answer_sha256": "3e63baa20c225e36d2c7f3def94963416253d921da5b531f8e93833bcdb544a9",
+    "case_file": "09-aircargo-internal-transfer-documents.json",
+    "case_id": "aircargo-internal-transfer-documents",
+    "class": "good",
+    "classic": {
+     "score": 100,
+     "source": "llm"
+    },
+    "item": 39,
+    "n": 50,
+    "prompt_file": "025-stream.txt",
+    "prompt_sha256": "f4a7caee351e250f5340e993d32e28e6c1dd86b1bf29242500cfdfa0f249214b",
+    "run": "v4-aircargo-b04"
+   },
+   {
+    "answer_sha256": "9e15c3a6a41a7ec00060569e917b50cccf8f49a790d6fff430cf1c57492fc97a",
+    "case_file": "03-aircargo-dangerous-goods-fields.json",
+    "case_id": "aircargo-dangerous-goods-fields",
+    "class": "good",
+    "classic": {
+     "score": 100,
+     "source": "llm"
+    },
+    "item": 43,
+    "n": 51,
+    "prompt_file": "006-stream.txt",
+    "prompt_sha256": "364da9c1b0af33a286b8547dedc7aadeeb1512fae14bb638af4acfbd6892ab13",
+    "run": "v4-aircargo-b05"
+   },
+   {
+    "answer_sha256": "cc96a52834fa8eeca43796c2d29bd39241c9955bb443b6dfd91365d8fbd55277",
+    "case_file": "05-aircargo-customs-clearance-fields.json",
+    "case_id": "aircargo-customs-clearance-fields",
+    "class": "good",
+    "classic": {
+     "score": 100,
+     "source": "llm"
+    },
+    "item": 45,
+    "n": 52,
+    "prompt_file": "012-stream.txt",
+    "prompt_sha256": "86565ad394fdabaca5c99557cfe44588c80521c5ea13d5bc0e39d4161a862794",
+    "run": "v4-aircargo-b05"
+   },
+   {
+    "answer_sha256": "1c77feb9aaccd889d60aad1502e5c7b3123a03b099397b6bb87724f8ffb812b9",
+    "case_file": "10-aircargo-trade-compliance-screening.json",
+    "case_id": "aircargo-trade-compliance-screening",
+    "class": "good",
+    "classic": {
+     "score": 100,
+     "source": "llm"
+    },
+    "item": 50,
+    "n": 53,
+    "prompt_file": "027-stream.txt",
+    "prompt_sha256": "61736699b89b1f059c52b9021b27e7e89c2ba4066f577a999ceefa701add199e",
+    "run": "v4-aircargo-b05"
+   },
+   {
+    "answer_sha256": "84f7abe2aecd13fa6af69909b27a02f58a2db0b1ffa27ffb532fffd8248309b5",
+    "case_file": "01-aircargo-incident-response-bridge.json",
+    "case_id": "aircargo-incident-response-bridge",
+    "class": "good",
+    "classic": {
+     "score": 100,
+     "source": "llm"
+    },
+    "item": 51,
+    "n": 54,
+    "prompt_file": "001-stream.txt",
+    "prompt_sha256": "2c907ff976650e7b33fda195812cbeafae0fa2355af0539166c0f4592e6a0459",
+    "run": "v4-aircargo-b06"
+   },
+   {
+    "answer_sha256": "57c4b97959bfe9feb3e0b1a9e52a240f99491a121f19ff5f014cd9ddca219510",
+    "case_file": "02-aircargo-incident-response-required-fields.json",
+    "case_id": "aircargo-incident-response-required-fields",
+    "class": "good",
+    "classic": {
+     "score": 100,
+     "source": "llm"
+    },
+    "item": 52,
+    "n": 55,
+    "prompt_file": "004-stream.txt",
+    "prompt_sha256": "9619307db43dde4aed2cac4026aad49f679a8b062b3befbfed6526d2648fa3b2",
+    "run": "v4-aircargo-b06"
+   },
+   {
+    "answer_sha256": "0ddb8675e2b9273d030c657af50b5ff45734af4395ad85b73b1fbdf756b64aa0",
+    "case_file": "03-aircargo-access-control-need-to-know.json",
+    "case_id": "aircargo-access-control-need-to-know",
+    "class": "good",
+    "classic": {
+     "score": 100,
+     "source": "llm"
+    },
+    "item": 53,
+    "n": 56,
+    "prompt_file": "007-stream.txt",
+    "prompt_sha256": "7ffc1d568246954983634be3bf4173f6ed861f44db67eeecc479ab2120b50300",
+    "run": "v4-aircargo-b06"
+   },
+   {
+    "answer_sha256": "2177d5dfad3b65c9160fb0cbedaaca0b480aa63ce040de140d426cd36c0eb36a",
+    "case_file": "06-aircargo-employment-contract-special-form.json",
+    "case_id": "aircargo-employment-contract-special-form",
+    "class": "good",
+    "classic": {
+     "score": 95,
+     "source": "llm"
+    },
+    "item": 56,
+    "n": 57,
+    "prompt_file": "015-stream.txt",
+    "prompt_sha256": "9c622fc051373d22601a6e3737d4d709c2f61f6b1b77939cdc5eaea80601dd74",
+    "run": "v4-aircargo-b06"
+   },
+   {
+    "answer_sha256": "7a4dbe6376492b255259599787d38a37af3ddb7cb6ae668e30e6da64cf0a5c8d",
+    "case_file": "08-aircargo-driver-dangerous-goods-refusal.json",
+    "case_id": "aircargo-driver-dangerous-goods-refusal",
+    "class": "good",
+    "classic": {
+     "score": 95,
+     "source": "llm"
+    },
+    "item": 58,
+    "n": 58,
+    "prompt_file": "021-stream.txt",
+    "prompt_sha256": "9295164119a60f35b2c7197c3ab54c0baf37d11886c9ba620e726a08740fc9ef",
+    "run": "v4-aircargo-b06"
+   },
+   {
+    "answer_sha256": "6d9392f64df114e157a11610ba38a5c3de3553ebf5c69d7e65d05f90bc90c0eb",
+    "case_file": "10-aircargo-sick-leave-lawyer-escalation.json",
+    "case_id": "aircargo-sick-leave-lawyer-escalation",
+    "class": "good",
+    "classic": {
+     "score": 100,
+     "source": "llm"
+    },
+    "item": 60,
+    "n": 59,
+    "prompt_file": "027-stream.txt",
+    "prompt_sha256": "80b6918f924886397b5ff663972995384f9e64de69d82c65c78061fe6142093f",
+    "run": "v4-aircargo-b06"
+   },
+   {
+    "answer_sha256": "ecc1e3515b753abcc734d45a667f93cce35654d96002de0a6c3bb6a78fdc6899",
+    "case_file": "02-aircargo-cargo-loss-required-fields.json",
+    "case_id": "aircargo-cargo-loss-required-fields",
+    "class": "good",
+    "classic": {
+     "score": 100,
+     "source": "llm"
+    },
+    "item": 62,
+    "n": 60,
+    "prompt_file": "004-stream.txt",
+    "prompt_sha256": "bb40103ab2446662823d98efe629809dd0ea09c64551705cd1f9007c375b0370",
+    "run": "v4-aircargo-b07"
+   },
+   {
+    "answer_sha256": "1b9f53f3c61c56d08b8908f8aee9b4771c8d5bde5174149a3ed8c81d6a6a3043",
+    "case_file": "03-aircargo-late-delivery-reply-evidence.json",
+    "case_id": "aircargo-late-delivery-reply-evidence",
+    "class": "good",
+    "classic": {
+     "score": 100,
+     "source": "llm"
+    },
+    "item": 63,
+    "n": 61,
+    "prompt_file": "007-stream.txt",
+    "prompt_sha256": "23aa3e243812d322a74996955f529d047d67c79159a85a15902ae7f27f11b5f4",
+    "run": "v4-aircargo-b07"
+   },
+   {
+    "answer_sha256": "6dae884162156bc4f1c1a522088ccf4a29cc9933c5f33244deacbb913cdf49f1",
+    "case_file": "06-aircargo-driver-hours-terminal-discrepancy.json",
+    "case_id": "aircargo-driver-hours-terminal-discrepancy",
+    "class": "good",
+    "classic": {
+     "score": 100,
+     "source": "llm"
+    },
+    "item": 66,
+    "n": 62,
+    "prompt_file": "016-stream.txt",
+    "prompt_sha256": "00ff4b43ba581e1e16154d2c25ee76ecc96f56354ccc0432107984725eb6ceb5",
+    "run": "v4-aircargo-b07"
+   },
+   {
+    "answer_sha256": "dc1f37639b4d1fb4ef02e8d2909dff87af7d92995eea964700d4838c4f506338",
+    "case_file": "07-aircargo-warehouse-3pl-required-fields.json",
+    "case_id": "aircargo-warehouse-3pl-required-fields",
+    "class": "good",
+    "classic": {
+     "score": 100,
+     "source": "llm"
+    },
+    "item": 67,
+    "n": 63,
+    "prompt_file": "019-stream.txt",
+    "prompt_sha256": "7fdc60d3ce43d9ea3c3ed7ffc14b9ec63a499645826851bca6092b3b205af6c7",
+    "run": "v4-aircargo-b07"
+   },
+   {
+    "answer_sha256": "9806d07abb4366f809eaa2d4d032eab664b7a8a9070bc560316dd87b9b876984",
+    "case_file": "10-aircargo-perishable-special-cargo-evidence.json",
+    "case_id": "aircargo-perishable-special-cargo-evidence",
+    "class": "good",
+    "classic": {
+     "score": 100,
+     "source": "llm"
+    },
+    "item": 70,
+    "n": 64,
+    "prompt_file": "028-stream.txt",
+    "prompt_sha256": "35a3a8aa2581285cf1367c4910c30b29c13a9ff56bd1144dc2ca4f78ea4573db",
+    "run": "v4-aircargo-b07"
+   },
+   {
+    "answer_sha256": "e9c91b5e711c1b7f29ecd5887a834aa0e9c22951d7d632a9486ee641139a4b3c",
+    "case_file": "04-aircargo-data-retention-required-fields.json",
+    "case_id": "aircargo-data-retention-required-fields",
+    "class": "good",
+    "classic": {
+     "score": 100,
+     "source": "llm"
+    },
+    "item": 74,
+    "n": 65,
+    "prompt_file": "010-stream.txt",
+    "prompt_sha256": "9c4aeb2d9c39f708abe648f038bbfdfa3968103642b6b83619dab47b86edb973",
+    "run": "v4-aircargo-b08"
+   },
+   {
+    "answer_sha256": "e0da64653964e0b7ee88c6ea39b950b8d05623aab26f3f06c876a59f33753f04",
+    "case_file": "06-aircargo-subject-rights-required-fields.json",
+    "case_id": "aircargo-subject-rights-required-fields",
+    "class": "good",
+    "classic": {
+     "score": 100,
+     "source": "llm"
+    },
+    "item": 76,
+    "n": 66,
+    "prompt_file": "016-stream.txt",
+    "prompt_sha256": "48e71db2973371fbc36c91270601987e8c8487dc2b55fbdef0d2d17fcb235312",
+    "run": "v4-aircargo-b08"
+   },
+   {
+    "answer_sha256": "2c027c7c9e69e02d6d8b99a19aac7c4f4f7331311ea98f2250a13cc57e069b8b",
+    "case_file": "08-aircargo-customs-broker-escalation.json",
+    "case_id": "aircargo-customs-broker-escalation",
+    "class": "good",
+    "classic": {
+     "score": 100,
+     "source": "llm"
+    },
+    "item": 78,
+    "n": 67,
+    "prompt_file": "022-stream.txt",
+    "prompt_sha256": "8b5500e406f4b0590f34b23fa2a1baba85e24e9bf05ca94322614058404c3ad1",
+    "run": "v4-aircargo-b08"
+   },
+   {
+    "answer_sha256": "1bf08223392edce0aee0360e5167d9dde2bc350a31bcf31255b62f10a9a19b53",
+    "case_file": "09-aircargo-salary-payment-dates.json",
+    "case_id": "aircargo-salary-payment-dates",
+    "class": "good",
+    "classic": {
+     "score": 100,
+     "source": "llm"
+    },
+    "item": 79,
+    "n": 68,
+    "prompt_file": "025-stream.txt",
+    "prompt_sha256": "c88b10feee10f2a5eaf2ff666a3f389aa99c28b095410a3abd3890a02c02f211",
+    "run": "v4-aircargo-b08"
+   },
+   {
+    "answer_sha256": "22511ec18f6f18dce6a30c85da187bc4a97d7ae8f85ea911e7115c44f457e80a",
+    "case_file": "02-aircargo-overtime-protected-categories.json",
+    "case_id": "aircargo-overtime-protected-categories",
+    "class": "good",
+    "classic": {
+     "score": 100,
+     "source": "llm"
+    },
+    "item": 82,
+    "n": 69,
+    "prompt_file": "004-stream.txt",
+    "prompt_sha256": "713ccb5bccf6580ad7296a79ba8fa8d3c8d0e4914f742952d7ae6beb19d33175",
+    "run": "v4-aircargo-b09"
+   },
+   {
+    "answer_sha256": "fd0dabbdf416a5cd7b9b342b8d5dac74431f324dcf0f095627eda78b9c262c5b",
+    "case_file": "03-aircargo-harassment-complaint-data.json",
+    "case_id": "aircargo-harassment-complaint-data",
+    "class": "good",
+    "classic": {
+     "score": 100,
+     "source": "llm"
+    },
+    "item": 83,
+    "n": 70,
+    "prompt_file": "007-stream.txt",
+    "prompt_sha256": "15006a484d72e6fbe231f77f843deda753d3f1172094a08c5b107ec8b0b65e19",
+    "run": "v4-aircargo-b09"
+   },
+   {
+    "answer_sha256": "d56a858f66504fc8c3d438fa9b252d4aedf3a46ad82f034416161e8023cdd261",
+    "case_file": "04-aircargo-harassment-investigation-timeline.json",
+    "case_id": "aircargo-harassment-investigation-timeline",
+    "class": "good",
+    "classic": {
+     "score": 100,
+     "source": "llm"
+    },
+    "item": 84,
+    "n": 71,
+    "prompt_file": "010-stream.txt",
+    "prompt_sha256": "8ea103675b63306d00ba1628d5cc37544296baf2bf84a2d91bb1f8a6b8fc3584",
+    "run": "v4-aircargo-b09"
+   },
+   {
+    "answer_sha256": "2ce4d8d797e80574aac9aaa3dfe977dcace61d17ce1e831bde90a0c9c40158d5",
+    "case_file": "05-aircargo-conflict-interest-disclosure.json",
+    "case_id": "aircargo-conflict-interest-disclosure",
+    "class": "good",
+    "classic": {
+     "score": 100,
+     "source": "llm"
+    },
+    "item": 85,
+    "n": 72,
+    "prompt_file": "013-stream.txt",
+    "prompt_sha256": "fb3a135ca9eafc2247ebf2d6f122241fd77763d0a97029f9021e154e72469c5e",
+    "run": "v4-aircargo-b09"
+   },
+   {
+    "answer_sha256": "e972bedb40bc885104eaec5540b98345f513bc17e8713da8d00811635844743c",
+    "case_file": "06-aircargo-conflict-interest-sanctions.json",
+    "case_id": "aircargo-conflict-interest-sanctions",
+    "class": "good",
+    "classic": {
+     "score": 100,
+     "source": "llm"
+    },
+    "item": 86,
+    "n": 73,
+    "prompt_file": "016-stream.txt",
+    "prompt_sha256": "839ca026b594fb408ae6410ab59930a9d36351895adcfbd1c62b1ba822eed194",
+    "run": "v4-aircargo-b09"
+   },
+   {
+    "answer_sha256": "239dfe7d42719be0eb1d055505ea1b47ca18da08df2d49d1a002303ef3d9c554",
+    "case_file": "10-aircargo-fuel-supply-required-fields.json",
+    "case_id": "aircargo-fuel-supply-required-fields",
+    "class": "good",
+    "classic": {
+     "score": 100,
+     "source": "llm"
+    },
+    "item": 90,
+    "n": 74,
+    "prompt_file": "028-stream.txt",
+    "prompt_sha256": "ef8872d621445be5cead801f6305c171dbaf8d7f8da474608dce12968902cd7e",
+    "run": "v4-aircargo-b09"
+   },
+   {
+    "answer_sha256": "35581533c0852f9cd9d456ca95a73a24064a361084651c17f551f618ec473d7b",
+    "case_file": "02-aircargo-gps-monitoring-scope.json",
+    "case_id": "aircargo-gps-monitoring-scope",
+    "class": "good",
+    "classic": {
+     "score": 100,
+     "source": "llm"
+    },
+    "item": 92,
+    "n": 75,
+    "prompt_file": "004-stream.txt",
+    "prompt_sha256": "5ec15864001e88cafc1b2663fab26cb0a6c9b013226bf55cd1519411fddfd4af",
+    "run": "v4-aircargo-b10"
+   },
+   {
+    "answer_sha256": "b4bd8f122a5b78fd360ccbd25ab0a793b82621510b4a8aba1fb475f0319b3209",
+    "case_file": "04-aircargo-weight-control-discrepancy.json",
+    "case_id": "aircargo-weight-control-discrepancy",
+    "class": "good",
+    "classic": {
+     "score": 100,
+     "source": "llm"
+    },
+    "item": 94,
+    "n": 76,
+    "prompt_file": "010-stream.txt",
+    "prompt_sha256": "8d4da43c29e4c8c3513c408f760b326a935865176cbdb48bdf7239e34550a237",
+    "run": "v4-aircargo-b10"
+   },
+   {
+    "answer_sha256": "9017d3578f55d9f9d7db3a8e75baa56435373d54defde283dc516b45d0d665b2",
+    "case_file": "05-aircargo-cross-border-required-fields.json",
+    "case_id": "aircargo-cross-border-required-fields",
+    "class": "good",
+    "classic": {
+     "score": 100,
+     "source": "llm"
+    },
+    "item": 95,
+    "n": 77,
+    "prompt_file": "013-stream.txt",
+    "prompt_sha256": "8145f39907360cd6fa3cde33d023c8c9d0bd0335c982cf4a63acc8c9957083da",
+    "run": "v4-aircargo-b10"
+   },
+   {
+    "answer_sha256": "a92f2b6ca4f25e91b02f8cb5f630a3eaefb6fb4b8ef2b6eaeb9d056e886a9b8c",
+    "case_file": "07-aircargo-breach-notification-required-fields.json",
+    "case_id": "aircargo-breach-notification-required-fields",
+    "class": "good",
+    "classic": {
+     "score": 100,
+     "source": "llm"
+    },
+    "item": 97,
+    "n": 78,
+    "prompt_file": "019-stream.txt",
+    "prompt_sha256": "59e00826a165de10ab6e18a01b8773f7db3050f88dc0ff5f1aa6ad7526600d7e",
+    "run": "v4-aircargo-b10"
+   },
+   {
+    "answer_sha256": "39847789936b991bdd6939260d5f39f53c89d062718d44bbc0d5b3fbfe159903",
+    "case_file": "08-aircargo-breach-notification-participants.json",
+    "case_id": "aircargo-breach-notification-participants",
+    "class": "good",
+    "classic": {
+     "score": 95,
+     "source": "llm"
+    },
+    "item": 98,
+    "n": 79,
+    "prompt_file": "022-stream.txt",
+    "prompt_sha256": "2cd2095cf7ff9a822c424a951013534f7d5798cccfe9ea18f5c6e3078858144a",
+    "run": "v4-aircargo-b10"
+   },
+   {
+    "answer_sha256": "ea9f1ac07b2b0d0b097c1a142e82bb57af2ab0de42a73df3a4dfa63eb75bddb6",
+    "case_file": "09-aircargo-cross-border-pdn-required-fields.json",
+    "case_id": "aircargo-cross-border-pdn-required-fields",
+    "class": "good",
+    "classic": {
+     "score": 100,
+     "source": "llm"
+    },
+    "item": 99,
+    "n": 80,
+    "prompt_file": "025-stream.txt",
+    "prompt_sha256": "a4a14c6515c2606297fd1c3e7561da8739d9f0da7f66747e843d2487b3dd686e",
+    "run": "v4-aircargo-b10"
+   }
+  ],
+  "classes_hold": true,
+  "classic": {
+   "at_80": {
+    "caught": 2,
+    "over_marked": 0
+   },
+   "under_100": {
+    "caught": 3,
+    "over_marked": 4
+   }
+  },
+  "classic_holds": true,
+  "goods": 63,
+  "labels": "/Users/julia/RAG_new_chat_57420db/reports/answer-prompt-v4/4f48fed/v4-aircargo-judge.cases.jsonl",
+  "notes": [],
+  "plan": "/Users/julia/RAG_new_chat_57420db/reports/handover-signal/d260d95/plan.json",
+  "sha256": {
+   "labels": "a1413cbadc5b7f1e629f9ad16ca77c7baba36870122c21a678a5dfd57b1b6718",
+   "plan": "30e0a598e6f6edabd7d72ac64b4ce4923655ed9845c5852f02107e345e9df16e"
+  },
+  "targets": 17,
+  "unjudged": 0
+ },
+ "labels": {
+  "dir": "/Users/julia/RAG_new_chat_57420db/step2b/labels",
+  "failures": [],
+  "gate": {
+   "classes": true,
+   "classic": true,
+   "environment": false,
+   "failures": false,
+   "input_files": true,
+   "inputs": false,
+   "launch": false,
+   "lines": false,
+   "passed": false,
+   "segments": false,
+   "tools": false
+  },
+  "launch": {},
+  "lines": [],
+  "notes": [
+   "labels: no readable launch.json",
+   "labels lines: not readable",
+   "labels: 0 lines for 80 answers",
+   "labels segments: no segments, or one unreadable",
+   "labels environment: fewer than two environment lines",
+   "labels environment: no times to set the lines beside the phase"
+  ],
+  "sha256": {
+   "continuations.jsonl": null,
+   "failures.jsonl": null,
+   "launch.json": null
+  }
+ },
+ "pairs": [
+  {
+   "case_id": "aircargo-probation-data",
+   "class": "target",
+   "n": 1,
+   "readable": false,
+   "run": "v4-aircargo-b01",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-probation-extend",
+   "class": "target",
+   "n": 2,
+   "readable": false,
+   "run": "v4-aircargo-b01",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-secret-check",
+   "class": "target",
+   "n": 3,
+   "readable": false,
+   "run": "v4-aircargo-b02",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-contract-termination-open-awb",
+   "class": "target",
+   "n": 4,
+   "readable": false,
+   "run": "v4-aircargo-b04",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-contract-termination-fields",
+   "class": "target",
+   "n": 5,
+   "readable": false,
+   "run": "v4-aircargo-b05",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-road-contract-aircargo-fields",
+   "class": "target",
+   "n": 6,
+   "readable": false,
+   "run": "v4-aircargo-b05",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-dangerous-goods-clearance",
+   "class": "target",
+   "n": 7,
+   "readable": false,
+   "run": "v4-aircargo-b05",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-waybill-first-mile-fields",
+   "class": "target",
+   "n": 8,
+   "readable": false,
+   "run": "v4-aircargo-b05",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-sick-leave-required-fields",
+   "class": "target",
+   "n": 9,
+   "readable": false,
+   "run": "v4-aircargo-b06",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-driver-hours-required-fields",
+   "class": "target",
+   "n": 10,
+   "readable": false,
+   "run": "v4-aircargo-b07",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-oversized-permit-route",
+   "class": "target",
+   "n": 11,
+   "readable": false,
+   "run": "v4-aircargo-b08",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-oversized-manual-check",
+   "class": "target",
+   "n": 12,
+   "readable": false,
+   "run": "v4-aircargo-b08",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-customs-broker-evidence",
+   "class": "target",
+   "n": 13,
+   "readable": false,
+   "run": "v4-aircargo-b08",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-cargo-insurance-evidence",
+   "class": "target",
+   "n": 14,
+   "readable": false,
+   "run": "v4-aircargo-b09",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-gps-monitoring-required-fields",
+   "class": "target",
+   "n": 15,
+   "readable": false,
+   "run": "v4-aircargo-b10",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-weight-control-required-fields",
+   "class": "target",
+   "n": 16,
+   "readable": false,
+   "run": "v4-aircargo-b10",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-cross-border-special-cargo",
+   "class": "target",
+   "n": 17,
+   "readable": false,
+   "run": "v4-aircargo-b10",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-probation-dismissal",
+   "class": "good",
+   "n": 18,
+   "readable": false,
+   "run": "v4-aircargo-b01",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-dismissal-check",
+   "class": "good",
+   "n": 19,
+   "readable": false,
+   "run": "v4-aircargo-b01",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-dismissal-lawyer",
+   "class": "good",
+   "n": 20,
+   "readable": false,
+   "run": "v4-aircargo-b01",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-dismissal-order",
+   "class": "good",
+   "n": 21,
+   "readable": false,
+   "run": "v4-aircargo-b01",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-leave-sources",
+   "class": "good",
+   "n": 22,
+   "readable": false,
+   "run": "v4-aircargo-b01",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-leave-compensation",
+   "class": "good",
+   "n": 23,
+   "readable": false,
+   "run": "v4-aircargo-b01",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-leave-risk",
+   "class": "good",
+   "n": 24,
+   "readable": false,
+   "run": "v4-aircargo-b01",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-matliab-check",
+   "class": "good",
+   "n": 25,
+   "readable": false,
+   "run": "v4-aircargo-b01",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-matliab-disputed",
+   "class": "good",
+   "n": 26,
+   "readable": false,
+   "run": "v4-aircargo-b02",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-templates-choose",
+   "class": "good",
+   "n": 27,
+   "readable": false,
+   "run": "v4-aircargo-b02",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-templates-insufficient",
+   "class": "good",
+   "n": 28,
+   "readable": false,
+   "run": "v4-aircargo-b02",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-secret-not-auto",
+   "class": "good",
+   "n": 29,
+   "readable": false,
+   "run": "v4-aircargo-b02",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-secret-disclosure",
+   "class": "good",
+   "n": 30,
+   "readable": false,
+   "run": "v4-aircargo-b02",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-pdp-scope",
+   "class": "good",
+   "n": 31,
+   "readable": false,
+   "run": "v4-aircargo-b02",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-pdp-data",
+   "class": "good",
+   "n": 32,
+   "readable": false,
+   "run": "v4-aircargo-b02",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-pdp-uncertain",
+   "class": "good",
+   "n": 33,
+   "readable": false,
+   "run": "v4-aircargo-b02",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-claims-delay",
+   "class": "good",
+   "n": 34,
+   "readable": false,
+   "run": "v4-aircargo-b03",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-claims-damage",
+   "class": "good",
+   "n": 35,
+   "readable": false,
+   "run": "v4-aircargo-b03",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-claims-lawyer",
+   "class": "good",
+   "n": 36,
+   "readable": false,
+   "run": "v4-aircargo-b03",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-claims-forbidden",
+   "class": "good",
+   "n": 37,
+   "readable": false,
+   "run": "v4-aircargo-b03",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-expedition-vs-carrier",
+   "class": "good",
+   "n": 38,
+   "readable": false,
+   "run": "v4-aircargo-b03",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-expedition-mawb-hawb",
+   "class": "good",
+   "n": 39,
+   "readable": false,
+   "run": "v4-aircargo-b03",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-expedition-risks",
+   "class": "good",
+   "n": 40,
+   "readable": false,
+   "run": "v4-aircargo-b03",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-road-cutoff",
+   "class": "good",
+   "n": 41,
+   "readable": false,
+   "run": "v4-aircargo-b03",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-road-penalty",
+   "class": "good",
+   "n": 42,
+   "readable": false,
+   "run": "v4-aircargo-b03",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-road-seal",
+   "class": "good",
+   "n": 43,
+   "readable": false,
+   "run": "v4-aircargo-b03",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-business-trip-foreign-approval",
+   "class": "good",
+   "n": 44,
+   "readable": false,
+   "run": "v4-aircargo-b04",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-remote-work-monitoring-limits",
+   "class": "good",
+   "n": 45,
+   "readable": false,
+   "run": "v4-aircargo-b04",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-remote-work-equipment-compensation",
+   "class": "good",
+   "n": 46,
+   "readable": false,
+   "run": "v4-aircargo-b04",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-maternity-duration-normal",
+   "class": "good",
+   "n": 47,
+   "readable": false,
+   "run": "v4-aircargo-b04",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-maternity-dismissal-ban",
+   "class": "good",
+   "n": 48,
+   "readable": false,
+   "run": "v4-aircargo-b04",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-internal-transfer-consent",
+   "class": "good",
+   "n": 49,
+   "readable": false,
+   "run": "v4-aircargo-b04",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-internal-transfer-documents",
+   "class": "good",
+   "n": 50,
+   "readable": false,
+   "run": "v4-aircargo-b04",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-dangerous-goods-fields",
+   "class": "good",
+   "n": 51,
+   "readable": false,
+   "run": "v4-aircargo-b05",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-customs-clearance-fields",
+   "class": "good",
+   "n": 52,
+   "readable": false,
+   "run": "v4-aircargo-b05",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-trade-compliance-screening",
+   "class": "good",
+   "n": 53,
+   "readable": false,
+   "run": "v4-aircargo-b05",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-incident-response-bridge",
+   "class": "good",
+   "n": 54,
+   "readable": false,
+   "run": "v4-aircargo-b06",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-incident-response-required-fields",
+   "class": "good",
+   "n": 55,
+   "readable": false,
+   "run": "v4-aircargo-b06",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-access-control-need-to-know",
+   "class": "good",
+   "n": 56,
+   "readable": false,
+   "run": "v4-aircargo-b06",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-employment-contract-special-form",
+   "class": "good",
+   "n": 57,
+   "readable": false,
+   "run": "v4-aircargo-b06",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-driver-dangerous-goods-refusal",
+   "class": "good",
+   "n": 58,
+   "readable": false,
+   "run": "v4-aircargo-b06",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-sick-leave-lawyer-escalation",
+   "class": "good",
+   "n": 59,
+   "readable": false,
+   "run": "v4-aircargo-b06",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-cargo-loss-required-fields",
+   "class": "good",
+   "n": 60,
+   "readable": false,
+   "run": "v4-aircargo-b07",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-late-delivery-reply-evidence",
+   "class": "good",
+   "n": 61,
+   "readable": false,
+   "run": "v4-aircargo-b07",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-driver-hours-terminal-discrepancy",
+   "class": "good",
+   "n": 62,
+   "readable": false,
+   "run": "v4-aircargo-b07",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-warehouse-3pl-required-fields",
+   "class": "good",
+   "n": 63,
+   "readable": false,
+   "run": "v4-aircargo-b07",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-perishable-special-cargo-evidence",
+   "class": "good",
+   "n": 64,
+   "readable": false,
+   "run": "v4-aircargo-b07",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-data-retention-required-fields",
+   "class": "good",
+   "n": 65,
+   "readable": false,
+   "run": "v4-aircargo-b08",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-subject-rights-required-fields",
+   "class": "good",
+   "n": 66,
+   "readable": false,
+   "run": "v4-aircargo-b08",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-customs-broker-escalation",
+   "class": "good",
+   "n": 67,
+   "readable": false,
+   "run": "v4-aircargo-b08",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-salary-payment-dates",
+   "class": "good",
+   "n": 68,
+   "readable": false,
+   "run": "v4-aircargo-b08",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-overtime-protected-categories",
+   "class": "good",
+   "n": 69,
+   "readable": false,
+   "run": "v4-aircargo-b09",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-harassment-complaint-data",
+   "class": "good",
+   "n": 70,
+   "readable": false,
+   "run": "v4-aircargo-b09",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-harassment-investigation-timeline",
+   "class": "good",
+   "n": 71,
+   "readable": false,
+   "run": "v4-aircargo-b09",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-conflict-interest-disclosure",
+   "class": "good",
+   "n": 72,
+   "readable": false,
+   "run": "v4-aircargo-b09",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-conflict-interest-sanctions",
+   "class": "good",
+   "n": 73,
+   "readable": false,
+   "run": "v4-aircargo-b09",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-fuel-supply-required-fields",
+   "class": "good",
+   "n": 74,
+   "readable": false,
+   "run": "v4-aircargo-b09",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-gps-monitoring-scope",
+   "class": "good",
+   "n": 75,
+   "readable": false,
+   "run": "v4-aircargo-b10",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-weight-control-discrepancy",
+   "class": "good",
+   "n": 76,
+   "readable": false,
+   "run": "v4-aircargo-b10",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-cross-border-required-fields",
+   "class": "good",
+   "n": 77,
+   "readable": false,
+   "run": "v4-aircargo-b10",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-breach-notification-required-fields",
+   "class": "good",
+   "n": 78,
+   "readable": false,
+   "run": "v4-aircargo-b10",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-breach-notification-participants",
+   "class": "good",
+   "n": 79,
+   "readable": false,
+   "run": "v4-aircargo-b10",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  },
+  {
+   "case_id": "aircargo-cross-border-pdn-required-fields",
+   "class": "good",
+   "n": 80,
+   "readable": false,
+   "run": "v4-aircargo-b10",
+   "unreadable": [
+    "the 80's gate did not pass",
+    "no line"
+   ]
+  }
+ ],
+ "readings": {
+  "bridge": {
+   "answer": "NOT_EVIDENCE",
+   "differ": [],
+   "max_routes_differ": 1,
+   "min_pairs": 10,
+   "printed_deciding_nothing": {
+    "by_outcome": {},
+    "by_run": {},
+    "cold": {
+     "median_counters": {
+      "eval_sec": null,
+      "eval_tokens": null,
+      "prompt_sec": null,
+      "prompt_tokens": null
+     },
+     "median_sec": null,
+     "scores": {}
+    },
+    "cold_minus_warm": {
+     "higher": 0,
+     "lower": 0,
+     "median_diff": null,
+     "same": 0
+    },
+    "equal": 0,
+    "routes": {},
+    "warm": {
+     "median_counters": {
+      "eval_sec": null,
+      "eval_tokens": null,
+      "prompt_sec": null,
+      "prompt_tokens": null
+     },
+     "median_sec": null,
+     "scores": {}
+    },
+    "warm_at_100": 0
+   },
+   "readable_pairs": 0,
+   "routes_differ": 0
+  },
+  "catches": {
+   "answer": "NOT_EVIDENCE",
+   "caught": {
+    "classic": [],
+    "effective": []
+   },
+   "classic": 0,
+   "effective": 0,
+   "of": 0
+  },
+  "over_marks": {
+   "answer": "NOT_EVIDENCE",
+   "classic": 0,
+   "effective": 0,
+   "margin": 1,
+   "of": 0,
+   "over_marked": {
+    "classic": [],
+    "effective": []
+   }
+  },
+  "printed_deciding_nothing": {
+   "continuation_alone": {
+    "goods": {
+     "flagged": 0,
+     "scored": 0
+    },
+    "targets": {
+     "flagged": 0,
+     "scored": 0
+    }
+   },
+   "continuation_scored": {
+    "higher": 0,
+    "lower": 0,
+    "median_diff": null,
+    "same": 0
+   },
+   "done_reasons": {},
+   "est_input_tokens": {
+    "max": null,
+    "median": null
+   },
+   "median_counters": {
+    "eval_sec": null,
+    "eval_tokens": null,
+    "prompt_sec": null,
+    "prompt_tokens": null
+   },
+   "median_score": {
+    "good": {
+     "classic": null,
+     "continuation": null,
+     "effective": null
+    },
+    "target": {
+     "classic": null,
+     "continuation": null,
+     "effective": null
+    }
+   },
+   "paired": {
+    "catches": {
+     "both": [],
+     "classic_only": [],
+     "effective_only": [],
+     "exact_p": 1.0,
+     "found": "no difference"
+    },
+    "over_marks": {
+     "both": [],
+     "classic_only": [],
+     "effective_only": [],
+     "exact_p": 1.0,
+     "found": "no difference"
+    }
+   },
+   "reloads": {
+    "before": [],
+    "load_sec": {
+     "max": null,
+     "median": null
+    },
+    "unload_sec": {
+     "max": null,
+     "median": null
+    }
+   },
+   "reply_chars": {},
+   "scores": {
+    "good": {
+     "classic": {},
+     "continuation": {},
+     "effective": {}
+    },
+    "target": {
+     "classic": {},
+     "continuation": {},
+     "effective": {}
+    }
+   },
+   "sec": {
+    "max": null,
+    "median": null,
+    "total": null
+   },
+   "under_100": {
+    "catches": {
+     "classic": 0,
+     "effective": 0
+    },
+    "over_marks": {
+     "classic": 0,
+     "effective": 0
+    }
+   },
+   "wilson": {
+    "caught": {
+     "classic": null,
+     "effective": null
+    },
+    "over_marked": {
+     "classic": null,
+     "effective": null
+    }
+   }
+  },
+  "scores": {
+   "answer": "NOT_EVIDENCE",
+   "by_outcome": {},
+   "max_no_score": 6,
+   "no_score": 0,
+   "no_score_answers": [],
+   "no_score_targets": 0,
+   "readable_pairs": 0
+  },
+  "signal": {
+   "answer": "NOT_EVIDENCE",
+   "of": {
+    "bridge": "NOT_EVIDENCE",
+    "catches": "NOT_EVIDENCE",
+    "over_marks": "NOT_EVIDENCE",
+    "scores": "NOT_EVIDENCE"
+   }
+  }
+ },
+ "schema": "stage4-step2b-reader/v1",
+ "spec": "docs/specs/stage4-step2b-continuation-labels.md",
+ "step2": {
+  "asks": [
+   {
+    "case_file": "01-aircargo-probation-data.json",
+    "case_id": "aircargo-probation-data",
+    "case_sha256": "c8c47faac45ac888267ad083e6c95f289fa205724ccfef485ee7327ce7c71da1",
+    "n": 1,
+    "run": "s2-both",
+    "warm": {
+     "eval_sec": 0.759778,
+     "eval_tokens": 4,
+     "prompt_sec": 8.104117,
+     "prompt_tokens": 2660,
+     "score": 100,
+     "sec": 9.035
+    }
+   },
+   {
+    "case_file": "02-aircargo-probation-extend.json",
+    "case_id": "aircargo-probation-extend",
+    "case_sha256": "a867f9b4d4f9f4d8121e78948e9da16a719184c202fb2689e817d477237f1eed",
+    "n": 2,
+    "run": "s2-both",
+    "warm": {
+     "eval_sec": 0.931187,
+     "eval_tokens": 3,
+     "prompt_sec": 9.387606,
+     "prompt_tokens": 2833,
+     "score": 95,
+     "sec": 10.622
+    }
+   },
+   {
+    "case_file": "03-aircargo-probation-dismissal.json",
+    "case_id": "aircargo-probation-dismissal",
+    "case_sha256": "4cf27defebce24e6a31f6c4f28881ec5e18c8024801697399a4f85195fd8cd3e",
+    "n": 3,
+    "run": "s2-both",
+    "warm": {
+     "eval_sec": 0.773666,
+     "eval_tokens": 4,
+     "prompt_sec": 12.555437,
+     "prompt_tokens": 2674,
+     "score": 100,
+     "sec": 14.0
+    }
+   },
+   {
+    "case_file": "04-aircargo-dismissal-check.json",
+    "case_id": "aircargo-dismissal-check",
+    "case_sha256": "a4b761b03853b34881825d8b3be1809d5a05c073185768b127fd1f724023293c",
+    "n": 4,
+    "run": "s2-both",
+    "warm": {
+     "eval_sec": 1.015364,
+     "eval_tokens": 4,
+     "prompt_sec": 8.602207,
+     "prompt_tokens": 2721,
+     "score": 100,
+     "sec": 10.17
+    }
+   },
+   {
+    "case_file": "05-aircargo-dismissal-lawyer.json",
+    "case_id": "aircargo-dismissal-lawyer",
+    "case_sha256": "dc065f219f9489a82f811fb0f804b947e6c3948b5dbc220cecab56e3e23fe7fc",
+    "n": 5,
+    "run": "s2-both",
+    "warm": {
+     "eval_sec": 2.518036,
+     "eval_tokens": 4,
+     "prompt_sec": 12.144472,
+     "prompt_tokens": 2593,
+     "score": 100,
+     "sec": 15.284
+    }
+   },
+   {
+    "case_file": "06-aircargo-dismissal-order.json",
+    "case_id": "aircargo-dismissal-order",
+    "case_sha256": "1849678a7da9670f122045b7ae11561eaf3bb99a3d8f23cd77e90ba81d4b9fd8",
+    "n": 6,
+    "run": "s2-both",
+    "warm": {
+     "eval_sec": 0.801533,
+     "eval_tokens": 4,
+     "prompt_sec": 8.189723,
+     "prompt_tokens": 2692,
+     "score": 100,
+     "sec": 9.254
+    }
+   },
+   {
+    "case_file": "07-aircargo-leave-sources.json",
+    "case_id": "aircargo-leave-sources",
+    "case_sha256": "59b4f32e0f9c7045e22df6d2932b3447f3848817c2cc0e96173bba6b913453e5",
+    "n": 7,
+    "run": "s2-both",
+    "warm": {
+     "eval_sec": 0.74922,
+     "eval_tokens": 4,
+     "prompt_sec": 7.973163,
+     "prompt_tokens": 2590,
+     "score": 100,
+     "sec": 8.962
+    }
+   },
+   {
+    "case_file": "08-aircargo-leave-compensation.json",
+    "case_id": "aircargo-leave-compensation",
+    "case_sha256": "c1e90c6f9faac5dd28a720aa982a447792654677ccb04ff2ee23955c764112bb",
+    "n": 8,
+    "run": "s2-both",
+    "warm": {
+     "eval_sec": 0.747242,
+     "eval_tokens": 4,
+     "prompt_sec": 7.874258,
+     "prompt_tokens": 2570,
+     "score": 100,
+     "sec": 8.847
+    }
+   },
+   {
+    "case_file": "09-aircargo-leave-risk.json",
+    "case_id": "aircargo-leave-risk",
+    "case_sha256": "c52746160a0be8256552a4a05cc475c3e2ee9d5dfb43fbe6366e30dc1247664c",
+    "n": 9,
+    "run": "s2-both",
+    "warm": {
+     "eval_sec": 0.735982,
+     "eval_tokens": 4,
+     "prompt_sec": 7.894973,
+     "prompt_tokens": 2493,
+     "score": 100,
+     "sec": 8.869
+    }
+   },
+   {
+    "case_file": "10-aircargo-matliab-check.json",
+    "case_id": "aircargo-matliab-check",
+    "case_sha256": "cf6b33d68ce71e68058354f725246b7fb155e6de0eb21696c39b29b84d563dd3",
+    "n": 10,
+    "run": "s2-both",
+    "warm": {
+     "eval_sec": 0.785954,
+     "eval_tokens": 4,
+     "prompt_sec": 8.435733,
+     "prompt_tokens": 2543,
+     "score": 100,
+     "sec": 10.017
+    }
+   },
+   {
+    "case_file": "11-aircargo-matliab-disputed.json",
+    "case_id": "aircargo-matliab-disputed",
+    "case_sha256": "b62cb7714bc9b53bbbe7f415066ffd0203b0603f83c3153b524b8d230c5db24f",
+    "n": 11,
+    "run": "s2-both",
+    "warm": {
+     "eval_sec": 0.764569,
+     "eval_tokens": 4,
+     "prompt_sec": 9.429439,
+     "prompt_tokens": 2570,
+     "score": 100,
+     "sec": 11.332
+    }
+   },
+   {
+    "case_file": "12-aircargo-templates-choose.json",
+    "case_id": "aircargo-templates-choose",
+    "case_sha256": "628d916ca4dda7e8c52d4014acebfaed9f2770bcb9330e0ccaeba4cff8fff98d",
+    "n": 12,
+    "run": "s2-both",
+    "warm": {
+     "eval_sec": 0.750643,
+     "eval_tokens": 4,
+     "prompt_sec": 9.931054,
+     "prompt_tokens": 2505,
+     "score": 100,
+     "sec": 11.988
+    }
+   },
+   {
+    "case_file": "01-aircargo-probation-data.json",
+    "case_id": "aircargo-probation-data",
+    "case_sha256": "352c2a1bb8589fb674c84555323972804f8d0c3313fc5c743d5c38c7239c5dac",
+    "n": 13,
+    "run": "s2-both-r2",
+    "warm": {
+     "eval_sec": 0.742822,
+     "eval_tokens": 4,
+     "prompt_sec": 7.633211,
+     "prompt_tokens": 2558,
+     "score": 100,
+     "sec": 8.483
+    }
+   },
+   {
+    "case_file": "02-aircargo-probation-extend.json",
+    "case_id": "aircargo-probation-extend",
+    "case_sha256": "a3fa56fcb69124df5ba7426101ba0b79525f0ab4ae4fb1cd560ce00d2b284f7d",
+    "n": 14,
+    "run": "s2-both-r2",
+    "warm": {
+     "eval_sec": 0.567747,
+     "eval_tokens": 3,
+     "prompt_sec": 7.905746,
+     "prompt_tokens": 2832,
+     "score": 90,
+     "sec": 8.57
+    }
+   },
+   {
+    "case_file": "03-aircargo-probation-dismissal.json",
+    "case_id": "aircargo-probation-dismissal",
+    "case_sha256": "9d84f9fdc0286f786ed3f06197f81f83fdb14c9efe6b2664399af8174396de66",
+    "n": 15,
+    "run": "s2-both-r2",
+    "warm": {
+     "eval_sec": 0.752732,
+     "eval_tokens": 4,
+     "prompt_sec": 7.748312,
+     "prompt_tokens": 2677,
+     "score": 100,
+     "sec": 8.635
+    }
+   },
+   {
+    "case_file": "04-aircargo-dismissal-check.json",
+    "case_id": "aircargo-dismissal-check",
+    "case_sha256": "6508310260ff528012e823f7aca4e9332634dce8743a6eedf514a4812ac2414f",
+    "n": 16,
+    "run": "s2-both-r2",
+    "warm": {
+     "eval_sec": 0.79259,
+     "eval_tokens": 4,
+     "prompt_sec": 11.858518,
+     "prompt_tokens": 2718,
+     "score": 100,
+     "sec": 12.789
+    }
+   },
+   {
+    "case_file": "05-aircargo-dismissal-lawyer.json",
+    "case_id": "aircargo-dismissal-lawyer",
+    "case_sha256": "55a5114e307ad1a16de44557a82666aeb412ae6bdb88af64128ec0c745cbd787",
+    "n": 17,
+    "run": "s2-both-r2",
+    "warm": {
+     "eval_sec": 2.976637,
+     "eval_tokens": 4,
+     "prompt_sec": 10.706025,
+     "prompt_tokens": 2593,
+     "score": 100,
+     "sec": 13.853
+    }
+   },
+   {
+    "case_file": "06-aircargo-dismissal-order.json",
+    "case_id": "aircargo-dismissal-order",
+    "case_sha256": "39ca39d12268f21e4581f7b8668023b7aa0450bcbd58a8e0c5d20351133b7e56",
+    "n": 18,
+    "run": "s2-both-r2",
+    "warm": {
+     "eval_sec": 0.749654,
+     "eval_tokens": 4,
+     "prompt_sec": 7.656211,
+     "prompt_tokens": 2671,
+     "score": 100,
+     "sec": 8.782
+    }
+   },
+   {
+    "case_file": "07-aircargo-leave-sources.json",
+    "case_id": "aircargo-leave-sources",
+    "case_sha256": "b9e0272be736aebffc0abdce277b6800fb1e074d577f5c524068391e9ec72449",
+    "n": 19,
+    "run": "s2-both-r2",
+    "warm": {
+     "eval_sec": 0.744113,
+     "eval_tokens": 4,
+     "prompt_sec": 7.66302,
+     "prompt_tokens": 2590,
+     "score": 100,
+     "sec": 8.764
+    }
+   },
+   {
+    "case_file": "08-aircargo-leave-compensation.json",
+    "case_id": "aircargo-leave-compensation",
+    "case_sha256": "809fa5aec7f40b3f5d1791a52a68001471c534cd87005dd20032597ecedffed4",
+    "n": 20,
+    "run": "s2-both-r2",
+    "warm": {
+     "eval_sec": 0.783123,
+     "eval_tokens": 4,
+     "prompt_sec": 7.761787,
+     "prompt_tokens": 2570,
+     "score": 100,
+     "sec": 8.997
+    }
+   },
+   {
+    "case_file": "09-aircargo-leave-risk.json",
+    "case_id": "aircargo-leave-risk",
+    "case_sha256": "250a0a8a86ec3caafa4b26a392686363506f8cc025562135bb855d43768939ca",
+    "n": 21,
+    "run": "s2-both-r2",
+    "warm": {
+     "eval_sec": 0.69983,
+     "eval_tokens": 4,
+     "prompt_sec": 7.559547,
+     "prompt_tokens": 2493,
+     "score": 100,
+     "sec": 8.527
+    }
+   },
+   {
+    "case_file": "10-aircargo-matliab-check.json",
+    "case_id": "aircargo-matliab-check",
+    "case_sha256": "de8401b1c806d0f65d707d8085b4f0f3c7b557c66ea48f1934e46b621376898c",
+    "n": 22,
+    "run": "s2-both-r2",
+    "warm": {
+     "eval_sec": 0.699893,
+     "eval_tokens": 4,
+     "prompt_sec": 7.553394,
+     "prompt_tokens": 2492,
+     "score": 100,
+     "sec": 8.429
+    }
+   },
+   {
+    "case_file": "11-aircargo-matliab-disputed.json",
+    "case_id": "aircargo-matliab-disputed",
+    "case_sha256": "a7aebb4c7557777d20aa49691178174c46bf065c94626b1a856214dafc9a83d6",
+    "n": 23,
+    "run": "s2-both-r2",
+    "warm": {
+     "eval_sec": 0.738548,
+     "eval_tokens": 4,
+     "prompt_sec": 7.646151,
+     "prompt_tokens": 2570,
+     "score": 100,
+     "sec": 8.526
+    }
+   },
+   {
+    "case_file": "12-aircargo-templates-choose.json",
+    "case_id": "aircargo-templates-choose",
+    "case_sha256": "7a9a11528f71147f68387fa1f5469160f2156f848fb7f78d9ad41d1bbfe28415",
+    "n": 24,
+    "run": "s2-both-r2",
+    "warm": {
+     "eval_sec": 0.758285,
+     "eval_tokens": 4,
+     "prompt_sec": 7.629043,
+     "prompt_tokens": 2505,
+     "score": 100,
+     "sec": 8.449
+    }
+   },
+   {
+    "case_file": "13-aircargo-templates-checklist.json",
+    "case_id": "aircargo-templates-checklist",
+    "case_sha256": "003388ad8d9d7a2cad6da6a27c2777169842db0a7b2ae67a058e51c14afcda06",
+    "n": 25,
+    "run": "s2-both-r2",
+    "warm": {
+     "eval_sec": 0.823079,
+     "eval_tokens": 4,
+     "prompt_sec": 7.772546,
+     "prompt_tokens": 2611,
+     "score": 100,
+     "sec": 8.682
+    }
+   }
+  ],
+  "dir": "/Users/julia/RAG_new_chat_57420db/step2b/step2",
+  "holds": true,
+  "notes": [],
+  "planned": {
+   "s2-both": 12,
+   "s2-both-r2": 13
+  },
+  "sha256": {
+   "s2-both": "e28b0fcbf032f2e745593d07baa01db9536a29f5ed52d961534779e78919e15f",
+   "s2-both-r2": "2cc0d1dd284d4790bb92122a8c42eec59db108a0a4fadc40abaae6e03b5fa65c"
+  }
+ },
+ "tools_sha256": {
+  "step2b_reader.py": "93432fd43c843e787583c82e205a5451fcbb6458a3be6d2d74c6ed635313de10"
+ }
+}

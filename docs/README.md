@@ -94,11 +94,15 @@ its [record](evidence/stage4-step3-record.md): K = 14 faster on 12 of 12, a medi
 rerank seconds (14.566 s less), no K adopted, 2026-10-28. [Stage 4, step 2](specs/stage4-step2-self-eval-continuation.md) —
 the self-eval as the answer chat's next turn: thirteen aircargo questions on a stand of the
 new code, mode both, the continuation's score and seconds paired with the classic's;
-registered before the first request. [Stage 4, step 2b](specs/stage4-step2b-continuation-labels.md) —
+registered before the first request; its [record](evidence/stage4-step2-record.md): the continuation
+faster on 13 of 13, a median 54.009 s saved (a ratio 0.1408), routes agree, the candidate the
+continuation, no default changed, 2026-10-29. [Stage 4, step 2b](specs/stage4-step2b-continuation-labels.md) —
 the continuation asked cold: first on step 2's 25 warm-scored answers, whose routes it must keep
 (the bridge), then on stage 3's 80 labelled aircargo answers beside the classic's saved scores:
 catches of the 17, over-marks of the 63, answers without a score; registered before the first
-request, run because step 2's candidate is the continuation.
+request, run because step 2's candidate is the continuation. Read 2026-10-29, not held: the
+bridge held, the catches not — 0 of the 17 flagged, the classic's 2 — and the default stays
+`classic`.
 [Stage 6, item 4](specs/stage6-throughput.md) — the
 service's questions an hour and what a second client sees: a draft, registered with its tools once
 the service is installed.
@@ -132,9 +136,11 @@ P2 reference samples ([Astra](specs/p2-astra-reference-sample.md),
 
 - [`evidence/`](evidence/) — one write-up per measured slice; the register with provenance is
   [`EVIDENCE_INDEX.md`](../EVIDENCE_INDEX.md). The records themselves are in `../reports/`.
-- [Latest handoff: stage 4 — step 2 running on the Mac; stage 7 and step 2b drafted](operations/session-handoff-2026-10-29-stage4-step2-running.md)
-  — step 1's and step 3's records, the continuation's code and step 2's spec, step 2's first
-  question read, the stage 7 drafts and step 2b's tools on the laptop. Before it:
+- [Latest handoff: stage 4 — step 2 and step 2b read, the continuation not adopted; the probe ready to register](operations/session-handoff-2026-10-29-stage4-step2b-read.md)
+  — step 2's record, step 2b registered, run and read: not held on the catches, the default
+  stays `classic`; the probe revised after its second opinion and tested on the Mac, GR-1b's
+  replay kept on the old expansion. Before it:
+  [stage 4 — step 2 running on the Mac; stage 7 and step 2b drafted](operations/session-handoff-2026-10-29-stage4-step2-running.md),
   [stage 4: step 0 read, step 1 measured, step 3 registered](operations/session-handoff-2026-10-28-stage4-step1.md),
   [V5 not adopted, the encoders' Amendment 1](operations/session-handoff-2026-10-28-v5-record.md),
   [the widget read, V5 running](operations/session-handoff-2026-10-27-v5-running.md),

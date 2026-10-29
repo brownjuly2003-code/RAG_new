@@ -1,5 +1,9 @@
 # Session handoff 2026-10-29 — stage 4: step 2 running on the Mac; stage 7 and step 2b drafted
 
+> **Superseded** by the next session's handoff,
+> [step 2 and step 2b read, the continuation not adopted; the probe ready to register](session-handoff-2026-10-29-stage4-step2b-read.md),
+> which keeps this file's model, glossary, «Do not» and «Once Julia answers» in force.
+
 The session ran 2026-10-28 22:12 UTC – 2026-10-29 ≈ 10:10 UTC. All times are UTC; the laptop's
 clock is EDT and the Mac's UTC+3. The previous handoff
 ([stage 4: step 0 read, step 1 measured, step 3 registered](session-handoff-2026-10-28-stage4-step1.md))
