@@ -6,6 +6,9 @@ Status 2026-10-29: **registered before the first request**, with its tools and t
 its gate, faster on 13 of 13, a median saving of 54 s). [`PLAN.md`](../../PLAN.md) stage 4,
 item 2. Its stand is step 2's ([The stand](#the-stand)); the one value filled in at launch is
 `<g>`, the commit that registers this spec.
+[Amendment 1](#amendment-1-2026-10-29-v4s-registry-by-the-path-v4-gave-it), 2026-10-29, after the
+check stopped at V4's settings and before the first request: each replay reads V4's registry
+file by the path V4's settings give it.
 
 ## Why
 
@@ -212,7 +215,7 @@ On the Mac, in bash, with `S`, `T`, `R`, `R2`, `D2`, `PLAN`, `LABELS`, `PY` and 
 replay runs in V5's environment, written out in full, since zsh does not split a variable into
 words:
 
-    env -i PATH=/usr/bin:/bin:/usr/sbin:/sbin HOME="$HOME" LC_ALL=C PYTHONPATH="$S:$SITE" PYTHONUTF8=1 PYTHONIOENCODING=utf-8 PYTHONDONTWRITEBYTECODE=1 REQUEST_TIMEOUT_SEC=3600 OLLAMA_REQUEST_TIMEOUT_SEC=3600 STREAMING_TIMEOUT_SEC=3600 RAG_DEVICE=cpu "$PY" $T/step2b_replay.py …
+    env -i PATH=/usr/bin:/bin:/usr/sbin:/sbin HOME="$HOME" LC_ALL=C PYTHONPATH="$S:$SITE" PYTHONUTF8=1 PYTHONIOENCODING=utf-8 PYTHONDONTWRITEBYTECODE=1 REQUEST_TIMEOUT_SEC=3600 OLLAMA_REQUEST_TIMEOUT_SEC=3600 STREAMING_TIMEOUT_SEC=3600 RAG_DEVICE=cpu PROVIDER_REGISTRY_PATH=/Users/julia/RAG_new_chat_4f48fed/config/providers.yml "$PY" $T/step2b_replay.py …
 
 `ENV` below stands for that prefix up to `"$PY"`, and `READ` for `"$PY" -I $T/step2b_reader.py`.
 
@@ -337,3 +340,27 @@ first.
   warm one its instruction and the turn markers.
 - The window check is the chat's estimate, with its margin: an answer it refuses gives no score
   and keeps the classic's, as the chat would.
+
+## Amendment 1, 2026-10-29: V4's registry by the path V4 gave it
+
+Registered before the first request, after the check stopped. The answers, their order, the
+tools, their SHA-256, the forecasts, the caps, the stops and the readings stay as above; the
+environment of [Running it](#running-it) gains one variable.
+
+**What the check gave.** Run as registered, after the first environment line, it stopped with
+exit 6 before any request, `not V4's: provider_registry_path`. V5's check holds the settings to
+V4's first run's, and V4's settings name the provider registry by V4's stand,
+`/Users/julia/RAG_new_chat_4f48fed/config/providers.yml`, while this stand's default is its own
+`config/providers.yml`. The two files are one: SHA-256
+`a71571492dff2e96abe41b7391286f5e602aae9d1edf51d79b73730667fae349` on the Mac in both stands, and
+unchanged in git from `4f48fed` to `57420db`. Every other setting V5's check reads, and the
+stream model, were V4's.
+
+**The change.** Each replay runs with
+`PROVIDER_REGISTRY_PATH=/Users/julia/RAG_new_chat_4f48fed/config/providers.yml`: the settings
+are V4's by V5's own check, unchanged, and the registry the stand reads is byte for byte its
+own. With it, before any request, the check's last two lines were
+`CHECK bridge 25 failed 0 past_the_window 0` and `CHECK answers 80 failed 0 past_the_window 0`:
+the chat's estimates run 2,866–3,113 tokens for the bridge and 2,736–3,363 for the 80, under the
+window's 3,443. The first environment line, taken before the check, stands as the bridge's
+first.
