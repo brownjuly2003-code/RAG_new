@@ -153,10 +153,13 @@ def test_the_chat_stream_asks_ollama_for_the_production_model(client, served, fa
     response = client.post("/api/ask/stream", json={"question": QUESTION})
 
     assert response.status_code == 200, response.text
-    results = [e for e in _events(response.text) if e.get("type") == "result"]
+    events = _events(response.text)
+    results = [e for e in events if e.get("type") == "result"]
     assert len(results) == 1, response.text
     assert results[0]["route"] == "auto", results[0]
-    assert results[0]["suggested_questions"] == SUGGESTIONS
+    # The suggestions follow the result in their own event (PLAN.md stage 4, item 4).
+    assert results[0]["suggested_questions"] == []
+    assert events[-1] == {"type": "suggestions", "suggested_questions": SUGGESTIONS}
     prompts = [str(r["payload"].get("prompt")) for r in fake_ollama.requests]
     # The answer, the self-evaluation and the suggestions: three calls, one model.
     assert len(prompts) == 3, prompts
@@ -190,9 +193,11 @@ def test_a_pinned_model_name_does_not_load_a_second_model_in_the_chat(
     response = client.post("/api/ask/stream", json={"question": QUESTION})
 
     assert response.status_code == 200, response.text
-    results = [e for e in _events(response.text) if e.get("type") == "result"]
+    events = _events(response.text)
+    results = [e for e in events if e.get("type") == "result"]
     assert len(results) == 1, response.text
-    assert results[0]["suggested_questions"] == SUGGESTIONS
+    assert results[0]["suggested_questions"] == []
+    assert events[-1] == {"type": "suggestions", "suggested_questions": SUGGESTIONS}
     prompts = [str(r["payload"].get("prompt")) for r in fake_ollama.requests]
     assert len(prompts) == 3, prompts
     assert sum(SUGGESTIONS_MARKER in p for p in prompts) == 1

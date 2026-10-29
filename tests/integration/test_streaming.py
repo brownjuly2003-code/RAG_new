@@ -84,4 +84,7 @@ def test_streaming_endpoint_emits_tokens_and_final_result(
     assert result["answer"] == "Сброс пароля"
     assert result["sources"][0]["source"] == "policy.md"
     assert result["citations"][0]["doc_id"] == "reset-1"
-    assert len(result["suggested_questions"]) == 2
+    # The suggested questions follow the result in their own event (PLAN.md stage 4, item 4).
+    assert result["suggested_questions"] == []
+    assert [event["type"] for event in events[-2:]] == ["result", "suggestions"]
+    assert len(events[-1]["suggested_questions"]) == 2

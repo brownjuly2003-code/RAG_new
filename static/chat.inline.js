@@ -463,6 +463,49 @@
             scrollToBottom();
             let streamingMsg = null;
             let streamingBubble = null;
+            let answerMsg = null;
+            let released = false;
+
+            // The answer is shown, and the input given back, at the result event; the
+            // suggested questions may still follow on the same stream (PLAN.md stage 4,
+            // item 4), and a later question must not be released by this stream's end.
+            function release() {
+                if (released) return;
+                released = true;
+                isLoading = false;
+                sendBtn.disabled = false;
+                typingIndicator.classList.remove('active');
+            }
+
+            function showResult(data) {
+                // Save session
+                if (data.session_id) {
+                    sessionId = data.session_id;
+                    localStorage.setItem('rag_session_id', sessionId);
+                }
+
+                // Add bot message. The answer that did not come in time and the one the
+                // model routed to a human offer the operator; neither opens a ticket by itself.
+                // Every other answer carries the handover line (stage 3, outcome C).
+                let resultActions = [];
+                if (data.route === 'timeout') resultActions = ['retry', 'escalate'];
+                else if (data.route === 'human') resultActions = ['escalate'];
+                const msg = addMessage('bot', data.answer, {
+                    actions: resultActions,
+                    handover: resultActions.length === 0,
+                    originalQuestion: question,
+                    escalationReason: 'route=' + data.route,
+                    quality: data.quality_score,
+                    route: data.route,
+                    sources: data.sources,
+                    citations: data.citations,
+                    trace_id: data.trace_id,
+                    session_id: data.session_id,
+                    suggested_questions: data.suggested_questions,
+                });
+                loadSessions();
+                return msg;
+            }
 
             try {
                 const body = { question: question };
@@ -572,6 +615,13 @@
                                     streamingBubble = null;
                                 }
                                 data = event;
+                                if (answerMsg) answerMsg.remove();
+                                answerMsg = showResult(data);
+                                release();
+                                continue;
+                            }
+                            if (event.type === 'suggestions') {
+                                if (answerMsg) appendSuggestedQuestions(answerMsg, event.suggested_questions);
                             }
                         }
                     }
@@ -582,49 +632,27 @@
                     resultError.context = 'stream';
                     throw resultError;
                 }
-
-                // Save session
-                if (data.session_id) {
-                    sessionId = data.session_id;
-                    localStorage.setItem('rag_session_id', sessionId);
-                }
-
-                // Add bot message. The answer that did not come in time and the one the
-                // model routed to a human offer the operator; neither opens a ticket by itself.
-                // Every other answer carries the handover line (stage 3, outcome C).
-                let resultActions = [];
-                if (data.route === 'timeout') resultActions = ['retry', 'escalate'];
-                else if (data.route === 'human') resultActions = ['escalate'];
-                addMessage('bot', data.answer, {
-                    actions: resultActions,
-                    handover: resultActions.length === 0,
-                    originalQuestion: question,
-                    escalationReason: 'route=' + data.route,
-                    quality: data.quality_score,
-                    route: data.route,
-                    sources: data.sources,
-                    citations: data.citations,
-                    trace_id: data.trace_id,
-                    session_id: data.session_id,
-                    suggested_questions: data.suggested_questions,
-                });
-                loadSessions();
             } catch (err) {
                 if (streamingMsg) {
                     streamingMsg.remove();
                 }
-                const errInfo = getErrorMessage(err, (err && err.context) || 'send');
-                addMessage('bot', errInfo.text, {
-                    error: true,
-                    actions: errInfo.actions,
-                    originalQuestion: question,
-                    escalationReason: errInfo.escalationReason,
-                });
+                if (answerMsg) {
+                    // The answer is shown: only its suggested questions were lost.
+                    console.warn('Stream ended after the answer:', err);
+                } else {
+                    const errInfo = getErrorMessage(err, (err && err.context) || 'send');
+                    addMessage('bot', errInfo.text, {
+                        error: true,
+                        actions: errInfo.actions,
+                        originalQuestion: question,
+                        escalationReason: errInfo.escalationReason,
+                    });
+                }
             } finally {
-                isLoading = false;
-                sendBtn.disabled = false;
-                typingIndicator.classList.remove('active');
-                scrollToBottom();
+                if (!released) {
+                    release();
+                    scrollToBottom();
+                }
             }
         }
 
@@ -870,20 +898,7 @@
                 }
 
                 if (meta.suggested_questions && meta.suggested_questions.length > 0) {
-                    const sqDiv = document.createElement('div');
-                    sqDiv.className = 'suggested-questions';
-                    meta.suggested_questions.forEach(function(q) {
-                        const btn = document.createElement('button');
-                        btn.className = 'btn-suggested';
-                        btn.type = 'button';
-                        btn.textContent = q;
-                        btn.addEventListener('click', function() {
-                            questionInput.value = q;
-                            sendMessage();
-                        });
-                        sqDiv.appendChild(btn);
-                    });
-                    content.appendChild(sqDiv);
+                    content.appendChild(buildSuggestedQuestions(meta.suggested_questions));
                 }
 
                 if (meta.trace_id || meta.session_id) {
@@ -912,6 +927,39 @@
             msg.appendChild(content);
             chatMessages.appendChild(msg);
             scrollToBottom();
+            return msg;
+        }
+
+        function buildSuggestedQuestions(questions) {
+            const sqDiv = document.createElement('div');
+            sqDiv.className = 'suggested-questions';
+            questions.forEach(function(q) {
+                const btn = document.createElement('button');
+                btn.className = 'btn-suggested';
+                btn.type = 'button';
+                btn.textContent = q;
+                btn.addEventListener('click', function() {
+                    questionInput.value = q;
+                    sendMessage();
+                });
+                sqDiv.appendChild(btn);
+            });
+            return sqDiv;
+        }
+
+        // The suggested questions that come after their answer: in the place addMessage
+        // gives them, under the sources and above the feedback, actions and time.
+        function appendSuggestedQuestions(msg, questions) {
+            if (!Array.isArray(questions) || questions.length === 0) return;
+            const content = msg.querySelector('.message-content');
+            if (!content || content.querySelector(':scope > .suggested-questions')) return;
+            const atBottom =
+                chatContainer.scrollHeight - chatContainer.scrollTop - chatContainer.clientHeight < 40;
+            const next = content.querySelector(
+                ':scope > .msg-feedback, :scope > .msg-actions, :scope > .msg-timestamp'
+            );
+            content.insertBefore(buildSuggestedQuestions(questions), next);
+            if (atBottom) scrollToBottom();
         }
 
         function scrollToBottom() {

@@ -97,8 +97,9 @@ def _wait_http_ok(url: str, *, timeout_sec: float = 30.0) -> None:
 @pytest.fixture
 def chat_stand(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
-) -> Iterator[Callable[[float], SimpleNamespace]]:
-    """Start the chat's server with a request limit; returns its URL and records."""
+) -> Iterator[Callable[..., SimpleNamespace]]:
+    """Start the chat's server with a request limit, and the model's replies if given;
+    returns its URL and records."""
     import api.app as api_app
     import config.settings as settings_mod
     from api.routers import conversation
@@ -107,8 +108,11 @@ def chat_stand(
 
     stack = ExitStack()
 
-    def start(request_timeout_sec: float) -> SimpleNamespace:
-        fake = stack.enter_context(_fake_ollama.running(_reply))
+    def start(
+        request_timeout_sec: float,
+        reply: Callable[[dict[str, Any]], _fake_ollama.Reply] = _reply,
+    ) -> SimpleNamespace:
+        fake = stack.enter_context(_fake_ollama.running(reply))
         data_dir = tmp_path / "chat-e2e-data"
         data_dir.mkdir()
         monkeypatch.setenv("RAG_ENV", "development")

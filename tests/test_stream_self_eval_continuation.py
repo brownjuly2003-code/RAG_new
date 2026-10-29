@@ -349,7 +349,8 @@ def test_continuation_sends_the_answers_own_chat(
     llm = _ollama_stack(monkeypatch, calls)
     _set_mode(monkeypatch, "continuation")
 
-    result = _result(_stream(client, monkeypatch, llm))
+    events = _stream(client, monkeypatch, llm)
+    result = _result(events)
 
     assert [call["call"] for call in calls] == ["answer", "continuation", "suggestions"]
     answer_call, continuation = calls[0], calls[1]
@@ -379,7 +380,9 @@ def test_continuation_sends_the_answers_own_chat(
         "llm",
         "auto",
     )
-    assert result["suggested_questions"] == SUGGESTIONS
+    # The suggestions follow the result in their own event (PLAN.md stage 4, item 4).
+    assert result["suggested_questions"] == []
+    assert events[-1] == {"type": "suggestions", "suggested_questions": SUGGESTIONS}
     assert set(result) == RESULT_KEYS
 
 

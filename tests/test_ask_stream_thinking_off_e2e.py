@@ -103,13 +103,16 @@ def test_every_model_call_of_the_chat_stream_turns_thinking_off(
     response = client.post("/api/ask/stream", json={"question": QUESTION})
 
     assert response.status_code == 200, response.text
-    results = [e for e in _events(response.text) if e.get("type") == "result"]
+    events = _events(response.text)
+    results = [e for e in events if e.get("type") == "result"]
     assert len(results) == 1, response.text
     result = results[0]
     assert (result["route"], result["generation_source"]) == ("auto", "stream"), result
     assert result["answer"] == ANSWER
     assert (result["quality_source"], result["quality_score"]) == ("llm", 85)
-    assert result["suggested_questions"] == SUGGESTIONS
+    # The suggestions follow the result in their own event (PLAN.md stage 4, item 4).
+    assert result["suggested_questions"] == []
+    assert events[-1] == {"type": "suggestions", "suggested_questions": SUGGESTIONS}
     # The answer, the self-evaluation and the suggestions: three calls, none thinking.
     prompts = [str(r["payload"].get("prompt")) for r in fake_ollama.requests]
     assert len(prompts) == 3, prompts

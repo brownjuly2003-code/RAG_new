@@ -2675,6 +2675,12 @@ async def ask_stream(
             else:
                 route = "auto" if quality >= 70 else "human"
             suggested_questions = []
+            # The suggested questions follow the result on the same stream, in a
+            # "suggestions" event: their model call no longer holds the answer
+            # back (PLAN.md stage 4, item 4). The prompt is built here, from the
+            # stream's own sources, as before.
+            hints_llm: Any = None
+            hints_prompt: str | None = None
             if route == "auto":
                 try:
                     from agent.prompts import build_suggested_questions_prompt  # noqa: PLC0415
@@ -2695,21 +2701,12 @@ async def ask_stream(
                         for source in sources[:2]
                         if source.get("page_content")
                     )[:500]
-                    prompt = build_suggested_questions_prompt(
+                    hints_prompt = build_suggested_questions_prompt(
                         question=question,
                         answer=full_answer,
                         context_snippet=context_snippet,
                     )
-                    raw_questions = await asyncio.get_running_loop().run_in_executor(
-                        None,
-                        question_llm.invoke,
-                        prompt,
-                    )
-                    suggested_questions = [
-                        re.sub(r"^\s*(?:[-*]|\d+[.)])\s*", "", line).strip()
-                        for line in raw_questions.strip().splitlines()
-                        if line.strip()
-                    ][:3]
+                    hints_llm = question_llm
                 except Exception as suggest_exc:
                     logger.warning(
                         "Failed to generate streaming suggested questions: %s",
@@ -2773,6 +2770,7 @@ async def ask_stream(
                     trace_id_value = str(graph_result["trace_id"])
                 if graph_result.get("suggested_questions"):
                     suggested_questions = list(graph_result["suggested_questions"])
+                    hints_prompt = None
                 graph_citations_raw = graph_result.get("citations") or []
                 if graph_citations_raw:
                     citations = [
@@ -2829,6 +2827,30 @@ async def ask_stream(
                 # Mode both only: both self-evals of this answer, for the comparison.
                 result_event["self_eval_both"] = self_eval_both
             yield "data: " + _json.dumps(result_event) + "\n\n"
+            if hints_prompt is not None:
+                # The result is out: nothing here may reach the sync fallback below.
+                hints: list[str] = []
+                try:
+                    raw_questions = await asyncio.get_running_loop().run_in_executor(
+                        None,
+                        hints_llm.invoke,
+                        hints_prompt,
+                    )
+                    hints = [
+                        re.sub(r"^\s*(?:[-*]|\d+[.)])\s*", "", line).strip()
+                        for line in raw_questions.strip().splitlines()
+                        if line.strip()
+                    ][:3]
+                except Exception as suggest_exc:
+                    logger.warning(
+                        "Failed to generate streaming suggested questions: %s",
+                        suggest_exc,
+                    )
+                yield (
+                    "data: "
+                    + _json.dumps({"type": "suggestions", "suggested_questions": hints})
+                    + "\n\n"
+                )
         except Exception as exc:
             logger.warning(
                 "SSE streaming path failed, fallback to sync pipeline: %s", exc, exc_info=True

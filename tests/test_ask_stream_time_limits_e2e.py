@@ -132,7 +132,9 @@ def test_stream_answer_slower_than_the_old_limits_arrives(
     assert "".join(e["token"] for e in events if e.get("type") == "token") == ANSWER
     assert result["answer"] == ANSWER
     assert (result["quality_source"], result["quality_score"]) == ("llm", 85)
-    assert result["suggested_questions"] == SUGGESTIONS
+    # The suggestions follow the result in their own event (PLAN.md stage 4, item 4).
+    assert result["suggested_questions"] == []
+    assert events[-1] == {"type": "suggestions", "suggested_questions": SUGGESTIONS}
     # One answer request, streamed, never retried: the client waited out the
     # model's silence and the whole stream.
     answer_requests = [
