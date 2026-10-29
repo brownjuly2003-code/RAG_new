@@ -106,7 +106,9 @@ bridge held, the catches not — 0 of the 17 flagged, the classic's 2 — and th
 [Stage 7's entity probe](specs/stage7-entity-probe.md) — the entity extraction's cost: an
 English prompt on 100 MultiHop-RAG chunks, the product's own JSON-schema call with the 4B; gate
 G2 stops the entity lane if 11,231 chunks × the upper bound of the mean pass 24 h or fewer than
-95 of the 100 outputs are valid; registered before the first request in `52dd160`.
+95 of the 100 outputs are valid; registered before the first request in `52dd160`. Read
+2026-10-29: G2 failed at the first look, 25.1 h at the lower bound, and E stops; its
+[record](evidence/stage7-entity-probe-record.md).
 [Stage 6, item 4](specs/stage6-throughput.md) — the
 service's questions an hour and what a second client sees: a draft, registered with its tools once
 the service is installed.

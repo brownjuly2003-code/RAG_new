@@ -1,0 +1,97 @@
+{
+ "files_sha256": {
+  "chunks.jsonl": "2e6234bda0a124ccf40d76ed3ce878ad2f18b5ef07dc4a6820820254021324d0",
+  "end.json": "c7a634a219dff511296f76f502fec8d9508bec4aa39ca228b0e6162927781d2d",
+  "launch.json": "2f14772b476ae64274fd8f906e835e61a9a93c66cba3d54c8c2038b2661c32ec"
+ },
+ "g2": {
+  "failed_by": [
+   "lower"
+  ],
+  "stopped_at": 10,
+  "verdict": "failed"
+ },
+ "gate": {
+  "clean": true,
+  "end": true,
+  "launch": true,
+  "rows": true
+ },
+ "notes": [],
+ "printed_deciding_nothing": {
+  "content_chars_median": 846.0,
+  "distinct_median": 8.0,
+  "done_reasons": {
+   "stop": 10
+  },
+  "empty_arrays": 0,
+  "entities_median": 8.0,
+  "eval_count_median": 41.5,
+  "generated_tokens_per_sec": 9.0,
+  "halves_mean_sec": [
+   10.466,
+   8.983
+  ],
+  "line_sec": 7.692993,
+  "load": {
+   "context_length": 4096,
+   "load_duration": null,
+   "runner_c": 4096,
+   "runner_np": 1,
+   "runners": 1,
+   "sec": 8.435,
+   "size": 3184001022,
+   "size_vram": 0
+  },
+  "loadavg": {
+   "end": [
+    5.79,
+    2.8,
+    1.88
+   ],
+   "launch": [
+    1.15,
+    1.11,
+    1.24
+   ]
+  },
+  "lower_sec": 8.048809,
+  "max_sec": 14.317,
+  "mean_sec": 9.72429,
+  "median_sec": 9.763,
+  "n": 10,
+  "ollama_models_after": [],
+  "p90_sec": 12.351,
+  "pairs_median": 28.0,
+  "projected_hours": {
+   "conditionalqa_wixqa_at_mean": 138.7,
+   "conditionalqa_wixqa_at_upper": 162.6,
+   "multihoprag_at_mean": 30.3,
+   "multihoprag_at_upper": 35.6
+  },
+  "prompt_eval_count_median": 302.5,
+  "prompt_tokens_per_sec": 60.12,
+  "reasons": {
+   "ok": 10
+  },
+  "reloads": 0,
+  "run_sec": 117.301,
+  "swap_used_mib": {
+   "end": 2532.2,
+   "launch": 2190.5
+  },
+  "unload_sec": 0.169,
+  "upper_sec": 11.399771,
+  "valid": 10,
+  "wall_less_ollama_median_sec": 0.002,
+  "wall_sec": 117.493,
+  "warmup": {
+   "reason": "ok",
+   "sec": 11.223
+  }
+ },
+ "run": "e1",
+ "schema": "stage7-entity-probe/v1",
+ "spec": "docs/specs/stage7-entity-probe.md",
+ "tool_sha256": "68f7e828277cd459a338633801026d36355cce85d0769f5161207c1df01d0c7f"
+}

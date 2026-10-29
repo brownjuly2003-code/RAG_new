@@ -1,0 +1,14 @@
+loaded in 8.4 s, size_vram 0, context_length 4096, runners 1, -np 1, -c 4096
+chunk 0 pick None index 11230 sec 11.223 ok entities 8 others 0 lock False alone True
+chunk 1 pick 0 index 0 sec 8.735 ok entities 6 others 0 lock False alone True
+chunk 2 pick 10 index 1123 sec 9.864 ok entities 8 others 0 lock False alone True
+chunk 3 pick 20 index 2246 sec 7.061 ok entities 8 others 0 lock False alone True
+chunk 4 pick 30 index 3369 sec 12.351 ok entities 12 others 0 lock False alone True
+chunk 5 pick 40 index 4492 sec 14.317 ok entities 12 others 0 lock False alone True
+chunk 6 pick 50 index 5615 sec 9.850 ok entities 9 others 0 lock False alone True
+chunk 7 pick 60 index 6738 sec 10.759 ok entities 9 others 0 lock False alone True
+chunk 8 pick 70 index 7861 sec 9.676 ok entities 8 others 0 lock False alone True
+chunk 9 pick 80 index 8984 sec 6.771 ok entities 8 others 0 lock False alone True
+chunk 10 pick 90 index 10107 sec 7.859 ok entities 6 others 0 lock False alone True
+look 10: mean 9.724 lower 8.049 upper 11.400 line 7.693
+PROBE_DONE stopped lower at 10

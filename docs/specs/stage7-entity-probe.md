@@ -5,7 +5,9 @@ SHA-256 are listed under [Records](#records); revised before that after
 [a second opinion and its second pass](#a-second-opinion). It
 follows [`PLAN.md`](../../PLAN.md) stage 7 and Julia's word of 2026-10-28 («P1b и граф»: both
 arms stay, the entity extraction's cost measured first). `52dd160` is the commit that registers
-it; the next one wrote its hash where the registered text had a placeholder.
+it; the next one wrote its hash where the registered text had a placeholder. **Read
+2026-10-29:** G2 failed at the first look, by the lower bound, so E stops
+([the record](../evidence/stage7-entity-probe-record.md)).
 
 ## Why
 
