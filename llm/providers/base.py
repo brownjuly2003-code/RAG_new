@@ -356,6 +356,11 @@ class ProviderBackedLLM:
         return self._provider.model_name
 
     @property
+    def stream_provider(self) -> LLMProvider:
+        """The provider ``generate_stream`` reads: the primary alone, never the fallback."""
+        return self._provider
+
+    @property
     def context_window(self) -> int | None:
         """Smallest declared input window of the primary and fallback providers."""
         windows = [
@@ -525,6 +530,19 @@ class ProviderBackedLLM:
             structured_output=parse_structured_output(response.text, schema),
         )
 
+    def _call_generate_chat(
+        self,
+        provider: LLMProvider,
+        messages: list[Message],
+        **kwargs: Any,
+    ) -> LLMResponse:
+        method = getattr(provider, "generate_chat", None)
+        if _provider_implements_method(provider, "generate_chat") and callable(method):
+            return method(messages, **kwargs)
+        raise ProviderCapabilityError(
+            f"Provider '{provider.provider_id}' does not support chat continuation"
+        )
+
     def generate_with_tools(
         self,
         messages: list[Message],
@@ -540,6 +558,14 @@ class ProviderBackedLLM:
         **kwargs: Any,
     ) -> LLMResponse:
         return self._fallback_response("generate_with_schema", messages, schema, **kwargs)
+
+    def generate_chat(
+        self,
+        messages: list[Message],
+        **kwargs: Any,
+    ) -> LLMResponse:
+        """The messages as they are, as one chat (``OllamaProvider.generate_chat``)."""
+        return self._fallback_response("generate_chat", messages, **kwargs)
 
     async def generate_stream(
         self,

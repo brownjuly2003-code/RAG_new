@@ -279,6 +279,26 @@ def _parse_rerank_batch(raw: str | None) -> Optional[int]:
     return value
 
 
+# How the web chat stream's self-eval reads the answer (STREAMING_SELF_EVAL_MODE).
+STREAMING_SELF_EVAL_MODES: tuple[str, ...] = ("classic", "continuation", "both")
+
+
+def normalize_streaming_self_eval_mode(raw: object) -> str:
+    """One of STREAMING_SELF_EVAL_MODES; unset or blank is "classic", anything else too, warned."""
+    value = str(raw or "").strip().lower()
+    if value in STREAMING_SELF_EVAL_MODES:
+        return value
+    if value:
+        import logging
+
+        logging.getLogger(__name__).warning(
+            "STREAMING_SELF_EVAL_MODE=%r is none of %s; the self-eval stays classic",
+            raw,
+            ", ".join(STREAMING_SELF_EVAL_MODES),
+        )
+    return "classic"
+
+
 @dataclass
 class Settings:
     """
@@ -746,6 +766,17 @@ class Settings:
     streaming_quality_eval: bool = field(
         default_factory=lambda: os.getenv("STREAMING_QUALITY_EVAL", "true").strip().lower()
         in ("1", "true", "yes")
+    )
+    # Which self-eval that call is (stage 4, step 2). "classic" (default): its
+    # own prompt of question, documents and answer. "continuation": the next
+    # turn of the answer's own chat, so llama-server reuses the answer's cached
+    # prompt instead of reading ~2,400 tokens anew. "both": the continuation,
+    # whose score counts, then the classic one, for a registered comparison.
+    # STREAMING_QUALITY_EVAL=false still turns every self-eval off.
+    streaming_self_eval_mode: str = field(
+        default_factory=lambda: normalize_streaming_self_eval_mode(
+            os.getenv("STREAMING_SELF_EVAL_MODE", "classic")
+        )
     )
     # Wall-clock budget for the SSE token loop, separate from
     # request_timeout_sec, which bounds the whole request. Exceeded, it cuts

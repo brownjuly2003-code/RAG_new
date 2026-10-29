@@ -15,6 +15,27 @@ from llm.providers.base import (
     window_input_limit,
 )
 
+# Ollama's own counters of one call, kept on the response of ``generate_chat``:
+# prompt tokens evaluated, their time, generated tokens, their time (ns).
+OLLAMA_CALL_COUNTERS = ("prompt_eval_count", "prompt_eval_duration", "eval_count", "eval_duration")
+
+
+def _post_chat(url: str, payload: dict[str, Any], *, timeout_sec: float) -> dict[str, Any]:
+    """POST one non-streaming ``/api/chat`` request and return its JSON object.
+
+    httpx, as the ollama client and the raw stream use; with ``stream`` false
+    nothing arrives before the end, so the read timeout bounds the whole call.
+    """
+    import httpx
+
+    with httpx.Client(timeout=httpx.Timeout(timeout_sec)) as client:
+        response = client.post(url, json=payload)
+        response.raise_for_status()
+        body = response.json()
+    if not isinstance(body, dict):
+        raise RuntimeError("Ollama /api/chat replied with something other than a JSON object")
+    return body
+
 
 def _with_timeout_kwargs(kwargs: dict[str, Any], timeout_sec: float) -> list[dict[str, Any]]:
     client_kwargs = {**(kwargs.get("client_kwargs") or {}), "timeout": timeout_sec}
@@ -187,6 +208,72 @@ class OllamaProvider:
             ),
             latency_ms=latency_ms,
             metadata={},
+        )
+
+    def generate_chat(
+        self,
+        messages: list[dict[str, Any]],
+        **kwargs: Any,
+    ) -> LLMResponse:
+        """One non-streaming ``/api/chat`` call with the messages as they are.
+
+        Ollama renders them with the model's own template, so a first user
+        message equal to an earlier ``/api/generate`` prompt begins with the
+        same tokens, and llama-server reads again only what follows the
+        prefix its slot cached: the stream's self-eval continuation
+        (api/routers/conversation.py). The options are those of the answer
+        call: num_ctx is this provider's window, as there, because another
+        num_ctx reloads the model. Ollama's counters of the call stay in
+        ``metadata`` (``OLLAMA_CALL_COUNTERS``), None when it sends none.
+        """
+        from utils.request_deadline import check_request_deadline, get_request_deadline
+
+        prompt = flatten_messages(messages)
+        gen_kwargs = self._window_kwargs(prompt, kwargs)
+        timeout_sec = float(self._timeout_sec)
+        deadline = get_request_deadline()
+        if deadline is not None:
+            deadline.check("ollama.chat")
+            timeout_sec = min(timeout_sec, deadline.remaining_sec())
+        payload: dict[str, Any] = {
+            "model": self.model_name,
+            "messages": [dict(message) for message in messages],
+            "stream": False,
+            # Thinking off, as on every other model call (_instantiate_with_timeout).
+            "think": False,
+            "options": gen_kwargs,
+        }
+        started = time.perf_counter()
+        try:
+            body = _post_chat(
+                f"{self._base_url.rstrip('/')}/api/chat", payload, timeout_sec=timeout_sec
+            )
+        except Exception:
+            # A timeout cut to the request's wall is the wall's: say so.
+            check_request_deadline("ollama.chat")
+            raise
+        check_request_deadline("ollama.chat")
+        message = body.get("message")
+        if not isinstance(message, dict):
+            raise RuntimeError("Ollama /api/chat reply carries no message")
+        text = str(message.get("content") or "")
+        input_tokens = estimate_tokens(prompt)
+        output_tokens = estimate_tokens(text)
+        return LLMResponse(
+            text=text,
+            provider=self.provider_id,
+            model=self.model_name,
+            input_tokens=input_tokens,
+            output_tokens=output_tokens,
+            cost_usd=calculate_cost(
+                input_tokens,
+                output_tokens,
+                input_price_per_1m_tokens=self._input_price_per_1m_tokens,
+                output_price_per_1m_tokens=self._output_price_per_1m_tokens,
+            ),
+            latency_ms=int((time.perf_counter() - started) * 1000),
+            finish_reason=str(body.get("done_reason") or "").strip() or None,
+            metadata={key: body.get(key) for key in OLLAMA_CALL_COUNTERS},
         )
 
     def generate_with_tools(

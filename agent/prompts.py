@@ -87,6 +87,39 @@ ASSISTANT'S ANSWER:
 Output only an integer from 1 to 100:
 """,
     },
+    # The web chat's self-eval as the next turn of the answer's own chat
+    # (api/routers/conversation.py): the question and the context are already
+    # in its first message and the answer in the turn before, so this turn
+    # holds only the rubric of "self_eval".
+    "self_eval_continuation": {
+        "prompt_id": "SELF_EVAL_CONTINUATION_V1",
+        "text": """Now rate your answer above on a scale from 1 to 100.
+The user's question and the context (fragments of a knowledge base) are in the first message.
+
+When rating, take into account:
+- Answer relevance:
+    How far your answer relates to the question at all, whether it answers its substance.
+
+- Answer accuracy:
+    How far the facts in your answer match the text of the context.
+    Do not reward an answer that invents facts.
+
+- Retrieval quality:
+    How well the context in the first message covers the topic of the
+    question without irrelevant noise. If the needed information is not
+    in the context, this also lowers the final rating of the answer.
+
+- Answer language:
+    The answer must be in the language of the question; an answer in another language lowers the rating.
+
+Your task is to output ONE INTEGER from 1 to 100,
+where 1 is a terrible answer, 50 an average one, 100 an excellent one.
+
+OUTPUT ONLY THE NUMBER, WITHOUT WORDS OR COMMENTS.
+
+Output only an integer from 1 to 100:
+""",
+    },
     "extract_claims": {
         "prompt_id": "EXTRACT_CLAIMS_PROMPT_V1",
         "text": """You are an assistant that breaks a text into atomic factual claims.
@@ -349,6 +382,11 @@ def build_self_eval_prompt(
         context_block=context_block,
         answer=answer,
     )
+
+
+def build_self_eval_continuation_prompt(experiment: Any | None = None) -> str:
+    """The last turn of the self-eval continuation; it has no placeholders."""
+    return _resolve_prompt("self_eval_continuation", experiment)
 
 
 def build_extract_claims_prompt(answer: str, experiment: Any | None = None) -> str:

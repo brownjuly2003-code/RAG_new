@@ -7,6 +7,7 @@ import contextvars
 import hashlib
 import json as _json
 import logging
+import math
 import re
 import time
 import uuid
@@ -25,7 +26,7 @@ from api._shared import app_module as _app_module
 from api.correlation import get_current_tenant, get_request_id
 from api.rate_limit import limiter
 from auth.dependencies import get_current_user
-from config.settings import TIME_LIMIT_CEILING_SEC
+from config.settings import TIME_LIMIT_CEILING_SEC, normalize_streaming_self_eval_mode
 from monitoring import prometheus as prometheus_metrics
 from services.pipeline import pipeline_runner
 from utils.background_tasks import spawn_tracked
@@ -698,6 +699,263 @@ def _fit_stream_prompt(
         history = history[1:]
     fitted = fit_context_docs(window_owner, question, docs, build, role="generate")
     return build(fitted), fitted
+
+
+# --- The stream's self-eval as a continuation of the answer (stage 4, step 2) ---
+# llama-server keeps a slot's last prompt and the tokens it generated in its KV
+# cache and reads again only what follows the longest common prefix. The
+# classic self-eval prompt shares 5-7 tokens with the answer's
+# (docs/evidence/stage4-step0-record.md), so it reads its ~2,400 tokens anew:
+# 65-105 s an answer on the production Mac. Sent as the next turn of the
+# answer's own chat -- the answer's prompt, the answer, then the request for a
+# score -- the self-eval begins with the tokens the slot holds. Julia,
+# 2026-10-28, on the badge: «Оставить, но ускорить».
+
+
+def _stream_self_eval_mode(settings: Any) -> str:
+    return normalize_streaming_self_eval_mode(
+        getattr(settings, "streaming_self_eval_mode", "classic")
+    )
+
+
+def _answer_request_text(prompt: str, *, stream_path: str | None) -> str:
+    """The prompt string the stream's answer call sent to Ollama, by its path.
+
+    ``"provider"``: ``OllamaProvider.generate_stream`` sends its one user
+    message flattened, ``"USER:\\n" + prompt.strip()``. ``"raw"``:
+    ``_stream_ollama`` posts the prompt as it is, no prefix and no strip.
+    """
+    if stream_path == "provider":
+        from llm.providers.base import flatten_messages  # noqa: PLC0415
+
+        return flatten_messages([{"role": "user", "content": prompt}])
+    if stream_path == "raw":
+        return prompt
+    raise ValueError(f"no Ollama stream path: {stream_path!r}")
+
+
+def _continuation_self_eval_messages(
+    sent: str, answer: str, instruction: str
+) -> list[dict[str, str]]:
+    """The answer's own turn, the answer, then the request for its score."""
+    return [
+        {"role": "user", "content": sent},
+        {"role": "assistant", "content": answer},
+        {"role": "user", "content": instruction},
+    ]
+
+
+def _answer_stream_ollama(
+    streaming_llm: Any, *, stream_path: str | None, settings: Any, context_window: Any
+) -> Any | None:
+    """The OllamaProvider of the server, model and num_ctx that streamed the answer.
+
+    ``"provider"``: ``streaming_llm.generate_stream`` streamed it. An
+    OllamaProvider streams itself; a ProviderBackedLLM streams from its primary
+    provider alone (``stream_provider``), which must be an OllamaProvider.
+    ``"raw"``: ``_stream_ollama`` posted to settings' server and model with
+    num_ctx ``context_window``; a provider of those same values is that
+    endpoint. None -- the classic self-eval instead -- for any other path, or
+    a stream from another provider: there is no cached prefix to continue.
+    """
+    from llm.providers.base import ProviderBackedLLM  # noqa: PLC0415
+    from llm.providers.ollama import OllamaProvider  # noqa: PLC0415
+
+    if stream_path == "provider":
+        streamer = streaming_llm
+        if isinstance(streamer, ProviderBackedLLM):
+            streamer = streamer.stream_provider
+        return streamer if isinstance(streamer, OllamaProvider) else None
+    if stream_path == "raw":
+        return OllamaProvider(
+            model_name=str(settings.ollama_model_name),
+            base_url=str(settings.ollama_base_url),
+            timeout_sec=float(
+                getattr(settings, "ollama_request_timeout_sec", TIME_LIMIT_CEILING_SEC)
+            ),
+            input_price_per_1m_tokens=0.0,
+            output_price_per_1m_tokens=0.0,
+            context_window=int(context_window),
+        )
+    return None
+
+
+def _continuation_input_limit(num_ctx: int, output_budget: int) -> int:
+    """The most input tokens the continuation may estimate at the answer's num_ctx.
+
+    Its three turns and the score must fit num_ctx (input + output_budget <=
+    num_ctx): past it Ollama drops the first message, the context, without an
+    error. ``window_input_limit`` keeps below that a margin for the estimate
+    and the template, and ``OllamaProvider._window_kwargs`` refuses any input
+    past it; the stricter of the two is the limit.
+    """
+    from llm.providers.base import window_input_limit  # noqa: PLC0415
+
+    return min(num_ctx - output_budget, window_input_limit(num_ctx, output_budget))
+
+
+_CONTINUATION_SCORE = re.compile(r"(\d{1,3})\.?")
+
+
+def _parse_continuation_score(text: Any) -> int:
+    """The continuation's score: the stripped reply is one integer 1-100, or -1.
+
+    A final period is allowed and nothing else. The classic self-eval's
+    ``_parse_int_score`` takes the first number anywhere; here "80/100",
+    "[1] 85" or "150" is not the score asked for, and -1 sends the caller to
+    the classic self-eval.
+    """
+    match = _CONTINUATION_SCORE.fullmatch(str(text or "").strip())
+    if match is None:
+        return -1
+    score = int(match.group(1))
+    return score if 1 <= score <= 100 else -1
+
+
+def _self_eval_entry(score: int, sec: float, metadata: Any = None) -> dict[str, Any]:
+    """One self-eval: its score (-1: none), its time and Ollama's counters of the call.
+
+    The counters are None where the call reported none (the classic call does not).
+    """
+    counters = metadata if isinstance(metadata, dict) else {}
+
+    def _count(key: str) -> int | None:
+        value = counters.get(key)
+        if isinstance(value, bool) or not isinstance(value, (int, float)):
+            return None
+        # A NaN or infinite counter would raise in int(); it is no counter.
+        if isinstance(value, float) and not math.isfinite(value):
+            return None
+        return int(value)
+
+    prompt_ns = _count("prompt_eval_duration")
+    eval_ns = _count("eval_duration")
+    return {
+        "score": int(score),
+        "sec": round(float(sec), 3),
+        "prompt_tokens": _count("prompt_eval_count"),
+        "prompt_sec": None if prompt_ns is None else prompt_ns / 1e9,
+        "eval_tokens": _count("eval_count"),
+        "eval_sec": None if eval_ns is None else eval_ns / 1e9,
+    }
+
+
+def _log_stream_self_eval(
+    call: str, mode: str, entry: dict[str, Any], est_input_tokens: int
+) -> None:
+    # Numbers only: never the question, the answer or a document.
+    logger.info(
+        "Streaming self-eval call=%s mode=%s sec=%.3f score=%d est_input_tokens=%d "
+        "prompt_tokens=%s prompt_sec=%s eval_tokens=%s eval_sec=%s",
+        call,
+        mode,
+        entry["sec"],
+        entry["score"],
+        est_input_tokens,
+        entry["prompt_tokens"],
+        entry["prompt_sec"],
+        entry["eval_tokens"],
+        entry["eval_sec"],
+    )
+
+
+async def _stream_continuation_self_eval(
+    streaming_llm: Any,
+    *,
+    stream_path: str | None,
+    settings: Any,
+    context_window: Any,
+    prompt: str,
+    answer: str,
+    mode: str,
+) -> dict[str, Any]:
+    """Score the streamed answer as the next turn of its own chat; never raises.
+
+    ``stream_path`` names the call that streamed ``answer`` from ``prompt``
+    (``"provider"`` or ``"raw"``, None when unknown); ``answer`` is the text
+    as the stream delivered it. Returns a ``_self_eval_entry``. Score -1 sends
+    the caller to the classic self-eval: an answer from no Ollama path this
+    can name, an input the answer's num_ctx cannot hold with the score (Ollama
+    would drop the first message, the context, without an error), a failed
+    call, or a reply that is not one integer from 1 to 100.
+    """
+    from agent.prompts import build_self_eval_continuation_prompt  # noqa: PLC0415
+    from llm.providers.base import (  # noqa: PLC0415
+        ProviderBackedLLM,
+        estimate_window_tokens,
+        flatten_messages,
+    )
+    from llm.role_params import generation_kwargs_for_role  # noqa: PLC0415
+
+    try:
+        ollama = _answer_stream_ollama(
+            streaming_llm,
+            stream_path=stream_path,
+            settings=settings,
+            context_window=context_window,
+        )
+        if ollama is None:
+            logger.warning(
+                "Streaming self-eval continuation: the answer came from no Ollama path "
+                "(stream path %s); classic self-eval instead",
+                stream_path,
+            )
+            return _self_eval_entry(-1, 0.0)
+        messages = _continuation_self_eval_messages(
+            _answer_request_text(prompt, stream_path=stream_path),
+            answer,
+            build_self_eval_continuation_prompt(),
+        )
+        params = generation_kwargs_for_role("evaluate")
+        # num_ctx as the answer call sent it: the provider's window, which its
+        # _window_kwargs sends, or the raw call's options built from it.
+        num_ctx = int(ollama.context_window)
+        est_input_tokens = estimate_window_tokens(flatten_messages(messages))
+        limit = _continuation_input_limit(num_ctx, int(params["max_tokens"]))
+        if est_input_tokens > limit:
+            logger.warning(
+                "Streaming self-eval continuation: ~%d input tokens, num_ctx=%d leaves %d; "
+                "classic self-eval instead",
+                est_input_tokens,
+                num_ctx,
+                limit,
+            )
+            return _self_eval_entry(-1, 0.0)
+        # The wrapper's deadline and budget checks, and no fallback provider to
+        # carry the chat to another server or model than the answer's.
+        chat_llm = ProviderBackedLLM(ollama)
+    except Exception as setup_exc:
+        logger.warning(
+            "Streaming self-eval continuation unavailable, classic self-eval instead: %s",
+            setup_exc,
+        )
+        return _self_eval_entry(-1, 0.0)
+
+    started = time.perf_counter()
+    try:
+        # As the classic call: a worker thread, the evaluate role's limits.
+        response = await asyncio.get_running_loop().run_in_executor(
+            None, lambda: chat_llm.generate_chat(messages, **params)
+        )
+    except Exception as call_exc:
+        entry = _self_eval_entry(-1, time.perf_counter() - started)
+        _log_stream_self_eval("continuation", mode, entry, est_input_tokens)
+        logger.warning(
+            "Streaming self-eval continuation failed, classic self-eval instead: %s", call_exc
+        )
+        return entry
+    entry = _self_eval_entry(
+        _parse_continuation_score(response.text),
+        time.perf_counter() - started,
+        response.metadata,
+    )
+    _log_stream_self_eval("continuation", mode, entry, est_input_tokens)
+    if entry["score"] == -1:
+        logger.warning(
+            "Streaming self-eval continuation replied with no integer from 1 to 100; "
+            "classic self-eval instead"
+        )
+    return entry
 
 
 def _graph_result_sources_and_citations(
@@ -2181,9 +2439,13 @@ async def ask_stream(
                 getattr(settings, "streaming_timeout_sec", TIME_LIMIT_CEILING_SEC)
             )
             stream_truncated = False
+            # The call that streams the answer: the self-eval continuation sends
+            # its first turn as that call sent it, to that server and model.
+            stream_path: str | None = None
             yield "data: " + _json.dumps({"type": "token_start"}) + "\n\n"
             try:
                 if uses_provider_stream:
+                    stream_path = "provider"
                     async for token in streaming_llm.generate_stream(
                         [{"role": "user", "content": prompt}],
                         **stream_params,
@@ -2203,6 +2465,7 @@ async def ask_stream(
                             stream_truncated = True
                             break
                 else:
+                    stream_path = "raw"
                     async for token in _app._stream_ollama(
                         prompt,
                         settings.ollama_model_name,
@@ -2292,7 +2555,33 @@ async def ask_stream(
             heuristic_quality = 70 if len(full_answer.strip()) > 20 or sources else 40
             quality = heuristic_quality
             quality_source = "heuristic"
-            if bool(getattr(settings, "streaming_quality_eval", True)):
+            self_eval_enabled = bool(getattr(settings, "streaming_quality_eval", True))
+            self_eval_mode = _stream_self_eval_mode(settings)
+            self_eval_both: dict[str, dict[str, Any]] | None = None
+            continuation_eval = _self_eval_entry(-1, 0.0)
+            classic_eval = _self_eval_entry(-1, 0.0)
+            if self_eval_enabled and self_eval_mode != "classic":
+                continuation_eval = await _stream_continuation_self_eval(
+                    streaming_llm,
+                    stream_path=stream_path,
+                    settings=settings,
+                    context_window=getattr(window_owner, "context_window", None),
+                    prompt=prompt,
+                    # As the stream delivered it: no citation strip, no other branch's answer.
+                    answer=full_answer,
+                    mode=self_eval_mode,
+                )
+                if continuation_eval["score"] != -1:
+                    quality = int(continuation_eval["score"])
+                    quality_source = "llm"
+            # The classic self-eval: the only one in mode classic, the fallback of
+            # a continuation without a score, and the recorded second reading in
+            # mode both -- always after the continuation, whose cached prefix
+            # its prompt would overwrite.
+            continuation_scored = quality_source == "llm"
+            if self_eval_enabled and not (
+                self_eval_mode == "continuation" and continuation_scored
+            ):
                 try:
                     from agent.graph import (  # noqa: PLC0415
                         LocalOllamaLLM,
@@ -2307,7 +2596,10 @@ async def ask_stream(
                     if eval_llm is None:
                         eval_llm = LocalOllamaLLM(model_name=settings.ollama_model_name)
 
-                    from agent.context_window import fit_context_docs  # noqa: PLC0415
+                    from agent.context_window import (  # noqa: PLC0415
+                        fit_context_docs,
+                        prompt_input_tokens,
+                    )
 
                     answer_for_eval = re.sub(r"\s*\[\d+\]", "", full_answer)
                     answer_for_eval = re.sub(r"\s{2,}", " ", answer_for_eval).strip()
@@ -2326,27 +2618,54 @@ async def ask_stream(
                             role="evaluate",
                         )
                     )
+                    classic_input_tokens = prompt_input_tokens(eval_prompt)
+                    classic_started = time.perf_counter()
                     # Evaluate-role limits: the context above was fitted to them.
-                    raw_eval = await asyncio.get_running_loop().run_in_executor(
-                        None, lambda: _invoke_llm(eval_llm, eval_prompt, role="evaluate")
-                    )
+                    try:
+                        raw_eval = await asyncio.get_running_loop().run_in_executor(
+                            None, lambda: _invoke_llm(eval_llm, eval_prompt, role="evaluate")
+                        )
+                    except Exception:
+                        classic_eval = _self_eval_entry(-1, time.perf_counter() - classic_started)
+                        _log_stream_self_eval(
+                            "classic", self_eval_mode, classic_eval, classic_input_tokens
+                        )
+                        raise
                     # "llm" provenance only when the model actually returned a
                     # numeric score; an unparseable reply keeps the heuristic
                     # quality AND its routing threshold (quality_threshold only
                     # applies to genuine LLM scores).
                     parsed_eval = _parse_int_score(raw_eval, default=-1)
-                    if parsed_eval != -1:
-                        quality = parsed_eval
-                        quality_source = "llm"
+                    classic_eval = _self_eval_entry(
+                        parsed_eval, time.perf_counter() - classic_started
+                    )
+                    _log_stream_self_eval(
+                        "classic", self_eval_mode, classic_eval, classic_input_tokens
+                    )
+                    # In mode both the continuation's score stands; this one is recorded.
+                    if not continuation_scored:
+                        if parsed_eval != -1:
+                            quality = parsed_eval
+                            quality_source = "llm"
+                        else:
+                            logger.warning(
+                                "Streaming self-eval returned no numeric score; "
+                                "keeping heuristic quality"
+                            )
+                except Exception as eval_exc:
+                    if continuation_scored:
+                        logger.warning(
+                            "Streaming classic self-eval failed; the continuation's score "
+                            "stands: %s",
+                            eval_exc,
+                        )
                     else:
                         logger.warning(
-                            "Streaming self-eval returned no numeric score; keeping heuristic quality"
+                            "Streaming self-eval failed, falling back to heuristic quality: %s",
+                            eval_exc,
                         )
-                except Exception as eval_exc:
-                    logger.warning(
-                        "Streaming self-eval failed, falling back to heuristic quality: %s",
-                        eval_exc,
-                    )
+            if self_eval_enabled and self_eval_mode == "both":
+                self_eval_both = {"continuation": continuation_eval, "classic": classic_eval}
             if quality_source == "llm":
                 route = (
                     "auto"
@@ -2492,26 +2811,24 @@ async def ask_stream(
                 prometheus_metrics.record_quality_score_source(quality_source)
             except Exception:
                 pass
-            yield (
-                "data: "
-                + _json.dumps(
-                    {
-                        "type": "result",
-                        "answer": terminal_answer,
-                        "answer_source": answer_source,
-                        "generation_source": "stream",
-                        "quality_score": quality,
-                        "quality_source": quality_source,
-                        "route": route,
-                        "session_id": session_id,
-                        "sources": sources,
-                        "citations": citations,
-                        "trace_id": trace_id_value,
-                        "suggested_questions": suggested_questions,
-                    }
-                )
-                + "\n\n"
-            )
+            result_event: dict[str, Any] = {
+                "type": "result",
+                "answer": terminal_answer,
+                "answer_source": answer_source,
+                "generation_source": "stream",
+                "quality_score": quality,
+                "quality_source": quality_source,
+                "route": route,
+                "session_id": session_id,
+                "sources": sources,
+                "citations": citations,
+                "trace_id": trace_id_value,
+                "suggested_questions": suggested_questions,
+            }
+            if self_eval_both is not None:
+                # Mode both only: both self-evals of this answer, for the comparison.
+                result_event["self_eval_both"] = self_eval_both
+            yield "data: " + _json.dumps(result_event) + "\n\n"
         except Exception as exc:
             logger.warning(
                 "SSE streaming path failed, fallback to sync pipeline: %s", exc, exc_info=True
