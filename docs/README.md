@@ -109,6 +109,11 @@ G2 stops the entity lane if 11,231 chunks × the upper bound of the mean pass 24
 95 of the 100 outputs are valid; registered before the first request in `52dd160`. Read
 2026-10-29: G2 failed at the first look, 25.1 h at the lower bound, and E stops; its
 [record](evidence/stage7-entity-probe-record.md).
+[Stage 7, step 1](specs/stage7-step1-arms-m3.md) — the retrieval arms at M3, without an
+answer: H, S (the structural graph's sections, with S's expansion fix) and P (P1b) replayed
+on stage 2's lists through the product's retrievers; an arm goes on to answers only on an M3
+gain at ConditionalQA and WixQA pooled larger than the MDE, aircargo's context judge only
+stopping it; registered before the run in `8b922a1`.
 [Stage 4, step 4](specs/stage4-step4-prompt-budget.md) — a shorter answer prompt: stage 2's 400
 questions fitted at num_ctx 4,096 down to 2,304 under today's `QA_PROMPT_V4`, without a model;
 gold at «sent» against 4,096 by an exact McNemar, per base and pooled, and the smallest window
@@ -217,6 +222,10 @@ P2 reference samples ([Astra](specs/p2-astra-reference-sample.md),
   — one fresh subagent on the session's model read the spec, reader, supervisor's copy, stand
   script and test frozen before registration; verbatim, 0 blocking, 3 should fix, 5 minor,
   each applied before registration, as its Disposition says.
+- [Cold read of stage 7 step 1's spec, 2026-10-30](operations/audit_opus55_30_10_26_stage7_gate.md)
+  — one fresh subagent on the session's model read the spec, tool, test and S's fix frozen
+  before registration; verbatim, 1 blocking, 4 should fix, 10 minor, each applied before
+  registration, as its Disposition says.
 - [`operations/`](operations/) — besides the runbooks above: the
   [GR-2 entity builder preparation](operations/gr2-entity-builder-preparation.md) and the last
   session handoffs (the newest is linked from [`CURRENT_STATE.md`](../CURRENT_STATE.md)). Older

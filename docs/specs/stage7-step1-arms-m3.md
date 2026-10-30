@@ -1,8 +1,8 @@
 # Stage 7, step 1: the retrieval arms at M3 on stage 2's lists, without an answer
 
 Status 2026-10-30: **registered before the run**, with its tool, its test and S's fix in one
-commit, its [cold read](../operations/audit_opus55_30_10_26_stage7_gate.md)'s fifteen findings
-applied ([Records](#records)). [`PLAN.md`](../../PLAN.md) stage 7, step 1:
+commit, `8b922a1`, its [cold read](../operations/audit_opus55_30_10_26_stage7_gate.md)'s fifteen
+findings applied ([Records](#records)). [`PLAN.md`](../../PLAN.md) stage 7, step 1:
 «Поиск без генерации: М3 для каждой руки на ≈ 400 вопросах»; her word of 2026-10-28: stage 7
 keeps both arms, the graph and P1b, and the entity graph's extraction cost is measured first.
 No model call, no new retrieval.
@@ -194,9 +194,9 @@ question: refused, and no plan is written. A plan already written that differs: 
 - The record goes to `reports/stage7/5e308fe/` with its artifact test, a capsule in
   `docs/evidence/` and a row in [`EVIDENCE_INDEX.md`](../../EVIDENCE_INDEX.md).
 
-SHA list of the run: the registration commit, written in by the next one; the SHA-256 of the
-tool and of its test, below, which the test checks; the record's and the plan's, written in with
-the evidence commit.
+SHA list of the run: the registration commit, `8b922a16999e9956f0aa36ecfc7e024e04d4069a`;
+the SHA-256 of the tool and of its test, below, which the test checks; the record's and the
+plan's, written in with the evidence commit.
 
 - `reports/stage7/tools/arms_replay.py` `7cd819655c9d2e88b1180518dc1413653b78209754dcc1541d441737b045e5a8`
 - `tests/test_stage7_arms_replay.py` `14f504c6ebccd3443c8341ae4232beeb08c1d7213ed03e1ca460e2f89cfc4034`
