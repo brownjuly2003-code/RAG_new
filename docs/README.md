@@ -185,9 +185,9 @@ P2 reference samples ([Astra](specs/p2-astra-reference-sample.md),
 
 - [`evidence/`](evidence/) — one write-up per measured slice; the register with provenance is
   [`EVIDENCE_INDEX.md`](../EVIDENCE_INDEX.md). The records themselves are in `../reports/`.
-- [Latest handoff: stage 4 — item 5a read, the n-gram lever closed, INT8's live series `NOT_EVIDENCE`; stage 7 step 1 registered; the package question open](operations/session-handoff-2026-10-30-stage4-step5a-live.md)
-  — the levers' table, the package question and what follows each answer; the live series'
-  stop and its cause; stage 7 step 1's run after her answer. Before it:
+- [Latest handoff: stage 4 — item 5a read, the n-gram lever closed, INT8's live series `NOT_EVIDENCE`; stage 7 step 1 registered; her «да» to the package](operations/session-handoff-2026-10-30-stage4-step5a-live.md)
+  — the levers' table, her «да» to the package and what follows it; the live series' stop and
+  its cause; stage 7 step 1's amendment and run. Before it:
   [stage 4 — item 5a's blocks 2–5 passed and block 6 ran on; the audit of 2026-10-30 taken into PLAN](operations/session-handoff-2026-10-30-stage4-step5a-block6.md),
   [stage 4 — items 4 and 5 read; item 5a's INT8 registered, its block 1 passed, the series resumes at block 2](operations/session-handoff-2026-10-30-stage4-step5a-block1.md),
   [stage 4 — step 2 and step 2b read, the continuation not adopted; the probe ready to register](operations/session-handoff-2026-10-29-stage4-step2b-read.md),

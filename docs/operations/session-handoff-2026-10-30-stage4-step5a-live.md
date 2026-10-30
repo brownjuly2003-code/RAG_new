@@ -1,19 +1,19 @@
-# Session handoff 2026-10-30, third — item 5a read, the n-gram lever closed, INT8's live series `NOT_EVIDENCE`; stage 7 step 1 registered; the package question open
+# Session handoff 2026-10-30, third — item 5a read, the n-gram lever closed, INT8's live series `NOT_EVIDENCE`; stage 7 step 1 registered; her «да» to the package
 
-The session ran 2026-10-30 13:17 – ≈ 21:15 UTC from the
+The session ran 2026-10-30 13:17 – ≈ 21:45 UTC from the
 [block 6 handoff](session-handoff-2026-10-30-stage4-step5a-block6.md) and was compacted 18
 times. All times are UTC; the laptop's clock is EDT (git's `-0400`), the Mac's UTC+3. The block 6
 and [block 1](session-handoff-2026-10-30-stage4-step5a-block1.md) handoffs still hold for their
-glossaries, the Mac's paths and their «Do not». Their next actions are done but three: the
-package question, stage 7 step 1's run (now under her answer) and the push. This file's next
-actions replace them.
+glossaries, the Mac's paths and their «Do not». Their next actions are done but two: stage 7
+step 1's run, now after an amendment, and the push; the package question has her «да». This
+file's next actions replace them.
 
 ## Read this first
 
 - **Stage 4** cuts the chat's answer time on the Mac (i5-7500, 4 cores, 8 GB, shared with other
   projects; a median answer ≈ 320 s). Each lever is measured on its own, on the idle Mac, and
-  recorded; none is adopted. Adopting them is Julia's word (PLAN §8.3, item 2), asked once, as
-  one package.
+  recorded. Adopting them was Julia's word (PLAN §8.3, item 2), asked once, as one package: she
+  said yes at 21:17. None is in the code yet; the next session's slice sets them.
 - **Where the levers stand,** each a record and a row in `EVIDENCE_INDEX.md`:
 
 | Lever | Speed, measured | Quality, measured | Record |
@@ -34,19 +34,30 @@ actions replace them.
   INT8 runs, and step 7's look at the Mac stopped the series, as registered. What it printed,
   deciding nothing: INT8's rerank 21.6–34.1 s against PyTorch's 126.9–336.9 s on block 1's five,
   one run a side. There is no successor series ([my choices](#my-choices-not-hers)).
-- **Open for her, one yes/no:** the package. Asked in the stop point's closing message, after
-  this file's commit; no answer when this file was written. The question as asked:
+- **Her answer: «да», all four** (21:17, [her words](#julias-words-in-this-session-utc)). The
+  question, asked in the stop point's closing message after `4e865f3`:
 
   > Включаем пакет одним решением — K = 14, num_ctx 3 584, `cache-ram = 1024` и INT8
   > реранкера — и перемеряем путь целиком (п. 6, п. 7, этап 5)?
 
-  My recommendation is yes: K, the window and INT8 (idle) save seconds and the cap holds the
+  My recommendation was yes: K, the window and INT8 (idle) save seconds and the cap holds the
   swap, with no detected loss of the gold, and the re-measure that a yes costs is the number of
   the final path that PLAN needs anyway. K 14's five fewer gold questions are not a detected
   loss; item 6 and stage 5, which judge the answers themselves, are where a real loss would
   show.
+- **The cap stayed in on my advice.** At 21:02 she offered to drop it. It changes no answer and
+  takes no reuse (step 0: the cache restored no state). Without it the swap reached 9–11 GB by
+  question 13 and llama-server 11 GB on the 8-GB Mac; with it llama-server held 3,882–4,204
+  MiB. Dropped now, item 7 would time a swelling path and run again once the cap came back. Its
+  one cost: the line reaches every llama.cpp program on the Mac, other projects' models too. No
+  route is narrower: Ollama 0.33.2 passes no flag, and `LLAMA_ARG_CACHE_RAM` in `ollama serve`'s
+  environment reaches every Ollama model and needs a restart. Deleting the line undoes it. Her
+  «да» covers the file.
 
 ## Once Julia decides
+
+**She said yes, all four, at 21:17: the next session takes the «Yes» branch.** The other two
+stay as the record of what each answer would have cost.
 
 - **Yes, all four:**
   1. A slice sets the path, with an E2E test (rule (a)): `retrieval_top_k` 14,
@@ -104,8 +115,12 @@ actions replace them.
 - 13:17 «продолжи доработку по handoff.md» — the block 6 handoff's next actions, in order.
 - 20:02 «сессия длинная, поставь точку, где логично. и обнови доку» — this stop point. The live
   series' record was committed first, then this file, the status lines and the backup.
+- 21:02 «Я готова ответить да, но также готова и рассмотреть снятие на ram = 1024. Как тут
+  оптимальнее?» — whether the cap could leave the package; my answer: keep it (above).
+- 21:17 «Я отвечаю - да. Но верочтно стоит продолжить в следующей сессии. Что думаешь?» — the
+  package, all four; the work after it goes to the next session, as I agreed.
 
-No other word of hers: no answer on the package, no push.
+No other word of hers: no push.
 
 ## What this session did
 
@@ -120,6 +135,8 @@ No other word of hers: no answer on the package, no push.
 | 17:14–19:29 | — | The live series: three runs, then the stop. |
 | 19:41, 19:43 | `8b922a1`, `4a8957a` | Stage 7 step 1 registered after its cold read (fifteen findings applied); `<c>`. |
 | 20:16 | `18467bf` | The live series' record: `NOT_EVIDENCE`. Its capsule, test and thirteen files; the spec's «Read» line; PLAN, ROADMAP, CURRENT_STATE, BACKLOG and docs/README. |
+| 20:53 | `4e865f3` | The stop point: this file, read cold (eighteen findings applied), the status lines, the block 6 handoff marked superseded. |
+| ≈ 21:40 | this commit | Her «да» to the package: PLAN §8.1, §8.3 and stage 4's items 5 and 5a, CURRENT_STATE, BACKLOG, ROADMAP, docs/README and this file. |
 
 Each commit's files passed a gate on the Mac on its own tree. The record's gate ran
 `tool_gate.py`: 536 passed, 10 skipped, tree `1bfd3b9b85`, equal to `git write-tree` before
@@ -160,7 +177,7 @@ the commit.
   - one note, `top: no row for pid 1339`, is the rerun's `llama-server` exiting 7.6 s after
     its last question. Step 1's frozen reader keeps it quiet, and the test pins it there.
 
-## Stage 7 step 1 — registered, waiting for the package
+## Stage 7 step 1 — registered; an amendment first, after her «да»
 
 - **What:** do the retrieval arms S (the structural graph's section expansion) and P (P1b, H's
   five cut by the reranker's scores) raise M3 over H on stage 2's saved lists, without an
@@ -172,7 +189,8 @@ the commit.
   tests, then `remote.py --site reports.stage7.tools.arms_replay replay`: ≈ 10 min, stopped at
   30. A judge plan exists only for an arm that qualifies: at most 268 requests, $25–56,
   2.7–9.7 h of the laptop.
-- **When:** after her answer. On no, as registered; on yes, after the amendment above.
+- **When:** after the amendment her «да» needs ([the «Yes» branch](#once-julia-decides), step
+  2).
 
 ## My choices, not hers
 
@@ -186,16 +204,19 @@ the commit.
    read and registration need not wait for her answer; its run does».
 4. **The replay before item 6** on a yes ([above](#once-julia-decides)).
 5. **The record's test refined, not loosened,** where the data broke two of its assumptions.
+6. **The cap kept in the package** when she offered to drop it ([above](#read-this-first)).
 
 ## Next actions
 
-1. **Her package answer** → [Once Julia decides](#once-julia-decides). If she asks something
-   else first, answer it first.
-2. **The push, only on her word.** 56 commits after `7caaf21` with this one. Before it, a full
+1. **The «Yes, all four» branch** of [Once Julia decides](#once-julia-decides), in its order:
+   the slice and its E2E test, the line on the Mac, stage 7 step 1's amendment and replay, then
+   the specs of items 6, 7 and stage 5, each cold-read and registered before its first request.
+   If she asks something else first, answer it first.
+2. **The push, only on her word.** 57 commits after `7caaf21` with this one. Before it, a full
    ci_local run with PASS, started once in the background, never during a Mac measurement:
    `python C:/Users/uedom/.claude/scripts/ci_local.py --repo D:/RAG_new`.
-3. **Until she answers, nothing of stages 4–7 runs.** If her word is not an answer, do what it
-   asks, then ask the question again as written. No job of ours runs on the Mac or the laptop.
+3. **One Mac job of ours at a time,** none during a measurement series. No job of ours runs on
+   the Mac or the laptop now.
 
 **Do not.** The block 1 and block 6 lists hold. Also do not:
 - start another live series of INT8 without a new registration: this one is recorded
@@ -205,7 +226,9 @@ the commit.
   amendment have read them;
 - edit the live series' tools (`reports/stage4-step5a-live/tools/`), item 5a's tool, its
   export or the step 1 reader they load;
-- create `~/.config/llama.cpp/config.ini` on the Mac before her yes;
+- write into `~/.config/llama.cpp/config.ini` anything but the series' file — the one line
+  `cache-ram = 1024`, SHA-256 `c75f4491…` ([item 5's spec](../specs/stage4-step5-cache-cap-series.md),
+  step 3): a wrong value stops every llama.cpp program of the user from starting;
 - run a Mac job of ours while any measurement series runs, or two of ours at once;
 - commit `demo/phase-e-raw.webm` or `reports/ask100/` (not this work's), or push without her
   word.
@@ -219,7 +242,7 @@ the commit.
     9.4 MB, holds the record's files, the samplers' files and the supervisor logs. The runs'
     index copies were removed after each run.
   - It may go now that the record is committed; nothing needs it gone.
-- **The laptop:** HEAD is this stop point's commit, 56 commits after `7caaf21`, not pushed.
+- **The laptop:** HEAD is this stop point's last commit, 57 commits after `7caaf21`, not pushed.
   Untracked and not this work's: `demo/phase-e-raw.webm`, `reports/ask100/`. This session's
   git-ignored scripts: `.tmp/s5a/` (the gates, the messages, `live_control/` with the chain
   that ran the series), `.tmp/coldread-live/`, `.tmp/ngram/`.
@@ -253,8 +276,8 @@ the commit.
 ## Glossary
 
 The block 1 and block 6 glossaries hold. New here:
-- **The package:** K = 14, num_ctx 3,584, `cache-ram = 1024` and INT8, adopted together by one
-  yes (PLAN §8.3, item 2).
+- **The package:** K = 14, num_ctx 3,584, `cache-ram = 1024` and INT8, given her one «да» on
+  2026-10-30 (PLAN §8.1; §8.3, item 2).
 - **Idle numbers:** a lever's seconds measured on the idle Mac without the chat, as item 5a's
   thirty; **in the chat:** inside `/api/ask/stream` with the answer model resident.
 - **INT8, PyTorch (`torch`), ONNX:** the reranker `BAAI/bge-reranker-v2-m3` as an 8-bit export
@@ -298,14 +321,14 @@ The block 1 and block 6 glossaries hold. New here:
   `python D:/RAG_new/.tmp/mf-mac/remote.py --site pytest -q tests/test_stage4_step5a_live_artifact.py`.
 - **The Mac's state:** the spec's step 3 line over ssh:
   `ssh deproject-mac 'sysctl -n vm.loadavg; pgrep -fl "[p]ytest|[l]lama-server|[_]supervisor|[r]eplay\.py|[s]tep[01]_|[n]gram_decode|[l]imactl" || echo none; curl -s http://127.0.0.1:11434/api/ps; ls $HOME/ci_local/.lock_ci-local 2>/dev/null || echo "no lock"'`.
-- **The commits:** `git -C D:/RAG_new rev-list --count 7caaf21..HEAD` gives 56 at this stop.
-- **The stop point's commit:** its docs gate ran `docs_gate.TESTS` on the Mac on its bytes;
-  the commit message gives the count.
+- **The commits:** `git -C D:/RAG_new rev-list --count 7caaf21..HEAD` gives 57 at this stop.
+- **The stop point's commits,** `4e865f3` and the one that records her «да»: each one's docs
+  gate ran `docs_gate.TESTS` on the Mac on its bytes; the commit messages give the counts.
 - **This file:** read cold before its commit by one fresh agent on this session's model,
   read-only, on the file and the repository: eighteen findings, each checked against the
   repository and applied, one of them corrected (onnxruntime is in `requirements.lock`).
-- **The wip branch:** `wip/stage4-step5a-live-stop`, built on the stop point's commit right
-  after it, by `.tmp/s5a/make_wip_backup3.sh` through a temporary index. A commit cannot name
+- **The wip branch:** `wip/stage4-step5a-live-stop`, built on the stop point's last commit
+  right after it, by `.tmp/s5a/make_wip_backup3.sh` through a temporary index. A commit cannot name
   what comes after it: `git log -1` and `git diff --name-only` of the branch give its SHA and
   files.
   - It holds the previous backup's git-ignored files that still exist, `.tmp/s5a/`,
