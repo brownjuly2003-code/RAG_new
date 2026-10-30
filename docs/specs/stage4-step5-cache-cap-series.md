@@ -1,10 +1,10 @@
 # Stage 4, item 5: thirty questions under a 1,024-MiB prompt cache — does the swap hold?
 
 Status 2026-10-30: **registered before the first request**, with its reader and the reader's
-test ([Records](#records)), in `<c>`. [`PLAN.md`](../../PLAN.md) stage 4, item 5: «Проверка — серия из 30
+test ([Records](#records)), in `f214459`. [`PLAN.md`](../../PLAN.md) stage 4, item 5: «Проверка — серия из 30
 вопросов, своп не растёт (≈ 2,5 ч)», for the policy's first candidate, a limit on llama-server's
 host prompt cache, under Julia's «да» of 29.10 to `cache-ram = 1024` (§8.1). The one value filled
-in at launch is `<c>`, the commit that registers this spec.
+in at launch is `f214459`, the commit that registers this spec.
 
 ## Why
 
@@ -151,7 +151,7 @@ On the Mac, with `S` and `PY` above: `CL=$S/chatlive`, `T=$S/step5`,
 no sync.
 
 1. **Tools:** `mkdir -p $T`; from the laptop, `git -C D:/RAG_new show
-   <c>:reports/stage4-step5/tools/step5_reader.py | ssh deproject-mac "cat >
+   f214459:reports/stage4-step5/tools/step5_reader.py | ssh deproject-mac "cat >
    /Users/julia/RAG_new_chat_4f48fed/step5/step5_reader.py"`, and the same from
    `reports/stage4-step0/tools/` for `step0_reader.py` and `step0_sampler.py`. Then `shasum -a 256
    $T/*.py` prints the reader's SHA-256 below and step 0's two in

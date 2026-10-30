@@ -121,6 +121,10 @@ classic self-evaluation in 26 blocks ABBA on the idle Mac, each begun with no mo
 calls' prompt seconds by an exact sign test over the twelve pairs; registered before the
 first request in `d1ef9e5`. Read 2026-10-30: faster on 12 of 12 pairs, a median 24.681 s
 less, a ratio 0.792; its [record](evidence/stage4-step4b-record.md).
+[Stage 4, item 5](specs/stage4-step5-cache-cap-series.md) — the host prompt cache capped at
+1,024 MiB by one line, `cache-ram = 1024`, in llama.cpp's user config, on step 0's stand:
+aircargo's first thirty questions, the swap's growth from questions 6–10 to 26–30 against
+512 MiB; registered before the first request in `f214459`.
 [Stage 6, item 4](specs/stage6-throughput.md) — the
 service's questions an hour and what a second client sees: a draft, registered with its tools once
 the service is installed.
