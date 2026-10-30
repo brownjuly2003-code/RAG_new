@@ -1,0 +1,580 @@
+{
+ "corpus": null,
+ "environment": [],
+ "pairs": [
+  {
+   "block": 1,
+   "case_id": "aircargo-dismissal-order",
+   "readable": false,
+   "why": [
+    "s5a-torch-1: 0 asks of the question, not one",
+    "s5a-int8-1: 0 runs, not one"
+   ]
+  },
+  {
+   "block": 1,
+   "case_id": "aircargo-leave-sources",
+   "readable": false,
+   "why": [
+    "s5a-torch-1: 0 asks of the question, not one",
+    "s5a-int8-1: 0 runs, not one"
+   ]
+  },
+  {
+   "block": 1,
+   "case_id": "aircargo-leave-compensation",
+   "readable": false,
+   "why": [
+    "s5a-torch-1: 0 asks of the question, not one",
+    "s5a-int8-1: 0 runs, not one"
+   ]
+  },
+  {
+   "block": 1,
+   "case_id": "aircargo-leave-risk",
+   "readable": false,
+   "why": [
+    "s5a-torch-1: 0 asks of the question, not one",
+    "s5a-int8-1: 0 runs, not one"
+   ]
+  },
+  {
+   "block": 1,
+   "case_id": "aircargo-matliab-check",
+   "readable": false,
+   "why": [
+    "s5a-torch-1: 0 asks of the question, not one",
+    "s5a-int8-1: 0 runs, not one"
+   ]
+  },
+  {
+   "block": 2,
+   "case_id": "aircargo-dismissal-order",
+   "readable": false,
+   "why": [
+    "s5a-torch-2: 0 runs, not one",
+    "s5a-int8-2: 0 runs, not one"
+   ]
+  },
+  {
+   "block": 2,
+   "case_id": "aircargo-leave-sources",
+   "readable": false,
+   "why": [
+    "s5a-torch-2: 0 runs, not one",
+    "s5a-int8-2: 0 runs, not one"
+   ]
+  },
+  {
+   "block": 2,
+   "case_id": "aircargo-leave-compensation",
+   "readable": false,
+   "why": [
+    "s5a-torch-2: 0 runs, not one",
+    "s5a-int8-2: 0 runs, not one"
+   ]
+  },
+  {
+   "block": 2,
+   "case_id": "aircargo-leave-risk",
+   "readable": false,
+   "why": [
+    "s5a-torch-2: 0 runs, not one",
+    "s5a-int8-2: 0 runs, not one"
+   ]
+  },
+  {
+   "block": 2,
+   "case_id": "aircargo-matliab-check",
+   "readable": false,
+   "why": [
+    "s5a-torch-2: 0 runs, not one",
+    "s5a-int8-2: 0 runs, not one"
+   ]
+  },
+  {
+   "block": 3,
+   "case_id": "aircargo-dismissal-order",
+   "readable": false,
+   "why": [
+    "s5a-torch-3: 0 runs, not one",
+    "s5a-int8-3: 0 runs, not one"
+   ]
+  },
+  {
+   "block": 3,
+   "case_id": "aircargo-leave-sources",
+   "readable": false,
+   "why": [
+    "s5a-torch-3: 0 runs, not one",
+    "s5a-int8-3: 0 runs, not one"
+   ]
+  },
+  {
+   "block": 3,
+   "case_id": "aircargo-leave-compensation",
+   "readable": false,
+   "why": [
+    "s5a-torch-3: 0 runs, not one",
+    "s5a-int8-3: 0 runs, not one"
+   ]
+  },
+  {
+   "block": 3,
+   "case_id": "aircargo-leave-risk",
+   "readable": false,
+   "why": [
+    "s5a-torch-3: 0 runs, not one",
+    "s5a-int8-3: 0 runs, not one"
+   ]
+  },
+  {
+   "block": 3,
+   "case_id": "aircargo-matliab-check",
+   "readable": false,
+   "why": [
+    "s5a-torch-3: 0 runs, not one",
+    "s5a-int8-3: 0 runs, not one"
+   ]
+  },
+  {
+   "block": 4,
+   "case_id": "aircargo-dismissal-order",
+   "readable": false,
+   "why": [
+    "s5a-torch-4: 0 runs, not one",
+    "s5a-int8-4: 0 runs, not one"
+   ]
+  },
+  {
+   "block": 4,
+   "case_id": "aircargo-leave-sources",
+   "readable": false,
+   "why": [
+    "s5a-torch-4: 0 runs, not one",
+    "s5a-int8-4: 0 runs, not one"
+   ]
+  },
+  {
+   "block": 4,
+   "case_id": "aircargo-leave-compensation",
+   "readable": false,
+   "why": [
+    "s5a-torch-4: 0 runs, not one",
+    "s5a-int8-4: 0 runs, not one"
+   ]
+  },
+  {
+   "block": 4,
+   "case_id": "aircargo-leave-risk",
+   "readable": false,
+   "why": [
+    "s5a-torch-4: 0 runs, not one",
+    "s5a-int8-4: 0 runs, not one"
+   ]
+  },
+  {
+   "block": 4,
+   "case_id": "aircargo-matliab-check",
+   "readable": false,
+   "why": [
+    "s5a-torch-4: 0 runs, not one",
+    "s5a-int8-4: 0 runs, not one"
+   ]
+  }
+ ],
+ "readings": {
+  "printed_deciding_nothing": {
+   "fives": {
+    "other set": 0,
+    "same order": 0,
+    "same set": 0
+   },
+   "median_answer_first_chunk_sec": {
+    "onnx": null,
+    "torch": null
+   },
+   "median_first_token_sec": {
+    "onnx": null,
+    "torch": null
+   },
+   "median_llama_mem_at_rerank_mib": {
+    "onnx": null,
+    "torch": null
+   },
+   "median_load1_max_question": {
+    "onnx": null,
+    "torch": null
+   },
+   "median_load1_max_rerank": {
+    "onnx": null,
+    "torch": null
+   },
+   "median_rerank_faulted_mib": {
+    "onnx": null,
+    "torch": null
+   },
+   "median_rerank_sec": {
+    "onnx": null,
+    "torch": null
+   },
+   "median_retrieval_sec": {
+    "onnx": null,
+    "torch": null
+   },
+   "median_swap_used_at_rerank_mib": {
+    "onnx": null,
+    "torch": null
+   },
+   "median_total_sec": {
+    "onnx": null,
+    "torch": null
+   },
+   "median_vector_sec": {
+    "onnx": null,
+    "torch": null
+   },
+   "median_whole_sec": {
+    "onnx": null,
+    "torch": null
+   },
+   "reranker_load_sec": {
+    "s5a-torch-1": 3.39
+   },
+   "warm_up": {
+    "s5a-torch-1": {
+     "build_sec": 2.334,
+     "index": 1,
+     "rerank_sec": 122.022,
+     "whole_sec": 361.043
+    }
+   }
+  },
+  "rerank": {
+   "answer": "NOT_EVIDENCE",
+   "blocks_below_above": {
+    "1": [
+     0,
+     0
+    ],
+    "2": [
+     0,
+     0
+    ],
+    "3": [
+     0,
+     0
+    ],
+    "4": [
+     0,
+     0
+    ]
+   },
+   "by_pair": {},
+   "median_ratio": null,
+   "median_saving_sec": null,
+   "onnx_above": 0,
+   "onnx_below": 0,
+   "p": null,
+   "readable_pairs": 0,
+   "ties": 0
+  },
+  "whole": {
+   "answer": "NOT_EVIDENCE",
+   "blocks_below_above": {
+    "1": [
+     0,
+     0
+    ],
+    "2": [
+     0,
+     0
+    ],
+    "3": [
+     0,
+     0
+    ],
+    "4": [
+     0,
+     0
+    ]
+   },
+   "by_pair": {},
+   "median_ratio": null,
+   "median_saving_sec": null,
+   "onnx_above": 0,
+   "onnx_below": 0,
+   "p": null,
+   "readable_pairs": 0,
+   "ties": 0
+  }
+ },
+ "runs": [
+  {
+   "asks": [
+    {
+     "answer_call": {
+      "error": null,
+      "first_chunk_sec": 62.154,
+      "offset_sec": 198.593,
+      "prompt_est_tokens": 2589,
+      "wall_sec": 80.434
+     },
+     "answered": true,
+     "arm": "A",
+     "arm_action": {
+      "arm": "A",
+      "done_monotonic": 4139132.399380335,
+      "error": null,
+      "llama_servers": null,
+      "polls": 0,
+      "ps_after": [
+       "qwen3:4b-instruct-2507-q4_K_M"
+      ],
+      "ps_before": [
+       "qwen3:4b-instruct-2507-q4_K_M"
+      ],
+      "sec": 0.577
+     },
+     "arm_held": true,
+     "arm_not_held": [],
+     "at_rerank_start": {
+      "ago_sec": 0.839,
+      "compressor_mib": 2928.941,
+      "free_mib": 37.91,
+      "llama_mem_mib": 2998.0,
+      "llama_pids": [
+       75715
+      ],
+      "swap_used_mib": 2359.5
+     },
+     "build_sec": 2.334,
+     "case_id": "aircargo-dismissal-lawyer",
+     "first_token_sec": 260.747,
+     "five": {
+      "order_sha256": "41682190ebb11b956df623d3ada226dcddfa21a68d02b8012e4a0bc689f8ba17",
+      "set_sha256": "9006232c3e0f66711d75adb3b499b53b6de145834f2ef4cfef14cf4c2f996e3d"
+     },
+     "http_status": 200,
+     "index": 1,
+     "load1_max": {
+      "question": 6.23,
+      "rerank": 2.57
+     },
+     "model_calls": 3,
+     "path": {
+      "candidates": {
+       "bm25": 20,
+       "merged": 35,
+       "vector": 20
+      },
+      "kind": "hybrid",
+      "rerank_status": "ok",
+      "timings_ms": {
+       "pools": 70122.615,
+       "rerank": 122022.696,
+       "total": 192147.289
+      }
+     },
+     "pool": {
+      "candidates": 35,
+      "pool_sha256": "821395642faa57399d4ee53e1fc8d27c3f16231ed76ad2a5107fb5fb363b46ad",
+      "rerank_k": 5
+     },
+     "read": true,
+     "rerank_sec": 122.022,
+     "reranker_ok": true,
+     "retrieval_offset_sec": 6.336,
+     "retrieval_sec": 192.149,
+     "route": "auto",
+     "sha256": "d540e7887c5774e60bf0f96ef414676b733fa68ce0eef89d8ac7b20c0e2186a4",
+     "spans": {
+      "hybrid._rerank_scored_with_status": 1,
+      "hybrid._vector_search": 1,
+      "hybrid.get_relevant_documents_with_path": 1,
+      "hybrid.rerank_pool": 1,
+      "ollama.generate": 2,
+      "ollama.generate_stream": 1,
+      "vectordb.manager.get_retriever": 1
+     },
+     "tokens": 71,
+     "total_sec": 360.466,
+     "unread": [],
+     "vector_sec": 70.078,
+     "whole_sec": 361.043,
+     "windows": {
+      "rerank": {
+       "compressions": 221477,
+       "decompressions": 72853,
+       "faulted_mib": 1476.117,
+       "faulted_mib_per_sec": 12.836,
+       "from": 4139208.864,
+       "llama_pids": [
+        75715
+       ],
+       "one_llama_each": true,
+       "pageins": 305033,
+       "pageouts": 174,
+       "ps_read": 24,
+       "samples": 24,
+       "sec": 114.996,
+       "swapins": 11837,
+       "swapouts": 0,
+       "to": 4139330.886,
+       "with_llama": 24
+      },
+      "retrieval": {
+       "compressions": 944313,
+       "decompressions": 112075,
+       "faulted_mib": 2778.973,
+       "faulted_mib_per_sec": 15.022,
+       "from": 4139138.74,
+       "llama_pids": [
+        75715
+       ],
+       "one_llama_each": true,
+       "pageins": 599342,
+       "pageouts": 253,
+       "ps_read": 38,
+       "samples": 38,
+       "sec": 184.996,
+       "swapins": 15420,
+       "swapouts": 0,
+       "to": 4139330.889,
+       "with_llama": 38
+      },
+      "vector": {
+       "compressions": 707988,
+       "decompressions": 29042,
+       "faulted_mib": 1237.016,
+       "faulted_mib_per_sec": 19.031,
+       "from": 4139138.741,
+       "llama_pids": [
+        75715
+       ],
+       "one_llama_each": true,
+       "pageins": 287634,
+       "pageouts": 77,
+       "ps_read": 14,
+       "samples": 14,
+       "sec": 64.999,
+       "swapins": 3391,
+       "swapouts": 0,
+       "to": 4139208.819,
+       "with_llama": 14
+      }
+     }
+    }
+   ],
+   "dir": "/Users/julia/RAG_new_chat_81cd2ad/live5a/runs/s5a-torch-1",
+   "drivers_sha256": {
+    "live_api.py": "43ff96f06af18538a2571d68a86e898ecfcdd5fcab47039f0d58bd245361a7b5",
+    "live_runner.py": "c87838014a0517d5e6a3dde0402ed0b067a9e0148aaf5d842ffe272ca451a072",
+    "live_supervisor.py": "e903a1498aa1d48fb7ef6a9ba8cd2e4bd94e866433420fb132a6ab7179bd8e59"
+   },
+   "gate": {
+    "actions": true,
+    "asks": false,
+    "drivers": true,
+    "launch": false,
+    "llama": true,
+    "passed": false,
+    "reranker": true,
+    "samples": true,
+    "settings": true
+   },
+   "label": "s5a-torch-1",
+   "launch": {
+    "arm": "AAAAAA",
+    "cases": [
+     "aircargo-dismissal-lawyer",
+     "aircargo-dismissal-order",
+     "aircargo-leave-sources",
+     "aircargo-leave-compensation",
+     "aircargo-leave-risk",
+     "aircargo-matliab-check"
+    ],
+    "cases_file": "/Users/julia/RAG_new_chat_81cd2ad/evaluation/curated_cases_aircargo.jsonl",
+    "chroma_dir": "/Users/julia/RAG_new_chat_81cd2ad/live5a/runs/s5a-torch-1.chroma",
+    "client_cap_sec": "1440/1200",
+    "code_sha": "81cd2ade80ea9bc5a4f3ea721a16bd05037136fd",
+    "label": "s5a-torch-1",
+    "mode": "prod",
+    "model": "qwen3:4b-instruct-2507-q4_K_M",
+    "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+    "ollama_load_sec": 42.873,
+    "ollama_models_before": [],
+    "overrides": {
+     "OLLAMA_REQUEST_TIMEOUT_SEC": "3600",
+     "RAG_DEVICE": "cpu",
+     "RAG_RERANKER_RUNTIME": "torch",
+     "REQUEST_TIMEOUT_SEC": "3600",
+     "STREAMING_TIMEOUT_SEC": "3600"
+    },
+    "started": "2026-10-30T17:14:40+00:00",
+    "status": "running",
+    "tenant": "aircargo",
+    "workspace": "/Users/julia/RAG_new_chat_81cd2ad"
+   },
+   "llama_pids_seen": 1,
+   "notes": [
+    "samples: no stop line",
+    "run: 1 hybrid._vector_search started and never ended",
+    "run: 1 hybrid.get_relevant_documents_with_path started and never ended"
+   ],
+   "onnx_sha256": null,
+   "reranker_loads": [
+    {
+     "before_first_case": true,
+     "error": null,
+     "sec": 3.39
+    },
+    {
+     "before_first_case": false,
+     "error": null,
+     "sec": 0.0
+    }
+   ],
+   "runtime": "torch",
+   "samples": {
+    "every_sec": 5.0,
+    "file": "s5a-torch-1.samples.jsonl",
+    "first_utc": "2026-10-30T17:14:34.646Z",
+    "last_utc": "2026-10-30T17:22:19.649Z",
+    "loud_notes": {},
+    "sample_notes": {
+     "ps: no process named llama-server": 10
+    },
+    "samples": 94,
+    "schema": "stage4-step0-samples/v1",
+    "sha256": "4d552b533b815b20bd37a8b519d0a6ace5932d965d12162a844d3371b680c512",
+    "stop_reason": null
+   },
+   "settings": {
+    "rag_device": "cpu",
+    "rerank_top_k": 5,
+    "reranker_model": "BAAI/bge-reranker-v2-m3",
+    "reranker_onnx_path": "",
+    "reranker_runtime": "torch",
+    "retrieval_top_k": 20
+   },
+   "sha256": {
+    "effective_settings.json": "4d60f4c1f6b60a26cc15e439056b4ec301578be80c1414857d2e0079e2945e1e",
+    "launch.json": "9c8bc087a5298a20b0606d6bb3ea65ff2316b4f821295d3e64167eef9928e3ae",
+    "stages.jsonl": "495920807b7f3ecf15141a12af367197c83bbb0bab1b156590eabcb0a7d2895c"
+   }
+  }
+ ],
+ "schema": "stage4-step5a-live/v1",
+ "spec": "docs/specs/stage4-step5a-live.md",
+ "stand_gate": {
+  "corpus": false,
+  "environment": false,
+  "passed": false
+ },
+ "tools_sha256": {
+  "live5a_reader.py": "7420673c65c97b05d9ecf6df18eea4062e1df66b8ba4d49bafa05565d0bfea2b",
+  "step0_sampler.py": "a0b3e53d78584f454d252770898efb884b77aa80f0fff1729992ec1a37c6d18c",
+  "step1_reader.py": "38f0abfe20143085ad593b361377ee09f5a59d30ca0c3ed69a75863ec288ea3b"
+ }
+}

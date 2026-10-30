@@ -1,0 +1,2731 @@
+{
+ "corpus": {
+  "dir": "/Users/julia/RAG_new_external_s1/aircargo",
+  "sha256": {
+   "chunks-report.json": "bf01530e5a4cf33de44a7ce4aa1282805fc600a49b3a2f82b30b3b5715c6a714",
+   "corpus.manifest.json": "2b2e9232e69b4f52a55237f3ee620f34c91d1900383877c2310ba616c6590444",
+   "index/index-receipt.json": "2dcc80e75d22e9dc34b31313c1db2724aa59c606203eb56c9ac7b84abb684666"
+  }
+ },
+ "environment": [
+  {
+   "freeze_sha256": "ed8fe1c2142b1a9ff7f1c80db891a0887860ba939131bf5cd3cbde324b161ada",
+   "server_version": "0.33.2",
+   "servers": [
+    [
+     12377,
+     "2026-09-13T16:37:06+00:00"
+    ]
+   ],
+   "taken": "2026-10-30T17:14:31+00:00"
+  },
+  {
+   "freeze_sha256": "ed8fe1c2142b1a9ff7f1c80db891a0887860ba939131bf5cd3cbde324b161ada",
+   "server_version": "0.33.2",
+   "servers": [
+    [
+     12377,
+     "2026-09-13T16:37:06+00:00"
+    ]
+   ],
+   "taken": "2026-10-30T19:37:45+00:00"
+  }
+ ],
+ "pairs": [
+  {
+   "block": 1,
+   "case_id": "aircargo-dismissal-order",
+   "onnx": {
+    "index": 2,
+    "run": "s5a-int8-1-r2"
+   },
+   "printed": {
+    "answer_first_chunk_sec": {
+     "onnx": 68.097,
+     "torch": 74.214
+    },
+    "first_token_sec": {
+     "onnx": 166.999,
+     "torch": 277.928
+    },
+    "five": "same order",
+    "llama_mem_at_rerank_mib": {
+     "onnx": 3849.0,
+     "torch": 3848.0
+    },
+    "load1_max_question": {
+     "onnx": 12.74,
+     "torch": 11.34
+    },
+    "load1_max_rerank": {
+     "onnx": 4.13,
+     "torch": 2.85
+    },
+    "rerank_faulted_mib": {
+     "onnx": 375.477,
+     "torch": 1997.379
+    },
+    "retrieval_sec": {
+     "onnx": 98.699,
+     "torch": 203.551
+    },
+    "swap_used_at_rerank_mib": {
+     "onnx": 3383.5,
+     "torch": 2730.5
+    },
+    "total_sec": {
+     "onnx": 321.858,
+     "torch": 542.043
+    },
+    "vector_sec": {
+     "onnx": 74.699,
+     "torch": 76.289
+    }
+   },
+   "readable": true,
+   "rerank_sec": {
+    "onnx": 23.449,
+    "torch": 126.898
+   },
+   "torch": {
+    "index": 2,
+    "run": "s5a-torch-1"
+   },
+   "whole_sec": {
+    "onnx": 321.907,
+    "torch": 542.076
+   },
+   "why": []
+  },
+  {
+   "block": 1,
+   "case_id": "aircargo-leave-sources",
+   "onnx": {
+    "index": 3,
+    "run": "s5a-int8-1-r2"
+   },
+   "printed": {
+    "answer_first_chunk_sec": {
+     "onnx": 85.778,
+     "torch": 71.319
+    },
+    "first_token_sec": {
+     "onnx": 359.073,
+     "torch": 550.233
+    },
+    "five": "same order",
+    "llama_mem_at_rerank_mib": {
+     "onnx": 4597.0,
+     "torch": 4594.0
+    },
+    "load1_max_question": {
+     "onnx": 11.23,
+     "torch": 9.29
+    },
+    "load1_max_rerank": {
+     "onnx": 3.38,
+     "torch": 6.62
+    },
+    "rerank_faulted_mib": {
+     "onnx": 998.641,
+     "torch": 4092.871
+    },
+    "retrieval_sec": {
+     "onnx": 271.675,
+     "torch": 477.391
+    },
+    "swap_used_at_rerank_mib": {
+     "onnx": 4114.5,
+     "torch": 3014.5
+    },
+    "total_sec": {
+     "onnx": 499.751,
+     "torch": 645.916
+    },
+    "vector_sec": {
+     "onnx": 236.415,
+     "torch": 139.735
+    }
+   },
+   "readable": true,
+   "rerank_sec": {
+    "onnx": 34.051,
+    "torch": 336.938
+   },
+   "torch": {
+    "index": 3,
+    "run": "s5a-torch-1"
+   },
+   "whole_sec": {
+    "onnx": 500.125,
+    "torch": 646.598
+   },
+   "why": []
+  },
+  {
+   "block": 1,
+   "case_id": "aircargo-leave-compensation",
+   "onnx": {
+    "index": 4,
+    "run": "s5a-int8-1-r2"
+   },
+   "printed": {
+    "answer_first_chunk_sec": {
+     "onnx": 68.621,
+     "torch": 62.803
+    },
+    "first_token_sec": {
+     "onnx": 403.199,
+     "torch": 307.55
+    },
+    "five": "same order",
+    "llama_mem_at_rerank_mib": {
+     "onnx": 5331.0,
+     "torch": 5327.0
+    },
+    "load1_max_question": {
+     "onnx": 9.92,
+     "torch": 7.79
+    },
+    "load1_max_rerank": {
+     "onnx": 2.06,
+     "torch": 4.38
+    },
+    "rerank_faulted_mib": {
+     "onnx": 865.152,
+     "torch": 2375.324
+    },
+    "retrieval_sec": {
+     "onnx": 332.6,
+     "torch": 244.457
+    },
+    "swap_used_at_rerank_mib": {
+     "onnx": 4629.75,
+     "torch": 3988.25
+    },
+    "total_sec": {
+     "onnx": 502.241,
+     "torch": 402.495
+    },
+    "vector_sec": {
+     "onnx": 298.096,
+     "torch": 83.581
+    }
+   },
+   "readable": true,
+   "rerank_sec": {
+    "onnx": 34.04,
+    "torch": 160.521
+   },
+   "torch": {
+    "index": 4,
+    "run": "s5a-torch-1"
+   },
+   "whole_sec": {
+    "onnx": 502.333,
+    "torch": 402.575
+   },
+   "why": []
+  },
+  {
+   "block": 1,
+   "case_id": "aircargo-leave-risk",
+   "onnx": {
+    "index": 5,
+    "run": "s5a-int8-1-r2"
+   },
+   "printed": {
+    "answer_first_chunk_sec": {
+     "onnx": 61.476,
+     "torch": 65.798
+    },
+    "first_token_sec": {
+     "onnx": 100.626,
+     "torch": 520.5
+    },
+    "five": "same order",
+    "llama_mem_at_rerank_mib": {
+     "onnx": 6039.0,
+     "torch": 6035.0
+    },
+    "load1_max_question": {
+     "onnx": 7.91,
+     "torch": 6.86
+    },
+    "load1_max_rerank": {
+     "onnx": 6.38,
+     "torch": 5.03
+    },
+    "rerank_faulted_mib": {
+     "onnx": 595.395,
+     "torch": 2279.906
+    },
+    "retrieval_sec": {
+     "onnx": 38.733,
+     "torch": 454.526
+    },
+    "swap_used_at_rerank_mib": {
+     "onnx": 5524.75,
+     "torch": 4210.25
+    },
+    "total_sec": {
+     "onnx": 191.343,
+     "torch": 611.182
+    },
+    "vector_sec": {
+     "onnx": 7.349,
+     "torch": 244.221
+    }
+   },
+   "readable": true,
+   "rerank_sec": {
+    "onnx": 31.094,
+    "torch": 209.978
+   },
+   "torch": {
+    "index": 5,
+    "run": "s5a-torch-1"
+   },
+   "whole_sec": {
+    "onnx": 191.415,
+    "torch": 611.229
+   },
+   "why": []
+  },
+  {
+   "block": 1,
+   "case_id": "aircargo-matliab-check",
+   "onnx": {
+    "index": 6,
+    "run": "s5a-int8-1-r2"
+   },
+   "printed": {
+    "answer_first_chunk_sec": {
+     "onnx": 84.457,
+     "torch": 63.336
+    },
+    "first_token_sec": {
+     "onnx": 112.388,
+     "torch": 303.964
+    },
+    "five": "same set",
+    "llama_mem_at_rerank_mib": {
+     "onnx": 6730.0,
+     "torch": 6726.0
+    },
+    "load1_max_question": {
+     "onnx": 7.71,
+     "torch": 7.07
+    },
+    "load1_max_rerank": {
+     "onnx": 6.75,
+     "torch": 2.85
+    },
+    "rerank_faulted_mib": {
+     "onnx": 422.934,
+     "torch": 2024.984
+    },
+    "retrieval_sec": {
+     "onnx": 27.745,
+     "torch": 240.445
+    },
+    "swap_used_at_rerank_mib": {
+     "onnx": 6378.0,
+     "torch": 5282.0
+    },
+    "total_sec": {
+     "onnx": 257.765,
+     "torch": 403.1
+    },
+    "vector_sec": {
+     "onnx": 5.785,
+     "torch": 72.783
+    }
+   },
+   "readable": true,
+   "rerank_sec": {
+    "onnx": 21.603,
+    "torch": 167.501
+   },
+   "torch": {
+    "index": 6,
+    "run": "s5a-torch-1"
+   },
+   "whole_sec": {
+    "onnx": 257.803,
+    "torch": 403.154
+   },
+   "why": []
+  },
+  {
+   "block": 2,
+   "case_id": "aircargo-dismissal-order",
+   "readable": false,
+   "why": [
+    "s5a-torch-2: 0 runs, not one",
+    "s5a-int8-2: 0 runs, not one"
+   ]
+  },
+  {
+   "block": 2,
+   "case_id": "aircargo-leave-sources",
+   "readable": false,
+   "why": [
+    "s5a-torch-2: 0 runs, not one",
+    "s5a-int8-2: 0 runs, not one"
+   ]
+  },
+  {
+   "block": 2,
+   "case_id": "aircargo-leave-compensation",
+   "readable": false,
+   "why": [
+    "s5a-torch-2: 0 runs, not one",
+    "s5a-int8-2: 0 runs, not one"
+   ]
+  },
+  {
+   "block": 2,
+   "case_id": "aircargo-leave-risk",
+   "readable": false,
+   "why": [
+    "s5a-torch-2: 0 runs, not one",
+    "s5a-int8-2: 0 runs, not one"
+   ]
+  },
+  {
+   "block": 2,
+   "case_id": "aircargo-matliab-check",
+   "readable": false,
+   "why": [
+    "s5a-torch-2: 0 runs, not one",
+    "s5a-int8-2: 0 runs, not one"
+   ]
+  },
+  {
+   "block": 3,
+   "case_id": "aircargo-dismissal-order",
+   "readable": false,
+   "why": [
+    "s5a-torch-3: 0 runs, not one",
+    "s5a-int8-3: 0 runs, not one"
+   ]
+  },
+  {
+   "block": 3,
+   "case_id": "aircargo-leave-sources",
+   "readable": false,
+   "why": [
+    "s5a-torch-3: 0 runs, not one",
+    "s5a-int8-3: 0 runs, not one"
+   ]
+  },
+  {
+   "block": 3,
+   "case_id": "aircargo-leave-compensation",
+   "readable": false,
+   "why": [
+    "s5a-torch-3: 0 runs, not one",
+    "s5a-int8-3: 0 runs, not one"
+   ]
+  },
+  {
+   "block": 3,
+   "case_id": "aircargo-leave-risk",
+   "readable": false,
+   "why": [
+    "s5a-torch-3: 0 runs, not one",
+    "s5a-int8-3: 0 runs, not one"
+   ]
+  },
+  {
+   "block": 3,
+   "case_id": "aircargo-matliab-check",
+   "readable": false,
+   "why": [
+    "s5a-torch-3: 0 runs, not one",
+    "s5a-int8-3: 0 runs, not one"
+   ]
+  },
+  {
+   "block": 4,
+   "case_id": "aircargo-dismissal-order",
+   "readable": false,
+   "why": [
+    "s5a-torch-4: 0 runs, not one",
+    "s5a-int8-4: 0 runs, not one"
+   ]
+  },
+  {
+   "block": 4,
+   "case_id": "aircargo-leave-sources",
+   "readable": false,
+   "why": [
+    "s5a-torch-4: 0 runs, not one",
+    "s5a-int8-4: 0 runs, not one"
+   ]
+  },
+  {
+   "block": 4,
+   "case_id": "aircargo-leave-compensation",
+   "readable": false,
+   "why": [
+    "s5a-torch-4: 0 runs, not one",
+    "s5a-int8-4: 0 runs, not one"
+   ]
+  },
+  {
+   "block": 4,
+   "case_id": "aircargo-leave-risk",
+   "readable": false,
+   "why": [
+    "s5a-torch-4: 0 runs, not one",
+    "s5a-int8-4: 0 runs, not one"
+   ]
+  },
+  {
+   "block": 4,
+   "case_id": "aircargo-matliab-check",
+   "readable": false,
+   "why": [
+    "s5a-torch-4: 0 runs, not one",
+    "s5a-int8-4: 0 runs, not one"
+   ]
+  }
+ ],
+ "readings": {
+  "printed_deciding_nothing": {
+   "fives": {
+    "other set": 0,
+    "same order": 4,
+    "same set": 1
+   },
+   "median_answer_first_chunk_sec": {
+    "onnx": 68.621,
+    "torch": 65.798
+   },
+   "median_first_token_sec": {
+    "onnx": 166.999,
+    "torch": 307.55
+   },
+   "median_llama_mem_at_rerank_mib": {
+    "onnx": 5331.0,
+    "torch": 5327.0
+   },
+   "median_load1_max_question": {
+    "onnx": 9.92,
+    "torch": 7.79
+   },
+   "median_load1_max_rerank": {
+    "onnx": 4.13,
+    "torch": 4.38
+   },
+   "median_rerank_faulted_mib": {
+    "onnx": 595.395,
+    "torch": 2279.906
+   },
+   "median_rerank_sec": {
+    "onnx": 31.094,
+    "torch": 167.501
+   },
+   "median_retrieval_sec": {
+    "onnx": 98.699,
+    "torch": 244.457
+   },
+   "median_swap_used_at_rerank_mib": {
+    "onnx": 4629.75,
+    "torch": 3988.25
+   },
+   "median_total_sec": {
+    "onnx": 321.858,
+    "torch": 542.043
+   },
+   "median_vector_sec": {
+    "onnx": 74.699,
+    "torch": 83.581
+   },
+   "median_whole_sec": {
+    "onnx": 321.907,
+    "torch": 542.076
+   },
+   "reranker_load_sec": {
+    "s5a-int8-1-r2": 2.764,
+    "s5a-torch-1": 3.39
+   },
+   "warm_up": {
+    "s5a-int8-1-r2": {
+     "build_sec": 2.458,
+     "index": 1,
+     "rerank_sec": 21.718,
+     "whole_sec": 357.73
+    },
+    "s5a-torch-1": {
+     "build_sec": 2.334,
+     "index": 1,
+     "rerank_sec": 122.022,
+     "whole_sec": 361.043
+    }
+   }
+  },
+  "rerank": {
+   "answer": "NOT_EVIDENCE",
+   "blocks_below_above": {
+    "1": [
+     5,
+     0
+    ],
+    "2": [
+     0,
+     0
+    ],
+    "3": [
+     0,
+     0
+    ],
+    "4": [
+     0,
+     0
+    ]
+   },
+   "by_pair": {
+    "1:aircargo-dismissal-order": [
+     126.898,
+     23.449
+    ],
+    "1:aircargo-leave-compensation": [
+     160.521,
+     34.04
+    ],
+    "1:aircargo-leave-risk": [
+     209.978,
+     31.094
+    ],
+    "1:aircargo-leave-sources": [
+     336.938,
+     34.051
+    ],
+    "1:aircargo-matliab-check": [
+     167.501,
+     21.603
+    ]
+   },
+   "median_ratio": 6.753,
+   "median_saving_sec": 145.898,
+   "onnx_above": 0,
+   "onnx_below": 5,
+   "p": 0.0625,
+   "readable_pairs": 5,
+   "ties": 0
+  },
+  "whole": {
+   "answer": "NOT_EVIDENCE",
+   "blocks_below_above": {
+    "1": [
+     4,
+     1
+    ],
+    "2": [
+     0,
+     0
+    ],
+    "3": [
+     0,
+     0
+    ],
+    "4": [
+     0,
+     0
+    ]
+   },
+   "by_pair": {
+    "1:aircargo-dismissal-order": [
+     542.076,
+     321.907
+    ],
+    "1:aircargo-leave-compensation": [
+     402.575,
+     502.333
+    ],
+    "1:aircargo-leave-risk": [
+     611.229,
+     191.415
+    ],
+    "1:aircargo-leave-sources": [
+     646.598,
+     500.125
+    ],
+    "1:aircargo-matliab-check": [
+     403.154,
+     257.803
+    ]
+   },
+   "median_ratio": 1.5638,
+   "median_saving_sec": 146.473,
+   "onnx_above": 1,
+   "onnx_below": 4,
+   "p": 0.375,
+   "readable_pairs": 5,
+   "ties": 0
+  }
+ },
+ "runs": [
+  {
+   "asks": [
+    {
+     "answer_call": {
+      "error": null,
+      "first_chunk_sec": 62.154,
+      "offset_sec": 198.593,
+      "prompt_est_tokens": 2589,
+      "wall_sec": 80.434
+     },
+     "answered": true,
+     "arm": "A",
+     "arm_action": {
+      "arm": "A",
+      "done_monotonic": 4139132.399380335,
+      "error": null,
+      "llama_servers": null,
+      "polls": 0,
+      "ps_after": [
+       "qwen3:4b-instruct-2507-q4_K_M"
+      ],
+      "ps_before": [
+       "qwen3:4b-instruct-2507-q4_K_M"
+      ],
+      "sec": 0.577
+     },
+     "arm_held": true,
+     "arm_not_held": [],
+     "at_rerank_start": {
+      "ago_sec": 0.839,
+      "compressor_mib": 2928.941,
+      "free_mib": 37.91,
+      "llama_mem_mib": 2998.0,
+      "llama_pids": [
+       75715
+      ],
+      "swap_used_mib": 2359.5
+     },
+     "build_sec": 2.334,
+     "case_id": "aircargo-dismissal-lawyer",
+     "first_token_sec": 260.747,
+     "five": {
+      "order_sha256": "41682190ebb11b956df623d3ada226dcddfa21a68d02b8012e4a0bc689f8ba17",
+      "set_sha256": "9006232c3e0f66711d75adb3b499b53b6de145834f2ef4cfef14cf4c2f996e3d"
+     },
+     "http_status": 200,
+     "index": 1,
+     "load1_max": {
+      "question": 6.23,
+      "rerank": 2.57
+     },
+     "model_calls": 3,
+     "path": {
+      "candidates": {
+       "bm25": 20,
+       "merged": 35,
+       "vector": 20
+      },
+      "kind": "hybrid",
+      "rerank_status": "ok",
+      "timings_ms": {
+       "pools": 70122.615,
+       "rerank": 122022.696,
+       "total": 192147.289
+      }
+     },
+     "pool": {
+      "candidates": 35,
+      "pool_sha256": "821395642faa57399d4ee53e1fc8d27c3f16231ed76ad2a5107fb5fb363b46ad",
+      "rerank_k": 5
+     },
+     "read": true,
+     "rerank_sec": 122.022,
+     "reranker_ok": true,
+     "retrieval_offset_sec": 6.336,
+     "retrieval_sec": 192.149,
+     "route": "auto",
+     "sha256": "d540e7887c5774e60bf0f96ef414676b733fa68ce0eef89d8ac7b20c0e2186a4",
+     "spans": {
+      "hybrid._rerank_scored_with_status": 1,
+      "hybrid._vector_search": 1,
+      "hybrid.get_relevant_documents_with_path": 1,
+      "hybrid.rerank_pool": 1,
+      "ollama.generate": 2,
+      "ollama.generate_stream": 1,
+      "vectordb.manager.get_retriever": 1
+     },
+     "tokens": 71,
+     "total_sec": 360.466,
+     "unread": [],
+     "vector_sec": 70.078,
+     "whole_sec": 361.043,
+     "windows": {
+      "rerank": {
+       "compressions": 221477,
+       "decompressions": 72853,
+       "faulted_mib": 1476.117,
+       "faulted_mib_per_sec": 12.836,
+       "from": 4139208.864,
+       "llama_pids": [
+        75715
+       ],
+       "one_llama_each": true,
+       "pageins": 305033,
+       "pageouts": 174,
+       "ps_read": 24,
+       "samples": 24,
+       "sec": 114.996,
+       "swapins": 11837,
+       "swapouts": 0,
+       "to": 4139330.886,
+       "with_llama": 24
+      },
+      "retrieval": {
+       "compressions": 944313,
+       "decompressions": 112075,
+       "faulted_mib": 2778.973,
+       "faulted_mib_per_sec": 15.022,
+       "from": 4139138.74,
+       "llama_pids": [
+        75715
+       ],
+       "one_llama_each": true,
+       "pageins": 599342,
+       "pageouts": 253,
+       "ps_read": 38,
+       "samples": 38,
+       "sec": 184.996,
+       "swapins": 15420,
+       "swapouts": 0,
+       "to": 4139330.889,
+       "with_llama": 38
+      },
+      "vector": {
+       "compressions": 707988,
+       "decompressions": 29042,
+       "faulted_mib": 1237.016,
+       "faulted_mib_per_sec": 19.031,
+       "from": 4139138.741,
+       "llama_pids": [
+        75715
+       ],
+       "one_llama_each": true,
+       "pageins": 287634,
+       "pageouts": 77,
+       "ps_read": 14,
+       "samples": 14,
+       "sec": 64.999,
+       "swapins": 3391,
+       "swapouts": 0,
+       "to": 4139208.819,
+       "with_llama": 14
+      }
+     }
+    },
+    {
+     "answer_call": {
+      "error": null,
+      "first_chunk_sec": 74.214,
+      "offset_sec": 203.711,
+      "prompt_est_tokens": 2594,
+      "wall_sec": 220.529
+     },
+     "answered": true,
+     "arm": "A",
+     "arm_action": {
+      "arm": "A",
+      "done_monotonic": 4139493.018163455,
+      "error": null,
+      "llama_servers": null,
+      "polls": 0,
+      "ps_after": [
+       "qwen3:4b-instruct-2507-q4_K_M"
+      ],
+      "ps_before": [
+       "qwen3:4b-instruct-2507-q4_K_M"
+      ],
+      "sec": 0.033
+     },
+     "arm_held": true,
+     "arm_not_held": [],
+     "at_rerank_start": {
+      "ago_sec": 1.574,
+      "compressor_mib": 3851.699,
+      "free_mib": 50.109,
+      "llama_mem_mib": 3848.0,
+      "llama_pids": [
+       75715
+      ],
+      "swap_used_mib": 2730.5
+     },
+     "build_sec": 0.002,
+     "case_id": "aircargo-dismissal-order",
+     "first_token_sec": 277.928,
+     "five": {
+      "order_sha256": "84adc80d3908fd2e6bb9b06aae32cafd8410e4983f9ed151a80656a5d49ef751",
+      "set_sha256": "0311b796f8276b6549b595c3451713968ae5611ecf0a6882926f2d2c1aa17444"
+     },
+     "http_status": 200,
+     "index": 2,
+     "load1_max": {
+      "question": 11.34,
+      "rerank": 2.85
+     },
+     "model_calls": 3,
+     "path": {
+      "candidates": {
+       "bm25": 20,
+       "merged": 30,
+       "vector": 20
+      },
+      "kind": "hybrid",
+      "rerank_status": "ok",
+      "timings_ms": {
+       "pools": 76471.314,
+       "rerank": 126898.47,
+       "total": 203550.188
+      }
+     },
+     "pool": {
+      "candidates": 30,
+      "pool_sha256": "339733b11aa493eb6bb4c0fa7bf90989d51325fd7c8ca0a59e7d7a29cbd2a637",
+      "rerank_k": 5
+     },
+     "read": true,
+     "rerank_sec": 126.898,
+     "reranker_ok": true,
+     "retrieval_offset_sec": 0.107,
+     "retrieval_sec": 203.551,
+     "route": "auto",
+     "sha256": "317c6e6ed02e894697df8af1e378ce70b1ff6c6705728ee54b4fd229ceeedf9a",
+     "spans": {
+      "hybrid._rerank_scored_with_status": 1,
+      "hybrid._vector_search": 1,
+      "hybrid.get_relevant_documents_with_path": 1,
+      "hybrid.rerank_pool": 1,
+      "ollama.generate": 2,
+      "ollama.generate_stream": 1,
+      "vectordb.manager.get_retriever": 1
+     },
+     "tokens": 136,
+     "total_sec": 542.043,
+     "unread": [],
+     "vector_sec": 76.289,
+     "whole_sec": 542.076,
+     "windows": {
+      "rerank": {
+       "compressions": 228974,
+       "decompressions": 239348,
+       "faulted_mib": 1997.379,
+       "faulted_mib_per_sec": 16.646,
+       "from": 4139569.597,
+       "llama_pids": [
+        75715
+       ],
+       "one_llama_each": true,
+       "pageins": 271981,
+       "pageouts": 389,
+       "ps_read": 25,
+       "samples": 25,
+       "sec": 119.993,
+       "swapins": 238430,
+       "swapouts": 227231,
+       "to": 4139696.495,
+       "with_llama": 25
+      },
+      "retrieval": {
+       "compressions": 1220534,
+       "decompressions": 350405,
+       "faulted_mib": 3591.781,
+       "faulted_mib_per_sec": 18.42,
+       "from": 4139493.125,
+       "llama_pids": [
+        75715
+       ],
+       "one_llama_each": true,
+       "pageins": 569091,
+       "pageouts": 537,
+       "ps_read": 40,
+       "samples": 40,
+       "sec": 194.997,
+       "swapins": 318356,
+       "swapouts": 272664,
+       "to": 4139696.676,
+       "with_llama": 40
+      },
+      "vector": {
+       "compressions": 990293,
+       "decompressions": 72442,
+       "faulted_mib": 1407.734,
+       "faulted_mib_per_sec": 20.11,
+       "from": 4139493.126,
+       "llama_pids": [
+        75715
+       ],
+       "one_llama_each": true,
+       "pageins": 287938,
+       "pageouts": 146,
+       "ps_read": 15,
+       "samples": 15,
+       "sec": 70.001,
+       "swapins": 57176,
+       "swapouts": 40847,
+       "to": 4139569.415,
+       "with_llama": 15
+      }
+     }
+    },
+    {
+     "answer_call": {
+      "error": null,
+      "first_chunk_sec": 71.319,
+      "offset_sec": 478.91,
+      "prompt_est_tokens": 2609,
+      "wall_sec": 83.985
+     },
+     "answered": true,
+     "arm": "A",
+     "arm_action": {
+      "arm": "A",
+      "done_monotonic": 4140037.127013929,
+      "error": null,
+      "llama_servers": null,
+      "polls": 0,
+      "ps_after": [
+       "qwen3:4b-instruct-2507-q4_K_M"
+      ],
+      "ps_before": [
+       "qwen3:4b-instruct-2507-q4_K_M"
+      ],
+      "sec": 0.682
+     },
+     "arm_held": true,
+     "arm_not_held": [],
+     "at_rerank_start": {
+      "ago_sec": 0.669,
+      "compressor_mib": 4218.895,
+      "free_mib": 24.164,
+      "llama_mem_mib": 4594.0,
+      "llama_pids": [
+       75715
+      ],
+      "swap_used_mib": 3014.5
+     },
+     "build_sec": 0.102,
+     "case_id": "aircargo-leave-sources",
+     "first_token_sec": 550.233,
+     "five": {
+      "order_sha256": "90a017c5eb681c99035c0c4a076a40f60ec1e69bf887a12628fd16d127f8a6cd",
+      "set_sha256": "77b02a75d9c331ab11eaacf8eb695add6cb2cc20f6aa2479566ad3e5720f4ffd"
+     },
+     "http_status": 200,
+     "index": 3,
+     "load1_max": {
+      "question": 9.29,
+      "rerank": 6.62
+     },
+     "model_calls": 3,
+     "path": {
+      "candidates": {
+       "bm25": 20,
+       "merged": 39,
+       "vector": 20
+      },
+      "kind": "hybrid",
+      "rerank_status": "ok",
+      "timings_ms": {
+       "pools": 140073.52,
+       "rerank": 336938.913,
+       "total": 477350.871
+      }
+     },
+     "pool": {
+      "candidates": 39,
+      "pool_sha256": "8581460f976e36f92cbcbddd7642cc6ee274825256359872d5e476cc93d66875",
+      "rerank_k": 5
+     },
+     "read": true,
+     "rerank_sec": 336.938,
+     "reranker_ok": true,
+     "retrieval_offset_sec": 1.456,
+     "retrieval_sec": 477.391,
+     "route": "auto",
+     "sha256": "38755ca29f848e6e63dd59bc81c967073b7c39e893f9595f74a33845f1814239",
+     "spans": {
+      "hybrid._rerank_scored_with_status": 1,
+      "hybrid._vector_search": 1,
+      "hybrid.get_relevant_documents_with_path": 1,
+      "hybrid.rerank_pool": 1,
+      "ollama.generate": 2,
+      "ollama.generate_stream": 1,
+      "vectordb.manager.get_retriever": 1
+     },
+     "tokens": 46,
+     "total_sec": 645.916,
+     "unread": [],
+     "vector_sec": 139.735,
+     "whole_sec": 646.598,
+     "windows": {
+      "rerank": {
+       "compressions": 420985,
+       "decompressions": 305614,
+       "faulted_mib": 4092.871,
+       "faulted_mib_per_sec": 12.403,
+       "from": 4140178.696,
+       "llama_pids": [
+        75715
+       ],
+       "one_llama_each": true,
+       "pageins": 742161,
+       "pageouts": 2414,
+       "ps_read": 66,
+       "samples": 66,
+       "sec": 329.99,
+       "swapins": 106096,
+       "swapouts": 220848,
+       "to": 4140515.634,
+       "with_llama": 66
+      },
+      "retrieval": {
+       "compressions": 1059845,
+       "decompressions": 470940,
+       "faulted_mib": 6024.316,
+       "faulted_mib_per_sec": 12.818,
+       "from": 4140038.583,
+       "llama_pids": [
+        75715
+       ],
+       "one_llama_each": true,
+       "pageins": 1071285,
+       "pageouts": 3661,
+       "ps_read": 94,
+       "samples": 94,
+       "sec": 469.996,
+       "swapins": 162415,
+       "swapouts": 293741,
+       "to": 4140515.974,
+       "with_llama": 94
+      },
+      "vector": {
+       "compressions": 621547,
+       "decompressions": 131948,
+       "faulted_mib": 1773.68,
+       "faulted_mib_per_sec": 13.138,
+       "from": 4140038.622,
+       "llama_pids": [
+        75715
+       ],
+       "one_llama_each": true,
+       "pageins": 322114,
+       "pageouts": 1219,
+       "ps_read": 28,
+       "samples": 28,
+       "sec": 135.004,
+       "swapins": 27787,
+       "swapouts": 66054,
+       "to": 4140178.358,
+       "with_llama": 28
+      }
+     }
+    },
+    {
+     "answer_call": {
+      "error": null,
+      "first_chunk_sec": 62.803,
+      "offset_sec": 244.707,
+      "prompt_est_tokens": 2600,
+      "wall_sec": 76.361
+     },
+     "answered": true,
+     "arm": "A",
+     "arm_action": {
+      "arm": "A",
+      "done_monotonic": 4140683.475091825,
+      "error": null,
+      "llama_servers": null,
+      "polls": 0,
+      "ps_after": [
+       "qwen3:4b-instruct-2507-q4_K_M"
+      ],
+      "ps_before": [
+       "qwen3:4b-instruct-2507-q4_K_M"
+      ],
+      "sec": 0.08
+     },
+     "arm_held": true,
+     "arm_not_held": [],
+     "at_rerank_start": {
+      "ago_sec": 4.555,
+      "compressor_mib": 2825.848,
+      "free_mib": 14.418,
+      "llama_mem_mib": 5327.0,
+      "llama_pids": [
+       75715
+      ],
+      "swap_used_mib": 3988.25
+     },
+     "build_sec": 0.003,
+     "case_id": "aircargo-leave-compensation",
+     "first_token_sec": 307.55,
+     "five": {
+      "order_sha256": "0107427a2c14e31ac0ec0faaa1e5f15b93ebcec6b6b9f1cb1f1d802777de153c",
+      "set_sha256": "b80df2251fce3d7f209036a57e903c36ef4172b3b15d88367a30e6f88fccd6da"
+     },
+     "http_status": 200,
+     "index": 4,
+     "load1_max": {
+      "question": 7.79,
+      "rerank": 4.38
+     },
+     "model_calls": 3,
+     "path": {
+      "candidates": {
+       "bm25": 20,
+       "merged": 37,
+       "vector": 20
+      },
+      "kind": "hybrid",
+      "rerank_status": "ok",
+      "timings_ms": {
+       "pools": 83904.021,
+       "rerank": 160521.412,
+       "total": 244453.436
+      }
+     },
+     "pool": {
+      "candidates": 37,
+      "pool_sha256": "3ff82de8a048962c94f4ba67aab74dc552370257914329c9e4cf71319eb77984",
+      "rerank_k": 5
+     },
+     "read": true,
+     "rerank_sec": 160.521,
+     "reranker_ok": true,
+     "retrieval_offset_sec": 0.2,
+     "retrieval_sec": 244.457,
+     "route": "auto",
+     "sha256": "6347e35977d15a6dc6e17bc372d7e901d3a5a7abc8e1e517f17bfa97763f0969",
+     "spans": {
+      "hybrid._rerank_scored_with_status": 1,
+      "hybrid._vector_search": 1,
+      "hybrid.get_relevant_documents_with_path": 1,
+      "hybrid.rerank_pool": 1,
+      "ollama.generate": 2,
+      "ollama.generate_stream": 1,
+      "vectordb.manager.get_retriever": 1
+     },
+     "tokens": 51,
+     "total_sec": 402.495,
+     "unread": [],
+     "vector_sec": 83.581,
+     "whole_sec": 402.575,
+     "windows": {
+      "rerank": {
+       "compressions": 443633,
+       "decompressions": 192363,
+       "faulted_mib": 2375.324,
+       "faulted_mib_per_sec": 14.846,
+       "from": 4140767.58,
+       "llama_pids": [
+        75715
+       ],
+       "one_llama_each": true,
+       "pageins": 415720,
+       "pageouts": 596,
+       "ps_read": 33,
+       "samples": 33,
+       "sec": 159.996,
+       "swapins": 171554,
+       "swapouts": 189985,
+       "to": 4140928.101,
+       "with_llama": 33
+      },
+      "retrieval": {
+       "compressions": 977743,
+       "decompressions": 246949,
+       "faulted_mib": 3773.961,
+       "faulted_mib_per_sec": 15.725,
+       "from": 4140683.676,
+       "llama_pids": [
+        75715
+       ],
+       "one_llama_each": true,
+       "pageins": 719185,
+       "pageouts": 674,
+       "ps_read": 49,
+       "samples": 49,
+       "sec": 240.001,
+       "swapins": 186136,
+       "swapouts": 189985,
+       "to": 4140928.133,
+       "with_llama": 49
+      },
+      "vector": {
+       "compressions": 506469,
+       "decompressions": 37619,
+       "faulted_mib": 1281.137,
+       "faulted_mib_per_sec": 17.081,
+       "from": 4140683.676,
+       "llama_pids": [
+        75715
+       ],
+       "one_llama_each": true,
+       "pageins": 290352,
+       "pageouts": 67,
+       "ps_read": 16,
+       "samples": 16,
+       "sec": 75.005,
+       "swapins": 5712,
+       "swapouts": 0,
+       "to": 4140767.257,
+       "with_llama": 16
+      }
+     }
+    },
+    {
+     "answer_call": {
+      "error": null,
+      "first_chunk_sec": 65.798,
+      "offset_sec": 454.698,
+      "prompt_est_tokens": 2550,
+      "wall_sec": 78.335
+     },
+     "answered": true,
+     "arm": "A",
+     "arm_action": {
+      "arm": "A",
+      "done_monotonic": 4141086.210593315,
+      "error": null,
+      "llama_servers": null,
+      "polls": 0,
+      "ps_after": [
+       "qwen3:4b-instruct-2507-q4_K_M"
+      ],
+      "ps_before": [
+       "qwen3:4b-instruct-2507-q4_K_M"
+      ],
+      "sec": 0.047
+     },
+     "arm_held": true,
+     "arm_not_held": [],
+     "at_rerank_start": {
+      "ago_sec": 2.782,
+      "compressor_mib": 4433.82,
+      "free_mib": 27.586,
+      "llama_mem_mib": 6035.0,
+      "llama_pids": [
+       75715
+      ],
+      "swap_used_mib": 4210.25
+     },
+     "build_sec": 0.002,
+     "case_id": "aircargo-leave-risk",
+     "first_token_sec": 520.5,
+     "five": {
+      "order_sha256": "cd597e8b93316dc53470bda307ed6038617d7974d499e2ef4efefe158aa9e9f1",
+      "set_sha256": "df5db106d07facd03ca2878cd3ced043115076172a5cb9b2d51f02ee315e82e0"
+     },
+     "http_status": 200,
+     "index": 5,
+     "load1_max": {
+      "question": 6.86,
+      "rerank": 5.03
+     },
+     "model_calls": 3,
+     "path": {
+      "candidates": {
+       "bm25": 20,
+       "merged": 39,
+       "vector": 20
+      },
+      "kind": "hybrid",
+      "rerank_status": "ok",
+      "timings_ms": {
+       "pools": 244512.478,
+       "rerank": 209979.308,
+       "total": 454522.602
+      }
+     },
+     "pool": {
+      "candidates": 39,
+      "pool_sha256": "11f5924e79ca1dc5398cff0ea871c4ca16551cf908b33346921edace16f9c70e",
+      "rerank_k": 5
+     },
+     "read": true,
+     "rerank_sec": 209.978,
+     "reranker_ok": true,
+     "retrieval_offset_sec": 0.086,
+     "retrieval_sec": 454.526,
+     "route": "auto",
+     "sha256": "5228df25d5637f7901042d9f40772e11851579275664dd95dd6260a7e5311a26",
+     "spans": {
+      "hybrid._rerank_scored_with_status": 1,
+      "hybrid._vector_search": 1,
+      "hybrid.get_relevant_documents_with_path": 1,
+      "hybrid.rerank_pool": 1,
+      "ollama.generate": 2,
+      "ollama.generate_stream": 1,
+      "vectordb.manager.get_retriever": 1
+     },
+     "tokens": 49,
+     "total_sec": 611.182,
+     "unread": [],
+     "vector_sec": 244.221,
+     "whole_sec": 611.229,
+     "windows": {
+      "rerank": {
+       "compressions": 236435,
+       "decompressions": 183358,
+       "faulted_mib": 2279.906,
+       "faulted_mib_per_sec": 11.122,
+       "from": 4141330.81,
+       "llama_pids": [
+        75715
+       ],
+       "one_llama_each": true,
+       "pageins": 400298,
+       "pageouts": 237,
+       "ps_read": 42,
+       "samples": 42,
+       "sec": 204.996,
+       "swapins": 68658,
+       "swapouts": 237166,
+       "to": 4141540.789,
+       "with_llama": 42
+      },
+      "retrieval": {
+       "compressions": 1052751,
+       "decompressions": 396229,
+       "faulted_mib": 4714.754,
+       "faulted_mib_per_sec": 10.529,
+       "from": 4141086.297,
+       "llama_pids": [
+        75715
+       ],
+       "one_llama_each": true,
+       "pageins": 810748,
+       "pageouts": 834,
+       "ps_read": 90,
+       "samples": 90,
+       "sec": 447.8,
+       "swapins": 233321,
+       "swapouts": 374457,
+       "to": 4141540.823,
+       "with_llama": 90
+      },
+      "vector": {
+       "compressions": 793918,
+       "decompressions": 189522,
+       "faulted_mib": 2325.238,
+       "faulted_mib_per_sec": 9.778,
+       "from": 4141086.298,
+       "llama_pids": [
+        75715
+       ],
+       "one_llama_each": true,
+       "pageins": 405739,
+       "pageouts": 595,
+       "ps_read": 48,
+       "samples": 48,
+       "sec": 237.809,
+       "swapins": 142892,
+       "swapouts": 136790,
+       "to": 4141330.519,
+       "with_llama": 48
+      }
+     }
+    },
+    {
+     "answer_call": {
+      "error": null,
+      "first_chunk_sec": 63.336,
+      "offset_sec": 240.589,
+      "prompt_est_tokens": 2636,
+      "wall_sec": 84.388
+     },
+     "answered": true,
+     "arm": "A",
+     "arm_action": {
+      "arm": "A",
+      "done_monotonic": 4141697.586570493,
+      "error": null,
+      "llama_servers": null,
+      "polls": 0,
+      "ps_after": [
+       "qwen3:4b-instruct-2507-q4_K_M"
+      ],
+      "ps_before": [
+       "qwen3:4b-instruct-2507-q4_K_M"
+      ],
+      "sec": 0.054
+     },
+     "arm_held": true,
+     "arm_not_held": [],
+     "at_rerank_start": {
+      "ago_sec": 2.602,
+      "compressor_mib": 3997.227,
+      "free_mib": 38.875,
+      "llama_mem_mib": 6726.0,
+      "llama_pids": [
+       75715
+      ],
+      "swap_used_mib": 5282.0
+     },
+     "build_sec": 0.001,
+     "case_id": "aircargo-matliab-check",
+     "first_token_sec": 303.964,
+     "five": {
+      "order_sha256": "1744153c7dafad6f6ade80f26a453fce923cc989547bfe365e525d1c07ef34a3",
+      "set_sha256": "1ef75708524ef557aa79dc33a86d686132a679abb3b85e69f5f2cf35621f462f"
+     },
+     "http_status": 200,
+     "index": 6,
+     "load1_max": {
+      "question": 7.07,
+      "rerank": 2.85
+     },
+     "model_calls": 3,
+     "path": {
+      "candidates": {
+       "bm25": 20,
+       "merged": 28,
+       "vector": 20
+      },
+      "kind": "hybrid",
+      "rerank_status": "ok",
+      "timings_ms": {
+       "pools": 72927.995,
+       "rerank": 167501.821,
+       "total": 240444.112
+      }
+     },
+     "pool": {
+      "candidates": 28,
+      "pool_sha256": "873f317e5e5eee856bd7212f367003ecdfe6d30a5de3c87f12cf9c7f8f4dfb92",
+      "rerank_k": 5
+     },
+     "read": true,
+     "rerank_sec": 167.501,
+     "reranker_ok": true,
+     "retrieval_offset_sec": 0.107,
+     "retrieval_sec": 240.445,
+     "route": "auto",
+     "sha256": "4090df9680cbd5fcefa763b230b07166c5e9dd257c4ff868d946dff3aeaad881",
+     "spans": {
+      "hybrid._rerank_scored_with_status": 1,
+      "hybrid._vector_search": 1,
+      "hybrid.get_relevant_documents_with_path": 1,
+      "hybrid.rerank_pool": 1,
+      "ollama.generate": 2,
+      "ollama.generate_stream": 1,
+      "vectordb.manager.get_retriever": 1
+     },
+     "tokens": 89,
+     "total_sec": 403.1,
+     "unread": [],
+     "vector_sec": 72.783,
+     "whole_sec": 403.154,
+     "windows": {
+      "rerank": {
+       "compressions": 186547,
+       "decompressions": 146202,
+       "faulted_mib": 2024.984,
+       "faulted_mib_per_sec": 12.273,
+       "from": 4141770.623,
+       "llama_pids": [
+        75715
+       ],
+       "one_llama_each": true,
+       "pageins": 372194,
+       "pageouts": 625,
+       "ps_read": 34,
+       "samples": 34,
+       "sec": 165.0,
+       "swapins": 59009,
+       "swapouts": 117884,
+       "to": 4141938.124,
+       "with_llama": 34
+      },
+      "retrieval": {
+       "compressions": 1146624,
+       "decompressions": 249940,
+       "faulted_mib": 3629.191,
+       "faulted_mib_per_sec": 15.122,
+       "from": 4141697.694,
+       "llama_pids": [
+        75715
+       ],
+       "one_llama_each": true,
+       "pageins": 679133,
+       "pageouts": 774,
+       "ps_read": 49,
+       "samples": 49,
+       "sec": 240.002,
+       "swapins": 124813,
+       "swapouts": 224872,
+       "to": 4141938.139,
+       "with_llama": 49
+      },
+      "vector": {
+       "compressions": 938971,
+       "decompressions": 80981,
+       "faulted_mib": 1465.52,
+       "faulted_mib_per_sec": 20.937,
+       "from": 4141697.695,
+       "llama_pids": [
+        75715
+       ],
+       "one_llama_each": true,
+       "pageins": 294192,
+       "pageouts": 121,
+       "ps_read": 15,
+       "samples": 15,
+       "sec": 69.997,
+       "swapins": 43613,
+       "swapouts": 86077,
+       "to": 4141770.478,
+       "with_llama": 15
+      }
+     }
+    }
+   ],
+   "dir": "/Users/julia/RAG_new_chat_81cd2ad/live5a/runs/s5a-torch-1",
+   "drivers_sha256": {
+    "live_api.py": "43ff96f06af18538a2571d68a86e898ecfcdd5fcab47039f0d58bd245361a7b5",
+    "live_runner.py": "c87838014a0517d5e6a3dde0402ed0b067a9e0148aaf5d842ffe272ca451a072",
+    "live_supervisor.py": "e903a1498aa1d48fb7ef6a9ba8cd2e4bd94e866433420fb132a6ab7179bd8e59"
+   },
+   "gate": {
+    "actions": true,
+    "asks": true,
+    "drivers": true,
+    "launch": true,
+    "llama": true,
+    "passed": true,
+    "reranker": true,
+    "samples": true,
+    "settings": true
+   },
+   "label": "s5a-torch-1",
+   "launch": {
+    "arm": "AAAAAA",
+    "cases": [
+     "aircargo-dismissal-lawyer",
+     "aircargo-dismissal-order",
+     "aircargo-leave-sources",
+     "aircargo-leave-compensation",
+     "aircargo-leave-risk",
+     "aircargo-matliab-check"
+    ],
+    "cases_file": "/Users/julia/RAG_new_chat_81cd2ad/evaluation/curated_cases_aircargo.jsonl",
+    "chroma_dir": "/Users/julia/RAG_new_chat_81cd2ad/live5a/runs/s5a-torch-1.chroma",
+    "client_cap_sec": "1440/1200",
+    "code_sha": "81cd2ade80ea9bc5a4f3ea721a16bd05037136fd",
+    "label": "s5a-torch-1",
+    "mode": "prod",
+    "model": "qwen3:4b-instruct-2507-q4_K_M",
+    "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+    "ollama_load_sec": 42.873,
+    "ollama_models_after": [
+     "qwen3:4b-instruct-2507-q4_K_M"
+    ],
+    "ollama_models_before": [],
+    "overrides": {
+     "OLLAMA_REQUEST_TIMEOUT_SEC": "3600",
+     "RAG_DEVICE": "cpu",
+     "RAG_RERANKER_RUNTIME": "torch",
+     "REQUEST_TIMEOUT_SEC": "3600",
+     "STREAMING_TIMEOUT_SEC": "3600"
+    },
+    "runner_exit": 0,
+    "started": "2026-10-30T17:14:40+00:00",
+    "status": "complete",
+    "tenant": "aircargo",
+    "unloaded_models": [
+     "qwen3:4b-instruct-2507-q4_K_M"
+    ],
+    "workspace": "/Users/julia/RAG_new_chat_81cd2ad"
+   },
+   "llama_pids_seen": 1,
+   "notes": [],
+   "onnx_sha256": null,
+   "reranker_loads": [
+    {
+     "before_first_case": true,
+     "error": null,
+     "sec": 3.39
+    },
+    {
+     "before_first_case": false,
+     "error": null,
+     "sec": 0.0
+    }
+   ],
+   "runtime": "torch",
+   "samples": {
+    "every_sec": 5.0,
+    "file": "s5a-torch-1.samples.jsonl",
+    "first_utc": "2026-10-30T17:14:34.646Z",
+    "last_utc": "2026-10-30T18:05:57.714Z",
+    "loud_notes": {},
+    "sample_notes": {
+     "ps: no process named llama-server": 13
+    },
+    "samples": 614,
+    "schema": "stage4-step0-samples/v1",
+    "sha256": "3a63923336b79596af884d6f2b21db7f38fd99c5bae47ff83b3f3c57f893ce84",
+    "stop_reason": "stop file"
+   },
+   "settings": {
+    "rag_device": "cpu",
+    "rerank_top_k": 5,
+    "reranker_model": "BAAI/bge-reranker-v2-m3",
+    "reranker_onnx_path": "",
+    "reranker_runtime": "torch",
+    "retrieval_top_k": 20
+   },
+   "sha256": {
+    "effective_settings.json": "4d60f4c1f6b60a26cc15e439056b4ec301578be80c1414857d2e0079e2945e1e",
+    "launch.json": "10967659c3bdeda6c2e6905ab7cbbad042844341f1785819b921f69b9147e94d",
+    "stages.jsonl": "0eaa592b5173f8bc27f1034467885b912594d3280d49afa3d706fe10edc8ee92"
+   }
+  },
+  {
+   "asks": [
+    {
+     "answer_call": {
+      "error": null,
+      "first_chunk_sec": 78.497,
+      "offset_sec": 160.585,
+      "prompt_est_tokens": 2600,
+      "wall_sec": 99.38
+     },
+     "answered": true,
+     "arm": "A",
+     "arm_action": {
+      "arm": "A",
+      "done_monotonic": 4144960.894984705,
+      "error": null,
+      "llama_servers": null,
+      "polls": 0,
+      "ps_after": [
+       "qwen3:4b-instruct-2507-q4_K_M"
+      ],
+      "ps_before": [
+       "qwen3:4b-instruct-2507-q4_K_M"
+      ],
+      "sec": 0.202
+     },
+     "arm_held": true,
+     "arm_not_held": [],
+     "at_rerank_start": {
+      "ago_sec": 1.879,
+      "compressor_mib": 3432.695,
+      "free_mib": 23.672,
+      "llama_mem_mib": 2997.0,
+      "llama_pids": [
+       1339
+      ],
+      "swap_used_mib": 2246.5
+     },
+     "build_sec": 2.458,
+     "case_id": "aircargo-dismissal-lawyer",
+     "first_token_sec": 239.133,
+     "five": {
+      "order_sha256": "b6deb0092681ca91d82b8e00059f5d46e9a63ea9c07bb1f7b7667ecc5e73d0c3",
+      "set_sha256": "9006232c3e0f66711d75adb3b499b53b6de145834f2ef4cfef14cf4c2f996e3d"
+     },
+     "http_status": 200,
+     "index": 1,
+     "load1_max": {
+      "question": 11.51,
+      "rerank": 2.86
+     },
+     "model_calls": 3,
+     "path": {
+      "candidates": {
+       "bm25": 20,
+       "merged": 35,
+       "vector": 20
+      },
+      "kind": "hybrid",
+      "rerank_status": "ok",
+      "timings_ms": {
+       "pools": 134048.488,
+       "rerank": 21945.797,
+       "total": 156336.718
+      }
+     },
+     "pool": {
+      "candidates": 35,
+      "pool_sha256": "821395642faa57399d4ee53e1fc8d27c3f16231ed76ad2a5107fb5fb363b46ad",
+      "rerank_k": 5
+     },
+     "read": true,
+     "rerank_sec": 21.718,
+     "reranker_ok": true,
+     "retrieval_offset_sec": 4.191,
+     "retrieval_sec": 156.338,
+     "route": "auto",
+     "sha256": "4f4e9cf6df4605b9f6f77693df28da9342487ea347ab33f8d2bf74ca1ad83f01",
+     "spans": {
+      "hybrid._rerank_scored_with_status": 1,
+      "hybrid._vector_search": 1,
+      "hybrid.get_relevant_documents_with_path": 1,
+      "hybrid.rerank_pool": 1,
+      "ollama.generate": 2,
+      "ollama.generate_stream": 1,
+      "vectordb.manager.get_retriever": 1
+     },
+     "tokens": 70,
+     "total_sec": 357.528,
+     "unread": [],
+     "vector_sec": 133.974,
+     "whole_sec": 357.73,
+     "windows": {
+      "rerank": {
+       "compressions": 6107,
+       "decompressions": 80572,
+       "faulted_mib": 339.859,
+       "faulted_mib_per_sec": 22.663,
+       "from": 4145099.167,
+       "llama_pids": [
+        1339
+       ],
+       "one_llama_each": true,
+       "pageins": 6432,
+       "pageouts": 10,
+       "ps_read": 4,
+       "samples": 4,
+       "sec": 14.996,
+       "swapins": 6051,
+       "swapouts": 384,
+       "to": 4145120.885,
+       "with_llama": 4
+      },
+      "retrieval": {
+       "compressions": 1001507,
+       "decompressions": 216366,
+       "faulted_mib": 2551.926,
+       "faulted_mib_per_sec": 17.013,
+       "from": 4144965.118,
+       "llama_pids": [
+        1339
+       ],
+       "one_llama_each": true,
+       "pageins": 436927,
+       "pageouts": 400,
+       "ps_read": 31,
+       "samples": 31,
+       "sec": 149.996,
+       "swapins": 32411,
+       "swapouts": 46130,
+       "to": 4145121.455,
+       "with_llama": 31
+      },
+      "vector": {
+       "compressions": 912874,
+       "decompressions": 102873,
+       "faulted_mib": 2054.52,
+       "faulted_mib_per_sec": 15.805,
+       "from": 4144965.118,
+       "llama_pids": [
+        1339
+       ],
+       "one_llama_each": true,
+       "pageins": 423084,
+       "pageouts": 341,
+       "ps_read": 27,
+       "samples": 27,
+       "sec": 129.991,
+       "swapins": 23527,
+       "swapouts": 26219,
+       "to": 4145099.092,
+       "with_llama": 27
+      }
+     }
+    },
+    {
+     "answer_call": {
+      "error": null,
+      "first_chunk_sec": 68.097,
+      "offset_sec": 98.852,
+      "prompt_est_tokens": 2594,
+      "wall_sec": 111.215
+     },
+     "answered": true,
+     "arm": "A",
+     "arm_action": {
+      "arm": "A",
+      "done_monotonic": 4145318.619723909,
+      "error": null,
+      "llama_servers": null,
+      "polls": 0,
+      "ps_after": [
+       "qwen3:4b-instruct-2507-q4_K_M"
+      ],
+      "ps_before": [
+       "qwen3:4b-instruct-2507-q4_K_M"
+      ],
+      "sec": 0.049
+     },
+     "arm_held": true,
+     "arm_not_held": [],
+     "at_rerank_start": {
+      "ago_sec": 1.441,
+      "compressor_mib": 2508.656,
+      "free_mib": 11.207,
+      "llama_mem_mib": 3849.0,
+      "llama_pids": [
+       1339
+      ],
+      "swap_used_mib": 3383.5
+     },
+     "build_sec": 0.002,
+     "case_id": "aircargo-dismissal-order",
+     "first_token_sec": 166.999,
+     "five": {
+      "order_sha256": "84adc80d3908fd2e6bb9b06aae32cafd8410e4983f9ed151a80656a5d49ef751",
+      "set_sha256": "0311b796f8276b6549b595c3451713968ae5611ecf0a6882926f2d2c1aa17444"
+     },
+     "http_status": 200,
+     "index": 2,
+     "load1_max": {
+      "question": 12.74,
+      "rerank": 4.13
+     },
+     "model_calls": 3,
+     "path": {
+      "candidates": {
+       "bm25": 20,
+       "merged": 30,
+       "vector": 20
+      },
+      "kind": "hybrid",
+      "rerank_status": "ok",
+      "timings_ms": {
+       "pools": 74996.63,
+       "rerank": 23577.625,
+       "total": 98697.572
+      }
+     },
+     "pool": {
+      "candidates": 30,
+      "pool_sha256": "339733b11aa493eb6bb4c0fa7bf90989d51325fd7c8ca0a59e7d7a29cbd2a637",
+      "rerank_k": 5
+     },
+     "read": true,
+     "rerank_sec": 23.449,
+     "reranker_ok": true,
+     "retrieval_offset_sec": 0.113,
+     "retrieval_sec": 98.699,
+     "route": "auto",
+     "sha256": "a12c52678901be2196710b914f040e918bdeb947d69e902b982881efde981001",
+     "spans": {
+      "hybrid._rerank_scored_with_status": 1,
+      "hybrid._vector_search": 1,
+      "hybrid.get_relevant_documents_with_path": 1,
+      "hybrid.rerank_pool": 1,
+      "ollama.generate": 2,
+      "ollama.generate_stream": 1,
+      "vectordb.manager.get_retriever": 1
+     },
+     "tokens": 142,
+     "total_sec": 321.858,
+     "unread": [],
+     "vector_sec": 74.699,
+     "whole_sec": 321.907,
+     "windows": {
+      "rerank": {
+       "compressions": 2949,
+       "decompressions": 78510,
+       "faulted_mib": 375.477,
+       "faulted_mib_per_sec": 25.032,
+       "from": 4145393.73,
+       "llama_pids": [
+        1339
+       ],
+       "one_llama_each": true,
+       "pageins": 17612,
+       "pageouts": 14,
+       "ps_read": 4,
+       "samples": 4,
+       "sec": 15.0,
+       "swapins": 74063,
+       "swapouts": 91789,
+       "to": 4145417.179,
+       "with_llama": 4
+      },
+      "retrieval": {
+       "compressions": 1133511,
+       "decompressions": 340929,
+       "faulted_mib": 2312.461,
+       "faulted_mib_per_sec": 24.342,
+       "from": 4145318.733,
+       "llama_pids": [
+        1339
+       ],
+       "one_llama_each": true,
+       "pageins": 251061,
+       "pageouts": 139,
+       "ps_read": 20,
+       "samples": 20,
+       "sec": 95.0,
+       "swapins": 275201,
+       "swapouts": 141294,
+       "to": 4145417.432,
+       "with_llama": 20
+      },
+      "vector": {
+       "compressions": 616961,
+       "decompressions": 92853,
+       "faulted_mib": 1229.77,
+       "faulted_mib_per_sec": 17.569,
+       "from": 4145318.733,
+       "llama_pids": [
+        1339
+       ],
+       "one_llama_each": true,
+       "pageins": 221968,
+       "pageouts": 101,
+       "ps_read": 15,
+       "samples": 15,
+       "sec": 69.997,
+       "swapins": 62045,
+       "swapouts": 26343,
+       "to": 4145393.432,
+       "with_llama": 15
+      }
+     }
+    },
+    {
+     "answer_call": {
+      "error": null,
+      "first_chunk_sec": 85.778,
+      "offset_sec": 273.288,
+      "prompt_est_tokens": 2609,
+      "wall_sec": 109.844
+     },
+     "answered": true,
+     "arm": "A",
+     "arm_action": {
+      "arm": "A",
+      "done_monotonic": 4145642.044593613,
+      "error": null,
+      "llama_servers": null,
+      "polls": 0,
+      "ps_after": [
+       "qwen3:4b-instruct-2507-q4_K_M"
+      ],
+      "ps_before": [
+       "qwen3:4b-instruct-2507-q4_K_M"
+      ],
+      "sec": 0.374
+     },
+     "arm_held": true,
+     "arm_not_held": [],
+     "at_rerank_start": {
+      "ago_sec": 3.162,
+      "compressor_mib": 4355.363,
+      "free_mib": 28.227,
+      "llama_mem_mib": 4597.0,
+      "llama_pids": [
+       1339
+      ],
+      "swap_used_mib": 4114.5
+     },
+     "build_sec": 0.001,
+     "case_id": "aircargo-leave-sources",
+     "first_token_sec": 359.073,
+     "five": {
+      "order_sha256": "90a017c5eb681c99035c0c4a076a40f60ec1e69bf887a12628fd16d127f8a6cd",
+      "set_sha256": "77b02a75d9c331ab11eaacf8eb695add6cb2cc20f6aa2479566ad3e5720f4ffd"
+     },
+     "http_status": 200,
+     "index": 3,
+     "load1_max": {
+      "question": 11.23,
+      "rerank": 3.38
+     },
+     "model_calls": 3,
+     "path": {
+      "candidates": {
+       "bm25": 20,
+       "merged": 39,
+       "vector": 20
+      },
+      "kind": "hybrid",
+      "rerank_status": "ok",
+      "timings_ms": {
+       "pools": 236931.471,
+       "rerank": 34190.871,
+       "total": 271459.604
+      }
+     },
+     "pool": {
+      "candidates": 39,
+      "pool_sha256": "8581460f976e36f92cbcbddd7642cc6ee274825256359872d5e476cc93d66875",
+      "rerank_k": 5
+     },
+     "read": true,
+     "rerank_sec": 34.051,
+     "reranker_ok": true,
+     "retrieval_offset_sec": 1.263,
+     "retrieval_sec": 271.675,
+     "route": "auto",
+     "sha256": "df8e5b987d179b9f278d4df56383300e22d312368a70d779c1063dad8adab833",
+     "spans": {
+      "hybrid._rerank_scored_with_status": 1,
+      "hybrid._vector_search": 1,
+      "hybrid.get_relevant_documents_with_path": 1,
+      "hybrid.rerank_pool": 1,
+      "ollama.generate": 2,
+      "ollama.generate_stream": 1,
+      "vectordb.manager.get_retriever": 1
+     },
+     "tokens": 46,
+     "total_sec": 499.751,
+     "unread": [],
+     "vector_sec": 236.415,
+     "whole_sec": 500.125,
+     "windows": {
+      "rerank": {
+       "compressions": 161124,
+       "decompressions": 246717,
+       "faulted_mib": 998.641,
+       "faulted_mib_per_sec": 33.288,
+       "from": 4145880.454,
+       "llama_pids": [
+        1339
+       ],
+       "one_llama_each": true,
+       "pageins": 8935,
+       "pageouts": 72,
+       "ps_read": 7,
+       "samples": 7,
+       "sec": 30.0,
+       "swapins": 146646,
+       "swapouts": 90140,
+       "to": 4145914.506,
+       "with_llama": 7
+      },
+      "retrieval": {
+       "compressions": 1293552,
+       "decompressions": 612206,
+       "faulted_mib": 3939.926,
+       "faulted_mib_per_sec": 14.868,
+       "from": 4145643.308,
+       "llama_pids": [
+        1339
+       ],
+       "one_llama_each": true,
+       "pageins": 396415,
+       "pageouts": 1060,
+       "ps_read": 54,
+       "samples": 54,
+       "sec": 265.0,
+       "swapins": 470792,
+       "swapouts": 456488,
+       "to": 4145914.983,
+       "with_llama": 54
+      },
+      "vector": {
+       "compressions": 1078080,
+       "decompressions": 309696,
+       "faulted_mib": 2709.293,
+       "faulted_mib_per_sec": 11.78,
+       "from": 4145643.523,
+       "llama_pids": [
+        1339
+       ],
+       "one_llama_each": true,
+       "pageins": 383883,
+       "pageouts": 988,
+       "ps_read": 47,
+       "samples": 47,
+       "sec": 230.0,
+       "swapins": 227643,
+       "swapouts": 366348,
+       "to": 4145879.938,
+       "with_llama": 47
+      }
+     }
+    },
+    {
+     "answer_call": {
+      "error": null,
+      "first_chunk_sec": 68.621,
+      "offset_sec": 334.576,
+      "prompt_est_tokens": 2600,
+      "wall_sec": 82.742
+     },
+     "answered": true,
+     "arm": "A",
+     "arm_action": {
+      "arm": "A",
+      "done_monotonic": 4146142.672793985,
+      "error": null,
+      "llama_servers": null,
+      "polls": 0,
+      "ps_after": [
+       "qwen3:4b-instruct-2507-q4_K_M"
+      ],
+      "ps_before": [
+       "qwen3:4b-instruct-2507-q4_K_M"
+      ],
+      "sec": 0.092
+     },
+     "arm_held": true,
+     "arm_not_held": [],
+     "at_rerank_start": {
+      "ago_sec": 0.762,
+      "compressor_mib": 4399.793,
+      "free_mib": 37.676,
+      "llama_mem_mib": 5331.0,
+      "llama_pids": [
+       1339
+      ],
+      "swap_used_mib": 4629.75
+     },
+     "build_sec": 0.001,
+     "case_id": "aircargo-leave-compensation",
+     "first_token_sec": 403.199,
+     "five": {
+      "order_sha256": "0107427a2c14e31ac0ec0faaa1e5f15b93ebcec6b6b9f1cb1f1d802777de153c",
+      "set_sha256": "b80df2251fce3d7f209036a57e903c36ef4172b3b15d88367a30e6f88fccd6da"
+     },
+     "http_status": 200,
+     "index": 4,
+     "load1_max": {
+      "question": 9.92,
+      "rerank": 2.06
+     },
+     "model_calls": 3,
+     "path": {
+      "candidates": {
+       "bm25": 20,
+       "merged": 37,
+       "vector": 20
+      },
+      "kind": "hybrid",
+      "rerank_status": "ok",
+      "timings_ms": {
+       "pools": 298525.367,
+       "rerank": 34042.112,
+       "total": 332598.645
+      }
+     },
+     "pool": {
+      "candidates": 37,
+      "pool_sha256": "3ff82de8a048962c94f4ba67aab74dc552370257914329c9e4cf71319eb77984",
+      "rerank_k": 5
+     },
+     "read": true,
+     "rerank_sec": 34.04,
+     "reranker_ok": true,
+     "retrieval_offset_sec": 1.849,
+     "retrieval_sec": 332.6,
+     "route": "auto",
+     "sha256": "7328ae92133dde7b728682acc2b1c301d0987cb407f2f0f1d94af1da89cf49d4",
+     "spans": {
+      "hybrid._rerank_scored_with_status": 1,
+      "hybrid._vector_search": 1,
+      "hybrid.get_relevant_documents_with_path": 1,
+      "hybrid.rerank_pool": 1,
+      "ollama.generate": 2,
+      "ollama.generate_stream": 1,
+      "vectordb.manager.get_retriever": 1
+     },
+     "tokens": 51,
+     "total_sec": 502.241,
+     "unread": [],
+     "vector_sec": 298.096,
+     "whole_sec": 502.333,
+     "windows": {
+      "rerank": {
+       "compressions": 43974,
+       "decompressions": 193670,
+       "faulted_mib": 865.152,
+       "faulted_mib_per_sec": 34.603,
+       "from": 4146443.049,
+       "llama_pids": [
+        1339
+       ],
+       "one_llama_each": true,
+       "pageins": 27809,
+       "pageouts": 80,
+       "ps_read": 6,
+       "samples": 6,
+       "sec": 25.002,
+       "swapins": 128519,
+       "swapouts": 127180,
+       "to": 4146477.089,
+       "with_llama": 6
+      },
+      "retrieval": {
+       "compressions": 524925,
+       "decompressions": 594029,
+       "faulted_mib": 3955.051,
+       "faulted_mib_per_sec": 12.169,
+       "from": 4146144.523,
+       "llama_pids": [
+        1339
+       ],
+       "one_llama_each": true,
+       "pageins": 418464,
+       "pageouts": 501,
+       "ps_read": 66,
+       "samples": 66,
+       "sec": 325.002,
+       "swapins": 312619,
+       "swapouts": 379477,
+       "to": 4146477.123,
+       "with_llama": 66
+      },
+      "vector": {
+       "compressions": 442318,
+       "decompressions": 376095,
+       "faulted_mib": 2962.742,
+       "faulted_mib_per_sec": 10.043,
+       "from": 4146144.524,
+       "llama_pids": [
+        1339
+       ],
+       "one_llama_each": true,
+       "pageins": 382367,
+       "pageouts": 419,
+       "ps_read": 60,
+       "samples": 60,
+       "sec": 294.995,
+       "swapins": 156542,
+       "swapouts": 252041,
+       "to": 4146442.62,
+       "with_llama": 60
+      }
+     }
+    },
+    {
+     "answer_call": {
+      "error": null,
+      "first_chunk_sec": 61.476,
+      "offset_sec": 39.101,
+      "prompt_est_tokens": 2550,
+      "wall_sec": 73.702
+     },
+     "answered": true,
+     "arm": "A",
+     "arm_action": {
+      "arm": "A",
+      "done_monotonic": 4146645.361573107,
+      "error": null,
+      "llama_servers": null,
+      "polls": 0,
+      "ps_after": [
+       "qwen3:4b-instruct-2507-q4_K_M"
+      ],
+      "ps_before": [
+       "qwen3:4b-instruct-2507-q4_K_M"
+      ],
+      "sec": 0.072
+     },
+     "arm_held": true,
+     "arm_not_held": [],
+     "at_rerank_start": {
+      "ago_sec": 1.032,
+      "compressor_mib": 4433.418,
+      "free_mib": 22.395,
+      "llama_mem_mib": 6039.0,
+      "llama_pids": [
+       1339
+      ],
+      "swap_used_mib": 5524.75
+     },
+     "build_sec": 0.001,
+     "case_id": "aircargo-leave-risk",
+     "first_token_sec": 100.626,
+     "five": {
+      "order_sha256": "cd597e8b93316dc53470bda307ed6038617d7974d499e2ef4efefe158aa9e9f1",
+      "set_sha256": "df5db106d07facd03ca2878cd3ced043115076172a5cb9b2d51f02ee315e82e0"
+     },
+     "http_status": 200,
+     "index": 5,
+     "load1_max": {
+      "question": 7.91,
+      "rerank": 6.38
+     },
+     "model_calls": 3,
+     "path": {
+      "candidates": {
+       "bm25": 20,
+       "merged": 39,
+       "vector": 20
+      },
+      "kind": "hybrid",
+      "rerank_status": "ok",
+      "timings_ms": {
+       "pools": 7604.865,
+       "rerank": 31094.601,
+       "total": 38732.356
+      }
+     },
+     "pool": {
+      "candidates": 39,
+      "pool_sha256": "11f5924e79ca1dc5398cff0ea871c4ca16551cf908b33346921edace16f9c70e",
+      "rerank_k": 5
+     },
+     "read": true,
+     "rerank_sec": 31.094,
+     "reranker_ok": true,
+     "retrieval_offset_sec": 0.355,
+     "retrieval_sec": 38.733,
+     "route": "auto",
+     "sha256": "e6f65b4996b024ca103a3664b3816f811267fc8041c7b45f6b9dafe4a7e293d4",
+     "spans": {
+      "hybrid._rerank_scored_with_status": 1,
+      "hybrid._vector_search": 1,
+      "hybrid.get_relevant_documents_with_path": 1,
+      "hybrid.rerank_pool": 1,
+      "ollama.generate": 2,
+      "ollama.generate_stream": 1,
+      "vectordb.manager.get_retriever": 1
+     },
+     "tokens": 49,
+     "total_sec": 191.343,
+     "unread": [],
+     "vector_sec": 7.349,
+     "whole_sec": 191.415,
+     "windows": {
+      "rerank": {
+       "compressions": 17908,
+       "decompressions": 141486,
+       "faulted_mib": 595.395,
+       "faulted_mib_per_sec": 23.81,
+       "from": 4146653.324,
+       "llama_pids": [
+        1339
+       ],
+       "one_llama_each": true,
+       "pageins": 10935,
+       "pageouts": 67,
+       "ps_read": 6,
+       "samples": 6,
+       "sec": 25.006,
+       "swapins": 121022,
+       "swapouts": 139185,
+       "to": 4146684.418,
+       "with_llama": 6
+      },
+      "retrieval": {
+       "compressions": 941615,
+       "decompressions": 326234,
+       "faulted_mib": 2473.949,
+       "faulted_mib_per_sec": 70.668,
+       "from": 4146645.718,
+       "llama_pids": [
+        1339
+       ],
+       "one_llama_each": true,
+       "pageins": 307097,
+       "pageouts": 83,
+       "ps_read": 8,
+       "samples": 8,
+       "sec": 35.008,
+       "swapins": 276590,
+       "swapouts": 286518,
+       "to": 4146684.453,
+       "with_llama": 8
+      },
+      "vector": {
+       "compressions": 882194,
+       "decompressions": 18264,
+       "faulted_mib": 1088.469,
+       "faulted_mib_per_sec": 217.52,
+       "from": 4146645.719,
+       "llama_pids": [
+        1339
+       ],
+       "one_llama_each": true,
+       "pageins": 260384,
+       "pageouts": 7,
+       "ps_read": 2,
+       "samples": 2,
+       "sec": 5.004,
+       "swapins": 5785,
+       "swapouts": 68836,
+       "to": 4146653.067,
+       "with_llama": 2
+      }
+     }
+    },
+    {
+     "answer_call": {
+      "error": null,
+      "first_chunk_sec": 84.457,
+      "offset_sec": 27.931,
+      "prompt_est_tokens": 2636,
+      "wall_sec": 117.887
+     },
+     "answered": true,
+     "arm": "A",
+     "arm_action": {
+      "arm": "A",
+      "done_monotonic": 4146836.887617778,
+      "error": null,
+      "llama_servers": null,
+      "polls": 0,
+      "ps_after": [
+       "qwen3:4b-instruct-2507-q4_K_M"
+      ],
+      "ps_before": [
+       "qwen3:4b-instruct-2507-q4_K_M"
+      ],
+      "sec": 0.038
+     },
+     "arm_held": true,
+     "arm_not_held": [],
+     "at_rerank_start": {
+      "ago_sec": 0.778,
+      "compressor_mib": 4339.422,
+      "free_mib": 207.211,
+      "llama_mem_mib": 6730.0,
+      "llama_pids": [
+       1339
+      ],
+      "swap_used_mib": 6378.0
+     },
+     "build_sec": 0.001,
+     "case_id": "aircargo-matliab-check",
+     "first_token_sec": 112.388,
+     "five": {
+      "order_sha256": "c9fbbb5c7267654caba1000a04989efeb7b67c418e1aa5f65836925b8a5972b5",
+      "set_sha256": "1ef75708524ef557aa79dc33a86d686132a679abb3b85e69f5f2cf35621f462f"
+     },
+     "http_status": 200,
+     "index": 6,
+     "load1_max": {
+      "question": 7.71,
+      "rerank": 6.75
+     },
+     "model_calls": 3,
+     "path": {
+      "candidates": {
+       "bm25": 20,
+       "merged": 28,
+       "vector": 20
+      },
+      "kind": "hybrid",
+      "rerank_status": "ok",
+      "timings_ms": {
+       "pools": 6132.596,
+       "rerank": 21603.035,
+       "total": 27743.795
+      }
+     },
+     "pool": {
+      "candidates": 28,
+      "pool_sha256": "873f317e5e5eee856bd7212f367003ecdfe6d30a5de3c87f12cf9c7f8f4dfb92",
+      "rerank_k": 5
+     },
+     "read": true,
+     "rerank_sec": 21.603,
+     "reranker_ok": true,
+     "retrieval_offset_sec": 0.048,
+     "retrieval_sec": 27.745,
+     "route": "auto",
+     "sha256": "17fab212fb37a7b5c02a76a6ac90d16d506d13c56d0115c5782ae1199920d593",
+     "spans": {
+      "hybrid._rerank_scored_with_status": 1,
+      "hybrid._vector_search": 1,
+      "hybrid.get_relevant_documents_with_path": 1,
+      "hybrid.rerank_pool": 1,
+      "ollama.generate": 2,
+      "ollama.generate_stream": 1,
+      "vectordb.manager.get_retriever": 1
+     },
+     "tokens": 51,
+     "total_sec": 257.765,
+     "unread": [],
+     "vector_sec": 5.785,
+     "whole_sec": 257.803,
+     "windows": {
+      "rerank": {
+       "compressions": 8932,
+       "decompressions": 94717,
+       "faulted_mib": 422.934,
+       "faulted_mib_per_sec": 28.201,
+       "from": 4146843.071,
+       "llama_pids": [
+        1339
+       ],
+       "one_llama_each": true,
+       "pageins": 13554,
+       "pageouts": 49,
+       "ps_read": 4,
+       "samples": 4,
+       "sec": 14.997,
+       "swapins": 24617,
+       "swapouts": 52573,
+       "to": 4146864.673,
+       "with_llama": 4
+      },
+      "retrieval": {
+       "compressions": 1009159,
+       "decompressions": 239687,
+       "faulted_mib": 1961.07,
+       "faulted_mib_per_sec": 78.443,
+       "from": 4146836.937,
+       "llama_pids": [
+        1339
+       ],
+       "one_llama_each": true,
+       "pageins": 262347,
+       "pageouts": 138,
+       "ps_read": 6,
+       "samples": 6,
+       "sec": 25.0,
+       "swapins": 135540,
+       "swapouts": 183337,
+       "to": 4146864.682,
+       "with_llama": 6
+      },
+      "vector": {
+       "compressions": 984311,
+       "decompressions": 22201,
+       "faulted_mib": 1049.898,
+       "faulted_mib_per_sec": 209.938,
+       "from": 4146836.938,
+       "llama_pids": [
+        1339
+       ],
+       "one_llama_each": true,
+       "pageins": 246573,
+       "pageouts": 84,
+       "ps_read": 2,
+       "samples": 2,
+       "sec": 5.001,
+       "swapins": 6307,
+       "swapouts": 118680,
+       "to": 4146842.723,
+       "with_llama": 2
+      }
+     }
+    }
+   ],
+   "dir": "/Users/julia/RAG_new_chat_81cd2ad/live5a/runs/s5a-int8-1-r2",
+   "drivers_sha256": {
+    "live_api.py": "43ff96f06af18538a2571d68a86e898ecfcdd5fcab47039f0d58bd245361a7b5",
+    "live_runner.py": "c87838014a0517d5e6a3dde0402ed0b067a9e0148aaf5d842ffe272ca451a072",
+    "live_supervisor.py": "e903a1498aa1d48fb7ef6a9ba8cd2e4bd94e866433420fb132a6ab7179bd8e59"
+   },
+   "gate": {
+    "actions": true,
+    "asks": true,
+    "drivers": true,
+    "launch": true,
+    "llama": true,
+    "passed": true,
+    "reranker": true,
+    "samples": true,
+    "settings": true
+   },
+   "label": "s5a-int8-1-r2",
+   "launch": {
+    "arm": "AAAAAA",
+    "cases": [
+     "aircargo-dismissal-lawyer",
+     "aircargo-dismissal-order",
+     "aircargo-leave-sources",
+     "aircargo-leave-compensation",
+     "aircargo-leave-risk",
+     "aircargo-matliab-check"
+    ],
+    "cases_file": "/Users/julia/RAG_new_chat_81cd2ad/evaluation/curated_cases_aircargo.jsonl",
+    "chroma_dir": "/Users/julia/RAG_new_chat_81cd2ad/live5a/runs/s5a-int8-1-r2.chroma",
+    "client_cap_sec": "1440/1200",
+    "code_sha": "81cd2ade80ea9bc5a4f3ea721a16bd05037136fd",
+    "label": "s5a-int8-1-r2",
+    "mode": "prod",
+    "model": "qwen3:4b-instruct-2507-q4_K_M",
+    "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+    "ollama_load_sec": 53.874,
+    "ollama_models_after": [
+     "qwen3:4b-instruct-2507-q4_K_M"
+    ],
+    "ollama_models_before": [],
+    "overrides": {
+     "OLLAMA_REQUEST_TIMEOUT_SEC": "3600",
+     "RAG_DEVICE": "cpu",
+     "RAG_RERANKER_ONNX": "/Users/julia/RAG_new_ort/bge-reranker-v2-m3/int8/model.onnx",
+     "RAG_RERANKER_RUNTIME": "onnx",
+     "REQUEST_TIMEOUT_SEC": "3600",
+     "STREAMING_TIMEOUT_SEC": "3600"
+    },
+    "runner_exit": 0,
+    "started": "2026-10-30T18:51:39+00:00",
+    "status": "complete",
+    "tenant": "aircargo",
+    "unloaded_models": [
+     "qwen3:4b-instruct-2507-q4_K_M"
+    ],
+    "workspace": "/Users/julia/RAG_new_chat_81cd2ad"
+   },
+   "llama_pids_seen": 1,
+   "notes": [],
+   "onnx_sha256": "57335a9f061fe31378c160ddd0861711a0fbdfa20f70aa2640d473dfc4bc1343",
+   "reranker_loads": [
+    {
+     "before_first_case": true,
+     "error": null,
+     "sec": 2.764
+    },
+    {
+     "before_first_case": false,
+     "error": null,
+     "sec": 0.0
+    }
+   ],
+   "runtime": "onnx",
+   "samples": {
+    "every_sec": 5.0,
+    "file": "s5a-int8-1-r2.samples.jsonl",
+    "first_utc": "2026-10-30T18:51:33.898Z",
+    "last_utc": "2026-10-30T19:29:19.933Z",
+    "loud_notes": {},
+    "sample_notes": {
+     "ps: no process named llama-server": 15,
+     "top: no row for pid 1339": 1
+    },
+    "samples": 455,
+    "schema": "stage4-step0-samples/v1",
+    "sha256": "d9b47f5a5ddbdf2008dced5ac0ea52ae4ac04948f20c52f8fba1527d294064aa",
+    "stop_reason": "stop file"
+   },
+   "settings": {
+    "rag_device": "cpu",
+    "rerank_top_k": 5,
+    "reranker_model": "BAAI/bge-reranker-v2-m3",
+    "reranker_onnx_path": "/Users/julia/RAG_new_ort/bge-reranker-v2-m3/int8/model.onnx",
+    "reranker_runtime": "onnx",
+    "retrieval_top_k": 20
+   },
+   "sha256": {
+    "effective_settings.json": "c074ce5a90ec76558c555085f8387cbcbb46120843e243e770984348e6a910d9",
+    "launch.json": "0deea68a1c1dcf583e65fb25e0993688a912e01b0521a9f633e9153eb2592be7",
+    "stages.jsonl": "2e436e5dbcbe67d8808754f7e3d99b76bb524a130ef3be04e90bcd4479fcd9e8"
+   }
+  }
+ ],
+ "schema": "stage4-step5a-live/v1",
+ "spec": "docs/specs/stage4-step5a-live.md",
+ "stand_gate": {
+  "corpus": true,
+  "environment": true,
+  "passed": true
+ },
+ "tools_sha256": {
+  "live5a_reader.py": "7420673c65c97b05d9ecf6df18eea4062e1df66b8ba4d49bafa05565d0bfea2b",
+  "step0_sampler.py": "a0b3e53d78584f454d252770898efb884b77aa80f0fff1729992ec1a37c6d18c",
+  "step1_reader.py": "38f0abfe20143085ad593b361377ee09f5a59d30ca0c3ed69a75863ec288ea3b"
+ }
+}

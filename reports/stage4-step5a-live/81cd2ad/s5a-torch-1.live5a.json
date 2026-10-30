@@ -1,0 +1,1343 @@
+{
+ "corpus": null,
+ "environment": [],
+ "pairs": [
+  {
+   "block": 1,
+   "case_id": "aircargo-dismissal-order",
+   "readable": false,
+   "why": [
+    "s5a-int8-1: 0 runs, not one"
+   ]
+  },
+  {
+   "block": 1,
+   "case_id": "aircargo-leave-sources",
+   "readable": false,
+   "why": [
+    "s5a-int8-1: 0 runs, not one"
+   ]
+  },
+  {
+   "block": 1,
+   "case_id": "aircargo-leave-compensation",
+   "readable": false,
+   "why": [
+    "s5a-int8-1: 0 runs, not one"
+   ]
+  },
+  {
+   "block": 1,
+   "case_id": "aircargo-leave-risk",
+   "readable": false,
+   "why": [
+    "s5a-int8-1: 0 runs, not one"
+   ]
+  },
+  {
+   "block": 1,
+   "case_id": "aircargo-matliab-check",
+   "readable": false,
+   "why": [
+    "s5a-int8-1: 0 runs, not one"
+   ]
+  },
+  {
+   "block": 2,
+   "case_id": "aircargo-dismissal-order",
+   "readable": false,
+   "why": [
+    "s5a-torch-2: 0 runs, not one",
+    "s5a-int8-2: 0 runs, not one"
+   ]
+  },
+  {
+   "block": 2,
+   "case_id": "aircargo-leave-sources",
+   "readable": false,
+   "why": [
+    "s5a-torch-2: 0 runs, not one",
+    "s5a-int8-2: 0 runs, not one"
+   ]
+  },
+  {
+   "block": 2,
+   "case_id": "aircargo-leave-compensation",
+   "readable": false,
+   "why": [
+    "s5a-torch-2: 0 runs, not one",
+    "s5a-int8-2: 0 runs, not one"
+   ]
+  },
+  {
+   "block": 2,
+   "case_id": "aircargo-leave-risk",
+   "readable": false,
+   "why": [
+    "s5a-torch-2: 0 runs, not one",
+    "s5a-int8-2: 0 runs, not one"
+   ]
+  },
+  {
+   "block": 2,
+   "case_id": "aircargo-matliab-check",
+   "readable": false,
+   "why": [
+    "s5a-torch-2: 0 runs, not one",
+    "s5a-int8-2: 0 runs, not one"
+   ]
+  },
+  {
+   "block": 3,
+   "case_id": "aircargo-dismissal-order",
+   "readable": false,
+   "why": [
+    "s5a-torch-3: 0 runs, not one",
+    "s5a-int8-3: 0 runs, not one"
+   ]
+  },
+  {
+   "block": 3,
+   "case_id": "aircargo-leave-sources",
+   "readable": false,
+   "why": [
+    "s5a-torch-3: 0 runs, not one",
+    "s5a-int8-3: 0 runs, not one"
+   ]
+  },
+  {
+   "block": 3,
+   "case_id": "aircargo-leave-compensation",
+   "readable": false,
+   "why": [
+    "s5a-torch-3: 0 runs, not one",
+    "s5a-int8-3: 0 runs, not one"
+   ]
+  },
+  {
+   "block": 3,
+   "case_id": "aircargo-leave-risk",
+   "readable": false,
+   "why": [
+    "s5a-torch-3: 0 runs, not one",
+    "s5a-int8-3: 0 runs, not one"
+   ]
+  },
+  {
+   "block": 3,
+   "case_id": "aircargo-matliab-check",
+   "readable": false,
+   "why": [
+    "s5a-torch-3: 0 runs, not one",
+    "s5a-int8-3: 0 runs, not one"
+   ]
+  },
+  {
+   "block": 4,
+   "case_id": "aircargo-dismissal-order",
+   "readable": false,
+   "why": [
+    "s5a-torch-4: 0 runs, not one",
+    "s5a-int8-4: 0 runs, not one"
+   ]
+  },
+  {
+   "block": 4,
+   "case_id": "aircargo-leave-sources",
+   "readable": false,
+   "why": [
+    "s5a-torch-4: 0 runs, not one",
+    "s5a-int8-4: 0 runs, not one"
+   ]
+  },
+  {
+   "block": 4,
+   "case_id": "aircargo-leave-compensation",
+   "readable": false,
+   "why": [
+    "s5a-torch-4: 0 runs, not one",
+    "s5a-int8-4: 0 runs, not one"
+   ]
+  },
+  {
+   "block": 4,
+   "case_id": "aircargo-leave-risk",
+   "readable": false,
+   "why": [
+    "s5a-torch-4: 0 runs, not one",
+    "s5a-int8-4: 0 runs, not one"
+   ]
+  },
+  {
+   "block": 4,
+   "case_id": "aircargo-matliab-check",
+   "readable": false,
+   "why": [
+    "s5a-torch-4: 0 runs, not one",
+    "s5a-int8-4: 0 runs, not one"
+   ]
+  }
+ ],
+ "readings": {
+  "printed_deciding_nothing": {
+   "fives": {
+    "other set": 0,
+    "same order": 0,
+    "same set": 0
+   },
+   "median_answer_first_chunk_sec": {
+    "onnx": null,
+    "torch": null
+   },
+   "median_first_token_sec": {
+    "onnx": null,
+    "torch": null
+   },
+   "median_llama_mem_at_rerank_mib": {
+    "onnx": null,
+    "torch": null
+   },
+   "median_load1_max_question": {
+    "onnx": null,
+    "torch": null
+   },
+   "median_load1_max_rerank": {
+    "onnx": null,
+    "torch": null
+   },
+   "median_rerank_faulted_mib": {
+    "onnx": null,
+    "torch": null
+   },
+   "median_rerank_sec": {
+    "onnx": null,
+    "torch": null
+   },
+   "median_retrieval_sec": {
+    "onnx": null,
+    "torch": null
+   },
+   "median_swap_used_at_rerank_mib": {
+    "onnx": null,
+    "torch": null
+   },
+   "median_total_sec": {
+    "onnx": null,
+    "torch": null
+   },
+   "median_vector_sec": {
+    "onnx": null,
+    "torch": null
+   },
+   "median_whole_sec": {
+    "onnx": null,
+    "torch": null
+   },
+   "reranker_load_sec": {
+    "s5a-torch-1": 3.39
+   },
+   "warm_up": {
+    "s5a-torch-1": {
+     "build_sec": 2.334,
+     "index": 1,
+     "rerank_sec": 122.022,
+     "whole_sec": 361.043
+    }
+   }
+  },
+  "rerank": {
+   "answer": "NOT_EVIDENCE",
+   "blocks_below_above": {
+    "1": [
+     0,
+     0
+    ],
+    "2": [
+     0,
+     0
+    ],
+    "3": [
+     0,
+     0
+    ],
+    "4": [
+     0,
+     0
+    ]
+   },
+   "by_pair": {},
+   "median_ratio": null,
+   "median_saving_sec": null,
+   "onnx_above": 0,
+   "onnx_below": 0,
+   "p": null,
+   "readable_pairs": 0,
+   "ties": 0
+  },
+  "whole": {
+   "answer": "NOT_EVIDENCE",
+   "blocks_below_above": {
+    "1": [
+     0,
+     0
+    ],
+    "2": [
+     0,
+     0
+    ],
+    "3": [
+     0,
+     0
+    ],
+    "4": [
+     0,
+     0
+    ]
+   },
+   "by_pair": {},
+   "median_ratio": null,
+   "median_saving_sec": null,
+   "onnx_above": 0,
+   "onnx_below": 0,
+   "p": null,
+   "readable_pairs": 0,
+   "ties": 0
+  }
+ },
+ "runs": [
+  {
+   "asks": [
+    {
+     "answer_call": {
+      "error": null,
+      "first_chunk_sec": 62.154,
+      "offset_sec": 198.593,
+      "prompt_est_tokens": 2589,
+      "wall_sec": 80.434
+     },
+     "answered": true,
+     "arm": "A",
+     "arm_action": {
+      "arm": "A",
+      "done_monotonic": 4139132.399380335,
+      "error": null,
+      "llama_servers": null,
+      "polls": 0,
+      "ps_after": [
+       "qwen3:4b-instruct-2507-q4_K_M"
+      ],
+      "ps_before": [
+       "qwen3:4b-instruct-2507-q4_K_M"
+      ],
+      "sec": 0.577
+     },
+     "arm_held": true,
+     "arm_not_held": [],
+     "at_rerank_start": {
+      "ago_sec": 0.839,
+      "compressor_mib": 2928.941,
+      "free_mib": 37.91,
+      "llama_mem_mib": 2998.0,
+      "llama_pids": [
+       75715
+      ],
+      "swap_used_mib": 2359.5
+     },
+     "build_sec": 2.334,
+     "case_id": "aircargo-dismissal-lawyer",
+     "first_token_sec": 260.747,
+     "five": {
+      "order_sha256": "41682190ebb11b956df623d3ada226dcddfa21a68d02b8012e4a0bc689f8ba17",
+      "set_sha256": "9006232c3e0f66711d75adb3b499b53b6de145834f2ef4cfef14cf4c2f996e3d"
+     },
+     "http_status": 200,
+     "index": 1,
+     "load1_max": {
+      "question": 6.23,
+      "rerank": 2.57
+     },
+     "model_calls": 3,
+     "path": {
+      "candidates": {
+       "bm25": 20,
+       "merged": 35,
+       "vector": 20
+      },
+      "kind": "hybrid",
+      "rerank_status": "ok",
+      "timings_ms": {
+       "pools": 70122.615,
+       "rerank": 122022.696,
+       "total": 192147.289
+      }
+     },
+     "pool": {
+      "candidates": 35,
+      "pool_sha256": "821395642faa57399d4ee53e1fc8d27c3f16231ed76ad2a5107fb5fb363b46ad",
+      "rerank_k": 5
+     },
+     "read": true,
+     "rerank_sec": 122.022,
+     "reranker_ok": true,
+     "retrieval_offset_sec": 6.336,
+     "retrieval_sec": 192.149,
+     "route": "auto",
+     "sha256": "d540e7887c5774e60bf0f96ef414676b733fa68ce0eef89d8ac7b20c0e2186a4",
+     "spans": {
+      "hybrid._rerank_scored_with_status": 1,
+      "hybrid._vector_search": 1,
+      "hybrid.get_relevant_documents_with_path": 1,
+      "hybrid.rerank_pool": 1,
+      "ollama.generate": 2,
+      "ollama.generate_stream": 1,
+      "vectordb.manager.get_retriever": 1
+     },
+     "tokens": 71,
+     "total_sec": 360.466,
+     "unread": [],
+     "vector_sec": 70.078,
+     "whole_sec": 361.043,
+     "windows": {
+      "rerank": {
+       "compressions": 221477,
+       "decompressions": 72853,
+       "faulted_mib": 1476.117,
+       "faulted_mib_per_sec": 12.836,
+       "from": 4139208.864,
+       "llama_pids": [
+        75715
+       ],
+       "one_llama_each": true,
+       "pageins": 305033,
+       "pageouts": 174,
+       "ps_read": 24,
+       "samples": 24,
+       "sec": 114.996,
+       "swapins": 11837,
+       "swapouts": 0,
+       "to": 4139330.886,
+       "with_llama": 24
+      },
+      "retrieval": {
+       "compressions": 944313,
+       "decompressions": 112075,
+       "faulted_mib": 2778.973,
+       "faulted_mib_per_sec": 15.022,
+       "from": 4139138.74,
+       "llama_pids": [
+        75715
+       ],
+       "one_llama_each": true,
+       "pageins": 599342,
+       "pageouts": 253,
+       "ps_read": 38,
+       "samples": 38,
+       "sec": 184.996,
+       "swapins": 15420,
+       "swapouts": 0,
+       "to": 4139330.889,
+       "with_llama": 38
+      },
+      "vector": {
+       "compressions": 707988,
+       "decompressions": 29042,
+       "faulted_mib": 1237.016,
+       "faulted_mib_per_sec": 19.031,
+       "from": 4139138.741,
+       "llama_pids": [
+        75715
+       ],
+       "one_llama_each": true,
+       "pageins": 287634,
+       "pageouts": 77,
+       "ps_read": 14,
+       "samples": 14,
+       "sec": 64.999,
+       "swapins": 3391,
+       "swapouts": 0,
+       "to": 4139208.819,
+       "with_llama": 14
+      }
+     }
+    },
+    {
+     "answer_call": {
+      "error": null,
+      "first_chunk_sec": 74.214,
+      "offset_sec": 203.711,
+      "prompt_est_tokens": 2594,
+      "wall_sec": 220.529
+     },
+     "answered": true,
+     "arm": "A",
+     "arm_action": {
+      "arm": "A",
+      "done_monotonic": 4139493.018163455,
+      "error": null,
+      "llama_servers": null,
+      "polls": 0,
+      "ps_after": [
+       "qwen3:4b-instruct-2507-q4_K_M"
+      ],
+      "ps_before": [
+       "qwen3:4b-instruct-2507-q4_K_M"
+      ],
+      "sec": 0.033
+     },
+     "arm_held": true,
+     "arm_not_held": [],
+     "at_rerank_start": {
+      "ago_sec": 1.574,
+      "compressor_mib": 3851.699,
+      "free_mib": 50.109,
+      "llama_mem_mib": 3848.0,
+      "llama_pids": [
+       75715
+      ],
+      "swap_used_mib": 2730.5
+     },
+     "build_sec": 0.002,
+     "case_id": "aircargo-dismissal-order",
+     "first_token_sec": 277.928,
+     "five": {
+      "order_sha256": "84adc80d3908fd2e6bb9b06aae32cafd8410e4983f9ed151a80656a5d49ef751",
+      "set_sha256": "0311b796f8276b6549b595c3451713968ae5611ecf0a6882926f2d2c1aa17444"
+     },
+     "http_status": 200,
+     "index": 2,
+     "load1_max": {
+      "question": 11.34,
+      "rerank": 2.85
+     },
+     "model_calls": 3,
+     "path": {
+      "candidates": {
+       "bm25": 20,
+       "merged": 30,
+       "vector": 20
+      },
+      "kind": "hybrid",
+      "rerank_status": "ok",
+      "timings_ms": {
+       "pools": 76471.314,
+       "rerank": 126898.47,
+       "total": 203550.188
+      }
+     },
+     "pool": {
+      "candidates": 30,
+      "pool_sha256": "339733b11aa493eb6bb4c0fa7bf90989d51325fd7c8ca0a59e7d7a29cbd2a637",
+      "rerank_k": 5
+     },
+     "read": true,
+     "rerank_sec": 126.898,
+     "reranker_ok": true,
+     "retrieval_offset_sec": 0.107,
+     "retrieval_sec": 203.551,
+     "route": "auto",
+     "sha256": "317c6e6ed02e894697df8af1e378ce70b1ff6c6705728ee54b4fd229ceeedf9a",
+     "spans": {
+      "hybrid._rerank_scored_with_status": 1,
+      "hybrid._vector_search": 1,
+      "hybrid.get_relevant_documents_with_path": 1,
+      "hybrid.rerank_pool": 1,
+      "ollama.generate": 2,
+      "ollama.generate_stream": 1,
+      "vectordb.manager.get_retriever": 1
+     },
+     "tokens": 136,
+     "total_sec": 542.043,
+     "unread": [],
+     "vector_sec": 76.289,
+     "whole_sec": 542.076,
+     "windows": {
+      "rerank": {
+       "compressions": 228974,
+       "decompressions": 239348,
+       "faulted_mib": 1997.379,
+       "faulted_mib_per_sec": 16.646,
+       "from": 4139569.597,
+       "llama_pids": [
+        75715
+       ],
+       "one_llama_each": true,
+       "pageins": 271981,
+       "pageouts": 389,
+       "ps_read": 25,
+       "samples": 25,
+       "sec": 119.993,
+       "swapins": 238430,
+       "swapouts": 227231,
+       "to": 4139696.495,
+       "with_llama": 25
+      },
+      "retrieval": {
+       "compressions": 1220534,
+       "decompressions": 350405,
+       "faulted_mib": 3591.781,
+       "faulted_mib_per_sec": 18.42,
+       "from": 4139493.125,
+       "llama_pids": [
+        75715
+       ],
+       "one_llama_each": true,
+       "pageins": 569091,
+       "pageouts": 537,
+       "ps_read": 40,
+       "samples": 40,
+       "sec": 194.997,
+       "swapins": 318356,
+       "swapouts": 272664,
+       "to": 4139696.676,
+       "with_llama": 40
+      },
+      "vector": {
+       "compressions": 990293,
+       "decompressions": 72442,
+       "faulted_mib": 1407.734,
+       "faulted_mib_per_sec": 20.11,
+       "from": 4139493.126,
+       "llama_pids": [
+        75715
+       ],
+       "one_llama_each": true,
+       "pageins": 287938,
+       "pageouts": 146,
+       "ps_read": 15,
+       "samples": 15,
+       "sec": 70.001,
+       "swapins": 57176,
+       "swapouts": 40847,
+       "to": 4139569.415,
+       "with_llama": 15
+      }
+     }
+    },
+    {
+     "answer_call": {
+      "error": null,
+      "first_chunk_sec": 71.319,
+      "offset_sec": 478.91,
+      "prompt_est_tokens": 2609,
+      "wall_sec": 83.985
+     },
+     "answered": true,
+     "arm": "A",
+     "arm_action": {
+      "arm": "A",
+      "done_monotonic": 4140037.127013929,
+      "error": null,
+      "llama_servers": null,
+      "polls": 0,
+      "ps_after": [
+       "qwen3:4b-instruct-2507-q4_K_M"
+      ],
+      "ps_before": [
+       "qwen3:4b-instruct-2507-q4_K_M"
+      ],
+      "sec": 0.682
+     },
+     "arm_held": true,
+     "arm_not_held": [],
+     "at_rerank_start": {
+      "ago_sec": 0.669,
+      "compressor_mib": 4218.895,
+      "free_mib": 24.164,
+      "llama_mem_mib": 4594.0,
+      "llama_pids": [
+       75715
+      ],
+      "swap_used_mib": 3014.5
+     },
+     "build_sec": 0.102,
+     "case_id": "aircargo-leave-sources",
+     "first_token_sec": 550.233,
+     "five": {
+      "order_sha256": "90a017c5eb681c99035c0c4a076a40f60ec1e69bf887a12628fd16d127f8a6cd",
+      "set_sha256": "77b02a75d9c331ab11eaacf8eb695add6cb2cc20f6aa2479566ad3e5720f4ffd"
+     },
+     "http_status": 200,
+     "index": 3,
+     "load1_max": {
+      "question": 9.29,
+      "rerank": 6.62
+     },
+     "model_calls": 3,
+     "path": {
+      "candidates": {
+       "bm25": 20,
+       "merged": 39,
+       "vector": 20
+      },
+      "kind": "hybrid",
+      "rerank_status": "ok",
+      "timings_ms": {
+       "pools": 140073.52,
+       "rerank": 336938.913,
+       "total": 477350.871
+      }
+     },
+     "pool": {
+      "candidates": 39,
+      "pool_sha256": "8581460f976e36f92cbcbddd7642cc6ee274825256359872d5e476cc93d66875",
+      "rerank_k": 5
+     },
+     "read": true,
+     "rerank_sec": 336.938,
+     "reranker_ok": true,
+     "retrieval_offset_sec": 1.456,
+     "retrieval_sec": 477.391,
+     "route": "auto",
+     "sha256": "38755ca29f848e6e63dd59bc81c967073b7c39e893f9595f74a33845f1814239",
+     "spans": {
+      "hybrid._rerank_scored_with_status": 1,
+      "hybrid._vector_search": 1,
+      "hybrid.get_relevant_documents_with_path": 1,
+      "hybrid.rerank_pool": 1,
+      "ollama.generate": 2,
+      "ollama.generate_stream": 1,
+      "vectordb.manager.get_retriever": 1
+     },
+     "tokens": 46,
+     "total_sec": 645.916,
+     "unread": [],
+     "vector_sec": 139.735,
+     "whole_sec": 646.598,
+     "windows": {
+      "rerank": {
+       "compressions": 420985,
+       "decompressions": 305614,
+       "faulted_mib": 4092.871,
+       "faulted_mib_per_sec": 12.403,
+       "from": 4140178.696,
+       "llama_pids": [
+        75715
+       ],
+       "one_llama_each": true,
+       "pageins": 742161,
+       "pageouts": 2414,
+       "ps_read": 66,
+       "samples": 66,
+       "sec": 329.99,
+       "swapins": 106096,
+       "swapouts": 220848,
+       "to": 4140515.634,
+       "with_llama": 66
+      },
+      "retrieval": {
+       "compressions": 1059845,
+       "decompressions": 470940,
+       "faulted_mib": 6024.316,
+       "faulted_mib_per_sec": 12.818,
+       "from": 4140038.583,
+       "llama_pids": [
+        75715
+       ],
+       "one_llama_each": true,
+       "pageins": 1071285,
+       "pageouts": 3661,
+       "ps_read": 94,
+       "samples": 94,
+       "sec": 469.996,
+       "swapins": 162415,
+       "swapouts": 293741,
+       "to": 4140515.974,
+       "with_llama": 94
+      },
+      "vector": {
+       "compressions": 621547,
+       "decompressions": 131948,
+       "faulted_mib": 1773.68,
+       "faulted_mib_per_sec": 13.138,
+       "from": 4140038.622,
+       "llama_pids": [
+        75715
+       ],
+       "one_llama_each": true,
+       "pageins": 322114,
+       "pageouts": 1219,
+       "ps_read": 28,
+       "samples": 28,
+       "sec": 135.004,
+       "swapins": 27787,
+       "swapouts": 66054,
+       "to": 4140178.358,
+       "with_llama": 28
+      }
+     }
+    },
+    {
+     "answer_call": {
+      "error": null,
+      "first_chunk_sec": 62.803,
+      "offset_sec": 244.707,
+      "prompt_est_tokens": 2600,
+      "wall_sec": 76.361
+     },
+     "answered": true,
+     "arm": "A",
+     "arm_action": {
+      "arm": "A",
+      "done_monotonic": 4140683.475091825,
+      "error": null,
+      "llama_servers": null,
+      "polls": 0,
+      "ps_after": [
+       "qwen3:4b-instruct-2507-q4_K_M"
+      ],
+      "ps_before": [
+       "qwen3:4b-instruct-2507-q4_K_M"
+      ],
+      "sec": 0.08
+     },
+     "arm_held": true,
+     "arm_not_held": [],
+     "at_rerank_start": {
+      "ago_sec": 4.555,
+      "compressor_mib": 2825.848,
+      "free_mib": 14.418,
+      "llama_mem_mib": 5327.0,
+      "llama_pids": [
+       75715
+      ],
+      "swap_used_mib": 3988.25
+     },
+     "build_sec": 0.003,
+     "case_id": "aircargo-leave-compensation",
+     "first_token_sec": 307.55,
+     "five": {
+      "order_sha256": "0107427a2c14e31ac0ec0faaa1e5f15b93ebcec6b6b9f1cb1f1d802777de153c",
+      "set_sha256": "b80df2251fce3d7f209036a57e903c36ef4172b3b15d88367a30e6f88fccd6da"
+     },
+     "http_status": 200,
+     "index": 4,
+     "load1_max": {
+      "question": 7.79,
+      "rerank": 4.38
+     },
+     "model_calls": 3,
+     "path": {
+      "candidates": {
+       "bm25": 20,
+       "merged": 37,
+       "vector": 20
+      },
+      "kind": "hybrid",
+      "rerank_status": "ok",
+      "timings_ms": {
+       "pools": 83904.021,
+       "rerank": 160521.412,
+       "total": 244453.436
+      }
+     },
+     "pool": {
+      "candidates": 37,
+      "pool_sha256": "3ff82de8a048962c94f4ba67aab74dc552370257914329c9e4cf71319eb77984",
+      "rerank_k": 5
+     },
+     "read": true,
+     "rerank_sec": 160.521,
+     "reranker_ok": true,
+     "retrieval_offset_sec": 0.2,
+     "retrieval_sec": 244.457,
+     "route": "auto",
+     "sha256": "6347e35977d15a6dc6e17bc372d7e901d3a5a7abc8e1e517f17bfa97763f0969",
+     "spans": {
+      "hybrid._rerank_scored_with_status": 1,
+      "hybrid._vector_search": 1,
+      "hybrid.get_relevant_documents_with_path": 1,
+      "hybrid.rerank_pool": 1,
+      "ollama.generate": 2,
+      "ollama.generate_stream": 1,
+      "vectordb.manager.get_retriever": 1
+     },
+     "tokens": 51,
+     "total_sec": 402.495,
+     "unread": [],
+     "vector_sec": 83.581,
+     "whole_sec": 402.575,
+     "windows": {
+      "rerank": {
+       "compressions": 443633,
+       "decompressions": 192363,
+       "faulted_mib": 2375.324,
+       "faulted_mib_per_sec": 14.846,
+       "from": 4140767.58,
+       "llama_pids": [
+        75715
+       ],
+       "one_llama_each": true,
+       "pageins": 415720,
+       "pageouts": 596,
+       "ps_read": 33,
+       "samples": 33,
+       "sec": 159.996,
+       "swapins": 171554,
+       "swapouts": 189985,
+       "to": 4140928.101,
+       "with_llama": 33
+      },
+      "retrieval": {
+       "compressions": 977743,
+       "decompressions": 246949,
+       "faulted_mib": 3773.961,
+       "faulted_mib_per_sec": 15.725,
+       "from": 4140683.676,
+       "llama_pids": [
+        75715
+       ],
+       "one_llama_each": true,
+       "pageins": 719185,
+       "pageouts": 674,
+       "ps_read": 49,
+       "samples": 49,
+       "sec": 240.001,
+       "swapins": 186136,
+       "swapouts": 189985,
+       "to": 4140928.133,
+       "with_llama": 49
+      },
+      "vector": {
+       "compressions": 506469,
+       "decompressions": 37619,
+       "faulted_mib": 1281.137,
+       "faulted_mib_per_sec": 17.081,
+       "from": 4140683.676,
+       "llama_pids": [
+        75715
+       ],
+       "one_llama_each": true,
+       "pageins": 290352,
+       "pageouts": 67,
+       "ps_read": 16,
+       "samples": 16,
+       "sec": 75.005,
+       "swapins": 5712,
+       "swapouts": 0,
+       "to": 4140767.257,
+       "with_llama": 16
+      }
+     }
+    },
+    {
+     "answer_call": {
+      "error": null,
+      "first_chunk_sec": 65.798,
+      "offset_sec": 454.698,
+      "prompt_est_tokens": 2550,
+      "wall_sec": 78.335
+     },
+     "answered": true,
+     "arm": "A",
+     "arm_action": {
+      "arm": "A",
+      "done_monotonic": 4141086.210593315,
+      "error": null,
+      "llama_servers": null,
+      "polls": 0,
+      "ps_after": [
+       "qwen3:4b-instruct-2507-q4_K_M"
+      ],
+      "ps_before": [
+       "qwen3:4b-instruct-2507-q4_K_M"
+      ],
+      "sec": 0.047
+     },
+     "arm_held": true,
+     "arm_not_held": [],
+     "at_rerank_start": {
+      "ago_sec": 2.782,
+      "compressor_mib": 4433.82,
+      "free_mib": 27.586,
+      "llama_mem_mib": 6035.0,
+      "llama_pids": [
+       75715
+      ],
+      "swap_used_mib": 4210.25
+     },
+     "build_sec": 0.002,
+     "case_id": "aircargo-leave-risk",
+     "first_token_sec": 520.5,
+     "five": {
+      "order_sha256": "cd597e8b93316dc53470bda307ed6038617d7974d499e2ef4efefe158aa9e9f1",
+      "set_sha256": "df5db106d07facd03ca2878cd3ced043115076172a5cb9b2d51f02ee315e82e0"
+     },
+     "http_status": 200,
+     "index": 5,
+     "load1_max": {
+      "question": 6.86,
+      "rerank": 5.03
+     },
+     "model_calls": 3,
+     "path": {
+      "candidates": {
+       "bm25": 20,
+       "merged": 39,
+       "vector": 20
+      },
+      "kind": "hybrid",
+      "rerank_status": "ok",
+      "timings_ms": {
+       "pools": 244512.478,
+       "rerank": 209979.308,
+       "total": 454522.602
+      }
+     },
+     "pool": {
+      "candidates": 39,
+      "pool_sha256": "11f5924e79ca1dc5398cff0ea871c4ca16551cf908b33346921edace16f9c70e",
+      "rerank_k": 5
+     },
+     "read": true,
+     "rerank_sec": 209.978,
+     "reranker_ok": true,
+     "retrieval_offset_sec": 0.086,
+     "retrieval_sec": 454.526,
+     "route": "auto",
+     "sha256": "5228df25d5637f7901042d9f40772e11851579275664dd95dd6260a7e5311a26",
+     "spans": {
+      "hybrid._rerank_scored_with_status": 1,
+      "hybrid._vector_search": 1,
+      "hybrid.get_relevant_documents_with_path": 1,
+      "hybrid.rerank_pool": 1,
+      "ollama.generate": 2,
+      "ollama.generate_stream": 1,
+      "vectordb.manager.get_retriever": 1
+     },
+     "tokens": 49,
+     "total_sec": 611.182,
+     "unread": [],
+     "vector_sec": 244.221,
+     "whole_sec": 611.229,
+     "windows": {
+      "rerank": {
+       "compressions": 236435,
+       "decompressions": 183358,
+       "faulted_mib": 2279.906,
+       "faulted_mib_per_sec": 11.122,
+       "from": 4141330.81,
+       "llama_pids": [
+        75715
+       ],
+       "one_llama_each": true,
+       "pageins": 400298,
+       "pageouts": 237,
+       "ps_read": 42,
+       "samples": 42,
+       "sec": 204.996,
+       "swapins": 68658,
+       "swapouts": 237166,
+       "to": 4141540.789,
+       "with_llama": 42
+      },
+      "retrieval": {
+       "compressions": 1052751,
+       "decompressions": 396229,
+       "faulted_mib": 4714.754,
+       "faulted_mib_per_sec": 10.529,
+       "from": 4141086.297,
+       "llama_pids": [
+        75715
+       ],
+       "one_llama_each": true,
+       "pageins": 810748,
+       "pageouts": 834,
+       "ps_read": 90,
+       "samples": 90,
+       "sec": 447.8,
+       "swapins": 233321,
+       "swapouts": 374457,
+       "to": 4141540.823,
+       "with_llama": 90
+      },
+      "vector": {
+       "compressions": 793918,
+       "decompressions": 189522,
+       "faulted_mib": 2325.238,
+       "faulted_mib_per_sec": 9.778,
+       "from": 4141086.298,
+       "llama_pids": [
+        75715
+       ],
+       "one_llama_each": true,
+       "pageins": 405739,
+       "pageouts": 595,
+       "ps_read": 48,
+       "samples": 48,
+       "sec": 237.809,
+       "swapins": 142892,
+       "swapouts": 136790,
+       "to": 4141330.519,
+       "with_llama": 48
+      }
+     }
+    },
+    {
+     "answer_call": {
+      "error": null,
+      "first_chunk_sec": 63.336,
+      "offset_sec": 240.589,
+      "prompt_est_tokens": 2636,
+      "wall_sec": 84.388
+     },
+     "answered": true,
+     "arm": "A",
+     "arm_action": {
+      "arm": "A",
+      "done_monotonic": 4141697.586570493,
+      "error": null,
+      "llama_servers": null,
+      "polls": 0,
+      "ps_after": [
+       "qwen3:4b-instruct-2507-q4_K_M"
+      ],
+      "ps_before": [
+       "qwen3:4b-instruct-2507-q4_K_M"
+      ],
+      "sec": 0.054
+     },
+     "arm_held": true,
+     "arm_not_held": [],
+     "at_rerank_start": {
+      "ago_sec": 2.602,
+      "compressor_mib": 3997.227,
+      "free_mib": 38.875,
+      "llama_mem_mib": 6726.0,
+      "llama_pids": [
+       75715
+      ],
+      "swap_used_mib": 5282.0
+     },
+     "build_sec": 0.001,
+     "case_id": "aircargo-matliab-check",
+     "first_token_sec": 303.964,
+     "five": {
+      "order_sha256": "1744153c7dafad6f6ade80f26a453fce923cc989547bfe365e525d1c07ef34a3",
+      "set_sha256": "1ef75708524ef557aa79dc33a86d686132a679abb3b85e69f5f2cf35621f462f"
+     },
+     "http_status": 200,
+     "index": 6,
+     "load1_max": {
+      "question": 7.07,
+      "rerank": 2.85
+     },
+     "model_calls": 3,
+     "path": {
+      "candidates": {
+       "bm25": 20,
+       "merged": 28,
+       "vector": 20
+      },
+      "kind": "hybrid",
+      "rerank_status": "ok",
+      "timings_ms": {
+       "pools": 72927.995,
+       "rerank": 167501.821,
+       "total": 240444.112
+      }
+     },
+     "pool": {
+      "candidates": 28,
+      "pool_sha256": "873f317e5e5eee856bd7212f367003ecdfe6d30a5de3c87f12cf9c7f8f4dfb92",
+      "rerank_k": 5
+     },
+     "read": true,
+     "rerank_sec": 167.501,
+     "reranker_ok": true,
+     "retrieval_offset_sec": 0.107,
+     "retrieval_sec": 240.445,
+     "route": "auto",
+     "sha256": "4090df9680cbd5fcefa763b230b07166c5e9dd257c4ff868d946dff3aeaad881",
+     "spans": {
+      "hybrid._rerank_scored_with_status": 1,
+      "hybrid._vector_search": 1,
+      "hybrid.get_relevant_documents_with_path": 1,
+      "hybrid.rerank_pool": 1,
+      "ollama.generate": 2,
+      "ollama.generate_stream": 1,
+      "vectordb.manager.get_retriever": 1
+     },
+     "tokens": 89,
+     "total_sec": 403.1,
+     "unread": [],
+     "vector_sec": 72.783,
+     "whole_sec": 403.154,
+     "windows": {
+      "rerank": {
+       "compressions": 186547,
+       "decompressions": 146202,
+       "faulted_mib": 2024.984,
+       "faulted_mib_per_sec": 12.273,
+       "from": 4141770.623,
+       "llama_pids": [
+        75715
+       ],
+       "one_llama_each": true,
+       "pageins": 372194,
+       "pageouts": 625,
+       "ps_read": 34,
+       "samples": 34,
+       "sec": 165.0,
+       "swapins": 59009,
+       "swapouts": 117884,
+       "to": 4141938.124,
+       "with_llama": 34
+      },
+      "retrieval": {
+       "compressions": 1146624,
+       "decompressions": 249940,
+       "faulted_mib": 3629.191,
+       "faulted_mib_per_sec": 15.122,
+       "from": 4141697.694,
+       "llama_pids": [
+        75715
+       ],
+       "one_llama_each": true,
+       "pageins": 679133,
+       "pageouts": 774,
+       "ps_read": 49,
+       "samples": 49,
+       "sec": 240.002,
+       "swapins": 124813,
+       "swapouts": 224872,
+       "to": 4141938.139,
+       "with_llama": 49
+      },
+      "vector": {
+       "compressions": 938971,
+       "decompressions": 80981,
+       "faulted_mib": 1465.52,
+       "faulted_mib_per_sec": 20.937,
+       "from": 4141697.695,
+       "llama_pids": [
+        75715
+       ],
+       "one_llama_each": true,
+       "pageins": 294192,
+       "pageouts": 121,
+       "ps_read": 15,
+       "samples": 15,
+       "sec": 69.997,
+       "swapins": 43613,
+       "swapouts": 86077,
+       "to": 4141770.478,
+       "with_llama": 15
+      }
+     }
+    }
+   ],
+   "dir": "/Users/julia/RAG_new_chat_81cd2ad/live5a/runs/s5a-torch-1",
+   "drivers_sha256": {
+    "live_api.py": "43ff96f06af18538a2571d68a86e898ecfcdd5fcab47039f0d58bd245361a7b5",
+    "live_runner.py": "c87838014a0517d5e6a3dde0402ed0b067a9e0148aaf5d842ffe272ca451a072",
+    "live_supervisor.py": "e903a1498aa1d48fb7ef6a9ba8cd2e4bd94e866433420fb132a6ab7179bd8e59"
+   },
+   "gate": {
+    "actions": true,
+    "asks": true,
+    "drivers": true,
+    "launch": true,
+    "llama": true,
+    "passed": true,
+    "reranker": true,
+    "samples": true,
+    "settings": true
+   },
+   "label": "s5a-torch-1",
+   "launch": {
+    "arm": "AAAAAA",
+    "cases": [
+     "aircargo-dismissal-lawyer",
+     "aircargo-dismissal-order",
+     "aircargo-leave-sources",
+     "aircargo-leave-compensation",
+     "aircargo-leave-risk",
+     "aircargo-matliab-check"
+    ],
+    "cases_file": "/Users/julia/RAG_new_chat_81cd2ad/evaluation/curated_cases_aircargo.jsonl",
+    "chroma_dir": "/Users/julia/RAG_new_chat_81cd2ad/live5a/runs/s5a-torch-1.chroma",
+    "client_cap_sec": "1440/1200",
+    "code_sha": "81cd2ade80ea9bc5a4f3ea721a16bd05037136fd",
+    "label": "s5a-torch-1",
+    "mode": "prod",
+    "model": "qwen3:4b-instruct-2507-q4_K_M",
+    "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+    "ollama_load_sec": 42.873,
+    "ollama_models_after": [
+     "qwen3:4b-instruct-2507-q4_K_M"
+    ],
+    "ollama_models_before": [],
+    "overrides": {
+     "OLLAMA_REQUEST_TIMEOUT_SEC": "3600",
+     "RAG_DEVICE": "cpu",
+     "RAG_RERANKER_RUNTIME": "torch",
+     "REQUEST_TIMEOUT_SEC": "3600",
+     "STREAMING_TIMEOUT_SEC": "3600"
+    },
+    "runner_exit": 0,
+    "started": "2026-10-30T17:14:40+00:00",
+    "status": "complete",
+    "tenant": "aircargo",
+    "unloaded_models": [
+     "qwen3:4b-instruct-2507-q4_K_M"
+    ],
+    "workspace": "/Users/julia/RAG_new_chat_81cd2ad"
+   },
+   "llama_pids_seen": 1,
+   "notes": [],
+   "onnx_sha256": null,
+   "reranker_loads": [
+    {
+     "before_first_case": true,
+     "error": null,
+     "sec": 3.39
+    },
+    {
+     "before_first_case": false,
+     "error": null,
+     "sec": 0.0
+    }
+   ],
+   "runtime": "torch",
+   "samples": {
+    "every_sec": 5.0,
+    "file": "s5a-torch-1.samples.jsonl",
+    "first_utc": "2026-10-30T17:14:34.646Z",
+    "last_utc": "2026-10-30T18:05:57.714Z",
+    "loud_notes": {},
+    "sample_notes": {
+     "ps: no process named llama-server": 13
+    },
+    "samples": 614,
+    "schema": "stage4-step0-samples/v1",
+    "sha256": "3a63923336b79596af884d6f2b21db7f38fd99c5bae47ff83b3f3c57f893ce84",
+    "stop_reason": "stop file"
+   },
+   "settings": {
+    "rag_device": "cpu",
+    "rerank_top_k": 5,
+    "reranker_model": "BAAI/bge-reranker-v2-m3",
+    "reranker_onnx_path": "",
+    "reranker_runtime": "torch",
+    "retrieval_top_k": 20
+   },
+   "sha256": {
+    "effective_settings.json": "4d60f4c1f6b60a26cc15e439056b4ec301578be80c1414857d2e0079e2945e1e",
+    "launch.json": "10967659c3bdeda6c2e6905ab7cbbad042844341f1785819b921f69b9147e94d",
+    "stages.jsonl": "0eaa592b5173f8bc27f1034467885b912594d3280d49afa3d706fe10edc8ee92"
+   }
+  }
+ ],
+ "schema": "stage4-step5a-live/v1",
+ "spec": "docs/specs/stage4-step5a-live.md",
+ "stand_gate": {
+  "corpus": false,
+  "environment": false,
+  "passed": false
+ },
+ "tools_sha256": {
+  "live5a_reader.py": "7420673c65c97b05d9ecf6df18eea4062e1df66b8ba4d49bafa05565d0bfea2b",
+  "step0_sampler.py": "a0b3e53d78584f454d252770898efb884b77aa80f0fff1729992ec1a37c6d18c",
+  "step1_reader.py": "38f0abfe20143085ad593b361377ee09f5a59d30ca0c3ed69a75863ec288ea3b"
+ }
+}

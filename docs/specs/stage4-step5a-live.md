@@ -8,7 +8,9 @@ and [its record](../evidence/stage4-step5a-record.md), with [step 1](stage4-step
 runner, reader, sampler, idle rule and stop rule. The one value filled in at launch is `<c>`, the
 commit that registers this spec. Its [cold read](../operations/audit_opus55_30_10_26_live_spec.md)
 was applied before registration: it moved the reranker's load to the API's start, and the
-noise it found doubled the runs, eight in four blocks, twenty pairs.
+noise it found doubled the runs, eight in four blocks, twenty pairs. **Read 2026-10-30**, stopped
+in its first block, its INT8 run failing step 7's look at the Mac again as `-r2`: `NOT_EVIDENCE`,
+nothing read ([the record](../evidence/stage4-step5a-live-record.md)).
 
 ## Why
 

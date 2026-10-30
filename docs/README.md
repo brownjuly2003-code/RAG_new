@@ -149,7 +149,9 @@ closes; its [record](evidence/stage4-step5a-ngram-record.md).
 the chat behind `81cd2ad`'s setting against PyTorch, on one commit with step 1's runner,
 reader and sampler: eight runs ABBA twice, twenty pairs in four blocks, faster or slower
 only by an exact sign test with every block leaning its way; registered before the first
-request in `3136fb8`.
+request in `3136fb8`. Read 2026-10-30: `NOT_EVIDENCE`, stopped in its first block — the INT8
+run failed step 7's look at the Mac again as `-r2`; its
+[record](evidence/stage4-step5a-live-record.md).
 [Stage 6, item 4](specs/stage6-throughput.md) — the
 service's questions an hour and what a second client sees: a draft, registered with its tools once
 the service is installed.
