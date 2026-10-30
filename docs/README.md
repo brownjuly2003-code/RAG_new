@@ -165,9 +165,11 @@ P2 reference samples ([Astra](specs/p2-astra-reference-sample.md),
 
 - [`evidence/`](evidence/) — one write-up per measured slice; the register with provenance is
   [`EVIDENCE_INDEX.md`](../EVIDENCE_INDEX.md). The records themselves are in `../reports/`.
-- [Latest handoff: stage 4 — items 4 and 5 read; item 5a's INT8 registered, its block 1 passed, the series resumes at block 2](operations/session-handoff-2026-10-30-stage4-step5a-block1.md)
-  — step 2b's and the probe's records; item 4's window counted and timed, the hints after the
-  answer; item 5's cache cap read; item 5a registered and its FP32 block passed. Before it:
+- [Latest handoff: stage 4 — item 5a's blocks 2–5 passed and block 6 ran on; the audit of 2026-10-30 taken into PLAN](operations/session-handoff-2026-10-30-stage4-step5a-block6.md)
+  — the audit's eight edits in PLAN; stage 7 step 1 rewritten to PLAN's gate and the n-gram
+  lever's spec, both prepared for registration; the help page's badge text and its browser
+  test. Before it:
+  [stage 4 — items 4 and 5 read; item 5a's INT8 registered, its block 1 passed, the series resumes at block 2](operations/session-handoff-2026-10-30-stage4-step5a-block1.md),
   [stage 4 — step 2 and step 2b read, the continuation not adopted; the probe ready to register](operations/session-handoff-2026-10-29-stage4-step2b-read.md),
   [stage 4 — step 2 running on the Mac; stage 7 and step 2b drafted](operations/session-handoff-2026-10-29-stage4-step2-running.md),
   [stage 4: step 0 read, step 1 measured, step 3 registered](operations/session-handoff-2026-10-28-stage4-step1.md),
@@ -192,6 +194,12 @@ P2 reference samples ([Astra](specs/p2-astra-reference-sample.md),
 - [Project audit of 2026-10-18](operations/audit_fable_18_10_26.md) (Fable 5.1) — the state
   against the plan, the status files' claims checked, findings F-1…F-10; kept in `operations/`
   because `docs/audits/` is publishable (earlier audits: `../archive/docs/audits/`).
+- [Project audit of 2026-10-30](operations/audit_astra_30_10_26.md) (gpt-6-astra) — HEAD
+  `83eac79` against the plan's definition of done, findings F1–F7; what `PLAN.md` took from it
+  is marked «правка 30.10» there.
+- [Cold read of the n-gram spec, 2026-10-30](operations/audit_opus55_30_10_26_ngram_spec.md) — one
+  fresh subagent on the session's model read the spec, tool and test frozen before registration;
+  verbatim, 1 blocking finding, 1 to fix, 10 minor, each applied or refuted there before it.
 - [`operations/`](operations/) — besides the runbooks above: the
   [GR-2 entity builder preparation](operations/gr2-entity-builder-preparation.md) and the last
   session handoffs (the newest is linked from [`CURRENT_STATE.md`](../CURRENT_STATE.md)). Older

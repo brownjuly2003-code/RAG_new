@@ -13,7 +13,7 @@ stage and the frozen streams with their unfreeze conditions are [`ROADMAP.md`](R
   2026-10-30, 3,584 faster on 12 of 12 ([record](docs/evidence/stage4-step4b-record.md)); item 5
   under her cap `cache-ram = 1024` read 2026-10-30, the swap holds, the limit not adopted
   ([record](docs/evidence/stage4-step5-record.md)); next item 5a's INT8, registered in `d9f9fd8`,
-  its block 1 passed, blocks 2–6 to run** (steps 0–3 read; [the handoff](docs/operations/session-handoff-2026-10-30-stage4-step5a-block1.md)): stage 3
+  blocks 1–5 passed, block 6 followed, the read next** (steps 0–3 read; [the handoff](docs/operations/session-handoff-2026-10-30-stage4-step5a-block6.md)): stage 3
   stays at outcome C — the handover line under every answer; the encoders and Horizon guard base
   in between ([record](docs/evidence/encoder-checkers-record.md)); stage 3б closed 2026-10-28,
   V5 not adopted ([record](docs/evidence/answer-prompt-v5-record.md)). The widget's R1 and

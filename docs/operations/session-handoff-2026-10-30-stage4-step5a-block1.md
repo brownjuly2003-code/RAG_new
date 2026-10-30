@@ -1,6 +1,12 @@
 # Session handoff 2026-10-30 — stage 4: items 4 and 5 read; item 5a's INT8 registered, its block 1 passed, the series resumes at block 2
 
-The session ran 2026-10-29 21:48 UTC – 2026-10-30 ≈ 10:15 UTC. All times are UTC; the laptop's
+> **Superseded** by the next session's handoff,
+> [item 5a's blocks 2–5 passed and block 6 ran on; the audit of 2026-10-30 taken into PLAN](session-handoff-2026-10-30-stage4-step5a-block6.md),
+> which keeps this file's item 5a model, exits table, record steps, glossary and «Do not» in
+> force. PLAN's F4 edit of 2026-10-30 overturns «They reopen neither item 6 nor stage 5» for
+> INT8 if its five changes on any question.
+
+The session ran 2026-10-29 21:48 UTC – 2026-10-30 ≈ 09:53 UTC. All times are UTC; the laptop's
 clock is EDT (git's `-0400`) and the Mac's UTC+3. The previous handoff
 ([step 2 and step 2b read, the continuation not adopted; the probe ready to register](session-handoff-2026-10-29-stage4-step2b-read.md))
 still holds for its model, its glossary and its «Do not». Its next actions 1 and 2 are done, and
