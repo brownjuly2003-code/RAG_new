@@ -125,8 +125,11 @@ def test_graph_lane_prefilters_promotes_and_expands_only_its_section() -> None:
 
     assert legacy[0] is returns
     assert store.filters == [None, {"source": {"$in": ["shipping.md", "weak.md"]}}]
-    assert graph_docs[0].page_content == ("first supported chunk\n\ntail from the same section")
-    assert graph_docs[1] is section_second
+    # Chunk 1 is another section's, so chunk 0's run ends at once, and chunk 3 joins
+    # chunk 2, the chunk before it (until stage 7 it joined chunk 0 across the gap).
+    assert graph_docs[0] is section_first
+    assert graph_docs[1].page_content == "second supported chunk\n\ntail from the same section"
+    assert graph_docs[1].metadata["graph_section_expanded"] is True
     assert all("returns-only" not in doc.page_content for doc in graph_docs)
     assert all("adjacent but different" not in doc.page_content for doc in graph_docs[:2])
     assert all("weak isolated" not in doc.page_content for doc in graph_docs)
@@ -244,6 +247,80 @@ def test_graph_lane_maps_builder_fallback_chunk_indices() -> None:
             },
         )
     ]
+
+
+def _rules_chunk(core: str, chunk_index: int, *, seam: int = 0) -> manager.Document:
+    """A chunk of one section as the chunker writes it: header line, recorded seam."""
+    header = "rules.md › Policy › Rules"
+    return manager.Document(
+        page_content=f"[{header}]\n{core}",
+        metadata={
+            "source": "rules.md",
+            "chunk_index": chunk_index,
+            "h1": "Policy",
+            "h2": "Rules",
+            "contextual_header": header,
+            "seam_overlap": seam,
+        },
+    )
+
+
+def _section_retriever(
+    chunks: list[manager.Document], max_chars: int = 2400
+) -> manager.HybridRetriever:
+    projection = project_structure_graph(build_structural_graph(chunks, tenant_id="acme"))
+    return manager.HybridRetriever(
+        None,
+        chunks=chunks,
+        use_bm25=False,
+        graph_projection=projection,
+        parent_expansion_max_chars=max_chars,
+    )
+
+
+def test_section_expansion_joins_each_seam_once_under_one_header() -> None:
+    chunks = [
+        _rules_chunk("Alpha opens the rule. Seam one words", 0),
+        _rules_chunk("Seam one words carry on. Seam two words", 1, seam=14),
+        _rules_chunk("Seam two words close it.", 2, seam=14),
+    ]
+
+    [expanded] = _section_retriever(chunks)._expand_graph_sections([chunks[1]])
+
+    # Until stage 7: the header three times, the seed's mid-text, and each seam twice.
+    assert expanded.page_content == (
+        "[rules.md › Policy › Rules]\n"
+        "Alpha opens the rule. Seam one words carry on. Seam two words close it."
+    )
+    assert expanded.metadata["graph_section_expanded"] is True
+
+
+def test_section_expansion_side_ends_at_a_chunk_over_the_budget() -> None:
+    chunks = [
+        _rules_chunk("Seed text.", 0),
+        _rules_chunk("x" * 300, 1),
+        _rules_chunk("Short text that would fit.", 2),
+    ]
+
+    # Chunk 2 fits the budget, but it is not joined to chunk 0 across chunk 1.
+    assert _section_retriever(chunks, max_chars=200)._expand_graph_sections([chunks[0]]) == [
+        chunks[0]
+    ]
+
+
+def test_section_expansion_side_ends_at_a_chunk_of_the_context() -> None:
+    chunks = [
+        _rules_chunk("First seed.", 0),
+        _rules_chunk("Second seed.", 1),
+        _rules_chunk("Tail of the section.", 2),
+    ]
+
+    first, second = _section_retriever(chunks)._expand_graph_sections(chunks[:2])
+
+    assert first is chunks[0]
+    assert second.page_content == (
+        "[rules.md › Policy › Rules]\nSecond seed.\n\nTail of the section."
+    )
 
 
 def test_graph_lane_without_projection_is_exact_hybrid_fallback() -> None:

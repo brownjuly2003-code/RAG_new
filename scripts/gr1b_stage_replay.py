@@ -20,11 +20,54 @@ from scripts.gr1b_controls import (
     sha256_file,
     write_bucket_report,
 )
-from vectordb._base_manager import Document, HybridRetriever
+from vectordb._base_manager import Document, HybridRetriever, _rrf_document_key
 
 POOL = PROJECT_ROOT / "evaluation/gr1b-4436d61-prerank-pool.json.gz"
 CHUNKS = PROJECT_ROOT / "evaluation/gr1b-4436d61-graph-chunks.json.gz"
 DEFAULT_REPORT = PROJECT_ROOT / "reports/gr/gr1b-stage-replay.json"
+
+
+def legacy_expand_graph_sections(retriever: HybridRetriever, docs: list[Document]) -> list[Document]:
+    """The section expansion GR-1b ran and archived: HybridRetriever._expand_graph_sections as it
+    stood until stage 7's fix (PLAN.md stage 7), each side taking every sibling of the section
+    in reach that fit, its header stripped, joined by blank lines. Kept here, so the published
+    replay still reproduces its archive; the product's expansion is the retriever's own."""
+    used_keys = {_rrf_document_key(doc, retriever._doc_key_chars) for doc in docs}
+    expanded: list[Document] = []
+    for doc in docs:
+        doc_key = _rrf_document_key(doc, retriever._doc_key_chars)
+        section = retriever._graph_chunk_sections.get(doc_key)
+        section_docs = retriever._graph_section_chunks.get(section or "", [])
+        positions = [index for index, candidate in enumerate(section_docs)
+                     if _rrf_document_key(candidate, retriever._doc_key_chars) == doc_key]
+        if not positions:
+            expanded.append(doc)
+            continue
+        before: list[str] = []
+        after: list[str] = []
+        budget = retriever._parent_max_chars - len(doc.page_content)
+        position = positions[0]
+        for distance in range(1, len(section_docs)):
+            for side, sibling_position in ((before, position - distance), (after, position + distance)):
+                if sibling_position < 0 or sibling_position >= len(section_docs):
+                    continue
+                sibling = section_docs[sibling_position]
+                sibling_key = _rrf_document_key(sibling, retriever._doc_key_chars)
+                if sibling_key in used_keys:
+                    continue
+                text = retriever._strip_contextual_header(sibling.page_content).strip()
+                if not text or len(text) > budget:
+                    continue
+                budget -= len(text)
+                used_keys.add(sibling_key)
+                side.append(text)
+        if not before and not after:
+            expanded.append(doc)
+            continue
+        parts = list(reversed(before)) + [doc.page_content] + after
+        expanded.append(Document(page_content="\n\n".join(parts),
+                                 metadata={**(doc.metadata or {}), "graph_section_expanded": True}))
+    return expanded
 
 
 def recover_ranked_docs(pool: dict, archived: dict) -> list[Document]:
@@ -62,12 +105,12 @@ def build_stage_report():
             raise ValueError("case identity or rerank limit differs")
         ranked = recover_ranked_docs(pool, source)[:5]
         coherent = retriever._apply_graph_coherence(ranked)
-        replay = retriever._expand_graph_sections(coherent)
+        replay = legacy_expand_graph_sections(retriever, coherent)
         if ([doc.page_content for doc in replay] != source["cands"]
                 or [doc.metadata for doc in replay] != source["cand_metadata"]
                 or [doc.metadata.get("source", "?") for doc in replay] != source["cand_sources"]):
             raise ValueError(f"{source['case_id']}: exact structural replay differs")
-        for name, docs in zip(variants, (ranked, coherent, retriever._expand_graph_sections(ranked), replay), strict=True):
+        for name, docs in zip(variants, (ranked, coherent, legacy_expand_graph_sections(retriever, ranked), replay), strict=True):
             texts = _truncate_contexts([doc.page_content for doc in docs], 6000)
             scored = dict(before, **_score_texts(source["query"], source["kws"], texts))
             scored["lost_keywords"] = sorted(set(before["matched_keywords"]) - set(scored["matched_keywords"]))

@@ -497,6 +497,7 @@ class HybridRetriever:
         self._graph_category_sources: dict[str, set[str]] = {}
         self._graph_chunk_sections: dict[str, str] = {}
         self._graph_section_chunks: dict[str, list[Document]] = {}
+        self._graph_chunk_positions: dict[str, int] = {}
         self._entity_index: Any = None
         # Provenance of the projected graph, recorded by the runtime factory on
         # the projection's graph attributes; None when the caller set none.
@@ -558,6 +559,7 @@ class HybridRetriever:
             if identity is not None:
                 docs_by_identity.setdefault(identity, doc)
             chunk_order.setdefault(_rrf_document_key(doc, self._doc_key_chars), position)
+        self._graph_chunk_positions = chunk_order
 
         node_data = dict(projection.nodes(data=True))
         graph_chunk_docs: dict[str, Document] = {}
@@ -750,6 +752,19 @@ class HybridRetriever:
         return [docs[rank] for rank in kept_ranks], dropped
 
     def _expand_graph_sections(self, docs: list[Document]) -> list[Document]:
+        """Each document with the chunks of its section that follow on from it.
+
+        A side grows one chunk at a time, the nearest first, while the next chunk of the
+        document is in the same section, is not in the context already, has text and fits
+        the budget; the first chunk that does not ends the side, so the pieces stay one run
+        of the document. They are joined as parent expansion joins them
+        (``vectordb.parent_join``): each seam's overlap once, the header line first, and the
+        budget counts the text without the repeat (PLAN.md stage 7).
+        """
+        from config.settings import get_settings
+        from vectordb import contextual_header, parent_join
+
+        limit = int(getattr(get_settings(), "chunk_overlap", parent_join.MAX_OVERLAP))
         used_keys = {_rrf_document_key(doc, self._doc_key_chars) for doc in docs}
         expanded: list[Document] = []
         for doc in docs:
@@ -761,39 +776,66 @@ class HybridRetriever:
                 for index, candidate in enumerate(section_docs)
                 if _rrf_document_key(candidate, self._doc_key_chars) == doc_key
             ]
-            if not positions:
+            seed = self._graph_chunk_positions.get(doc_key)
+            if not positions or seed is None:
                 expanded.append(doc)
                 continue
 
-            before: list[str] = []
-            after: list[str] = []
+            header, core = contextual_header.split(doc.page_content, doc.metadata)
+            pieces: dict[int, tuple[str, dict[str, Any]]] = {
+                seed: (core.strip(), dict(doc.metadata or {}))
+            }
             budget = self._parent_max_chars - len(doc.page_content)
             position = positions[0]
+            growing = [-1, 1]
             for distance in range(1, len(section_docs)):
-                for side, sibling_position in (
-                    (before, position - distance),
-                    (after, position + distance),
-                ):
-                    if sibling_position < 0 or sibling_position >= len(section_docs):
+                for step in (-1, 1):
+                    if step not in growing:
+                        continue
+                    sibling_position = position + step * distance
+                    at = seed + step * distance
+                    if not 0 <= sibling_position < len(section_docs):
+                        growing.remove(step)
                         continue
                     sibling = section_docs[sibling_position]
                     sibling_key = _rrf_document_key(sibling, self._doc_key_chars)
-                    if sibling_key in used_keys:
+                    meta = dict(sibling.metadata or {})
+                    text = self._strip_contextual_header(sibling.page_content, meta).strip()
+                    # The section's next chunk is not the document's next one (another
+                    # section's chunk stands between), it is in the context already, or
+                    # it is empty: the side ends here.
+                    if (
+                        self._graph_chunk_positions.get(sibling_key) != at
+                        or sibling_key in used_keys
+                        or not text
+                    ):
+                        growing.remove(step)
                         continue
-                    text = self._strip_contextual_header(sibling.page_content).strip()
-                    if not text or len(text) > budget:
+                    cost = len(text)
+                    if step < 0 and parent_join.same_section(meta, pieces[at + 1][1]):
+                        cost -= parent_join.repeated(
+                            text, pieces[at + 1][0], pieces[at + 1][1], limit
+                        )
+                    if step > 0 and parent_join.same_section(pieces[at - 1][1], meta):
+                        cost -= parent_join.repeated(pieces[at - 1][0], text, meta, limit)
+                    if max(cost, 0) > budget:
+                        growing.remove(step)
                         continue
-                    budget -= len(text)
+                    budget -= max(cost, 0)
                     used_keys.add(sibling_key)
-                    side.append(text)
+                    pieces[at] = (text, meta)
+                if not growing:
+                    break
 
-            if not before and not after:
+            if len(pieces) == 1:
                 expanded.append(doc)
                 continue
-            parts = list(reversed(before)) + [doc.page_content] + after
+            joined = parent_join.join(
+                header, [(at, text, meta) for at, (text, meta) in pieces.items()], limit
+            )
             expanded.append(
                 Document(
-                    page_content="\n\n".join(parts),
+                    page_content=joined,
                     metadata={**(doc.metadata or {}), "graph_section_expanded": True},
                 )
             )

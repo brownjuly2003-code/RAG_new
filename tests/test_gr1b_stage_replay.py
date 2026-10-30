@@ -41,8 +41,8 @@ def test_published_stage_replay_reproduces_all_cases_and_inputs():
 
 
 def test_stage_measurement_refuses_a_nonidentical_baseline(monkeypatch):
-    from scripts.gr1b_stage_replay import HybridRetriever
+    import scripts.gr1b_stage_replay as stage_replay
 
-    monkeypatch.setattr(HybridRetriever, "_expand_graph_sections", lambda self, docs: [])
+    monkeypatch.setattr(stage_replay, "legacy_expand_graph_sections", lambda retriever, docs: [])
     with pytest.raises(ValueError, match="exact structural replay differs"):
         build_stage_report()

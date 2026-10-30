@@ -17,7 +17,13 @@ from scripts.gr1b_controls import (
     sha256_file,
     write_bucket_report,
 )
-from scripts.gr1b_stage_replay import CHUNKS, POOL, build_stage_report, recover_ranked_docs
+from scripts.gr1b_stage_replay import (
+    CHUNKS,
+    POOL,
+    build_stage_report,
+    legacy_expand_graph_sections,
+    recover_ranked_docs,
+)
 from vectordb._base_manager import Document, HybridRetriever
 
 DEFAULT_REPORT = PROJECT_ROOT / "reports/gr/gr1b-seed-expansion.json"
@@ -61,7 +67,7 @@ def build_seed_report():
         ranked = recover_ranked_docs(pool, source)[:5]
         for name, docs in zip(variants, (ranked, retriever._apply_graph_coherence(ranked)), strict=True):
             seeds = [doc.page_content for doc in docs]
-            expanded = [doc.page_content for doc in retriever._expand_graph_sections(docs)]
+            expanded = [doc.page_content for doc in legacy_expand_graph_sections(retriever, docs)]
             texts = reserve_seed_contexts(seeds, expanded, 6000)
             capped_seeds = _truncate_contexts(seeds, 6000)
             if len(texts) != len(capped_seeds) or any(seed not in text for seed, text in zip(capped_seeds, texts, strict=True)):
