@@ -14,7 +14,8 @@ stage and the frozen streams with their unfreeze conditions are [`ROADMAP.md`](R
   under her cap `cache-ram = 1024` read 2026-10-30, the swap holds, the limit not adopted
   ([record](docs/evidence/stage4-step5-record.md)); item 5a's INT8 read 2026-10-30, `int8`
   passes, its five changes on 307 of the 400 ([record](docs/evidence/stage4-step5a-record.md));
-  next its short live series in the chat, then the n-gram lever** (steps 0–3 read; [the handoff](docs/operations/session-handoff-2026-10-30-stage4-step5a-block6.md)): stage 3
+  the n-gram lever closed 2026-10-30, `NOT_EVIDENCE` ([record](docs/evidence/stage4-step5a-ngram-record.md));
+  next INT8's short live series in the chat** (steps 0–3 read; [the handoff](docs/operations/session-handoff-2026-10-30-stage4-step5a-block6.md)): stage 3
   stays at outcome C — the handover line under every answer; the encoders and Horizon guard base
   in between ([record](docs/evidence/encoder-checkers-record.md)); stage 3б closed 2026-10-28,
   V5 not adopted ([record](docs/evidence/answer-prompt-v5-record.md)). The widget's R1 and

@@ -5,7 +5,9 @@ Status 2026-10-30: **registered before the first request**, with the tool and it
 of research 6: «n-gram-декодирование — llama-server без Ollama на том же GGUF и тех же флагах:
 сначала база без speculation, затем `--spec-type ngram-simple`. ≈ 2–3 ч. Найденный тест дал и
 ускорение, и замедление.» This spec is that comparison. The one value filled in at launch is
-`<c>`, the commit that registers this spec.
+`<c>`, the commit that registers this spec. **Read 2026-10-30**, five blocks, every gate passed
+at its first attempt: `NOT_EVIDENCE`, seven of the thirteen readable — the lever closes;
+[the record](../evidence/stage4-step5a-ngram-record.md).
 
 ## Why
 
