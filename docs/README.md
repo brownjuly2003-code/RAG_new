@@ -131,7 +131,9 @@ aircargo's first thirty questions, the swap's growth from questions 6–10 to 26
 in ONNX Runtime against PyTorch, on the pools stage 2 recorded: the FP32 export's fidelity
 and the speed on aircargo's first thirty, ABBA on the idle Mac by an exact sign test; the
 fives and the gold on the 400 by an exact McNemar; registered before the first question
-was scored in ONNX in `d9f9fd8`.
+was scored in ONNX in `d9f9fd8`. Read 2026-10-30: `int8` passes, the gold holds and it reads
+faster on 30 of 30, a ratio 1.751, but its five differs from PyTorch's on 307 of the 400; its
+[record](evidence/stage4-step5a-record.md).
 [Stage 6, item 4](specs/stage6-throughput.md) — the
 service's questions an hour and what a second client sees: a draft, registered with its tools once
 the service is installed.

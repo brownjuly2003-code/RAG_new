@@ -1,7 +1,9 @@
 # Stage 4, item 5a: INT8 of the same reranker, on stage 2's saved pools
 
 Status 2026-10-30: **registered before the first question was scored in ONNX**, with the tool,
-its test and the export's manifest ([Records](#records)), in `d9f9fd8`. [`PLAN.md`](../../PLAN.md)
+its test and the export's manifest ([Records](#records)), in `d9f9fd8`; **read 2026-10-30**,
+six blocks, all gates passed: `int8` passes, and its five changes on 307 of the 400,
+[the record](../evidence/stage4-step5a-record.md). [`PLAN.md`](../../PLAN.md)
 stage 4, item 5a, the first lever of research 6: «INT8 того же реранкера в ONNX Runtime 1.23.2 …
 Сначала ONNX FP32 против PyTorch, затем INT8, на сохранённых списках кандидатов этапа 2:
 пересечение пятёрок, эталон по базам, секунды, RSS; затем короткая живая серия.» This spec is
