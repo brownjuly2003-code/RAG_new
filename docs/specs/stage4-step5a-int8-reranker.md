@@ -1,12 +1,12 @@
 # Stage 4, item 5a: INT8 of the same reranker, on stage 2's saved pools
 
 Status 2026-10-30: **registered before the first question was scored in ONNX**, with the tool,
-its test and the export's manifest ([Records](#records)), in `<c>`. [`PLAN.md`](../../PLAN.md)
+its test and the export's manifest ([Records](#records)), in `d9f9fd8`. [`PLAN.md`](../../PLAN.md)
 stage 4, item 5a, the first lever of research 6: «INT8 того же реранкера в ONNX Runtime 1.23.2 …
 Сначала ONNX FP32 против PyTorch, затем INT8, на сохранённых списках кандидатов этапа 2:
 пересечение пятёрок, эталон по базам, секунды, RSS; затем короткая живая серия.» This spec is
 that comparison; the short live series comes after it, and only if an INT8 file passes here.
-The one value filled in at launch is `<c>`, the commit that registers this spec.
+The one value filled in at launch is `d9f9fd8`, the commit that registers this spec.
 
 ## Why
 
@@ -167,7 +167,7 @@ and `PY` above, `T=reports/stage4-step5a/tools/int8_reranker.py`; `E` is the blo
 
     env -i PATH=/usr/bin:/bin:/usr/sbin:/sbin HOME="$HOME" LC_ALL=C PYTHONUTF8=1 PYTHONIOENCODING=utf-8 PYTHONDONTWRITEBYTECODE=1 HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1
 
-1. **The worktree:** `git -C $G worktree add --detach $W <c>`, by its full SHA;
+1. **The worktree:** `git -C $G worktree add --detach $W d9f9fd8`, by its full SHA;
    `git -C $W status --porcelain` prints nothing; `shasum -a 256` of the four files of
    [Records](#records) in `$W` prints their four; `shasum -a 256 $M/manifest.json` prints the
    manifest's.
@@ -216,7 +216,7 @@ fallback, if it runs, ≈ 3 h more, at the made-up pairs' 1.56.
 
 ## Records
 
-`reports/stage4-step5a/<c>/`:
+`reports/stage4-step5a/d9f9fd8/`:
 - `record.json`: the inputs and the export's manifest by SHA-256, the tool and the measuring code
   by SHA-256, the runs' provenance, each block's facts, the attempts and the files rejected, the
   fidelity, per base the blocks' score differences and fives, each variant's speed and gold, and

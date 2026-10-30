@@ -127,6 +127,11 @@ aircargo's first thirty questions, the swap's growth from questions 6–10 to 26
 512 MiB; registered before the first request in `f214459`. Read 2026-10-30: the swap holds,
 −180.25 MiB, where `19beeb1`'s rerun without the limit grew +4,452.125 MB; its
 [record](evidence/stage4-step5-record.md).
+[Stage 4, item 5a](specs/stage4-step5a-int8-reranker.md) — INT8 of the product's reranker
+in ONNX Runtime against PyTorch, on the pools stage 2 recorded: the FP32 export's fidelity
+and the speed on aircargo's first thirty, ABBA on the idle Mac by an exact sign test; the
+fives and the gold on the 400 by an exact McNemar; registered before the first question
+was scored in ONNX in `d9f9fd8`.
 [Stage 6, item 4](specs/stage6-throughput.md) — the
 service's questions an hour and what a second client sees: a draft, registered with its tools once
 the service is installed.
