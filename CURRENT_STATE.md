@@ -1,7 +1,7 @@
 # Current state — RAG_new
 
 2026-10-30 · The plan: [`PLAN.md`](PLAN.md), accepted by Julia on 2026-10-17 («принять») ·
-now: stage 4 — items 0–5a read, each a record ([Next](#next)); none adopted: K = 14, num_ctx 3,584, the cache cap and INT8 of the reranker — it passed, but its five changes on 307 of the 400 — are her word (§8.3), asked once as a package when the n-gram lever is read; next: INT8's short live series in the chat, then the n-gram lever's measurement, then stage 7 step 1's replay · previous version: [`archive/docs/state/current-state-through-2026-10-17.md`](archive/docs/state/current-state-through-2026-10-17.md).
+now: stage 4 — items 0–5a read, each a record ([Next](#next)); none adopted: K = 14, num_ctx 3,584, the cache cap and INT8 of the reranker — it passed, but its five changes on 307 of the 400 — are her word (§8.3), asked once as a package when the n-gram lever is read; next: the n-gram lever's measurement, registered in `5558ca8`, then INT8's short live series in the chat behind its setting (`81cd2ad`), then stage 7 step 1's replay · previous version: [`archive/docs/state/current-state-through-2026-10-17.md`](archive/docs/state/current-state-through-2026-10-17.md).
 
 Read this file for *what is true now*; [`PLAN.md`](PLAN.md) for *what happens next and why*;
 [`ROADMAP.md`](ROADMAP.md) for *what each stage has delivered*; [`docs/README.md`](docs/README.md)

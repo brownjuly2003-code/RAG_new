@@ -1,7 +1,7 @@
 # Stage 4, item 5a: n-gram decoding in the answer model's own llama-server
 
 Status 2026-10-30: **registered before the first request**, with the tool and its test
-([Records](#records)), in `<c>`. [`PLAN.md`](../../PLAN.md) stage 4, item 5a, the second lever
+([Records](#records)), in `5558ca8`. [`PLAN.md`](../../PLAN.md) stage 4, item 5a, the second lever
 of research 6: «n-gram-декодирование — llama-server без Ollama на том же GGUF и тех же флагах:
 сначала база без speculation, затем `--spec-type ngram-simple`. ≈ 2–3 ч. Найденный тест дал и
 ускорение, и замедление.» This spec is that comparison. The one value filled in at launch is
@@ -229,7 +229,7 @@ checks, the stop after block 1 and the read ≈ 10 min.
 
 ## Records
 
-`reports/stage4-step5a-ngram/<c>/`:
+`reports/stage4-step5a-ngram/5558ca8/`:
 - `record.json`: the inputs by SHA-256 — step 4b's, the calls' prompts, the model, its renderer,
   parser and options, the runner's binary, version, arguments and environment, the GGUF —, the
   tool by SHA-256 and the commit measured, each block's facts, the attempts and the files

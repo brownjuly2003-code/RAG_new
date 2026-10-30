@@ -134,6 +134,11 @@ fives and the gold on the 400 by an exact McNemar; registered before the first q
 was scored in ONNX in `d9f9fd8`. Read 2026-10-30: `int8` passes, the gold holds and it reads
 faster on 30 of 30, a ratio 1.751, but its five differs from PyTorch's on 307 of the 400; its
 [record](evidence/stage4-step5a-record.md).
+[Stage 4, item 5a's n-gram](specs/stage4-step5a-ngram-decoding.md) — n-gram decoding in the
+answer model's own llama-server outside Ollama: block 0 through Ollama for the fidelity, then
+base and `ngram-simple` ABBA on step 4b's thirteen at 4,096; the milliseconds a written token
+by an exact sign test, and the answers' bytes; registered before the first request in
+`5558ca8`.
 [Stage 6, item 4](specs/stage6-throughput.md) — the
 service's questions an hour and what a second client sees: a draft, registered with its tools once
 the service is installed.
