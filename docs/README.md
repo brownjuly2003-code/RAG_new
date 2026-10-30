@@ -119,7 +119,8 @@ tokens shorter there; its [record](evidence/stage4-step4-record.md).
 timed: aircargo's first thirteen questions on step 4's documents, the chat's answer and its
 classic self-evaluation in 26 blocks ABBA on the idle Mac, each begun with no model; the two
 calls' prompt seconds by an exact sign test over the twelve pairs; registered before the
-first request in `d1ef9e5`.
+first request in `d1ef9e5`. Read 2026-10-30: faster on 12 of 12 pairs, a median 24.681 s
+less, a ratio 0.792; its [record](evidence/stage4-step4b-record.md).
 [Stage 6, item 4](specs/stage6-throughput.md) — the
 service's questions an hour and what a second client sees: a draft, registered with its tools once
 the service is installed.

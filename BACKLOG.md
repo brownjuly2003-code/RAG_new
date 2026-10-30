@@ -9,7 +9,8 @@ stage and the frozen streams with their unfreeze conditions are [`ROADMAP.md`](R
 - **[`PLAN.md`](PLAN.md) stage 4 with V4: step 2b, the continuation on stage 3's 80 labelled
   answers, read 2026-10-29 — not held on the catches, the default stays `classic`
   ([record](docs/evidence/stage4-step2b-record.md)); stage 7's probe read, G2 failed, E stops
-  ([record](docs/evidence/stage7-entity-probe-record.md)); next item 4, then item 5
+  ([record](docs/evidence/stage7-entity-probe-record.md)); item 4's window timed
+  2026-10-30, 3,584 faster on 12 of 12 ([record](docs/evidence/stage4-step4b-record.md)); next item 5
   under her cap `cache-ram = 1024` («да», 2026-10-29)** (steps 0–3 read; [the handoff](docs/operations/session-handoff-2026-10-29-stage4-step2b-read.md)): stage 3
   stays at outcome C — the handover line under every answer; the encoders and Horizon guard base
   in between ([record](docs/evidence/encoder-checkers-record.md)); stage 3б closed 2026-10-28,

@@ -1,10 +1,11 @@
 # Stage 4, step 4b: num_ctx 3,584 against 4,096, timed — the answer and its self-evaluation
 
-Status 2026-10-29: **registered before the first request**, with the tool and its test
-([Records](#records)), in `d1ef9e5`. [`PLAN.md`](../../PLAN.md) stage 4, item 4: «Затем живой замер
-этого окна против 4 096», after [step 4](stage4-step4-prompt-budget.md)'s count and
-[its record](../evidence/stage4-step4-record.md): the smallest window without a detected loss is
-3,584. This is the live timing that spec names in
+Status 2026-10-30: **registered before the first request**, with the tool and its test
+([Records](#records)), in `d1ef9e5`; **read 2026-10-30**, 26 blocks, all gates passed:
+[the record](../evidence/stage4-step4b-record.md). [`PLAN.md`](../../PLAN.md) stage 4, item 4:
+«Затем живой замер этого окна против 4 096», after [step 4](stage4-step4-prompt-budget.md)'s
+count and [its record](../evidence/stage4-step4-record.md): the smallest window without a
+detected loss is 3,584. This is the live timing that spec names in
 [What comes after](stage4-step4-prompt-budget.md#what-comes-after). The one value filled in at
 launch is `<c>`, the commit that registers this spec.
 
