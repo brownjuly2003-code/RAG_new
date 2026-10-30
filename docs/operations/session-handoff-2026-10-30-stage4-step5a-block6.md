@@ -1,5 +1,10 @@
 # Session handoff 2026-10-30, second — item 5a's blocks 2–5 passed and block 6 ran on; the audit of 2026-10-30 taken into PLAN; n-gram and stage 7 prepared for registration
 
+> **Superseded** by the next session's handoff,
+> [item 5a read, the n-gram lever closed, INT8's live series `NOT_EVIDENCE`; stage 7 step 1 registered; the package question open](session-handoff-2026-10-30-stage4-step5a-live.md),
+> which keeps this file's glossary, the Mac's paths and «Do not» in force. Its next actions
+> replace this file's.
+
 The session ran 2026-10-30 10:03 – ≈ 13:25 UTC and was compacted six times. All times are
 UTC; the laptop's clock is EDT (git's `-0400`) and the Mac's UTC+3. The previous handoff,
 [block 1 passed](session-handoff-2026-10-30-stage4-step5a-block1.md), still holds for item 5a's
