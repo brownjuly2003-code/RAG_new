@@ -1,7 +1,7 @@
 # Stage 4, step 4b: num_ctx 3,584 against 4,096, timed — the answer and its self-evaluation
 
 Status 2026-10-29: **registered before the first request**, with the tool and its test
-([Records](#records)), in `<c>`. [`PLAN.md`](../../PLAN.md) stage 4, item 4: «Затем живой замер
+([Records](#records)), in `d1ef9e5`. [`PLAN.md`](../../PLAN.md) stage 4, item 4: «Затем живой замер
 этого окна против 4 096», after [step 4](stage4-step4-prompt-budget.md)'s count and
 [its record](../evidence/stage4-step4-record.md): the smallest window without a detected loss is
 3,584. This is the live timing that spec names in
@@ -208,7 +208,7 @@ That is ≈ 85 min for the 26, ≈ 1.5 h with the unloads and the checks, once t
 
 ## Records
 
-`reports/stage4-step4b/<c>/`:
+`reports/stage4-step4b/d1ef9e5/`:
 - `record.json`: the series' facts, the inputs by SHA-256 with the thirteen's prompt sizes, the
   model, the environment's lines, the attempts and the files rejected, the pairs and the readings;
 - `rows.jsonl`, a block a line: its schedule, its numbers, and its gate's and its disturbance's

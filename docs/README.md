@@ -115,6 +115,11 @@ gold at «sent» against 4,096 by an exact McNemar, per base and pooled, and the
 without a detected loss read from the top; registered before the count in `b192fb0`. Read
 2026-10-29: 3,584, not the forecast's 3,328, and aircargo's prompt a median 456 estimated
 tokens shorter there; its [record](evidence/stage4-step4-record.md).
+[Stage 4, step 4b](specs/stage4-step4b-window-timing.md) — num_ctx 3,584 against 4,096,
+timed: aircargo's first thirteen questions on step 4's documents, the chat's answer and its
+classic self-evaluation in 26 blocks ABBA on the idle Mac, each begun with no model; the two
+calls' prompt seconds by an exact sign test over the twelve pairs; registered before the
+first request in `d1ef9e5`.
 [Stage 6, item 4](specs/stage6-throughput.md) — the
 service's questions an hour and what a second client sees: a draft, registered with its tools once
 the service is installed.
