@@ -1,7 +1,7 @@
 # Stage 4, item 5a: the short live series — INT8 of the reranker in the chat, behind its setting
 
 Status 2026-10-30: **registered before the first request**, with the supervisor's copy, the reader,
-the stand's script and their test ([Records](#records)). [`PLAN.md`](../../PLAN.md) stage 4, item
+the stand's script and their test ([Records](#records)), in `3136fb8`. [`PLAN.md`](../../PLAN.md) stage 4, item
 5a: «Сначала ONNX FP32 против PyTorch, затем INT8, на сохранённых списках кандидатов этапа 2 …
 затем короткая живая серия.» It follows [item 5a's comparison](stage4-step5a-int8-reranker.md)
 and [its record](../evidence/stage4-step5a-record.md), with [step 1](stage4-step1-rerank-memory.md)'s
@@ -213,8 +213,8 @@ Git Bash, whose pipe passes the bytes as they are.
    prints `81cd2ade80ea9bc5a4f3ea721a16bd05037136fd`. What an earlier smoke left in `$T` is
    moved out of it, never into the record. From the laptop:
 
-       git -C D:/RAG_new show <c>:reports/stage4-step5a-live/tools/live5a_reader.py | ssh deproject-mac "cat > /Users/julia/RAG_new_chat_81cd2ad/live5a/live5a_reader.py"
-       git -C D:/RAG_new show <c>:reports/stage4-step5a-live/tools/live_supervisor.py | ssh deproject-mac "cat > /Users/julia/RAG_new_chat_81cd2ad/live5a/live_supervisor.py"
+       git -C D:/RAG_new show 3136fb87651aa4e41080021cd185f43353f80b98:reports/stage4-step5a-live/tools/live5a_reader.py | ssh deproject-mac "cat > /Users/julia/RAG_new_chat_81cd2ad/live5a/live5a_reader.py"
+       git -C D:/RAG_new show 3136fb87651aa4e41080021cd185f43353f80b98:reports/stage4-step5a-live/tools/live_supervisor.py | ssh deproject-mac "cat > /Users/julia/RAG_new_chat_81cd2ad/live5a/live_supervisor.py"
 
    On the Mac:
 

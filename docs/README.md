@@ -140,6 +140,11 @@ base and `ngram-simple` ABBA on step 4b's thirteen at 4,096; the milliseconds a 
 by an exact sign test, and the answers' bytes; registered before the first request in
 `5558ca8`. Read 2026-10-30: `NOT_EVIDENCE`, seven of the thirteen readable — the lever
 closes; its [record](evidence/stage4-step5a-ngram-record.md).
+[Stage 4, item 5a's live series](specs/stage4-step5a-live.md) — INT8 of the reranker in
+the chat behind `81cd2ad`'s setting against PyTorch, on one commit with step 1's runner,
+reader and sampler: eight runs ABBA twice, twenty pairs in four blocks, faster or slower
+only by an exact sign test with every block leaning its way; registered before the first
+request in `3136fb8`.
 [Stage 6, item 4](specs/stage6-throughput.md) — the
 service's questions an hour and what a second client sees: a draft, registered with its tools once
 the service is installed.
@@ -208,6 +213,10 @@ P2 reference samples ([Astra](specs/p2-astra-reference-sample.md),
 - [Cold read of the n-gram spec, 2026-10-30](operations/audit_opus55_30_10_26_ngram_spec.md) — one
   fresh subagent on the session's model read the spec, tool and test frozen before registration;
   verbatim, 1 blocking finding, 1 to fix, 10 minor, each applied or refuted there before it.
+- [Cold read of the live series' spec, 2026-10-30](operations/audit_opus55_30_10_26_live_spec.md)
+  — one fresh subagent on the session's model read the spec, reader, supervisor's copy, stand
+  script and test frozen before registration; verbatim, 0 blocking, 3 should fix, 5 minor,
+  each applied before registration, as its Disposition says.
 - [`operations/`](operations/) — besides the runbooks above: the
   [GR-2 entity builder preparation](operations/gr2-entity-builder-preparation.md) and the last
   session handoffs (the newest is linked from [`CURRENT_STATE.md`](../CURRENT_STATE.md)). Older
