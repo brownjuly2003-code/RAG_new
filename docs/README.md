@@ -124,7 +124,9 @@ less, a ratio 0.792; its [record](evidence/stage4-step4b-record.md).
 [Stage 4, item 5](specs/stage4-step5-cache-cap-series.md) — the host prompt cache capped at
 1,024 MiB by one line, `cache-ram = 1024`, in llama.cpp's user config, on step 0's stand:
 aircargo's first thirty questions, the swap's growth from questions 6–10 to 26–30 against
-512 MiB; registered before the first request in `f214459`.
+512 MiB; registered before the first request in `f214459`. Read 2026-10-30: the swap holds,
+−180.25 MiB, where `19beeb1`'s rerun without the limit grew +4,452.125 MB; its
+[record](evidence/stage4-step5-record.md).
 [Stage 6, item 4](specs/stage6-throughput.md) — the
 service's questions an hour and what a second client sees: a draft, registered with its tools once
 the service is installed.
