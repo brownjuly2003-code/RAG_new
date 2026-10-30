@@ -1,0 +1,83 @@
+{
+ "spec": "docs/specs/stage4-step5a-int8-reranker.md",
+ "tool_sha256": "40ab7c504e41de8ce30bc9a545ea5858e181df413848c2a75478fe5a40c8facd",
+ "model": "BAAI/bge-reranker-v2-m3",
+ "snapshot": "953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e",
+ "opset": 17,
+ "threads": 4,
+ "batch": 32,
+ "max_length": null,
+ "variants": {
+  "int8": {
+   "weight_type": "QInt8",
+   "per_channel": true,
+   "reduce_range": true
+  },
+  "int8_u8u8": {
+   "weight_type": "QUInt8",
+   "per_channel": true,
+   "reduce_range": false
+  }
+ },
+ "python": "3.11.15",
+ "macos": "13.7.8",
+ "machine": "x86_64",
+ "packages": {
+  "torch": "2.2.2",
+  "transformers": "4.44.2",
+  "tokenizers": "0.19.1",
+  "sentence-transformers": "2.7.0",
+  "onnx": "1.23.2",
+  "onnxruntime": "1.23.2",
+  "numpy": "1.26.4",
+  "protobuf": "6.33.6",
+  "ml_dtypes": "0.5.4"
+ },
+ "files": {
+  "fp32/model.onnx": {
+   "sha256": "6f9df349d54e6514fc8753ca9e5bd322d5d104cbabd6e8ac833ccbea28662c8f",
+   "bytes": 642377
+  },
+  "fp32/model.onnx.data": {
+   "sha256": "2f17f314b7947fb5003d04127d5f2d421fe8f2af5fc330b5ccb36882e73165bd",
+   "bytes": 2271023104
+  },
+  "int8/model.onnx": {
+   "sha256": "57335a9f061fe31378c160ddd0861711a0fbdfa20f70aa2640d473dfc4bc1343",
+   "bytes": 570858625
+  },
+  "int8_u8u8/model.onnx": {
+   "sha256": "e7c394439027b47744ab73b5644a396cdeb38dc1d8fe4de66560bc8cfed69715",
+   "bytes": 570976214
+  }
+ },
+ "synthetic": {
+  "pairs": 32,
+  "tokens": [
+   59,
+   445
+  ],
+  "same_inputs_as_sentence_transformers": true,
+  "torch_seconds": 40.314,
+  "arms": {
+   "fp32": {
+    "max_abs_diff": 1.1920928955078125e-07,
+    "median_abs_diff": 0.0,
+    "same_order": true,
+    "seconds": 36.132
+   },
+   "int8": {
+    "max_abs_diff": 0.0035259127616882324,
+    "median_abs_diff": 0.000772327184677124,
+    "same_order": false,
+    "seconds": 22.31
+   },
+   "int8_u8u8": {
+    "max_abs_diff": 0.0040953755378723145,
+    "median_abs_diff": 0.0007173418998718262,
+    "same_order": false,
+    "seconds": 25.807
+   }
+  }
+ }
+}
