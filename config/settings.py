@@ -486,6 +486,21 @@ class Settings:
     reranker_model: str = field(
         default_factory=lambda: os.getenv("RAG_RERANKER_MODEL", "BAAI/bge-reranker-v2-m3")
     )
+    # Runtime of the reranker (PLAN.md stage 4, item 5a):
+    # "torch" (default) — sentence-transformers' CrossEncoder, what production runs;
+    # "onnx" — ONNX Runtime on RAG_RERANKER_ONNX, an export of reranker_model, scored with the
+    #          model's own tokenizer (vectordb.onnx_reranker). It needs the onnxruntime
+    #          package, which requirements.txt does not list. Item 5a's INT8 file reranked
+    #          1.751x faster on the idle Mac, but its five differs from PyTorch's on 307 of 400
+    #          questions (docs/evidence/stage4-step5a-record.md).
+    reranker_runtime: str = field(
+        default_factory=lambda: (
+            os.getenv("RAG_RERANKER_RUNTIME", "torch").strip().lower() or "torch"
+        )
+    )
+    reranker_onnx_path: str = field(
+        default_factory=lambda: os.getenv("RAG_RERANKER_ONNX", "").strip()
+    )
 
     # --- Inference device for embedder + reranker (SentenceTransformers) ---
     # "cpu" (default) — what production on the Mac measured: its 4 GB GPU runs out
@@ -1408,6 +1423,20 @@ class Settings:
             raise RuntimeError(
                 "\nERROR: INGESTION_TENANT_LOCK_WAIT_SEC must be a finite float >= 0.\n"
                 f"       Got {self.ingestion_tenant_lock_wait_sec}."
+            )
+        if self.reranker_runtime not in ("torch", "onnx"):
+            raise RuntimeError(
+                "\nERROR: RAG_RERANKER_RUNTIME must be torch or onnx.\n"
+                f"       Got {self.reranker_runtime!r}."
+            )
+        if (
+            self.reranker_runtime == "onnx"
+            and self.reranker_model
+            and not Path(self.reranker_onnx_path).is_file()
+        ):
+            raise RuntimeError(
+                "\nERROR: RAG_RERANKER_RUNTIME=onnx needs RAG_RERANKER_ONNX, an ONNX file.\n"
+                f"       Got {self.reranker_onnx_path!r}."
             )
 
         if self.rag_env == "production" and ("*" in self.cors_origins or self.cors_origins == []):

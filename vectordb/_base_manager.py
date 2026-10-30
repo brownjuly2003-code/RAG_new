@@ -388,17 +388,33 @@ def _load_cross_encoder() -> Any | None:
 
 
 def get_reranker(model_name: str | None = None) -> Any | None:
-    """Создаёт CrossEncoder reranker. Возвращает None если отключён или недоступен."""
+    """Создаёт CrossEncoder reranker. Возвращает None если отключён или недоступен.
+
+    RAG_RERANKER_RUNTIME=onnx loads RAG_RERANKER_ONNX in ONNX Runtime instead
+    (vectordb.onnx_reranker); a failure there raises, it never disables the reranker.
+    """
     global _cached_reranker
     if _cached_reranker is not None:
         return _cached_reranker
 
+    from config.settings import get_settings
+
+    settings = get_settings()
     if model_name is None:
-        from config.settings import get_settings
-        model_name = get_settings().reranker_model
+        model_name = settings.reranker_model
 
     if not model_name:
         return None
+
+    if getattr(settings, "reranker_runtime", "torch") == "onnx":
+        from vectordb.onnx_reranker import OnnxCrossEncoder
+
+        logger.info("Loading reranker: %s (onnx=%s)", model_name, settings.reranker_onnx_path)
+        start = time.time()
+        onnx_reranker = OnnxCrossEncoder(model_name, settings.reranker_onnx_path)
+        logger.info("Reranker loaded in %.1fs", time.time() - start)
+        _cached_reranker = onnx_reranker
+        return onnx_reranker
 
     cross_encoder_cls = _load_cross_encoder()
     if cross_encoder_cls is None:
