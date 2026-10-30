@@ -165,10 +165,10 @@ P2 reference samples ([Astra](specs/p2-astra-reference-sample.md),
 
 - [`evidence/`](evidence/) — one write-up per measured slice; the register with provenance is
   [`EVIDENCE_INDEX.md`](../EVIDENCE_INDEX.md). The records themselves are in `../reports/`.
-- [Latest handoff: stage 4 — step 2 and step 2b read, the continuation not adopted; the probe ready to register](operations/session-handoff-2026-10-29-stage4-step2b-read.md)
-  — step 2's record, step 2b registered, run and read: not held on the catches, the default
-  stays `classic`; the probe revised after its second opinion and tested on the Mac, GR-1b's
-  replay kept on the old expansion. Before it:
+- [Latest handoff: stage 4 — items 4 and 5 read; item 5a's INT8 registered, its block 1 passed, the series resumes at block 2](operations/session-handoff-2026-10-30-stage4-step5a-block1.md)
+  — step 2b's and the probe's records; item 4's window counted and timed, the hints after the
+  answer; item 5's cache cap read; item 5a registered and its FP32 block passed. Before it:
+  [stage 4 — step 2 and step 2b read, the continuation not adopted; the probe ready to register](operations/session-handoff-2026-10-29-stage4-step2b-read.md),
   [stage 4 — step 2 running on the Mac; stage 7 and step 2b drafted](operations/session-handoff-2026-10-29-stage4-step2-running.md),
   [stage 4: step 0 read, step 1 measured, step 3 registered](operations/session-handoff-2026-10-28-stage4-step1.md),
   [V5 not adopted, the encoders' Amendment 1](operations/session-handoff-2026-10-28-v5-record.md),

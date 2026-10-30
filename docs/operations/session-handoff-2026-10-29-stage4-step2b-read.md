@@ -1,5 +1,9 @@
 # Session handoff 2026-10-29, evening — stage 4: step 2 and step 2b read, the continuation not adopted; the probe ready to register
 
+> **Superseded** by the next session's handoff,
+> [stage 4: items 4 and 5 read; item 5a's INT8 registered, its block 1 passed, the series resumes at block 2](session-handoff-2026-10-30-stage4-step5a-block1.md),
+> which keeps this file's model, glossary and «Do not» in force.
+
 The session ran 2026-10-29 16:57 – ≈ 22:00 UTC. All times are UTC; the laptop's clock is EDT and
 the Mac's UTC+3. The previous handoff
 ([step 2 running on the Mac; stage 7 and step 2b drafted](session-handoff-2026-10-29-stage4-step2-running.md))
