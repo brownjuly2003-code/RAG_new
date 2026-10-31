@@ -22,6 +22,7 @@ measurement it waits for is [`stage6-throughput.md`](../specs/stage6-throughput.
   `HOME`, `USER`, `LOGNAME` and `TMPDIR`, the stands' `PYTHONPATH`, and the deployment keys of
   one file outside the repository, `~/.config/rag-new/chat-service.env`. No value of that file
   is printed or put on a command line.
+  It sets `HF_HUB_OFFLINE=1` and `TRANSFORMERS_OFFLINE=1`, using the cached models without fetching.
 - **Why `RAG_ENV` stays at the default:** `production` is not only a deployment switch. It makes
   judge independence and the calibration artifact required (`config/settings.py`), which moves
   the answer path, and it makes the auth cookies Secure-only. start.py applies production's

@@ -215,6 +215,9 @@ def api_environment(deployment: dict[str, str]) -> dict[str, str]:
             "PYTHONUTF8": "1",
             "PYTHONIOENCODING": "utf-8",
             "PYTHONDONTWRITEBYTECODE": "1",
+            # The measured reranker's cached snapshot, without model downloads.
+            "HF_HUB_OFFLINE": "1",
+            "TRANSFORMERS_OFFLINE": "1",
             # chromadb sends no telemetry from the service.
             "ANONYMIZED_TELEMETRY": "False",
             # Traces outside the checkout, so a new release keeps them.

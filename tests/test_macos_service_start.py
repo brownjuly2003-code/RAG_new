@@ -9,6 +9,14 @@ import pytest
 from deploy.macos import start
 
 
+def test_service_forces_the_measured_offline_environment(monkeypatch):
+    monkeypatch.setenv("HF_HUB_OFFLINE", "0")
+    monkeypatch.delenv("TRANSFORMERS_OFFLINE", raising=False)
+    env = start.api_environment({})
+    assert env["HF_HUB_OFFLINE"] == "1"
+    assert env["TRANSFORMERS_OFFLINE"] == "1"
+
+
 @pytest.fixture
 def deployment(tmp_path, monkeypatch):
     index = tmp_path / "index"

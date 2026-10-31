@@ -152,6 +152,13 @@ only by an exact sign test with every block leaning its way; registered before t
 request in `3136fb8`. Read 2026-10-30: `NOT_EVIDENCE`, stopped in its first block — the INT8
 run failed step 7's look at the Mac again as `-r2`; its
 [record](evidence/stage4-step5a-live-record.md).
+[Stage 4, item 6](specs/stage4-item6-final-aircargo.md) — the final path's aircargo answers:
+the package of `6c52b06` (K 14, window 3,584, INT8 reranker, cache cap 1,024) on the 100
+questions, ten batches on one stand; M1 paired against V4's `4f48fed` with a judge bridge, M3
+read one way only (its old side is 100 of 100); harm on M1 bad sends stage 5 back to Julia.
+[Stage 4, item 7](specs/stage4-item7-final-speed.md) — the final path's speed, measured apart
+from item 6 on an idle Mac: the first 30 aircargo questions on one API, a disturbed question
+asked once more after the thirtieth (at most six), and the SLO proposal from the p90.
 [Stage 6, item 4](specs/stage6-throughput.md) — the
 service's questions an hour and what a second client sees: a draft, registered with its tools once
 the service is installed.
@@ -229,6 +236,10 @@ P2 reference samples ([Astra](specs/p2-astra-reference-sample.md),
   — one fresh subagent on the session's model read the spec, tool, test and S's fix frozen
   before registration; verbatim, 1 blocking, 4 should fix, 10 minor, each applied before
   registration, as its Disposition says.
+- [Cold read of stage 4 items 6 and 7, 2026-10-31](operations/audit_opus55_31_10_26_stage4_items6_7.md)
+  — one fresh subagent on the session's model read both specs, the tools and their test frozen
+  before registration, and checked the adapters against the published artifacts; verbatim, 2
+  blocking, 5 should fix, 6 minor, each applied before registration, as its Disposition says.
 - [`operations/`](operations/) — besides the runbooks above: the
   [GR-2 entity builder preparation](operations/gr2-entity-builder-preparation.md) and the last
   session handoffs (the newest is linked from [`CURRENT_STATE.md`](../CURRENT_STATE.md)). Older
