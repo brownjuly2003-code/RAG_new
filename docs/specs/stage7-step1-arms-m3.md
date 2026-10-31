@@ -1,7 +1,7 @@
 # Stage 7, step 1: the retrieval arms at M3 on stage 2's lists, without an answer
 
 Status 2026-10-31: **registered before the run**, Amendment 1 with the stage-4 package, tool
-and tests in the same commit; a cold read of this registration precedes the run. The original
+and tests in the same commit, `6c52b06`; a cold read of this registration preceded it. The original
 registration and S's fix were commit `8b922a1`, its [cold read](../operations/audit_opus55_30_10_26_stage7_gate.md)'s fifteen
 findings applied ([Records](#records)). [`PLAN.md`](../../PLAN.md) stage 7, step 1:
 «Поиск без генерации: М3 для каждой руки на ≈ 400 вопросах»; her word of 2026-10-28: stage 7
@@ -337,7 +337,8 @@ No elapsed-time claim includes an interrupted, unfinished model call.
 - The record goes to `reports/stage7/5e308fe/` with its artifact test, a capsule in
   `docs/evidence/` and a row in [`EVIDENCE_INDEX.md`](../../EVIDENCE_INDEX.md).
 
-SHA list of the run: Amendment 1 is registered with the stage-4 package; the original
+SHA list of the run: Amendment 1 is registered with the stage-4 package in
+`6c52b06c12505305c41714327b52e8bd01a36b0f`; the original
 registration commit was `8b922a16999e9956f0aa36ecfc7e024e04d4069a`;
 the SHA-256 of the tool and of its test, below, which the test checks; the record's and the
 plan's, written in with the evidence commit.
