@@ -1,0 +1,220 @@
+{
+  "source": "item5",
+  "status": "counted",
+  "input_sha256": {
+    "launch.json": "b07cd00a5ea6137743a8c58532fa75f21b5cc1fb4988b8a50306e2019ab92066",
+    "cases/01-aircargo-probation-data.json": "c0222e6aacec3f9bbb0ffabb071c33e37b60841590c73512bf3477d42e0fa7df",
+    "cases/02-aircargo-probation-extend.json": "6019fc08815b144c9897ab3e09a3581abb24f1579bd63841ecbf8117879d17ec",
+    "cases/03-aircargo-probation-dismissal.json": "7bf6a7105110d5bec2cf68cf13453c70c4e65dacd0c311991a49b0cf65159576",
+    "cases/04-aircargo-dismissal-check.json": "3ba885d1869bd9b484b81ba8c474936128aa6a779cc76f4433b2fcb730f69725",
+    "cases/05-aircargo-dismissal-lawyer.json": "7bb0cf74a92de65cb8279ff0cf364fe97d0ba5998e68e82080a70ba87a6bdc10",
+    "cases/06-aircargo-dismissal-order.json": "b8cec968f4772367d8608a4c187c54edfc6e6181be601ea88ca46ce40375103d",
+    "cases/07-aircargo-leave-sources.json": "369bbb48f62d04d1e46455585f43ed5593e879b69b76591aac6d9f71d70aa3e8",
+    "cases/08-aircargo-leave-compensation.json": "da3b48f856fd1729deb759ac319ba9c1dc75361e2f63f67d6c0f90220977c083",
+    "cases/09-aircargo-leave-risk.json": "1e3a0c6e59096122bffc4357e5fe98d517689338bf6eb783171649904ebe672a",
+    "cases/10-aircargo-matliab-check.json": "35c415f86c0170b640d2dec7d6f55bfc208797d88efc3cea449caef4474c9fef",
+    "cases/11-aircargo-matliab-disputed.json": "e5fbed4be3126469e443efe69700a65f1e69b5c5409c4994b99725d4dff4d535",
+    "cases/12-aircargo-templates-choose.json": "7d9ffb3b2bd0625191bb2d31d33acfa29a0e11fbb9bfe02ef0534b39f3f1c629",
+    "cases/13-aircargo-templates-checklist.json": "47d6ab56b2cdabb9b5e957787f182d95e43f3ec37333bcc3a4d42d4c5e2965b7",
+    "cases/14-aircargo-templates-insufficient.json": "8e3619b37fc25e42ea1e5a8cc642080fe088e1b34fc622cf9e802bdce08df62e",
+    "cases/15-aircargo-secret-check.json": "7ff29fa5fb01653e8215e66f4e28a4473c0c9699ccf5413b88d982ce6a645006",
+    "cases/16-aircargo-secret-not-auto.json": "6c0080bc32e9ec3e4b222405279bd3a6c97ade897783c508b03566260d883979",
+    "cases/17-aircargo-secret-disclosure.json": "7faead993e3aba3b3f9df457e7140e8c5e9489f3a86b786c41c70ce677a02128",
+    "cases/18-aircargo-pdp-scope.json": "9348459084b6068db363ba574aa8958e94bd40ecf21e785cec114f5a72426725",
+    "cases/19-aircargo-pdp-data.json": "56d3134c799f0f4a70e3c2b33ca40bc531aa56b00d9500ff646b0004ef20c80c",
+    "cases/20-aircargo-pdp-uncertain.json": "89708b34bff32ad00c58481fab9ce023f4eca4695afa4414e955086ba2d72ca3",
+    "cases/21-aircargo-claims-delay.json": "815dd635d4ce22c8970d11d5e3683a52b0337b2ca6957df08c34e1cf73914c68",
+    "cases/22-aircargo-claims-damage.json": "10c736b69d652334d99e8cb8aa4f21910c81b72ec468570dba2460b9bffc76ce",
+    "cases/23-aircargo-claims-lawyer.json": "aa7ddee9aaec8e90de58540613c54d8c4c6c4bdc66a61b30de7c6b5889c19c60",
+    "cases/24-aircargo-claims-forbidden.json": "7cc2701690f332136c24254ba34f710c3c7fd1853ee1a024f3f33e62aeaad3ea",
+    "cases/25-aircargo-expedition-vs-carrier.json": "a4b2de6fb3ebc21dff2cfdce5f778a07c721346013900de34b611102f0f53340",
+    "cases/26-aircargo-expedition-mawb-hawb.json": "d42466bea00139c055a95219cea49a743a52298d84ccea0f31efe1e7c9489789",
+    "cases/27-aircargo-expedition-risks.json": "00aad2f554ad722b06f51ccfe4946ed9b6cb6c3e8db4557dfabb6a9068fe2602",
+    "cases/28-aircargo-road-cutoff.json": "024a8c5842a887e22c00d16b739661c7d04c92b5807907f0f86a52936a5d3d32",
+    "cases/29-aircargo-road-penalty.json": "4d3ad7e9a884040d0edf3ece432d3e6140a5b038911e72b076f65fa50dcc9f2a",
+    "cases/30-aircargo-road-seal.json": "e32024064dca39391700d765cd80b2b02db5d3c9bee8a994020c0e13a93083e4"
+  },
+  "cases_sha256": "3737d694362d1867ca3d5983e3765d02c01110d2409145ba7e0f05c021d9c720",
+  "cases": [
+    {
+      "case_id": "aircargo-probation-data",
+      "first_token_sec": 188.973,
+      "result_sec": 366.313,
+      "total_sec": 366.313
+    },
+    {
+      "case_id": "aircargo-probation-extend",
+      "first_token_sec": 242.458,
+      "result_sec": 370.876,
+      "total_sec": 370.877
+    },
+    {
+      "case_id": "aircargo-probation-dismissal",
+      "first_token_sec": 227.322,
+      "result_sec": 332.235,
+      "total_sec": 332.236
+    },
+    {
+      "case_id": "aircargo-dismissal-check",
+      "first_token_sec": 212.725,
+      "result_sec": 332.594,
+      "total_sec": 332.595
+    },
+    {
+      "case_id": "aircargo-dismissal-lawyer",
+      "first_token_sec": 345.272,
+      "result_sec": 440.939,
+      "total_sec": 440.942
+    },
+    {
+      "case_id": "aircargo-dismissal-order",
+      "first_token_sec": 232.835,
+      "result_sec": 350.047,
+      "total_sec": 350.048
+    },
+    {
+      "case_id": "aircargo-leave-sources",
+      "first_token_sec": 272.63,
+      "result_sec": 359.338,
+      "total_sec": 359.338
+    },
+    {
+      "case_id": "aircargo-leave-compensation",
+      "first_token_sec": 301.953,
+      "result_sec": 387.761,
+      "total_sec": 387.761
+    },
+    {
+      "case_id": "aircargo-leave-risk",
+      "first_token_sec": 245.047,
+      "result_sec": 331.176,
+      "total_sec": 331.176
+    },
+    {
+      "case_id": "aircargo-matliab-check",
+      "first_token_sec": 233.93,
+      "result_sec": 329.283,
+      "total_sec": 329.284
+    },
+    {
+      "case_id": "aircargo-matliab-disputed",
+      "first_token_sec": 245.2,
+      "result_sec": 330.848,
+      "total_sec": 330.848
+    },
+    {
+      "case_id": "aircargo-templates-choose",
+      "first_token_sec": 237.699,
+      "result_sec": 323.41,
+      "total_sec": 323.411
+    },
+    {
+      "case_id": "aircargo-templates-checklist",
+      "first_token_sec": 267.294,
+      "result_sec": 373.268,
+      "total_sec": 373.269
+    },
+    {
+      "case_id": "aircargo-templates-insufficient",
+      "first_token_sec": 200.383,
+      "result_sec": 283.849,
+      "total_sec": 283.849
+    },
+    {
+      "case_id": "aircargo-secret-check",
+      "first_token_sec": 161.412,
+      "result_sec": 294.525,
+      "total_sec": 294.525
+    },
+    {
+      "case_id": "aircargo-secret-not-auto",
+      "first_token_sec": 162.302,
+      "result_sec": 251.758,
+      "total_sec": 251.76
+    },
+    {
+      "case_id": "aircargo-secret-disclosure",
+      "first_token_sec": 160.962,
+      "result_sec": 251.85,
+      "total_sec": 251.852
+    },
+    {
+      "case_id": "aircargo-pdp-scope",
+      "first_token_sec": 152.094,
+      "result_sec": 237.634,
+      "total_sec": 237.635
+    },
+    {
+      "case_id": "aircargo-pdp-data",
+      "first_token_sec": 165.705,
+      "result_sec": 306.994,
+      "total_sec": 306.994
+    },
+    {
+      "case_id": "aircargo-pdp-uncertain",
+      "first_token_sec": 195.115,
+      "result_sec": 280.791,
+      "total_sec": 280.792
+    },
+    {
+      "case_id": "aircargo-claims-delay",
+      "first_token_sec": 176.251,
+      "result_sec": 265.137,
+      "total_sec": 265.137
+    },
+    {
+      "case_id": "aircargo-claims-damage",
+      "first_token_sec": 397.018,
+      "result_sec": 516.294,
+      "total_sec": 516.351
+    },
+    {
+      "case_id": "aircargo-claims-lawyer",
+      "first_token_sec": 359.378,
+      "result_sec": 503.256,
+      "total_sec": 503.274
+    },
+    {
+      "case_id": "aircargo-claims-forbidden",
+      "first_token_sec": 378.46,
+      "result_sec": 511.124,
+      "total_sec": 511.162
+    },
+    {
+      "case_id": "aircargo-expedition-vs-carrier",
+      "first_token_sec": 228.476,
+      "result_sec": 335.574,
+      "total_sec": 335.575
+    },
+    {
+      "case_id": "aircargo-expedition-mawb-hawb",
+      "first_token_sec": 386.01,
+      "result_sec": 498.968,
+      "total_sec": 498.976
+    },
+    {
+      "case_id": "aircargo-expedition-risks",
+      "first_token_sec": 356.607,
+      "result_sec": 499.019,
+      "total_sec": 499.04
+    },
+    {
+      "case_id": "aircargo-road-cutoff",
+      "first_token_sec": 195.33,
+      "result_sec": 292.476,
+      "total_sec": 292.477
+    },
+    {
+      "case_id": "aircargo-road-penalty",
+      "first_token_sec": 198.272,
+      "result_sec": 290.38,
+      "total_sec": 290.381
+    },
+    {
+      "case_id": "aircargo-road-seal",
+      "first_token_sec": 191.987,
+      "result_sec": 297.911,
+      "total_sec": 297.912
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 # Current state — RAG_new
 
 2026-10-31 · The plan: [`PLAN.md`](PLAN.md), accepted by Julia on 2026-10-17 («принять») ·
-now: stage 4 — items 0–5a read, each a record ([Next](#next)); the package — K = 14, num_ctx 3,584, the cache cap and INT8 of the reranker, her «да» of 2026-10-30 (PLAN §8.1) — is in: the line `cache-ram = 1024` on the Mac for good since 2026-10-30 23:57 UTC, the rest the code's defaults since `6c52b06` with its E2E test; stage 7 step 1's Amendment 1, the control the package, registered in the same commit, read 2026-10-31: **H stays**, stage 7 closed ([record](docs/evidence/stage7-step1-arms-record.md)); items 6 and 7 registered in `ecc79dd` ([6](docs/specs/stage4-item6-final-aircargo.md), [7](docs/specs/stage4-item7-final-speed.md)) — corrected before any request, as item 6's first laptop command found a loader defect; next: item 6's run, item 7, then stage 5's spec; Codex (cw) the executor since her word of 2026-10-30 · previous version: [`archive/docs/state/current-state-through-2026-10-17.md`](archive/docs/state/current-state-through-2026-10-17.md).
+now: stage 4 — items 0–5a read, each a record ([Next](#next)); the package — K = 14, num_ctx 3,584, the cache cap and INT8 of the reranker, her «да» of 2026-10-30 (PLAN §8.1) — is in: the line `cache-ram = 1024` on the Mac for good since 2026-10-30 23:57 UTC, the rest the code's defaults since `6c52b06` with its E2E test; stage 7 step 1's Amendment 1, the control the package, registered in the same commit, read 2026-10-31: **H stays**, stage 7 closed ([record](docs/evidence/stage7-step1-arms-record.md)); items 6 and 7 read 2026-10-31 on stand `138f3b3`: aircargo's M1 good 63 → 73 of 100 against V4, a detected gain ([record](docs/evidence/stage4-item6-final-aircargo-record.md)); the first word a median 89.3 s, the whole answer 170.2 s, the SLO proposal 270 s and 360 s, hers to name ([record](docs/evidence/stage4-item7-final-speed-record.md)); next: stage 5; Codex (cw) the executor since her word of 2026-10-30 · previous version: [`archive/docs/state/current-state-through-2026-10-17.md`](archive/docs/state/current-state-through-2026-10-17.md).
 
 Read this file for *what is true now*; [`PLAN.md`](PLAN.md) for *what happens next and why*;
 [`ROADMAP.md`](ROADMAP.md) for *what each stage has delivered*; [`docs/README.md`](docs/README.md)
@@ -45,8 +45,8 @@ limits: [`EVIDENCE_INDEX.md`](EVIDENCE_INDEX.md), [`PLAN.md`](PLAN.md) §3.
 
 | What | Number | Record and limits |
 |---|---|---|
-| Earlier chat speed, 4B | median 320 s; first token 223 s; rerank 102 s | [30-question idle-Mac record](reports/chat-live-4b/19beeb1/) |
-| Earlier memory | swap up to 12,274 MB; runner +312 MB/request | same record; stage 4 investigates |
+| Earlier chat speed and memory, 4B | median 320 s; first token 223 s; rerank 102 s; swap up to 12,274 MB, runner +312 MB/request | [30-question idle-Mac record](reports/chat-live-4b/19beeb1/) |
+| Final path, the package (items 6–7) | aircargo M1 good 63 → 73 of 100 against V4, detected; bad 17 → 13 not detected; first word median 89.3 s, p90 255.6 s; whole answer median 170.2 s, p90 338.8 s | [item 6](docs/evidence/stage4-item6-final-aircargo-record.md), [item 7](docs/evidence/stage4-item7-final-speed-record.md): stand `138f3b3`, 100 and 30 questions, one day |
 | Retrieval alone | median 27.6 s, rerank 27.3 s | [record](reports/chat-live/33d4b42/); stage 4 investigates contention |
 | Engineering | 7,502 passed, 125 skipped on `6c52b06`'s code, 2026-10-31, and CI's mypy clean; bandit, DEP-01 and pip-audit last passed on `9b769f5`, 2026-10-28 | The Mac's unit suite; its venv is not built from the lock |
 | Answer quality, chat path, V3 | M1 good: aircargo 69, ConditionalQA 31, WixQA 27, MultiHop-RAG 65 of 100; bad 14, 64, 63, 34 | [stage-2 record](docs/evidence/stage2-record.md); one model judges, no person; MultiHop-RAG's M2 `NOT_EVIDENCE` |
@@ -110,7 +110,7 @@ on 2026-10-23 Julia: «Да, запускай судью». No replacement judge
 ## Open for Julia
 
 [`PLAN.md`](PLAN.md) §8.3, by stage: fixes of the widget's R1 (confirmed) and of its retry's call budget (stage 3); the
-SLO, after item 7's measurement of the package (stage 4); the service on her Mac and whether it counts as a
+SLO — item 7's proposal 270 s to the first word, 360 s to the whole answer (stage 4); the service on her Mac and whether it counts as a
 deployment, the first release's composition and the share of bad `auto` answers a pilot accepts, with stages 4–5's numbers (stage 6); publication (stage 8) — the locked parts wait, stage 7 closed with H. Decided 2026-10-28:
 the «Качество: N» badge stays, made faster (stage 4, step 2); stage 7 keeps P1b and the graph. Any time: GitHub billing; Q2b (`PLAN.md` writes Q2б) — 100 real shipment-bound
 requests (without them phase B stays blocked); Mac hours a day for runs; frozen items whose condition is formally met ([`PLAN.md`](PLAN.md) §9).

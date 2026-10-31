@@ -1,0 +1,533 @@
+{
+  "status": "counted",
+  "base": "aircargo",
+  "m1_bad": {
+    "n": 100,
+    "table": {
+      "a": 9,
+      "b": 8,
+      "c": 4,
+      "d": 79
+    },
+    "v3": 0.17,
+    "v4": 0.13,
+    "difference": -0.04,
+    "clusters": 100,
+    "cluster95": [
+      -0.11,
+      0.03
+    ],
+    "newcombe95": [
+      -0.1148,
+      0.0324
+    ],
+    "read95": [
+      -0.1148,
+      0.0324
+    ],
+    "detected": false,
+    "direction": "not detected"
+  },
+  "m1_good": {
+    "n": 100,
+    "table": {
+      "a": 59,
+      "b": 4,
+      "c": 14,
+      "d": 23
+    },
+    "v3": 0.63,
+    "v4": 0.73,
+    "difference": 0.1,
+    "clusters": 100,
+    "cluster95": [
+      0.02,
+      0.18
+    ],
+    "newcombe95": [
+      0.0166,
+      0.1819
+    ],
+    "read95": [
+      0.0166,
+      0.1819
+    ],
+    "detected": true,
+    "direction": "rises"
+  },
+  "m3": {
+    "n": 100,
+    "table": {
+      "a": 99,
+      "b": 1,
+      "c": 0,
+      "d": 0
+    },
+    "v3": 1.0,
+    "v4": 0.99,
+    "difference": -0.01,
+    "clusters": 100,
+    "cluster95": [
+      -0.03,
+      0.0
+    ],
+    "newcombe95": [
+      -0.0545,
+      0.0279
+    ],
+    "read95": [
+      -0.0545,
+      0.0279
+    ],
+    "detected": false,
+    "direction": "not detected"
+  },
+  "m3_old_ceiling": {
+    "hits": 100,
+    "n": 100,
+    "instrument": "M1 context_has_answer",
+    "reading": "only a detected fall is harm; no rise outcome"
+  },
+  "outcome": "gain detected",
+  "stage5": "follows",
+  "baselines": {
+    "m1": "V4 4f48fed",
+    "m3": "V4 4f48fed context_has_answer"
+  },
+  "admitted_cli": {
+    "old": {
+      "2.1.310": 115
+    },
+    "new": {
+      "2.1.312": 115
+    },
+    "bridge": {
+      "old": [
+        "2.1.310"
+      ],
+      "new": [
+        "2.1.312"
+      ]
+    }
+  },
+  "bridge": {
+    "status": "counted",
+    "retest": {
+      "planned": 15,
+      "scale": [
+        "bad",
+        "partial_ok",
+        "good"
+      ],
+      "pairs": 15,
+      "pairs_list": [
+        [
+          1,
+          1
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "pairs_ids": [
+        "38a1603f88f48253",
+        "ea3368b3cb353f8d",
+        "78e695e229785525",
+        "d6c517cf97e18552",
+        "462d7c91ee7efeaa",
+        "e6f380d5991ede0d",
+        "416436e9aaaeef50",
+        "fe61920ccac6d21a",
+        "43e57f7e2bb5a9b2",
+        "487e8ab24405b6a9",
+        "7d892dac36c71fe6",
+        "2a5df5f95b1a954e",
+        "fdc3ef78eec98ccd",
+        "14612d0dc655a5fb",
+        "c294cf0a7bf4c43c"
+      ],
+      "agree": 15,
+      "two_steps_apart": 0,
+      "quadratic_kappa": 1.0,
+      "ci95": [
+        1.0,
+        1.0
+      ],
+      "resamples_undefined": 0,
+      "passes_by_kappa": true,
+      "passes_by_agreement": true,
+      "enough_pairs": true,
+      "passed": true,
+      "field_agreement": {
+        "reference": {
+          "agree": 0,
+          "of": 0
+        },
+        "answers_question": {
+          "agree": 15,
+          "of": 15
+        },
+        "context_has_answer": {
+          "agree": 15,
+          "of": 15
+        },
+        "defect": {
+          "agree": 15,
+          "of": 15
+        }
+      }
+    },
+    "source_plan_sha256": "ad67e68c17534b6656d3e75daff292c55c161872406498f874714b2b74b738e1",
+    "source_verdicts_sha256": "9b26a4c3c948e3791cf041f68ecc1b5c5527bba1b052343ad10c30ea9c98618f",
+    "plan_sha256": "f4e646b9904b2c6d419dab423155efa0bea52ae2105c416f9d1054c557e366cf",
+    "verdicts_sha256": "aff00f1739b5dfe6d7a20d0ca013a1f5236262cae704d8d7dddf94936880ef57",
+    "admitted_cli": {
+      "old": [
+        "2.1.310"
+      ],
+      "new": [
+        "2.1.312"
+      ]
+    },
+    "pairs": [
+      {
+        "case_id": "aircargo-data-retention-legal-hold",
+        "first": "38a1603f88f48253",
+        "copy": "38a1603f88f48253-retest",
+        "old_cli": "2.1.310",
+        "new_cli": "2.1.312"
+      },
+      {
+        "case_id": "aircargo-waybill-escalation-events",
+        "first": "ea3368b3cb353f8d",
+        "copy": "ea3368b3cb353f8d-retest",
+        "old_cli": "2.1.310",
+        "new_cli": "2.1.312"
+      },
+      {
+        "case_id": "aircargo-employment-contract-essential-terms",
+        "first": "78e695e229785525",
+        "copy": "78e695e229785525-retest",
+        "old_cli": "2.1.310",
+        "new_cli": "2.1.312"
+      },
+      {
+        "case_id": "aircargo-contract-termination-open-awb",
+        "first": "d6c517cf97e18552",
+        "copy": "d6c517cf97e18552-retest",
+        "old_cli": "2.1.310",
+        "new_cli": "2.1.312"
+      },
+      {
+        "case_id": "aircargo-road-penalty",
+        "first": "462d7c91ee7efeaa",
+        "copy": "462d7c91ee7efeaa-retest",
+        "old_cli": "2.1.310",
+        "new_cli": "2.1.312"
+      },
+      {
+        "case_id": "aircargo-cross-border-pdn-required-fields",
+        "first": "e6f380d5991ede0d",
+        "copy": "e6f380d5991ede0d-retest",
+        "old_cli": "2.1.310",
+        "new_cli": "2.1.312"
+      },
+      {
+        "case_id": "aircargo-harassment-complaint-data",
+        "first": "416436e9aaaeef50",
+        "copy": "416436e9aaaeef50-retest",
+        "old_cli": "2.1.310",
+        "new_cli": "2.1.312"
+      },
+      {
+        "case_id": "aircargo-incident-response-required-fields",
+        "first": "fe61920ccac6d21a",
+        "copy": "fe61920ccac6d21a-retest",
+        "old_cli": "2.1.310",
+        "new_cli": "2.1.312"
+      },
+      {
+        "case_id": "aircargo-harassment-investigation-timeline",
+        "first": "43e57f7e2bb5a9b2",
+        "copy": "43e57f7e2bb5a9b2-retest",
+        "old_cli": "2.1.310",
+        "new_cli": "2.1.312"
+      },
+      {
+        "case_id": "aircargo-cargo-insurance-evidence",
+        "first": "487e8ab24405b6a9",
+        "copy": "487e8ab24405b6a9-retest",
+        "old_cli": "2.1.310",
+        "new_cli": "2.1.312"
+      },
+      {
+        "case_id": "aircargo-subject-rights-third-party-masking",
+        "first": "7d892dac36c71fe6",
+        "copy": "7d892dac36c71fe6-retest",
+        "old_cli": "2.1.310",
+        "new_cli": "2.1.312"
+      },
+      {
+        "case_id": "aircargo-subject-rights-required-fields",
+        "first": "2a5df5f95b1a954e",
+        "copy": "2a5df5f95b1a954e-retest",
+        "old_cli": "2.1.310",
+        "new_cli": "2.1.312"
+      },
+      {
+        "case_id": "aircargo-templates-choose",
+        "first": "fdc3ef78eec98ccd",
+        "copy": "fdc3ef78eec98ccd-retest",
+        "old_cli": "2.1.310",
+        "new_cli": "2.1.312"
+      },
+      {
+        "case_id": "aircargo-road-seal",
+        "first": "14612d0dc655a5fb",
+        "copy": "14612d0dc655a5fb-retest",
+        "old_cli": "2.1.310",
+        "new_cli": "2.1.312"
+      },
+      {
+        "case_id": "aircargo-late-delivery-reply-no-admission",
+        "first": "c294cf0a7bf4c43c",
+        "copy": "c294cf0a7bf4c43c-retest",
+        "old_cli": "2.1.310",
+        "new_cli": "2.1.312"
+      }
+    ]
+  },
+  "provenance": {
+    "code_sha": "138f3b3f6ac223540965cc831838ff4f671a2200",
+    "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+    "corpus_sha256": {
+      "corpus.manifest.json": "2b2e9232e69b4f52a55237f3ee620f34c91d1900383877c2310ba616c6590444",
+      "chunks-report.json": "bf01530e5a4cf33de44a7ce4aa1282805fc600a49b3a2f82b30b3b5715c6a714",
+      "index/index-receipt.json": "2dcc80e75d22e9dc34b31313c1db2724aa59c606203eb56c9ac7b84abb684666"
+    },
+    "cases_sha256": "3737d694362d1867ca3d5983e3765d02c01110d2409145ba7e0f05c021d9c720"
+  },
+  "stand": {
+    "environment": {
+      "executable": "/Users/julia/RAG_Support_Assistant/.venv/bin/python",
+      "versions": {
+        "transformers": "4.44.2",
+        "tokenizers": "0.19.1",
+        "numpy": "1.26.4",
+        "chromadb": "1.5.9",
+        "sentence-transformers": "2.7.0",
+        "langchain-ollama": "1.1.0",
+        "langchain-community": "0.4.1",
+        "onnxruntime": "1.23.2"
+      },
+      "offline": {
+        "HF_HUB_OFFLINE": "1",
+        "TRANSFORMERS_OFFLINE": "1"
+      },
+      "tokenizer_snapshot": "953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e",
+      "ort_version": "1.23.2",
+      "ort_module": "/Users/julia/RAG_new_mf_gate_site/onnxruntime/__init__.py",
+      "ort_intra_op_num_threads": 0
+    },
+    "settings": {
+      "retrieval_top_k": 14,
+      "ollama_context_window": 3584,
+      "reranker_runtime": "onnx",
+      "reranker_model": "BAAI/bge-reranker-v2-m3",
+      "rerank_top_k": 5,
+      "rerank_batch": null,
+      "rag_device": "cpu",
+      "ollama_model_name": "qwen3:4b-instruct-2507-q4_K_M",
+      "streaming_self_eval_mode": "classic",
+      "hybrid_search": true,
+      "parent_expansion": true,
+      "model_routing_enabled": false,
+      "llm_provider_profile": "local-first",
+      "streaming_timeout_sec": 3600.0,
+      "request_timeout_sec": 3600.0,
+      "ollama_request_timeout_sec": 3600.0,
+      "reranker_onnx_path": "/Users/julia/RAG_new_ort/bge-reranker-v2-m3/int8/model.onnx"
+    },
+    "prompt_id": "QA_PROMPT_V4",
+    "input_limit": 2176,
+    "export_sha256": "57335a9f061fe31378c160ddd0861711a0fbdfa20f70aa2640d473dfc4bc1343",
+    "cache_sha256": "c75f44912ea2c7f54ea0cf0e9ffea8f05466ae447961d99c8f12d716589b4e6c",
+    "ollama": "0.33.2",
+    "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+    "server": {
+      "server_version": "0.33.2",
+      "servers": [
+        {
+          "pid": 12377,
+          "started": "2026-09-13T16:37:06+00:00",
+          "binary": "/Users/julia/RAG_new_tools_ollama_v0.33.2/ollama",
+          "binary_changed": "2026-08-28T20:09:07+00:00"
+        }
+      ]
+    },
+    "rerank_batch": null,
+    "batch_size": 32
+  },
+  "input_sha256": {
+    "reports\\answer-prompt-v4\\4f48fed\\v4-aircargo-judge.json": "12dd4032a477cc853f2c6bae00506b43091ff5bb872ddfa90fbeee5a23889ac1",
+    "reports\\answer-prompt-v4\\4f48fed\\v4-aircargo-judge.cases.jsonl": "a1413cbadc5b7f1e629f9ad16ca77c7baba36870122c21a678a5dfd57b1b6718",
+    "reports\\stage4-final\\138f3b3\\final-aircargo-m1.json": "b652921bd3a988e0bb9cc3bef4ec52f07043f543194a8c52f6694f2471628c83",
+    "reports\\stage4-final\\138f3b3\\final-aircargo-m1.cases.jsonl": "232d605eee10b65320f3a6a52a5dd3ecd3fb297d4c442b639329d1b8383e779a",
+    "reports\\stage4-final\\138f3b3\\final-aircargo-bridge.json": "f7f09bd3e272e685e4c3df67351d191113c18c87504aa462daa746f7a482b53a"
+  },
+  "pair_ids": [
+    "aircargo-probation-data",
+    "aircargo-probation-extend",
+    "aircargo-probation-dismissal",
+    "aircargo-dismissal-check",
+    "aircargo-dismissal-lawyer",
+    "aircargo-dismissal-order",
+    "aircargo-leave-sources",
+    "aircargo-leave-compensation",
+    "aircargo-leave-risk",
+    "aircargo-matliab-check",
+    "aircargo-matliab-disputed",
+    "aircargo-templates-choose",
+    "aircargo-templates-checklist",
+    "aircargo-templates-insufficient",
+    "aircargo-secret-check",
+    "aircargo-secret-not-auto",
+    "aircargo-secret-disclosure",
+    "aircargo-pdp-scope",
+    "aircargo-pdp-data",
+    "aircargo-pdp-uncertain",
+    "aircargo-claims-delay",
+    "aircargo-claims-damage",
+    "aircargo-claims-lawyer",
+    "aircargo-claims-forbidden",
+    "aircargo-expedition-vs-carrier",
+    "aircargo-expedition-mawb-hawb",
+    "aircargo-expedition-risks",
+    "aircargo-road-cutoff",
+    "aircargo-road-penalty",
+    "aircargo-road-seal",
+    "aircargo-road-driver-pdn",
+    "aircargo-business-trip-advance-report",
+    "aircargo-business-trip-foreign-approval",
+    "aircargo-remote-work-monitoring-limits",
+    "aircargo-remote-work-equipment-compensation",
+    "aircargo-maternity-duration-normal",
+    "aircargo-maternity-dismissal-ban",
+    "aircargo-internal-transfer-consent",
+    "aircargo-internal-transfer-documents",
+    "aircargo-contract-termination-open-awb",
+    "aircargo-contract-termination-fields",
+    "aircargo-road-contract-aircargo-fields",
+    "aircargo-dangerous-goods-fields",
+    "aircargo-dangerous-goods-clearance",
+    "aircargo-customs-clearance-fields",
+    "aircargo-customs-special-cargo-manual-check",
+    "aircargo-waybill-first-mile-fields",
+    "aircargo-waybill-escalation-events",
+    "aircargo-trade-compliance-hold",
+    "aircargo-trade-compliance-screening",
+    "aircargo-incident-response-bridge",
+    "aircargo-incident-response-required-fields",
+    "aircargo-access-control-need-to-know",
+    "aircargo-access-control-review",
+    "aircargo-employment-contract-essential-terms",
+    "aircargo-employment-contract-special-form",
+    "aircargo-driver-job-documents",
+    "aircargo-driver-dangerous-goods-refusal",
+    "aircargo-sick-leave-required-fields",
+    "aircargo-sick-leave-lawyer-escalation",
+    "aircargo-cargo-loss-evidence-bundle",
+    "aircargo-cargo-loss-required-fields",
+    "aircargo-late-delivery-reply-evidence",
+    "aircargo-late-delivery-reply-no-admission",
+    "aircargo-driver-hours-required-fields",
+    "aircargo-driver-hours-terminal-discrepancy",
+    "aircargo-warehouse-3pl-required-fields",
+    "aircargo-warehouse-3pl-escalation",
+    "aircargo-perishable-temperature-controls",
+    "aircargo-perishable-special-cargo-evidence",
+    "aircargo-oversized-permit-route",
+    "aircargo-oversized-manual-check",
+    "aircargo-data-retention-legal-hold",
+    "aircargo-data-retention-required-fields",
+    "aircargo-subject-rights-third-party-masking",
+    "aircargo-subject-rights-required-fields",
+    "aircargo-customs-broker-evidence",
+    "aircargo-customs-broker-escalation",
+    "aircargo-salary-payment-dates",
+    "aircargo-salary-bonus-conditions",
+    "aircargo-overtime-limits",
+    "aircargo-overtime-protected-categories",
+    "aircargo-harassment-complaint-data",
+    "aircargo-harassment-investigation-timeline",
+    "aircargo-conflict-interest-disclosure",
+    "aircargo-conflict-interest-sanctions",
+    "aircargo-cargo-insurance-evidence",
+    "aircargo-cargo-insurance-operational-limits",
+    "aircargo-fuel-supply-evidence",
+    "aircargo-fuel-supply-required-fields",
+    "aircargo-gps-monitoring-required-fields",
+    "aircargo-gps-monitoring-scope",
+    "aircargo-weight-control-required-fields",
+    "aircargo-weight-control-discrepancy",
+    "aircargo-cross-border-required-fields",
+    "aircargo-cross-border-special-cargo",
+    "aircargo-breach-notification-required-fields",
+    "aircargo-breach-notification-participants",
+    "aircargo-cross-border-pdn-required-fields",
+    "aircargo-cross-border-pdn-no-transfer"
+  ]
+}

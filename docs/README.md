@@ -155,10 +155,14 @@ run failed step 7's look at the Mac again as `-r2`; its
 [Stage 4, item 6](specs/stage4-item6-final-aircargo.md) — the final path's aircargo answers:
 the package of `6c52b06` (K 14, window 3,584, INT8 reranker, cache cap 1,024) on the 100
 questions, ten batches on one stand; M1 paired against V4's `4f48fed` with a judge bridge, M3
-read one way only (its old side is 100 of 100); harm on M1 bad sends stage 5 back to Julia.
+read one way only (its old side is 100 of 100); harm on M1 bad sends stage 5 back to Julia. Read
+2026-10-31 on stand `138f3b3`: a gain, M1 good 63 → 73 of 100; its
+[record](evidence/stage4-item6-final-aircargo-record.md).
 [Stage 4, item 7](specs/stage4-item7-final-speed.md) — the final path's speed, measured apart
 from item 6 on an idle Mac: the first 30 aircargo questions on one API, a disturbed question
-asked once more after the thirtieth (at most six), and the SLO proposal from the p90.
+asked once more after the thirtieth (at most six), and the SLO proposal from the p90. Read
+2026-10-31: first word a median 89.3 s, whole answer 170.2 s, the proposal 270 s and 360 s;
+its [record](evidence/stage4-item7-final-speed-record.md).
 [Stage 6, item 4](specs/stage6-throughput.md) — the
 service's questions an hour and what a second client sees: a draft, registered with its tools once
 the service is installed.
