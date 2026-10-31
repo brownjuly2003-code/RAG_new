@@ -68,6 +68,8 @@ jobs:
         if: github.event_name == 'workflow_dispatch' && inputs.enable_live == true
         env:
           RAG_LIVE_PROVIDER_GATE: "1"
+          # No INT8 export in this environment; the measured path is onnx.
+          RAG_RERANKER_RUNTIME: "torch"
           MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
           GRACEKELLY_API_KEY: ${{ secrets.GRACEKELLY_API_KEY }}
           OPENCODE_ZEN_API_KEY: ${{ secrets.OPENCODE_ZEN_API_KEY }}

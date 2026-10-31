@@ -112,7 +112,7 @@ def test_the_messages_go_as_they_are_with_the_answer_calls_options(chat: _Chat) 
         "messages": MESSAGES,
         "stream": False,
         "think": False,
-        "options": {"num_ctx": 4096, "num_predict": 128, "temperature": 0.0},
+        "options": {"num_ctx": 3584, "num_predict": 128, "temperature": 0.0},
     }
     assert request["timeout_sec"] == 60.0
     assert (response.text, response.provider, response.model) == ("91", "ollama", MODEL)
@@ -166,11 +166,11 @@ def test_counters_ollama_does_not_send_stay_none(monkeypatch: pytest.MonkeyPatch
     assert response.metadata == dict.fromkeys(OLLAMA_CALL_COUNTERS)
     assert response.finish_reason is None
     # Without a temperature none is sent, as on the other calls.
-    assert chat.requests[0]["payload"]["options"] == {"num_ctx": 4096, "num_predict": 128}
+    assert chat.requests[0]["payload"]["options"] == {"num_ctx": 3584, "num_predict": 128}
 
 
 def test_an_input_the_window_cannot_hold_is_refused_before_any_request(chat: _Chat) -> None:
-    # Digits weigh one token each in the estimate: 4,000 against 3,443 left by num_ctx 4096.
+    # Digits weigh one token each in the estimate: 4,000 against 2,982 left by num_ctx 3584.
     oversized = [{"role": "user", "content": "7" * 4000}, *MESSAGES[1:]]
 
     with pytest.raises(ValueError, match="exceeds the model input window"):
@@ -279,7 +279,7 @@ def test_the_call_goes_over_http_to_api_chat() -> None:
                 "messages": MESSAGES,
                 "stream": False,
                 "think": False,
-                "options": {"num_ctx": 4096, "num_predict": 128, "temperature": 0.0},
+                "options": {"num_ctx": 3584, "num_predict": 128, "temperature": 0.0},
             },
         }
     ]

@@ -299,7 +299,12 @@ below; a later change is a marked error fix that updates this list:
 - `reports/answer-prompt-v5/tools/replay.py` `ca954c59710e93925cc923f5b2a7f175ce86f7e1fa7b96a46d3b3bbeec4d6eed`
 - `reports/stage4-step2b/tools/step2b_reader.py` `93432fd43c843e787583c82e205a5451fcbb6458a3be6d2d74c6ed635313de10`
 - `reports/stage4-step2b/tools/step2b_replay.py` `7d0b46bb26943c5c2209bdfc7b827a720fcdb67365902d70d3eb49d21b21ff19`
-- `tests/test_stage4_step2b_tools.py` `d2a0aa457a68ee2ea0d41bf42849bc3d5b861a6ce87c31b614065b9daa8161f5`
+- `tests/test_stage4_step2b_tools.py` `4ce01360c1ce07a029bb30a9367f90107a69eb83dccaf7c4ef38ee2229a01b04`
+
+Marked error fix, 2026-10-31: the test provider and runtime fixture explicitly use the stand's
+4,096 window (`OLLAMA_CONTEXT_WINDOW=4096` for the runtime). Code defaults moved to the stage-4
+package (3,584); step-2b replayed the 4,096 stand. Only the test's stand setup and its hash
+change; the reading does not change.
 
 ## A second opinion
 

@@ -15,6 +15,7 @@ import re
 import sys
 from fractions import Fraction
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 
@@ -93,7 +94,7 @@ KINDS = ("one", "two", "one", "two")
 @functools.cache
 def chat():
     """The chat's prompt builder, as the replay reads it: V3 and V4 at V4's input limit."""
-    return ar.Builder()
+    return ar.Builder(ar.WINDOW_V4, ar.LIMIT_V4)
 
 
 def machine():
@@ -787,6 +788,7 @@ CONTROL_ENV = (
     "RAG_RETRIEVAL_TOP_K",
     "OLLAMA_CONTEXT_WINDOW",
     "RAG_RERANKER_RUNTIME",
+    "RAG_RERANK_BATCH",
     "EXPERIMENT_ID",
 )
 
@@ -807,7 +809,15 @@ def _replay_args(tmp_path):
     ]
 
 
-def _fake_runs(monkeypatch, tmp_path, kinds=None):
+def _score_args(tmp_path):
+    return ["score", *_replay_args(tmp_path)[1:]]
+
+
+def _scores_only(tmp_path):
+    return {p.name for p in (tmp_path / "out").iterdir()} == {ar.SCORE_FILE}
+
+
+def _fake_runs(monkeypatch, tmp_path, kinds=None, *, with_scores=True):
     """The five runs over the synthetic archive, each of KINDS unless kinds names a label's
     fives; V4's questions are the fixture's, not the 300."""
     kinds = kinds or {}
@@ -819,11 +829,611 @@ def _fake_runs(monkeypatch, tmp_path, kinds=None):
     monkeypatch.setattr(ar, "export_manifest", lambda: {})
     monkeypatch.setattr(ar, "V4_SAVED", sum(len(runs[label]["v4"]) for label in ar.V4_KEYS))
     monkeypatch.setattr(nr, "git_head", lambda: "0" * 40)
+    monkeypatch.setattr(
+        ar,
+        "git",
+        lambda *args: {
+            ("status", "--porcelain"): "",
+            ("rev-parse", "HEAD^"): "1" * 40,
+            ("log", "-1", "--format=%s"): "mf-gate overlay of " + "1" * 40,
+        }[args],
+    )
+    from huggingface_hub import constants as hub
+
+    from config import settings as config
+    from vectordb import _base_manager as manager
+
+    cache = tmp_path / "hf-cache"
+    ref = cache / "models--BAAI--bge-reranker-v2-m3" / "refs" / "main"
+    ref.parent.mkdir(parents=True)
+    ref.write_text(ar.TOKENIZER_SNAPSHOT, encoding="utf-8")
+    monkeypatch.setattr(hub, "HF_HUB_CACHE", str(cache))
+    for name in ("HF_HUB_OFFLINE", "TRANSFORMERS_OFFLINE"):
+        monkeypatch.setenv(name, "1")
+    versions = {
+        "transformers": "4.44.2",
+        "tokenizers": "0.19.1",
+        "numpy": "1.26.4",
+        "onnxruntime": "1.23.2",
+        "chromadb": "1.5.9",
+        "sentence-transformers": "2.7.0",
+        "langchain-ollama": "1.1.0",
+        "langchain-community": "0.4.1",
+    }
+    version = ar.metadata.version
+    monkeypatch.setattr(
+        ar.metadata, "version", lambda name: versions[name] if name in versions else version(name)
+    )
+    export = tmp_path / "model.onnx"
+    export.write_bytes(b"synthetic INT8 export")
+    monkeypatch.setenv("RAG_RERANKER_ONNX", str(export))
+    monkeypatch.setenv("RAG_RERANKER_MODEL", "BAAI/bge-reranker-v2-m3")
+    monkeypatch.setattr(config, "_settings", None)
+    monkeypatch.setattr(ar, "INT8_SHA256", ar.sha256(export))
+    monkeypatch.setitem(
+        sys.modules,
+        "onnxruntime",
+        SimpleNamespace(
+            __version__="1.23.2",
+            __file__=str(tmp_path / "ort" / "__init__.py"),
+            SessionOptions=lambda: SimpleNamespace(intra_op_num_threads=0),
+        ),
+    )
+    by_question = {
+        r["question"]: {CHUNKS[p[1]]["page_content"]: p[2] for p in r["pool"]}
+        for inputs in runs.values()
+        for r in inputs["records"]
+    }
+
+    class Int8:
+        runtime = "onnx"
+        path = export
+        tokenizer = SimpleNamespace(init_kwargs={"_commit_hash": ar.TOKENIZER_SNAPSHOT})
+        session = SimpleNamespace(
+            get_session_options=lambda: SimpleNamespace(intra_op_num_threads=0)
+        )
+
+        def predict(self, pairs, batch_size=32):
+            return [by_question[q][text] for q, text in pairs]
+
+    # Only the model loader is replaced: score still calls the product's retriever and rerank.
+    monkeypatch.setattr(manager, "get_reranker", lambda: Int8())
+    if with_scores:
+        assert ar.main(_score_args(tmp_path)) == 0
     return runs
 
 
 def _lines(path):
     return [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines()]
+
+
+@pytest.mark.parametrize("command", [_score_args, _replay_args])
+@pytest.mark.parametrize("broken", ["digest", "version"])
+def test_score_refuses_the_wrong_export_or_ort_before_loading(
+    tmp_path, monkeypatch, broken, command
+):
+    from vectordb import _base_manager as manager
+
+    _fake_runs(monkeypatch, tmp_path, with_scores=False)
+    if broken == "digest":
+        (tmp_path / "model.onnx").write_bytes(b"another export")
+        message = "wrong INT8 digest"
+    else:
+        monkeypatch.setitem(sys.modules, "onnxruntime", SimpleNamespace(__version__="1.23.1"))
+        message = "onnxruntime must be 1.23.2"
+
+    def forbidden():
+        pytest.fail("the model was loaded before its export and runtime were checked")
+
+    monkeypatch.setattr(manager, "get_reranker", forbidden)
+    with pytest.raises(SystemExit, match=message):
+        ar.main(command(tmp_path))
+    assert not (tmp_path / "out").exists()
+
+
+@pytest.mark.parametrize("precondition", ["export_manifest", "run_inputs"])
+def test_score_checks_the_frozen_inputs_before_loading(tmp_path, monkeypatch, precondition):
+    from vectordb import _base_manager as manager
+
+    _fake_runs(monkeypatch, tmp_path, with_scores=False)
+
+    def refused(*args):
+        raise SystemExit("synthetic input precondition")
+
+    monkeypatch.setattr(ar, precondition, refused)
+    monkeypatch.setattr(manager, "get_reranker", lambda: pytest.fail("loaded before inputs"))
+    with pytest.raises(SystemExit, match="synthetic input precondition"):
+        ar.main(_score_args(tmp_path))
+    assert not (tmp_path / "out").exists()
+
+
+def test_score_resumes_after_the_last_complete_line_without_repeating_it(tmp_path, monkeypatch):
+    from vectordb import _base_manager as manager
+
+    runs = _fake_runs(monkeypatch, tmp_path)
+    path = tmp_path / "out" / ar.SCORE_FILE
+    original = _lines(path)
+    assert len(original) == 21
+    assert original[0]["k"] == 14 and original[0]["batch_size"] == 32
+    assert original[0]["rerank_batch"] is None
+    assert original[0]["ort_version"] == "1.23.2"
+    assert original[0]["export_sha256"] == ar.INT8_SHA256
+    prefix = b"".join(path.read_bytes().splitlines(keepends=True)[:4])
+    path.write_bytes(prefix + b'{"label":')
+    live, called = manager.get_reranker(), []
+    predict = live.predict
+
+    def tracked(pairs, batch_size=32):
+        called.append((pairs[0][0], batch_size))
+        return predict(pairs, batch_size)
+
+    live.predict = tracked
+    monkeypatch.setattr(manager, "get_reranker", lambda: live)
+    assert ar.main(_score_args(tmp_path)) == 0
+    assert path.read_bytes().startswith(prefix)
+    assert called == [(r["question"], 32) for _, r in ar.entries(runs)[3:]]
+    resumed = _lines(path)
+    assert [{k: v for k, v in r.items() if k != "seconds"} for r in resumed] == [
+        {k: v for k, v in r.items() if k != "seconds"} for r in original
+    ]
+    ar.without_text(resumed, NAMES, [r["question"] for _, r in ar.entries(runs)])
+    held = path.read_bytes()
+    monkeypatch.setattr(manager, "get_reranker", lambda: pytest.fail("complete scores reloaded"))
+    assert ar.main(_score_args(tmp_path)) == 0
+    assert path.read_bytes() == held
+
+
+@pytest.mark.parametrize(
+    "field",
+    [
+        "head",
+        "head_parent",
+        "head_subject",
+        "measure_code_sha256",
+        "environment",
+        "export_sha256",
+        "ort_version",
+        "batch_size",
+        "k",
+        "spec_sha256",
+        "tool_sha256",
+        "inputs",
+        "questions",
+        "rerank_batch",
+    ],
+)
+@pytest.mark.parametrize("command", [_score_args, _replay_args])
+def test_score_refuses_a_mismatched_header_without_changing_it(
+    tmp_path, monkeypatch, field, command
+):
+    from vectordb import _base_manager as manager
+
+    _fake_runs(monkeypatch, tmp_path)
+    path = tmp_path / "out" / ar.SCORE_FILE
+    lines = _lines(path)
+    lines[0][field] = "changed"
+    ar.write_rows(path, lines[:3])
+    held = path.read_bytes()
+    monkeypatch.setattr(manager, "get_reranker", lambda: pytest.fail("mismatched journal loaded"))
+    with pytest.raises(SystemExit, match="header does not match"):
+        ar.main(command(tmp_path))
+    assert path.read_bytes() == held
+
+
+@pytest.mark.parametrize("broken", ["pool", "scores", "partial"])
+def test_replay_refuses_another_pool_or_five_or_incomplete_scores(tmp_path, monkeypatch, broken):
+    _fake_runs(monkeypatch, tmp_path)
+    path = tmp_path / "out" / ar.SCORE_FILE
+    lines = _lines(path)
+    if broken == "pool":
+        lines[1]["pool"][0], lines[1]["pool"][1] = lines[1]["pool"][1], lines[1]["pool"][0]
+        message = "did not read the scored INT8 pool"
+    elif broken == "scores":
+        lines[1]["scores"][lines[1]["pool"].index(0)] = 1.0
+        message = "replayed five differ from score's five"
+    else:
+        lines.pop()
+        message = "INT8 scores are incomplete"
+    ar.write_rows(path, lines)
+    with pytest.raises(SystemExit, match=message):
+        ar.main(_replay_args(tmp_path))
+    assert _scores_only(tmp_path) and not (tmp_path / "private").exists()
+
+
+def test_score_and_replay_cut_both_recorded_lanes_to_fourteen_in_the_product(tmp_path, monkeypatch):
+    module = sys.modules[__name__]
+    chunks = CHUNKS + [piece(f"f-{i}.md", ["Filler"], f"Filler {i}.") for i in range(15, 40)]
+    monkeypatch.setattr(module, "CHUNKS", chunks)
+    monkeypatch.setattr(module, "NAMES", {c["metadata"]["source"] for c in chunks})
+    monkeypatch.setattr(module, "VECTOR", list(range(20)))
+    monkeypatch.setattr(module, "BM25", list(range(20, 40)))
+    monkeypatch.setattr(module, "SCORES", {"wide": {i: (i + 1) / 100 for i in range(40)}})
+    runs = _fake_runs(
+        monkeypatch, tmp_path, {label: ("wide",) for label in ar.LABELS}, with_scores=False
+    )
+    seen, real = [], ar.new_machine
+
+    def observed(*args, **kwargs):
+        machine = real(*args, **kwargs)
+        h = machine.h
+
+        def search(record):
+            result = h(record)
+            seen.append(
+                (
+                    machine.store.asked[:],
+                    result[1]["candidates"],
+                    machine.pool[:],
+                    machine.reranker.calls,
+                )
+            )
+            return result
+
+        machine.h = search
+        return machine
+
+    monkeypatch.setattr(ar, "new_machine", observed)
+    assert ar.main(_score_args(tmp_path)) == 0
+    scored = _lines(tmp_path / "out" / ar.SCORE_FILE)
+    assert (scored[0]["rerank_batch"], scored[0]["batch_size"]) == (None, 32)
+    assert [r["five"] for r in scored[1:]] == [[33, 32, 31, 30, 29]] * 5
+    assert ar.main(_replay_args(tmp_path)) == 0
+    assert len(seen) == 10  # Five live pools, then five H_new pools; H_old stays at K 20.
+    for asked, candidates, pool, calls in seen:
+        assert calls == 1
+        assert len(asked) == 1 and asked[0][1:] == (14, [])
+        assert candidates == {"vector": 14, "bm25": 14, "merged": 28}
+        assert len(pool) == 28 and set(pool) == {*range(14), *range(20, 34)}
+    record = json.loads((tmp_path / "out" / "record.json").read_text(encoding="utf-8"))
+    assert record["parity"]["passed"] == 5 and record["parity"]["v4_byte_equal"] == 3
+    assert record["frozen"]["window"] == 3584 and record["frozen"]["input_limit"] == 2176
+    ar.without_text(scored, NAMES, [r["question"] for _, r in ar.entries(runs)])
+
+
+def test_score_records_fresh_factory_scores_instead_of_the_recorded_torch_scores(
+    tmp_path, monkeypatch
+):
+    from vectordb import _base_manager as manager
+
+    _fake_runs(monkeypatch, tmp_path, with_scores=False)
+    called = []
+    positions = {c["page_content"]: i for i, c in enumerate(CHUNKS)}
+
+    live = manager.get_reranker()
+
+    def predict(pairs, batch_size=32):
+        assert batch_size == 32
+        called.append(pairs)
+        return [1 / (positions[text] + 1) for _, text in pairs]
+
+    live.predict = predict
+    monkeypatch.setattr(manager, "get_reranker", lambda: live)
+    assert ar.main(_score_args(tmp_path)) == 0
+    rows = _lines(tmp_path / "out" / ar.SCORE_FILE)[1:]
+    assert len(called) == len(rows) == 20
+    for row in rows:
+        assert row["scores"] == [1 / (m + 1) for m in row["pool"]]
+        assert row["five"] == [0, 2, 4, 7, 8]
+    assert rows[0]["scores"][rows[0]["pool"].index(0)] == 1.0  # The old score was 0.15.
+    monkeypatch.setattr(manager, "get_reranker", lambda: pytest.fail("replay loaded a model"))
+    # Replay now imports ORT for provenance, but may never create an inference session.
+    monkeypatch.setattr(
+        sys.modules["onnxruntime"],
+        "InferenceSession",
+        lambda *args: pytest.fail("replay loaded ONNX"),
+        raising=False,
+    )
+    assert ar.main(_replay_args(tmp_path)) == 0
+
+
+def test_score_prints_its_forecast_and_stops_at_three_times_it_even_on_resume(
+    tmp_path, monkeypatch, capsys
+):
+    _fake_runs(monkeypatch, tmp_path, with_scores=False)
+    # The shared gate has its own budget; the synthetic clock below measures scoring only.
+    monkeypatch.setattr(ar, "replay_budget", lambda: lambda: None)
+    clock = iter([v for i in range(10) for v in (float(i), float(i + 1))] + [10.0, 100.0])
+    monkeypatch.setattr(ar, "time", SimpleNamespace(monotonic=lambda: next(clock)))
+    with pytest.raises(SystemExit, match="3 times its forecast"):
+        ar.main(_score_args(tmp_path))
+    assert '"forecast_seconds": 20.0, "stop_seconds": 60.0' in capsys.readouterr().out
+    rows = _lines(tmp_path / "out" / ar.SCORE_FILE)
+    assert len(rows) == 12 and rows[-1]["seconds"] == 90.0
+    with pytest.raises(SystemExit, match="3 times its forecast"):
+        ar.main(_score_args(tmp_path))
+
+
+@pytest.mark.parametrize("command", [_score_args, _replay_args])
+@pytest.mark.parametrize(
+    "broken", ["transformers", "snapshot", "HF_HUB_OFFLINE", "TRANSFORMERS_OFFLINE"]
+)
+def test_both_phases_refuse_another_environment_before_loading(
+    tmp_path, monkeypatch, command, broken
+):
+    from vectordb import _base_manager as manager
+
+    _fake_runs(monkeypatch, tmp_path, with_scores=False)
+    if broken == "transformers":
+        version = ar.metadata.version
+        monkeypatch.setattr(
+            ar.metadata,
+            "version",
+            lambda name: "4.41.2" if name == "transformers" else version(name),
+        )
+        message = "transformers must be 4.44.2"
+    elif broken == "snapshot":
+        ref = tmp_path / "hf-cache/models--BAAI--bge-reranker-v2-m3/refs/main"
+        ref.write_text("2" * 40, encoding="utf-8")
+        message = "cached tokenizer snapshot"
+    else:
+        monkeypatch.delenv(broken)
+        message = "must both be 1"
+    monkeypatch.setattr(manager, "get_reranker", lambda: pytest.fail("loaded before environment"))
+    with pytest.raises(SystemExit, match=message):
+        ar.main(command(tmp_path))
+    assert not (tmp_path / "out").exists()
+
+
+@pytest.mark.parametrize("command", [_score_args, _replay_args])
+@pytest.mark.parametrize("field", ["transformers", "tokenizer_snapshot"])
+def test_both_phases_compare_the_journals_environment(tmp_path, monkeypatch, command, field):
+    _fake_runs(monkeypatch, tmp_path)
+    path = tmp_path / "out" / ar.SCORE_FILE
+    lines = _lines(path)
+    if field == "transformers":
+        lines[0]["environment"]["versions"][field] = "4.41.2"
+    else:
+        lines[0]["environment"][field] = "2" * 40
+    ar.write_rows(path, lines)
+    held = path.read_bytes()
+    with pytest.raises(SystemExit, match="header does not match"):
+        ar.main(command(tmp_path))
+    assert path.read_bytes() == held
+
+
+@pytest.mark.parametrize("broken", ["tokenizer", "unresolved_tokenizer", "threads"])
+def test_score_checks_the_loaded_tokenizer_and_session(tmp_path, monkeypatch, broken):
+    from vectordb import _base_manager as manager
+
+    _fake_runs(monkeypatch, tmp_path, with_scores=False)
+    live = manager.get_reranker()
+    if broken in ("tokenizer", "unresolved_tokenizer"):
+        live.tokenizer = SimpleNamespace(
+            init_kwargs={"_commit_hash": "2" * 40} if broken == "tokenizer" else {}
+        )
+        message = "loaded tokenizer snapshot"
+    else:
+        live.session = SimpleNamespace(
+            get_session_options=lambda: SimpleNamespace(intra_op_num_threads=4)
+        )
+        message = "default threads"
+    monkeypatch.setattr(manager, "get_reranker", lambda: live)
+    with pytest.raises(SystemExit, match=message):
+        ar.main(_score_args(tmp_path))
+    assert not (tmp_path / "out").exists()
+
+
+def test_the_loaded_tokenizers_resolved_vocab_also_identifies_its_snapshot(tmp_path, monkeypatch):
+    from vectordb import _base_manager as manager
+
+    _fake_runs(monkeypatch, tmp_path, with_scores=False)
+    live = manager.get_reranker()
+    vocab = tmp_path / "snapshots" / ar.TOKENIZER_SNAPSHOT / "sentencepiece.bpe.model"
+    live.tokenizer = SimpleNamespace(init_kwargs={"vocab_file": str(vocab)})
+    monkeypatch.setattr(manager, "get_reranker", lambda: live)
+    assert ar.main(_score_args(tmp_path)) == 0
+    header = _lines(tmp_path / "out" / ar.SCORE_FILE)[0]
+    assert header["environment"]["tokenizer_snapshot"] == ar.TOKENIZER_SNAPSHOT
+
+
+def test_header_and_record_hold_the_service_environment_and_overlay_provenance(
+    tmp_path, monkeypatch
+):
+    _fake_runs(monkeypatch, tmp_path)
+    header = _lines(tmp_path / "out" / ar.SCORE_FILE)[0]
+    assert header["head"] == "0" * 40
+    assert header["head_parent"] == "1" * 40
+    assert header["head_subject"] == "mf-gate overlay of " + "1" * 40
+    assert header["measure_code_sha256"] == {n: ar.sha256(ROOT / n) for n in ar.MEASURE_CODE}
+    assert header["environment"] == {
+        "executable": sys.executable,
+        "versions": {
+            "transformers": "4.44.2",
+            "tokenizers": "0.19.1",
+            "numpy": "1.26.4",
+            "onnxruntime": "1.23.2",
+            "chromadb": "1.5.9",
+            "sentence-transformers": "2.7.0",
+            "langchain-ollama": "1.1.0",
+            "langchain-community": "0.4.1",
+        },
+        "offline": {"HF_HUB_OFFLINE": "1", "TRANSFORMERS_OFFLINE": "1"},
+        "tokenizer_snapshot": "953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e",
+        "ort_version": "1.23.2",
+        "ort_module": str(tmp_path / "ort" / "__init__.py"),
+        "ort_intra_op_num_threads": 0,
+    }
+    assert ar.main(_replay_args(tmp_path)) == 0
+    record = json.loads((tmp_path / "out/record.json").read_text(encoding="utf-8"))
+    assert record["int8_scores"]["header"] == header
+    assert record["measured_at_head"] == header["head"]
+    for field in ("head_parent", "head_subject", "measure_code_sha256", "environment"):
+        assert record[field] == header[field]
+
+
+@pytest.mark.parametrize("command", [_score_args, _replay_args])
+@pytest.mark.parametrize("value", ["7", "32", ""])
+def test_both_phases_refuse_a_set_batch(tmp_path, monkeypatch, command, value):
+    from vectordb import _base_manager as manager
+
+    _fake_runs(monkeypatch, tmp_path, with_scores=False)
+    monkeypatch.setenv("RAG_RERANK_BATCH", value)
+    monkeypatch.setattr(manager, "get_reranker", lambda: pytest.fail("loaded with a set batch"))
+    with pytest.raises(SystemExit, match="RAG_RERANK_BATCH must be unset"):
+        ar.main(command(tmp_path))
+    assert not (tmp_path / "out").exists()
+
+
+def test_another_score_holds_the_journal_without_changing_its_bytes(tmp_path, monkeypatch):
+    fcntl = pytest.importorskip("fcntl")
+    from vectordb import _base_manager as manager
+
+    _fake_runs(monkeypatch, tmp_path)
+    path = tmp_path / "out" / ar.SCORE_FILE
+    prefix = b"".join(path.read_bytes().splitlines(keepends=True)[:3])
+    path.write_bytes(prefix + b'{"label":')
+    held = path.read_bytes()
+    monkeypatch.setattr(manager, "get_reranker", lambda: pytest.fail("loaded while journal held"))
+    with path.open("r+b") as holder:
+        fcntl.flock(holder, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        with pytest.raises(SystemExit, match="another score holds the journal"):
+            ar.main(_score_args(tmp_path))
+        assert path.read_bytes() == held
+
+
+def test_score_refuses_a_journal_created_during_loading(tmp_path, monkeypatch):
+    from vectordb import _base_manager as manager
+
+    _fake_runs(monkeypatch, tmp_path, with_scores=False)
+    live = manager.get_reranker()
+    path = tmp_path / "out" / ar.SCORE_FILE
+
+    def other_writer():
+        path.parent.mkdir()
+        path.write_bytes(b"another writer's completed line\n")
+        return live
+
+    monkeypatch.setattr(manager, "get_reranker", other_writer)
+    with pytest.raises(SystemExit, match="journal appeared during loading"):
+        ar.main(_score_args(tmp_path))
+    assert path.read_bytes() == b"another writer's completed line\n"
+
+
+def test_a_broken_byte_stops_score_before_loading_or_opening_the_journal(tmp_path, monkeypatch):
+    from vectordb import _base_manager as manager
+
+    runs = _fake_runs(monkeypatch, tmp_path, with_scores=False)
+    record = runs["p2-conditionalqa"]["records"][1]
+    record["prompt"]["text"] = _flip(record["prompt"]["text"])
+    monkeypatch.setattr(manager, "get_reranker", lambda: pytest.fail("loaded before parity"))
+    assert ar.main(_score_args(tmp_path)) == 3
+    assert {p.name for p in (tmp_path / "out").iterdir()} == {"parity.jsonl"}
+    parity = _lines(tmp_path / "out/parity.jsonl")
+    assert len(parity) == 20
+    assert [(r["case_id"], r["breaks"]) for r in parity if r["breaks"]] == [
+        ("p2-conditionalqa-002", ["v3_prompt"])
+    ]
+
+
+@pytest.mark.parametrize("command", [_score_args, _replay_args])
+@pytest.mark.parametrize("status", [" M config/settings.py", "?? stray.txt"])
+def test_both_phases_refuse_a_dirty_checkout(tmp_path, monkeypatch, command, status):
+    from vectordb import _base_manager as manager
+
+    _fake_runs(monkeypatch, tmp_path, with_scores=False)
+    git = ar.git
+    monkeypatch.setattr(
+        ar, "git", lambda *args: status if args == ("status", "--porcelain") else git(*args)
+    )
+    monkeypatch.setattr(manager, "get_reranker", lambda: pytest.fail("loaded a dirty checkout"))
+    with pytest.raises(SystemExit, match="require a clean checkout"):
+        ar.main(command(tmp_path))
+    assert not (tmp_path / "out").exists()
+
+
+@pytest.mark.parametrize("command", [_score_args, _replay_args])
+@pytest.mark.parametrize("broken", ["nan", "five", "length", "batch", "seconds", "extra", "json"])
+def test_corrupt_complete_scores_are_refused_without_changing_bytes(
+    tmp_path, monkeypatch, command, broken
+):
+    from vectordb import _base_manager as manager
+
+    _fake_runs(monkeypatch, tmp_path)
+    path = tmp_path / "out" / ar.SCORE_FILE
+    lines = _lines(path)
+    message = "planned questions and finite scores"
+    if broken == "nan":
+        lines[1]["scores"][0] = float("nan")
+    elif broken == "five":
+        assert 1 not in lines[1]["pool"]
+        lines[1]["five"][0] = 1
+    elif broken == "length":
+        lines[1]["scores"].pop()
+    elif broken == "batch":
+        lines[1]["batch_size"] = 7
+    elif broken == "seconds":
+        lines[1]["seconds"] = -1
+    elif broken == "extra":
+        lines.append(lines[-1])
+        message = "extra questions"
+    ar.write_rows(path, lines)
+    if broken == "json":
+        path.write_bytes(path.read_bytes() + b"not JSON\n")
+        message = "invalid complete line"
+    held = path.read_bytes()
+    monkeypatch.setattr(manager, "get_reranker", lambda: pytest.fail("loaded corrupt journal"))
+    with pytest.raises(SystemExit, match=message):
+        ar.main(command(tmp_path))
+    assert path.read_bytes() == held
+
+
+@pytest.mark.parametrize("broken", ["runtime", "path", "model", "cached_path", "cached_control"])
+def test_score_refuses_another_factory_before_opening_the_journal(tmp_path, monkeypatch, broken):
+    from config.settings import get_settings
+    from vectordb import _base_manager as manager
+
+    _fake_runs(monkeypatch, tmp_path, with_scores=False)
+    live = manager.get_reranker()
+    if broken == "runtime":
+        live.runtime = "torch"
+        message = "did not load the ONNX reranker"
+    elif broken == "path":
+        live.path = tmp_path / "other.onnx"
+        message = "cached reranker names another export"
+    else:
+        if broken == "model":
+            monkeypatch.setenv("RAG_RERANKER_MODEL", "another/model")
+        elif broken == "cached_path":
+            get_settings().reranker_onnx_path = "another.onnx"
+        else:
+            get_settings().reranker_runtime = "torch"
+        message = "factory's cached settings"
+    monkeypatch.setattr(manager, "get_reranker", lambda: live)
+    monkeypatch.setattr(
+        ar, "locked_journal", lambda path: pytest.fail("opened before factory check")
+    )
+    with pytest.raises(SystemExit, match=message):
+        ar.main(_score_args(tmp_path))
+    assert not (tmp_path / "out").exists()
+
+
+@pytest.mark.parametrize("broken", ["clean", "status", "batch"])
+def test_score_refuses_its_own_unclean_pool_or_fallback(tmp_path, monkeypatch, broken):
+    _fake_runs(monkeypatch, tmp_path, with_scores=False)
+    real = ar.new_machine
+
+    def damaged(*args):
+        machine = real(*args)
+        h = machine.h
+
+        def search(record):
+            docs, trace, clean = h(record)
+            if broken == "batch":
+                machine.reranker.batch = 7
+            return (
+                docs,
+                {**trace, "rerank_status": "fallback" if broken == "status" else "ok"},
+                clean and broken != "clean",
+            )
+
+        machine.h = search
+        return machine
+
+    monkeypatch.setattr(ar, "new_machine", damaged)
+    with pytest.raises(SystemExit, match="did not score the product's pool in its batch"):
+        ar.main(_score_args(tmp_path))
+    lines = _lines(tmp_path / "out" / ar.SCORE_FILE)
+    assert len(lines) == 1 and lines[0]["type"] == "header"
 
 
 def _verdicts(plan, level_of):
@@ -875,7 +1485,11 @@ def test_without_a_detected_gain_the_replay_plans_no_judge_and_h_stays(tmp_path,
     assert ar.main(_replay_args(tmp_path)) == 0
     record = json.loads((out / "record.json").read_text(encoding="utf-8"))
     assert record["judge"] is None and not (tmp_path / "private").exists()
-    assert record["control"] == ar.CONTROL
+    assert record["control"] == {**ar.CONTROL, "reranker_onnx_sha256": ar.INT8_SHA256}
+    assert record["package_advisory"]["advisory"] is True
+    assert record["package_advisory"]["baseline"] == "H_old"
+    advisory = record["package_advisory"]["pooled"]["all_three"]["sent"]
+    assert (advisory["n"], advisory["b_h_only"], advisory["c_arm_only"]) == (12, 0, 0)
     assert record["decision"] == {
         "standings": {"S": "open", "P": "open"},
         "gains": {"S": [], "P": []},
@@ -979,8 +1593,10 @@ def test_s_without_a_graph_of_aircargo_is_not_planned_and_the_replay_reads_not_e
     ("name", "value"),
     [
         ("RAG_RETRIEVAL_TOP_K", "10"),
+        ("RAG_RETRIEVAL_TOP_K", "20"),
         ("OLLAMA_CONTEXT_WINDOW", "8192"),
-        ("RAG_RERANKER_RUNTIME", "onnx"),
+        ("OLLAMA_CONTEXT_WINDOW", "4096"),
+        ("RAG_RERANKER_RUNTIME", "torch"),
         ("EXPERIMENT_ID", "stage7"),
     ],
 )
@@ -991,7 +1607,7 @@ def test_a_checkout_whose_control_is_not_the_specs_stops_the_replay(
     monkeypatch.setenv(name, value)
     with pytest.raises(SystemExit, match="the checkout's control"):
         ar.main(_replay_args(tmp_path))
-    assert not (tmp_path / "out").exists() and not (tmp_path / "private").exists()
+    assert _scores_only(tmp_path) and not (tmp_path / "private").exists()
 
 
 def test_v4s_questions_are_all_read_or_the_replay_stops(tmp_path, monkeypatch):
@@ -1003,7 +1619,7 @@ def test_v4s_questions_are_all_read_or_the_replay_stops(tmp_path, monkeypatch):
     v4["p2-aircargo-099"] = {**v4["p2-aircargo-001"], "case_id": "p2-aircargo-099"}
     with pytest.raises(SystemExit, match="a question V4 answered is not among the records"):
         ar.main(_replay_args(tmp_path))
-    assert not (tmp_path / "out").exists()
+    assert _scores_only(tmp_path)
 
 
 def test_a_record_refused_after_the_plan_is_built_leaves_no_plan(tmp_path, monkeypatch):
@@ -1013,7 +1629,7 @@ def test_a_record_refused_after_the_plan_is_built_leaves_no_plan(tmp_path, monke
     with pytest.raises(SystemExit, match="refused"):
         ar.main(_replay_args(tmp_path))
     private = tmp_path / "private"
-    assert not (tmp_path / "out").exists()
+    assert _scores_only(tmp_path)
     assert not (private / "runs").exists() and not (private / "judge").exists()
 
 
@@ -1134,6 +1750,7 @@ def test_a_plan_other_than_the_one_the_replay_froze_is_refused(tmp_path, monkeyp
 
 def test_a_parity_break_writes_the_parity_rows_alone_and_reads_no_arm(tmp_path, monkeypatch):
     runs = _fake_runs(monkeypatch, tmp_path)
+    monkeypatch.setattr(ar, "new_machine", lambda *args: pytest.fail("an arm preceded the gate"))
     record = runs["p2-conditionalqa"]["records"][1]
     record["prompt"]["text"] = _flip(record["prompt"]["text"])
     out = tmp_path / "out"
@@ -1153,7 +1770,7 @@ def test_a_record_that_would_name_a_document_of_a_base_is_refused(tmp_path, monk
     runs["p2-wixqa"]["names"] = NAMES | {"p2-wixqa"}
     with pytest.raises(SystemExit, match="refused"):
         ar.main(_replay_args(tmp_path))
-    assert not (tmp_path / "out").exists()
+    assert _scores_only(tmp_path)
 
 
 def test_the_tool_reads_what_the_spec_registers():
@@ -1188,12 +1805,27 @@ def test_the_tool_reads_what_the_spec_registers():
     # Gate G1 and the control, as the spec registers them.
     assert (ar.QUALIFIES_AT, ar.MDE_Z, ar.V4_SAVED) == ("pooled_deciding", Fraction(14, 5), 300)
     assert ar.CONTROL == {
-        "retrieval_top_k": 20,
-        "ollama_context_window": 4096,
-        "reranker_runtime": "torch",
+        "retrieval_top_k": 14,
+        "ollama_context_window": 3584,
+        "reranker_runtime": "onnx",
     }
-    frozen = (ar.KMAX, ar.TOP, ar.WINDOW, ar.LIMIT, ar.REL, ar.MAX_UNREAD, ar.MAX_MISSING)
-    assert frozen == (20, 5, 4096, 2636, 0.2, 5, 5)
+    frozen = (
+        ar.K_RECORDED,
+        ar.WINDOW_V4,
+        ar.LIMIT_V4,
+        ar.KMAX,
+        ar.TOP,
+        ar.WINDOW,
+        ar.LIMIT,
+        ar.REL,
+        ar.MAX_UNREAD,
+        ar.MAX_MISSING,
+    )
+    assert frozen == (20, 4096, 2636, 14, 5, 3584, 2176, 0.2, 5, 5)
+    assert ar.ORT_VERSION == "1.23.2"
+    assert ar.TRANSFORMERS_VERSION == "4.44.2"
+    assert ar.TOKENIZER_SNAPSHOT == "953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e"
+    assert ar.INT8_SHA256 == "57335a9f061fe31378c160ddd0861711a0fbdfa20f70aa2640d473dfc4bc1343"
     assert (ar.ARMS, ar.DECIDING, ar.AIRCARGO) == (
         ("S", "P"),
         ("conditionalqa", "wixqa"),

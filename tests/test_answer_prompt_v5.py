@@ -372,6 +372,8 @@ def test_the_stream_model_is_the_runtimes_ollama_provider_inside_its_wrapper(
         "EXPERIMENT_ID",
     ):
         monkeypatch.delenv(name, raising=False)
+    # V5 replayed V4's 4,096 window; the stage-4 package now defaults to 3,584.
+    monkeypatch.setenv("OLLAMA_CONTEXT_WINDOW", "4096")
     settings = config.Settings()
     monkeypatch.setattr(config, "get_settings", lambda: settings)
     strong = runtime.build_provider_runtime(settings).strong

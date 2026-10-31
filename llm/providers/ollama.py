@@ -92,7 +92,7 @@ class OllamaProvider:
         timeout_sec: float,
         input_price_per_1m_tokens: float,
         output_price_per_1m_tokens: float,
-        context_window: int = 4096,
+        context_window: int = 3584,
     ) -> None:
         self.provider_id = "ollama"
         self.model_name = model_name

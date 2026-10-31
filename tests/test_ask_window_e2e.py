@@ -167,8 +167,8 @@ def test_ask_graph_fits_every_model_call_into_the_window(monkeypatch, client, tm
     assert "rules-5.md" not in prompt
     # Every call carries num_ctx and fits what the window leaves for input.
     for call in calls:
-        assert call["kwargs"]["num_ctx"] == 4096
-        limit = window_input_limit(4096, call["kwargs"]["num_predict"])
+        assert call["kwargs"]["num_ctx"] == 3584
+        limit = window_input_limit(3584, call["kwargs"]["num_predict"])
         assert estimate_window_tokens(call["prompt"]) <= limit, call["prompt"][:80]
     # The answer cites only documents the model was given.
     citations = body.get("citations") or []

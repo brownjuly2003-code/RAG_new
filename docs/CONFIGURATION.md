@@ -12,6 +12,7 @@ Copy `.env.example` to `.env`, then adjust only what your deployment needs.
 |---|---|---|
 | `OLLAMA_BASE_URL` | `http://localhost:11434` | Base URL for the default `local-first` Ollama mode or GraceKelly fallback |
 | `OLLAMA_MODEL_NAME` | `qwen3:4b-instruct-2507-q4_K_M` | Primary Ollama model when `LLM_PROVIDER_PROFILE=local-first` |
+| `OLLAMA_CONTEXT_WINDOW` | `3584` | Input window sent as `num_ctx`, including the answer and classic self-evaluation; measured in stage 4 ([step 4](evidence/stage4-step4-record.md), [step 4b](evidence/stage4-step4b-record.md)) |
 | `OLLAMA_FAST_MODEL_NAME` | `llama3.2:3b` | Faster Ollama model for local helper/tool flows |
 | `MODEL_ROUTING_ENABLED` | `false` | Enable structured query classification and simple/complex/global model routing |
 | `OLLAMA_REQUEST_TIMEOUT_SEC` | `3600` | Timeout for a single Ollama HTTP request: the longest silence between bytes, not the call's total time |
@@ -50,12 +51,12 @@ Copy `.env.example` to `.env`, then adjust only what your deployment needs.
 | `RAG_EMBEDDING_REMOTE_BATCH` | `32` | Inputs per remote embeddings request |
 | `RAG_EMBEDDING_REMOTE_TIMEOUT_SEC` | `60` | Timeout for a single remote embeddings request |
 | `RAG_RERANKER_MODEL` | `BAAI/bge-reranker-v2-m3` | Multilingual cross-encoder reranker (pairs with BGE-M3); set to an empty value to disable it |
-| `RAG_RERANKER_RUNTIME` | `torch` | `torch` = sentence-transformers' CrossEncoder; `onnx` = ONNX Runtime on `RAG_RERANKER_ONNX`, scored with the model's own tokenizer as the CrossEncoder scores. `onnx` needs the `onnxruntime` package, which `requirements.txt` does not list; a file that does not load fails the request, it never disables the reranker. Stage 4, item 5a's INT8 export reranked 1.751× faster on the idle Mac, but its five differs from PyTorch's on 307 of 400 questions ([record](evidence/stage4-step5a-record.md)) |
-| `RAG_RERANKER_ONNX` | empty | Path of the ONNX file `RAG_RERANKER_RUNTIME=onnx` loads, an export of `RAG_RERANKER_MODEL`; startup refuses `onnx` without it |
+| `RAG_RERANKER_RUNTIME` | `onnx` | ONNX Runtime on the INT8 export at `RAG_RERANKER_ONNX`, with the model's own tokenizer. `requirements.txt` pins the measured `onnxruntime==1.23.2`: INT8 kernels can change scores between versions. Load failures raise; there is no fallback to torch. Explicit `torch` selects sentence-transformers' CrossEncoder outside the measured package. The INT8 export reranked 1.751× faster on the idle Mac, but its five differs from PyTorch's on 307 of 400 questions ([record](evidence/stage4-step5a-record.md)) |
+| `RAG_RERANKER_ONNX` | empty | Deployment path to the INT8 export made by `reports/stage4-step5a/tools/export_onnx.py`; the model file is not bundled. With a non-empty `RAG_RERANKER_MODEL` and runtime `onnx`, startup refuses an absent file. Set this path or explicitly set `RAG_RERANKER_RUNTIME=torch` outside the measured package. The macOS service also verifies the measured SHA-256 ([runbook](operations/macos-service.md)) |
 | `RAG_DEVICE` | `cpu` | Device of the embedder and the reranker: `cpu`, `auto` (cuda → mps → cpu), `cuda`, `cuda:0` or `mps`. `cpu` by default: on the production Mac's 4 GB GPU the reranker runs out of memory and answers are built on the unreranked order |
 | `RAG_HYBRID_SEARCH` | `true` | Combine BM25 with vector retrieval |
 | `RAG_RETRIEVAL_STRATEGY` | `hybrid` | Retrieval strategy: `vector`, `hybrid`, `graph`, or `factcard`; `graph` and `factcard` fall back to `hybrid` when their store is absent. `factcard` (opt-in) serves whole fact-cards for enumeration queries (fields/documents/conditions) — closes the `customs-clearance-fields` recall gap; build the collection with `scripts/build_factcards.py`. Auto-routing into `factcard` is intentionally NOT default (NO-SHIP pending Phase-5 offline-delta — see `archive/docs/operations/2026-06-14-adaptive-retrieval-closure.md`) |
-| `RAG_RETRIEVAL_TOP_K` | `20` | Candidate documents fetched before reranking |
+| `RAG_RETRIEVAL_TOP_K` | `14` | Candidates per BM25/vector lane before RRF and reranking; smallest measured K without a detected gold loss ([K curve](evidence/k-curve-record.md)), median rerank 14.6 s faster ([step 3](evidence/stage4-step3-record.md)) |
 | `RAG_RERANK_TOP_K` | `5` | Final document count after reranking |
 | `RRF_K` | `60` | Reciprocal Rank Fusion smoothing constant |
 | `RRF_DOC_KEY_CHARS` | `200` | Prefix length used to deduplicate RRF document keys |

@@ -33,6 +33,12 @@ binds autopilot too.
   back one role: Codex, profile cw, reads a package of the repository's
   files and gives a second opinion; it writes no code, grades nothing and
   gets no data of an external base ([`PLAN.md`](PLAN.md) §8.1).
+  Her word of 2026-10-30 («В качестве исполнителя используй кодекс (astra 6
+  xhigh)») made Codex (cw, `gpt-6-astra`, `xhigh`) the executor of the
+  work after it: it writes code, tests and technical documents in a copy of
+  the repository's tracked files without external-base data; the session
+  briefs it, reviews its diff, runs the Mac's gates and measurements,
+  writes the status documents and commits. It still grades nothing.
 - **No MyFlow unless the owner names it in the current session**: neither the
   `myflow_new` skill nor a `$MF` command. `$MF` steps in a handoff give the
   order of the tasks, not the tool.

@@ -1,34 +1,135 @@
 # Stage 7, step 1: the retrieval arms at M3 on stage 2's lists, without an answer
 
-Status 2026-10-30: **registered before the run**, with its tool, its test and S's fix in one
-commit, `8b922a1`, its [cold read](../operations/audit_opus55_30_10_26_stage7_gate.md)'s fifteen
+Status 2026-10-31: **registered before the run**, Amendment 1 with the stage-4 package, tool
+and tests in the same commit; a cold read of this registration precedes the run. The original
+registration and S's fix were commit `8b922a1`, its [cold read](../operations/audit_opus55_30_10_26_stage7_gate.md)'s fifteen
 findings applied ([Records](#records)). [`PLAN.md`](../../PLAN.md) stage 7, step 1:
 «Поиск без генерации: М3 для каждой руки на ≈ 400 вопросах»; her word of 2026-10-28: stage 7
 keeps both arms, the graph and P1b, and the entity graph's extraction cost is measured first.
-No model call, no new retrieval.
+No answer generation or new index search. Amendment 1 adds one live INT8 scoring phase.
+
+A cold read of Amendment 1 (docs/operations/audit_opus55_31_10_26_stage7_amendment1.md) found 1 blocking, 2 should fix and 4 minor; each is applied (its Disposition says how).
 
 Rewritten 2026-10-30 to PLAN's gate, after the [audit](../operations/audit_astra_30_10_26.md)'s
 F5. The draft of 2026-10-29 opened answers on no detected loss and broke a tie by the prompts
 an arm changes: with aircargo's M3 at its ceiling that opened answers almost always, and the
 answers' paired reading (random seed, MDE 0.17–0.30) would most likely have read «not detected»
 after hours of the Mac and the judge. Both rules are gone, from the tool and its test too. The
-control is the path stage 4 accepts: K 20, a 4,096 window and PyTorch's fives today. If the
-stage-4 package changes any of them — INT8 of the reranker keeps the gold but changes the five
-on 307 of the 400 —, H changes, and the replay runs again, in minutes, after a registered
-amendment: the spec and the tool fix K at 20 and the input limit at 2,636, and the tool stops
-unless the checkout's `retrieval_top_k`, `ollama_context_window` and `reranker_runtime` are 20,
-4,096 and `torch`, writing the three into its record. An amendment for INT8 brings INT8's
-scores for all 415 questions: item 5a's comparison scored stage 2's 400, and aircargo-gr's 15
-are scored anew. A replay after an amendment runs at another HEAD, which its judge runs'
+original control was K 20, a 4,096 window and PyTorch's fives. The registration required that
+a package that changes them takes a registered amendment first. Amendment 1 below replaces
+the arms' control; the old control remains the parity gate's. A replay after an amendment runs at another HEAD, which its judge runs'
 `launch.json` name, so it takes a new PRIVATE; the old plan stays with the old record.
+
+## Amendment 1, 2026-10-31: the stage-4 package
+
+The product now defaults to K 14 per retrieval lane, an Ollama window of 3,584 (the product's
+input limit is 2,176), and the INT8 reranker in ONNX Runtime. The fourth accepted lever is
+llama.cpp's `cache-ram = 1024` on the Mac; it is not the replay's concern. H changes: fewer
+candidates, a different five and a shorter fitted context. H in the arms, G1 and the aircargo
+plan henceforth means **H_new** at this package; **H_old** means the original recorded control.
+
+The parity gate stays exactly at H_old: K 20, the recorded PyTorch scores, a 4,096 window and
+2,636 input limit (`K_RECORDED`, `WINDOW_V4`, `LIMIT_V4`). It checks all 415 records against
+V3's sent documents and prompts and the export, and all 300 saved V4 prompts byte for byte.
+It proves the reader faithfully reads stage 2; it remains the precondition, before any arm.
+Both phases call the same parity gate: score after its input preconditions, before loading
+the model or opening the journal, and replay again before reading the arms. A break writes
+`parity.jsonl` and exits 3 in either phase.
+
+H_new uses the recorded vector and BM25 lanes cut to 14 by the product. The vector Store
+returns its first k when the product asks with `retrieval_k = 14`; the BM25 stand-in ranks its
+recorded lane and the product slices it. This is the K curve's method
+(`reports/k-curve/tools/k_curve.py`, `Selection`): both use the same lane prefixes and the
+product's fusion and rerank. The curve sliced both lists before fusion; this replay obtains
+those slices through the product's retrieval calls, and uses fresh INT8 scores instead of
+the curve's recorded PyTorch scores.
+
+All 415 questions are scored anew, including aircargo-gr, through
+`vectordb._base_manager.get_reranker()` and `HybridRetriever`'s own rerank, with
+`RAG_RERANKER_RUNTIME=onnx`. `RAG_RERANKER_ONNX` must name the measured export, SHA-256
+`57335a9f061fe31378c160ddd0861711a0fbdfa20f70aa2640d473dfc4bc1343`; its digest is checked in
+chunks before loading, and another file is refused. ONNX Runtime must be 1.23.2.
+The service passes no `RAG_RERANK_BATCH` (deploy/macos/start.py), so the product calls
+`predict` once per question at its default of 32. A set `RAG_RERANK_BATCH` stops score and
+replay, even if empty or 32; the header always holds `rerank_batch: null`, `batch_size: 32`.
+Item 5a's scores cannot be reused: they score K-20 pools.
+The export uses `quantize_dynamic` (`reports/stage4-step5a/tools/export_onnx.py`), which
+quantizes activations over the whole input tensor of a call: a candidate's score depends on
+the other candidates in its batch, and a K-14 pool is another batch.
+
+Both phases use one recipe: the service's Python
+`/Users/julia/RAG_Support_Assistant/.venv/bin/python` (3.11.15), with
+`PYTHONPATH=<checkout>:/Users/julia/RAG_new_mf_gate_site`, in a clean environment, offline.
+Before any model load both refuse transformers other than 4.44.2, ONNX Runtime other than
+1.23.2, either `HF_HUB_OFFLINE` or `TRANSFORMERS_OFFLINE` other than `1`, or the cached
+BAAI/bge-reranker-v2-m3 `refs/main` naming a snapshot other than
+`953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e`. This is step 5a's tokenizer snapshot and stack;
+the gate's `remote.py --site` environment has transformers 4.41.2 and is only for pytest.
+The header's `environment` is computed without loading a model: `sys.executable`, package
+versions from `importlib.metadata` (transformers, tokenizers, numpy, chromadb,
+sentence-transformers, langchain-ollama, langchain-community, onnxruntime), the offline flags,
+cached snapshot, imported ORT version/module path and its default intra-op thread setting.
+After loading, score verifies the tokenizer's actual snapshot (commit or resolved vocab path)
+and records/checks the session's `intra_op_num_threads` against that setting. The product's
+`OnnxCrossEncoder` passes no SessionOptions: the recorded value is 0, ORT's automatic choice,
+not an assertion of four explicit threads. Product code is unchanged.
+
+Two phases: `score` checks the clean checkout, environment, frozen inputs, complete runs,
+amended `control()` and old parity gate before its first question, then writes
+`OUT/int8_scores.jsonl`. Its header names HEAD, HEAD's parent and subject, the spec and
+tool hashes, the `MEASURE_CODE` SHA-256 map, input provenance and record hashes, export
+digest, environment, ORT version, batch and K. Both phases refuse a nonempty
+`git status --porcelain`; ignored files (including `.tmp/` basetemps) are excluded.
+Each subsequent line holds the label, case id, pool by archive positions, scores, the five
+seen, effective batch size and seconds; no text. Each complete line is flushed to disk.
+Score takes `fcntl.flock(LOCK_EX | LOCK_NB)` on the journal before truncating it and holds
+it to exit; a taken lock stops with "another score holds the journal". An existing journal
+is locked before reading or model loading. For a new journal the factory is validated before
+creating it; if another writer creates it during loading, score refuses under the lock.
+A restart resumes after the last newline-terminated line only if the header and complete rows
+match; it truncates a torn last line, refuses another header or question order, and never
+repeats a completed question. It prints a forecast after ten questions and checks the
+three-times budget after each question and before a resume, counting the saved durations.
+Model loading and the parity gate are additional to this forecast. Once the 3× stop fires,
+keep the journal: move it aside with its stop time in the filename, and register it as
+`NOT_EVIDENCE` in the run's record of evidence. Read the cause before starting score afresh
+at a new OUT; do not resume or erase the stopped journal to reset its clock.
+
+`replay` loads no model, checks the same environment and completes the old parity gate.
+It compares the whole header, including environment, and copies it into `record.json`.
+It then reads all INT8 score
+lines, refuses any pool other than the scored one (positions and order as well as text), and
+requires H_new's replayed five to equal the five seen by `score`. S uses that same pool and
+INT8 scores before coherence and section expansion; P1b keeps by H_new's INT8 scores. V4's
+prompt is fitted by the product at 3,584, and `prompt_input_limit` must give 2,176. G1 and the
+aircargo plan are otherwise unchanged. Beside them, `package_advisory` reads H_new against
+H_old on the 415's available context gold, with the same McNemar pairs at sent and expanded,
+per base and pooled: b is old-only, c new-only. It is labelled advisory and enters no gate;
+aircargo has no context gold here and gains no new judge merely for that comparison.
+
+`control()` now requires `retrieval_top_k = 14`, `ollama_context_window = 3584` and
+`reranker_runtime = onnx`, and records the export digest. The new OUT is
+`/Users/julia/RAG_new_stage7/out-a1`, PRIVATE `/Users/julia/RAG_new_stage7/private-a1`.
+RECORD stays `reports/stage7/5e308fe/`: it names the source stand, while the record, journal
+and judge launches name the overlay of the registering commit, both SHAs named. The journal
+and record hold HEAD, its parent and subject ("mf-gate overlay of <laptop sha>") and the
+measuring-code hashes. The previous OUT and PRIVATE are preserved.
+
+Run `python -m reports.stage7.tools.arms_replay score`, then
+`python -m reports.stage7.tools.arms_replay replay`, with the environment and paths below.
+Forecast: score ≈ 85–90 minutes plus load (415 × ≈ 12 s), stopped at 3× its forecast;
+replay ≈ 10 minutes, stopped at 30. The idle-Mac record measured PyTorch at 28.2 s for K 20,
+INT8 at ≈ 16 s; the K-14 pool is ≈ 30% smaller. These are planning estimates, not new results.
+This amendment says nothing about generated answers or fresh approximate-index searches;
+the limitations below still apply.
 
 ## Why
 
-The retrieval code is stage 2's since stand `5e308fe` and the cross-encoder scores each pair on
-its own, so the arms replay on stage 2's saved lists with the product's code, as the
+The original parity reading replays stage 2's lists and recorded PyTorch scores from stand
+`5e308fe` with the product's code, as the
 [no-reranker point](no-rerank-point.md) and the [K curve](k-curve-expanded.md) did: minutes of
-the Mac, not PLAN's ≈ 3.5 h an arm. Only the fit to the window is redone, under the answer
-prompt V4 of stand `4f48fed`: its template moves the tail of the fit.
+the Mac, not PLAN's ≈ 3.5 h an arm. Amendment 1 scores INT8 once before that fast replay;
+its arms redo the fit under the answer prompt V4 of stand `4f48fed` at the package's window.
 
 **The gate of step 2: PLAN's.** Answers open «только для лучшей руки и только если М3 выросла
 больше MDE», and PLAN's MDE is the effect the sample can detect (§4.4); step 4 reads aircargo,
@@ -43,7 +144,7 @@ and 3 do not run and stage 7 closes with «H stays»: a negative result is a dec
 
 ## The arms
 
-- **H** — `HybridRetriever.get_relevant_documents_with_path`: stage 2's path, today's default.
+- **H** — H_new, `HybridRetriever.get_relevant_documents_with_path` at the package's defaults.
 - **S** — `get_graph_documents_with_path` over the structural graph of the base's chunks, built
   and projected as `vectordb.manager.get_retriever` does with graph retrieval on and no entity
   database: H's pool and five, section coherence (a lone section at ≤ 0.25 of the strongest
@@ -63,7 +164,8 @@ and 3 do not run and stage 7 closes with «H stays»: a negative result is a dec
 - E stops: its probe's gate G2, the extraction cost, failed at the first look on 2026-10-29
   ([record](../evidence/stage7-entity-probe-record.md)).
 
-K stays 20, the five stay five, the input budget stays V4's: a 4,096 window, 2,636 tokens in.
+Amendment 1: K is 14 for the arms, the five stay five, V4's prompt has a 3,584 window and
+2,176 tokens in. K 20 and 4,096/2,636 remain only the parity gate's old control.
 
 ## Inputs, frozen
 
@@ -86,7 +188,8 @@ K stays 20, the five stay five, the input budget stays V4's: a 4,096 window, 2,6
 
 ## The parity gate, before any arm is read
 
-On every question: the stand-ins give the recorded lists (the vector store the vector lane, the
+At H_old (K 20, recorded PyTorch scores, 4,096/2,636), on every question: the stand-ins give
+the recorded lists (the vector store the vector lane, the
 BM25 index the BM25 lane in its order, the cross-encoder each candidate's recorded score,
 refusing any other pool), each asked once; H gives the record's pool, five, scores, path and
 expansion; under stage 2's V3 its sent documents and its prompt byte for byte, the hash the
@@ -136,7 +239,8 @@ amendment that removes the cause — the unread questions read, a graph, or a ne
 The survey's extra condition for S (a gain or a shorter median prompt) is not taken: a
 prompt's length is not M3. It stands beside, as do the prompts each arm changes of V4's 300.
 
-No forecast of the readings: S cannot be computed off the Mac. Under V3 P changes the sent
+No forecast of the new readings: S cannot be computed off the Mac. Historically, at H_old
+under V3 P changes the sent
 documents of 17 aircargo questions, none of aircargo-gr, 39 ConditionalQA, 11 WixQA and 13
 MultiHop-RAG (the export, read again 2026-10-29; P1b keeps fewer than five on 23, 0, 40, 11
 and 15). The smallest detectable loss is six questions lost and none gained (p = 0.031; seven
@@ -145,47 +249,86 @@ two.
 
 ## Running it on the Mac
 
-Idle Mac, after registration and `python D:/RAG_new/.tmp/mf-mac/sync.py`:
+After registration and `python D:/RAG_new/.tmp/mf-mac/sync.py`, run the tests from the laptop:
 
 ```text
 python D:/RAG_new/.tmp/mf-mac/remote.py --site pytest -q tests/test_stage7_arms_replay.py tests/test_graph_retriever.py tests/test_graph_retrieval_path.py tests/integration/test_graph_lane_e2e.py tests/test_gr1b_stage_replay.py tests/test_graph_route_observability.py tests/test_entity_retrieval.py tests/test_ab_remote_contextual_entity_arm.py tests/test_route_trace_units.py tests/test_route_trace_nodes.py
-python D:/RAG_new/.tmp/mf-mac/remote.py --site reports.stage7.tools.arms_replay replay
+```
+
+On the Mac, confirm it is idle before score (no competing chat/model or measurement job).
+From the clean synced checkout, launch score detached and read its log; wait for its successful
+completion (`"score": "complete", "questions": 415`) before replay. Both use the service
+interpreter and exactly the same environment:
+
+```sh
+cd /Users/julia/RAG_new_mf_gate
+mkdir -p /Users/julia/RAG_new_stage7/out-a1
+nohup env -i HOME="$HOME" PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin \
+  LANG=en_US.UTF-8 PYTHONUTF8=1 PYTHONIOENCODING=utf-8 PYTHONDONTWRITEBYTECODE=1 \
+  HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 ANONYMIZED_TELEMETRY=False \
+  PYTHONPATH=/Users/julia/RAG_new_mf_gate:/Users/julia/RAG_new_mf_gate_site \
+  RAG_RERANKER_ONNX=/Users/julia/RAG_new_ort/bge-reranker-v2-m3/int8/model.onnx \
+  /Users/julia/RAG_Support_Assistant/.venv/bin/python -u -m reports.stage7.tools.arms_replay score \
+  >> /Users/julia/RAG_new_stage7/out-a1/score.out 2>&1 </dev/null &
+tail -n 30 /Users/julia/RAG_new_stage7/out-a1/score.out
+
+env -i HOME="$HOME" PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin \
+  LANG=en_US.UTF-8 PYTHONUTF8=1 PYTHONIOENCODING=utf-8 PYTHONDONTWRITEBYTECODE=1 \
+  HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 ANONYMIZED_TELEMETRY=False \
+  PYTHONPATH=/Users/julia/RAG_new_mf_gate:/Users/julia/RAG_new_mf_gate_site \
+  RAG_RERANKER_ONNX=/Users/julia/RAG_new_ort/bge-reranker-v2-m3/int8/model.onnx \
+  /Users/julia/RAG_Support_Assistant/.venv/bin/python -u -m reports.stage7.tools.arms_replay replay
 ```
 
 Its defaults: runs `/Users/julia/RAG_new_chat_5e308fe/chatlive/runs`, archives
 `/Users/julia/RAG_new_external_s1`, V4's runs `/Users/julia/RAG_new_chat_4f48fed/chatlive/runs`,
-out `/Users/julia/RAG_new_stage7/out`, PRIVATE `/Users/julia/RAG_new_stage7/private`, all outside
-the checkout. ≈ 10 minutes, stopped at 30. OUT goes to `reports/stage7/5e308fe/`, PRIVATE to
-`D:/RAG_new_stage7_private/`, never committed. Then the laptop, beside the Mac:
-`python -m scripts.context_judge run --out D:/RAG_new_stage7_private/judge` and
-`python reports/stage7/tools/arms_replay.py judged --plan D:/RAG_new_stage7_private/judge`.
+out `/Users/julia/RAG_new_stage7/out-a1`, PRIVATE `/Users/julia/RAG_new_stage7/private-a1`, all
+outside the checkout. The recipe sets only the export path; the package's K, window and ONNX
+runtime defaults remain in effect, with no `RAG_RERANK_BATCH`. Score ≈ 90 minutes
+plus load, stopped at 3× the first-ten forecast; replay ≈ 10 minutes, stopped at 30.
+OUT goes to `reports/stage7/5e308fe/`, PRIVATE to `D:/RAG_new_stage7_private-a1/`, never
+committed. Then the laptop, beside the Mac:
+`python -m scripts.context_judge run --out D:/RAG_new_stage7_private-a1/judge` and
+`python reports/stage7/tools/arms_replay.py judged --plan D:/RAG_new_stage7_private-a1/judge`.
 
 **The plan's size and cost:** only an arm that qualifies on the external bases is planned;
 with none there is no plan, no request and no laptop time, and the replay's record holds the
-decision. With both arms planned, at most 268 requests — 115 of H, at most 115 of S, at most
-23 of P (the p2-aircargo questions where P1b keeps fewer than five; P is H on all 15 of
-aircargo-gr), 15 retests; by V3's sent documents P's are about 17. $25.2 at stage 2's $0.094 a
-request, $56.3 at $0.21; 2.7–9.7 h of the laptop at 36–130 s a request.
+decision. Amendment 1 removes the old-control bound of 23 changed P prompts: the INT8 five
+and smaller window can change that count. With both arms planned the conservative bound is
+360 requests — 115 each of H, S and P, plus 15 retests — $33.84 at stage 2's $0.094 a request,
+$75.60 at $0.21; 3.6–13 h at 36–130 s a request. The replay prints the actual frozen plan's size.
 
 ## Stops
 
 Each writes nothing unless it says so. A run not complete or not of `5e308fe`; settings other
 than stage 2's hybrid path at K 20 and the five; an input whose hash is not the frozen one; the
-checkout's qa prompt not V4, or an input limit other than 2,636; the checkout's control other
-than K 20, a 4,096 window and PyTorch's reranker, or an experiment's (`EXPERIMENT_ID` set); a
+checkout's qa prompt not V4, or an input limit other than 2,636 for the old gate or 2,176 for
+the arms; the checkout's control other than K 14, a 3,584 window and ONNX, or an experiment's
+(`EXPERIMENT_ID` set); a dirty checkout; a set `RAG_RERANK_BATCH`; an absent or wrong INT8
+export, ORT other than 1.23.2, transformers other than 4.44.2, another cached snapshot or an
+offline flag other than `1` in either phase; a loaded tokenizer/session that disagrees at score; a
 question V4 answered that is not among the records, or other than 300 of them read: the tool
-stops. A parity break: `parity.jsonl` alone, exit 3. S that does not read H's pool, or keeps a
+stops. A mismatched score header, invalid complete line, missing scores at replay, a different
+pool or a replayed five different from score's: refused. A taken journal lock refuses score
+without changing the file. Score preserves its completed lines
+on failure; a parity break writes `parity.jsonl` alone beside that journal, exit 3. S that does not read H's pool, or keeps a
 seed outside H's five: the tool stops and neither arm is read — S's path is then not the
 product's, a defect to fix first. A record or row that would hold a text of a base or a
 question: refused, and no plan is written. A plan already written that differs: refused. Past
-30 minutes on the Mac: stop and read why.
+30 minutes at replay, or 3× score's forecast: the tool stops at a question boundary; inspect
+why before another run. After score's 3× stop, keep and rename the journal with its stop time,
+record it as `NOT_EVIDENCE`, and start afresh at a new OUT only after reading the cause.
+No elapsed-time claim includes an interrupted, unfinished model call.
 
 ## Records
 
-- [`reports/stage7/tools/arms_replay.py`](../../reports/stage7/tools/arms_replay.py) `replay`
+- [`reports/stage7/tools/arms_replay.py`](../../reports/stage7/tools/arms_replay.py) `score`
+  writes the resumable `int8_scores.jsonl`; `replay`
   writes `record.json` — the inputs, the tool and the measuring code by SHA-256, the frozen
   constants, each run's provenance, the gate's counts, each arm's spreads, the pairs, the stop
-  readings, the prompts changed, the plan's size and hash, and the decision or «pending the
+  readings, the advisory H_new/H_old pairs, the score journal's hash and full header including
+  environment, HEAD/parent/subject and measuring-code hashes, the prompts
+  changed, the plan's size and hash, and the decision or «pending the
   aircargo context judge» — `rows.jsonl`, a question a line, and `parity.jsonl`; `judged`
   writes `judged.json`. Ids, flags and numbers: `stage2_common.without_text` refuses a text.
 - `tests/test_stage7_arms_replay.py`: the arms through the product's code on a synthetic
@@ -194,15 +337,18 @@ question: refused, and no plan is written. A plan already written that differs: 
 - The record goes to `reports/stage7/5e308fe/` with its artifact test, a capsule in
   `docs/evidence/` and a row in [`EVIDENCE_INDEX.md`](../../EVIDENCE_INDEX.md).
 
-SHA list of the run: the registration commit, `8b922a16999e9956f0aa36ecfc7e024e04d4069a`;
+SHA list of the run: Amendment 1 is registered with the stage-4 package; the original
+registration commit was `8b922a16999e9956f0aa36ecfc7e024e04d4069a`;
 the SHA-256 of the tool and of its test, below, which the test checks; the record's and the
 plan's, written in with the evidence commit.
 
-- `reports/stage7/tools/arms_replay.py` `7cd819655c9d2e88b1180518dc1413653b78209754dcc1541d441737b045e5a8`
-- `tests/test_stage7_arms_replay.py` `14f504c6ebccd3443c8341ae4232beeb08c1d7213ed03e1ca460e2f89cfc4034`
+- `reports/stage7/tools/arms_replay.py` `6ca8b723841d08dfd6f5d084bdc0883264c889eb495dc4d3728ac0a2ea623689`
+- `tests/test_stage7_arms_replay.py` `3e8fe6c15290816ab1dda08eb73fe4c1151621592dc73b699fb0531fb19cbe72`
 
 ## What it does not say
 
+- A K-20 vector lane's first 14 equal a fresh K-14 search only if the index returns top 14 as
+  the first 14 of top 20; Chroma's HNSW search is approximate.
 - Answer quality: M1 and M2 come in step 2, past G1.
 - That S is the chat's path: the chat's stream calls the hybrid search. S here reads sections
   only — no links, no entities, no categories — over the archive's metadata, where the product

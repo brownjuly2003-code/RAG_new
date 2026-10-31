@@ -20,6 +20,8 @@ HEALTHCHECK --interval=30s --timeout=5s --retries=3 \
   CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health')"
 
 USER app
+# No INT8 export in this image; the measured path is onnx.
+ENV RAG_RERANKER_RUNTIME=torch
 # Single worker by design: session history, pending confirm-actions, the LLM/
 # retriever caches and the circuit breaker live in process memory and are NOT
 # shared across workers/replicas. Running >1 worker breaks confirm-action flows

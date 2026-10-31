@@ -179,7 +179,12 @@ this list:
 - `reports/answer-prompt-v5/tools/v5_chain.sh` `52b9f5f77881db021e802942ed0608c87438a3b32fe259406f3ad23991c03f1b`
 - `reports/answer-prompt-v5/tools/v5_record.py` `1e77dd35f011d274a165e7fda606d54fafbfd27a45c66154e791a645a23f7620`
 - `scripts/chat_answer_judge.py` `cdb2be82d3341afe0b1aba4e560f56eac4e2dec9cce69d0e038a18da4f2c7788` — the judge with V5's marker
-- `tests/test_answer_prompt_v5.py` `dd1801a6fbecf53598df3e3a2182f9c1cec57497596322673ea93214c9da1f19`
+- `tests/test_answer_prompt_v5.py` `77a4df2a5eca65fb42821f56440ad964abd79ba5e3831c4af53f2c2db4b00a4e`
+
+Marked error fix, 2026-10-31: the runtime-provider test explicitly sets
+`OLLAMA_CONTEXT_WINDOW=4096`. Code defaults moved to the stage-4 package (3,584), while V5's
+replays ran at V4's 4,096 window. Only the test's stand setup and its hash change; the reading
+does not change.
 
 ## What the cold read corrected
 

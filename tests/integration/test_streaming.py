@@ -78,7 +78,7 @@ def test_streaming_endpoint_emits_tokens_and_final_result(
     assert any(event == {"type": "token_start"} for event in events)
     assert [event["token"] for event in events if event.get("type") == "token"] == ["Сброс ", "пароля"]
     # The raw Ollama fallback gets the window and the generate role's budget.
-    assert stream_options == [{"num_ctx": 4096, "num_predict": 1024, "temperature": 0.2}]
+    assert stream_options == [{"num_ctx": 3584, "num_predict": 1024, "temperature": 0.2}]
 
     result = next(event for event in events if event.get("type") == "result")
     assert result["answer"] == "Сброс пароля"

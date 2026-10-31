@@ -49,6 +49,8 @@ autoscaling:
 #   --set env.CORS_ORIGINS="https://app.example.com,https://admin.example.com"
 env:
   RAG_ENV: "production"
+  # No INT8 export in this environment; the measured path is onnx.
+  RAG_RERANKER_RUNTIME: "torch"
   OLLAMA_BASE_URL: "http://ollama:11434"
   REDIS_URL: "redis://redis:6379/0"
   REQUIRE_OLLAMA: "true"

@@ -406,7 +406,7 @@ def get_reranker(model_name: str | None = None) -> Any | None:
     if not model_name:
         return None
 
-    if getattr(settings, "reranker_runtime", "torch") == "onnx":
+    if getattr(settings, "reranker_runtime", "onnx") == "onnx":
         from vectordb.onnx_reranker import OnnxCrossEncoder
 
         logger.info("Loading reranker: %s (onnx=%s)", model_name, settings.reranker_onnx_path)
@@ -470,7 +470,7 @@ class HybridRetriever:
         self,
         vector_store: Any,
         chunks: list[Document],
-        retrieval_k: int = 20,
+        retrieval_k: int = 14,
         rerank_k: int = 5,
         rrf_k: int = 60,
         doc_key_chars: int = 200,

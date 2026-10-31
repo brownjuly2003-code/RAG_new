@@ -2417,7 +2417,7 @@ async def ask_stream(
                 streaming_llm
                 if uses_provider_stream
                 else SimpleNamespace(
-                    context_window=int(getattr(settings, "ollama_context_window", 4096))
+                    context_window=int(getattr(settings, "ollama_context_window", 3584))
                 )
             )
             if stream_retrieved:

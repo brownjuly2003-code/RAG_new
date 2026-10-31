@@ -1,7 +1,7 @@
 """RAG_RERANKER_RUNTIME=onnx: the reranker in ONNX Runtime behind a setting (PLAN.md stage 4,
 item 5a, the short live series).
 
-PyTorch stays the default. Under the setting ``get_reranker()`` loads RAG_RERANKER_ONNX with the
+ONNX is the default. Under the setting ``get_reranker()`` loads RAG_RERANKER_ONNX with the
 model's own tokenizer, and ``predict`` scores as ``CrossEncoder.predict`` does: each text
 stripped, a batch padded and truncated longest first, the sigmoid of logit 0, one float per pair
 in the pairs' order. These tests stand in for ONNX Runtime and the tokenizer; the end-to-end test
@@ -23,17 +23,20 @@ from config.settings import Settings
 from vectordb import _base_manager
 
 
-def test_the_runtime_defaults_to_torch_and_reads_the_onnx_path(monkeypatch):
+def test_the_runtime_defaults_to_onnx_and_reads_the_onnx_path(monkeypatch):
     monkeypatch.delenv("RAG_RERANKER_RUNTIME", raising=False)
     monkeypatch.delenv("RAG_RERANKER_ONNX", raising=False)
     settings = Settings()
-    assert (settings.reranker_runtime, settings.reranker_onnx_path) == ("torch", "")
+    assert (settings.reranker_runtime, settings.reranker_onnx_path) == ("onnx", "")
 
     monkeypatch.setenv("RAG_RERANKER_RUNTIME", " ONNX ")
     monkeypatch.setenv("RAG_RERANKER_ONNX", " /models/int8/model.onnx ")
     settings = Settings()
     assert settings.reranker_runtime == "onnx"
     assert settings.reranker_onnx_path == "/models/int8/model.onnx"
+
+    monkeypatch.setenv("RAG_RERANKER_RUNTIME", " ")
+    assert Settings().reranker_runtime == "onnx"
 
 
 @pytest.mark.parametrize(
@@ -45,8 +48,24 @@ def test_startup_refuses_an_unknown_runtime_and_onnx_without_a_file(
     monkeypatch.setenv("RAG_RERANKER_MODEL", "BAAI/bge-reranker-v2-m3")  # conftest empties it
     monkeypatch.setenv("RAG_RERANKER_RUNTIME", runtime)
     monkeypatch.setenv("RAG_RERANKER_ONNX", str(tmp_path / "missing.onnx"))
-    with pytest.raises(RuntimeError, match=named):
+    with pytest.raises(RuntimeError, match=named) as refused:
         Settings().validate()
+    if runtime == "onnx":
+        assert repr(str(tmp_path / "missing.onnx")) in str(refused.value)
+
+
+def test_default_runtime_refusal_names_export_and_explicit_torch_opt_out(monkeypatch):
+    monkeypatch.delenv("RAG_RERANKER_RUNTIME", raising=False)
+    monkeypatch.delenv("RAG_RERANKER_ONNX", raising=False)
+    monkeypatch.setenv("RAG_RERANKER_MODEL", "BAAI/bge-reranker-v2-m3")
+    with pytest.raises(RuntimeError, match="RAG_RERANKER_ONNX") as refused:
+        Settings().validate()
+    assert "reports/stage4-step5a/tools/export_onnx.py" in str(refused.value)
+    assert "RAG_RERANKER_RUNTIME=torch" in str(refused.value)
+    assert "not the measured stage-4 package" in str(refused.value)
+    assert "Got ''." in str(refused.value)
+    monkeypatch.setenv("RAG_RERANKER_RUNTIME", "torch")
+    Settings().validate()
 
 
 def test_get_reranker_loads_the_onnx_file_under_the_setting(monkeypatch):
@@ -80,7 +99,7 @@ def test_get_reranker_loads_the_onnx_file_under_the_setting(monkeypatch):
     assert len(loaded) == 1
 
 
-def test_get_reranker_keeps_the_cross_encoder_by_default(monkeypatch):
+def test_get_reranker_keeps_the_explicit_torch_cross_encoder(monkeypatch):
     created: list[str] = []
 
     class _CrossEncoder:

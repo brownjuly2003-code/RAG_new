@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import asyncio
 import dataclasses
+import hashlib
 import json
 import os
 import re
@@ -45,6 +46,8 @@ HOST = "127.0.0.1"
 # it, and the service refuses while a stand does. One measurement at a time on 8 GB.
 PORT = 8002
 POSTGRES_WAIT_SEC = 120.0
+# Measured INT8 export: reports/stage4-step5a/onnx/manifest.json, files["int8/model.onnx"].
+RERANKER_ONNX_SHA256 = "57335a9f061fe31378c160ddd0861711a0fbdfa20f70aa2640d473dfc4bc1343"
 
 # What the service takes from SERVICE_ENV (deploy/macos/service.env.example explains each):
 # where its data lives, its secrets and its login. Everything else keeps the code default.
@@ -52,6 +55,7 @@ DEPLOYMENT_KEYS = frozenset(
     {
         "DATABASE_URL",
         "VECTORDB_CHROMA_DIR",
+        "RAG_RERANKER_ONNX",
         "JWT_SECRET",
         "SESSION_SECRET_KEY",
         "DB_ENCRYPTION_KEY",
@@ -65,6 +69,7 @@ DEPLOYMENT_KEYS = frozenset(
 REQUIRED_KEYS = (
     "DATABASE_URL",
     "VECTORDB_CHROMA_DIR",
+    "RAG_RERANKER_ONNX",
     "JWT_SECRET",
     "DB_ENCRYPTION_KEY",
     "ADMIN_PASSWORD_HASH",
@@ -249,6 +254,18 @@ def check_values(env: dict[str, str]) -> None:
             REFUSE,
             f"no chroma.sqlite3 in VECTORDB_CHROMA_DIR {index}: the API would make an empty index",
         )
+    model = Path(env["RAG_RERANKER_ONNX"])
+    if not model.is_file():
+        raise Stop(REFUSE, "RAG_RERANKER_ONNX must name the measured INT8 file")
+    digest = hashlib.sha256()
+    try:
+        with model.open("rb") as handle:
+            for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+                digest.update(chunk)
+    except OSError:
+        raise Stop(REFUSE, "RAG_RERANKER_ONNX could not be read") from None
+    if digest.hexdigest() != RERANKER_ONNX_SHA256:
+        raise Stop(REFUSE, "RAG_RERANKER_ONNX SHA-256 differs from the measured INT8 export")
 
 
 def wait_for_postgres(url_text: str) -> None:

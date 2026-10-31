@@ -14,7 +14,9 @@ measurement it waits for is [`stage6-throughput.md`](../specs/stage6-throughput.
 - **What the agent starts:** [`start.py`](../../deploy/macos/start.py) checks everything, then
   replaces itself with `uvicorn api.app:app` on `127.0.0.1:8002`, one worker.
 - **The code defaults:** the model `qwen3:4b-instruct-2507-q4_K_M`, the 3,600-s limits,
-  `RAG_DEVICE=cpu` and `RAG_ENV` `development`, the configuration the stands measured.
+  `RAG_DEVICE=cpu` and `RAG_ENV` `development`. The stage-4 package defaults are
+  `RAG_RETRIEVAL_TOP_K=14`, `OLLAMA_CONTEXT_WINDOW=3584`, `RAG_RERANKER_RUNTIME=onnx`;
+  the kept count stays 5. See [configuration](../CONFIGURATION.md) for the measurement records.
   `.ask100-runtime/env.json` pins qwen2.5:7b, so it is never read (item 2).
 - **The environment:** start.py builds the API's environment from nothing. It holds the user's
   `HOME`, `USER`, `LOGNAME` and `TMPDIR`, the stands' `PYTHONPATH`, and the deployment keys of
@@ -34,6 +36,7 @@ measurement it waits for is [`stage6-throughput.md`](../specs/stage6-throughput.
 | `RAG_SERVICE_MEMORY_POLICY` is a policy the service can hold ([below](#the-memory-policy)) | refusal |
 | Port 8002 is free | refusal |
 | Every required key is set and no `<placeholder>` is left. `JWT_SECRET` and `SESSION_SECRET_KEY` have at least 32 characters and `DB_ENCRYPTION_KEY` at least 16, none of them a known dev default. `ADMIN_PASSWORD_HASH` is a bcrypt hash. The index directory holds `chroma.sqlite3` | refusal |
+| `RAG_RERANKER_ONNX` names a file whose SHA-256 matches the measured INT8 export; hashed in 1 MiB chunks before any API start | refusal |
 | PostgreSQL accepts the service's login (`SELECT 1`). The TCP wait is ≤ 120 s, and SQLSTATE `57P03` means starting up | not up yet; any other error is a refusal |
 | Ollama answers and has the code default's model (nothing is loaded) | not up yet; a missing model is a refusal |
 | `Settings.validate()` | refusal |
@@ -108,6 +111,16 @@ The only measurement it stays up for is its own throughput measurement.
    - each secret from `$PY -c "import secrets; print(secrets.token_urlsafe(48))"`;
    - the login's hash from `$PY -c "import getpass; from passlib.hash import bcrypt; print(bcrypt.hash(getpass.getpass()))"`;
    - `DATABASE_URL` with the role's password, percent-encoded where needed.
+
+   `RAG_RERANKER_ONNX` is a required deployment path, default empty in code. The example names
+   `/Users/julia/RAG_new_ort/bge-reranker-v2-m3/int8/model.onnx`. This 570858625-byte file is not
+   in the repository; `reports/stage4-step5a/tools/export_onnx.py` made the measured export.
+   start.py requires SHA-256 `57335a9f061fe31378c160ddd0861711a0fbdfa20f70aa2640d473dfc4bc1343`
+   from `reports/stage4-step5a/onnx/manifest.json`. Missing, unreadable or different files refuse
+   startup. Install the pinned `onnxruntime==1.23.2` from the regenerated dependency lock.
+   `RAG_RERANKER_RUNTIME` remains a quality setting and is not accepted in the service env file:
+   this service runs the measured ONNX default. Outside this service, explicit
+   `RAG_RERANKER_RUNTIME=torch` opts out of the measured package; no automatic fallback exists.
 
    **Keep `DB_ENCRYPTION_KEY` for the database's whole life.** Messages are stored encrypted with
    it (pgcrypto, `db/crypto.py`), and a new key leaves the old rows unreadable.

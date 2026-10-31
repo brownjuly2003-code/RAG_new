@@ -25,8 +25,11 @@ The product measured and improved now is the web chat on the production Mac
 ## Who does the work
 
 - **The session does all of it** — code, tests, documents, checks (Julia's D12, 2026-10-04:
-  «ты должен все делать сам»). No model of another vendor in any role; a subagent runs on the
-  session's model. MyFlow only when Julia names it in the current session.
+  «ты должен все делать сам»). No model of another vendor in any role but Codex's, on her word;
+  a subagent runs on the session's model. Codex (profile cw) gives a second opinion since
+  2026-10-19 and is the executor since 2026-10-30 — the session briefs it, reviews its diff,
+  gates, measures and commits ([`CLAUDE.md`](CLAUDE.md)). MyFlow only when Julia names it in
+  the current session.
 - **No person in the quality process** (D11, 2026-10-03): nobody grades, labels or approves; a
   model's check is never called a human one.
 - **Commits are local and allowed; a push is Julia's decision, asked each time.** Command in

@@ -225,6 +225,7 @@ P2 reference samples ([Astra](specs/p2-astra-reference-sample.md),
   script and test frozen before registration; verbatim, 0 blocking, 3 should fix, 5 minor,
   each applied before registration, as its Disposition says.
 - [Cold read of stage 7 step 1's spec, 2026-10-30](operations/audit_opus55_30_10_26_stage7_gate.md)
+- [Cold read of stage 7 step 1's Amendment 1, the stage-4 package, 2026-10-31](operations/audit_opus55_31_10_26_stage7_amendment1.md)
   — one fresh subagent on the session's model read the spec, tool, test and S's fix frozen
   before registration; verbatim, 1 blocking, 4 should fix, 10 minor, each applied before
   registration, as its Disposition says.

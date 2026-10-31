@@ -139,6 +139,8 @@ def _provider(**overrides: Any) -> Any:
         "timeout_sec": 60,
         "input_price_per_1m_tokens": 0,
         "output_price_per_1m_tokens": 0,
+        # The stand ran at 4,096; the code default is 3,584 since the stage-4 package.
+        "context_window": 4096,
     }
     values.update(overrides)
     return OllamaProvider(**values)
@@ -1147,7 +1149,7 @@ def test_a_stand_whose_continuation_is_not_the_specs_stops_before_any_request(
 def test_the_stands_default_stream_model_gives_the_specs_continuation(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """The runtime's own stream model under the code's defaults, held against V4's settings as
+    """The runtime's own stream model under the stand's settings, held against V4's settings as
     V5's replay holds them: its continuation is the spec's."""
     import config.settings as config
 
@@ -1161,6 +1163,7 @@ def test_the_stands_default_stream_model_gives_the_specs_continuation(
         "EXPERIMENT_ID",
     ):
         monkeypatch.delenv(name, raising=False)
+    monkeypatch.setenv("OLLAMA_CONTEXT_WINDOW", "4096")  # The recorded stand's window.
     settings = config.Settings()
     monkeypatch.setattr(config, "get_settings", lambda: settings)
     run = tmp_path / RUN

@@ -371,8 +371,10 @@ class Settings:
     )
     # Input window sent to Ollama as num_ctx on every call. Prompts are fitted
     # under it; a larger value costs memory for the model's KV cache.
+    # 3584 is the measured stage-4 window: docs/evidence/stage4-step4-record.md
+    # and docs/evidence/stage4-step4b-record.md.
     ollama_context_window: int = field(
-        default_factory=lambda: int(os.getenv("OLLAMA_CONTEXT_WINDOW", "4096"))
+        default_factory=lambda: int(os.getenv("OLLAMA_CONTEXT_WINDOW", "3584"))
     )
     ollama_model_name: str = field(
         default_factory=lambda: os.getenv("OLLAMA_MODEL_NAME", "qwen3:4b-instruct-2507-q4_K_M")
@@ -486,18 +488,19 @@ class Settings:
     reranker_model: str = field(
         default_factory=lambda: os.getenv("RAG_RERANKER_MODEL", "BAAI/bge-reranker-v2-m3")
     )
-    # Runtime of the reranker (PLAN.md stage 4, item 5a):
-    # "torch" (default) — sentence-transformers' CrossEncoder, what production runs;
-    # "onnx" — ONNX Runtime on RAG_RERANKER_ONNX, an export of reranker_model, scored with the
-    #          model's own tokenizer (vectordb.onnx_reranker). It needs the onnxruntime
-    #          package, which requirements.txt does not list. Item 5a's INT8 file reranked
-    #          1.751x faster on the idle Mac, but its five differs from PyTorch's on 307 of 400
-    #          questions (docs/evidence/stage4-step5a-record.md).
+    # Runtime of the reranker (the measured stage-4 package):
+    # "onnx" (default) — ONNX Runtime on the INT8 export at RAG_RERANKER_ONNX, scored with
+    #          the model's own tokenizer (vectordb.onnx_reranker). requirements.txt pins the
+    #          measured runtime. It reranked 1.751x faster on the idle Mac, but its five differs
+    #          from PyTorch's on 307 of 400 questions (docs/evidence/stage4-step5a-record.md;
+    #          docs/specs/stage4-step5a-int8-reranker.md).
+    # "torch" — explicit sentence-transformers CrossEncoder opt-out of the measured package.
     reranker_runtime: str = field(
         default_factory=lambda: (
-            os.getenv("RAG_RERANKER_RUNTIME", "torch").strip().lower() or "torch"
+            os.getenv("RAG_RERANKER_RUNTIME", "onnx").strip().lower() or "onnx"
         )
     )
+    # Deployment path, never bundled: startup refuses an enabled ONNX reranker without it.
     reranker_onnx_path: str = field(
         default_factory=lambda: os.getenv("RAG_RERANKER_ONNX", "").strip()
     )
@@ -524,9 +527,11 @@ class Settings:
     )
 
     # Retrieval parameters
-    # candidates before reranking
+    # Candidates per lane before reranking: 14 is the smallest measured K without a
+    # detected gold loss (docs/evidence/k-curve-record.md); median rerank saved 14.6 s
+    # (docs/evidence/stage4-step3-record.md).
     retrieval_top_k: int = field(
-        default_factory=lambda: int(os.getenv("RAG_RETRIEVAL_TOP_K", "20"))
+        default_factory=lambda: int(os.getenv("RAG_RETRIEVAL_TOP_K", "14"))
     )
     # final docs after reranking
     rerank_top_k: int = field(
@@ -1435,8 +1440,11 @@ class Settings:
             and not Path(self.reranker_onnx_path).is_file()
         ):
             raise RuntimeError(
-                "\nERROR: RAG_RERANKER_RUNTIME=onnx needs RAG_RERANKER_ONNX, an ONNX file.\n"
-                f"       Got {self.reranker_onnx_path!r}."
+                "\nERROR: RAG_RERANKER_RUNTIME=onnx needs RAG_RERANKER_ONNX pointing to the "
+                "INT8 export made by reports/stage4-step5a/tools/export_onnx.py.\n"
+                "       Or set RAG_RERANKER_RUNTIME=torch for the PyTorch path, "
+                "which is not the measured stage-4 package."
+                f" Got {self.reranker_onnx_path!r}."
             )
 
         if self.rag_env == "production" and ("*" in self.cors_origins or self.cors_origins == []):

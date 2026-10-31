@@ -3,8 +3,10 @@
 docs/specs/stage7-step1-arms-m3.md (registered before the run); PLAN.md stage 7, step 1. Reads, on
 the Mac, stage 2's retrieval records of stand 5e308fe and the bases' chunk archives, the
 committed export of the same runs, and V4's saved stream prompts of stand 4f48fed with their
-committed rows; no model is called:
+committed rows. Amendment 1 separates live INT8 scoring from the replay:
 
+  python -m reports.stage7.tools.arms_replay score [--runs DIR] [--data-root DIR]
+      [--v4-runs DIR] [--out DIR]
   python -m reports.stage7.tools.arms_replay replay [--runs DIR] [--data-root DIR]
       [--v4-runs DIR] [--out DIR] [--private DIR]
   python reports/stage7/tools/arms_replay.py judged --plan DIR [--record DIR] [--runs DIR]
@@ -13,12 +15,19 @@ The defaults are the Mac's folders (RUNS, DATA_ROOT, V4_RUNS, OUT, PRIVATE below
 PRIVATE stand outside the checkout. Every question of p2-wixqa, p2-conditionalqa,
 p2-multihoprag, p2-aircargo and p2-aircargo-gr (415) goes through the product's own retriever
 over its base's chunk archive, the recorded lists standing in for the index and the models: the
-vector store returns the recorded vector lane, the BM25 index ranks the recorded BM25 lane in
-its order, the cross-encoder returns each fused candidate's recorded score and refuses any
-other pool. K stays 20, the five stay five, the input window stays V4's; the checkout's own
-control must be the same (K 20, a 4,096 window, PyTorch's reranker) or the replay stops.
+vector store returns the first k of the recorded vector lane, the BM25 index ranks its lane
+and the product cuts it. score runs K 14 through get_reranker() and HybridRetriever with the
+measured INT8 export and ORT 1.23.2, journalling positions, scores, batch, seconds and the five
+in OUT/int8_scores.jsonl under an exclusive lock. Both phases require the clean registered
+checkout and service interpreter stack, offline tokenizer snapshot and default batch 32;
+the header binds that environment, HEAD/parent/subject and measuring code. score also runs
+the old parity gate before loading and checks the loaded tokenizer and session threads.
+It resumes only a matching header; after ten questions it forecasts
+the run and stops past three times that forecast. replay loads no model: it refuses any pool
+other than the scored one and checks the five against score's. The checkout's control must be
+K 14, a 3,584 window and ONNX; the prompt's input limit must be 2,176.
 
-  H - HybridRetriever.get_relevant_documents_with_path: stage 2's path, today's default;
+  H - H_new, HybridRetriever.get_relevant_documents_with_path at the package's defaults;
   S - HybridRetriever.get_graph_documents_with_path over the structural graph of the base's
       chunks, built and projected as vectordb.manager.get_retriever does with graph retrieval
       on and no entity graph: the same five, section coherence, the section expansion;
@@ -26,10 +35,11 @@ control must be the same (K 20, a 4,096 window, PyTorch's reranker) or the repla
       0.2) by their cross-encoder scores, then HybridRetriever._expand_parents.
 
 Each arm's documents go through the chat's fitting (api.routers.conversation._fit_stream_prompt,
-no history) under the answer prompt V4 at V4's input limit: the prompt the chat would send,
+no history) under the answer prompt V4 at the package's input limit: the prompt the chat would send,
 flattened as the provider sends it.
 
-The parity gate, before any arm is read. On every question H must give the record's pool, its
+The parity gate stays at H_old: K 20, recorded PyTorch scores, window 4,096 / limit 2,636.
+Before any arm is read, on every question H_old must give the record's pool, its
 five with their scores, its expansion and, under stage 2's prompt V3, its sent documents and
 its prompt byte for byte, the one whose hash the export holds; the M3 points read again must be
 the export's. On the 300 questions V4 answered (WixQA, ConditionalQA, aircargo) H under V4 must
@@ -45,7 +55,8 @@ the external bases, the one context-judge plan (scripts/context_judge.build_plan
 prompts and of each such arm's prompts that differ, written under PRIVATE after the record
 passes its checks and not judged here; `judged` reads the plan's verdicts on the laptop and
 completes G1, aircargo's readings stopping an arm and qualifying none. No such arm: G1 decides
-at the replay.
+at the replay. H_new against H_old on context gold stands beside, advisory and read by no gate.
+replay stops past 30 minutes; score is forecast at about 90 minutes plus model load.
 
 Writes OUT/record.json and OUT/rows.jsonl (ids, flags, numbers); stage2_common.without_text
 refuses either when a string of it names a document of a base or holds a question. PRIVATE holds
@@ -58,10 +69,13 @@ import hashlib
 import json
 import math
 import os
+import subprocess
 import sys
 import tempfile
+import time
 from collections import Counter
 from fractions import Fraction
+from importlib import metadata
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -105,12 +119,22 @@ QUALIFIES_AT = "pooled_deciding"
 MDE_Z = Fraction(14, 5)
 AIRCARGO = ("p2-aircargo", "p2-aircargo-gr")
 ARMS = ("S", "P")
-KMAX = 20
+K_RECORDED = 20
+WINDOW_V4 = 4096
+LIMIT_V4 = 2636
+KMAX = 14
 TOP = nr.TOP
-WINDOW = 4096
-LIMIT = 2636
+WINDOW = 3584
+LIMIT = 2176
 # The path stage 4 accepts, as the checkout's settings give it: H rests on it.
-CONTROL = {"retrieval_top_k": KMAX, "ollama_context_window": WINDOW, "reranker_runtime": "torch"}
+CONTROL = {"retrieval_top_k": 14, "ollama_context_window": 3584, "reranker_runtime": "onnx"}
+# reports/stage4-step5a/onnx/manifest.json, files["int8/model.onnx"].
+INT8_SHA256 = "57335a9f061fe31378c160ddd0861711a0fbdfa20f70aa2640d473dfc4bc1343"
+ORT_VERSION = "1.23.2"
+TRANSFORMERS_VERSION = "4.44.2"
+TOKENIZER_SNAPSHOT = "953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e"
+SCORE_FILE = "int8_scores.jsonl"
+REPLAY_SECONDS = 30 * 60
 V4_SAVED = 300
 REL = 0.2
 MAX_UNREAD = 5
@@ -131,8 +155,8 @@ RENAMED = {"b_reranker_only": "b_h_only", "c_fused_only": "c_arm_only"}
 RUNS = Path("/Users/julia/RAG_new_chat_5e308fe/chatlive/runs")
 DATA_ROOT = Path("/Users/julia/RAG_new_external_s1")
 V4_RUNS = Path("/Users/julia/RAG_new_chat_4f48fed/chatlive/runs")
-OUT = Path("/Users/julia/RAG_new_stage7/out")
-PRIVATE = Path("/Users/julia/RAG_new_stage7/private")
+OUT = Path("/Users/julia/RAG_new_stage7/out-a1")
+PRIVATE = Path("/Users/julia/RAG_new_stage7/private-a1")
 RECORD = WS / "reports" / "stage7" / "5e308fe"
 # Stage 2's context judge: $12.164 for 130 requests; the survey's upper price a request.
 COST_PER_REQUEST = (0.094, 0.21)
@@ -155,6 +179,7 @@ MEASURE_CODE = (
     "ingestion/entity_graph_loading.py",
     "vectordb/table_header.py",
     "vectordb/manager.py",
+    "vectordb/onnx_reranker.py",
     "scripts/p1_adaptive_k.py",
     "scripts/context_judge.py",
     "scripts/chat_answer_judge.py",
@@ -178,7 +203,7 @@ class Store:
 
     def similarity_search(self, query, k=None, **kwargs):
         self.asked.append((query, k, sorted(kwargs)))
-        return list(self.lane)
+        return list(self.lane[:k])
 
 
 class Lane:
@@ -215,6 +240,30 @@ class Recorded:
             self.refused = True
             raise ValueError("the pool is not the recorded one")
         return list(self.scores)
+
+
+class Recorder:
+    """The live product reranker, recording exactly the call the product makes."""
+
+    def __init__(self, reranker):
+        self.reranker = reranker
+
+    def expect(self, question, texts, scores):
+        self.calls, self.refused, self.scores, self.batch = 0, False, [], None
+
+    def predict(self, pairs, batch_size=None):
+        self.calls += 1
+        self.batch = batch_size
+        values = (
+            self.reranker.predict(pairs)
+            if batch_size is None
+            else self.reranker.predict(pairs, batch_size=batch_size)
+        )
+        self.scores = [float(value) for value in values]
+        if len(self.scores) != len(pairs) or not all(finite(v) for v in self.scores):
+            self.refused = True
+            raise ValueError("INT8 did not score every candidate finitely")
+        return self.scores
 
 
 @contextlib.contextmanager
@@ -256,7 +305,7 @@ class Replay:
     """A base's chunks behind the product's retrievers, the recorded lists standing in for the
     index and the models: H and P read the hybrid retriever, S the one with the graph."""
 
-    def __init__(self, chunks, settings, tenant, batch):
+    def __init__(self, chunks, settings, tenant, batch, reranker=None):
         from vectordb._base_manager import Document
 
         # The index stamps each chunk's archive position as its chunk_index.
@@ -265,7 +314,8 @@ class Replay:
             for i, c in enumerate(chunks)
         ]
         self.chunks, self.settings, self.tenant, self.batch = chunks, settings, tenant, batch
-        self.store, self.lane, self.reranker = Store(), Lane(len(self.docs)), Recorded()
+        self.store, self.lane = Store(), Lane(len(self.docs))
+        self.reranker = Recorded() if reranker is None else reranker
         self.hybrid = self.retriever(None)
         self.structural, self.graph = None, None
 
@@ -291,6 +341,14 @@ class Replay:
             rerank_batch=self.batch,
         )
         made._bm25 = self.lane
+        rerank = made._rerank_scored_with_status
+
+        def observed(query, docs):
+            # Positions, not texts: identical chunk text must not hide a changed pool.
+            self.pool = [d.metadata["chunk_index"] for d in docs]
+            return rerank(query, docs)
+
+        made._rerank_scored_with_status = observed
         return made
 
     def build_graph(self):
@@ -319,6 +377,7 @@ class Replay:
         self.store.asked = []
         self.lane.set([position(x, self.chunks) for x in lanes["bm25"]])
         members = [position(p, self.chunks) for p in pool]
+        self.expected_pool, self.pool = members, []
         self.reranker.expect(
             record["question"], [self.docs[m].page_content for m in members], [p[2] for p in pool]
         )
@@ -331,6 +390,7 @@ class Replay:
             and self.lane.calls == 1
             and self.reranker.calls == 1
             and not self.reranker.refused
+            and (isinstance(self.reranker, Recorder) or self.pool == self.expected_pool)
         )
 
     def h(self, record):
@@ -364,9 +424,9 @@ def kept(scores):
 
 class Builder:
     """The chat's prompt of a question and documents under V3 or V4, flattened as the provider
-    sends it, at V4's input limit; and the documents it holds."""
+    sends it, at the amended input limit (or the explicit old gate's); and its documents."""
 
-    def __init__(self):
+    def __init__(self, window=WINDOW, limit=LIMIT):
         import agent.prompts as prompts
         from agent.context_window import prompt_input_limit
         from api.routers.conversation import _fit_stream_prompt
@@ -375,7 +435,7 @@ class Builder:
 
         self.prompts, self.fit = prompts, _fit_stream_prompt
         self.flatten, self.estimate = flatten_messages, estimate_window_tokens
-        self.owner = SimpleNamespace(context_window=WINDOW)
+        self.owner = SimpleNamespace(context_window=window)
         self.texts = {"v3": v4_record.V3_TEMPLATE, "v4": v4_record.V4_TEMPLATE}
         self.marks = {"v3": PROMPT_IDS[V3_ID], "v4": PROMPT_IDS[V4_ID]}
         registry = prompts.PROMPT_REGISTRY["qa"]
@@ -387,8 +447,8 @@ class Builder:
                 or self.marks[version] in (self.texts[other])
             ):
                 raise SystemExit("V3's and V4's citation sentences do not tell them apart")
-        if prompt_input_limit(self.owner, "generate") != LIMIT:
-            raise SystemExit(f"the model's input limit is not V4's {LIMIT} tokens")
+        if prompt_input_limit(self.owner, "generate") != limit:
+            raise SystemExit(f"the model's input limit is not the registered {limit} tokens")
         self.cache = {}
 
     def __call__(self, version, question, docs):
@@ -601,7 +661,20 @@ def control():
     got = {key: getattr(built, key) for key in CONTROL}
     if got != CONTROL:
         raise SystemExit(f"the checkout's control is {got}, not the spec's {CONTROL}")
-    return got
+    return {**got, "reranker_onnx_sha256": export_digest(built.reranker_onnx_path)}
+
+
+def export_digest(path):
+    """Check the measured export before loading it; never read 571 MB at once."""
+    if not path or not Path(path).is_file():
+        raise SystemExit("RAG_RERANKER_ONNX must name the measured INT8 export")
+    hashed = hashlib.sha256()
+    with Path(path).open("rb") as stream:
+        for block in iter(lambda: stream.read(1024 * 1024), b""):
+            hashed.update(block)
+    if hashed.hexdigest() != INT8_SHA256:
+        raise SystemExit("RAG_RERANKER_ONNX has the wrong INT8 digest")
+    return hashed.hexdigest()
 
 
 def export_manifest():
@@ -625,13 +698,13 @@ def run_inputs(label, args, manifest):
     settings = effective["all"]
     path = {
         "rerank_top_k": TOP,
-        "retrieval_top_k": KMAX,
+        "retrieval_top_k": K_RECORDED,
         "parent_expansion": True,
         "hybrid_search": True,
         "retrieval_strategy": "hybrid",
     }
     if any(settings.get(key) != value for key, value in path.items()):
-        raise SystemExit(f"{label}: not stage 2's hybrid path at K {KMAX} and the five")
+        raise SystemExit(f"{label}: not stage 2's hybrid path at K {K_RECORDED} and the five")
     if sha256(EXPORT / f"{label}.json") != manifest["files"][f"{label}.json"]:
         raise SystemExit(f"{label}.json is not the file the export's manifest names")
     exported = json.loads((EXPORT / f"{label}.json").read_text(encoding="utf-8"))["provenance"]
@@ -646,8 +719,8 @@ def run_inputs(label, args, manifest):
         and archive_sha == ARCHIVES[base]
     ):
         raise SystemExit(f"{base}: the chunk archive is not the one the index and export read")
-    if (exported.get("window") or {}).get("context_window") != WINDOW:
-        raise SystemExit(f"{label}: the export's prompts were not fitted to a {WINDOW} window")
+    if (exported.get("window") or {}).get("context_window") != WINDOW_V4:
+        raise SystemExit(f"{label}: the export's prompts were not fitted to a {WINDOW_V4} window")
     # retrieval_summary.py's hash of the public settings, and of the questions' file.
     public = json.dumps(effective["settings"], sort_keys=True).encode()
     if hashlib.sha256(public).hexdigest() != exported.get("settings_sha256") or sha256(
@@ -1150,47 +1223,246 @@ def write_rows(path, rows):
     )
 
 
-def replay(args):
-    """The parity gate, then the arms, the external readings and the aircargo judge plan."""
-    held_control = control()
-    manifest = export_manifest()
-    builder = Builder()
-    parity, rows, provenance, graphs, labels = [], [], {}, {}, {}
-    texts, launches, names, questions = {}, {}, set(), []
-    failed, current = False, None
-    for label in LABELS:
-        inputs = run_inputs(label, args, manifest)
+def package_batch():
+    from config.settings import Settings, _apply_deployed_settings
+    from vectordb._base_manager import _effective_rerank_batch
+
+    if "RAG_RERANK_BATCH" in os.environ:
+        raise SystemExit("RAG_RERANK_BATCH must be unset, as in the service")
+    settings = Settings()
+    _apply_deployed_settings(settings)
+    if _effective_rerank_batch(settings) is not None:
+        raise SystemExit("the service's rerank batch must be None (effective 32)")
+    return None
+
+
+def git(*args):
+    return subprocess.check_output(["git", *args], cwd=WS, text=True, encoding="utf-8").strip()
+
+
+def checkout():
+    if git("status", "--porcelain"):
+        raise SystemExit("score and replay require a clean checkout")
+    return {
+        "head": nr.git_head(),
+        "head_parent": git("rev-parse", "HEAD^"),
+        "head_subject": git("log", "-1", "--format=%s"),
+        "measure_code_sha256": {n: sha256(WS / n) for n in MEASURE_CODE},
+    }
+
+
+def tokenizer_snapshot():
+    from huggingface_hub.constants import HF_HUB_CACHE
+
+    ref = Path(HF_HUB_CACHE) / "models--BAAI--bge-reranker-v2-m3" / "refs" / "main"
+    try:
+        return ref.read_text(encoding="utf-8").strip()
+    except OSError as error:
+        raise SystemExit("the cached tokenizer refs/main is absent") from error
+
+
+def environment():
+    """Provenance and guards without loading a model, identical for score and replay."""
+    flags = {name: os.getenv(name) for name in ("HF_HUB_OFFLINE", "TRANSFORMERS_OFFLINE")}
+    if any(value != "1" for value in flags.values()):
+        raise SystemExit("HF_HUB_OFFLINE and TRANSFORMERS_OFFLINE must both be 1")
+    try:
+        versions = {
+            name: metadata.version(name)
+            for name in (
+                "transformers",
+                "tokenizers",
+                "numpy",
+                "chromadb",
+                "sentence-transformers",
+                "langchain-ollama",
+                "langchain-community",
+                "onnxruntime",
+            )
+        }
+        import onnxruntime as ort
+    except (metadata.PackageNotFoundError, ImportError) as error:
+        raise SystemExit("the registered service environment is incomplete") from error
+    if versions["transformers"] != TRANSFORMERS_VERSION:
+        raise SystemExit(f"transformers must be {TRANSFORMERS_VERSION}")
+    if ort.__version__ != ORT_VERSION or versions["onnxruntime"] != ORT_VERSION:
+        raise SystemExit(f"onnxruntime must be {ORT_VERSION}, got {ort.__version__}")
+    snapshot = tokenizer_snapshot()
+    if snapshot != TOKENIZER_SNAPSHOT:
+        raise SystemExit("the cached tokenizer snapshot is not the measured one")
+    return {
+        "executable": sys.executable,
+        "versions": versions,
+        "offline": flags,
+        "tokenizer_snapshot": snapshot,
+        "ort_version": ort.__version__,
+        "ort_module": ort.__file__,
+        # OnnxCrossEncoder passes no SessionOptions: 0 means ORT's automatic thread choice.
+        "ort_intra_op_num_threads": ort.SessionOptions().intra_op_num_threads,
+    }
+
+
+def loaded_environment(live, held):
+    # Transformers may retain the commit in init_kwargs or only in the resolved vocab path.
+    # Do not resolve symlinks: HF's snapshot files link to blobs outside snapshots/.
+    kwargs = live.tokenizer.init_kwargs
+    snapshots = {kwargs["_commit_hash"]} if kwargs.get("_commit_hash") else set()
+    for name in ("vocab_file", "tokenizer_file"):
+        value = kwargs.get(name) or getattr(live.tokenizer, name, None)
+        if value:
+            parts = Path(value).parts
+            if "snapshots" in parts and parts.index("snapshots") + 1 < len(parts):
+                snapshots.add(parts[parts.index("snapshots") + 1])
+    if snapshots != {held["tokenizer_snapshot"]}:
+        raise SystemExit("the loaded tokenizer snapshot is not the measured one")
+    threads = live.session.get_session_options().intra_op_num_threads
+    if threads != held["ort_intra_op_num_threads"]:
+        raise SystemExit("the loaded ONNX session does not use the product's default threads")
+
+
+@contextlib.contextmanager
+def locked_journal(path):
+    import fcntl
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    # a+b creates without truncation; the lock is held until the stream closes, on every exit.
+    with path.open("a+b") as stream:
+        try:
+            fcntl.flock(stream, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError as error:
+            raise SystemExit("another score holds the journal") from error
+        yield stream
+
+
+def entries(runs):
+    return [(inputs, record) for inputs in runs.values() for record in inputs["records"]]
+
+
+def score_header(held_control, runs, batch, code, env):
+    from vectordb.onnx_reranker import DEFAULT_BATCH
+
+    return {
+        "type": "header",
+        "schema": 2,
+        **code,
+        "environment": env,
+        "spec": SPEC,
+        "spec_sha256": sha256(WS / SPEC),
+        "tool_sha256": sha256(Path(__file__)),
+        "export_sha256": held_control["reranker_onnx_sha256"],
+        "ort_version": ORT_VERSION,
+        "rerank_batch": batch,
+        "batch_size": DEFAULT_BATCH if batch is None else batch,
+        "k": KMAX,
+        "questions": len(entries(runs)),
+        "inputs": {
+            label: {
+                "provenance": inputs["provenance"],
+                "records_sha256": digest(json.dumps(inputs["records"], sort_keys=True)),
+            }
+            for label, inputs in runs.items()
+        },
+    }
+
+
+def score_rows(path, header, runs, *, resume=False):
+    """Read only newline-terminated records. A resume may discard one torn final line, after
+    validating the header and every complete row; a replay requires the whole journal."""
+    if not path.exists():
+        if resume:
+            return [], 0
+        raise SystemExit("INT8 scores are absent: run score first")
+    data = path.read_bytes()
+    end = data.rfind(b"\n") + 1
+    try:
+        lines = [json.loads(line) for line in data[:end].splitlines()]
+    except (ValueError, UnicodeDecodeError) as error:
+        raise SystemExit("INT8 scores contain an invalid complete line") from error
+    if not lines or lines[0] != header:
+        raise SystemExit("INT8 scores header does not match this run")
+    rows, planned = lines[1:], entries(runs)
+    if len(rows) > len(planned):
+        raise SystemExit("INT8 scores contain extra questions")
+    for row, (inputs, record) in zip(rows, planned, strict=False):
+        if not isinstance(row, dict):
+            raise SystemExit("INT8 scores contain an invalid complete row")
+        size = len(inputs["chunks"])
+        pool, values, five = row.get("pool", []), row.get("scores", []), row.get("five", [])
+        if (
+            set(row) != {"label", "case_id", "pool", "scores", "five", "batch_size", "seconds"}
+            or (row["label"], row["case_id"]) != (inputs["label"], record["case_id"])
+            or not isinstance(pool, list)
+            or not pool
+            or not all(type(m) is int and 0 <= m < size for m in pool)
+            or len(set(pool)) != len(pool)
+            or not isinstance(values, list)
+            or len(values) != len(pool)
+            or not all(finite(v) for v in values)
+            or not isinstance(five, list)
+            or not all(type(m) is int and m in pool for m in five)
+            or len(set(five)) != len(five)
+            or len(five) != min(TOP, len(pool))
+            or row["batch_size"] != header["batch_size"]
+            or not finite(row["seconds"])
+            or row["seconds"] < 0
+        ):
+            raise SystemExit("INT8 scores are not the planned questions and finite scores")
+    if not resume and (end != len(data) or len(rows) != len(planned)):
+        raise SystemExit("INT8 scores are incomplete: resume score first")
+    return rows, end
+
+
+def new_machine(inputs, batch, reranker=None):
+    settings = {**inputs["settings"], "retrieval_top_k": KMAX}
+    return Replay(inputs["chunks"], settings, inputs["tenant"], batch, reranker)
+
+
+def scored_record(inputs, record, row):
+    return {
+        **record,
+        "pool": [
+            [inputs["chunks"][m]["metadata"]["source"], m, value]
+            for m, value in zip(row["pool"], row["scores"], strict=True)
+        ],
+    }
+
+
+def new_h(inputs, record, row, machine, builder):
+    amended = scored_record(inputs, record, row)
+    docs, path, clean = machine.h(amended)
+    if not clean or path["rerank_status"] != "ok":
+        raise SystemExit("H_new did not read the scored INT8 pool")
+    if [d.metadata["chunk_index"] for d in docs] != row["five"]:
+        raise SystemExit("H_new's replayed five differ from score's five")
+    flat, sent = builder("v4", record["question"], docs)
+    return amended, {"docs": docs, "path": path, "flat": flat, "sent": sent}
+
+
+def forecast(rows, total):
+    if len(rows) < 10:
+        return None
+    return sum(r["seconds"] for r in rows[:10]) / 10 * total
+
+
+def parity_gate(args, runs, budget):
+    """The same old-control byte gate before score's model load and replay's arms."""
+    old_builder = Builder(WINDOW_V4, LIMIT_V4)
+    parity, old, current = [], {}, None
+    for label, inputs in runs.items():
         if not set(inputs["v4"]) <= {r["case_id"] for r in inputs["records"]}:
             raise SystemExit(f"{label}: a question V4 answered is not among the records")
-        provenance[label] = inputs["provenance"]
-        names |= inputs["names"]
-        questions += inputs["questions"]
-        launches[label] = {
-            "code_sha": nr.git_head(),
-            "stand_code_sha": CODE_SHA,
-            "tenant": inputs["launch"].get("tenant"),
-            "chroma_dir": None,
-            "cases_file": inputs["launch"].get("cases_file"),
-            "status": "complete",
-        }
         key = (inputs["base"], json.dumps(inputs["settings"], sort_keys=True), inputs["batch"])
         if current is None or current[0] != key:
             current = (
                 key,
                 Replay(inputs["chunks"], inputs["settings"], inputs["tenant"], inputs["batch"]),
             )
-        machine = current[1]
-        checked = [(r, *h_parity(inputs, r, machine, builder)) for r in inputs["records"]]
+        checked = []
+        for r in inputs["records"]:
+            budget()
+            checked.append((r, *h_parity(inputs, r, current[1], old_builder)))
         parity += [row for _, row, _ in checked]
-        failed = failed or any(row["breaks"] for _, row, _ in checked)
-        if failed:
-            continue
-        if machine.graph is None:
-            machine.build_graph()
-        graphs[inputs["base"]] = machine.graph
-        mine = [arms_row(inputs, r, h, machine, builder, texts) for r, _, h in checked]
-        labels[label] = label_summary(mine, machine.graph)
-        rows += mine
+        old.update({(label, r["case_id"]): h for r, _, h in checked})
     gate = {
         "questions": len(parity),
         "passed": sum(1 for row in parity if not row["breaks"]),
@@ -1202,14 +1474,177 @@ def replay(args):
         ),
         "breaks": dict(Counter(b for row in parity for b in row["breaks"])),
     }
+    names = set().union(*(r["names"] for r in runs.values()))
+    questions = [q for r in runs.values() for q in r["questions"]]
     without_text(parity, names, questions)
-    if failed:
+    if gate["breaks"]:
         write_rows(args.out / "parity.jsonl", parity)
         print(json.dumps({"parity": gate}, indent=1))
         print("the parity gate failed: no arm is read", file=sys.stderr)
-        return 3
+        return None
     if gate["v4_saved"] != V4_SAVED:
         raise SystemExit(f"{gate['v4_saved']} of V4's questions read, not the {V4_SAVED}")
+    return parity, gate, old, old_builder
+
+
+def replay_budget():
+    started = time.monotonic()
+
+    def budget():
+        if time.monotonic() - started > REPLAY_SECONDS:
+            raise SystemExit("replay passed 30 minutes; stop and read why")
+
+    return budget
+
+
+def score(args):
+    """Score the K-14 pools once, with the product's INT8 path; resume only this same reading."""
+    from config.settings import get_settings
+    from vectordb import _base_manager as manager
+
+    code = checkout()
+    batch = package_batch()
+    held_control = control()  # The file's digest is checked before importing ORT or loading.
+    env = environment()
+    manifest = export_manifest()
+    runs = {label: run_inputs(label, args, manifest) for label in LABELS}
+    Builder()  # The product must still give the amended 2,176-token input limit.
+    if parity_gate(args, runs, replay_budget()) is None:
+        return 3
+    header = score_header(held_control, runs, batch, code, env)
+    names = set().union(*(r["names"] for r in runs.values()))
+    questions = [q for r in runs.values() for q in r["questions"]]
+    without_text(header, names, questions)
+    path = args.out / SCORE_FILE
+    planned = entries(runs)
+    with contextlib.ExitStack() as locks:
+        # Existing journals are locked before reading or loading. A new file is opened only
+        # after the factory checks; a create race is refused under the lock.
+        stream = locks.enter_context(locked_journal(path)) if path.exists() else None
+        rows, end = score_rows(path, header, runs, resume=True)
+        estimate = forecast(rows, len(planned))
+        if estimate is not None:
+            print(json.dumps({"forecast_seconds": estimate, "stop_seconds": 3 * estimate}))
+            if sum(r["seconds"] for r in rows) > 3 * estimate:
+                raise SystemExit("score passed 3 times its forecast; inspect before a new run")
+        if len(rows) == len(planned) and path.stat().st_size == end:
+            print(json.dumps({"score": "complete", "questions": len(rows)}), flush=True)
+            return 0
+        settings = get_settings()
+        if (
+            {key: getattr(settings, key) for key in CONTROL} != CONTROL
+            or settings.reranker_model != "BAAI/bge-reranker-v2-m3"
+            or settings.reranker_onnx_path != os.getenv("RAG_RERANKER_ONNX", "").strip()
+        ):
+            raise SystemExit("the factory's cached settings are not the measured INT8 path")
+        live = manager.get_reranker()
+        if live is None or getattr(live, "runtime", None) != "onnx":
+            raise SystemExit("the factory did not load the ONNX reranker")
+        if Path(live.path) != Path(settings.reranker_onnx_path):
+            raise SystemExit("the factory's cached reranker names another export")
+        loaded_environment(live, env)
+        recorder = Recorder(live)
+        if stream is None:
+            stream = locks.enter_context(locked_journal(path))
+            if stream.seek(0, os.SEEK_END):
+                # A writer won the create race: never append using the earlier empty snapshot.
+                raise SystemExit("INT8 journal appeared during loading; resume score")
+        stream.truncate(end)
+        stream.seek(end)
+
+        def append(row):
+            stream.write((json.dumps(row, ensure_ascii=False) + "\n").encode("utf-8"))
+            stream.flush()
+            os.fsync(stream.fileno())
+
+        if end == 0:
+            append(header)
+        current, machine = None, None
+        for inputs, record in planned[len(rows) :]:
+            started = time.monotonic()
+            if current != inputs["label"]:
+                current = inputs["label"]
+                machine = new_machine(inputs, batch, recorder)
+            docs, trace, clean = machine.h(record)
+            if not clean or trace["rerank_status"] != "ok" or recorder.batch != batch:
+                raise SystemExit("INT8 did not score the product's pool in its batch")
+            row = {
+                "label": inputs["label"],
+                "case_id": record["case_id"],
+                "pool": machine.pool,
+                "scores": recorder.scores,
+                "five": [d.metadata["chunk_index"] for d in docs],
+                "batch_size": header["batch_size"],
+                "seconds": time.monotonic() - started,
+            }
+            without_text(row, names, questions)
+            append(row)
+            rows.append(row)
+            if len(rows) == 10:
+                estimate = forecast(rows, len(planned))
+                print(json.dumps({"forecast_seconds": estimate, "stop_seconds": 3 * estimate}))
+            if estimate is not None and sum(r["seconds"] for r in rows) > 3 * estimate:
+                raise SystemExit("score passed 3 times its forecast; inspect before a new run")
+        print(json.dumps({"score": "complete", "questions": len(rows)}), flush=True)
+    return 0
+
+
+def replay(args):
+    """The parity gate, then the arms, the external readings and the aircargo judge plan."""
+    budget = replay_budget()
+    code = checkout()
+    batch = package_batch()
+    held_control = control()
+    env = environment()
+    manifest = export_manifest()
+    runs = {label: run_inputs(label, args, manifest) for label in LABELS}
+    checked = parity_gate(args, runs, budget)
+    if checked is None:
+        return 3
+    parity, gate, old, old_builder = checked
+    rows, graphs, labels, texts = [], {}, {}, {}
+    provenance = {label: inputs["provenance"] for label, inputs in runs.items()}
+    names = set().union(*(r["names"] for r in runs.values()))
+    questions = [q for r in runs.values() for q in r["questions"]]
+    launches = {
+        label: {
+            "code_sha": code["head"],
+            "stand_code_sha": CODE_SHA,
+            "tenant": inputs["launch"].get("tenant"),
+            "chroma_dir": None,
+            "cases_file": inputs["launch"].get("cases_file"),
+            "status": "complete",
+        }
+        for label, inputs in runs.items()
+    }
+    # Every old-control question passed before the new scores or any arm are read.
+    builder = Builder()
+    header = score_header(held_control, runs, batch, code, env)
+    journal = args.out / SCORE_FILE
+    scored, _ = score_rows(journal, header, runs)
+    by_case = {(r["label"], r["case_id"]): r for r in scored}
+    for label, inputs in runs.items():
+        machine = new_machine(inputs, batch)
+        machine.build_graph()
+        graphs[inputs["base"]] = machine.graph
+        mine = []
+        for r in inputs["records"]:
+            budget()
+            amended, h = new_h(inputs, r, by_case[(label, r["case_id"])], machine, builder)
+            row = arms_row(inputs, amended, h, machine, builder, texts)
+            before = old[(label, r["case_id"])]
+            row["H_old"] = arm_entry(
+                "H",
+                before["docs"],
+                before["flat"],
+                before["sent"],
+                inputs,
+                old_builder,
+                inputs["cases"].get(r["case_id"]),
+            )
+            mine.append(row)
+        labels[label] = label_summary(mine, machine.graph)
+        rows += mine
     reads = external([r for r in rows if r["base"] in EXTERNAL], graphs)
     stops = {arm: external_stops(reads[arm]) for arm in ARMS}
     open_arms = []
@@ -1234,7 +1669,10 @@ def replay(args):
         "spec": SPEC,
         "stand_code_sha": CODE_SHA,
         "v4_stand_code_sha": V4_STAND,
-        "measured_at_head": nr.git_head(),
+        "measured_at_head": code["head"],
+        "head_parent": code["head_parent"],
+        "head_subject": code["head_subject"],
+        "environment": env,
         "inputs": {
             "runs": str(args.runs),
             "data_root": str(args.data_root),
@@ -1244,8 +1682,9 @@ def replay(args):
             "v4_record_sha256": sha256(V4_DIR / "v4-record.json"),
         },
         "tool_sha256": sha256(Path(__file__)),
-        "measure_code_sha256": {n: sha256(WS / n) for n in MEASURE_CODE},
+        "measure_code_sha256": code["measure_code_sha256"],
         "control": held_control,
+        "int8_scores": {"sha256": sha256(journal), "header": header},
         "frozen": {
             "k": KMAX,
             "five": TOP,
@@ -1259,11 +1698,13 @@ def replay(args):
             "qualifies_at": QUALIFIES_AT,
             "mde_z": float(MDE_Z),
             "v4_saved": V4_SAVED,
+            "old_control": {"k": K_RECORDED, "window": WINDOW_V4, "input_limit": LIMIT_V4},
         },
         "provenance": provenance,
         "parity": gate,
         "labels": labels,
         "external": reads,
+        "package_advisory": package_advisory(rows),
         "stops": stops,
         "changed_on_v4": changed,
         "judge": judge,
@@ -1271,6 +1712,7 @@ def replay(args):
     }
     without_text(record, names, questions)
     without_text(rows, names, questions)
+    budget()
     # The plan only beside a record that passed: a refused record leaves no plan.
     put_trees(trees)
     write_json(args.out / "record.json", record)
@@ -1287,6 +1729,34 @@ def replay(args):
                 print(f"{arm} {where}: {got}")
     print(json.dumps({"parity": gate, "judge": judge, "decision": record["decision"]}, indent=1))
     return 0
+
+
+def package_advisory(rows):
+    """H_new against H_old on context gold, beside G1 and never an input to it."""
+    view = [{**r, "H": r["H_old"], "H_new": r["H"]} for r in rows if r["base"] in EXTERNAL]
+    failed = {
+        base
+        for base in EXTERNAL
+        if unread([r for r in view if r["base"] == base], "H_new") > MAX_UNREAD
+    }
+    return {
+        "advisory": True,
+        "baseline": "H_old",
+        "comparison": "H_new",
+        "per_base": {
+            base: {
+                "unread": unread([r for r in view if r["base"] == base], "H_new"),
+                **readings([r for r in view if r["base"] == base], "H_new", base in failed),
+            }
+            for base in EXTERNAL
+        },
+        "pooled": {
+            name: readings(
+                [r for r in view if r["base"] in held], "H_new", bool(failed.intersection(held))
+            )
+            for name, held in {"deciding": DECIDING, "all_three": EXTERNAL}.items()
+        },
+    }
 
 
 def aircargo_pairs(levels, arm, cases):
@@ -1398,18 +1868,19 @@ def judged(args):
 def main(argv=None):
     parser = argparse.ArgumentParser(description=(__doc__ or "").splitlines()[0])
     commands = parser.add_subparsers(dest="command", required=True)
-    run = commands.add_parser("replay")
-    run.add_argument("--runs", type=Path, default=RUNS)
-    run.add_argument("--data-root", type=Path, default=DATA_ROOT)
-    run.add_argument("--v4-runs", type=Path, default=V4_RUNS)
-    run.add_argument("--out", type=Path, default=OUT)
-    run.add_argument("--private", type=Path, default=PRIVATE)
+    for command in ("score", "replay"):
+        run = commands.add_parser(command)
+        run.add_argument("--runs", type=Path, default=RUNS)
+        run.add_argument("--data-root", type=Path, default=DATA_ROOT)
+        run.add_argument("--v4-runs", type=Path, default=V4_RUNS)
+        run.add_argument("--out", type=Path, default=OUT)
+        run.add_argument("--private", type=Path, default=PRIVATE)
     read_back = commands.add_parser("judged")
     read_back.add_argument("--plan", type=Path, required=True)
     read_back.add_argument("--record", type=Path, default=RECORD)
     read_back.add_argument("--runs", type=Path, default=None)
     args = parser.parse_args(sys.argv[1:] if argv is None else argv)
-    return replay(args) if args.command == "replay" else judged(args)
+    return {"score": score, "replay": replay, "judged": judged}[args.command](args)
 
 
 if __name__ == "__main__":

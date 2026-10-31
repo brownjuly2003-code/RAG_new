@@ -115,7 +115,8 @@ def test_g1_rerank_applies_coherence_then_expands_from_graph_sidecar(
         source="weak.md",
         section="Weak",
     )
-    all_chunks = [first, adjacent, second, tail, weak]
+    # Since 8b922a1 each side stops at the next chunk outside its section; it cannot skip it.
+    all_chunks = [first, tail, adjacent, second, weak]
     candidates = [adjacent, first, second, weak]
 
     pool = [
@@ -156,5 +157,6 @@ def test_g1_rerank_applies_coherence_then_expands_from_graph_sidecar(
     rows = json.loads((tmp_path / "ab_candidates_phase2_G1.json").read_text(encoding="utf-8"))
     assert rows[0]["cands"][0] == ("first supported chunk\n\ntail from the same section")
     assert rows[0]["cands"][1] == "second supported chunk"
+    assert all("adjacent but different section" not in text for text in rows[0]["cands"][:2])
     assert all("weak isolated" not in text for text in rows[0]["cands"])
     assert rows[0]["graph_postprocessed"] is True

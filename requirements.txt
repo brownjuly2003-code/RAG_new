@@ -34,7 +34,8 @@ rank-bm25>=0.2.2
 networkx>=3.5
 
 # === Reranker: cross-encoder for post-retrieval reranking ===
-# (uses sentence-transformers, no extra package needed)
+# Measured INT8 runtime; kernel changes between versions can change scores.
+onnxruntime==1.23.2
 
 # === Document Loaders ===
 # Floor at 6.21.2: clears CVE-2026-113786, 113789..113795, 115572, 115580 and 115585

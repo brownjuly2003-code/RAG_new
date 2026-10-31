@@ -98,7 +98,11 @@ def test_get_reranker_handles_disabled_dependency_and_caches(
 
     monkeypatch.setattr(manager, "_cached_reranker", None)
     monkeypatch.setattr(manager, "HAS_CROSS_ENCODER", False)
-    monkeypatch.setattr(settings_module, "get_settings", lambda: SimpleNamespace(rag_device="cpu"))
+    # This tests the torch dependency/cache, independently of the default ONNX runtime.
+    monkeypatch.setattr(
+        settings_module, "get_settings",
+        lambda: SimpleNamespace(rag_device="cpu", reranker_runtime="torch"),
+    )
     assert manager.get_reranker("reranker-a") is None
 
     monkeypatch.setattr(manager, "HAS_CROSS_ENCODER", True)
@@ -168,6 +172,8 @@ def test_default_device_is_cpu_where_mps_is_available(monkeypatch: pytest.Monkey
     # unset, the embedder and the reranker load on the CPU even where MPS reports
     # itself available.
     monkeypatch.delenv("RAG_DEVICE", raising=False)
+    # Device selection here concerns sentence-transformers, not the ONNX runtime.
+    monkeypatch.setenv("RAG_RERANKER_RUNTIME", "torch")
     mps_torch = types.ModuleType("torch")
     mps_torch.cuda = SimpleNamespace(is_available=lambda: False)
     mps_torch.backends = SimpleNamespace(mps=SimpleNamespace(is_available=lambda: True))
@@ -268,7 +274,7 @@ def test_hybrid_retriever_vector_paths_and_reranker_fallback(
     class _VectorStore:
         def similarity_search(self, query: str, k: int) -> list[manager.Document]:
             assert query == "question"
-            assert k == 20
+            assert k == 14
             return [alpha, beta]
 
     class _Reranker:
@@ -308,7 +314,7 @@ def test_hybrid_retriever_vector_paths_and_reranker_fallback(
 
     class _StoreWithRetriever:
         def as_retriever(self, search_kwargs: dict[str, int]) -> _Retriever:
-            assert search_kwargs == {"k": 20}
+            assert search_kwargs == {"k": 14}
             return _Retriever()
 
     no_similarity = manager.HybridRetriever(
@@ -326,7 +332,7 @@ def test_hybrid_retriever_vector_fast_path_skips_reranker() -> None:
     class _VectorStore:
         def similarity_search(self, query: str, k: int) -> list[manager.Document]:
             assert query == "question"
-            assert k == 20
+            assert k == 14
             return [alpha, beta]
 
     class _UnexpectedReranker:

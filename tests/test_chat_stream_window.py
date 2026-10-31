@@ -146,12 +146,12 @@ def test_stream_prompt_fits_the_ollama_window(
     assert QUESTION in prompt
     assert "[1 | source=rules-1.md]" in prompt
     assert "rules-5.md" not in prompt
-    assert generate_call["kwargs"]["num_ctx"] == 4096
+    assert generate_call["kwargs"]["num_ctx"] == 3584
     assert generate_call["kwargs"]["num_predict"] == 1024
 
     from llm.providers.base import estimate_window_tokens, window_input_limit
 
-    assert estimate_window_tokens(prompt) <= window_input_limit(4096, 1024)
+    assert estimate_window_tokens(prompt) <= window_input_limit(3584, 1024)
     # Sources and citations name exactly the documents the model was given.
     citations = result["citations"]
     assert 1 <= len(citations) < 5
@@ -161,7 +161,7 @@ def test_stream_prompt_fits_the_ollama_window(
     assert all(source["page_content"] in prompt for source in result["sources"])
     # The self-eval call runs with the evaluate role's output budget, fitted to it.
     assert eval_call["kwargs"]["num_predict"] == 128
-    assert estimate_window_tokens(eval_call["prompt"]) <= window_input_limit(4096, 128)
+    assert estimate_window_tokens(eval_call["prompt"]) <= window_input_limit(3584, 128)
     assert (result["quality_score"], result["quality_source"]) == (85, "llm")
 
 
