@@ -163,6 +163,10 @@ from item 6 on an idle Mac: the first 30 aircargo questions on one API, a distur
 asked once more after the thirtieth (at most six), and the SLO proposal from the p90. Read
 2026-10-31: first word a median 89.3 s, whole answer 170.2 s, the proposal 270 s and 360 s;
 its [record](evidence/stage4-item7-final-speed-record.md).
+[Stage 5](specs/stage5-final-external.md) — the final path on WixQA, ConditionalQA and
+MultiHop-RAG: item 6's product path on its own stand, 300 answers, M1 and M2 paired with
+the published bases by the same judge, M3 at the sent point; one receipt a base, graded
+while the Mac answers the next. Registered 2026-10-31.
 [Stage 6, item 4](specs/stage6-throughput.md) — the
 service's questions an hour and what a second client sees: a draft, registered with its tools once
 the service is installed.
@@ -244,6 +248,10 @@ P2 reference samples ([Astra](specs/p2-astra-reference-sample.md),
   — one fresh subagent on the session's model read both specs, the tools and their test frozen
   before registration, and checked the adapters against the published artifacts; verbatim, 2
   blocking, 5 should fix, 6 minor, each applied before registration, as its Disposition says.
+- [Cold read of stage 5's spec, the final path on the external bases, 2026-10-31](operations/audit_opus55_31_10_26_stage5.md)
+  — one fresh subagent on the session's model read the spec, its tools and test frozen before
+  registration, and ran the preflight on the real private files; 1 blocking, 4 should fix, 5
+  minor, each applied before registration, as its Disposition says.
 - [`operations/`](operations/) — besides the runbooks above: the
   [GR-2 entity builder preparation](operations/gr2-entity-builder-preparation.md) and the last
   session handoffs (the newest is linked from [`CURRENT_STATE.md`](../CURRENT_STATE.md)). Older
