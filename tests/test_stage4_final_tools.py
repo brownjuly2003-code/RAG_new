@@ -1,9 +1,11 @@
 """Final-package registration: synthetic files only, no Mac, model, HTTP or judge calls."""
 
+import ast
 import hashlib
 import importlib.util
 import json
 import re
+import subprocess
 import sys
 from pathlib import Path
 from types import SimpleNamespace
@@ -286,7 +288,7 @@ def test_registered_corpus_must_match_before_index_copy(tools, tmp_path, monkeyp
             ARCHIVES={"aircargo": tools.common.sha(archive)},
         ),
     )
-    monkeypatch.setattr(tools.common, "load", lambda *a: SimpleNamespace(CORPUS_SHA256=hashes))
+    monkeypatch.setattr(tools.run, "aircargo_hashes", lambda: hashes)
     assert tools.run.corpus("aircargo", tmp_path) == hashes
     # Freeze the original archive hash before changing bytes.
     expected = tools.common.sha(archive)
@@ -296,6 +298,111 @@ def test_registered_corpus_must_match_before_index_copy(tools, tmp_path, monkeyp
     (archive if change == "archive" else receipt).write_bytes(b"changed")
     with pytest.raises(SystemExit, match="corpus archive differs|aircargo generation differs"):
         tools.run.corpus("aircargo", tmp_path)
+
+
+def test_aircargo_hashes_read_the_real_frozen_assignment_without_import(tools):
+    path = ROOT / "reports/stage4-step5a-live/tools/live5a_reader.py"
+    tree = ast.parse(path.read_text(encoding="utf-8"))
+    assignments = [
+        node.value
+        for node in tree.body
+        if isinstance(node, ast.Assign)
+        and any(isinstance(t, ast.Name) and t.id == "CORPUS_SHA256" for t in node.targets)
+    ]
+    assert len(assignments) == 1
+    expected = ast.literal_eval(assignments[0])
+    tools.common.frozen("cases")
+    from stage2_common import SOURCE_FILES
+
+    assert set(expected) == set(SOURCE_FILES)
+    assert len(expected) == 3
+    assert all(re.fullmatch(r"[0-9a-f]{64}", digest) for digest in expected.values())
+    assert tools.run.aircargo_hashes() == expected
+
+
+def test_aircargo_wrong_generation_reaches_the_real_corpus_refusal(tools, tmp_path):
+    tools.common.frozen("cases")
+    from stage2_common import SOURCE_FILES
+
+    for name in (*SOURCE_FILES, "chunks.json.gz"):
+        path = tmp_path / "aircargo" / name
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(b"synthetic wrong generation")
+    # No loader, hash or constant is replaced; an archive refusal cannot satisfy this check.
+    with pytest.raises(SystemExit, match="aircargo generation differs"):
+        tools.run.corpus("aircargo", tmp_path)
+
+
+@pytest.mark.parametrize(
+    "source",
+    [
+        "OTHER = {}",
+        "def nested():\n    CORPUS_SHA256 = {}",
+        "CORPUS_SHA256 = dict()",
+        "CORPUS_SHA256 = []",
+        "CORPUS_SHA256 = {'a': '0' * 64}",
+        "CORPUS_SHA256 = " + repr({"a": "0" * 64, "b": "1" * 64}),
+        "CORPUS_SHA256 = " + repr(dict.fromkeys("abcd", "0" * 64)),
+        "CORPUS_SHA256 = " + repr({"a": "0" * 64, "b": "1" * 64, "c": "g" * 64}),
+        "CORPUS_SHA256 = " + repr({"a": "0" * 64, "b": "1" * 64, "c": "2" * 63}),
+        "CORPUS_SHA256 = " + repr({"a": "0" * 64, "b": "1" * 64, "c": 2}),
+        "CORPUS_SHA256 = " + repr({"a": "0" * 64, "b": "1" * 64, 3: "2" * 64}),
+        "CORPUS_SHA256 = {}\nCORPUS_SHA256 = {}",
+        "CORPUS_SHA256 = {",
+    ],
+)
+def test_aircargo_hash_reader_refuses_missing_or_malformed_literal(tools, tmp_path, source):
+    path = tmp_path / "reader.py"
+    path.write_text(source, encoding="utf-8", newline="\n")
+    with pytest.raises(SystemExit, match="aircargo corpus hashes"):
+        tools.run.aircargo_hashes(path)
+
+
+def test_aircargo_hash_reader_never_executes_the_source(tools, tmp_path):
+    path = tmp_path / "reader.py"
+    expected = {name: str(i) * 64 for i, name in enumerate("abc")}
+    path.write_text(
+        f"CORPUS_SHA256 = {expected!r}\nraise RuntimeError('must not run')\n",
+        encoding="utf-8",
+        newline="\n",
+    )
+    assert tools.run.aircargo_hashes(path) == expected
+    path.unlink()
+    with pytest.raises(SystemExit, match="aircargo corpus hashes"):
+        tools.run.aircargo_hashes(path)
+
+
+def test_all_final_tools_import_without_executing_live5a():
+    # A fresh interpreter covers every entry, including api and external tools, without
+    # cached modules concealing an import. The audit hook observes real loaders unchanged.
+    script = """
+import importlib.util
+import sys
+from pathlib import Path
+
+tools = Path(sys.argv[1])
+sys.path[:0] = [str(tools), str(tools / 'external'), str(tools.parents[2])]
+def guard(event, args):
+    if event == 'exec' and 'stage4-step5a-live' in Path(args[0].co_filename).parts:
+        raise AssertionError('stage4-final imported a live5a module')
+sys.addaudithook(guard)
+paths = sorted(tools.rglob('*.py'))
+for path in paths:
+    spec = importlib.util.spec_from_file_location(path.stem, path)
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[path.stem] = module
+    spec.loader.exec_module(module)
+print('IMPORTED', len(paths))
+"""
+    result = subprocess.run(
+        [sys.executable, "-I", "-c", script, str(TOOLS)],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        timeout=30,
+    )
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert result.stdout.strip() == f"IMPORTED {len(list(TOOLS.rglob('*.py')))}"
 
 
 def make_run(tools, run, ids):

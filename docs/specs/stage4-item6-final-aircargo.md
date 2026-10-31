@@ -3,6 +3,12 @@
 Status: **registered before the run**, 2026-10-31, before the first request, with its tools
 and tests in one commit; the stand is that commit. This is preparation, not a quality result. Item 7 uses the same stand after these answers finish.
 
+Registered in `ecc79dd`; corrected before the first request in the commit that writes this
+paragraph, which is the stand. The first laptop command refused: `run.py`'s `corpus()`
+imported live 5a's reader for its `CORPUS_SHA256`, and that import needs a file present only
+on that series' stand. `corpus()` now reads the same literal by `ast` without running the
+reader; nothing else in the tools changed, and the SHA list below is recomputed.
+
 A cold read (docs/operations/audit_opus55_31_10_26_stage4_items6_7.md) found 2 blocking, 5 should fix and 6 minor; each is applied (its Disposition says how).
 
 ## What is measured
@@ -291,7 +297,7 @@ The following SHA-256 list is checked by `test_forecasts_caps_and_fixed_pin_list
 - `reports/stage4-final/tools/judge.py` `8b96d7d3413cf7a5d978713046ff3620351647a058e00e2040beca31485cf336`
 - `reports/stage4-final/tools/raise_stand.py` `caa1feec88202e6a1bc72af02fd1997a493ff9487a1eda9b844350acd7fff984`
 - `reports/stage4-final/tools/record.py` `455f164a41bccb7a50d455c527de12e19d8224fc0cf51f8ff170b56afa4591ac`
-- `reports/stage4-final/tools/run.py` `10d577f61df10b5cbc20edbcfb809301228f90a8c9eaab7801c0974fa479efb4`
+- `reports/stage4-final/tools/run.py` `d75cc1195a0258cbd78b049d434e15ab79439f2e96cef71838dba6a804481ff1`
 - `reports/stage4-final/tools/runner.py` `ace524da530742672a9b03d6638cdc79032a6188fde1be40ba41160336a8bd62`
 - `reports/stage4-final/tools/stand.py` `2887646363fe9be5b148d0abc378492d53f51c1f9ebef874dc76516955bea29d`
-- `tests/test_stage4_final_tools.py` `5e13fac3b9f4162ffd4c409dacd0a830e0865ecf2a948750485d013e6fdbf246`
+- `tests/test_stage4_final_tools.py` `06485545bb64c614f9b133257991aa5eb922a1cfb89c1d74135859678c593644`

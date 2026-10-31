@@ -5,6 +5,7 @@ use the service interpreter. This tool owns and cleans up only the children it s
 """
 
 import argparse
+import ast
 import json
 import os
 import re
@@ -183,17 +184,46 @@ def idle_check(check_load=True):
     }
 
 
+def aircargo_hashes(path=None):
+    # Importing this frozen reader runs load_step1(), whose sibling exists only on its stand.
+    path = path or ROOT / "reports/stage4-step5a-live/tools/live5a_reader.py"
+    try:
+        tree = ast.parse(Path(path).read_text(encoding="utf-8"))
+        values = [
+            node.value
+            for node in tree.body
+            if isinstance(node, (ast.Assign, ast.AnnAssign))
+            and any(
+                isinstance(target, ast.Name) and target.id == "CORPUS_SHA256"
+                for target in (node.targets if isinstance(node, ast.Assign) else [node.target])
+            )
+        ]
+        require(len(values) == 1, "aircargo corpus hashes assignment absent or ambiguous")
+        held = ast.literal_eval(values[0])
+    except (OSError, SyntaxError, ValueError, TypeError):
+        require(False, "aircargo corpus hashes cannot be read as a literal")
+    require(
+        isinstance(held, dict)
+        and len(held) == 3
+        and all(
+            isinstance(name, str)
+            and isinstance(digest, str)
+            and re.fullmatch(r"[0-9a-fA-F]{64}", digest)
+            for name, digest in held.items()
+        ),
+        "aircargo corpus hashes must be three SHA-256 values",
+    )
+    return held
+
+
 def corpus(base, data):
     source = Path(data) / base
     arms = frozen("arms")
-    require(sha(source / "chunks.json.gz") == arms.ARCHIVES[base], "corpus archive differs")
     common = __import__("stage2_common")
     held = {n: sha(source / n) for n in common.SOURCE_FILES}
     if base == "aircargo":
-        live = __import__("common").load(
-            "reports/stage4-step5a-live/tools/live5a_reader.py", "final_live5a"
-        )
-        require(held == live.CORPUS_SHA256, "aircargo generation differs")
+        require(held == aircargo_hashes(), "aircargo generation differs")
+    require(sha(source / "chunks.json.gz") == arms.ARCHIVES[base], "corpus archive differs")
     return held
 
 
