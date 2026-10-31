@@ -7,6 +7,9 @@ findings applied ([Records](#records)). [`PLAN.md`](../../PLAN.md) stage 7, step
 «Поиск без генерации: М3 для каждой руки на ≈ 400 вопросах»; her word of 2026-10-28: stage 7
 keeps both arms, the graph and P1b, and the entity graph's extraction cost is measured first.
 No answer generation or new index search. Amendment 1 adds one live INT8 scoring phase.
+**Read 2026-10-31:** parity 415 of 415, V4's prompts byte-equal 300 of 300; S stopped by a
+detected loss, P no detected difference, so stage 7 closes with H
+([the record](../evidence/stage7-step1-arms-record.md)).
 
 A cold read of Amendment 1 (docs/operations/audit_opus55_31_10_26_stage7_amendment1.md) found 1 blocking, 2 should fix and 4 minor; each is applied (its Disposition says how).
 
@@ -345,6 +348,10 @@ plan's, written in with the evidence commit.
 
 - `reports/stage7/tools/arms_replay.py` `6ca8b723841d08dfd6f5d084bdc0883264c889eb495dc4d3728ac0a2ea623689`
 - `tests/test_stage7_arms_replay.py` `3e8fe6c15290816ab1dda08eb73fe4c1151621592dc73b699fb0531fb19cbe72`
+
+Written in with the evidence commit: `reports/stage7/5e308fe/record.json` SHA-256
+`b9db1434a6091536540112591e29cb3f02f373660dd06469e6abebc3780b55e4`; no plan, as no arm
+qualified ([the record](../evidence/stage7-step1-arms-record.md)).
 
 ## What it does not say
 
