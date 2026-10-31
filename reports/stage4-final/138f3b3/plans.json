@@ -1,0 +1,39 @@
+{
+  "base": "aircargo",
+  "answers_sha256": {
+    "final-answers-aircargo-b01": "82492c01b59020c3121734112dbcd73bc9a9a1211525fa03b610491bd43fd95d",
+    "final-answers-aircargo-b02": "722cf2529439439f293d03a4089b5c4de41ce60431795e55cdeb1bc4c34f0109",
+    "final-answers-aircargo-b03": "5d7b2c20a54c5c17f3a8b1477936b24324017051a9a74bc0f4b4da4f6481789c",
+    "final-answers-aircargo-b04": "3b8c02e34fbb576ca69380bcc570c055ab4599c741c9617bd8cb686e8a27c432",
+    "final-answers-aircargo-b05": "d59876d04dcc8ce62d450ae82f43c1be3ecb47cbc9b6a1fc870f2c39673a7875",
+    "final-answers-aircargo-b06": "b72a4f86c473a14fa64f67ca0c7981918c1bf4147d35c6b33459aa5a785cfb88",
+    "final-answers-aircargo-b07": "2e324bf3970e6914526e26f4e978cfc8ef4434ed3e5810a295c0dc2ddecff897",
+    "final-answers-aircargo-b08": "3b9ab99932770046d8653c091c1c9b6f19670d2787fcd7bc293af6be9bfa575e",
+    "final-answers-aircargo-b09": "3a69661bfe81f98e339b3ebd2e5780aaf2efad909847a9f825faf0db642344f1",
+    "final-answers-aircargo-b10": "1cdf54f6ea8164c69e8e81486394ae003315fc713fc0fdb70ea96124f03ed1de"
+  },
+  "plans": {
+    "m1": "84805c90506941a9880790b2b424cdbbcdb54b511bc3946c4522ba3160c1dcc1",
+    "bridge": "f4e646b9904b2c6d419dab423155efa0bea52ae2105c416f9d1054c557e366cf"
+  },
+  "requests": {
+    "m1": 115,
+    "bridge": 15
+  },
+  "inputs": {
+    "corpus": {
+      "corpus.manifest.json": "2b2e9232e69b4f52a55237f3ee620f34c91d1900383877c2310ba616c6590444",
+      "chunks-report.json": "bf01530e5a4cf33de44a7ce4aa1282805fc600a49b3a2f82b30b3b5715c6a714",
+      "index/index-receipt.json": "2dcc80e75d22e9dc34b31313c1db2724aa59c606203eb56c9ac7b84abb684666"
+    },
+    "v4": {
+      "plan": "ad67e68c17534b6656d3e75daff292c55c161872406498f874714b2b74b738e1",
+      "verdicts": "9b26a4c3c948e3791cf041f68ecc1b5c5527bba1b052343ad10c30ea9c98618f"
+    },
+    "old_m1_sha256": "12dd4032a477cc853f2c6bae00506b43091ff5bb872ddfa90fbeee5a23889ac1"
+  },
+  "bridge_seed": {
+    "bytes": 23263,
+    "sha256": "d1e18bd157bf758837c1288f363d446228bab6fbef07fa8907d93bb6f7f1cf2a"
+  }
+}
