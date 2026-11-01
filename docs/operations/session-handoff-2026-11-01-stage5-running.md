@@ -3,7 +3,8 @@
 Session: 2026-10-30 23:08 UTC (her first message) to 2026-11-01 ≈09:45 UTC, closed for a reboot. It continued
 [the 2026-10-30 handoff](session-handoff-2026-10-30-stage4-step5a-live.md), branch «Yes, all
 four». Times are UTC. The laptop's git dates print −04:00 until 2026-11-01 06:00 and −05:00
-since; the Mac's clock is UTC+3.
+since; the Mac's clock is UTC+3. Continued by
+[the evening handoff](session-handoff-2026-11-01-stage5-judge-v6-fixes.md).
 
 ## Read this first
 

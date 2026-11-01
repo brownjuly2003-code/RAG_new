@@ -200,9 +200,10 @@ P2 reference samples ([Astra](specs/p2-astra-reference-sample.md),
 
 - [`evidence/`](evidence/) — one write-up per measured slice; the register with provenance is
   [`EVIDENCE_INDEX.md`](../EVIDENCE_INDEX.md). The records themselves are in `../reports/`.
-- [Latest handoff: items 6 and 7 read, stage 7 closed, stage 5 registered and running; WixQA's M1 and M2 graded, the judge resumes next session](operations/session-handoff-2026-11-01-stage5-running.md)
-  — stage 5's decision table, the Mac and the laptop in a pipeline, the judge stopped by the
-  laptop's memory and how to resume it. Before it:
+- [Latest handoff: stage 5's judge through ConditionalQA's M2 (preliminary: holds), V6's spec re-read, RAG_new to go public with its history](operations/session-handoff-2026-11-01-stage5-judge-v6-fixes.md)
+  — what is left of stage 5's judge, V6's fixes before registration, what the switch to public
+  needs; the procedure is the [stage 8 runbook](operations/stage8-publication-runbook.md). Before it:
+  [items 6 and 7 read, stage 7 closed, stage 5 registered and running](operations/session-handoff-2026-11-01-stage5-running.md),
   [stage 4 — item 5a read, the n-gram lever closed, INT8's live series `NOT_EVIDENCE`; stage 7 step 1 registered; her «да» to the package](operations/session-handoff-2026-10-30-stage4-step5a-live.md),
   [stage 4 — item 5a's blocks 2–5 passed and block 6 ran on; the audit of 2026-10-30 taken into PLAN](operations/session-handoff-2026-10-30-stage4-step5a-block6.md),
   [stage 4 — items 4 and 5 read; item 5a's INT8 registered, its block 1 passed, the series resumes at block 2](operations/session-handoff-2026-10-30-stage4-step5a-block1.md),
