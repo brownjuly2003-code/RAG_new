@@ -89,7 +89,10 @@ lost; no orphan process was left. The harness forbids an unasked restart. Julia,
 The four WixQA exports are untracked (they are committed with the reading). SHA-256 prefixes:
 `stage5-wixqa-m1.json` c5b33eb1cdb3aaba, `.m1.cases.jsonl` a2dde0f07015ccc0,
 `stage5-wixqa-m2.json` bbe3780da47538dc, `.m2.cases.jsonl` 90849af8f2f033dc. A resumed run
-rewrites them from the same verdicts; the bytes should not change.
+rewrites them from the same verdicts; the bytes should not change. The exports come out with
+CRLF on the laptop (539 of 539 lines in `stage5-wixqa-m1.json`; the receipts are LF) and git
+stores LF: normalize every export to LF bytes before `reading.py`, as item 6 did, or the
+record's input hashes miss the committed files. The prefixes above are of the CRLF bytes.
 
 ## Once Julia decides
 
@@ -130,7 +133,7 @@ rewrites them from the same verdicts; the bytes should not change.
 | `2057ad0` 14:19 | Stage 5 registration — **STAGE5_SHA** (gate 411 passed) |
 | `da0988a` 11-01 00:27 | WixQA receipt before grading |
 | `bd18bce` 09:25 | ConditionalQA receipt before grading |
-| the commit adding this file | This handoff and the status docs |
+| `b9ccdd9` and the next | This handoff and the status docs; then the CRLF note |
 
 Codex (cw, `gpt-6-astra`, `xhigh`) wrote code, tests and capsules in the data-free package
 `D:/RAG_new_cx/s1`; the session reviewed, applied, ran the Mac gates and committed. The full
@@ -175,7 +178,7 @@ none of ours (pytest, sync) needed while the driver runs except as noted.
    in the foreground (copy, extract, plan, receipt commit; nothing else may be staged), then
    its judge. `stage5-plan.ps1` is the spec's block 4 first half verbatim with
    `Set-Location D:/RAG_new` and a commit trailer.
-6. **Read.** The spec's block 5: `reading.py … --out reports/stage4-final/stage5/2057ad0/record.json`.
+6. **Read.** Normalize the exports to LF bytes first (above), then the spec's block 5: `reading.py … --out reports/stage4-final/stage5/2057ad0/record.json`.
    Then the capsule and its artifact test (Codex, data-free package; no external-base text),
    an EVIDENCE_INDEX row, PLAN/ROADMAP/CURRENT_STATE, the Mac gate, one commit. That commit is
    slice rule (c).
@@ -190,7 +193,7 @@ push without her word.
 
 ## State at the end
 
-- `master` HEAD is the commit adding this file; untracked: the four WixQA exports,
+- `master` HEAD is the last commit touching this file; untracked: the four WixQA exports,
   `demo/phase-e-raw.webm`, `reports/ask100/`.
 - Local backup branch `wip/stage5-run` (not pushed): the WixQA exports and the git-ignored scripts
   `.tmp/cx-exec/stage5-*.ps1`, `watch_stage5.py`. Restore:
@@ -206,8 +209,8 @@ push without her word.
    runs the batch marked busy. Watch the batch pace, not only errors.
 3. From item 6, now in the tools: macOS `tar` adds AppleDouble `._*` entries
    (`COPYFILE_DISABLE=1`); PowerShell started from Git Bash finds GNU `tar`
-   (use `$env:SystemRoot/System32/tar.exe`); the laptop writes CRLF — normalize frozen
-   exports to LF before a record reads them.
+   (use `$env:SystemRoot/System32/tar.exe`). Not in the tools: the exports still come out
+   CRLF on the laptop — normalize them to LF before a record reads them (above).
 4. PLAN's estimate of stage 5's judge (≈330 requests) left out M2's plans and the bridges:
    735. Count every plan before a forecast.
 
@@ -230,7 +233,7 @@ push without her word.
 
 ## Verification
 
-- `git -C D:/RAG_new log --oneline -11` shows the commits above.
+- `git -C D:/RAG_new log --oneline -12` shows the commits above.
 - `git -C D:/RAG_new log -1 --format=%H --diff-filter=A -- reports/stage4-final/stage5/baseline.json`
   prints `2057ad0e5733fbf18d6f199a0cfd94927aec85d8`.
 - `python -c "import json; print(json.load(open('D:/RAG_new/reports/stage4-final/stage5/2057ad0/plans-wixqa.json'))['requests'])"`
