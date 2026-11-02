@@ -42,7 +42,8 @@ class OnnxCrossEncoder:
 
         self.model_name = model_name
         self.path = path
-        self.tokenizer = AutoTokenizer.from_pretrained(model_name)
+        # Accept the configured reranker's unpinned revision, matching the PyTorch CrossEncoder path.
+        self.tokenizer = AutoTokenizer.from_pretrained(model_name)  # nosec B615
         self.session = ort.InferenceSession(str(path), providers=["CPUExecutionProvider"])
         self._inputs = [item.name for item in self.session.get_inputs()]
         self._output = self.session.get_outputs()[0].name

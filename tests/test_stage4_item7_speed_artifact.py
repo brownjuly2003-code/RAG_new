@@ -43,6 +43,14 @@ def sha(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def sum_python311(values):
+    # Python 3.12+ compensates float sums; the record was written on Python 3.11.
+    total = 0
+    for value in values:
+        total += value
+    return total
+
+
 @pytest.fixture
 def tools(monkeypatch):
     monkeypatch.syspath_prepend(str(TOOLS))
@@ -53,6 +61,7 @@ def tools(monkeypatch):
         monkeypatch.setitem(sys.modules, name, module)
         spec.loader.exec_module(module)
         modules[name] = module
+    monkeypatch.setattr(modules["record"], "sum", sum_python311, raising=False)
     return SimpleNamespace(**modules)
 
 
@@ -136,7 +145,7 @@ def test_the_reader_rebuilds_all_speed_results_and_the_slo_proposals(tools):
                 math.comb(len(values), k) * p**k * (1 - p) ** (len(values) - k)
                 for k in range(len(values) + 1)
             ]
-            assert held["coverage"] == sum(masses[lower:upper])
+            assert held["coverage"] == sum_python311(masses[lower:upper])
             assert sum(masses[:lower]) <= 0.025 < sum(masses[: lower + 1])
             assert sum(masses[upper:]) <= 0.025 < sum(masses[upper - 1 :])
         assert speed["times"][key]["median"]["point"] == statistics.median(values)
