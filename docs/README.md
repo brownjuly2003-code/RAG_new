@@ -166,7 +166,13 @@ its [record](evidence/stage4-item7-final-speed-record.md).
 [Stage 5](specs/stage5-final-external.md) — the final path on WixQA, ConditionalQA and
 MultiHop-RAG: item 6's product path on its own stand, 300 answers, M1 and M2 paired with
 the published bases by the same judge, M3 at the sent point; one receipt a base, graded
-while the Mac answers the next. Registered 2026-10-31.
+while the Mac answers the next. Registered 2026-10-31; read 2026-11-02: holds — the pooled M1
+bad share not detected, WixQA's M1 good share a detected fall, MultiHop-RAG `NOT_EVIDENCE`;
+its [record](evidence/stage5-final-external-record.md).
+[Stage 5б, answer V6](specs/answer-prompt-v6.md) — V5's evidence step hidden from the client,
+guards for the answer's language and for repeats, paired with stage 5's package answers on
+WixQA and ConditionalQA and with item 6's on aircargo. Registered 2026-11-02 in `9f968bb`,
+its pre-request amendment 1 in `4a5c36e`.
 [Stage 6, item 4](specs/stage6-throughput.md) — the
 service's questions an hour and what a second client sees: a draft, registered with its tools once
 the service is installed.
@@ -200,9 +206,10 @@ P2 reference samples ([Astra](specs/p2-astra-reference-sample.md),
 
 - [`evidence/`](evidence/) — one write-up per measured slice; the register with provenance is
   [`EVIDENCE_INDEX.md`](../EVIDENCE_INDEX.md). The records themselves are in `../reports/`.
-- [Latest handoff: stage 5's judge through ConditionalQA's M2 (preliminary: holds), V6's spec re-read, RAG_new to go public with its history](operations/session-handoff-2026-11-01-stage5-judge-v6-fixes.md)
-  — what is left of stage 5's judge, V6's fixes before registration, what the switch to public
-  needs; the procedure is the [stage 8 runbook](operations/stage8-publication-runbook.md). Before it:
+- [Latest handoff: stage 5 read (holds), her «Да» to publish RAG_new with its history, V6 running](operations/session-handoff-2026-11-02-stage5-record-v6-judge.md)
+  — the uncommitted stage 5 record and README waiting for the Mac gate, V6's judge per key, the
+  publication's order; the procedure is the [stage 8 runbook](operations/stage8-publication-runbook.md). Before it:
+  [stage 5's judge through ConditionalQA's M2, V6's spec re-read](operations/session-handoff-2026-11-01-stage5-judge-v6-fixes.md),
   [items 6 and 7 read, stage 7 closed, stage 5 registered and running](operations/session-handoff-2026-11-01-stage5-running.md),
   [stage 4 — item 5a read, the n-gram lever closed, INT8's live series `NOT_EVIDENCE`; stage 7 step 1 registered; her «да» to the package](operations/session-handoff-2026-10-30-stage4-step5a-live.md),
   [stage 4 — item 5a's blocks 2–5 passed and block 6 ran on; the audit of 2026-10-30 taken into PLAN](operations/session-handoff-2026-10-30-stage4-step5a-block6.md),

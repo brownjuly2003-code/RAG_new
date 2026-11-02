@@ -1,0 +1,241 @@
+{
+  "status": "NOT_EVIDENCE",
+  "retest": {
+    "planned": 15,
+    "scale": [
+      "bad",
+      "partial_ok",
+      "good"
+    ],
+    "pairs": 15,
+    "pairs_list": [
+      [
+        2,
+        2
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        0,
+        2
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        0,
+        2
+      ],
+      [
+        0,
+        0
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        0,
+        2
+      ]
+    ],
+    "pairs_ids": [
+      "02d905b9e7ea1064",
+      "119ed165ae694a8a",
+      "b66f173d4ad1dcdc",
+      "7a4bb1fb83d38386",
+      "366861792764e07a",
+      "8bb6727366515ae1",
+      "3a8be162af8820ac",
+      "9e38b999f991073b",
+      "22d3e420e1d18816",
+      "44994440841fb609",
+      "a9befcedf687e967",
+      "857e901a45828ef6",
+      "a5fc8d0d578e2339",
+      "2b0bcd8d515ea6f9",
+      "076f53e0042f1c40"
+    ],
+    "agree": 12,
+    "two_steps_apart": 3,
+    "quadratic_kappa": 0.3284,
+    "ci95": [
+      0.0,
+      1.0
+    ],
+    "resamples_undefined": 90,
+    "passes_by_kappa": false,
+    "passes_by_agreement": false,
+    "enough_pairs": true,
+    "passed": false,
+    "field_agreement": {
+      "reference": {
+        "agree": 0,
+        "of": 0
+      },
+      "answers_question": {
+        "agree": 15,
+        "of": 15
+      },
+      "context_has_answer": {
+        "agree": 15,
+        "of": 15
+      },
+      "defect": {
+        "agree": 14,
+        "of": 15
+      }
+    }
+  },
+  "source_plan_sha256": "fa9ea3827ba5178a6fe7f5e76b9fa0de3ab0573ada1987a91497b0516cd6def2",
+  "source_verdicts_sha256": "31bb393f1f82e053cbbd875609d9c3e45271a7cdcb6160a060cf0aaff5ff1d3c",
+  "plan_sha256": "85ec5f8345d408d6aba93b680be1d80d279761be5483ccd87ec5d53e99b51642",
+  "verdicts_sha256": "0231201a6d55ca0f3397648f130847ca11b506a18aa6d0038abf6b7ec8013f9d",
+  "admitted_cli": {
+    "old": [
+      "2.1.309",
+      "2.1.310"
+    ],
+    "new": [
+      "2.1.312"
+    ]
+  },
+  "pairs": [
+    {
+      "case_id": "multihoprag-2328",
+      "first": "02d905b9e7ea1064",
+      "copy": "02d905b9e7ea1064-retest",
+      "old_cli": "2.1.309",
+      "new_cli": "2.1.312"
+    },
+    {
+      "case_id": "multihoprag-1438",
+      "first": "119ed165ae694a8a",
+      "copy": "119ed165ae694a8a-retest",
+      "old_cli": "2.1.309",
+      "new_cli": "2.1.312"
+    },
+    {
+      "case_id": "multihoprag-0565",
+      "first": "b66f173d4ad1dcdc",
+      "copy": "b66f173d4ad1dcdc-retest",
+      "old_cli": "2.1.309",
+      "new_cli": "2.1.312"
+    },
+    {
+      "case_id": "multihoprag-0284",
+      "first": "7a4bb1fb83d38386",
+      "copy": "7a4bb1fb83d38386-retest",
+      "old_cli": "2.1.309",
+      "new_cli": "2.1.312"
+    },
+    {
+      "case_id": "multihoprag-1919",
+      "first": "366861792764e07a",
+      "copy": "366861792764e07a-retest",
+      "old_cli": "2.1.309",
+      "new_cli": "2.1.312"
+    },
+    {
+      "case_id": "multihoprag-0876",
+      "first": "8bb6727366515ae1",
+      "copy": "8bb6727366515ae1-retest",
+      "old_cli": "2.1.309",
+      "new_cli": "2.1.312"
+    },
+    {
+      "case_id": "multihoprag-2169",
+      "first": "3a8be162af8820ac",
+      "copy": "3a8be162af8820ac-retest",
+      "old_cli": "2.1.309",
+      "new_cli": "2.1.312"
+    },
+    {
+      "case_id": "multihoprag-0335",
+      "first": "9e38b999f991073b",
+      "copy": "9e38b999f991073b-retest",
+      "old_cli": "2.1.309",
+      "new_cli": "2.1.312"
+    },
+    {
+      "case_id": "multihoprag-0448",
+      "first": "22d3e420e1d18816",
+      "copy": "22d3e420e1d18816-retest",
+      "old_cli": "2.1.309",
+      "new_cli": "2.1.312"
+    },
+    {
+      "case_id": "multihoprag-0418",
+      "first": "44994440841fb609",
+      "copy": "44994440841fb609-retest",
+      "old_cli": "2.1.310",
+      "new_cli": "2.1.312"
+    },
+    {
+      "case_id": "multihoprag-1643",
+      "first": "a9befcedf687e967",
+      "copy": "a9befcedf687e967-retest",
+      "old_cli": "2.1.309",
+      "new_cli": "2.1.312"
+    },
+    {
+      "case_id": "multihoprag-2234",
+      "first": "857e901a45828ef6",
+      "copy": "857e901a45828ef6-retest",
+      "old_cli": "2.1.309",
+      "new_cli": "2.1.312"
+    },
+    {
+      "case_id": "multihoprag-0147",
+      "first": "a5fc8d0d578e2339",
+      "copy": "a5fc8d0d578e2339-retest",
+      "old_cli": "2.1.309",
+      "new_cli": "2.1.312"
+    },
+    {
+      "case_id": "multihoprag-0432",
+      "first": "2b0bcd8d515ea6f9",
+      "copy": "2b0bcd8d515ea6f9-retest",
+      "old_cli": "2.1.309",
+      "new_cli": "2.1.312"
+    },
+    {
+      "case_id": "multihoprag-0697",
+      "first": "076f53e0042f1c40",
+      "copy": "076f53e0042f1c40-retest",
+      "old_cli": "2.1.309",
+      "new_cli": "2.1.312"
+    }
+  ]
+}

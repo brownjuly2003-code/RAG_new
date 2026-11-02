@@ -16,7 +16,7 @@ stage and the frozen streams with their unfreeze conditions are [`ROADMAP.md`](R
   passes, its five changes on 307 of the 400 ([record](docs/evidence/stage4-step5a-record.md));
   the n-gram lever closed 2026-10-30, `NOT_EVIDENCE` ([record](docs/evidence/stage4-step5a-ngram-record.md));
   INT8's short live series in the chat read 2026-10-30, `NOT_EVIDENCE`, stopped in its first
-  block ([record](docs/evidence/stage4-step5a-live-record.md)); her «да» to the package 2026-10-30, the code's defaults since `6c52b06`; items 6 and 7 read 2026-10-31, aircargo a detected gain ([record](docs/evidence/stage4-item6-final-aircargo-record.md)); stage 5 running since 2026-10-31** (steps 0–3 read; [the handoff](docs/operations/session-handoff-2026-11-01-stage5-running.md)): stage 3
+  block ([record](docs/evidence/stage4-step5a-live-record.md)); her «да» to the package 2026-10-30, the code's defaults since `6c52b06`; items 6 and 7 read 2026-10-31, aircargo a detected gain ([record](docs/evidence/stage4-item6-final-aircargo-record.md)); stage 5 read 2026-11-02, holds, WixQA's M1 good a detected fall ([record](docs/evidence/stage5-final-external-record.md)); V6 (stage 5б) on the Mac since 2026-11-02**: stage 3
   stays at outcome C — the handover line under every answer; the encoders and Horizon guard base
   in between ([record](docs/evidence/encoder-checkers-record.md)); stage 3б closed 2026-10-28,
   V5 not adopted ([record](docs/evidence/answer-prompt-v5-record.md)). The widget's R1 and
