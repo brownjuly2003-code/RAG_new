@@ -61,8 +61,13 @@ durable transport.json is infrastructure with no inferred task timeout or measur
 After each task, stop only roots whose command line contains that unique cwd and descendants
 created no earlier than their parent. Verify process creation time again before terminating
 its handle at the common precision derived from CIM's DMTF fraction and native FILETIME.
-Record the number stopped; never use taskkill /T. A second snapshot must contain neither
-a process naming cwd nor a creation-matching member of the built tree. Survivors set
+Record the number stopped; never use taskkill /T. If TerminateProcess fails, wait on the same
+handle for the remaining cleanup deadline: a signalled handle counts separately as exited,
+not stopped; otherwise raise cleanup_timeout. For each apparent survivor in the second
+snapshot (a process naming cwd or a creation-matching member of the built tree), open it with
+SYNCHRONIZE | PROCESS_QUERY_LIMITED_INFORMATION and reverify creation time before trusting
+the handle: OpenProcess error 87 or an already signalled handle is not a survivor, and only
+a verified live process raises CleanupFailed. Survivors set
 cleanup_failed and retain the tree for cleanup_pending; unresolved cleanup blocks launches.
 
 Count Latin/Cyrillic letters by Unicode name in the saved prompt's parsed question and the
@@ -348,11 +353,11 @@ commit before another corpus request.
 - `reports/answer-prompt-v6/tools/v6_key.py` `817a42c0bddae5968a4de5cb6702e0547b920f981b702e322ac64663e8f4c1c0`
 - `reports/answer-prompt-v6/tools/v6_record.py` `059d4ce93a265b56ca992a2be9b64abd763e07564de2e67b5cacc59249c759ab`
 - `reports/answer-prompt-v6/tools/v6_replay.py` `2a346517fa2c084c797e341758c73f2c5b2f2085df27367c276b391b1ce75c38`
-- `reports/generator-ceiling/tools/ceiling_answer.py` `248c7b5dcd2c28144b535615fabea0dd20559bdc9697a107dce7f55da437b71c`
+- `reports/generator-ceiling/tools/ceiling_answer.py` `60fc767f514d39c7475f845528bdb039f7cf30520206c64dfd58090a571aeb8f`
 - `reports/generator-ceiling/tools/ceiling_common.py` `1f75e3cbd0e64145dd425d32bd710dc20a14921c8b19dd75ba50f28c63169014`
 - `reports/generator-ceiling/tools/ceiling_judge.py` `83c823d20f02447030d21ff96e0d06144952ad0b5366e8ce16c4c6f22052cdf2`
 - `reports/generator-ceiling/tools/ceiling_record.py` `ad65e000798c0ed676df9b4a3601b058c50f54e61c2942027eada3512e28e1a6`
-- `reports/generator-ceiling/tools/ceiling_route.py` `7ab7e14735db113b2c45d9e653ee252c850fdaf4a15d362f316b20fb2ed871c1`
+- `reports/generator-ceiling/tools/ceiling_route.py` `a7b6809e9026a4de6632c50164af2f3ad673b885974c1ddeaed5937405d35ace`
 - `reports/generator-ceiling/tools/wrapper.txt` `583b49ac747123ce24e17d200f3deb70c82117f9f0e295c1dc6db3df311086af`
 - `reports/stage2/tools/judge_export.py` `d2a69975de960791c2b1aca8d93d58f75ef01c92c16686e12646473aea069193`
 - `reports/stage2/tools/stage2_cases.py` `17550c826764349a9ea654a18cfb107948dfcaa3474675a269695c78b572fb9d`
@@ -366,4 +371,4 @@ commit before another corpus request.
 - `scripts/chat_signals.py` `5a193a801147427a725f3ac32580118ac98ecfdfcacb7b02587fb9fe56afeab7`
 - `scripts/context_judge.py` `c93744c25148313ec50e1a6120aebcb702a177cf8def88e49d128260c1e93cd6`
 - `scripts/p2_astra_reference.py` `51bab02664db50adde7bd25b89cf9d279b3c7e0d4f66ea46e18f5bd033ce65b6`
-- `tests/test_generator_ceiling.py` `ebc10677dc992f94edc733f8d8c9b466e3241e702583e10affa74fd8ddb1818a`
+- `tests/test_generator_ceiling.py` `790127d9c67f0a1a0b5fa5e7a24a6a8222c6ae841d4c8db2d1a4ca5038486ab4`

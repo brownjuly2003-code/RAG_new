@@ -1,0 +1,76 @@
+{
+  "attempts": 0,
+  "redos": 0,
+  "counted_out": 0,
+  "infrastructure_failures": 0,
+  "infrastructure_streak": 1,
+  "language_mismatches": 0,
+  "raw_output_mismatches": 0,
+  "agents_hashes": [
+    "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546"
+  ],
+  "processes_stopped": 0,
+  "task_seconds": {
+    "n": 0,
+    "median": null,
+    "p90": null
+  },
+  "tokens": {
+    "input_tokens": 0,
+    "cached_input_tokens": 0,
+    "output_tokens": 0,
+    "reasoning_output_tokens": 0,
+    "total_tokens": 0
+  },
+  "stops": [],
+  "pilot_passed": false,
+  "forecast": null,
+  "chunks": [
+    {
+      "started": "2026-11-02T23:12:55.463073+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false
+    }
+  ],
+  "probe": {
+    "passed": false,
+    "attempts": [
+      {
+        "id": "1774b13ee7894cf38366a29dc1a5c70e",
+        "kind": "infrastructure",
+        "reason": "cleanup_failure",
+        "elapsed_s": 14.875,
+        "task_forecast": 180,
+        "task_stop": 540,
+        "timeout": false,
+        "processes_stopped": 0,
+        "job_id": "task-mvzvjyfg-x0j2g8",
+        "thread_id": "01a19e89-a4bd-7643-a4e3-4131b1cee552",
+        "rollout_file": "rollout-2026-11-02T18-13-03-01a19e89-a4bd-7643-a4e3-4131b1cee552.jsonl",
+        "rollout_sha256": "e02049c608157b98eda2d8cacca4f2d9bab9db1ec7057fbfba5d0ffe75c90668",
+        "raw_output_sha256": "565339bc4d33d72817b583024112eb7f5cdf3e5eef0252d6ec1b9c9a94e12bb3",
+        "raw_output_mismatch": false,
+        "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+        "request_sha256": "b4d50a67a784a449e0c763c401bb9f95fb37804dff5765d8b4f95fd202eb7d77",
+        "saved_prompt_sha256": "b4d50a67a784a449e0c763c401bb9f95fb37804dff5765d8b4f95fd202eb7d77",
+        "postpilot": false,
+        "gate": {
+          "passed": true,
+          "reasons": [],
+          "tokens": {
+            "input_tokens": 16585,
+            "cached_input_tokens": 0,
+            "output_tokens": 5,
+            "reasoning_output_tokens": 0,
+            "total_tokens": 16590
+          },
+          "timing": {
+            "duration_ms": 6726,
+            "time_to_first_token_ms": 6573
+          }
+        },
+        "answer_sha256": "565339bc4d33d72817b583024112eb7f5cdf3e5eef0252d6ec1b9c9a94e12bb3"
+      }
+    ]
+  }
+}

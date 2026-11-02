@@ -249,10 +249,11 @@ def process_kernel():
 
 
 class CleanupFailed(ValueError):
-    def __init__(self, tree, stopped=0):
+    def __init__(self, tree, stopped=0, exited=0):
         super().__init__("owned process survived cleanup")
         self.tree = tree
         self.stopped = stopped
+        self.exited = exited
 
 
 def same_process(first, second):
@@ -271,7 +272,7 @@ def cleanup(cwd, *, snapshot=None, kernel=None, tracked=()):
     # Retain the original creation-bound tree for the next cleanup attempt.
     selected = process_tree(current, cwd, tracked)
     kernel = kernel if kernel is not None else process_kernel()
-    stopped = 0
+    stopped, exited = 0, 0
     deadline = time.monotonic() + 20
     for proc in selected:
         handle = kernel.OpenProcess(0x100001 | 0x1000, False, proc["pid"])
@@ -289,20 +290,42 @@ def cleanup(cwd, *, snapshot=None, kernel=None, tracked=()):
             if times[0].value // quantum != proc["created"] // quantum:
                 continue  # PID reused; this is no longer the built tree.
             if kernel.WaitForSingleObject(handle, 0) == 0:
+                exited += 1
                 continue
-            c.require(kernel.TerminateProcess(handle, 1), "owned process termination failed")
+            terminated = kernel.TerminateProcess(handle, 1)
             remaining = max(0, int((deadline - time.monotonic()) * 1000))
             if kernel.WaitForSingleObject(handle, remaining) != 0:
                 raise TimeoutError("owned process stop timed out")
-            stopped += 1
+            if terminated:
+                stopped += 1
+            else:
+                # Termination can be refused while the process is already exiting.
+                exited += 1
         finally:
             kernel.CloseHandle(handle)
     by_id = {proc["pid"]: proc for proc in selected}
     for proc in snapshot():
         previous = by_id.get(proc["pid"])
         if str(cwd) in (proc.get("command") or "") or (previous and same_process(previous, proc)):
-            raise CleanupFailed(selected, stopped)
-    return stopped
+            handle = kernel.OpenProcess(0x100000 | 0x1000, False, proc["pid"])
+            if not handle:
+                c.require(ctypes.get_last_error() == 87, "owned process inaccessible")
+                continue
+            try:
+                times = [ctypes.c_ulonglong() for _ in range(4)]
+                c.require(
+                    kernel.GetProcessTimes(handle, *(ctypes.byref(t) for t in times)),
+                    "process creation time unavailable",
+                )
+                quantum = creation_quantum(proc)
+                if times[0].value // quantum != proc["created"] // quantum:
+                    continue
+                if kernel.WaitForSingleObject(handle, 0) == 0:
+                    continue
+                raise CleanupFailed(selected, stopped, exited)
+            finally:
+                kernel.CloseHandle(handle)
+    return {"processes_stopped": stopped, "processes_exited": exited}
 
 
 def rollout_complete(raw):
@@ -347,6 +370,7 @@ def cleanup_failure(result, exc):
     if isinstance(exc, CleanupFailed):
         result["cleanup_tree"] = exc.tree
         result["processes_stopped"] = result.get("processes_stopped", 0) + exc.stopped
+        result["processes_exited"] = result.get("processes_exited", 0) + exc.exited
 
 
 class CompanionClient:
@@ -372,6 +396,7 @@ class CompanionClient:
             "elapsed_s": elapsed,
             "timeout": timed_out,
             "processes_stopped": 0,
+            "processes_exited": 0,
         }
         try:
             record = self.precedent.find_job_record(
@@ -439,7 +464,7 @@ class CompanionClient:
             result["reason"] = "record_or_rollout"
         finally:
             try:
-                result["processes_stopped"] = cleanup(cwd)
+                result.update(cleanup(cwd))
             except (Exception, SystemExit) as exc:
                 cleanup_failure(result, exc)
         c.write(folder / "outcome.json", result)
@@ -507,17 +532,19 @@ class CompanionClient:
             }
         # Never start a second task while an interrupted task/broker may remain.
         try:
-            stopped = cleanup(folder / "cwd")
+            cleaned = cleanup(folder / "cwd")
         except (Exception, SystemExit) as exc:
             result = {
                 "elapsed_s": transport["elapsed"],
                 "timeout": transport["timed_out"],
                 "processes_stopped": 0,
+                "processes_exited": 0,
             }
             cleanup_failure(result, exc)
             c.write(folder / "outcome.json", result)
             return result
         result = self.collect(folder, launch["started"], **transport)
-        result["processes_stopped"] += stopped
+        for name, count in cleaned.items():
+            result[name] += count
         c.write(folder / "outcome.json", result)
         return result

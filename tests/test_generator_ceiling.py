@@ -1057,7 +1057,9 @@ def test_collect_transport_messages_require_failed_status(modules, local_tmp, mo
     if failure == "missing":
         data.job.unlink()
     (data.folder / "stderr.bin").write_bytes(b"connection timed out")
-    monkeypatch.setattr(route, "cleanup", lambda *_: 2)
+    monkeypatch.setattr(
+        route, "cleanup", lambda *_: {"processes_stopped": 2, "processes_exited": 0}
+    )
     result = data.client.collect(data.folder, data.started, returncode=int(failure == "exit"))
     assert result["kind"] == ("accepted" if failure is None else "infrastructure")
     assert result["processes_stopped"] == 2 and c.read(data.folder / "outcome.json") == result
@@ -1087,7 +1089,9 @@ def test_collect_waits_for_complete_rollout(modules, local_tmp, monkeypatch, inc
             data.rollout.write_bytes(full)
 
     monkeypatch.setattr(route.time, "sleep", sleep)
-    monkeypatch.setattr(route, "cleanup", lambda *_: 0)
+    monkeypatch.setattr(
+        route, "cleanup", lambda *_: {"processes_stopped": 0, "processes_exited": 0}
+    )
     result = data.client.collect(data.folder, data.started)
     assert result["kind"] == ("accepted" if finishes else "infrastructure")
     assert waits and (sum(waits) <= 10 if finishes else sum(waits) == 10)
@@ -1102,7 +1106,9 @@ def test_collect_complete_route_failure_and_raw_mismatch(modules, local_tmp, mon
     entries = clean_rollout(str(data.folder / "cwd"), "Different answer")
     entries.insert(-1, {"type": "response_item", "payload": {"type": "function_call"}})
     data.rollout.write_bytes(rollout_bytes(entries))
-    monkeypatch.setattr(route, "cleanup", lambda *_: 0)
+    monkeypatch.setattr(
+        route, "cleanup", lambda *_: {"processes_stopped": 0, "processes_exited": 0}
+    )
     monkeypatch.setattr(
         route.time, "sleep", lambda *_: pytest.fail("complete rollout must not wait")
     )
@@ -1111,20 +1117,40 @@ def test_collect_complete_route_failure_and_raw_mismatch(modules, local_tmp, mon
 
 
 class FakeKernel:
-    def __init__(self, created):
+    def __init__(
+        self, created, *, termination_fails=(), exit_on_failure=(), exited=(), gone=(), live=()
+    ):
         self.created, self.stopped, self.closed = created, [], []
+        self.termination_fails = set(termination_fails)
+        self.exit_on_failure, self.exited = set(exit_on_failure), set(exited)
+        self.gone, self.live = set(gone), set(live)
+        self.opened, self.waits, self.terminated = [], [], []
+        self.error = 0
 
-    def OpenProcess(self, _access, _inherit, pid):
+    def OpenProcess(self, access, _inherit, pid):
+        self.opened.append((access, pid))
+        if pid in self.gone:
+            self.error = 87
+            return 0
         return pid
 
     def GetProcessTimes(self, handle, created, *_times):
         created._obj.value = self.created[handle]
         return 1
 
-    def WaitForSingleObject(self, handle, _timeout):
-        return 0 if handle in self.stopped else 258
+    def WaitForSingleObject(self, handle, timeout):
+        self.waits.append((handle, timeout))
+        if timeout == 0 and handle in self.live:
+            return 258
+        return 0 if handle in self.stopped or handle in self.exited else 258
 
     def TerminateProcess(self, handle, _code):
+        self.terminated.append(handle)
+        if handle in self.termination_fails:
+            self.error = 5
+            if handle in self.exit_on_failure:
+                self.exited.add(handle)
+            return 0
         self.stopped.append(handle)
         return 1
 
@@ -1152,13 +1178,120 @@ def process_snapshot(cwd):
     ]
 
 
+def test_cleanup_termination_race_counts_exit_and_stops_rest(modules, monkeypatch):
+    route = modules["route"]
+    rows = process_snapshot("unique/cwd")[:3]
+    kernel = FakeKernel(
+        {10: 1007, 11: 1029, 12: 1041}, termination_fails=(12,), exit_on_failure=(12,)
+    )
+    snapshots = iter((rows, []))
+    ticks = iter((100, 102, 104, 106))
+    monkeypatch.setattr(route.time, "monotonic", lambda: next(ticks))
+    monkeypatch.setattr(route.ctypes, "get_last_error", lambda: kernel.error, raising=False)
+    result = route.cleanup("unique/cwd", snapshot=lambda: next(snapshots), kernel=kernel)
+    assert result == {"processes_stopped": 2, "processes_exited": 1}
+    assert kernel.error == 5 and kernel.terminated == [12, 11, 10]
+    assert kernel.stopped == [11, 10] and kernel.closed == [12, 11, 10]
+    assert kernel.waits == [(12, 0), (12, 18000), (11, 0), (11, 16000), (10, 0), (10, 14000)]
+
+
+def test_cleanup_termination_failure_times_out(modules, monkeypatch):
+    route = modules["route"]
+    kernel = FakeKernel({10: 1007}, termination_fails=(10,))
+    ticks = iter((100, 119.5))
+    monkeypatch.setattr(route.time, "monotonic", lambda: next(ticks))
+    monkeypatch.setattr(route.ctypes, "get_last_error", lambda: kernel.error, raising=False)
+    with pytest.raises(TimeoutError, match="owned process stop timed out") as caught:
+        route.cleanup(
+            "unique/cwd", snapshot=lambda: process_snapshot("unique/cwd")[:1], kernel=kernel
+        )
+    outcome = {}
+    route.cleanup_failure(outcome, caught.value)
+    assert outcome["reason"] == "cleanup_timeout" and outcome["cleanup_failed"]
+    assert kernel.error == 5 and kernel.waits == [(10, 0), (10, 500)]
+    assert kernel.closed == [10] and not kernel.stopped
+
+
+@pytest.mark.parametrize("member", ["cwd", "tree"])
+@pytest.mark.parametrize("state", ["signalled", "gone", "reused", "live"])
+def test_cleanup_second_snapshot_checks_handle(modules, monkeypatch, member, state):
+    route = modules["route"]
+    rows = process_snapshot("unique/cwd")[:3]
+    proc = {**rows[0], "pid": 99} if member == "cwd" else rows[2]
+    kernel = FakeKernel(
+        {10: 1007, 11: 1029, 12: 1041, 99: 1007},
+        exited=(proc["pid"],) if member == "cwd" and state == "signalled" else (),
+        live=(proc["pid"],) if state == "live" else (),
+    )
+    monkeypatch.setattr(route.ctypes, "get_last_error", lambda: kernel.error, raising=False)
+    snapshots = iter((rows, [proc]))
+
+    def snapshot():
+        current = next(snapshots)
+        if current is not rows:
+            if state == "gone":
+                kernel.gone.add(proc["pid"])
+            elif state == "reused":
+                kernel.created[proc["pid"]] += 10
+        return current
+
+    if state == "live":
+        with pytest.raises(route.CleanupFailed) as caught:
+            route.cleanup("unique/cwd", snapshot=snapshot, kernel=kernel)
+        assert caught.value.tree == route.process_tree(rows, "unique/cwd")
+        assert caught.value.stopped == 3
+    else:
+        assert route.cleanup("unique/cwd", snapshot=snapshot, kernel=kernel) == {
+            "processes_stopped": 3,
+            "processes_exited": 0,
+        }
+    # The final snapshot is checked without requesting termination rights.
+    assert kernel.opened[-1] == (0x100000 | 0x1000, proc["pid"])
+    assert kernel.terminated == [12, 11, 10]
+    assert len(kernel.closed) == (3 if state == "gone" else 4)
+
+
+@pytest.mark.parametrize("recover", [False, True])
+def test_cleanup_exit_counter_is_journaled(modules, local_tmp, monkeypatch, recover):
+    c, route, arm = modules["common"], modules["route"], modules["answer"]
+    data = collection_fixture(modules, local_tmp)
+    c.write(data.folder / "transport.json", {"returncode": 0, "timed_out": False, "elapsed": 1})
+    rows = process_snapshot(data.folder / "cwd")[:3]
+    kernel = FakeKernel(
+        {10: 1007, 11: 1029, 12: 1041}, termination_fails=(12,), exit_on_failure=(12,)
+    )
+    snapshots = iter((rows, [], [], []))
+    cleanup = route.cleanup
+    monkeypatch.setattr(
+        route, "cleanup", lambda cwd: cleanup(cwd, snapshot=lambda: next(snapshots), kernel=kernel)
+    )
+    result = (
+        data.client.recover(data.folder)
+        if recover
+        else data.client.collect(data.folder, data.started)
+    )
+    assert result["kind"] == "accepted"
+    assert result["processes_stopped"] == 2 and result["processes_exited"] == 1
+    assert c.read(data.folder / "outcome.json") == result
+    state = arm.initial("spec")
+    arm.reduce_attempt(
+        state, "wixqa", "case", {"id": "attempt", "task_stop": 540, **result}, "Question"
+    )
+    assert arm.attempt_public(result)["processes_exited"] == 1
+    assert arm.route_numbers(state)["processes_exited"] == 1
+    assert arm.route_numbers(state)["processes_stopped"] == 2
+
+
 def test_cleanup_common_precision_and_pid_reuse(modules):
     route = modules["route"]
     first = process_snapshot("unique/cwd")
     # Native FILETIME retains sub-microsecond ticks; pid 15 has been reused.
     kernel = FakeKernel({10: 1007, 11: 1029, 12: 1041, 15: 1071})
     snapshots = iter((first, [{**first[-1], "created": 1070}, *first[3:5]]))
-    assert route.cleanup("unique/cwd", snapshot=lambda: next(snapshots), kernel=kernel) == 3
+    assert route.cleanup("unique/cwd", snapshot=lambda: next(snapshots), kernel=kernel) == {
+        "processes_stopped": 3,
+        "processes_exited": 0,
+    }
     assert kernel.stopped == [12, 11, 10]
     assert set(kernel.closed) == {10, 11, 12, 15}
 
@@ -1174,10 +1307,9 @@ def test_cleanup_derives_snapshot_precision(modules, fraction, native, stopped):
     }
     kernel = FakeKernel({10: native})
     snapshots = iter(([proc], []))
-    assert (
-        modules["route"].cleanup("unique/cwd", snapshot=lambda: next(snapshots), kernel=kernel)
-        == stopped
-    )
+    assert modules["route"].cleanup(
+        "unique/cwd", snapshot=lambda: next(snapshots), kernel=kernel
+    ) == {"processes_stopped": stopped, "processes_exited": 0}
 
 
 @pytest.mark.parametrize("survivor", ["root", "child", "new_root"])
@@ -1190,7 +1322,9 @@ def test_cleanup_survivor_records_failure_and_blocks_launch(
     alive = [rows[0 if survivor == "root" else 2]]
     if survivor == "new_root":
         alive = [{**rows[0], "pid": 99, "created": 1080}]
-    kernel = FakeKernel({10: 1007, 11: 1029, 12: 1041, 99: 1089})
+    # Deliberately report a live handle in the final check despite the successful
+    # termination wait, so this test still exercises the survivor failure path.
+    kernel = FakeKernel({10: 1007, 11: 1029, 12: 1041, 99: 1089}, live=(alive[0]["pid"],))
     cleanup = route.cleanup
     snapshots = iter((rows, alive))
     monkeypatch.setattr(
@@ -1246,7 +1380,12 @@ def test_companion_recover_uses_only_durable_timeout(modules, local_tmp, monkeyp
     c.write(data.folder / "launch.json", {"started": "2000-01-01T00:00:00+00:00", "task_stop": 540})
     if transport:
         c.write(data.folder / "transport.json", transport)
-    stopped = iter((2, 0))
+    stopped = iter(
+        (
+            {"processes_stopped": 2, "processes_exited": 0},
+            {"processes_stopped": 0, "processes_exited": 0},
+        )
+    )
     monkeypatch.setattr(route, "cleanup", lambda *_: next(stopped))
     result = data.client.recover(data.folder)
     assert result["kind"] == (
@@ -1407,12 +1546,13 @@ def test_recover_cleanup_survivor_is_journaled(modules, local_tmp, monkeypatch):
     tree = process_snapshot(data.folder / "cwd")[:3]
 
     def fail(*_):
-        raise route.CleanupFailed(tree)
+        raise route.CleanupFailed(tree, stopped=2, exited=1)
 
     monkeypatch.setattr(route, "cleanup", fail)
     result = data.client.recover(data.folder)
     assert result["kind"] == "infrastructure" and result["cleanup_failed"]
     assert result["cleanup_tree"] == tree and result["timeout"] is False
+    assert result["processes_stopped"] == 2 and result["processes_exited"] == 1
     assert c.read(data.folder / "outcome.json") == result
 
 
@@ -1423,10 +1563,7 @@ def test_cleanup_tracks_orphan_and_new_descendants(modules):
     child = {**orphan, "pid": 20, "parent": 12, "created": 1050, "command": "new worker"}
     kernel = FakeKernel({12: 1041, 20: 1058})
     snapshots = iter(([orphan, child], []))
-    assert (
-        route.cleanup(
-            "unique/cwd", snapshot=lambda: next(snapshots), kernel=kernel, tracked=tracked
-        )
-        == 2
-    )
+    assert route.cleanup(
+        "unique/cwd", snapshot=lambda: next(snapshots), kernel=kernel, tracked=tracked
+    ) == {"processes_stopped": 2, "processes_exited": 0}
     assert kernel.stopped == [20, 12]

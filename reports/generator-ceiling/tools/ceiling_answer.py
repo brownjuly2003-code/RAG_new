@@ -129,6 +129,7 @@ def attempt_public(attempt):
         "task_stop",
         "timeout",
         "processes_stopped",
+        "processes_exited",
         "job_id",
         "thread_id",
         "rollout_file",
@@ -185,6 +186,7 @@ def route_numbers(state):
         "raw_output_mismatches": sum(a.get("raw_output_mismatch", False) for a in attempts),
         "agents_hashes": state["agents_hashes"],
         "processes_stopped": sum(a.get("processes_stopped", 0) for a in attempts),
+        "processes_exited": sum(a.get("processes_exited", 0) for a in attempts),
         "task_seconds": {
             "n": len(times),
             "median": statistics.median(times) if times else None,
