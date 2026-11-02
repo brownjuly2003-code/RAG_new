@@ -3,6 +3,7 @@
 import asyncio
 import copy
 import hashlib
+import importlib.machinery
 import importlib.util
 import json
 import re
@@ -72,6 +73,15 @@ def v6():
         modules[name] = module
     yield modules
     sys.path[:] = before
+
+
+def test_11f_product_api_package_after_frozen_imports(v6):
+    spec = importlib.machinery.PathFinder.find_spec("api", sys.path)
+    assert spec is not None
+    assert spec.submodule_search_locations is not None, spec.origin
+    assert v6["v6_common"].ROOT / "api" in {
+        Path(location).resolve() for location in spec.submodule_search_locations
+    }
 
 
 @pytest.mark.parametrize(

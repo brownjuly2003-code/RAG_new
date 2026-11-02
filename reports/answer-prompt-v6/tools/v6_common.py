@@ -30,6 +30,8 @@ final = load("reports/stage4-final/tools/common.py", "common")
 v5 = load("reports/answer-prompt-v5/tools/replay.py", "v6_frozen_replay")
 v5_record = load("reports/answer-prompt-v5/tools/v5_record.py", "v6_frozen_record")
 protocol = load("reports/stage4-final/tools/external/protocol.py", "v6_frozen_protocol")
+# Frozen protocol.py prepends stage-4 tools; its api.py shadows the product package.
+sys.path.insert(0, str(ROOT))
 KEYS = ("wixqa", "conditionalqa", "aircargo")
 BASES = KEYS[:2]
 STANDS = {"wixqa": "2057ad0", "conditionalqa": "2057ad0", "aircargo": "138f3b3"}

@@ -8,6 +8,19 @@ any amendment, register these bytes and the tools/tests together, and only then
 make the first V6 request. The replay and grading tools refuse the draft status.
 Registration changes the status to `registered before V6's first request`.
 
+**Amendment 1 (pre-request, 2026-11-02).** Registration `9f968bb`'s `attempt-01`
+stopped in `v6_chain.py --check` for wixqa (stand `2057ad0`), before any V6
+request, with `ModuleNotFoundError: No module named 'api.routers'; 'api' is not a package`.
+Frozen `protocol.py` prepends the stage-4 tools directory, whose `api.py` shadows
+the product `api/` package, also when loaded from `LIBRARY` for aircargo's stand
+`138f3b3`. Immediately after loading that protocol, `v6_common.py` restores the
+product stand's precedence with `sys.path.insert(0, str(ROOT))`. The operator's
+diagnostic Mac `--check` with this fix passed all three keys: wixqa 100,
+same_context 46; conditionalqa 100, same_context 49; aircargo 100, same_context 36;
+regex 2026.5.9, unicodedata 14.0.0, matching the registered 46/49/36. The amended
+bytes must be registered by a new commit; `9f968bb`'s `attempt-01` is not evidence
+and none of its output is used.
+
 ## Why and what changes (V1–V3)
 
 [V5's record](../evidence/answer-prompt-v5-record.md) found the principal loss:
@@ -714,7 +727,7 @@ explicit pre-request amendment; never silently accept different registered bytes
 - `reports/answer-prompt-v6/tools/qa_prompt_v6.txt` `a5eced6ee2a8ab4ad93a4db94462d40f8f5f8c5f0290917803eac9d91a56da62`
 - `reports/answer-prompt-v6/tools/shown_text.py` `eb571e5ca935fb3729595b95dc785dae7097ae8ac135a78587ebf64cc370aedc`
 - `reports/answer-prompt-v6/tools/v6_chain.py` `51f7b6352ab9a21b5d1fd4a82223d7d148e23f5e151b67f499ac54ccbc09f140`
-- `reports/answer-prompt-v6/tools/v6_common.py` `a677fc27bbd873523524fecd4df2dbae8b4d6ba45b6b587d07376ec3f3d32e2c`
+- `reports/answer-prompt-v6/tools/v6_common.py` `9d851a6aa6c6c021d3a5c98667e56bfb9d57a125413b83d37873857ab1ebf19e`
 - `reports/answer-prompt-v6/tools/v6_judge.py` `609477a00f14e1b660a57c43b9ebaa9246c2c2f23d8c9170c05c2a2d5a09c6c3`
 - `reports/answer-prompt-v6/tools/v6_key.py` `817a42c0bddae5968a4de5cb6702e0547b920f981b702e322ac64663e8f4c1c0`
 - `reports/answer-prompt-v6/tools/v6_record.py` `059d4ce93a265b56ca992a2be9b64abd763e07564de2e67b5cacc59249c759ab`
@@ -727,4 +740,4 @@ explicit pre-request amendment; never silently accept different registered bytes
 - `reports/stage4-final/tools/run.py` `d75cc1195a0258cbd78b049d434e15ab79439f2e96cef71838dba6a804481ff1`
 - `reports/stage4-final/tools/stand.py` `2887646363fe9be5b148d0abc378492d53f51c1f9ebef874dc76516955bea29d`
 - `scripts/chat_answer_judge.py` `cdb2be82d3341afe0b1aba4e560f56eac4e2dec9cce69d0e038a18da4f2c7788`
-- `tests/test_answer_prompt_v6.py` `37b10e19840cc86d002a7fbc100a9a0155bbbf58c36e1a709d777120e4ab39b0`
+- `tests/test_answer_prompt_v6.py` `c511eed8bc8ff25833f9169a220a5d0e35cadb50df3dffa47d267cd1744a35ad`
