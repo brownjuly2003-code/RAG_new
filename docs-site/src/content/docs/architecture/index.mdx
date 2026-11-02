@@ -28,7 +28,7 @@ flowchart LR
 
 The path is one-way; the LangGraph node loop (retry, rewrite_query) lives
 inside the `Graph` box and is detailed in
-[LangGraph state machine](/RAG_Support_Assistant/architecture/langgraph/).
+[LangGraph state machine](/RAG_new/architecture/langgraph/).
 Each node, store, and provider maps to a directory below.
 
 ## Top-level modules
@@ -45,14 +45,14 @@ Each node, store, and provider maps to a directory below.
     <h3 class="q-title">
       <span class="q-label">agent/</span>
     </h3>
-    <div class="q-body"><p>LangGraph state machine: <code>state.py</code> (TypedDict shape), <code>graph.py</code> (nodes + edges), <code>prompts.py</code>, <code>prompt_registry.py</code> (experiment-aware sticky-rollout), <code>tools.py</code>. See the auto-generated <a href="/RAG_Support_Assistant/architecture/langgraph/">LangGraph state machine</a>.</p></div>
+    <div class="q-body"><p>LangGraph state machine: <code>state.py</code> (TypedDict shape), <code>graph.py</code> (nodes + edges), <code>prompts.py</code>, <code>prompt_registry.py</code> (experiment-aware sticky-rollout), <code>tools.py</code>. See the auto-generated <a href="/RAG_new/architecture/langgraph/">LangGraph state machine</a>.</p></div>
   </article>
 
   <article class="q-card">
     <h3 class="q-title">
       <span class="q-label">llm/providers/</span>
     </h3>
-    <div class="q-body"><p>Pluggable provider abstraction: <code>base.py</code> interface, <code>ollama.py</code>, <code>gracekelly.py</code> (browser-proxy to Perplexity Pro), <code>mistral.py</code> (OpenAI-compatible). Failover to local via routing profiles. See the <a href="/RAG_Support_Assistant/architecture/providers/">provider routing matrix</a>.</p></div>
+    <div class="q-body"><p>Pluggable provider abstraction: <code>base.py</code> interface, <code>ollama.py</code>, <code>gracekelly.py</code> (browser-proxy to Perplexity Pro), <code>mistral.py</code> (OpenAI-compatible). Failover to local via routing profiles. See the <a href="/RAG_new/architecture/providers/">provider routing matrix</a>.</p></div>
   </article>
 
   <article class="q-card">
@@ -101,7 +101,7 @@ Each node, store, and provider maps to a directory below.
   surface.
 
 <Aside type="note" title="See also">
-  - [Module layout & deprecations](/RAG_Support_Assistant/guides/deprecations/) — historical shim
+  - [Module layout & deprecations](/RAG_new/guides/deprecations/) — historical shim
     cleanup phases and the current canonical import map.
-  - [Quickstart](/RAG_Support_Assistant/guides/quickstart/) — boot the stack end-to-end locally.
+  - [Quickstart](/RAG_new/guides/quickstart/) — boot the stack end-to-end locally.
 </Aside>

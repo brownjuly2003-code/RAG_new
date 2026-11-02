@@ -29,7 +29,7 @@ flowchart LR
 
 Путь одностoронний; узловой цикл LangGraph (retry, rewrite_query) живёт
 внутри блока `Graph` и подробно описан на странице
-[Конечный автомат LangGraph](/RAG_Support_Assistant/ru/architecture/langgraph/).
+[Конечный автомат LangGraph](/RAG_new/ru/architecture/langgraph/).
 Каждый узел, хранилище и провайдер мапится на каталог ниже.
 
 ## Модули верхнего уровня
@@ -46,14 +46,14 @@ flowchart LR
     <h3 class="q-title">
       <span class="q-label">agent/</span>
     </h3>
-    <div class="q-body"><p>Конечный автомат LangGraph: <code>state.py</code> (форма TypedDict), <code>graph.py</code> (узлы + рёбра), <code>prompts.py</code>, <code>prompt_registry.py</code> (sticky-rollout с поддержкой экспериментов), <code>tools.py</code>. См. автогенерируемую страницу <a href="/RAG_Support_Assistant/ru/architecture/langgraph/">Конечный автомат LangGraph</a>.</p></div>
+    <div class="q-body"><p>Конечный автомат LangGraph: <code>state.py</code> (форма TypedDict), <code>graph.py</code> (узлы + рёбра), <code>prompts.py</code>, <code>prompt_registry.py</code> (sticky-rollout с поддержкой экспериментов), <code>tools.py</code>. См. автогенерируемую страницу <a href="/RAG_new/ru/architecture/langgraph/">Конечный автомат LangGraph</a>.</p></div>
   </article>
 
   <article class="q-card">
     <h3 class="q-title">
       <span class="q-label">llm/providers/</span>
     </h3>
-    <div class="q-body"><p>Подключаемая абстракция провайдеров: интерфейс <code>base.py</code>, <code>ollama.py</code>, <code>gracekelly.py</code> (browser-прокси к Perplexity Pro), <code>mistral.py</code> (OpenAI-совместимый). Failover к локали через профили маршрутизации. См. <a href="/RAG_Support_Assistant/ru/architecture/providers/">матрицу маршрутизации провайдеров</a>.</p></div>
+    <div class="q-body"><p>Подключаемая абстракция провайдеров: интерфейс <code>base.py</code>, <code>ollama.py</code>, <code>gracekelly.py</code> (browser-прокси к Perplexity Pro), <code>mistral.py</code> (OpenAI-совместимый). Failover к локали через профили маршрутизации. См. <a href="/RAG_new/ru/architecture/providers/">матрицу маршрутизации провайдеров</a>.</p></div>
   </article>
 
   <article class="q-card">
@@ -103,7 +103,7 @@ flowchart LR
   cross-tenant на каждой поверхности.
 
 <Aside type="note" title="См. также">
-  - [Модули и deprecations (EN)](/RAG_Support_Assistant/guides/deprecations/) — фазы
+  - [Модули и deprecations (EN)](/RAG_new/guides/deprecations/) — фазы
     зачистки shim-ов и текущая каноничная import-карта.
-  - [Запустить локально](/RAG_Support_Assistant/ru/guides/quickstart/) — поднять стек end-to-end локально.
+  - [Запустить локально](/RAG_new/ru/guides/quickstart/) — поднять стек end-to-end локально.
 </Aside>

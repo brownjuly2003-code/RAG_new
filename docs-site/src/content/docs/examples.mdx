@@ -27,8 +27,8 @@ the measured-baseline section, and the auto-generated LangGraph flowchart.
 
 <figure>
   <picture>
-    <source srcset="/RAG_Support_Assistant/screenshots/00-chat-e20.webp" type="image/webp" />
-    <img src="/RAG_Support_Assistant/screenshots/00-chat-e20.png"
+    <source srcset="/RAG_new/screenshots/00-chat-e20.webp" type="image/webp" />
+    <img src="/RAG_new/screenshots/00-chat-e20.png"
          alt="RAG Support Assistant chat UI: user question 'Как исправить E20?' followed by the assistant's grounded three-step answer with [1] citation pills, Качество: 95 and Маршрут: auto badges, and an expanded Источники block citing errors_e10_e30.md."
          width="1280" height="820" fetchpriority="high" decoding="async" />
   </picture>
@@ -37,8 +37,8 @@ the measured-baseline section, and the auto-generated LangGraph flowchart.
 
 <figure>
   <picture>
-    <source srcset="/RAG_Support_Assistant/screenshots/01-landing.webp" type="image/webp" />
-    <img src="/RAG_Support_Assistant/screenshots/01-landing.png"
+    <source srcset="/RAG_new/screenshots/01-landing.webp" type="image/webp" />
+    <img src="/RAG_new/screenshots/01-landing.png"
          alt="Landing page of the RAG Support Assistant docs hub: title, intro paragraph, See the example / Reproduce E20 / GitHub buttons, and the start of the Proof points cards."
          width="1440" height="900" loading="lazy" decoding="async" />
   </picture>
@@ -47,8 +47,8 @@ the measured-baseline section, and the auto-generated LangGraph flowchart.
 
 <figure>
   <picture>
-    <source srcset="/RAG_Support_Assistant/screenshots/02-evaluation.webp" type="image/webp" />
-    <img src="/RAG_Support_Assistant/screenshots/02-evaluation.png"
+    <source srcset="/RAG_new/screenshots/02-evaluation.webp" type="image/webp" />
+    <img src="/RAG_new/screenshots/02-evaluation.png"
          alt="Evaluation page — Measured baseline section with aggregate metric table (faithfulness 0.042, answer_relevancy 0.549, context_precision 0.190, context_recall 0.250) and per-category breakdown."
          width="1440" height="900" loading="lazy" decoding="async" />
   </picture>
@@ -57,8 +57,8 @@ the measured-baseline section, and the auto-generated LangGraph flowchart.
 
 <figure>
   <picture>
-    <source srcset="/RAG_Support_Assistant/screenshots/03-langgraph.webp" type="image/webp" />
-    <img src="/RAG_Support_Assistant/screenshots/03-langgraph.png"
+    <source srcset="/RAG_new/screenshots/03-langgraph.webp" type="image/webp" />
+    <img src="/RAG_new/screenshots/03-langgraph.png"
          alt="LangGraph state machine flowchart rendered inline: classify_complexity, transform_query, retrieve, grade_docs, generate, verify_facts, evaluate, route_or_retry with branches to suggest_questions / rewrite_query / handle_error."
          width="1440" height="900" loading="lazy" decoding="async" />
   </picture>
@@ -83,10 +83,10 @@ full LangGraph pipeline against that bundled corpus once ingested.
 ### What happens inside the graph
 
 The pipeline is a LangGraph state machine. It lives in
-[`agent/graph.py`](https://github.com/brownjuly2003-code/RAG_Support_Assistant/blob/master/agent/graph.py)
+[`agent/graph.py`](https://github.com/brownjuly2003-code/RAG_new/blob/master/agent/graph.py)
 and the full flowchart — with every node and conditional edge — is rendered
 automatically on the
-[LangGraph state machine](/RAG_Support_Assistant/architecture/langgraph/) page.
+[LangGraph state machine](/RAG_new/architecture/langgraph/) page.
 The walkthrough below names each node in the order the graph actually executes.
 
 <Steps>
@@ -125,7 +125,7 @@ The walkthrough below names each node in the order the graph actually executes.
    question, with each chunk presented as `[Документ N | source=<filename>]`.
    The model is chosen by the active routing profile (default
    `gracekelly-primary`, with Ollama fallback on provider failure — see
-   [Provider routing](/RAG_Support_Assistant/architecture/providers/)).
+   [Provider routing](/RAG_new/architecture/providers/)).
 
 6. **Verify & Decide 6-8: `verify_facts`** — when fact verification is enabled and retrieved
    context is non-empty, up to ten claims are extracted from the draft
@@ -300,7 +300,7 @@ produce that data, but cross-provider numbers are not yet committed here.
 
 ## Where to go next
 
-- [LangGraph state machine](/RAG_Support_Assistant/architecture/langgraph/) — the auto-generated flowchart of the nodes referenced above.
-- [Architecture overview](/RAG_Support_Assistant/architecture/) — request lifecycle, modules, datastores, cross-cutting concerns.
-- [Provider routing](/RAG_Support_Assistant/architecture/providers/) — which models answer which profile, with costs.
-- [API routes catalog](/RAG_Support_Assistant/architecture/routes/) — the surface a client integrates against.
+- [LangGraph state machine](/RAG_new/architecture/langgraph/) — the auto-generated flowchart of the nodes referenced above.
+- [Architecture overview](/RAG_new/architecture/) — request lifecycle, modules, datastores, cross-cutting concerns.
+- [Provider routing](/RAG_new/architecture/providers/) — which models answer which profile, with costs.
+- [API routes catalog](/RAG_new/architecture/routes/) — the surface a client integrates against.

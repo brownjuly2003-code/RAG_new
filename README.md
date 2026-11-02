@@ -1,8 +1,18 @@
-# RAG assistant — support answers with inspectable evidence
+# RAG assistant
 
-RAG assistant (the `RAG_new` repository) helps support teams answer logistics
-and air-cargo questions from a knowledge base. An optional shipment-status
-journey records the source facts,
+RAG assistant (the `RAG_new` repository) is a support answering service that
+answers questions from a company's documents, cites its sources, and offers a
+hand-off to an operator. It runs on one iMac with 8 GB of memory, using
+Qwen3-4B-Instruct-2507 (`q4_K_M`) on the CPU through Ollama.
+
+Retrieval combines BM25 and BGE-M3, with 14 candidates each, reciprocal rank
+fusion (RRF), and `bge-reranker-v2-m3` as INT8 in ONNX Runtime on the CPU,
+keeping five chunks. The V4 answer prompt uses a 3,584-token window. This is
+the measured **package**, including a 1,024 MiB host prompt-cache cap; the
+retrieval and window settings are code defaults since `6c52b06`. See
+[`CURRENT_STATE.md`](CURRENT_STATE.md) for the runtime and records.
+
+An optional shipment-status journey records the source facts,
 policy decision, claims, and replay receipt behind the synchronous `/api/ask`.
 Reviewers can inspect that record in the admin Evidence tab.
 
@@ -18,26 +28,45 @@ describe the sequence and its limits.
 
 ## Measured results
 
-These are offline measurements on agent-written questions over real documents,
-not verified shipment resolutions. The graph lane and the Qwen3 8B arm stay
-off by default (the production model is Qwen3-4B-Instruct-2507 since
-2026-10-16); each comparison changes only the component named in its row.
+These measurements cover the web chat (`/api/ask/stream`) on the package.
+M1 is the judge's answer-quality rating without reference answers: good,
+faithful but partial, or bad. The quality arrows compare saved V4 answers
+**before the package** with new answers on the same question ids.
 
-| Measure | Current baseline | Experimental arm | Evidence |
-|---|---:|---:|---|
-| Context precision, 100-case H pool | 0.5067, hybrid | 0.5487, graph G2 | [GR-3 A/B](docs/evidence/gr3-graph-lane-ab.md) |
-| Context recall, same H pool | 0.9050, hybrid | 0.9250, graph G2 | [GR-3 A/B](docs/evidence/gr3-graph-lane-ab.md) |
-| Recall, 15-case multi-document bucket | 0.5000, hybrid | 0.4000, graph G2 | [GR-3 A/B](docs/evidence/gr3-graph-lane-ab.md) |
-| LLM faithfulness, three runs of 100 cases | 0.8295, Qwen2.5 7B | 0.8986, Qwen3 8B | [C.1a](evaluation/c1a-qwen25-7b-c06bdf5-phase-c-generator-benchmark.json) · [C.1b](docs/evidence/c1b-qwen3-generator-benchmark.md) |
+aircargo is the project's own corpus of 201 real documents; its
+questions were written by an agent. WixQA asks support questions, while
+ConditionalQA tests conditions, refusals, and evidence across sections.
+MultiHop-RAG asks questions requiring evidence from several documents, so
+the bases probe different demands.
 
-Graph G2 missed the multi-document coverage and latency gates; Qwen3 missed
-the 0.90 LLM faithfulness gate. Neither changed the default. The linked reports
-pin corpus, code, configuration, and measurement limits. There is no measured
-VR precision, verified-resolution yield (VRY), or cost per resolution: none of
-the 100 approved journey labels names a real shipment, and no person grades
-routes (owner's decision, 2026-10-03); which answers go to a person is
-measured in [`PLAN.md`](PLAN.md) stage 3. See the [admission and outcome
-analysis](docs/evidence/a6-journey-admission-and-clarification.md).
+| Measurement | Before the package → package, or package timing | Reading | Record (date) |
+|---|---|---|---|
+| aircargo M1 | Good 63/100 → 73/100; bad 17/100 → 13/100 | Good gain detected; bad change not detected | [Item 6](docs/evidence/stage4-item6-final-aircargo-record.md), 2026-10-31 |
+| aircargo first word (n = 30) | Median 89.3 s; p90 255.6 s | Separate speed run | [Item 7](docs/evidence/stage4-item7-final-speed-record.md), 2026-10-31 |
+| aircargo whole answer (n = 30) | Median 170.2 s; p90 338.8 s | Excludes subsequent suggestions | [Item 7](docs/evidence/stage4-item7-final-speed-record.md), 2026-10-31 |
+| WixQA M1 | Good 40/100 → 30/100; bad 51/100 → 59/100 | Good fall detected; bad change not detected | [Stage 5](docs/evidence/stage5-final-external-record.md), 2026-11-02 |
+| ConditionalQA M1 | Good 35/100 → 38/100; bad 57/100 → 53/100 | Neither change detected | [Stage 5](docs/evidence/stage5-final-external-record.md), 2026-11-02 |
+| WixQA + ConditionalQA M1 bad | 108/200 (54%) → 112/200 (56%) | Change not detected; registered decision: holds | [Stage 5](docs/evidence/stage5-final-external-record.md), 2026-11-02 |
+| MultiHop-RAG (n = 100) | NOT_EVIDENCE | Judge bridge stability failed; advisory only | [Stage 5](docs/evidence/stage5-final-external-record.md), 2026-11-02 |
+
+Stage 5's registered outcome is **holds: publish the package's numbers**.
+The decision reads only the pooled WixQA + ConditionalQA M1 bad share.
+**WixQA's detected fall in good answers is outside that decision and is the
+main caveat.** MultiHop-RAG supplies no admitted old-versus-new result because
+its judge bridge failed. The records read the whole package, without
+attributing the outcome to any one change. Earlier experiments and decisions
+are in the [evidence index](EVIDENCE_INDEX.md).
+
+## How the numbers are made
+
+A [specification](docs/specs/) is registered before the first request.
+Quality comparisons pair the same question ids and use cluster bootstrap
+intervals alongside Newcombe intervals: "detected" means both intervals
+exclude zero in the same direction. "Not detected" does not mean "no
+difference". The LLM judge is `claude-opus-5-5`; bridges re-grade kept replies
+to check its stability. Records bind each number to its corpus SHA, code SHA,
+and configuration; the [evidence index](EVIDENCE_INDEX.md) links the records
+and artifact checks. No person grades the answers (owner's decision D11).
 
 ## Design
 
@@ -81,12 +110,26 @@ The full design, invariants, and decision register are in
 
 - Shipment-status is the only wired resolution journey, and its TMS is a fixture.
 - The 100 approved journey labels are on agent-written questions, with no
-  shipment-bound support requests. The LLM relevance judges are checked against
-  model references only; no human relevance grades are planned.
+  shipment-bound support requests. There is no measured verified-resolution
+  precision, verified-resolution yield (VRY), or cost per resolution; see the
+  [admission analysis](docs/evidence/a6-journey-admission-and-clarification.md).
+- Quality is graded by one judge model. The bridges check stability and supply
+  no human validation; relevance checks also use model references only.
+- Each external base has 100 questions, drawn in stage 2 and reused here, so
+  they are not an independent test set.
+- Speed was measured on one shared iMac, idle for the run, on one day with
+  30 questions. It measures neither throughput nor concurrency; the exact
+  intervals for p90 have no finite upper bound. See [item 7's
+  caveats](docs/evidence/stage4-item7-final-speed-record.md#what-it-does-not-say).
+- No SLO has been named. Item 7's proposals await the owner's decision.
 - Graph retrieval, contract-shaped answers, and clarification projection require
   explicit flags; the graph arm failed its default-on gate.
 - The local Compose setup runs one web replica. It is a development setup, not
   a measured production deployment.
+- No service is kept running between measurement runs yet; see
+  [`CURRENT_STATE.md`](CURRENT_STATE.md).
+
+Answer V6 (stage 5b) is [registered and running](CURRENT_STATE.md).
 
 ## Quick start
 

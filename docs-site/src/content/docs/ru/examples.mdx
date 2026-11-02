@@ -27,8 +27,8 @@ disclosure «Источники» — реальный DOM, заполненны
 
 <figure>
   <picture>
-    <source srcset="/RAG_Support_Assistant/screenshots/00-chat-e20.webp" type="image/webp" />
-    <img src="/RAG_Support_Assistant/screenshots/00-chat-e20.png"
+    <source srcset="/RAG_new/screenshots/00-chat-e20.webp" type="image/webp" />
+    <img src="/RAG_new/screenshots/00-chat-e20.png"
          alt="Чат-UI RAG Support Assistant: вопрос «Как исправить E20?» от пользователя и трёхшаговый ответ ассистента с citation-pill [1], бейджами Качество: 95 и Маршрут: auto, развёрнутым блоком Источники со ссылкой на errors_e10_e30.md."
          width="1280" height="820" fetchpriority="high" decoding="async" />
   </picture>
@@ -37,8 +37,8 @@ disclosure «Источники» — реальный DOM, заполненны
 
 <figure>
   <picture>
-    <source srcset="/RAG_Support_Assistant/screenshots/01-landing.webp" type="image/webp" />
-    <img src="/RAG_Support_Assistant/screenshots/01-landing.png"
+    <source srcset="/RAG_new/screenshots/01-landing.webp" type="image/webp" />
+    <img src="/RAG_new/screenshots/01-landing.png"
          alt="Лэндинг docs-хаба RAG Support Assistant: заголовок, intro-абзац, кнопки See the example / Reproduce E20 / GitHub и начало карточек Proof points."
          width="1440" height="900" loading="lazy" decoding="async" />
   </picture>
@@ -47,8 +47,8 @@ disclosure «Источники» — реальный DOM, заполненны
 
 <figure>
   <picture>
-    <source srcset="/RAG_Support_Assistant/screenshots/02-evaluation.webp" type="image/webp" />
-    <img src="/RAG_Support_Assistant/screenshots/02-evaluation.png"
+    <source srcset="/RAG_new/screenshots/02-evaluation.webp" type="image/webp" />
+    <img src="/RAG_new/screenshots/02-evaluation.png"
          alt="Страница оценки — секция Measured baseline с таблицей агрегатов (faithfulness 0.042, answer_relevancy 0.549, context_precision 0.190, context_recall 0.250) и per-category разрезом."
          width="1440" height="900" loading="lazy" decoding="async" />
   </picture>
@@ -57,8 +57,8 @@ disclosure «Источники» — реальный DOM, заполненны
 
 <figure>
   <picture>
-    <source srcset="/RAG_Support_Assistant/screenshots/03-langgraph.webp" type="image/webp" />
-    <img src="/RAG_Support_Assistant/screenshots/03-langgraph.png"
+    <source srcset="/RAG_new/screenshots/03-langgraph.webp" type="image/webp" />
+    <img src="/RAG_new/screenshots/03-langgraph.png"
          alt="Схема LangGraph state-машины inline: classify_complexity, transform_query, retrieve, grade_docs, generate, verify_facts, evaluate, route_or_retry с ветками suggest_questions / rewrite_query / handle_error."
          width="1440" height="900" loading="lazy" decoding="async" />
   </picture>
@@ -84,10 +84,10 @@ disclosure «Источники» — реальный DOM, заполненны
 ### Что происходит внутри графа
 
 Конвейер — это конечный автомат LangGraph. Он живёт в
-[`agent/graph.py`](https://github.com/brownjuly2003-code/RAG_Support_Assistant/blob/master/agent/graph.py);
+[`agent/graph.py`](https://github.com/brownjuly2003-code/RAG_new/blob/master/agent/graph.py);
 полный flowchart со всеми узлами и условными переходами генерируется
 автоматически на странице
-[LangGraph state machine](/RAG_Support_Assistant/ru/architecture/langgraph/).
+[LangGraph state machine](/RAG_new/ru/architecture/langgraph/).
 Разбор ниже называет каждый узел в том порядке, в котором их реально
 проходит граф.
 
@@ -130,7 +130,7 @@ disclosure «Источники» — реальный DOM, заполненны
    `[Документ N | source=<filename>]`. Модель выбирается активным
    профилем маршрутизации (по умолчанию `gracekelly-primary`, запасной
    путь на Ollama при сбое провайдера — см.
-   [Provider routing](/RAG_Support_Assistant/ru/architecture/providers/)).
+   [Provider routing](/RAG_new/ru/architecture/providers/)).
 
 6. **Verify & Decide 6-8: `verify_facts`** — когда проверка фактов включена и контекст поиска
    непустой, из черновика ответа извлекаются до десяти утверждений, и
@@ -308,7 +308,7 @@ latency) живут на отдельной странице оценки — к
 
 ## Куда дальше
 
-- [LangGraph state machine](/RAG_Support_Assistant/ru/architecture/langgraph/) — автогенерируемый flowchart всех упомянутых выше узлов.
-- [Обзор архитектуры](/RAG_Support_Assistant/ru/architecture/) — жизненный цикл запроса, модули, хранилища, сквозные аспекты.
-- [Provider routing](/RAG_Support_Assistant/ru/architecture/providers/) — какая модель отвечает в каком профиле и за сколько.
-- [API routes catalog](/RAG_Support_Assistant/ru/architecture/routes/) — поверхность, к которой подключается клиент.
+- [LangGraph state machine](/RAG_new/ru/architecture/langgraph/) — автогенерируемый flowchart всех упомянутых выше узлов.
+- [Обзор архитектуры](/RAG_new/ru/architecture/) — жизненный цикл запроса, модули, хранилища, сквозные аспекты.
+- [Provider routing](/RAG_new/ru/architecture/providers/) — какая модель отвечает в каком профиле и за сколько.
+- [API routes catalog](/RAG_new/ru/architecture/routes/) — поверхность, к которой подключается клиент.

@@ -10,7 +10,7 @@ comparison: the committed evaluation surface is an offline fixture plus
 runtime evaluators, not a live benchmark of any specific model.
 
 For the deterministic path that walks a single supported question end to
-end, see [Reproduce E20](/RAG_Support_Assistant/reproduce-e20/).
+end, see [Reproduce E20](/RAG_new/reproduce-e20/).
 
 ## What is committed
 
@@ -74,7 +74,7 @@ the graph, but the retrieval step is expected to surface low-relevance
 chunks, and the evaluator scores reflect that — by design, not by accident.
 
 If you want the deterministic trust path on the supported scenario, the
-[Reproduce E20](/RAG_Support_Assistant/reproduce-e20/) page walks ingest,
+[Reproduce E20](/RAG_new/reproduce-e20/) page walks ingest,
 ask, and trace inspection end to end against the seeded source.
 
 ## How to run the offline benchmark
@@ -84,7 +84,7 @@ There are two runners. The default one runs against empty context (so only
 demo doc whose category matches, which exercises all four metrics.
 
 ```powershell
-cd D:\RAG_Support_Assistant
+cd RAG_new
 python -m demo.seed_docs                              # writes demo/docs/*.md
 
 # Baseline: empty context, scores answer_relevancy only.

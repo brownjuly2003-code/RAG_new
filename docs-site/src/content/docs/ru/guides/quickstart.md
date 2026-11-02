@@ -21,7 +21,7 @@ draft: true
 ## 1. Зависимости
 
 ```bash
-cd D:\RAG_Support_Assistant
+cd RAG_new
 python -m venv .venv
 . .venv/Scripts/activate          # Windows PowerShell: . .venv\Scripts\Activate.ps1
 pip install -r requirements.txt
@@ -70,7 +70,7 @@ cd D:\GraceKelly
 uvicorn gracekelly.main:create_app --factory --host 127.0.0.1 --port 8011
 
 # Запуск
-cd D:\RAG_Support_Assistant
+cd RAG_new
 python main.py
 ```
 
@@ -104,7 +104,7 @@ LLM_PROVIDER_PROFILE=local-first python main.py
    uvicorn gracekelly.main:create_app --factory --host 127.0.0.1 --port 8011
    ```
 
-2. В `D:\RAG_Support_Assistant\.env`:
+2. В `RAG_new/.env`:
 
    ```
    MISTRAL_API_KEY=<your-key>
