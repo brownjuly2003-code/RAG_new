@@ -22,8 +22,8 @@ Plan: [`PLAN.md`](../../PLAN.md) stages 5, 5б, 8. State: [`CURRENT_STATE.md`](.
    deleted on GitHub, `weekly-report` disabled, RAG_new **public**, Pages on (build by
    workflow, `https://brownjuly2003-code.github.io/RAG_new/`), master pushed with this file.
 
-**What to tell Julia next.** The quality stream's next step is the generator pilot
-(PLAN §8.3, item 15). The SLO is hers to name (PLAN §8.3, item 2): item 7's proposal is
+**What to tell Julia next.** Superseded the same evening: the next quality step is now
+stage 5в, the generator's ceiling — see "After the handoff" below. The SLO is hers to name (PLAN §8.3, item 2): item 7's proposal is
 first word 270 s, whole answer 360 s (p90, rounded up to 30 s); V6 would have lengthened the
 answer, and V6 is not adopted, so the proposal stands as measured.
 
@@ -129,10 +129,93 @@ answer, and V6 is not adopted, so the proposal stands as measured.
 2. **Ask her one yes/no before any later push** (runbook §6; her «Да» covered the publication
    push only); run both scans before each.
 3. **SLO**: hers to name (CURRENT_STATE, "Open for Julia").
-4. **Generator pilot** (PLAN §8.3, item 15) — the next quality step; read PLAN first.
+4. **Stage 5в** (PLAN, "Этап 5в") — the next quality step; it replaced the generator pilot as
+   the next step. Start from "After the handoff" below.
 5. Cleanup: the Mac's `/Users/julia/RAG_new_stage5/v6-diag` (a diagnostic copy, not evidence).
    `D:/RAG_new/.tmp/stage8-scan/cache` (346 MB) is needed only for `shingle_range.py` before
    later pushes; delete it when no push is planned.
+
+## After the handoff (≈ 20:55 → 21:45 UTC): stage 5в
+
+Julia's words:
+
+- 20:55 — «но результаты же фиговые?(((». Answered plainly: weak on the external bases (M1
+  good: WixQA 30 of 100, ConditionalQA 38 of 100; aircargo 73 of 100), though the gold is in
+  the sent context of 67 of 100, 58 of 80 and 99 of 100. My advice was to answer the same 300
+  questions once with a strong model under the same judge. That shows whether the generator
+  or retrieval loses the answers.
+- 21:12 — «давай последуем твоему совету».
+- 21:13 — «сейчас есть ресурс кодекс. в качестве сильной модели астра 6 xhigh подойдет?». I
+  said yes: it comes from another vendor than the judge (Claude), so there is no same-family
+  bias. I asked one yes/no for the two exceptions.
+- 21:15 — «да». She granted both exceptions:
+  - Codex gets the questions and contexts of WixQA, ConditionalQA and aircargo, in isolated
+    per-question tasks;
+  - Codex is a measured generator arm: the judge grades it, and it grades nothing.
+
+  The executor copy `s1` stays data-free.
+
+Committed: `cae46ee` (local, **not pushed**). It adds the PLAN §8.1 decision line, the "Этап
+5в" section, the status lines and a ROADMAP row.
+
+Found for the spec, which is not written yet:
+
+- **The inputs exist byte for byte.**
+  - Stage 5's package prompts:
+    `D:/RAG_new_stage5_private/2057ad0/runs/final-answers-<key>-b01..b10/prompts/*-stream.txt`.
+  - aircargo, item 6 (git-ignored):
+    `D:/RAG_new/.tmp/stage4-final/138f3b3/runs/final-answers-aircargo-b01..b10/`.
+  - `cases()` in `reports/answer-prompt-v6/tools/v6_replay.py` already loads and checks them:
+    prompt id `QA_PROMPT_V4`, `prompt_sha256`, stand, model digest.
+- **The judge reads a run folder.** `run_answers()` in `scripts/chat_answer_judge.py` takes the
+  question and the documents from `prompts/*-stream.txt`. It takes the answer from
+  `cases/*.json`: the `result` event's `answer`, or else `answer`.
+  - So the Codex arm is a copy of each package run folder with only the answer replaced.
+    `build_plan()` and the V6 judge path (`v6_judge.py`, without its shown-text gate) then work
+    unchanged.
+  - References: `D:/RAG_new_stage5_private/2057ad0/references/`. aircargo has none, so it gets
+    M1 and the bridge only.
+  - Package grades: `D:/RAG_new_stage5_private/2057ad0/judge/<key>-{m1,m2,bridge}/` and
+    `.tmp/stage4-final/138f3b3/judge/{m1,bridge}/`.
+  - Per-question M3 (gold in the sent context) is in the stage 5 and item 6 records. Find it
+    for the split.
+- **The Codex route.**
+  - The companion's `task` (plugin 1.0.4) takes model, effort, cwd, prompt-file, json, write,
+    fresh and resume options. It is read-only by default.
+  - Use one empty cwd outside the repository and one fresh task per question, serially. Each
+    task is a new thread, so the model sees only its own question.
+  - The spec must gate two risks:
+    1. The cw profile's global `AGENTS.md` says «Отвечай по-русски». The wrapper must say the
+       answer takes the question's language. Gate: an English question gets a Latin-script
+       answer, checked by the export's letter counts.
+    2. The profile has MCP servers and plugins outside the sandbox (`openaiDeveloperDocs`,
+       browser and others). Each task's rollout must prove there was no network: zero tool
+       calls, model `gpt-6-astra`, effort `xhigh`. A task with a tool call is redone once,
+       then counted out. Above a threshold the spec sets, the arm is `NOT_EVIDENCE`.
+- **Cost.** The Codex time per `xhigh` answer is unknown; the pilot measures it. The judge takes
+  ≈ 120–130 s a request on the stage 5 route. M1 needs 300 requests, M2 180, and the bridges
+  bring the total to ≈ 525.
+
+Next:
+
+1. Sync `s1` to master. Five status documents differ. `s1` also still holds task 14's
+   uncommitted files, which master already has in `d60913d`; commit them as a wip sync.
+2. Brief Codex for task 15; the latest template is `D:/RAG_new_cx/briefs/s14-v6-record.md`.
+   - Codex writes:
+     - the spec `docs/specs/generator-ceiling.md` with its outcome table;
+     - tools under `reports/generator-ceiling/tools/`;
+     - tests on synthetic fixtures.
+   - The brief carries the decisions:
+     - the arm and its wrapper text;
+     - the gates above;
+     - M1 and M2 read paired with the package;
+     - the M3 split;
+     - the outcome table from PLAN 5в item 4;
+     - the 20 pilot questions and how they are chosen;
+     - the stops.
+3. Register the spec (a commit) before the first request. Then the pilot of 20, then all 300,
+   then the record.
+4. Push `cae46ee` and the commits after it only with her yes/no, both scans and ci_local.
 
 ## Do not
 
@@ -144,7 +227,8 @@ answer, and V6 is not adopted, so the proposal stands as measured.
 
 ## State at the end
 
-- RAG_new public; `origin/master` = local `master` (the md commit after `d60913d`).
+- RAG_new public; `origin/master` is at `02b055a` (the md commit after `d60913d`); local
+  `master` is ahead by `cae46ee` and the md commit that adds "After the handoff" (unpushed).
 - GitHub refs: `master`, `baseline/freeze-2026-08-23`, tag `freeze-2026-08-23`. Local
   `wip/*` branches stay local (never push them).
 - Laptop: no background job, no monitor, no Codex task; the Codex broker of

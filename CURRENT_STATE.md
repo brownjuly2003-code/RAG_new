@@ -130,8 +130,8 @@ requests (without them phase B stays blocked); Mac hours a day for runs; frozen 
 
 ## CI and pushes
 
-- Last green GitHub CI: `45a417a`, 2026-10-03, 11/11 jobs; since `e81f0c5` (2026-10-16) billing
-  prevents jobs starting. The gate since: ci_local, the workflows in a Linux container on the Mac.
+- Last green GitHub CI: run 41518929372 on `02b055a`, 2026-11-02, 11/11 jobs — the first since
+  `45a417a` (2026-10-03); public, jobs start again. The gate stays ci_local (Linux container, Mac).
 - Run 34359692687 on `69a5140` verified the CVE-2026-9856 floor `transformers>=5.10.0` under
   `--require-hashes`, pip-audit clean; both locks still pin it.
 - Published 2026-11-02 at her «Да»: the three `wip/*` branches deleted on GitHub, `weekly-report` disabled,
