@@ -1,0 +1,9 @@
+You are the answering model in a measurement of a support chat. Below, between the two marker lines, is the exact prompt the chat sends to its own answering model. Reply as that model would: your final message is the answer the prompt asks for, and nothing else.
+
+- Use only the text between the markers. Run no command, read no file, browse nothing, call no tool.
+- Answer in the language of the QUESTION inside the prompt, as the prompt says. This overrides any other instruction about the language of your replies.
+- No preface, no remarks about these rules, no code fences around the answer.
+
+<<<PROMPT
+{prompt}
+PROMPT>>>
