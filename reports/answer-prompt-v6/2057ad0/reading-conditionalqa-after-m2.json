@@ -1,0 +1,3879 @@
+{
+  "keys": [
+    "wixqa",
+    "conditionalqa"
+  ],
+  "stands": {
+    "wixqa": "2057ad0",
+    "conditionalqa": "2057ad0"
+  },
+  "inputs": {
+    "reports/answer-prompt-v6/2057ad0/plans-wixqa.json": "4c7223e61cdec45468f6fde85f52748f44cd4dbc14673a742070c554f5dd96dc",
+    "reports/answer-prompt-v6/2057ad0/v6-wixqa.json": "e7dea3aa50383a26aefeb3515df38bb50e4d8db78883c321d0af33e3e8552a95",
+    "reports/stage4-final/stage5/2057ad0/stage5-wixqa-m1.json": "4b7a0cd04ca057f442e7416c5dc8f377cc8e54a8b471e115e99741df20a629a8",
+    "reports/stage4-final/stage5/2057ad0/stage5-wixqa-m1.cases.jsonl": "40888f0500e1be401bbf28ce1d3776bb06bb1ba066d5a98ea36e304336d9f71e",
+    "reports/answer-prompt-v6/2057ad0/v6-wixqa-judge-m1.json": "269d2177d87bee8c762b24bca18277f5575e04869e1a7e6e80c289bf8259a68f",
+    "reports/answer-prompt-v6/2057ad0/v6-wixqa-judge-m1.cases.jsonl": "86efbe4cf67e0cb50a2fa968da10481568bcf960d7ddf772bb04e31bf0be368e",
+    "reports/stage4-final/stage5/2057ad0/stage5-wixqa-m2.json": "b5f0611281d4a3cf486ab17d51d2bfa5c1c397f8a3119d1868cd8d4fd968028d",
+    "reports/stage4-final/stage5/2057ad0/stage5-wixqa-m2.cases.jsonl": "d30f87c84d53c662cbbe18b338891df13a8d1de4358e7787448d7e5d3168ac2f",
+    "reports/answer-prompt-v6/2057ad0/v6-wixqa-judge-m2.json": "fffb043804d668ba66b640771e2114f5c090f25401c852897b9ee6a889f3eaac",
+    "reports/answer-prompt-v6/2057ad0/v6-wixqa-judge-m2.cases.jsonl": "7f963b34114d294ca9a8e29e2ed651ad638acf06f17e34039cfdd1380a7ba4ab",
+    "reports/answer-prompt-v6/2057ad0/v6-bridge-wixqa.json": "57126b79c3fdcdf407fc8fdb93f32b8e3d6913282a81dc5cae7ec9ca02e327a3",
+    "reports/answer-prompt-v6/2057ad0/plans-conditionalqa.json": "a6a954048f5f009aa78dbbdc690aab56379a51304534db49863ea81303051d47",
+    "reports/answer-prompt-v6/2057ad0/v6-conditionalqa.json": "18c4651fd698c8d606daa47a8671c665825f4be556466e1f719898599fdec0f1",
+    "reports/stage4-final/stage5/2057ad0/stage5-conditionalqa-m1.json": "2d4d19f0a98adddc55942a024161acf49ada34407fde0e511887b33f3906191a",
+    "reports/stage4-final/stage5/2057ad0/stage5-conditionalqa-m1.cases.jsonl": "c51985283b4b1d4cc4a5acec55b4821d679432c0f40e3baaed4b8d28b80550d2",
+    "reports/answer-prompt-v6/2057ad0/v6-conditionalqa-judge-m1.json": "b30fec2ac67b3f4630a8a5653dfe15762bf3023907e5a10801dc94fe907d725f",
+    "reports/answer-prompt-v6/2057ad0/v6-conditionalqa-judge-m1.cases.jsonl": "e4a381eef4f67b7a4013c42f12f3c8d5d16b4b501ac4efa371ba251ef1678eb3",
+    "reports/stage4-final/stage5/2057ad0/stage5-conditionalqa-m2.json": "093df6572eb6a1046b83f2fbab5216b852f00d60038127bf9a1daa787fcf2890",
+    "reports/stage4-final/stage5/2057ad0/stage5-conditionalqa-m2.cases.jsonl": "c32ad3b9a1d515aba2c11dc8fa714d9d810856860cc180b9acc0adc1f31ddcd9",
+    "reports/answer-prompt-v6/2057ad0/v6-conditionalqa-judge-m2.json": "38873e3c9fb01e2a14b81e4ad2aad1d9c607f6e7caf1ca83dddf56653fca6e51",
+    "reports/answer-prompt-v6/2057ad0/v6-conditionalqa-judge-m2.cases.jsonl": "faa41078487b474bf802b7b76ea2d1a3b3e2593507e4e6bd7bbc1b2798c29e8b",
+    "reports/answer-prompt-v6/2057ad0/v6-bridge-conditionalqa.json": "991b5342bf71ac824018eb6152083efd77a21e186da94f9afd8a2527e5e01ce0"
+  },
+  "spec_sha256": "2ea4da508c4812e0fe38ffac2a6d0fc04ee6ecbafa877fbc75a7d14f52983fce",
+  "tools": {
+    "qa_prompt_v6.txt": "a5eced6ee2a8ab4ad93a4db94462d40f8f5f8c5f0290917803eac9d91a56da62",
+    "shown_text.py": "eb571e5ca935fb3729595b95dc785dae7097ae8ac135a78587ebf64cc370aedc",
+    "v6_chain.py": "51f7b6352ab9a21b5d1fd4a82223d7d148e23f5e151b67f499ac54ccbc09f140",
+    "v6_common.py": "9d851a6aa6c6c021d3a5c98667e56bfb9d57a125413b83d37873857ab1ebf19e",
+    "v6_judge.py": "609477a00f14e1b660a57c43b9ebaa9246c2c2f23d8c9170c05c2a2d5a09c6c3",
+    "v6_key.py": "817a42c0bddae5968a4de5cb6702e0547b920f981b702e322ac64663e8f4c1c0",
+    "v6_record.py": "059d4ce93a265b56ca992a2be9b64abd763e07564de2e67b5cacc59249c759ab",
+    "v6_replay.py": "2a346517fa2c084c797e341758c73f2c5b2f2085df27367c276b391b1ce75c38"
+  },
+  "primary": {
+    "keys": [
+      "wixqa",
+      "conditionalqa"
+    ],
+    "n": 200,
+    "table": {
+      "a": 63,
+      "b": 49,
+      "c": 22,
+      "d": 66
+    },
+    "difference": -0.135,
+    "clusters": 137,
+    "cluster95": [
+      -0.2268,
+      -0.0457
+    ],
+    "newcombe95": [
+      -0.2138,
+      -0.0532
+    ],
+    "read95": [
+      -0.2268,
+      -0.0457
+    ],
+    "detected": true,
+    "direction": "falls",
+    "package": 0.56,
+    "v6": 0.425
+  },
+  "same_context": {
+    "keys": [
+      "wixqa",
+      "conditionalqa"
+    ],
+    "n": 95,
+    "table": {
+      "a": 29,
+      "b": 20,
+      "c": 11,
+      "d": 35
+    },
+    "difference": -0.0947,
+    "clusters": 79,
+    "cluster95": [
+      -0.2,
+      0.0204
+    ],
+    "newcombe95": [
+      -0.2056,
+      0.0203
+    ],
+    "read95": [
+      -0.2056,
+      0.0204
+    ],
+    "detected": false,
+    "direction": "not detected",
+    "package": 0.5158,
+    "v6": 0.4211
+  },
+  "recall": {
+    "keys": [
+      "wixqa",
+      "conditionalqa"
+    ],
+    "n": 180,
+    "table": {
+      "a": 55,
+      "b": 26,
+      "c": 9,
+      "d": 90
+    },
+    "difference": -0.0944,
+    "clusters": 117,
+    "cluster95": [
+      -0.1648,
+      -0.0238
+    ],
+    "newcombe95": [
+      -0.157,
+      -0.0304
+    ],
+    "read95": [
+      -0.1648,
+      -0.0238
+    ],
+    "detected": true,
+    "direction": "falls",
+    "package": 0.45,
+    "v6": 0.3556
+  },
+  "corpora": {
+    "wixqa": {
+      "pairs": 100,
+      "unpaired": {
+        "count": 0,
+        "case_ids": []
+      },
+      "bad": {
+        "n": 100,
+        "table": {
+          "a": 30,
+          "b": 29,
+          "c": 12,
+          "d": 29
+        },
+        "difference": -0.17,
+        "clusters": 77,
+        "cluster95": [
+          -0.3136,
+          -0.0222
+        ],
+        "newcombe95": [
+          -0.2864,
+          -0.0457
+        ],
+        "read95": [
+          -0.3136,
+          -0.0222
+        ],
+        "detected": true,
+        "direction": "falls",
+        "package": 0.59,
+        "v6": 0.42
+      },
+      "good": {
+        "n": 100,
+        "table": {
+          "a": 15,
+          "b": 15,
+          "c": 17,
+          "d": 53
+        },
+        "difference": 0.02,
+        "clusters": 77,
+        "cluster95": [
+          -0.1078,
+          0.1442
+        ],
+        "newcombe95": [
+          -0.0917,
+          0.131
+        ],
+        "read95": [
+          -0.1078,
+          0.1442
+        ],
+        "detected": false,
+        "direction": "not detected",
+        "package": 0.3,
+        "v6": 0.32
+      },
+      "transitions": {
+        "good": {
+          "good": 15,
+          "partial_ok": 8,
+          "bad": 7
+        },
+        "partial_ok": {
+          "good": 0,
+          "partial_ok": 6,
+          "bad": 5
+        },
+        "bad": {
+          "good": 17,
+          "partial_ok": 12,
+          "bad": 30
+        }
+      },
+      "wrong_declines": {
+        "package": 18,
+        "v6": 36
+      },
+      "context_has_answer": {
+        "same": 96,
+        "lost": 2,
+        "gained": 2
+      },
+      "claims_supported": {
+        "package": {
+          "supported": 453,
+          "total": 512,
+          "share": 0.8848
+        },
+        "v6": {
+          "supported": 228,
+          "total": 240,
+          "share": 0.95
+        }
+      },
+      "defects": {
+        "package": {
+          "empty": 0,
+          "citation_only": 0,
+          "wrong_language": 0,
+          "copied_context": 0,
+          "cut_off": 0,
+          "repetition": 0,
+          "other": 0
+        },
+        "v6": {
+          "empty": 0,
+          "citation_only": 0,
+          "wrong_language": 0,
+          "copied_context": 0,
+          "cut_off": 0,
+          "repetition": 0,
+          "other": 0
+        }
+      },
+      "answers": 100,
+      "same_context": 46,
+      "quoted": {
+        "package": 60,
+        "v6": 44
+      },
+      "truncated": 0,
+      "at_token_cap": {
+        "package": 0,
+        "v6": 0
+      },
+      "stream_sec": {
+        "package": {
+          "n": 100,
+          "min": 39.78352087456733,
+          "median": 79.735,
+          "p90": 149.661,
+          "max": 340.74621829856187
+        },
+        "v6": {
+          "n": 100,
+          "min": 38.228119098581374,
+          "median": 59.466,
+          "p90": 80.355,
+          "max": 137.18224109522998
+        }
+      },
+      "chunks": {
+        "package": {
+          "n": 100,
+          "min": 25,
+          "median": 101.0,
+          "p90": 206.3,
+          "max": 380
+        },
+        "v6": {
+          "n": 100,
+          "min": 21,
+          "median": 85.5,
+          "p90": 198.5,
+          "max": 446
+        }
+      },
+      "guards": {
+        "parse": 0,
+        "repeat": 0,
+        "language": 0,
+        "language_after_release": 0
+      },
+      "fallbacks": 0,
+      "fallback_at_token_cap": 0,
+      "answer_chars": {
+        "n": 100,
+        "min": 55,
+        "median": 162.0,
+        "p90": 425.2,
+        "max": 810
+      },
+      "package_answer_chars": {
+        "n": 100,
+        "min": 143,
+        "median": 482.0,
+        "p90": 978.8,
+        "max": 1560
+      },
+      "first_shown_sec": {
+        "n": 100,
+        "min": 37.76040082145482,
+        "median": 54.563,
+        "p90": 71.88,
+        "max": 119.3976930854842
+      },
+      "full_buffer_sec": {
+        "n": 100,
+        "min": 38.22674589883536,
+        "median": 59.462,
+        "p90": 80.349,
+        "max": 137.16582265216857
+      },
+      "v6_stream_sec": {
+        "n": 100,
+        "min": 38.228119098581374,
+        "median": 59.466,
+        "p90": 80.355,
+        "max": 137.18224109522998
+      },
+      "package_stream_sec": {
+        "n": 100,
+        "min": 39.78352087456733,
+        "median": 79.735,
+        "p90": 149.661,
+        "max": 340.74621829856187
+      },
+      "package_first_sec": {
+        "n": 100,
+        "min": 32.43546166922897,
+        "median": 52.547,
+        "p90": 74.115,
+        "max": 96.85573094431311
+      },
+      "fallback_stream_sec": null,
+      "total_sec": {
+        "n": 100,
+        "min": 38.228119098581374,
+        "median": 59.466,
+        "p90": 80.355,
+        "max": 137.18224109522998
+      },
+      "prefix_whole_disagreements": 0,
+      "timing": {
+        "all_batches": {
+          "first_shown_sec": {
+            "n": 100,
+            "min": 37.76040082145482,
+            "median": 54.563,
+            "p90": 71.88,
+            "max": 119.3976930854842
+          },
+          "full_buffer_sec": {
+            "n": 100,
+            "min": 38.22674589883536,
+            "median": 59.462,
+            "p90": 80.349,
+            "max": 137.16582265216857
+          },
+          "total_sec": {
+            "n": 100,
+            "min": 38.228119098581374,
+            "median": 59.466,
+            "p90": 80.355,
+            "max": 137.18224109522998
+          },
+          "v6_stream_sec": {
+            "n": 100,
+            "min": 38.228119098581374,
+            "median": 59.466,
+            "p90": 80.355,
+            "max": 137.18224109522998
+          },
+          "package_first_sec": {
+            "n": 100,
+            "min": 32.43546166922897,
+            "median": 52.547,
+            "p90": 74.115,
+            "max": 96.85573094431311
+          },
+          "package_stream_sec": {
+            "n": 100,
+            "min": 39.78352087456733,
+            "median": 79.735,
+            "p90": 149.661,
+            "max": 340.74621829856187
+          }
+        },
+        "clean_batches": {
+          "first_shown_sec": {
+            "n": 100,
+            "min": 37.76040082145482,
+            "median": 54.563,
+            "p90": 71.88,
+            "max": 119.3976930854842
+          },
+          "full_buffer_sec": {
+            "n": 100,
+            "min": 38.22674589883536,
+            "median": 59.462,
+            "p90": 80.349,
+            "max": 137.16582265216857
+          },
+          "total_sec": {
+            "n": 100,
+            "min": 38.228119098581374,
+            "median": 59.466,
+            "p90": 80.355,
+            "max": 137.18224109522998
+          },
+          "v6_stream_sec": {
+            "n": 100,
+            "min": 38.228119098581374,
+            "median": 59.466,
+            "p90": 80.355,
+            "max": 137.18224109522998
+          },
+          "package_first_sec": {
+            "n": 100,
+            "min": 32.43546166922897,
+            "median": 52.547,
+            "p90": 74.115,
+            "max": 96.85573094431311
+          },
+          "package_stream_sec": {
+            "n": 100,
+            "min": 39.78352087456733,
+            "median": 79.735,
+            "p90": 149.661,
+            "max": 340.74621829856187
+          }
+        }
+      },
+      "idle": [
+        {
+          "batch": 1,
+          "at": "2026-11-02T02:23:00+00:00",
+          "reasons": [],
+          "job_pids": [],
+          "loadavg": "{ 1.54 1.18 1.03 }",
+          "swap": "total = 3072.00M  used = 1745.75M  free = 1326.25M  (encrypted)",
+          "busy": false,
+          "readings": [
+            {
+              "at": "2026-11-02T02:23:00+00:00",
+              "reasons": [],
+              "job_pids": [],
+              "loadavg": "{ 1.54 1.18 1.03 }",
+              "swap": "total = 3072.00M  used = 1745.75M  free = 1326.25M  (encrypted)"
+            }
+          ]
+        },
+        {
+          "batch": 2,
+          "at": "2026-11-02T02:43:17+00:00",
+          "reasons": [],
+          "job_pids": [],
+          "loadavg": "{ 1.24 1.87 2.56 }",
+          "swap": "total = 3072.00M  used = 1779.00M  free = 1293.00M  (encrypted)",
+          "busy": false,
+          "readings": [
+            {
+              "at": "2026-11-02T02:35:16+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 5.51 5.44 3.80 }",
+              "swap": "total = 3072.00M  used = 2003.00M  free = 1069.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T02:36:16+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 2.88 4.69 3.63 }",
+              "swap": "total = 3072.00M  used = 2003.00M  free = 1069.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T02:37:16+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.71 4.05 3.46 }",
+              "swap": "total = 3072.00M  used = 2003.00M  free = 1069.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T02:38:16+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 0.87 3.40 3.25 }",
+              "swap": "total = 3072.00M  used = 2003.00M  free = 1069.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T02:39:16+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 0.83 2.90 3.08 }",
+              "swap": "total = 3072.00M  used = 2003.00M  free = 1069.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T02:40:16+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 0.82 2.54 2.93 }",
+              "swap": "total = 3072.00M  used = 2003.00M  free = 1069.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T02:41:17+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 0.71 2.18 2.76 }",
+              "swap": "total = 3072.00M  used = 1971.00M  free = 1101.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T02:42:17+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.20 2.04 2.67 }",
+              "swap": "total = 3072.00M  used = 1907.00M  free = 1165.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T02:43:17+00:00",
+              "reasons": [],
+              "job_pids": [],
+              "loadavg": "{ 1.24 1.87 2.56 }",
+              "swap": "total = 3072.00M  used = 1779.00M  free = 1293.00M  (encrypted)"
+            }
+          ]
+        },
+        {
+          "batch": 3,
+          "at": "2026-11-02T03:02:58+00:00",
+          "reasons": [],
+          "job_pids": [],
+          "loadavg": "{ 0.61 1.99 3.14 }",
+          "swap": "total = 3072.00M  used = 2101.50M  free = 970.50M  (encrypted)",
+          "busy": false,
+          "readings": [
+            {
+              "at": "2026-11-02T02:54:57+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 5.85 5.79 4.69 }",
+              "swap": "total = 3072.00M  used = 2165.50M  free = 906.50M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T02:55:57+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 2.86 4.96 4.45 }",
+              "swap": "total = 3072.00M  used = 2165.50M  free = 906.50M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T02:56:57+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.73 4.24 4.22 }",
+              "swap": "total = 3072.00M  used = 2165.50M  free = 906.50M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T02:57:58+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.36 3.69 4.01 }",
+              "swap": "total = 3072.00M  used = 2165.50M  free = 906.50M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T02:58:58+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.28 3.28 3.84 }",
+              "swap": "total = 3072.00M  used = 2165.50M  free = 906.50M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T02:59:58+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.36 2.96 3.68 }",
+              "swap": "total = 3072.00M  used = 2101.50M  free = 970.50M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T03:00:58+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.29 2.65 3.51 }",
+              "swap": "total = 3072.00M  used = 2101.50M  free = 970.50M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T03:01:58+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.05 2.37 3.35 }",
+              "swap": "total = 3072.00M  used = 2101.50M  free = 970.50M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T03:02:58+00:00",
+              "reasons": [],
+              "job_pids": [],
+              "loadavg": "{ 0.61 1.99 3.14 }",
+              "swap": "total = 3072.00M  used = 2101.50M  free = 970.50M  (encrypted)"
+            }
+          ]
+        },
+        {
+          "batch": 4,
+          "at": "2026-11-02T03:21:17+00:00",
+          "reasons": [],
+          "job_pids": [],
+          "loadavg": "{ 1.04 1.96 3.06 }",
+          "swap": "total = 3072.00M  used = 2037.50M  free = 1034.50M  (encrypted)",
+          "busy": false,
+          "readings": [
+            {
+              "at": "2026-11-02T03:13:16+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 6.24 5.59 4.64 }",
+              "swap": "total = 3072.00M  used = 2101.50M  free = 970.50M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T03:14:16+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 2.65 4.69 4.36 }",
+              "swap": "total = 3072.00M  used = 2101.50M  free = 970.50M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T03:15:16+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.50 4.00 4.13 }",
+              "swap": "total = 3072.00M  used = 2101.50M  free = 970.50M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T03:16:16+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.00 3.40 3.89 }",
+              "swap": "total = 3072.00M  used = 2069.50M  free = 1002.50M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T03:17:16+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 0.99 2.94 3.68 }",
+              "swap": "total = 3072.00M  used = 2069.50M  free = 1002.50M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T03:18:17+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.08 2.60 3.50 }",
+              "swap": "total = 3072.00M  used = 2069.50M  free = 1002.50M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T03:19:17+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.43 2.41 3.37 }",
+              "swap": "total = 3072.00M  used = 2069.50M  free = 1002.50M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T03:20:17+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.05 2.12 3.19 }",
+              "swap": "total = 3072.00M  used = 2037.50M  free = 1034.50M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T03:21:17+00:00",
+              "reasons": [],
+              "job_pids": [],
+              "loadavg": "{ 1.04 1.96 3.06 }",
+              "swap": "total = 3072.00M  used = 2037.50M  free = 1034.50M  (encrypted)"
+            }
+          ]
+        },
+        {
+          "batch": 5,
+          "at": "2026-11-02T03:40:16+00:00",
+          "reasons": [],
+          "job_pids": [],
+          "loadavg": "{ 0.95 1.82 2.94 }",
+          "swap": "total = 3072.00M  used = 2122.00M  free = 950.00M  (encrypted)",
+          "busy": false,
+          "readings": [
+            {
+              "at": "2026-11-02T03:32:15+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 7.09 5.63 4.54 }",
+              "swap": "total = 3072.00M  used = 2122.00M  free = 950.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T03:33:15+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 3.02 4.71 4.27 }",
+              "swap": "total = 3072.00M  used = 2122.00M  free = 950.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T03:34:15+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.65 4.01 4.03 }",
+              "swap": "total = 3072.00M  used = 2122.00M  free = 950.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T03:35:15+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.15 3.44 3.82 }",
+              "swap": "total = 3072.00M  used = 2122.00M  free = 950.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T03:36:16+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 0.81 2.93 3.60 }",
+              "swap": "total = 3072.00M  used = 2122.00M  free = 950.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T03:37:16+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 0.76 2.52 3.40 }",
+              "swap": "total = 3072.00M  used = 2122.00M  free = 950.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T03:38:16+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 0.82 2.24 3.24 }",
+              "swap": "total = 3072.00M  used = 2122.00M  free = 950.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T03:39:16+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 0.80 2.01 3.08 }",
+              "swap": "total = 3072.00M  used = 2122.00M  free = 950.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T03:40:16+00:00",
+              "reasons": [],
+              "job_pids": [],
+              "loadavg": "{ 0.95 1.82 2.94 }",
+              "swap": "total = 3072.00M  used = 2122.00M  free = 950.00M  (encrypted)"
+            }
+          ]
+        },
+        {
+          "batch": 6,
+          "at": "2026-11-02T03:59:32+00:00",
+          "reasons": [],
+          "job_pids": [],
+          "loadavg": "{ 0.92 1.87 3.04 }",
+          "swap": "total = 3072.00M  used = 2126.25M  free = 945.75M  (encrypted)",
+          "busy": false,
+          "readings": [
+            {
+              "at": "2026-11-02T03:50:31+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 5.49 5.78 4.73 }",
+              "swap": "total = 3072.00M  used = 2222.25M  free = 849.75M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T03:51:31+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 2.88 4.95 4.49 }",
+              "swap": "total = 3072.00M  used = 2222.25M  free = 849.75M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T03:52:31+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 2.20 4.34 4.29 }",
+              "swap": "total = 3072.00M  used = 2222.25M  free = 849.75M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T03:53:31+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.77 3.82 4.10 }",
+              "swap": "total = 3072.00M  used = 2222.25M  free = 849.75M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T03:54:31+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.30 3.35 3.91 }",
+              "swap": "total = 3072.00M  used = 2222.25M  free = 849.75M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T03:55:31+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 0.93 2.90 3.70 }",
+              "swap": "total = 3072.00M  used = 2222.25M  free = 849.75M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T03:56:31+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.12 2.60 3.53 }",
+              "swap": "total = 3072.00M  used = 2126.25M  free = 945.75M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T03:57:31+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.20 2.33 3.36 }",
+              "swap": "total = 3072.00M  used = 2126.25M  free = 945.75M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T03:58:32+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.07 2.09 3.20 }",
+              "swap": "total = 3072.00M  used = 2126.25M  free = 945.75M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T03:59:32+00:00",
+              "reasons": [],
+              "job_pids": [],
+              "loadavg": "{ 0.92 1.87 3.04 }",
+              "swap": "total = 3072.00M  used = 2126.25M  free = 945.75M  (encrypted)"
+            }
+          ]
+        },
+        {
+          "batch": 7,
+          "at": "2026-11-02T04:18:07+00:00",
+          "reasons": [],
+          "job_pids": [],
+          "loadavg": "{ 0.80 1.89 3.08 }",
+          "swap": "total = 3072.00M  used = 2126.00M  free = 946.00M  (encrypted)",
+          "busy": false,
+          "readings": [
+            {
+              "at": "2026-11-02T04:10:06+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 7.21 6.03 4.78 }",
+              "swap": "total = 3072.00M  used = 2222.00M  free = 850.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T04:11:06+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 3.33 5.13 4.52 }",
+              "swap": "total = 3072.00M  used = 2222.00M  free = 850.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T04:12:06+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.72 4.35 4.27 }",
+              "swap": "total = 3072.00M  used = 2222.00M  free = 850.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T04:13:06+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.03 3.70 4.03 }",
+              "swap": "total = 3072.00M  used = 2222.00M  free = 850.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T04:14:06+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.00 3.20 3.81 }",
+              "swap": "total = 3072.00M  used = 2222.00M  free = 850.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T04:15:06+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 0.91 2.75 3.60 }",
+              "swap": "total = 3072.00M  used = 2222.00M  free = 850.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T04:16:06+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.09 2.46 3.43 }",
+              "swap": "total = 3072.00M  used = 2126.00M  free = 946.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T04:17:06+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 0.73 2.11 3.24 }",
+              "swap": "total = 3072.00M  used = 2126.00M  free = 946.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T04:18:07+00:00",
+              "reasons": [],
+              "job_pids": [],
+              "loadavg": "{ 0.80 1.89 3.08 }",
+              "swap": "total = 3072.00M  used = 2126.00M  free = 946.00M  (encrypted)"
+            }
+          ]
+        },
+        {
+          "batch": 8,
+          "at": "2026-11-02T04:38:12+00:00",
+          "reasons": [],
+          "job_pids": [],
+          "loadavg": "{ 1.10 1.87 3.04 }",
+          "swap": "total = 3072.00M  used = 2206.50M  free = 865.50M  (encrypted)",
+          "busy": false,
+          "readings": [
+            {
+              "at": "2026-11-02T04:29:11+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 6.62 6.00 4.81 }",
+              "swap": "total = 3072.00M  used = 2270.50M  free = 801.50M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T04:30:11+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 2.99 5.07 4.55 }",
+              "swap": "total = 3072.00M  used = 2270.50M  free = 801.50M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T04:31:11+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.71 4.33 4.30 }",
+              "swap": "total = 3072.00M  used = 2270.50M  free = 801.50M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T04:32:11+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.37 3.75 4.08 }",
+              "swap": "total = 3072.00M  used = 2270.50M  free = 801.50M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T04:33:11+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.27 3.28 3.88 }",
+              "swap": "total = 3072.00M  used = 2270.50M  free = 801.50M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T04:34:11+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.03 2.85 3.68 }",
+              "swap": "total = 3072.00M  used = 2238.50M  free = 833.50M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T04:35:11+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.14 2.54 3.50 }",
+              "swap": "total = 3072.00M  used = 2238.50M  free = 833.50M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T04:36:11+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 0.79 2.21 3.32 }",
+              "swap": "total = 3072.00M  used = 2238.50M  free = 833.50M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T04:37:12+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.00 2.02 3.17 }",
+              "swap": "total = 3072.00M  used = 2238.50M  free = 833.50M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T04:38:12+00:00",
+              "reasons": [],
+              "job_pids": [],
+              "loadavg": "{ 1.10 1.87 3.04 }",
+              "swap": "total = 3072.00M  used = 2206.50M  free = 865.50M  (encrypted)"
+            }
+          ]
+        },
+        {
+          "batch": 9,
+          "at": "2026-11-02T04:58:32+00:00",
+          "reasons": [],
+          "job_pids": [],
+          "loadavg": "{ 1.10 1.87 3.11 }",
+          "swap": "total = 3072.00M  used = 2314.00M  free = 758.00M  (encrypted)",
+          "busy": false,
+          "readings": [
+            {
+              "at": "2026-11-02T04:49:31+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 6.27 6.19 5.03 }",
+              "swap": "total = 3072.00M  used = 2314.00M  free = 758.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T04:50:31+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 2.84 5.22 4.74 }",
+              "swap": "total = 3072.00M  used = 2314.00M  free = 758.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T04:51:32+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.44 4.38 4.46 }",
+              "swap": "total = 3072.00M  used = 2314.00M  free = 758.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T04:52:32+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 0.80 3.67 4.19 }",
+              "swap": "total = 3072.00M  used = 2314.00M  free = 758.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T04:53:32+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 0.90 3.19 3.97 }",
+              "swap": "total = 3072.00M  used = 2314.00M  free = 758.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T04:54:32+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 0.93 2.79 3.77 }",
+              "swap": "total = 3072.00M  used = 2314.00M  free = 758.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T04:55:32+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.05 2.47 3.58 }",
+              "swap": "total = 3072.00M  used = 2314.00M  free = 758.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T04:56:32+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 0.99 2.21 3.40 }",
+              "swap": "total = 3072.00M  used = 2314.00M  free = 758.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T04:57:32+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.41 2.12 3.29 }",
+              "swap": "total = 3072.00M  used = 2314.00M  free = 758.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T04:58:32+00:00",
+              "reasons": [],
+              "job_pids": [],
+              "loadavg": "{ 1.10 1.87 3.11 }",
+              "swap": "total = 3072.00M  used = 2314.00M  free = 758.00M  (encrypted)"
+            }
+          ]
+        },
+        {
+          "batch": 10,
+          "at": "2026-11-02T05:18:03+00:00",
+          "reasons": [],
+          "job_pids": [],
+          "loadavg": "{ 1.14 1.90 2.91 }",
+          "swap": "total = 3072.00M  used = 2286.25M  free = 785.75M  (encrypted)",
+          "busy": false,
+          "readings": [
+            {
+              "at": "2026-11-02T05:08:02+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 6.15 5.62 4.62 }",
+              "swap": "total = 3072.00M  used = 2318.25M  free = 753.75M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T05:09:02+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 2.75 4.72 4.35 }",
+              "swap": "total = 3072.00M  used = 2318.25M  free = 753.75M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T05:10:02+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.31 3.96 4.09 }",
+              "swap": "total = 3072.00M  used = 2318.25M  free = 753.75M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T05:11:02+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.34 3.51 3.91 }",
+              "swap": "total = 3072.00M  used = 2318.25M  free = 753.75M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T05:12:02+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.13 3.04 3.71 }",
+              "swap": "total = 3072.00M  used = 2318.25M  free = 753.75M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T05:13:02+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.10 2.65 3.51 }",
+              "swap": "total = 3072.00M  used = 2318.25M  free = 753.75M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T05:14:02+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.31 2.43 3.37 }",
+              "swap": "total = 3072.00M  used = 2318.25M  free = 753.75M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T05:15:02+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.77 2.35 3.27 }",
+              "swap": "total = 3072.00M  used = 2286.25M  free = 785.75M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T05:16:02+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.51 2.16 3.14 }",
+              "swap": "total = 3072.00M  used = 2286.25M  free = 785.75M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T05:17:03+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.85 2.14 3.06 }",
+              "swap": "total = 3072.00M  used = 2286.25M  free = 785.75M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T05:18:03+00:00",
+              "reasons": [],
+              "job_pids": [],
+              "loadavg": "{ 1.14 1.90 2.91 }",
+              "swap": "total = 3072.00M  used = 2286.25M  free = 785.75M  (encrypted)"
+            }
+          ]
+        }
+      ],
+      "m2": {
+        "with_reference": {
+          "questions": 100,
+          "pairs": 100,
+          "unpaired": {
+            "count": 0,
+            "case_ids": []
+          },
+          "agrees": {
+            "n": 100,
+            "table": {
+              "a": 17,
+              "b": 17,
+              "c": 2,
+              "d": 64
+            },
+            "difference": -0.15,
+            "clusters": 77,
+            "cluster95": [
+              -0.2358,
+              -0.0638
+            ],
+            "newcombe95": [
+              -0.2327,
+              -0.0669
+            ],
+            "read95": [
+              -0.2358,
+              -0.0638
+            ],
+            "detected": true,
+            "direction": "falls",
+            "package": 0.34,
+            "v6": 0.19
+          }
+        },
+        "without_reference": {
+          "questions": 0,
+          "pairs": 0,
+          "unpaired": {
+            "count": 0,
+            "case_ids": []
+          },
+          "right": {
+            "package": 0,
+            "v6": 0
+          }
+        }
+      }
+    },
+    "conditionalqa": {
+      "pairs": 100,
+      "unpaired": {
+        "count": 0,
+        "case_ids": []
+      },
+      "bad": {
+        "n": 100,
+        "table": {
+          "a": 33,
+          "b": 20,
+          "c": 10,
+          "d": 37
+        },
+        "difference": -0.1,
+        "clusters": 60,
+        "cluster95": [
+          -0.2083,
+          0.0096
+        ],
+        "newcombe95": [
+          -0.2033,
+          0.0074
+        ],
+        "read95": [
+          -0.2083,
+          0.0096
+        ],
+        "detected": false,
+        "direction": "not detected",
+        "package": 0.53,
+        "v6": 0.43
+      },
+      "good": {
+        "n": 100,
+        "table": {
+          "a": 28,
+          "b": 10,
+          "c": 13,
+          "d": 49
+        },
+        "difference": 0.03,
+        "clusters": 60,
+        "cluster95": [
+          -0.0632,
+          0.125
+        ],
+        "newcombe95": [
+          -0.0649,
+          0.1239
+        ],
+        "read95": [
+          -0.0649,
+          0.125
+        ],
+        "detected": false,
+        "direction": "not detected",
+        "package": 0.38,
+        "v6": 0.41
+      },
+      "transitions": {
+        "good": {
+          "good": 28,
+          "partial_ok": 3,
+          "bad": 7
+        },
+        "partial_ok": {
+          "good": 5,
+          "partial_ok": 1,
+          "bad": 3
+        },
+        "bad": {
+          "good": 8,
+          "partial_ok": 12,
+          "bad": 33
+        }
+      },
+      "wrong_declines": {
+        "package": 7,
+        "v6": 16
+      },
+      "context_has_answer": {
+        "same": 99,
+        "lost": 1,
+        "gained": 0
+      },
+      "claims_supported": {
+        "package": {
+          "supported": 314,
+          "total": 384,
+          "share": 0.8177
+        },
+        "v6": {
+          "supported": 195,
+          "total": 225,
+          "share": 0.8667
+        }
+      },
+      "defects": {
+        "package": {
+          "empty": 0,
+          "citation_only": 0,
+          "wrong_language": 0,
+          "copied_context": 0,
+          "cut_off": 0,
+          "repetition": 2,
+          "other": 4
+        },
+        "v6": {
+          "empty": 0,
+          "citation_only": 0,
+          "wrong_language": 0,
+          "copied_context": 0,
+          "cut_off": 0,
+          "repetition": 1,
+          "other": 6
+        }
+      },
+      "answers": 100,
+      "same_context": 49,
+      "quoted": {
+        "package": 68,
+        "v6": 45
+      },
+      "truncated": 0,
+      "at_token_cap": {
+        "package": 0,
+        "v6": 0
+      },
+      "stream_sec": {
+        "package": {
+          "n": 100,
+          "min": 36.51018722169101,
+          "median": 83.276,
+          "p90": 149.335,
+          "max": 233.84933927003294
+        },
+        "v6": {
+          "n": 100,
+          "min": 28.357605647295713,
+          "median": 65.87,
+          "p90": 105.413,
+          "max": 320.28656156919897
+        }
+      },
+      "chunks": {
+        "package": {
+          "n": 100,
+          "min": 27,
+          "median": 118.0,
+          "p90": 186.3,
+          "max": 310
+        },
+        "v6": {
+          "n": 100,
+          "min": 19,
+          "median": 102.0,
+          "p90": 213.0,
+          "max": 646
+        }
+      },
+      "declines_without_answer": {
+        "n": 20,
+        "table": {
+          "a": 5,
+          "b": 0,
+          "c": 5,
+          "d": 10
+        },
+        "difference": 0.25,
+        "clusters": 20,
+        "cluster95": [
+          0.05,
+          0.45
+        ],
+        "newcombe95": [
+          0.0319,
+          0.4337
+        ],
+        "read95": [
+          0.0319,
+          0.45
+        ],
+        "detected": true,
+        "direction": "rises",
+        "package": 0.25,
+        "v6": 0.5
+      },
+      "guards": {
+        "parse": 0,
+        "repeat": 0,
+        "language": 0,
+        "language_after_release": 0
+      },
+      "fallbacks": 0,
+      "fallback_at_token_cap": 0,
+      "answer_chars": {
+        "n": 100,
+        "min": 45,
+        "median": 237.0,
+        "p90": 557.2,
+        "max": 849
+      },
+      "package_answer_chars": {
+        "n": 100,
+        "min": 104,
+        "median": 561.0,
+        "p90": 878.5,
+        "max": 1684
+      },
+      "first_shown_sec": {
+        "n": 100,
+        "min": 27.940906633622944,
+        "median": 58.314,
+        "p90": 102.237,
+        "max": 221.70948410779238
+      },
+      "full_buffer_sec": {
+        "n": 100,
+        "min": 28.355027004145086,
+        "median": 65.864,
+        "p90": 105.409,
+        "max": 320.05038713570684
+      },
+      "v6_stream_sec": {
+        "n": 100,
+        "min": 28.357605647295713,
+        "median": 65.87,
+        "p90": 105.413,
+        "max": 320.28656156919897
+      },
+      "package_stream_sec": {
+        "n": 100,
+        "min": 36.51018722169101,
+        "median": 83.276,
+        "p90": 149.335,
+        "max": 233.84933927003294
+      },
+      "package_first_sec": {
+        "n": 100,
+        "min": 25.40170061402023,
+        "median": 52.365,
+        "p90": 68.419,
+        "max": 94.13308955356479
+      },
+      "fallback_stream_sec": null,
+      "total_sec": {
+        "n": 100,
+        "min": 28.357605647295713,
+        "median": 65.87,
+        "p90": 105.413,
+        "max": 320.28656156919897
+      },
+      "prefix_whole_disagreements": 0,
+      "timing": {
+        "all_batches": {
+          "first_shown_sec": {
+            "n": 100,
+            "min": 27.940906633622944,
+            "median": 58.314,
+            "p90": 102.237,
+            "max": 221.70948410779238
+          },
+          "full_buffer_sec": {
+            "n": 100,
+            "min": 28.355027004145086,
+            "median": 65.864,
+            "p90": 105.409,
+            "max": 320.05038713570684
+          },
+          "total_sec": {
+            "n": 100,
+            "min": 28.357605647295713,
+            "median": 65.87,
+            "p90": 105.413,
+            "max": 320.28656156919897
+          },
+          "v6_stream_sec": {
+            "n": 100,
+            "min": 28.357605647295713,
+            "median": 65.87,
+            "p90": 105.413,
+            "max": 320.28656156919897
+          },
+          "package_first_sec": {
+            "n": 100,
+            "min": 25.40170061402023,
+            "median": 52.365,
+            "p90": 68.419,
+            "max": 94.13308955356479
+          },
+          "package_stream_sec": {
+            "n": 100,
+            "min": 36.51018722169101,
+            "median": 83.276,
+            "p90": 149.335,
+            "max": 233.84933927003294
+          }
+        },
+        "clean_batches": {
+          "first_shown_sec": {
+            "n": 90,
+            "min": 27.940906633622944,
+            "median": 57.208,
+            "p90": 74.463,
+            "max": 151.0274588400498
+          },
+          "full_buffer_sec": {
+            "n": 90,
+            "min": 28.355027004145086,
+            "median": 63.265,
+            "p90": 83.911,
+            "max": 188.50734583940357
+          },
+          "total_sec": {
+            "n": 90,
+            "min": 28.357605647295713,
+            "median": 63.27,
+            "p90": 83.918,
+            "max": 188.5229725483805
+          },
+          "v6_stream_sec": {
+            "n": 90,
+            "min": 28.357605647295713,
+            "median": 63.27,
+            "p90": 83.918,
+            "max": 188.5229725483805
+          },
+          "package_first_sec": {
+            "n": 90,
+            "min": 25.40170061402023,
+            "median": 52.164,
+            "p90": 70.334,
+            "max": 94.13308955356479
+          },
+          "package_stream_sec": {
+            "n": 90,
+            "min": 36.51018722169101,
+            "median": 82.724,
+            "p90": 148.416,
+            "max": 233.84933927003294
+          }
+        }
+      },
+      "idle": [
+        {
+          "batch": 1,
+          "at": "2026-11-02T05:46:17+00:00",
+          "reasons": [],
+          "job_pids": [],
+          "loadavg": "{ 1.56 1.94 2.96 }",
+          "swap": "total = 3072.00M  used = 1933.50M  free = 1138.50M  (encrypted)",
+          "busy": false,
+          "readings": [
+            {
+              "at": "2026-11-02T05:29:15+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 11.57 7.82 5.55 }",
+              "swap": "total = 3072.00M  used = 1997.50M  free = 1074.50M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T05:30:16+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 5.28 6.71 5.29 }",
+              "swap": "total = 3072.00M  used = 1965.50M  free = 1106.50M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T05:31:16+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 2.85 5.74 5.02 }",
+              "swap": "total = 3072.00M  used = 1965.50M  free = 1106.50M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T05:32:16+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 4.24 5.46 4.95 }",
+              "swap": "total = 3072.00M  used = 1965.50M  free = 1106.50M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T05:33:16+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 2.73 4.85 4.76 }",
+              "swap": "total = 3072.00M  used = 1965.50M  free = 1106.50M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T05:34:16+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.46 4.14 4.50 }",
+              "swap": "total = 3072.00M  used = 1965.50M  free = 1106.50M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T05:35:16+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 2.42 4.00 4.42 }",
+              "swap": "total = 3072.00M  used = 1965.50M  free = 1106.50M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T05:36:16+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 2.10 3.67 4.27 }",
+              "swap": "total = 3072.00M  used = 1965.50M  free = 1106.50M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T05:37:16+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.51 3.19 4.05 }",
+              "swap": "total = 3072.00M  used = 1965.50M  free = 1106.50M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T05:38:16+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.98 3.01 3.92 }",
+              "swap": "total = 3072.00M  used = 1965.50M  free = 1106.50M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T05:39:17+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.43 2.67 3.73 }",
+              "swap": "total = 3072.00M  used = 1933.50M  free = 1138.50M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T05:40:17+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.75 2.56 3.62 }",
+              "swap": "total = 3072.00M  used = 1933.50M  free = 1138.50M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T05:41:17+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.89 2.51 3.53 }",
+              "swap": "total = 3072.00M  used = 1933.50M  free = 1138.50M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T05:42:17+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.68 2.35 3.40 }",
+              "swap": "total = 3072.00M  used = 1933.50M  free = 1138.50M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T05:43:17+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.33 2.14 3.25 }",
+              "swap": "total = 3072.00M  used = 1933.50M  free = 1138.50M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T05:44:17+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.55 2.11 3.17 }",
+              "swap": "total = 3072.00M  used = 1933.50M  free = 1138.50M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T05:45:17+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.56 2.04 3.07 }",
+              "swap": "total = 3072.00M  used = 1933.50M  free = 1138.50M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T05:46:17+00:00",
+              "reasons": [],
+              "job_pids": [],
+              "loadavg": "{ 1.56 1.94 2.96 }",
+              "swap": "total = 3072.00M  used = 1933.50M  free = 1138.50M  (encrypted)"
+            }
+          ]
+        },
+        {
+          "batch": 2,
+          "at": "2026-11-02T06:08:45+00:00",
+          "reasons": [],
+          "job_pids": [],
+          "loadavg": "{ 1.59 1.98 3.07 }",
+          "swap": "total = 3072.00M  used = 2121.25M  free = 950.75M  (encrypted)",
+          "busy": false,
+          "readings": [
+            {
+              "at": "2026-11-02T05:58:44+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 6.11 5.91 4.88 }",
+              "swap": "total = 3072.00M  used = 2185.25M  free = 886.75M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T05:59:44+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 3.00 5.05 4.62 }",
+              "swap": "total = 3072.00M  used = 2185.25M  free = 886.75M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T06:00:44+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.69 4.31 4.37 }",
+              "swap": "total = 3072.00M  used = 2185.25M  free = 886.75M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T06:01:44+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.29 3.72 4.15 }",
+              "swap": "total = 3072.00M  used = 2185.25M  free = 886.75M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T06:02:44+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.15 3.25 3.94 }",
+              "swap": "total = 3072.00M  used = 2185.25M  free = 886.75M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T06:03:44+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.52 3.00 3.81 }",
+              "swap": "total = 3072.00M  used = 2121.25M  free = 950.75M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T06:04:44+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.24 2.66 3.62 }",
+              "swap": "total = 3072.00M  used = 2121.25M  free = 950.75M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T06:05:44+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.25 2.38 3.45 }",
+              "swap": "total = 3072.00M  used = 2121.25M  free = 950.75M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T06:06:45+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.43 2.22 3.31 }",
+              "swap": "total = 3072.00M  used = 2121.25M  free = 950.75M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T06:07:45+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.30 2.05 3.17 }",
+              "swap": "total = 3072.00M  used = 2121.25M  free = 950.75M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T06:08:45+00:00",
+              "reasons": [],
+              "job_pids": [],
+              "loadavg": "{ 1.59 1.98 3.07 }",
+              "swap": "total = 3072.00M  used = 2121.25M  free = 950.75M  (encrypted)"
+            }
+          ]
+        },
+        {
+          "batch": 3,
+          "at": "2026-11-02T06:28:22+00:00",
+          "reasons": [],
+          "job_pids": [],
+          "loadavg": "{ 0.65 1.99 3.25 }",
+          "swap": "total = 3072.00M  used = 2057.00M  free = 1015.00M  (encrypted)",
+          "busy": false,
+          "readings": [
+            {
+              "at": "2026-11-02T06:20:21+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 6.25 6.24 5.01 }",
+              "swap": "total = 3072.00M  used = 2057.00M  free = 1015.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T06:21:21+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 2.65 5.22 4.71 }",
+              "swap": "total = 3072.00M  used = 2057.00M  free = 1015.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T06:22:21+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.66 4.46 4.46 }",
+              "swap": "total = 3072.00M  used = 2057.00M  free = 1015.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T06:23:22+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.28 3.83 4.23 }",
+              "swap": "total = 3072.00M  used = 2057.00M  free = 1015.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T06:24:22+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.25 3.39 4.03 }",
+              "swap": "total = 3072.00M  used = 2057.00M  free = 1015.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T06:25:22+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.21 2.97 3.83 }",
+              "swap": "total = 3072.00M  used = 2057.00M  free = 1015.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T06:26:22+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 0.89 2.57 3.62 }",
+              "swap": "total = 3072.00M  used = 2057.00M  free = 1015.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T06:27:22+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.12 2.34 3.46 }",
+              "swap": "total = 3072.00M  used = 2057.00M  free = 1015.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T06:28:22+00:00",
+              "reasons": [],
+              "job_pids": [],
+              "loadavg": "{ 0.65 1.99 3.25 }",
+              "swap": "total = 3072.00M  used = 2057.00M  free = 1015.00M  (encrypted)"
+            }
+          ]
+        },
+        {
+          "batch": 4,
+          "at": "2026-11-02T06:52:24+00:00",
+          "reasons": [],
+          "job_pids": [],
+          "loadavg": "{ 1.30 1.94 3.37 }",
+          "swap": "total = 3072.00M  used = 2059.00M  free = 1013.00M  (encrypted)",
+          "busy": false,
+          "readings": [
+            {
+              "at": "2026-11-02T06:40:23+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 12.44 8.53 6.05 }",
+              "swap": "total = 3072.00M  used = 2251.00M  free = 821.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T06:41:23+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 5.05 7.12 5.69 }",
+              "swap": "total = 3072.00M  used = 2219.00M  free = 853.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T06:42:23+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 2.47 6.01 5.37 }",
+              "swap": "total = 3072.00M  used = 2187.00M  free = 885.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T06:43:23+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 2.49 5.44 5.20 }",
+              "swap": "total = 3072.00M  used = 2187.00M  free = 885.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T06:44:23+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 2.28 4.91 5.02 }",
+              "swap": "total = 3072.00M  used = 2187.00M  free = 885.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T06:45:23+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 2.04 4.35 4.80 }",
+              "swap": "total = 3072.00M  used = 2187.00M  free = 885.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T06:46:23+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.53 3.80 4.56 }",
+              "swap": "total = 3072.00M  used = 2155.00M  free = 917.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T06:47:23+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.03 3.24 4.30 }",
+              "swap": "total = 3072.00M  used = 2155.00M  free = 917.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T06:48:23+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.05 2.84 4.08 }",
+              "swap": "total = 3072.00M  used = 2155.00M  free = 917.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T06:49:24+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.21 2.58 3.89 }",
+              "swap": "total = 3072.00M  used = 2155.00M  free = 917.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T06:50:24+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 0.89 2.24 3.68 }",
+              "swap": "total = 3072.00M  used = 2155.00M  free = 917.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T06:51:24+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 0.98 2.01 3.49 }",
+              "swap": "total = 3072.00M  used = 2059.00M  free = 1013.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T06:52:24+00:00",
+              "reasons": [],
+              "job_pids": [],
+              "loadavg": "{ 1.30 1.94 3.37 }",
+              "swap": "total = 3072.00M  used = 2059.00M  free = 1013.00M  (encrypted)"
+            }
+          ]
+        },
+        {
+          "batch": 5,
+          "at": "2026-11-02T07:11:49+00:00",
+          "reasons": [],
+          "job_pids": [],
+          "loadavg": "{ 0.91 1.82 3.12 }",
+          "swap": "total = 3072.00M  used = 2059.00M  free = 1013.00M  (encrypted)",
+          "busy": false,
+          "readings": [
+            {
+              "at": "2026-11-02T07:02:48+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 6.67 6.00 4.97 }",
+              "swap": "total = 3072.00M  used = 2059.00M  free = 1013.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T07:03:48+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 3.24 5.11 4.70 }",
+              "swap": "total = 3072.00M  used = 2059.00M  free = 1013.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T07:04:48+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.85 4.37 4.45 }",
+              "swap": "total = 3072.00M  used = 2059.00M  free = 1013.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T07:05:49+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.83 3.90 4.27 }",
+              "swap": "total = 3072.00M  used = 2059.00M  free = 1013.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T07:06:49+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.47 3.44 4.07 }",
+              "swap": "total = 3072.00M  used = 2059.00M  free = 1013.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T07:07:49+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.01 2.97 3.85 }",
+              "swap": "total = 3072.00M  used = 2059.00M  free = 1013.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T07:08:49+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.03 2.60 3.65 }",
+              "swap": "total = 3072.00M  used = 2059.00M  free = 1013.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T07:09:49+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 0.99 2.28 3.46 }",
+              "swap": "total = 3072.00M  used = 2059.00M  free = 1013.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T07:10:49+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 0.77 2.01 3.28 }",
+              "swap": "total = 3072.00M  used = 2059.00M  free = 1013.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T07:11:49+00:00",
+              "reasons": [],
+              "job_pids": [],
+              "loadavg": "{ 0.91 1.82 3.12 }",
+              "swap": "total = 3072.00M  used = 2059.00M  free = 1013.00M  (encrypted)"
+            }
+          ]
+        },
+        {
+          "batch": 6,
+          "at": "2026-11-02T07:31:47+00:00",
+          "reasons": [],
+          "job_pids": [],
+          "loadavg": "{ 1.40 1.92 3.16 }",
+          "swap": "total = 3072.00M  used = 1883.00M  free = 1189.00M  (encrypted)",
+          "busy": false,
+          "readings": [
+            {
+              "at": "2026-11-02T07:20:46+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 9.94 7.46 5.38 }",
+              "swap": "total = 3072.00M  used = 2363.00M  free = 709.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T07:21:46+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 4.89 6.46 5.15 }",
+              "swap": "total = 3072.00M  used = 2331.00M  free = 741.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T07:22:46+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 2.94 5.61 4.92 }",
+              "swap": "total = 3072.00M  used = 2267.00M  free = 805.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T07:23:46+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.85 4.80 4.66 }",
+              "swap": "total = 3072.00M  used = 1947.00M  free = 1125.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T07:24:46+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.89 4.30 4.48 }",
+              "swap": "total = 3072.00M  used = 1883.00M  free = 1189.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T07:25:46+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.23 3.67 4.23 }",
+              "swap": "total = 3072.00M  used = 1883.00M  free = 1189.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T07:26:46+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 0.99 3.17 4.01 }",
+              "swap": "total = 3072.00M  used = 1883.00M  free = 1189.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T07:27:46+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 0.92 2.75 3.79 }",
+              "swap": "total = 3072.00M  used = 1883.00M  free = 1189.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T07:28:46+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.04 2.47 3.62 }",
+              "swap": "total = 3072.00M  used = 1883.00M  free = 1189.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T07:29:46+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.14 2.22 3.44 }",
+              "swap": "total = 3072.00M  used = 1883.00M  free = 1189.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T07:30:47+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.14 2.05 3.30 }",
+              "swap": "total = 3072.00M  used = 1883.00M  free = 1189.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T07:31:47+00:00",
+              "reasons": [],
+              "job_pids": [],
+              "loadavg": "{ 1.40 1.92 3.16 }",
+              "swap": "total = 3072.00M  used = 1883.00M  free = 1189.00M  (encrypted)"
+            }
+          ]
+        },
+        {
+          "batch": 7,
+          "at": "2026-11-02T07:57:25+00:00",
+          "reasons": [],
+          "job_pids": [],
+          "loadavg": "{ 1.11 1.84 2.82 }",
+          "swap": "total = 3072.00M  used = 2171.50M  free = 900.50M  (encrypted)",
+          "busy": false,
+          "readings": [
+            {
+              "at": "2026-11-02T07:42:24+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 5.85 6.09 5.07 }",
+              "swap": "total = 3072.00M  used = 2590.25M  free = 481.75M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T07:43:24+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 2.76 5.17 4.79 }",
+              "swap": "total = 3072.00M  used = 2590.25M  free = 481.75M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T07:44:24+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.32 4.32 4.50 }",
+              "swap": "total = 3072.00M  used = 2590.25M  free = 481.75M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T07:45:24+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 0.83 3.65 4.23 }",
+              "swap": "total = 3072.00M  used = 2558.25M  free = 513.75M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T07:46:24+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.77 3.42 4.11 }",
+              "swap": "total = 3072.00M  used = 2526.25M  free = 545.75M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T07:47:24+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.49 3.04 3.92 }",
+              "swap": "total = 3072.00M  used = 2494.25M  free = 577.75M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T07:48:24+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.12 2.64 3.70 }",
+              "swap": "total = 3072.00M  used = 2494.25M  free = 577.75M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T07:49:24+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.23 2.38 3.53 }",
+              "swap": "total = 3072.00M  used = 2430.25M  free = 641.75M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T07:50:24+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 2.43 2.53 3.52 }",
+              "swap": "total = 3072.00M  used = 2430.25M  free = 641.75M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T07:51:25+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 2.65 2.59 3.47 }",
+              "swap": "total = 3072.00M  used = 2366.25M  free = 705.75M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T07:52:25+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 2.19 2.46 3.36 }",
+              "swap": "total = 3072.00M  used = 2366.25M  free = 705.75M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T07:53:25+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 2.10 2.40 3.27 }",
+              "swap": "total = 3072.00M  used = 2235.50M  free = 836.50M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T07:54:25+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.51 2.18 3.13 }",
+              "swap": "total = 3072.00M  used = 2203.50M  free = 868.50M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T07:55:25+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.84 2.17 3.06 }",
+              "swap": "total = 3072.00M  used = 2203.50M  free = 868.50M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T07:56:25+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.70 2.08 2.96 }",
+              "swap": "total = 3072.00M  used = 2171.50M  free = 900.50M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T07:57:25+00:00",
+              "reasons": [],
+              "job_pids": [],
+              "loadavg": "{ 1.11 1.84 2.82 }",
+              "swap": "total = 3072.00M  used = 2171.50M  free = 900.50M  (encrypted)"
+            }
+          ]
+        },
+        {
+          "batch": 8,
+          "at": "2026-11-02T08:18:07+00:00",
+          "reasons": [],
+          "job_pids": [],
+          "loadavg": "{ 1.17 1.91 3.27 }",
+          "swap": "total = 3072.00M  used = 2405.25M  free = 666.75M  (encrypted)",
+          "busy": false,
+          "readings": [
+            {
+              "at": "2026-11-02T08:08:05+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 6.50 6.89 5.46 }",
+              "swap": "total = 3072.00M  used = 2533.25M  free = 538.75M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T08:09:05+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 2.83 5.77 5.14 }",
+              "swap": "total = 3072.00M  used = 2533.25M  free = 538.75M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T08:10:06+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.99 4.99 4.89 }",
+              "swap": "total = 3072.00M  used = 2533.25M  free = 538.75M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T08:11:06+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.45 4.31 4.64 }",
+              "swap": "total = 3072.00M  used = 2533.25M  free = 538.75M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T08:12:06+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.28 3.76 4.41 }",
+              "swap": "total = 3072.00M  used = 2533.25M  free = 538.75M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T08:13:06+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.26 3.30 4.19 }",
+              "swap": "total = 3072.00M  used = 2533.25M  free = 538.75M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T08:14:07+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.12 2.90 3.98 }",
+              "swap": "total = 3072.00M  used = 2501.25M  free = 570.75M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T08:15:07+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.60 2.72 3.84 }",
+              "swap": "total = 3072.00M  used = 2437.25M  free = 634.75M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T08:16:07+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 0.98 2.34 3.62 }",
+              "swap": "total = 3072.00M  used = 2405.25M  free = 666.75M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T08:17:07+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 0.70 2.01 3.41 }",
+              "swap": "total = 3072.00M  used = 2405.25M  free = 666.75M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T08:18:07+00:00",
+              "reasons": [],
+              "job_pids": [],
+              "loadavg": "{ 1.17 1.91 3.27 }",
+              "swap": "total = 3072.00M  used = 2405.25M  free = 666.75M  (encrypted)"
+            }
+          ]
+        },
+        {
+          "batch": 9,
+          "at": "2026-11-02T08:41:41+00:00",
+          "reasons": [],
+          "job_pids": [],
+          "loadavg": "{ 1.55 1.92 3.09 }",
+          "swap": "total = 3072.00M  used = 2520.00M  free = 552.00M  (encrypted)",
+          "busy": false,
+          "readings": [
+            {
+              "at": "2026-11-02T08:30:40+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 8.06 6.38 5.22 }",
+              "swap": "total = 3072.00M  used = 2552.00M  free = 520.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T08:31:40+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 3.67 5.42 4.94 }",
+              "swap": "total = 3072.00M  used = 2552.00M  free = 520.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T08:32:40+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.95 4.60 4.66 }",
+              "swap": "total = 3072.00M  used = 2552.00M  free = 520.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T08:33:40+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.30 3.94 4.41 }",
+              "swap": "total = 3072.00M  used = 2552.00M  free = 520.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T08:34:40+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.32 3.44 4.19 }",
+              "swap": "total = 3072.00M  used = 2552.00M  free = 520.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T08:35:40+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.29 3.07 4.00 }",
+              "swap": "total = 3072.00M  used = 2552.00M  free = 520.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T08:36:40+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 0.90 2.63 3.77 }",
+              "swap": "total = 3072.00M  used = 2520.00M  free = 552.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T08:37:41+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 0.80 2.32 3.58 }",
+              "swap": "total = 3072.00M  used = 2520.00M  free = 552.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T08:38:41+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.48 2.24 3.47 }",
+              "swap": "total = 3072.00M  used = 2520.00M  free = 552.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T08:39:41+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.36 2.05 3.31 }",
+              "swap": "total = 3072.00M  used = 2520.00M  free = 552.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T08:40:41+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.67 2.02 3.21 }",
+              "swap": "total = 3072.00M  used = 2520.00M  free = 552.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T08:41:41+00:00",
+              "reasons": [],
+              "job_pids": [],
+              "loadavg": "{ 1.55 1.92 3.09 }",
+              "swap": "total = 3072.00M  used = 2520.00M  free = 552.00M  (encrypted)"
+            }
+          ]
+        },
+        {
+          "batch": 10,
+          "at": "2026-11-02T09:21:57+00:00",
+          "reasons": [
+            "5-minute load is not below 2",
+            "another job",
+            "ci_local lock",
+            "virtual machine"
+          ],
+          "job_pids": [
+            63822,
+            63832
+          ],
+          "loadavg": "{ 1.37 2.12 2.78 }",
+          "swap": "total = 4608.00M  used = 2886.75M  free = 1721.25M  (encrypted)",
+          "busy": true,
+          "readings": [
+            {
+              "at": "2026-11-02T08:51:57+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 6.25 6.64 5.25 }",
+              "swap": "total = 3072.00M  used = 2586.25M  free = 485.75M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T08:52:58+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 3.11 5.67 4.98 }",
+              "swap": "total = 3072.00M  used = 2586.25M  free = 485.75M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T08:53:58+00:00",
+              "reasons": [
+                "5-minute load is not below 2"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.46 4.73 4.67 }",
+              "swap": "total = 3072.00M  used = 2586.25M  free = 485.75M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T08:54:58+00:00",
+              "reasons": [
+                "5-minute load is not below 2",
+                "ci_local lock"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 1.04 4.02 4.41 }",
+              "swap": "total = 3072.00M  used = 2586.25M  free = 485.75M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T08:55:58+00:00",
+              "reasons": [
+                "5-minute load is not below 2",
+                "another job",
+                "ci_local lock",
+                "virtual machine"
+              ],
+              "job_pids": [
+                62246,
+                62248,
+                62312
+              ],
+              "loadavg": "{ 1.23 3.54 4.20 }",
+              "swap": "total = 3072.00M  used = 2554.25M  free = 517.75M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T08:56:58+00:00",
+              "reasons": [
+                "5-minute load is not below 2",
+                "another job",
+                "ci_local lock",
+                "virtual machine"
+              ],
+              "job_pids": [
+                62246,
+                62248,
+                62397
+              ],
+              "loadavg": "{ 0.89 3.02 3.96 }",
+              "swap": "total = 3072.00M  used = 2554.25M  free = 517.75M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T08:57:58+00:00",
+              "reasons": [
+                "5-minute load is not below 2",
+                "another job",
+                "ci_local lock",
+                "virtual machine"
+              ],
+              "job_pids": [
+                62246,
+                62248
+              ],
+              "loadavg": "{ 1.25 2.72 3.78 }",
+              "swap": "total = 3072.00M  used = 2554.25M  free = 517.75M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T08:58:58+00:00",
+              "reasons": [
+                "5-minute load is not below 2",
+                "another job",
+                "ci_local lock",
+                "virtual machine"
+              ],
+              "job_pids": [
+                62246,
+                62248
+              ],
+              "loadavg": "{ 1.60 2.53 3.64 }",
+              "swap": "total = 3072.00M  used = 2554.25M  free = 517.75M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T08:59:58+00:00",
+              "reasons": [
+                "5-minute load is not below 2",
+                "another job",
+                "ci_local lock",
+                "virtual machine"
+              ],
+              "job_pids": [
+                62246,
+                62248
+              ],
+              "loadavg": "{ 1.82 2.43 3.52 }",
+              "swap": "total = 3072.00M  used = 2522.25M  free = 549.75M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T09:00:59+00:00",
+              "reasons": [
+                "5-minute load is not below 2",
+                "another job",
+                "ci_local lock",
+                "virtual machine"
+              ],
+              "job_pids": [
+                62246,
+                62248
+              ],
+              "loadavg": "{ 3.35 2.66 3.52 }",
+              "swap": "total = 3072.00M  used = 2522.25M  free = 549.75M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T09:01:59+00:00",
+              "reasons": [
+                "5-minute load is not below 2",
+                "another job",
+                "ci_local lock",
+                "virtual machine"
+              ],
+              "job_pids": [
+                62246,
+                62248
+              ],
+              "loadavg": "{ 2.98 2.65 3.46 }",
+              "swap": "total = 3072.00M  used = 2693.75M  free = 378.25M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T09:02:59+00:00",
+              "reasons": [
+                "5-minute load is not below 2",
+                "another job",
+                "ci_local lock",
+                "virtual machine"
+              ],
+              "job_pids": [
+                62246,
+                62248
+              ],
+              "loadavg": "{ 3.65 3.09 3.58 }",
+              "swap": "total = 3584.00M  used = 2817.00M  free = 767.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T09:03:59+00:00",
+              "reasons": [
+                "5-minute load is not below 2",
+                "another job",
+                "ci_local lock",
+                "virtual machine"
+              ],
+              "job_pids": [
+                62246,
+                62248
+              ],
+              "loadavg": "{ 3.84 3.19 3.58 }",
+              "swap": "total = 3584.00M  used = 2986.50M  free = 597.50M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T09:05:00+00:00",
+              "reasons": [
+                "5-minute load is not below 2",
+                "another job",
+                "ci_local lock",
+                "virtual machine"
+              ],
+              "job_pids": [
+                62246,
+                62248
+              ],
+              "loadavg": "{ 2.96 3.05 3.50 }",
+              "swap": "total = 3584.00M  used = 3180.00M  free = 404.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T09:06:00+00:00",
+              "reasons": [
+                "5-minute load is not below 2",
+                "another job",
+                "ci_local lock",
+                "virtual machine"
+              ],
+              "job_pids": [
+                62246,
+                62248
+              ],
+              "loadavg": "{ 3.16 3.02 3.45 }",
+              "swap": "total = 3584.00M  used = 3013.50M  free = 570.50M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T09:07:00+00:00",
+              "reasons": [
+                "5-minute load is not below 2",
+                "another job",
+                "ci_local lock",
+                "virtual machine"
+              ],
+              "job_pids": [
+                62246,
+                62248
+              ],
+              "loadavg": "{ 2.95 3.02 3.42 }",
+              "swap": "total = 3584.00M  used = 3139.00M  free = 445.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T09:08:01+00:00",
+              "reasons": [
+                "5-minute load is not below 2",
+                "another job",
+                "ci_local lock",
+                "virtual machine"
+              ],
+              "job_pids": [
+                62246,
+                62248
+              ],
+              "loadavg": "{ 3.32 3.12 3.43 }",
+              "swap": "total = 4608.00M  used = 3559.25M  free = 1048.75M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T09:09:01+00:00",
+              "reasons": [
+                "5-minute load is not below 2",
+                "another job",
+                "ci_local lock",
+                "virtual machine"
+              ],
+              "job_pids": [
+                62246,
+                62248
+              ],
+              "loadavg": "{ 3.41 3.19 3.43 }",
+              "swap": "total = 4608.00M  used = 3356.75M  free = 1251.25M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T09:10:01+00:00",
+              "reasons": [
+                "5-minute load is not below 2",
+                "another job",
+                "ci_local lock",
+                "virtual machine"
+              ],
+              "job_pids": [
+                62246,
+                62248
+              ],
+              "loadavg": "{ 3.08 3.16 3.40 }",
+              "swap": "total = 4608.00M  used = 3059.75M  free = 1548.25M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T09:11:01+00:00",
+              "reasons": [
+                "5-minute load is not below 2",
+                "another job",
+                "ci_local lock",
+                "virtual machine"
+              ],
+              "job_pids": [
+                62246,
+                62248
+              ],
+              "loadavg": "{ 3.13 3.18 3.39 }",
+              "swap": "total = 4608.00M  used = 3471.00M  free = 1137.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T09:12:02+00:00",
+              "reasons": [
+                "5-minute load is not below 2",
+                "another job",
+                "ci_local lock",
+                "virtual machine"
+              ],
+              "job_pids": [
+                62246,
+                62248
+              ],
+              "loadavg": "{ 4.02 3.45 3.48 }",
+              "swap": "total = 4608.00M  used = 3315.00M  free = 1293.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T09:13:02+00:00",
+              "reasons": [
+                "5-minute load is not below 2",
+                "another job",
+                "ci_local lock",
+                "virtual machine"
+              ],
+              "job_pids": [
+                62246,
+                62248
+              ],
+              "loadavg": "{ 3.44 3.38 3.45 }",
+              "swap": "total = 4608.00M  used = 3256.00M  free = 1352.00M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T09:14:02+00:00",
+              "reasons": [
+                "5-minute load is not below 2",
+                "another job",
+                "ci_local lock",
+                "virtual machine"
+              ],
+              "job_pids": [
+                62246,
+                62248
+              ],
+              "loadavg": "{ 2.70 3.18 3.37 }",
+              "swap": "total = 4608.00M  used = 3113.50M  free = 1494.50M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T09:15:02+00:00",
+              "reasons": [
+                "5-minute load is not below 2",
+                "ci_local lock"
+              ],
+              "job_pids": [],
+              "loadavg": "{ 3.70 3.46 3.47 }",
+              "swap": "total = 4608.00M  used = 3080.25M  free = 1527.75M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T09:16:02+00:00",
+              "reasons": [
+                "5-minute load is not below 2",
+                "another job",
+                "ci_local lock",
+                "virtual machine"
+              ],
+              "job_pids": [
+                63820,
+                63822,
+                63832
+              ],
+              "loadavg": "{ 2.13 3.08 3.32 }",
+              "swap": "total = 4608.00M  used = 3048.25M  free = 1559.75M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T09:17:02+00:00",
+              "reasons": [
+                "5-minute load is not below 2",
+                "another job",
+                "ci_local lock",
+                "virtual machine"
+              ],
+              "job_pids": [
+                63822,
+                63832,
+                63979
+              ],
+              "loadavg": "{ 1.68 2.79 3.20 }",
+              "swap": "total = 4608.00M  used = 3048.25M  free = 1559.75M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T09:18:03+00:00",
+              "reasons": [
+                "5-minute load is not below 2",
+                "another job",
+                "ci_local lock",
+                "virtual machine"
+              ],
+              "job_pids": [
+                63822,
+                63832
+              ],
+              "loadavg": "{ 2.45 2.76 3.15 }",
+              "swap": "total = 4608.00M  used = 2950.75M  free = 1657.25M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T09:19:03+00:00",
+              "reasons": [
+                "5-minute load is not below 2",
+                "another job",
+                "ci_local lock",
+                "virtual machine"
+              ],
+              "job_pids": [
+                63822,
+                63832
+              ],
+              "loadavg": "{ 2.04 2.59 3.06 }",
+              "swap": "total = 4608.00M  used = 2918.75M  free = 1689.25M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T09:20:03+00:00",
+              "reasons": [
+                "5-minute load is not below 2",
+                "another job",
+                "ci_local lock",
+                "virtual machine"
+              ],
+              "job_pids": [
+                63822,
+                63832
+              ],
+              "loadavg": "{ 2.24 2.53 3.00 }",
+              "swap": "total = 4608.00M  used = 2886.75M  free = 1721.25M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T09:21:03+00:00",
+              "reasons": [
+                "5-minute load is not below 2",
+                "another job",
+                "ci_local lock",
+                "virtual machine"
+              ],
+              "job_pids": [
+                63822,
+                63832
+              ],
+              "loadavg": "{ 1.72 2.32 2.89 }",
+              "swap": "total = 4608.00M  used = 2886.75M  free = 1721.25M  (encrypted)"
+            },
+            {
+              "at": "2026-11-02T09:21:57+00:00",
+              "reasons": [
+                "5-minute load is not below 2",
+                "another job",
+                "ci_local lock",
+                "virtual machine"
+              ],
+              "job_pids": [
+                63822,
+                63832
+              ],
+              "loadavg": "{ 1.37 2.12 2.78 }",
+              "swap": "total = 4608.00M  used = 2886.75M  free = 1721.25M  (encrypted)"
+            }
+          ]
+        }
+      ],
+      "m2": {
+        "with_reference": {
+          "questions": 80,
+          "pairs": 80,
+          "unpaired": {
+            "count": 0,
+            "case_ids": []
+          },
+          "agrees": {
+            "n": 80,
+            "table": {
+              "a": 38,
+              "b": 9,
+              "c": 7,
+              "d": 26
+            },
+            "difference": -0.025,
+            "clusters": 40,
+            "cluster95": [
+              -0.1375,
+              0.0875
+            ],
+            "newcombe95": [
+              -0.1233,
+              0.0743
+            ],
+            "read95": [
+              -0.1375,
+              0.0875
+            ],
+            "detected": false,
+            "direction": "not detected",
+            "package": 0.5875,
+            "v6": 0.5625
+          }
+        },
+        "without_reference": {
+          "questions": 20,
+          "pairs": 20,
+          "unpaired": {
+            "count": 0,
+            "case_ids": []
+          },
+          "right": {
+            "package": 5,
+            "v6": 10
+          }
+        }
+      }
+    }
+  },
+  "plans": {
+    "package-wixqa-m1": {
+      "status": "counted",
+      "retest_passed": true,
+      "admitted_cli": {
+        "2.1.312": 115
+      }
+    },
+    "v6-wixqa-m1": {
+      "status": "counted",
+      "retest_passed": true,
+      "admitted_cli": {
+        "2.1.312": 115
+      }
+    },
+    "package-wixqa-m2": {
+      "status": "counted",
+      "retest_passed": true,
+      "admitted_cli": {
+        "2.1.312": 115
+      }
+    },
+    "v6-wixqa-m2": {
+      "status": "counted",
+      "retest_passed": true,
+      "admitted_cli": {
+        "2.1.312": 115
+      }
+    },
+    "v6-bridge-wixqa": {
+      "status": "counted",
+      "retest": {
+        "planned": 15,
+        "scale": [
+          "bad",
+          "partial_ok",
+          "good"
+        ],
+        "pairs": 15,
+        "pairs_list": [
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            0
+          ]
+        ],
+        "pairs_ids": [
+          "1d695eff92274338",
+          "c4a5af56b5b8a1b4",
+          "a7139eff52cdd929",
+          "74e26aa530f63953",
+          "0623d49e09367998",
+          "803c775a4d022b71",
+          "9268de5e67ed9821",
+          "d794b969eb602a74",
+          "af7ca5802b41cce0",
+          "e9ed46bd4cfd43dd",
+          "40fb0f8c5165c872",
+          "2025aa8e74cf1b90",
+          "1bd69fe5a40cf4f0",
+          "75ea09db97403fea",
+          "9dcc6d81142f5f82"
+        ],
+        "agree": 14,
+        "two_steps_apart": 0,
+        "quadratic_kappa": 0.9589,
+        "ci95": [
+          0.8483,
+          1.0
+        ],
+        "resamples_undefined": 8,
+        "passes_by_kappa": true,
+        "passes_by_agreement": true,
+        "enough_pairs": true,
+        "passed": true,
+        "field_agreement": {
+          "reference": {
+            "agree": 0,
+            "of": 0
+          },
+          "answers_question": {
+            "agree": 13,
+            "of": 15
+          },
+          "context_has_answer": {
+            "agree": 15,
+            "of": 15
+          },
+          "defect": {
+            "agree": 15,
+            "of": 15
+          }
+        }
+      },
+      "source_plan_sha256": "ee3bc71d52d7dbabed92d23d0ef5177240bc58a59f5ad5d7f3f605723d245e6a",
+      "source_verdicts_sha256": "e5c9285dc6674b85fcf5126e0fc43d4d9fcef40dd80620bbb9403679b05ed5eb",
+      "plan_sha256": "311e35a0396fcd4449a2ae226d0a9f65e6003426de7a1ee21d1fc3502a41256c",
+      "verdicts_sha256": "92a17d92badcffdfa4ef576ca8e84553a0eb50e4e9a112341247a17587eba8a4",
+      "admitted_cli": {
+        "old": [
+          "2.1.312"
+        ],
+        "new": [
+          "2.1.312"
+        ]
+      },
+      "pairs": [
+        {
+          "case_id": "wixqa-simulated-013",
+          "first": "1d695eff92274338",
+          "copy": "1d695eff92274338-retest",
+          "old_cli": "2.1.312",
+          "new_cli": "2.1.312"
+        },
+        {
+          "case_id": "wixqa-simulated-077",
+          "first": "c4a5af56b5b8a1b4",
+          "copy": "c4a5af56b5b8a1b4-retest",
+          "old_cli": "2.1.312",
+          "new_cli": "2.1.312"
+        },
+        {
+          "case_id": "wixqa-simulated-094",
+          "first": "a7139eff52cdd929",
+          "copy": "a7139eff52cdd929-retest",
+          "old_cli": "2.1.312",
+          "new_cli": "2.1.312"
+        },
+        {
+          "case_id": "wixqa-simulated-082",
+          "first": "74e26aa530f63953",
+          "copy": "74e26aa530f63953-retest",
+          "old_cli": "2.1.312",
+          "new_cli": "2.1.312"
+        },
+        {
+          "case_id": "wixqa-simulated-093",
+          "first": "0623d49e09367998",
+          "copy": "0623d49e09367998-retest",
+          "old_cli": "2.1.312",
+          "new_cli": "2.1.312"
+        },
+        {
+          "case_id": "wixqa-simulated-100",
+          "first": "803c775a4d022b71",
+          "copy": "803c775a4d022b71-retest",
+          "old_cli": "2.1.312",
+          "new_cli": "2.1.312"
+        },
+        {
+          "case_id": "wixqa-simulated-005",
+          "first": "9268de5e67ed9821",
+          "copy": "9268de5e67ed9821-retest",
+          "old_cli": "2.1.312",
+          "new_cli": "2.1.312"
+        },
+        {
+          "case_id": "wixqa-simulated-076",
+          "first": "d794b969eb602a74",
+          "copy": "d794b969eb602a74-retest",
+          "old_cli": "2.1.312",
+          "new_cli": "2.1.312"
+        },
+        {
+          "case_id": "wixqa-simulated-024",
+          "first": "af7ca5802b41cce0",
+          "copy": "af7ca5802b41cce0-retest",
+          "old_cli": "2.1.312",
+          "new_cli": "2.1.312"
+        },
+        {
+          "case_id": "wixqa-simulated-025",
+          "first": "e9ed46bd4cfd43dd",
+          "copy": "e9ed46bd4cfd43dd-retest",
+          "old_cli": "2.1.312",
+          "new_cli": "2.1.312"
+        },
+        {
+          "case_id": "wixqa-simulated-051",
+          "first": "40fb0f8c5165c872",
+          "copy": "40fb0f8c5165c872-retest",
+          "old_cli": "2.1.312",
+          "new_cli": "2.1.312"
+        },
+        {
+          "case_id": "wixqa-simulated-170",
+          "first": "2025aa8e74cf1b90",
+          "copy": "2025aa8e74cf1b90-retest",
+          "old_cli": "2.1.312",
+          "new_cli": "2.1.312"
+        },
+        {
+          "case_id": "wixqa-simulated-073",
+          "first": "1bd69fe5a40cf4f0",
+          "copy": "1bd69fe5a40cf4f0-retest",
+          "old_cli": "2.1.312",
+          "new_cli": "2.1.312"
+        },
+        {
+          "case_id": "wixqa-simulated-159",
+          "first": "75ea09db97403fea",
+          "copy": "75ea09db97403fea-retest",
+          "old_cli": "2.1.312",
+          "new_cli": "2.1.312"
+        },
+        {
+          "case_id": "wixqa-simulated-001",
+          "first": "9dcc6d81142f5f82",
+          "copy": "9dcc6d81142f5f82-retest",
+          "old_cli": "2.1.312",
+          "new_cli": "2.1.312"
+        }
+      ]
+    },
+    "package-conditionalqa-m1": {
+      "status": "counted",
+      "retest_passed": true,
+      "admitted_cli": {
+        "2.1.312": 115
+      }
+    },
+    "v6-conditionalqa-m1": {
+      "status": "counted",
+      "retest_passed": true,
+      "admitted_cli": {
+        "2.1.312": 115
+      }
+    },
+    "package-conditionalqa-m2": {
+      "status": "counted",
+      "retest_passed": true,
+      "admitted_cli": {
+        "2.1.312": 115
+      }
+    },
+    "v6-conditionalqa-m2": {
+      "status": "counted",
+      "retest_passed": true,
+      "admitted_cli": {
+        "2.1.312": 115
+      }
+    },
+    "v6-bridge-conditionalqa": {
+      "status": "counted",
+      "retest": {
+        "planned": 15,
+        "scale": [
+          "bad",
+          "partial_ok",
+          "good"
+        ],
+        "pairs": 15,
+        "pairs_list": [
+          [
+            0,
+            0
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            0,
+            1
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            0
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            2,
+            2
+          ]
+        ],
+        "pairs_ids": [
+          "693118126ba6e326",
+          "139cc588039f75a7",
+          "bd617607d78c25d2",
+          "407ce6730a93eceb",
+          "65ccd4d1fa0b7fbb",
+          "47daab6830df7dae",
+          "37e93ed674eef5d8",
+          "84a93e8b64623d54",
+          "af6ae1fc745db645",
+          "be62c0f2fd379f72",
+          "a1e470cab547301b",
+          "b2710e1f7e44b2d6",
+          "1c6451acc95c2b9c",
+          "933d51f92af2bc43",
+          "bbe582125cbff301"
+        ],
+        "agree": 13,
+        "two_steps_apart": 1,
+        "quadratic_kappa": 0.8148,
+        "ci95": [
+          0.4628,
+          1.0
+        ],
+        "resamples_undefined": 0,
+        "passes_by_kappa": true,
+        "passes_by_agreement": false,
+        "enough_pairs": true,
+        "passed": true,
+        "field_agreement": {
+          "reference": {
+            "agree": 0,
+            "of": 0
+          },
+          "answers_question": {
+            "agree": 14,
+            "of": 15
+          },
+          "context_has_answer": {
+            "agree": 14,
+            "of": 15
+          },
+          "defect": {
+            "agree": 15,
+            "of": 15
+          }
+        }
+      },
+      "source_plan_sha256": "1592f1dd2b35719b6e59a5bd39d8560305c73a33fd561666ec1453313b897a6b",
+      "source_verdicts_sha256": "7c36752af4386a9cf011d8782235227a9b840f6569929ba2c167b808845c7c7c",
+      "plan_sha256": "8e02513691ab7a2f22f73d0269da2a4df5582a9cb55f9b64fa96210a7c9d4b85",
+      "verdicts_sha256": "e0438da3adf8249a6c658fcd42ed5a23c32a90de588791cba5a634d0d648dad1",
+      "admitted_cli": {
+        "old": [
+          "2.1.312"
+        ],
+        "new": [
+          "2.1.312"
+        ]
+      },
+      "pairs": [
+        {
+          "case_id": "conditionalqa-dev-35",
+          "first": "693118126ba6e326",
+          "copy": "693118126ba6e326-retest",
+          "old_cli": "2.1.312",
+          "new_cli": "2.1.312"
+        },
+        {
+          "case_id": "conditionalqa-train-31",
+          "first": "139cc588039f75a7",
+          "copy": "139cc588039f75a7-retest",
+          "old_cli": "2.1.312",
+          "new_cli": "2.1.312"
+        },
+        {
+          "case_id": "conditionalqa-dev-161",
+          "first": "bd617607d78c25d2",
+          "copy": "bd617607d78c25d2-retest",
+          "old_cli": "2.1.312",
+          "new_cli": "2.1.312"
+        },
+        {
+          "case_id": "conditionalqa-train-143",
+          "first": "407ce6730a93eceb",
+          "copy": "407ce6730a93eceb-retest",
+          "old_cli": "2.1.312",
+          "new_cli": "2.1.312"
+        },
+        {
+          "case_id": "conditionalqa-train-1534",
+          "first": "65ccd4d1fa0b7fbb",
+          "copy": "65ccd4d1fa0b7fbb-retest",
+          "old_cli": "2.1.312",
+          "new_cli": "2.1.312"
+        },
+        {
+          "case_id": "conditionalqa-train-466",
+          "first": "47daab6830df7dae",
+          "copy": "47daab6830df7dae-retest",
+          "old_cli": "2.1.312",
+          "new_cli": "2.1.312"
+        },
+        {
+          "case_id": "conditionalqa-train-1497",
+          "first": "37e93ed674eef5d8",
+          "copy": "37e93ed674eef5d8-retest",
+          "old_cli": "2.1.312",
+          "new_cli": "2.1.312"
+        },
+        {
+          "case_id": "conditionalqa-train-1510",
+          "first": "84a93e8b64623d54",
+          "copy": "84a93e8b64623d54-retest",
+          "old_cli": "2.1.312",
+          "new_cli": "2.1.312"
+        },
+        {
+          "case_id": "conditionalqa-train-236",
+          "first": "af6ae1fc745db645",
+          "copy": "af6ae1fc745db645-retest",
+          "old_cli": "2.1.312",
+          "new_cli": "2.1.312"
+        },
+        {
+          "case_id": "conditionalqa-dev-26",
+          "first": "be62c0f2fd379f72",
+          "copy": "be62c0f2fd379f72-retest",
+          "old_cli": "2.1.312",
+          "new_cli": "2.1.312"
+        },
+        {
+          "case_id": "conditionalqa-train-815",
+          "first": "a1e470cab547301b",
+          "copy": "a1e470cab547301b-retest",
+          "old_cli": "2.1.312",
+          "new_cli": "2.1.312"
+        },
+        {
+          "case_id": "conditionalqa-train-2059",
+          "first": "b2710e1f7e44b2d6",
+          "copy": "b2710e1f7e44b2d6-retest",
+          "old_cli": "2.1.312",
+          "new_cli": "2.1.312"
+        },
+        {
+          "case_id": "conditionalqa-train-1547",
+          "first": "1c6451acc95c2b9c",
+          "copy": "1c6451acc95c2b9c-retest",
+          "old_cli": "2.1.312",
+          "new_cli": "2.1.312"
+        },
+        {
+          "case_id": "conditionalqa-dev-68",
+          "first": "933d51f92af2bc43",
+          "copy": "933d51f92af2bc43-retest",
+          "old_cli": "2.1.312",
+          "new_cli": "2.1.312"
+        },
+        {
+          "case_id": "conditionalqa-train-851",
+          "first": "bbe582125cbff301",
+          "copy": "bbe582125cbff301-retest",
+          "old_cli": "2.1.312",
+          "new_cli": "2.1.312"
+        }
+      ]
+    }
+  },
+  "decision": {
+    "decision": "not adopted",
+    "reasons": [
+      "pooled: M2's agreement with the reference falls"
+    ],
+    "harm": [
+      "pooled: M2's agreement with the reference falls"
+    ],
+    "not_counted": {},
+    "not_run": [
+      "aircargo"
+    ],
+    "v6_replaces_package": false
+  }
+}

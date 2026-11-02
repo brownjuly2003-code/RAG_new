@@ -172,7 +172,9 @@ its [record](evidence/stage5-final-external-record.md).
 [Stage 5б, answer V6](specs/answer-prompt-v6.md) — V5's evidence step hidden from the client,
 guards for the answer's language and for repeats, paired with stage 5's package answers on
 WixQA and ConditionalQA and with item 6's on aircargo. Registered 2026-11-02 in `9f968bb`,
-its pre-request amendment 1 in `4a5c36e`.
+its pre-request amendment 1 in `4a5c36e`; read 2026-11-02: not adopted — harm, the pooled M2
+agreement with the reference a detected fall; aircargo `NOT_EVIDENCE`; its
+[record](evidence/answer-prompt-v6-record.md).
 [Stage 6, item 4](specs/stage6-throughput.md) — the
 service's questions an hour and what a second client sees: a draft, registered with its tools once
 the service is installed.
