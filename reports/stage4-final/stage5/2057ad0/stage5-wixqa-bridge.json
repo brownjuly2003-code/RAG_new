@@ -1,0 +1,240 @@
+{
+  "status": "counted",
+  "retest": {
+    "planned": 15,
+    "scale": [
+      "bad",
+      "partial_ok",
+      "good"
+    ],
+    "pairs": 15,
+    "pairs_list": [
+      [
+        0,
+        0
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        0,
+        0
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        0,
+        0
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        1,
+        1
+      ],
+      [
+        0,
+        0
+      ],
+      [
+        0,
+        0
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        1,
+        1
+      ],
+      [
+        0,
+        0
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        2,
+        2
+      ]
+    ],
+    "pairs_ids": [
+      "d63b50c9930f7147",
+      "40e962c0d42a735e",
+      "04f716dc0218fc31",
+      "2a7796ef517ce7ca",
+      "0288eebf31b8c196",
+      "6138afdb637430a3",
+      "dd2e8753ae340f0f",
+      "35748030aea326fc",
+      "d0ef6e80bca1797e",
+      "8e8b7ec6773b79d9",
+      "093989bcab83a8b4",
+      "31a95aa5e26cadcd",
+      "cf5ac5d1231aa9a0",
+      "d46a57a92fd02e4d",
+      "2ba52f1ed28485c3"
+    ],
+    "agree": 15,
+    "two_steps_apart": 0,
+    "quadratic_kappa": 1.0,
+    "ci95": [
+      1.0,
+      1.0
+    ],
+    "resamples_undefined": 0,
+    "passes_by_kappa": true,
+    "passes_by_agreement": true,
+    "enough_pairs": true,
+    "passed": true,
+    "field_agreement": {
+      "reference": {
+        "agree": 0,
+        "of": 0
+      },
+      "answers_question": {
+        "agree": 15,
+        "of": 15
+      },
+      "context_has_answer": {
+        "agree": 15,
+        "of": 15
+      },
+      "defect": {
+        "agree": 15,
+        "of": 15
+      }
+    }
+  },
+  "source_plan_sha256": "fd090ede6a5f98b61d16fd5502ee2ddff79fd117bc87d729b6dbb8fbdcc1f05d",
+  "source_verdicts_sha256": "02aaf9ca509368ea3ebfe5365e488729f925055534b91a06f8ac68850e58fd93",
+  "plan_sha256": "db88932ee23275e4194081ec831992f93816074f2c5b2299803e6b26bf4de37a",
+  "verdicts_sha256": "045968ae073619209a8d2d86da412c60def2d8083518bf0f75bc189e56f1ecdf",
+  "admitted_cli": {
+    "old": [
+      "2.1.310"
+    ],
+    "new": [
+      "2.1.312"
+    ]
+  },
+  "pairs": [
+    {
+      "case_id": "wixqa-simulated-155",
+      "first": "d63b50c9930f7147",
+      "copy": "d63b50c9930f7147-retest",
+      "old_cli": "2.1.310",
+      "new_cli": "2.1.312"
+    },
+    {
+      "case_id": "wixqa-simulated-157",
+      "first": "40e962c0d42a735e",
+      "copy": "40e962c0d42a735e-retest",
+      "old_cli": "2.1.310",
+      "new_cli": "2.1.312"
+    },
+    {
+      "case_id": "wixqa-simulated-014",
+      "first": "04f716dc0218fc31",
+      "copy": "04f716dc0218fc31-retest",
+      "old_cli": "2.1.310",
+      "new_cli": "2.1.312"
+    },
+    {
+      "case_id": "wixqa-simulated-170",
+      "first": "2a7796ef517ce7ca",
+      "copy": "2a7796ef517ce7ca-retest",
+      "old_cli": "2.1.310",
+      "new_cli": "2.1.312"
+    },
+    {
+      "case_id": "wixqa-simulated-119",
+      "first": "0288eebf31b8c196",
+      "copy": "0288eebf31b8c196-retest",
+      "old_cli": "2.1.310",
+      "new_cli": "2.1.312"
+    },
+    {
+      "case_id": "wixqa-simulated-025",
+      "first": "6138afdb637430a3",
+      "copy": "6138afdb637430a3-retest",
+      "old_cli": "2.1.310",
+      "new_cli": "2.1.312"
+    },
+    {
+      "case_id": "wixqa-simulated-107",
+      "first": "dd2e8753ae340f0f",
+      "copy": "dd2e8753ae340f0f-retest",
+      "old_cli": "2.1.310",
+      "new_cli": "2.1.312"
+    },
+    {
+      "case_id": "wixqa-simulated-034",
+      "first": "35748030aea326fc",
+      "copy": "35748030aea326fc-retest",
+      "old_cli": "2.1.310",
+      "new_cli": "2.1.312"
+    },
+    {
+      "case_id": "wixqa-simulated-002",
+      "first": "d0ef6e80bca1797e",
+      "copy": "d0ef6e80bca1797e-retest",
+      "old_cli": "2.1.310",
+      "new_cli": "2.1.312"
+    },
+    {
+      "case_id": "wixqa-simulated-149",
+      "first": "8e8b7ec6773b79d9",
+      "copy": "8e8b7ec6773b79d9-retest",
+      "old_cli": "2.1.310",
+      "new_cli": "2.1.312"
+    },
+    {
+      "case_id": "wixqa-simulated-060",
+      "first": "093989bcab83a8b4",
+      "copy": "093989bcab83a8b4-retest",
+      "old_cli": "2.1.310",
+      "new_cli": "2.1.312"
+    },
+    {
+      "case_id": "wixqa-simulated-066",
+      "first": "31a95aa5e26cadcd",
+      "copy": "31a95aa5e26cadcd-retest",
+      "old_cli": "2.1.310",
+      "new_cli": "2.1.312"
+    },
+    {
+      "case_id": "wixqa-simulated-138",
+      "first": "cf5ac5d1231aa9a0",
+      "copy": "cf5ac5d1231aa9a0-retest",
+      "old_cli": "2.1.310",
+      "new_cli": "2.1.312"
+    },
+    {
+      "case_id": "wixqa-simulated-122",
+      "first": "d46a57a92fd02e4d",
+      "copy": "d46a57a92fd02e4d-retest",
+      "old_cli": "2.1.310",
+      "new_cli": "2.1.312"
+    },
+    {
+      "case_id": "wixqa-simulated-181",
+      "first": "2ba52f1ed28485c3",
+      "copy": "2ba52f1ed28485c3-retest",
+      "old_cli": "2.1.310",
+      "new_cli": "2.1.312"
+    }
+  ]
+}

@@ -1,0 +1,546 @@
+{
+ "plan": "stage5-conditionalqa-m1",
+ "status": "counted",
+ "judge": "answers",
+ "base": "conditionalqa",
+ "provenance": {
+  "plan_sha256": "1592f1dd2b35719b6e59a5bd39d8560305c73a33fd561666ec1453313b897a6b",
+  "verdicts_sha256": "7c36752af4386a9cf011d8782235227a9b840f6569929ba2c167b808845c7c7c",
+  "references_sha256": "d31b52fa7f654c6043d3775984f087f9a2f6a98bbb3015580ae0ad97482b3502",
+  "references_withheld": true,
+  "salt": "chat-answer-judge-2026-10-18",
+  "prompt_id": "QA_PROMPT_V4",
+  "instructions_sha256": "fd015e742c835a17b17704ad629df90a34a61ac600762e8c74e52aababdcc9c2",
+  "route": {
+   "model": "claude-opus-5-5",
+   "effort": "max",
+   "tools": "none",
+   "session": "safe mode: no instruction file, memory, hook, skill, plugin or MCP server; no tools; an empty working directory; nothing stored; one turn",
+   "system_prompt_sha256": "5a0b99f2d4f3fc17efe27aa24440a3ec8ff7e9e45e9a299019ba4516f4fa5859"
+  },
+  "runs": {
+   "final-answers-conditionalqa-b01": {
+    "code_sha": "2057ad0e5733fbf18d6f199a0cfd94927aec85d8",
+    "model": "qwen3:4b-instruct-2507-q4_K_M",
+    "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+    "tenant": "ext_conditionalqa",
+    "chroma_dir": "/Users/julia/RAG_new_stage5/2057ad0/runs/final-answers-conditionalqa-b01/chroma",
+    "cases_file": "/Users/julia/RAG_new_external_s1/conditionalqa/cases.jsonl"
+   },
+   "final-answers-conditionalqa-b02": {
+    "code_sha": "2057ad0e5733fbf18d6f199a0cfd94927aec85d8",
+    "model": "qwen3:4b-instruct-2507-q4_K_M",
+    "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+    "tenant": "ext_conditionalqa",
+    "chroma_dir": "/Users/julia/RAG_new_stage5/2057ad0/runs/final-answers-conditionalqa-b02/chroma",
+    "cases_file": "/Users/julia/RAG_new_external_s1/conditionalqa/cases.jsonl"
+   },
+   "final-answers-conditionalqa-b03": {
+    "code_sha": "2057ad0e5733fbf18d6f199a0cfd94927aec85d8",
+    "model": "qwen3:4b-instruct-2507-q4_K_M",
+    "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+    "tenant": "ext_conditionalqa",
+    "chroma_dir": "/Users/julia/RAG_new_stage5/2057ad0/runs/final-answers-conditionalqa-b03/chroma",
+    "cases_file": "/Users/julia/RAG_new_external_s1/conditionalqa/cases.jsonl"
+   },
+   "final-answers-conditionalqa-b04": {
+    "code_sha": "2057ad0e5733fbf18d6f199a0cfd94927aec85d8",
+    "model": "qwen3:4b-instruct-2507-q4_K_M",
+    "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+    "tenant": "ext_conditionalqa",
+    "chroma_dir": "/Users/julia/RAG_new_stage5/2057ad0/runs/final-answers-conditionalqa-b04/chroma",
+    "cases_file": "/Users/julia/RAG_new_external_s1/conditionalqa/cases.jsonl"
+   },
+   "final-answers-conditionalqa-b05": {
+    "code_sha": "2057ad0e5733fbf18d6f199a0cfd94927aec85d8",
+    "model": "qwen3:4b-instruct-2507-q4_K_M",
+    "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+    "tenant": "ext_conditionalqa",
+    "chroma_dir": "/Users/julia/RAG_new_stage5/2057ad0/runs/final-answers-conditionalqa-b05/chroma",
+    "cases_file": "/Users/julia/RAG_new_external_s1/conditionalqa/cases.jsonl"
+   },
+   "final-answers-conditionalqa-b06": {
+    "code_sha": "2057ad0e5733fbf18d6f199a0cfd94927aec85d8",
+    "model": "qwen3:4b-instruct-2507-q4_K_M",
+    "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+    "tenant": "ext_conditionalqa",
+    "chroma_dir": "/Users/julia/RAG_new_stage5/2057ad0/runs/final-answers-conditionalqa-b06/chroma",
+    "cases_file": "/Users/julia/RAG_new_external_s1/conditionalqa/cases.jsonl"
+   },
+   "final-answers-conditionalqa-b07": {
+    "code_sha": "2057ad0e5733fbf18d6f199a0cfd94927aec85d8",
+    "model": "qwen3:4b-instruct-2507-q4_K_M",
+    "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+    "tenant": "ext_conditionalqa",
+    "chroma_dir": "/Users/julia/RAG_new_stage5/2057ad0/runs/final-answers-conditionalqa-b07/chroma",
+    "cases_file": "/Users/julia/RAG_new_external_s1/conditionalqa/cases.jsonl"
+   },
+   "final-answers-conditionalqa-b08": {
+    "code_sha": "2057ad0e5733fbf18d6f199a0cfd94927aec85d8",
+    "model": "qwen3:4b-instruct-2507-q4_K_M",
+    "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+    "tenant": "ext_conditionalqa",
+    "chroma_dir": "/Users/julia/RAG_new_stage5/2057ad0/runs/final-answers-conditionalqa-b08/chroma",
+    "cases_file": "/Users/julia/RAG_new_external_s1/conditionalqa/cases.jsonl"
+   },
+   "final-answers-conditionalqa-b09": {
+    "code_sha": "2057ad0e5733fbf18d6f199a0cfd94927aec85d8",
+    "model": "qwen3:4b-instruct-2507-q4_K_M",
+    "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+    "tenant": "ext_conditionalqa",
+    "chroma_dir": "/Users/julia/RAG_new_stage5/2057ad0/runs/final-answers-conditionalqa-b09/chroma",
+    "cases_file": "/Users/julia/RAG_new_external_s1/conditionalqa/cases.jsonl"
+   },
+   "final-answers-conditionalqa-b10": {
+    "code_sha": "2057ad0e5733fbf18d6f199a0cfd94927aec85d8",
+    "model": "qwen3:4b-instruct-2507-q4_K_M",
+    "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+    "tenant": "ext_conditionalqa",
+    "chroma_dir": "/Users/julia/RAG_new_stage5/2057ad0/runs/final-answers-conditionalqa-b10/chroma",
+    "cases_file": "/Users/julia/RAG_new_external_s1/conditionalqa/cases.jsonl"
+   }
+  },
+  "adapter_sha256": "cdb2be82d3341afe0b1aba4e560f56eac4e2dec9cce69d0e038a18da4f2c7788",
+  "tool_sha256": "d2a69975de960791c2b1aca8d93d58f75ef01c92c16686e12646473aea069193",
+  "replies_counted_per_request": 6,
+  "reading": null
+ },
+ "replies": {
+  "rows": 117,
+  "statuses": {
+   "valid": 115,
+   "unavailable": 2
+  },
+  "past_the_limit": 0,
+  "models": {
+   "claude-opus-5-5": 115
+  },
+  "admitted_at_reply": {
+   "1": 115
+  },
+  "admitted_cli": {
+   "2.1.312": 115
+  },
+  "cost_usd": 25.0768
+ },
+ "questions": 100,
+ "requests_valid": 115,
+ "missing": [],
+ "per_run": {
+  "final-answers-conditionalqa-b01": {
+   "answers": 10,
+   "graded": 10,
+   "missing": 0,
+   "classes": {
+    "good": 4,
+    "partial_ok": 1,
+    "bad": 5
+   },
+   "routes": {
+    "auto": 6,
+    "human": 4
+   },
+   "defects": {
+    "none": 10
+   },
+   "reference": {
+    "none": 10
+   },
+   "marks_listed": 23,
+   "marks_supported": 17,
+   "marks_unlisted": 0,
+   "context_has_answer": 9,
+   "answer_without_context": 0
+  },
+  "final-answers-conditionalqa-b02": {
+   "answers": 10,
+   "graded": 10,
+   "missing": 0,
+   "classes": {
+    "good": 3,
+    "partial_ok": 0,
+    "bad": 7
+   },
+   "routes": {
+    "auto": 9,
+    "human": 1
+   },
+   "defects": {
+    "none": 9,
+    "other": 1
+   },
+   "reference": {
+    "none": 10
+   },
+   "marks_listed": 18,
+   "marks_supported": 15,
+   "marks_unlisted": 0,
+   "context_has_answer": 10,
+   "answer_without_context": 0
+  },
+  "final-answers-conditionalqa-b03": {
+   "answers": 10,
+   "graded": 10,
+   "missing": 0,
+   "classes": {
+    "good": 4,
+    "partial_ok": 0,
+    "bad": 6
+   },
+   "routes": {
+    "auto": 8,
+    "human": 2
+   },
+   "defects": {
+    "none": 10
+   },
+   "reference": {
+    "none": 10
+   },
+   "marks_listed": 24,
+   "marks_supported": 17,
+   "marks_unlisted": 0,
+   "context_has_answer": 9,
+   "answer_without_context": 0
+  },
+  "final-answers-conditionalqa-b04": {
+   "answers": 10,
+   "graded": 10,
+   "missing": 0,
+   "classes": {
+    "good": 4,
+    "partial_ok": 1,
+    "bad": 5
+   },
+   "routes": {
+    "auto": 9,
+    "human": 1
+   },
+   "defects": {
+    "none": 9,
+    "other": 1
+   },
+   "reference": {
+    "none": 10
+   },
+   "marks_listed": 14,
+   "marks_supported": 14,
+   "marks_unlisted": 0,
+   "context_has_answer": 9,
+   "answer_without_context": 1
+  },
+  "final-answers-conditionalqa-b05": {
+   "answers": 10,
+   "graded": 10,
+   "missing": 0,
+   "classes": {
+    "good": 8,
+    "partial_ok": 0,
+    "bad": 2
+   },
+   "routes": {
+    "auto": 10
+   },
+   "defects": {
+    "none": 10
+   },
+   "reference": {
+    "none": 10
+   },
+   "marks_listed": 18,
+   "marks_supported": 17,
+   "marks_unlisted": 0,
+   "context_has_answer": 10,
+   "answer_without_context": 0
+  },
+  "final-answers-conditionalqa-b06": {
+   "answers": 10,
+   "graded": 10,
+   "missing": 0,
+   "classes": {
+    "good": 6,
+    "partial_ok": 0,
+    "bad": 4
+   },
+   "routes": {
+    "auto": 9,
+    "human": 1
+   },
+   "defects": {
+    "none": 10
+   },
+   "reference": {
+    "none": 10
+   },
+   "marks_listed": 12,
+   "marks_supported": 11,
+   "marks_unlisted": 0,
+   "context_has_answer": 10,
+   "answer_without_context": 0
+  },
+  "final-answers-conditionalqa-b07": {
+   "answers": 10,
+   "graded": 10,
+   "missing": 0,
+   "classes": {
+    "good": 1,
+    "partial_ok": 3,
+    "bad": 6
+   },
+   "routes": {
+    "auto": 10
+   },
+   "defects": {
+    "none": 10
+   },
+   "reference": {
+    "none": 10
+   },
+   "marks_listed": 23,
+   "marks_supported": 16,
+   "marks_unlisted": 0,
+   "context_has_answer": 9,
+   "answer_without_context": 0
+  },
+  "final-answers-conditionalqa-b08": {
+   "answers": 10,
+   "graded": 10,
+   "missing": 0,
+   "classes": {
+    "good": 2,
+    "partial_ok": 2,
+    "bad": 6
+   },
+   "routes": {
+    "auto": 9,
+    "human": 1
+   },
+   "defects": {
+    "none": 9,
+    "other": 1
+   },
+   "reference": {
+    "none": 10
+   },
+   "marks_listed": 25,
+   "marks_supported": 19,
+   "marks_unlisted": 0,
+   "context_has_answer": 10,
+   "answer_without_context": 0
+  },
+  "final-answers-conditionalqa-b09": {
+   "answers": 10,
+   "graded": 10,
+   "missing": 0,
+   "classes": {
+    "good": 4,
+    "partial_ok": 1,
+    "bad": 5
+   },
+   "routes": {
+    "auto": 6,
+    "human": 4
+   },
+   "defects": {
+    "none": 7,
+    "repetition": 2,
+    "other": 1
+   },
+   "reference": {
+    "none": 10
+   },
+   "marks_listed": 21,
+   "marks_supported": 17,
+   "marks_unlisted": 0,
+   "context_has_answer": 6,
+   "answer_without_context": 1
+  },
+  "final-answers-conditionalqa-b10": {
+   "answers": 10,
+   "graded": 10,
+   "missing": 0,
+   "classes": {
+    "good": 2,
+    "partial_ok": 1,
+    "bad": 7
+   },
+   "routes": {
+    "auto": 9,
+    "human": 1
+   },
+   "defects": {
+    "none": 10
+   },
+   "reference": {
+    "none": 10
+   },
+   "marks_listed": 19,
+   "marks_supported": 16,
+   "marks_unlisted": 0,
+   "context_has_answer": 9,
+   "answer_without_context": 0
+  }
+ },
+ "shares": {
+  "bad": {
+   "n": 100,
+   "hits": 53,
+   "share": 0.53,
+   "wilson95": [
+    0.4329,
+    0.6249
+   ],
+   "clusters": 60,
+   "cluster95": [
+    0.4272,
+    0.6327
+   ]
+  },
+  "partial_ok": {
+   "n": 100,
+   "hits": 9,
+   "share": 0.09,
+   "wilson95": [
+    0.0481,
+    0.1623
+   ],
+   "clusters": 60,
+   "cluster95": [
+    0.0374,
+    0.1553
+   ]
+  },
+  "good": {
+   "n": 100,
+   "hits": 38,
+   "share": 0.38,
+   "wilson95": [
+    0.291,
+    0.4779
+   ],
+   "clusters": 60,
+   "cluster95": [
+    0.28,
+    0.4851
+   ]
+  }
+ },
+ "retest": {
+  "planned": 15,
+  "scale": [
+   "bad",
+   "partial_ok",
+   "good"
+  ],
+  "pairs": 15,
+  "pairs_list": [
+   [
+    0,
+    0
+   ],
+   [
+    2,
+    2
+   ],
+   [
+    2,
+    2
+   ],
+   [
+    0,
+    0
+   ],
+   [
+    0,
+    0
+   ],
+   [
+    0,
+    0
+   ],
+   [
+    2,
+    2
+   ],
+   [
+    2,
+    2
+   ],
+   [
+    0,
+    0
+   ],
+   [
+    1,
+    1
+   ],
+   [
+    0,
+    0
+   ],
+   [
+    2,
+    2
+   ],
+   [
+    2,
+    0
+   ],
+   [
+    0,
+    0
+   ],
+   [
+    2,
+    2
+   ]
+  ],
+  "pairs_ids": [
+   "693118126ba6e326",
+   "139cc588039f75a7",
+   "bd617607d78c25d2",
+   "407ce6730a93eceb",
+   "65ccd4d1fa0b7fbb",
+   "47daab6830df7dae",
+   "37e93ed674eef5d8",
+   "84a93e8b64623d54",
+   "af6ae1fc745db645",
+   "be62c0f2fd379f72",
+   "a1e470cab547301b",
+   "b2710e1f7e44b2d6",
+   "1c6451acc95c2b9c",
+   "933d51f92af2bc43",
+   "bbe582125cbff301"
+  ],
+  "agree": 14,
+  "two_steps_apart": 1,
+  "quadratic_kappa": 0.8571,
+  "ci95": [
+   0.5361,
+   1.0
+  ],
+  "resamples_undefined": 0,
+  "passes_by_kappa": true,
+  "passes_by_agreement": false,
+  "enough_pairs": true,
+  "passed": true,
+  "field_agreement": {
+   "reference": {
+    "agree": 0,
+    "of": 0
+   },
+   "answers_question": {
+    "agree": 13,
+    "of": 15
+   },
+   "context_has_answer": {
+    "agree": 14,
+    "of": 15
+   },
+   "defect": {
+    "agree": 15,
+    "of": 15
+   }
+  }
+ }
+}
