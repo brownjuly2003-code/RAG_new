@@ -41,6 +41,33 @@ def test_key_allowlist_matches_deployment_contract():
     assert macos.OWN_KEYS.isdisjoint(start.DEPLOYMENT_KEYS)
 
 
+def test_runtime_data_is_beside_the_release_checkout():
+    assert start.DATA == start.ROOT.parent
+
+
+@pytest.mark.parametrize("checkout_name,expected_code", [("development", 2), ("app", 1)])
+def test_main_checks_release_layout_before_reading_env_or_creating_directories(
+    tmp_path, monkeypatch, capsys, checkout_name, expected_code
+):
+    monkeypatch.setattr(start, "sys", SimpleNamespace(platform="win32"))
+    monkeypatch.setattr(start, "ROOT", tmp_path / "product" / checkout_name)
+    monkeypatch.setattr(start, "DATA", start.ROOT.parent)
+    env_file = tmp_path / "service.env"
+    reads = []
+
+    def read_env(path):
+        reads.append(path)
+        raise start.Stop(macos.NOT_YET, "test ends at env reading")
+
+    monkeypatch.setattr(start, "read_service_env", read_env)
+    assert start.main([str(env_file)]) == expected_code
+    assert reads == ([env_file] if checkout_name == "app" else [])
+    assert list(tmp_path.iterdir()) == []
+    output = capsys.readouterr()
+    if checkout_name != "app":
+        assert "expected <product root>/app layout" in output.out + output.err
+
+
 def test_parser_accepts_new_keys_without_posix_permissions(tmp_path, monkeypatch):
     monkeypatch.setattr(start, "ROOT", tmp_path / "checkout")
     path = tmp_path / "service.env"
@@ -203,6 +230,7 @@ def test_api_environment_drops_inherited_tuning_and_forces_offline(deployment, m
     assert env["HF_HUB_OFFLINE"] == env["TRANSFORMERS_OFFLINE"] == "1"
     assert env["HF_HOME"] == deployment["HF_HOME"]
     assert env["PYTHONPATH"] == str(start.ROOT)
+    assert env["TRACING_DB_PATH"] == str(start.DATA / "traces.db")
     assert env["PYTHONUTF8"] == "1" and env["PYTHONIOENCODING"] == "utf-8"
     assert env["USERPROFILE"] == "C:/Users/owner"
     for key in ("OLLAMA_MODEL_NAME", "CODEX_MODEL", "LLM_PROVIDER_PROFILE", "OPENAI_API_KEY"):
@@ -215,7 +243,8 @@ def ready(monkeypatch, tmp_path, deployment):
 
     calls = []
     monkeypatch.setattr(start, "sys", SimpleNamespace(platform="win32"))
-    monkeypatch.setattr(start, "DATA", tmp_path / "data")
+    monkeypatch.setattr(start, "ROOT", tmp_path / "product" / "app")
+    monkeypatch.setattr(start, "DATA", start.ROOT.parent)
     monkeypatch.setattr(start.os, "environ", {})
     monkeypatch.setattr(start, "read_service_env", lambda _: deployment)
     monkeypatch.setattr(macos, "port_taken", lambda *_: False)

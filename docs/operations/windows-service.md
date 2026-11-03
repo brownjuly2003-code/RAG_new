@@ -1,152 +1,230 @@
 # The chat on the Windows 11 laptop
 
-The owner's 16 GB laptop runs the product: Python 3.11, PostgreSQL,
-and the native Codex CLI using the signed-in `C:/Users/uedom/.codex-work` profile.
-The Mac and Linux CI run tests. The [Mac service](macos-service.md) remains a draft.
-The Mac's OpenAI connection requires a VPN which disrupts another project; the laptop
-can reach OpenAI directly. **The chat answers only while the laptop is on and the API,
-and PostgreSQL are running.** Sleep and shutdown interrupt availability.
-The laptop uses `codex-only`: Ollama is not needed and must not run for the product.
-Embedding and ONNX reranking remain local; neither uses Ollama.
+The owner's 16 GB laptop runs Python 3.11, PostgreSQL 16 and native Codex with the
+owner's signed-in profile. The Mac and Linux CI run tests; the [Mac service](macos-service.md)
+remains a draft. The laptop reaches OpenAI directly; the Mac needs a VPN that disrupts
+another project. **The chat answers only while the laptop, API and PostgreSQL are running.**
+Sleep and shutdown interrupt availability. The laptop uses `codex-only`: never run Ollama
+for this product. Embedding and ONNX reranking remain local and do not use Ollama.
 
 ## Runtime layout
 
-Keep production data separate from development checkouts. The deployment layout under
-`D:/RAG_new_prod` is:
+All four helpers in `deploy/windows/` accept `--root` (default `D:/RAG_new_prod`).
+Product paths derive from that root; the external env file and installed binaries/profile
+are exceptions. The service runs only from the release copy, never a development checkout.
 
-| Purpose | Path or address |
+| Purpose | Default path or address |
 | --- | --- |
-| Release checkout | `D:/RAG_new_prod/app` |
-| Python 3.11 virtual environment | `D:/RAG_new_prod/venv` |
-| Service's writable index copy | `D:/RAG_new_prod/index/chroma` (includes `chroma.sqlite3`) |
-| Measured INT8 reranker | `D:/RAG_new_prod/models/bge-reranker-v2-m3/int8/model.onnx` |
-| Prepared embedding and reranker tokenizer caches | `D:/RAG_new_prod/hf-cache` |
-| PostgreSQL data | `D:/RAG_new_prod/postgres/data`, listening on `127.0.0.1:55432` |
-| Service env file, using the explicit argument | `D:/RAG_new_prod/chat-service.env` |
-| Default env file, when no argument is given | `%LOCALAPPDATA%/rag-new/chat-service.env` |
-| Trace database | `D:/RAG_new_prod/traces.db` |
+| Release copy: plain local Git clone, detached at the release commit | `D:/RAG_new_prod/app/` |
+| Python 3.11 venv, installed from the release's `deploy/windows/requirements-win.lock` | `D:/RAG_new_prod/venv/` |
+| Aircargo data, embedding manifest and sidecars | `D:/RAG_new_prod/data/aircargo/` |
+| Writable index, including `chroma.sqlite3` | `D:/RAG_new_prod/data/aircargo/index/chroma/` |
+| Measured INT8 reranker | `D:/RAG_new_prod/ort/bge-reranker-v2-m3/int8/model.onnx` |
+| Offline Hugging Face cache (`HF_HOME`) | `D:/RAG_new_prod/hf/` |
+| Own PostgreSQL 16 cluster; role `rag_app`, database `rag_new` | `D:/RAG_new_prod/pgdata/`, `127.0.0.1:55432` |
+| PostgreSQL log | `D:/RAG_new_prod/pg.log` |
+| Generated secrets, user-only ACL | `D:/RAG_new_prod/secrets/pg.json`, `D:/RAG_new_prod/secrets/service.json` |
+| External env file | `%LOCALAPPDATA%/rag-new/chat-service.env` |
+| Launcher/API log; trace database | `D:/RAG_new_prod/service.log`; `D:/RAG_new_prod/traces.db` |
 | API and chat | `http://127.0.0.1:8002` |
 
-The launcher uses the interpreter that invokes it and derives the checkout from its own
-location; it does not install a venv, copy data, download caches or initialize PostgreSQL.
-Prepare those resources before first start. The index must be a separate, consistent copy
-of the approved index, including its embedding manifest and sidecars. The presence check
-prevents an accidental empty index; it does not prove the copy's contents or completeness.
+## First install and release changes
 
-## Configuration and first start
+Run these commands as the owner in PowerShell. Python 3.11, PostgreSQL 16 binaries,
+native Codex and its signed-in profile must already exist. No helper installs software,
+downloads model files or logs in to Codex.
 
-1. Place the release and its prepared Python environment at the paths above. Prepare the
-   index, ONNX file, and complete Hugging Face snapshots for both the embedding model and
-   reranker tokenizer. `HF_HOME` must be an existing absolute directory. Both
-   `HF_HUB_OFFLINE=1` and `TRANSFORMERS_OFFLINE=1` are forced: missing cache files cannot
-   be downloaded at startup. The orchestrator must verify cache completeness live.
-2. Start the service's PostgreSQL cluster on port 55432, with its own database and login.
-   Start it detached: run `pg_ctl` from a process with its own hidden console, as shown
-   below. PostgreSQL is not started or reconfigured by the launcher.
-3. Copy [service.env.example](../../deploy/windows/service.env.example) outside the checkout
-   to `D:/RAG_new_prod/chat-service.env`, and fill it in with an editor. Use UTF-8 without
-   BOM and LF line endings. Restrict its Windows ACL to the owner and necessary system
-   administrators; POSIX `chmod 600` is not a Windows access check. No `export`, quotes,
-   spaces around `=`, duplicate keys or `<placeholders>` are accepted. Password characters
-   with URL meaning must be percent-encoded in `DATABASE_URL`. Generate independent random
-   secrets; use a bcrypt password hash for the admin login.
-4. For `codex-only`, set the existing native `.exe` path from the example and the absolute
-   `CODEX_HOME` directory. The `codex` command on PATH is an npm `.cmd` shim and cannot be
-   used. No shell is invoked. The launcher verifies the file and directory; it neither logs
-   in nor reads credentials nor makes a Codex pre-flight request.
-5. Start from a normal PowerShell terminal that stays open, or Task Scheduler, using the
-   prepared environment:
+1. Create the Python 3.11 venv. Populate it from the release's Windows lock after
+   selecting the release in step 2. The release contains
+   `deploy/windows/requirements-win.lock`, generated with
+   `python deploy/windows/make_win_lock.py` before the release commit.
 
    ```powershell
-   & 'D:/RAG_new_prod/venv/Scripts/python.exe' -I 'D:/RAG_new_prod/app/deploy/windows/start.py' 'D:/RAG_new_prod/chat-service.env'
+   $productRoot = 'D:/RAG_new_prod'
+   $developmentRepo = 'D:/RAG_new'
+   $releaseCommit = 'FULL_RELEASE_COMMIT'
+   py -3.11 -m venv "$productRoot/venv"
    ```
 
-   Omit the final argument to use the default env location. More than one argument refuses
-   startup. The env file must resolve outside the checkout, including through symlinks.
-   The launcher checks deployment values, the free API port, a PostgreSQL `SELECT 1`
-   (up to 60 seconds), Codex binary/home presence, and `Settings.validate()`.
-   Under `codex-only` neither pre-flight nor settings validation probes Ollama.
-   It starts `uvicorn api.app:app` on `127.0.0.1:8002` with exactly one worker as a child
-   and forwards its exit code. Exit 2 means a launch/configuration refusal; exit 1 means
-   a dependency pre-flight failed. No env-file values or exception payloads are logged;
-   the failing check's name is reported. Fix the cause before restarting.
+2. Make a plain local release clone (not a worktree or symlink). Select a committed
+   release containing these helpers; uncommitted development changes are not copied.
 
-The explicit allowed keys are `DATABASE_URL`, `VECTORDB_CHROMA_DIR`, `RAG_RERANKER_ONNX`,
-`JWT_SECRET`, `SESSION_SECRET_KEY`, `DB_ENCRYPTION_KEY`, `ADMIN_USERNAME`,
-`ADMIN_PASSWORD_HASH`, `ADMIN_DEFAULT_TENANT`, `CORS_ORIGINS`, `AUTO_MIGRATE`,
-`LLM_PROVIDER_PROFILE`, `CODEX_BINARY`, `CODEX_HOME`, and `HF_HOME`.
+   ```powershell
+   git clone --no-hardlinks "$developmentRepo" "$productRoot/app"
+   git -C "$productRoot/app" checkout --detach "$releaseCommit"
+   git -C "$productRoot/app" rev-parse HEAD
+   & "$productRoot/venv/Scripts/python.exe" -m pip install --require-hashes -r "$productRoot/app/deploy/windows/requirements-win.lock"
+   ```
 
-`JWT_SECRET` and `SESSION_SECRET_KEY` require at least 32 characters; `DB_ENCRYPTION_KEY`
-requires at least 16. Known development defaults are refused by the shared production secret
-rules. An absent/empty session secret uses the JWT secret, as in the Mac launcher. Required
-keys are the Mac's required deployment keys plus `HF_HOME`; both Codex paths are additionally
-required for `codex-only` and `codex-answer`, and checked whenever supplied with `local-first`.
-The launcher imports the Mac's secret, bcrypt, index and streaming SHA-256 checks unchanged.
-The required ONNX SHA-256 is:
+   After each `requirements.lock` change, regenerate from the development repository
+   root with `python deploy/windows/make_win_lock.py` (requires uv and network access;
+   optional `--uv-cache-dir D:/RAG_new_prod/uv-cache`). It constrains Windows/Python 3.11
+   to the Linux versions, prints counts/platform-only packages/version differences,
+   and fails on any shared-package version difference. Temporary constraints are removed;
+   the lock header contains only the repository-relative generator command. Review and
+   include the generated lock in the release. The Mac lock test requires SHA-256 hashes
+   for every pin and equal versions in both locks; it skips only while the file is absent.
 
-```text
-57335a9f061fe31378c160ddd0861711a0fbdfa20f70aa2640d473dfc4bc1343
-```
+   For a new release, first stop the launcher/API as below. Check
+   `git -C "$productRoot/app" status --short` is empty; preserve unexpected changes.
+   Set `$releaseCommit` to the new full commit, run `git -C "$productRoot/app" fetch origin`
+   (origin is the local development repository), then `checkout --detach` and `rev-parse`
+   as above. Install that release's lock with `--require-hashes` if dependencies changed;
+   for an exact dependency reset, recreate the stopped product's venv. Rerun env writing,
+   start, readiness and smoke checks. Data and secrets stay beside `app/`.
+3. Copy the approved Aircargo dataset to `data/aircargo/`, including a consistent
+   `index/chroma/`, embedding manifest and sidecars. Stop the source index while copying
+   or use a consistent snapshot. The recorded laptop index had 5,589 chunks; WixQA and
+   ConditionalQA remain on the Mac. The launcher's presence check prevents an accidental
+   empty index, but does not prove contents or completeness.
+4. Copy the measured ONNX file to `ort/bge-reranker-v2-m3/int8/model.onnx`. Verify with
+   `Get-FileHash -Algorithm SHA256 "$productRoot/ort/bge-reranker-v2-m3/int8/model.onnx"`:
+   `57335a9f061fe31378c160ddd0861711a0fbdfa20f70aa2640d473dfc4bc1343`.
+5. Copy prepared HF snapshots to `hf/`. Under `hf/hub/`, `BAAI/bge-m3` snapshot beginning
+   `5617a9f6` includes weights; `BAAI/bge-reranker-v2-m3` snapshot beginning `953dc6f6`
+   includes tokenizer/config (ONNX supplies weights). Preserve blobs, snapshots, refs
+   and link targets. `HF_HOME` must exist. Startup forces `HF_HUB_OFFLINE=1` and
+   `TRANSFORMERS_OFFLINE=1`; a live smoke question must check cache completeness.
+6. Create/start the own PostgreSQL 16 cluster; the system PostgreSQL service is untouched:
 
-Every quality, model and timeout setting keeps its code default. Inherited tuning variables
-are discarded; `.ask100-runtime/env.json` and shell env files are never loaded. The sole
-provider switch is `LLM_PROVIDER_PROFILE=local-first|codex-answer|codex-only`; omission keeps
-`local-first`. `RAG_ENV` keeps the code default, while production secret rules still apply.
+   ```powershell
+   & "$productRoot/venv/Scripts/python.exe" -I "$productRoot/app/deploy/windows/prepare_postgres.py" --root "$productRoot"
+   ```
 
-There is no launchd or memory-policy key here. The laptop must use `codex-only`.
-`RAG_SERVICE_MEMORY_POLICY` and `RAG_SERVICE_OLLAMA_LOG` are refused.
+   `--pg-bin` defaults to `C:/Program Files/PostgreSQL/16/bin`. Cluster, role and database
+   are created only when missing; `secrets/pg.json` is reused and the app login checked.
+   An existing cluster without its secrets store refuses; restore the store first.
+7. Write the external env file. `--admin-username` has no default and is required when
+   `secrets/service.json` does not exist. With an existing store, the argument is ignored
+   and the stored admin username and credentials are retained.
 
-The API child also inherits `USERPROFILE`, required by `Path.home()` during Chroma imports.
-Readiness is `GET http://127.0.0.1:8002/api/health/ready`; `GET /health` returns 404.
-Under `codex-only`, readiness and `/api/health` report Codex binary/home configuration
-without calling a model. This does not prove login or remote model availability.
+   ```powershell
+   & "$productRoot/venv/Scripts/python.exe" -I "$productRoot/app/deploy/windows/write_env.py" --root "$productRoot" --admin-username '<admin-name>'
+   ```
 
-Closing a temporary parent console can make PostgreSQL backends and similar children fail
-with `0xC0000142`. Use a separate hidden console for `pg_ctl`, not `-NoNewWindow`:
+   `--codex-exe` supplies a native `.exe`; otherwise the glob
+   `%APPDATA%/npm/node_modules/@openai/codex/**/codex.exe` must match exactly one file.
+   Zero/multiple matches refuse; npm's `.cmd` shim is unsupported. `--codex-home` defaults
+   to `%USERPROFILE%/.codex-work`. Use the existing signed-in profile; do not copy its
+   credentials (refresh-token rotation can invalidate another copy).
+   `--env-file` overrides the default; pass the same override to `run_detached.py`.
+   Secrets are generated once, secured with `icacls` and reused. The stored admin password
+   is bcrypt-hashed; the writer validates with the launcher and prints key names only.
+   No password is an argument or printed. [service.env.example](../../deploy/windows/service.env.example)
+   is a format reference, not an install-ready file.
+8. Start the release, wait for readiness after cold startup, then ask an indexed question:
+
+   ```powershell
+   & "$productRoot/venv/Scripts/python.exe" -I "$productRoot/app/deploy/windows/run_detached.py" --root "$productRoot"
+   Invoke-RestMethod 'http://127.0.0.1:8002/api/health/ready'
+   & "$productRoot/venv/Scripts/python.exe" -I "$productRoot/app/deploy/windows/smoke_ask.py" --root "$productRoot" 'В какой срок нужно сдать авансовый отчёт после возвращения из командировки?' --tenant aircargo
+   ```
+
+   `GET /health` returns 404. Under `codex-only`, readiness and `/api/health` inspect Codex
+   binary/home configuration without calling a model; they do not prove login or remote
+   availability. Smoke reads the admin password from `secrets/service.json`, never prints
+   it, reports `seconds`, `answer_provider`, `answer_model`, `route`, `ticket_id`,
+   `delivery_state` and `quality_score` (API null under `codex-only`, printed as `None`),
+   and exits nonzero on a non-200 login or ask. Inspect metadata: a 200
+   alone is not proof of an automatic Codex answer. The detached helper prints a PID,
+   not a readiness claim.
+
+## Daily start and stop
+
+Run `prepare_postgres.py`, `run_detached.py`, then readiness above. The launcher command is
+`<root>/venv/Scripts/python.exe -I <root>/app/deploy/windows/start.py`, cwd `<root>/app`;
+logs append to `service.log`. Both `pg_ctl` and the launcher use the laptop-proven
+`CREATE_NO_WINDOW | CREATE_NEW_PROCESS_GROUP` flags plus `CREATE_BREAKAWAY_FROM_JOB`,
+with no `STARTUPINFO`. On `OSError`, they retry without breakaway, retaining the two base
+flags. This is the combination verified on the laptop against `0xC0000142` when a temporary
+parent console closes; do not use `-NoNewWindow`. `start.py` itself does not start or
+reconfigure PostgreSQL.
+
+Stop only the launcher and its uvicorn child by verified PID. Inspect
+`Get-CimInstance Win32_Process` for `ProcessId`, `ParentProcessId`, `ExecutablePath` and
+`CommandLine`: confirm this release's launcher and its uvicorn `api.app:app` child (the
+venv may add a Python redirector between them). Record both PIDs first. Set `$launcherPid`
+and `$uvicornPid` to those verified numbers, then:
 
 ```powershell
-Start-Process -FilePath 'C:/Program Files/PostgreSQL/17/bin/pg_ctl.exe' -ArgumentList @('start', '-D', 'D:/RAG_new_prod/postgres/data', '-l', 'D:/RAG_new_prod/postgres/server.log', '-w') -WindowStyle Hidden -Wait
+Stop-Process -Id $uvicornPid
+# Recheck the launcher's identity if it has not already exited with uvicorn.
+Stop-Process -Id $launcherPid -ErrorAction SilentlyContinue
+& 'C:/Program Files/PostgreSQL/16/bin/pg_ctl.exe' -D "$productRoot/pgdata" stop -m fast
 ```
 
-Adjust the installed PostgreSQL binary path. PowerShell starts this Windows console process
-with its own console; its hidden console is independent of the terminal running this command.
-The API launcher itself should run in a persistent normal terminal or Task Scheduler.
+The launcher normally exits after uvicorn; recheck identity before stopping a remaining
+PID. Confirm the API port is no longer listening. Never use `taskkill /T`: process-tree
+termination can reach other sessions' processes. Never kill by image name.
 
-## Which model answered and how fallback works
+## Launcher contract and routing
 
-Inspect `answer_provider` and `answer_model` in the chat API response (or its final streaming
-result): `codex` / `gpt-6-astra` identifies the subscription answer. With `codex-only`, the
-final answer uses `xhigh` and the unchanged stage 5v wrapper. Auxiliary calls use `low` with
-a 60-second timeout each. Online quality judges, claim-verification telemetry, suggested
-questions and continuation self-evaluation are disabled for this profile; unmeasured quality
-never claims an auto route.
-Document grading uses one batch and fails closed if that batch cannot be graded.
+The launcher requires the `<product root>/app` layout: the checkout directory must be
+named `app`. Any other name refuses with exit code 2 and a layout diagnostic before
+reading the env file or creating directories. Runtime data stays in the checkout's
+parent (`DATA = ROOT.parent`); run the launcher only from the release copy.
 
-A timeout, login/connectivity/usage failure, invalid stream, tool or warning item, invalid
-binary, or Job Object failure rejects the Codex result. No partial answer escapes the gate.
-Under `codex-only` there is no fallback model. A failed answer returns the existing unavailable
-answer with both `answer_provider` and `answer_model` null. The 300-second outage cache
-prevents repeated answer attempts during that interval. Short auxiliary failures are cached
-separately from the longer answer target. After expiry the next request may try again.
-The older `codex-answer` profile retains local auxiliaries and its 4B fallback; `local-first`
-remains the code default. These profiles are not the laptop deployment profile.
+The launcher accepts at most one env-file argument. It must be absolute and resolve outside
+the checkout, including through symlinks. UTF-8 without BOM, LF and unquoted `KEY=VALUE`
+are required: no `export`, padding, duplicates, unknown keys or `<placeholders>`. User-only
+Windows ACLs protect secrets; POSIX `chmod 600` is not a Windows access check. The writer
+percent-encodes URL credentials and sets these allowed keys except optional `AUTO_MIGRATE`:
+`DATABASE_URL`, `VECTORDB_CHROMA_DIR`, `RAG_RERANKER_ONNX`, `JWT_SECRET`, `SESSION_SECRET_KEY`,
+`DB_ENCRYPTION_KEY`, `ADMIN_USERNAME`, `ADMIN_PASSWORD_HASH`, `ADMIN_DEFAULT_TENANT`,
+`CORS_ORIGINS`, `AUTO_MIGRATE`, `LLM_PROVIDER_PROFILE`, `CODEX_BINARY`, `CODEX_HOME`, `HF_HOME`.
 
-On Windows each Codex child starts in a new process group and is immediately assigned to an
-unnamed Job Object configured with `JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE`. The job is terminated
-and its handle closed after success, failure or timeout, ending assigned descendants even if
-the leader already exited. Failure to set up isolation refuses the call; an unassigned child
-is killed directly. Other Codex sessions and Ollama are never targeted. The child receives
-only `PATH`, `SystemRoot`, `CODEX_HOME`, `TEMP` and `TMP` when present.
+The Mac's production secret, bcrypt, index and streaming SHA-256 checks are reused.
+JWT/session secrets need at least 32 characters; encryption needs 16. Development defaults
+are refused; an absent/empty session secret falls back to JWT. Required keys are the Mac's
+required deployment keys plus `HF_HOME`; Codex paths are required for `codex-only` and
+`codex-answer`, and checked when supplied for `local-first`. Pre-flight checks the free
+port, PostgreSQL `SELECT 1` (up to 60 seconds) and `Settings.validate()`. With `codex-only`,
+neither pre-flight nor settings validation probes Ollama. One uvicorn worker listens on
+`127.0.0.1:8002`; its exit code is forwarded. Exit 2 is a configuration refusal; exit 1 is
+a dependency pre-flight failure. Only the failed check name is logged, never env values or
+exception payloads. The API inherits `USERPROFILE` for Chroma's `Path.home()`.
+
+Quality/model/timeout settings keep code defaults; inherited tuning, shell env files and
+`.ask100-runtime/env.json` are discarded. `RAG_ENV` keeps its code default but production
+secret rules apply. `RAG_SERVICE_MEMORY_POLICY` and `RAG_SERVICE_OLLAMA_LOG` are refused.
+The switch accepts `local-first|codex-answer|codex-only`; omission means `local-first`,
+but this laptop must use `codex-only`.
+
+Task 18: an error-free Codex answer with retrieval context and no knowledge gap routes
+`auto` and the chat offers **«Передать оператору»**. Codex outage, no context, fewer than
+two documents, a knowledge gap or an error routes `human`; `/api/ask` opens a ticket.
+Response safety keeps its veto. There is no retry or fallback model. `quality_score` is
+null and the chat shows no quality badge. Online quality judges, claim-verification
+telemetry, suggestions and continuation self-evaluation are disabled. Document grading
+uses one batch and fails closed if it cannot grade the batch.
+
+`answer_provider=codex` / `answer_model=gpt-6-astra` identify the subscription answer.
+The final answer uses `xhigh` and the stage 5v wrapper; auxiliaries use `low` with 60-second
+timeouts. Timeout, login/connectivity/usage failure, invalid stream, tool/warning item,
+invalid binary or Job Object failure rejects the result: no partial answer escapes.
+Failed answers have null provider/model. The 300-second outage cache prevents repeated
+answer attempts; auxiliary failures are cached separately from the longer answer target.
+After expiry a later request may try again. `codex-answer` retains local auxiliaries/4B
+fallback and `local-first` remains the default; neither is the laptop profile.
+
+Each Windows Codex child starts in a new process group and is assigned to an unnamed Job
+Object with `JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE`. Success, failure and timeout terminate
+the job and close its handle, ending assigned descendants even after the leader exits.
+Isolation failure refuses the call; an unassigned child is killed directly. Other Codex
+sessions and Ollama are never targeted. The child receives only `PATH`, `SystemRoot`,
+`CODEX_HOME`, `TEMP` and `TMP` when present.
+
+Known task 18 limitation: `UnverifiedAutoResponse` in `monitoring/alert_rules.yml` would
+count every codex-only auto answer as unverified. No Prometheus runs on the laptop;
+the monitoring rule has not been changed.
 
 ## Optional autostart at logon
 
 After a successful manual start, the owner may create a Task Scheduler task for her own
-Windows account with **At log on** and **Run only when user is logged on**. Use the venv's
-`python.exe` as the program, `-I` followed by the quoted launcher and env-file paths as the
-arguments, and `D:/RAG_new_prod/app` as **Start in**. Select **Do not start a new instance**;
-the launcher also refuses an occupied port. Start the detached PostgreSQL cluster before this task,
-or configure a logon delay and a bounded restart policy for dependency startup failures.
-Do not run it as SYSTEM: the owner profile holds the Codex login.
-
-The launcher creates no scheduled task, service, firewall rule or power policy. Task Scheduler
-autostart is an optional owner action; it does not keep a sleeping or powered-off laptop online.
+account: **At log on**, **Run only when user is logged on**. Program: venv `python.exe`;
+arguments: `-I`, quoted `start.py` and optional env-file paths; **Start in**:
+`D:/RAG_new_prod/app`. Choose **Do not start a new instance**; the launcher refuses an
+occupied port. Start detached PostgreSQL first, or use a logon delay and bounded restart
+policy for dependency failures. Do not run as SYSTEM: the owner holds the Codex login.
+No helper creates a scheduled task, service, firewall rule or power policy. Autostart is
+optional and cannot keep a sleeping or powered-off laptop online.

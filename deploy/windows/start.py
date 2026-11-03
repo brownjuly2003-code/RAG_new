@@ -18,7 +18,8 @@ from deploy.macos import start as common  # noqa: E402
 
 Stop = common.Stop
 PY = sys.executable
-DATA = Path("D:/RAG_new_prod")
+# The release lives at <product root>/app; runtime data stays beside it.
+DATA = ROOT.parent
 DEPLOYMENT_KEYS = common.DEPLOYMENT_KEYS | frozenset({"HF_HOME"})
 WINDOWS_KEYS = frozenset({"LLM_PROVIDER_PROFILE", "CODEX_BINARY", "CODEX_HOME", "HF_HOME"})
 REFUSE = 2
@@ -35,13 +36,22 @@ def service_env_path(args: list[str]) -> Path:
     return Path(local) / "rag-new" / "chat-service.env"
 
 
-def read_service_env(path: Path) -> dict[str, str]:
-    """Strict UTF-8/LF data, never shell syntax; Windows access is controlled by ACLs."""
+def check_env_path(path: Path) -> None:
+    """Shared by the launcher and env writer, including before the file exists."""
     if not path.is_absolute() or path.resolve().is_relative_to(ROOT.resolve()):
         raise Stop(REFUSE, "env file must be absolute and outside the checkout")
+
+
+def read_service_env(path: Path) -> dict[str, str]:
+    """Strict UTF-8/LF data, never shell syntax; Windows access is controlled by ACLs."""
+    check_env_path(path)
     if not path.is_file():
         raise Stop(REFUSE, "env file is missing")
-    raw = path.read_bytes()
+    return parse_service_env(path.read_bytes())
+
+
+def parse_service_env(raw: bytes) -> dict[str, str]:
+    """Validate the same bytes before writing them and when launching the API."""
     if b"\r" in raw:
         raise Stop(REFUSE, "env file must use LF line endings")
     try:
@@ -125,8 +135,11 @@ def wait_for_postgres(url_text: str) -> None:
 
 
 def main(args: list[str] | None = None) -> int:
-    stage = "env file"
+    stage = "release checkout (expected <product root>/app layout)"
     try:
+        if ROOT.name != "app":
+            raise Stop(REFUSE, stage)
+        stage = "env file"
         if sys.platform != "win32":
             raise Stop(REFUSE, "this launcher requires Windows")
         deployment = read_service_env(service_env_path(sys.argv[1:] if args is None else args))
