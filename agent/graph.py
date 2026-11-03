@@ -747,7 +747,7 @@ def _is_knowledge_gap(state: GraphState) -> bool:
         return True
 
     factuality = state.get("factuality_score")
-    if factuality is not None and factuality < 50:
+    if not is_codex_only(get_settings()) and factuality is not None and factuality < 50:
         return True
 
     answer = str(state.get("answer") or "").lower()
@@ -2627,12 +2627,18 @@ def make_evaluate_node(
         trace_id = state.get("trace_id", "unknown-trace-id")
         complexity = state.get("complexity", "unknown")
         if is_codex_only(get_settings()):
-            # No quality model is measured; preserve the conservative human route.
+            # Disabled by profile, not a judge outage or a measured zero score.
             new_state = cast(
                 GraphState,
                 {
                     **state,
-                    **judge_fail_closed_fields(reason="codex_only_disabled", status="unavailable"),
+                    "quality_score": None,
+                    "quality_source": "unmeasured",
+                    "relevance_score": 0.0,
+                    "factuality_score": 0,
+                    "grounding_status": "not_verified",
+                    "judge_status": "disabled",
+                    "judge_reason": "codex_only_disabled",
                     "judge_independent": False,
                 },
             )
@@ -2922,9 +2928,26 @@ def make_route_or_retry_node(
 
     Floors prefer plan §6.4 calibration artifact via resolve_routing_thresholds
     when explicit min_factuality is omitted.
+
+    Codex-only has no judge: deliver Codex answers with context and no gap,
+    otherwise hand over to a human. Never retry an unmeasured answer.
     """
 
     def node(state: GraphState) -> GraphState:
+        from config.settings import get_settings
+
+        if is_codex_only(get_settings()):
+            from agent.grounding import has_retrieval_context
+
+            can_answer = (
+                not state.get("error")
+                and state.get("answer_provider") == "codex"
+                and has_retrieval_context(state)
+                and not state.get("knowledge_gap")
+            )
+            codex_state: GraphState = {**state, "route": "auto" if can_answer else "human"}
+            log_step(state.get("trace_id", "unknown-trace-id"), "route_or_retry", codex_state)
+            return codex_state
         if state.get("error"):
             return state
         trace_id = state.get("trace_id", "unknown-trace-id")
@@ -2934,8 +2957,6 @@ def make_route_or_retry_node(
                 DEFAULT_MIN_FACTUALITY_FOR_AUTO,
                 grounding_allows_auto,
             )
-            from config.settings import get_settings
-
             q = state.get("quality_score")
             r = state.get("relevance_score")
             iteration = state.get("iteration", 0)

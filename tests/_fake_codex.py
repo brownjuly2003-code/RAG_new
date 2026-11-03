@@ -28,14 +28,24 @@ class FakeCodex:
         self.binary.chmod(0o700)
         self.configure()
 
-    def configure(self, *, fixture="ok", events=None, exit_code=0, delay=0, child=False):
+    def configure(
+        self, *, fixture="ok", events=None, exit_code=0, delay=0, child=False, prompt_events=None
+    ):
         if events is None:
             events = [
                 json.loads(line)
                 for line in (FIXTURES / f"{fixture}.jsonl").read_text(encoding="utf-8").splitlines()
             ]
         (self.root / "scenario.json").write_text(
-            json.dumps({"events": events, "exit": exit_code, "delay": delay, "child": child}),
+            json.dumps(
+                {
+                    "events": events,
+                    "exit": exit_code,
+                    "delay": delay,
+                    "child": child,
+                    "prompt_events": prompt_events or {},
+                }
+            ),
             encoding="utf-8",
         )
 

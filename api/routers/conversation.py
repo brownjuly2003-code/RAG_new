@@ -1075,7 +1075,7 @@ class AskResponse(BaseModel):
     answer: str
     answer_provider: str | None = None
     answer_model: str | None = None
-    quality_score: int = 50
+    quality_score: int | None = 50
     route: str = "auto"
     sources: list[SourceInfo] = Field(default_factory=list)
     citations: list[Citation] = Field(default_factory=list)
@@ -1487,9 +1487,15 @@ async def _answer_ask(
                     session["history"].append({"role": "user", "content": question})
                     session["history"].append({"role": "assistant", "content": answer})
 
+                if is_codex_only(settings):
+                    quality_source = str(cached_payload.get("quality_source") or "llm")
                 response = AskResponse(
                     answer=answer,
-                    quality_score=int(cached_payload.get("quality_score") or 50),
+                    quality_score=(
+                        None
+                        if is_codex_only(settings) and quality_source == "unmeasured"
+                        else int(cached_payload.get("quality_score") or 50)
+                    ),
                     answer_provider=cached_payload.get("answer_provider"),
                     answer_model=cached_payload.get("answer_model"),
                     route=str(cached_payload.get("route") or "auto"),
@@ -1663,7 +1669,11 @@ async def _answer_ask(
                         answer=answer,
                         answer_provider=result.get("answer_provider"),
                         answer_model=result.get("answer_model"),
-                        quality_score=quality,
+                        quality_score=(
+                            None
+                            if is_codex_only(settings) and quality_source == "unmeasured"
+                            else quality
+                        ),
                         route=route,
                         sources=sources_list,
                         citations=citations_list,
@@ -1689,6 +1699,11 @@ async def _answer_ask(
                                 "answer_provider": response.answer_provider,
                                 "answer_model": response.answer_model,
                                 "quality_score": response.quality_score,
+                                **(
+                                    {"quality_source": quality_source}
+                                    if is_codex_only(settings)
+                                    else {}
+                                ),
                                 "route": response.route,
                                 "sources": [source.model_dump() for source in response.sources],
                                 "suggested_questions": response.suggested_questions,
@@ -1784,6 +1799,8 @@ async def _answer_ask(
         if projected_response is not response:
             response = projected_response
             quality_source = "unmeasured"
+            if is_codex_only(settings):
+                response.quality_score = None
             _replace_latest_session_answer(session, question=question, answer=response.answer)
 
     # A durable turn owns its own write: `commit_turn` puts the pair and the
@@ -2339,7 +2356,11 @@ async def ask_stream(
                             "answer_model": graph_result.get("answer_model"),
                             "token_source": token_source_final,
                             "graph_nodes": graph_nodes,
-                            "quality_score": quality,
+                            "quality_score": (
+                                None
+                                if is_codex_only(settings) and quality_source == "unmeasured"
+                                else quality
+                            ),
                             "quality_source": quality_source,
                             "route": route,
                             "session_id": session_id,
@@ -2985,7 +3006,11 @@ async def ask_stream(
                             "answer": answer,
                             "answer_provider": (result or {}).get("answer_provider"),
                             "answer_model": (result or {}).get("answer_model"),
-                            "quality_score": quality,
+                            "quality_score": (
+                                None
+                                if is_codex_only(settings) and quality_source == "unmeasured"
+                                else quality
+                            ),
                             "quality_source": quality_source,
                             "route": route,
                             "session_id": session_id,

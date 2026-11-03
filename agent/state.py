@@ -89,7 +89,7 @@ class GraphState(TypedDict, total=False):
     # Provenance of quality_score: "llm" — real self-evaluation; "fixed" —
     # legacy hardcoded constants (must not unlock auto after plan §6.1);
     # "heuristic" — streaming length check; "unmeasured" — agentic/tool path
-    # without evaluate/grounding (fail-closed, never auto).
+    # without evaluate/grounding; codex-only can deliver unmeasured auto answers.
     quality_source: Optional[Literal["llm", "fixed", "heuristic", "unmeasured"]]
     # Agentic §6.5 measure marker when KB path ran (observability only).
     agentic_measure: Optional[str]
@@ -177,7 +177,7 @@ class GraphState(TypedDict, total=False):
     safety_action: Optional[Literal["allow", "redact", "refuse", "human"]]
     safety_reasons: list[str]
     # Independent judge (plan §6.3).
-    judge_status: Optional[Literal["ok", "unavailable", "error", "parse_failure"]]
+    judge_status: Optional[Literal["ok", "disabled", "unavailable", "error", "parse_failure"]]
     judge_reason: Optional[str]
     judge_independent: bool
 

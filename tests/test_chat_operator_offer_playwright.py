@@ -111,8 +111,10 @@ def chat_stand(
     def start(
         request_timeout_sec: float,
         reply: Callable[[dict[str, Any]], _fake_ollama.Reply] = _reply,
+        *,
+        codex: Any = None,
     ) -> SimpleNamespace:
-        fake = stack.enter_context(_fake_ollama.running(reply))
+        fake = codex if codex is not None else stack.enter_context(_fake_ollama.running(reply))
         data_dir = tmp_path / "chat-e2e-data"
         data_dir.mkdir()
         monkeypatch.setenv("RAG_ENV", "development")
@@ -129,11 +131,22 @@ def chat_stand(
         monkeypatch.setenv("REQUEST_TIMEOUT_SEC", str(request_timeout_sec))
         for name in ("OLLAMA_REQUEST_TIMEOUT_SEC", "STREAMING_TIMEOUT_SEC", *PATH_ENV):
             monkeypatch.delenv(name, raising=False)
-        monkeypatch.setenv("OLLAMA_HOST", fake.url)
+        if codex is None:
+            monkeypatch.setenv("OLLAMA_HOST", fake.url)
         settings_mod._settings = None
         settings = Settings()
         settings.tracing_db_path = tmp_path / "traces.db"
-        settings.ollama_base_url = fake.url
+        if codex is None:
+            settings.ollama_base_url = fake.url
+        else:
+            settings.llm_provider_profile = "codex-only"
+            settings.codex_binary = str(codex.binary)
+            settings.codex_home = str(codex.root)
+            settings.agentic_mode = False
+            settings.model_routing_enabled = False
+            settings.hyde = False
+            settings.llm_cache_enabled = False
+            settings.online_evaluators_enabled = False
         monkeypatch.setattr(settings_mod, "get_settings", lambda: settings)
         monkeypatch.setattr(graph, "get_settings", lambda: settings)
         monkeypatch.setattr(api_app, "get_settings", lambda: settings)
@@ -172,6 +185,8 @@ def chat_stand(
         monkeypatch.setattr(api_app, "_get_or_create_session", session_factory)
         monkeypatch.setattr(api_app, "log_audit", no_postgres)
         monkeypatch.setattr(conversation, "_persist_ask_messages", no_postgres)
+        if codex is not None:
+            monkeypatch.setattr(conversation, "_admit_durable_turn", no_postgres)
         # The durable ticket store has its own tests; here it records the request.
         monkeypatch.setattr("services.escalation.create_escalation", record_escalation)
         monkeypatch.setattr(api_app, "initialize_vector_store", lambda: None)
