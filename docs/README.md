@@ -208,9 +208,11 @@ P2 reference samples ([Astra](specs/p2-astra-reference-sample.md),
 
 - [`evidence/`](evidence/) — one write-up per measured slice; the register with provenance is
   [`EVIDENCE_INDEX.md`](../EVIDENCE_INDEX.md). The records themselves are in `../reports/`.
-- [Latest handoff: stage 5 and V6 recorded (V6 not adopted, harm), RAG_new published](operations/session-handoff-2026-11-02-v6-record-publication.md)
-  — V6's aircargo attempts, the CI fixes, ci_local's defects met on the way, the scans' triage; the
-  procedure is the [stage 8 runbook](operations/stage8-publication-runbook.md). Before it:
+- [Latest handoff: stage 5в answered whole, two keys graded, aircargo's judging paused](operations/session-handoff-2026-11-03-stage5v-arm-judge.md)
+  — the generator's ceiling: the arm's 300 answers, the cleanup amendment, the judge's state and how to
+  resume it, the outcome table. Before it:
+  [stage 5 and V6 recorded (V6 not adopted, harm), RAG_new published](operations/session-handoff-2026-11-02-v6-record-publication.md)
+  (procedure: the [stage 8 runbook](operations/stage8-publication-runbook.md)),
   [stage 5 read (holds), her «Да» to publish RAG_new with its history, V6 running](operations/session-handoff-2026-11-02-stage5-record-v6-judge.md),
   [stage 5's judge through ConditionalQA's M2, V6's spec re-read](operations/session-handoff-2026-11-01-stage5-judge-v6-fixes.md),
   [items 6 and 7 read, stage 7 closed, stage 5 registered and running](operations/session-handoff-2026-11-01-stage5-running.md),
