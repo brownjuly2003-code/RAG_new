@@ -1,0 +1,2803 @@
+{
+  "arm": {
+    "attempts": 300,
+    "redos": 0,
+    "counted_out": 0,
+    "infrastructure_failures": 0,
+    "infrastructure_streak": 0,
+    "language_mismatches": 2,
+    "raw_output_mismatches": 0,
+    "agents_hashes": [
+      "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546"
+    ],
+    "processes_stopped": 1192,
+    "processes_exited": 721,
+    "task_seconds": {
+      "n": 300,
+      "median": 25.82850000000326,
+      "p90": 34.703000000008615
+    },
+    "tokens": {
+      "input_tokens": 5434591,
+      "cached_input_tokens": 2814208,
+      "output_tokens": 125074,
+      "reasoning_output_tokens": 85302,
+      "total_tokens": 5559665
+    },
+    "stops": [],
+    "pilot_passed": true,
+    "forecast": {
+      "task": 60,
+      "task_stop": 180,
+      "series_stop": 50400
+    },
+    "chunks": [
+      {
+        "started": "2026-11-02T23:33:04.884123+00:00",
+        "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+        "changed": false
+      },
+      {
+        "started": "2026-11-02T23:33:38.061984+00:00",
+        "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+        "changed": false
+      },
+      {
+        "started": "2026-11-02T23:34:46.658668+00:00",
+        "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+        "changed": false
+      },
+      {
+        "started": "2026-11-02T23:37:04.283582+00:00",
+        "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+        "changed": false
+      },
+      {
+        "started": "2026-11-02T23:44:46.239243+00:00",
+        "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+        "changed": false
+      },
+      {
+        "started": "2026-11-02T23:59:09.308428+00:00",
+        "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+        "changed": false
+      },
+      {
+        "started": "2026-11-03T00:13:57.543467+00:00",
+        "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+        "changed": false
+      },
+      {
+        "started": "2026-11-03T00:28:28.783579+00:00",
+        "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+        "changed": false
+      },
+      {
+        "started": "2026-11-03T04:12:10.961660+00:00",
+        "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+        "changed": false
+      },
+      {
+        "started": "2026-11-03T04:26:34.958373+00:00",
+        "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+        "changed": false
+      },
+      {
+        "started": "2026-11-03T04:41:02.622687+00:00",
+        "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+        "changed": false
+      },
+      {
+        "started": "2026-11-03T04:55:07.972778+00:00",
+        "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+        "changed": false
+      },
+      {
+        "started": "2026-11-03T08:35:56.474645+00:00",
+        "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+        "changed": false
+      },
+      {
+        "started": "2026-11-03T08:50:08.239501+00:00",
+        "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+        "changed": false
+      },
+      {
+        "started": "2026-11-03T09:04:18.778378+00:00",
+        "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+        "changed": false
+      },
+      {
+        "started": "2026-11-03T09:18:39.078123+00:00",
+        "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+        "changed": false
+      }
+    ],
+    "probe": {
+      "passed": true,
+      "attempts": [
+        {
+          "id": "fa939dc5c31e4a7baa9b8ca23bcaca0d",
+          "kind": "accepted",
+          "reason": "route_pass",
+          "elapsed_s": 13.53200000000652,
+          "task_forecast": 180,
+          "task_stop": 540,
+          "timeout": false,
+          "processes_stopped": 4,
+          "processes_exited": 3,
+          "job_id": "task-mvzw9uyd-8rd7ca",
+          "thread_id": "01a19e9c-1004-7f71-ac9e-a9f13df3b5fa",
+          "rollout_file": "rollout-2026-11-02T18-33-10-01a19e9c-1004-7f71-ac9e-a9f13df3b5fa.jsonl",
+          "rollout_sha256": "bf460d4af7e7d0e9484002dc12ec20fe342d695c204ced5fac5b1add7899246c",
+          "raw_output_sha256": "565339bc4d33d72817b583024112eb7f5cdf3e5eef0252d6ec1b9c9a94e12bb3",
+          "raw_output_mismatch": false,
+          "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+          "request_sha256": "b4d50a67a784a449e0c763c401bb9f95fb37804dff5765d8b4f95fd202eb7d77",
+          "saved_prompt_sha256": "b4d50a67a784a449e0c763c401bb9f95fb37804dff5765d8b4f95fd202eb7d77",
+          "postpilot": false,
+          "gate": {
+            "passed": true,
+            "reasons": [],
+            "tokens": {
+              "input_tokens": 16587,
+              "cached_input_tokens": 0,
+              "output_tokens": 5,
+              "reasoning_output_tokens": 0,
+              "total_tokens": 16592
+            },
+            "timing": {
+              "duration_ms": 6956,
+              "time_to_first_token_ms": 6808
+            }
+          },
+          "answer_sha256": "565339bc4d33d72817b583024112eb7f5cdf3e5eef0252d6ec1b9c9a94e12bb3"
+        }
+      ]
+    }
+  },
+  "plans": {
+    "ceiling-wixqa-judge-m1": {
+      "status": "counted",
+      "retest": {
+        "planned": 15,
+        "scale": [
+          "bad",
+          "partial_ok",
+          "good"
+        ],
+        "pairs": 15,
+        "pairs_list": [
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            0,
+            0
+          ]
+        ],
+        "pairs_ids": [
+          "1d695eff92274338",
+          "c4a5af56b5b8a1b4",
+          "a7139eff52cdd929",
+          "74e26aa530f63953",
+          "0623d49e09367998",
+          "803c775a4d022b71",
+          "9268de5e67ed9821",
+          "d794b969eb602a74",
+          "af7ca5802b41cce0",
+          "e9ed46bd4cfd43dd",
+          "40fb0f8c5165c872",
+          "2025aa8e74cf1b90",
+          "1bd69fe5a40cf4f0",
+          "75ea09db97403fea",
+          "9dcc6d81142f5f82"
+        ],
+        "agree": 15,
+        "two_steps_apart": 0,
+        "quadratic_kappa": 1.0,
+        "ci95": [
+          1.0,
+          1.0
+        ],
+        "resamples_undefined": 1194,
+        "passes_by_kappa": true,
+        "passes_by_agreement": true,
+        "enough_pairs": true,
+        "passed": true,
+        "field_agreement": {
+          "answers_question": {
+            "agree": 15,
+            "of": 15
+          },
+          "context_has_answer": {
+            "agree": 15,
+            "of": 15
+          },
+          "defect": {
+            "agree": 15,
+            "of": 15
+          },
+          "reference_counts": {
+            "agree": 0,
+            "of": 0
+          }
+        }
+      },
+      "missing": []
+    },
+    "ceiling-bridge-wixqa": {
+      "status": "counted",
+      "retest": {
+        "planned": 15,
+        "scale": [
+          "bad",
+          "partial_ok",
+          "good"
+        ],
+        "pairs": 15,
+        "pairs_list": [
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            0
+          ]
+        ],
+        "pairs_ids": [
+          "1d695eff92274338",
+          "c4a5af56b5b8a1b4",
+          "a7139eff52cdd929",
+          "74e26aa530f63953",
+          "0623d49e09367998",
+          "803c775a4d022b71",
+          "9268de5e67ed9821",
+          "d794b969eb602a74",
+          "af7ca5802b41cce0",
+          "e9ed46bd4cfd43dd",
+          "40fb0f8c5165c872",
+          "2025aa8e74cf1b90",
+          "1bd69fe5a40cf4f0",
+          "75ea09db97403fea",
+          "9dcc6d81142f5f82"
+        ],
+        "agree": 13,
+        "two_steps_apart": 0,
+        "quadratic_kappa": 0.9231,
+        "ci95": [
+          0.7934,
+          1.0
+        ],
+        "resamples_undefined": 8,
+        "passes_by_kappa": true,
+        "passes_by_agreement": true,
+        "enough_pairs": true,
+        "passed": true,
+        "field_agreement": {
+          "answers_question": {
+            "agree": 12,
+            "of": 15
+          },
+          "context_has_answer": {
+            "agree": 14,
+            "of": 15
+          },
+          "defect": {
+            "agree": 15,
+            "of": 15
+          },
+          "reference_counts": {
+            "agree": 0,
+            "of": 0
+          }
+        }
+      }
+    },
+    "ceiling-wixqa-judge-m2": {
+      "status": "counted",
+      "retest": {
+        "planned": 15,
+        "scale": [
+          "bad",
+          "partial_ok",
+          "good"
+        ],
+        "pairs": 15,
+        "pairs_list": [
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            0,
+            0
+          ]
+        ],
+        "pairs_ids": [
+          "1d695eff92274338",
+          "c4a5af56b5b8a1b4",
+          "a7139eff52cdd929",
+          "74e26aa530f63953",
+          "0623d49e09367998",
+          "803c775a4d022b71",
+          "9268de5e67ed9821",
+          "d794b969eb602a74",
+          "af7ca5802b41cce0",
+          "e9ed46bd4cfd43dd",
+          "40fb0f8c5165c872",
+          "2025aa8e74cf1b90",
+          "1bd69fe5a40cf4f0",
+          "75ea09db97403fea",
+          "9dcc6d81142f5f82"
+        ],
+        "agree": 15,
+        "two_steps_apart": 0,
+        "quadratic_kappa": 1.0,
+        "ci95": [
+          1.0,
+          1.0
+        ],
+        "resamples_undefined": 3509,
+        "passes_by_kappa": true,
+        "passes_by_agreement": true,
+        "enough_pairs": true,
+        "passed": true,
+        "field_agreement": {
+          "answers_question": {
+            "agree": 15,
+            "of": 15
+          },
+          "context_has_answer": {
+            "agree": 15,
+            "of": 15
+          },
+          "defect": {
+            "agree": 15,
+            "of": 15
+          },
+          "reference_counts": {
+            "agree": 15,
+            "of": 15
+          }
+        }
+      },
+      "missing": []
+    },
+    "ceiling-conditionalqa-judge-m1": {
+      "status": "counted",
+      "retest": {
+        "planned": 15,
+        "scale": [
+          "bad",
+          "partial_ok",
+          "good"
+        ],
+        "pairs": 15,
+        "pairs_list": [
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ]
+        ],
+        "pairs_ids": [
+          "693118126ba6e326",
+          "139cc588039f75a7",
+          "bd617607d78c25d2",
+          "407ce6730a93eceb",
+          "65ccd4d1fa0b7fbb",
+          "47daab6830df7dae",
+          "37e93ed674eef5d8",
+          "84a93e8b64623d54",
+          "af6ae1fc745db645",
+          "be62c0f2fd379f72",
+          "a1e470cab547301b",
+          "b2710e1f7e44b2d6",
+          "1c6451acc95c2b9c",
+          "933d51f92af2bc43",
+          "bbe582125cbff301"
+        ],
+        "agree": 15,
+        "two_steps_apart": 0,
+        "quadratic_kappa": 1.0,
+        "ci95": [
+          1.0,
+          1.0
+        ],
+        "resamples_undefined": 3619,
+        "passes_by_kappa": true,
+        "passes_by_agreement": true,
+        "enough_pairs": true,
+        "passed": true,
+        "field_agreement": {
+          "answers_question": {
+            "agree": 15,
+            "of": 15
+          },
+          "context_has_answer": {
+            "agree": 15,
+            "of": 15
+          },
+          "defect": {
+            "agree": 15,
+            "of": 15
+          },
+          "reference_counts": {
+            "agree": 0,
+            "of": 0
+          }
+        }
+      },
+      "missing": []
+    },
+    "ceiling-bridge-conditionalqa": {
+      "status": "counted",
+      "retest": {
+        "planned": 15,
+        "scale": [
+          "bad",
+          "partial_ok",
+          "good"
+        ],
+        "pairs": 15,
+        "pairs_list": [
+          [
+            0,
+            0
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            2,
+            2
+          ]
+        ],
+        "pairs_ids": [
+          "693118126ba6e326",
+          "139cc588039f75a7",
+          "bd617607d78c25d2",
+          "407ce6730a93eceb",
+          "65ccd4d1fa0b7fbb",
+          "47daab6830df7dae",
+          "37e93ed674eef5d8",
+          "84a93e8b64623d54",
+          "af6ae1fc745db645",
+          "be62c0f2fd379f72",
+          "a1e470cab547301b",
+          "b2710e1f7e44b2d6",
+          "1c6451acc95c2b9c",
+          "933d51f92af2bc43",
+          "bbe582125cbff301"
+        ],
+        "agree": 15,
+        "two_steps_apart": 0,
+        "quadratic_kappa": 1.0,
+        "ci95": [
+          1.0,
+          1.0
+        ],
+        "resamples_undefined": 0,
+        "passes_by_kappa": true,
+        "passes_by_agreement": true,
+        "enough_pairs": true,
+        "passed": true,
+        "field_agreement": {
+          "answers_question": {
+            "agree": 13,
+            "of": 15
+          },
+          "context_has_answer": {
+            "agree": 15,
+            "of": 15
+          },
+          "defect": {
+            "agree": 15,
+            "of": 15
+          },
+          "reference_counts": {
+            "agree": 0,
+            "of": 0
+          }
+        }
+      }
+    },
+    "ceiling-conditionalqa-judge-m2": {
+      "status": "counted",
+      "retest": {
+        "planned": 15,
+        "scale": [
+          "bad",
+          "partial_ok",
+          "good"
+        ],
+        "pairs": 15,
+        "pairs_list": [
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            1
+          ],
+          [
+            2,
+            1
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ]
+        ],
+        "pairs_ids": [
+          "693118126ba6e326",
+          "139cc588039f75a7",
+          "bd617607d78c25d2",
+          "407ce6730a93eceb",
+          "65ccd4d1fa0b7fbb",
+          "47daab6830df7dae",
+          "37e93ed674eef5d8",
+          "84a93e8b64623d54",
+          "af6ae1fc745db645",
+          "be62c0f2fd379f72",
+          "a1e470cab547301b",
+          "b2710e1f7e44b2d6",
+          "1c6451acc95c2b9c",
+          "933d51f92af2bc43",
+          "bbe582125cbff301"
+        ],
+        "agree": 13,
+        "two_steps_apart": 0,
+        "quadratic_kappa": 0.5946,
+        "ci95": [
+          0.0,
+          1.0
+        ],
+        "resamples_undefined": 96,
+        "passes_by_kappa": false,
+        "passes_by_agreement": true,
+        "enough_pairs": true,
+        "passed": true,
+        "field_agreement": {
+          "answers_question": {
+            "agree": 13,
+            "of": 15
+          },
+          "context_has_answer": {
+            "agree": 15,
+            "of": 15
+          },
+          "defect": {
+            "agree": 15,
+            "of": 15
+          },
+          "reference_counts": {
+            "agree": 11,
+            "of": 11
+          }
+        }
+      },
+      "missing": []
+    },
+    "ceiling-aircargo-judge-m1": {
+      "status": "counted",
+      "retest": {
+        "planned": 15,
+        "scale": [
+          "bad",
+          "partial_ok",
+          "good"
+        ],
+        "pairs": 15,
+        "pairs_list": [
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ]
+        ],
+        "pairs_ids": [
+          "8d4dd4f44b430bb5",
+          "b1140c361d2484b4",
+          "cf95feb567203004",
+          "5c134cd850ae48d9",
+          "85791b42dca19aca",
+          "35fcdb8cecf0aaab",
+          "7ae5a5706aa275e3",
+          "c0b51e6a18741a3c",
+          "794b79fdf9fbde9f",
+          "340747f9395232c9",
+          "fc2a2db8b29f2f3c",
+          "ec96bbf66bf91b94",
+          "cbdd3fdaf4a076a3",
+          "e351d37b3c9e4748",
+          "65aeb6956a445ab4"
+        ],
+        "agree": 15,
+        "two_steps_apart": 0,
+        "quadratic_kappa": null,
+        "ci95": null,
+        "resamples_undefined": 10000,
+        "passes_by_kappa": false,
+        "passes_by_agreement": true,
+        "enough_pairs": true,
+        "passed": true,
+        "field_agreement": {
+          "answers_question": {
+            "agree": 15,
+            "of": 15
+          },
+          "context_has_answer": {
+            "agree": 15,
+            "of": 15
+          },
+          "defect": {
+            "agree": 15,
+            "of": 15
+          },
+          "reference_counts": {
+            "agree": 0,
+            "of": 0
+          }
+        }
+      },
+      "missing": []
+    },
+    "ceiling-bridge-aircargo": {
+      "status": "counted",
+      "retest": {
+        "planned": 15,
+        "scale": [
+          "bad",
+          "partial_ok",
+          "good"
+        ],
+        "pairs": 15,
+        "pairs_list": [
+          [
+            1,
+            1
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            2
+          ]
+        ],
+        "pairs_ids": [
+          "8d4dd4f44b430bb5",
+          "b1140c361d2484b4",
+          "cf95feb567203004",
+          "5c134cd850ae48d9",
+          "85791b42dca19aca",
+          "35fcdb8cecf0aaab",
+          "7ae5a5706aa275e3",
+          "c0b51e6a18741a3c",
+          "794b79fdf9fbde9f",
+          "340747f9395232c9",
+          "fc2a2db8b29f2f3c",
+          "ec96bbf66bf91b94",
+          "cbdd3fdaf4a076a3",
+          "e351d37b3c9e4748",
+          "65aeb6956a445ab4"
+        ],
+        "agree": 15,
+        "two_steps_apart": 0,
+        "quadratic_kappa": 1.0,
+        "ci95": [
+          1.0,
+          1.0
+        ],
+        "resamples_undefined": 25,
+        "passes_by_kappa": true,
+        "passes_by_agreement": true,
+        "enough_pairs": true,
+        "passed": true,
+        "field_agreement": {
+          "answers_question": {
+            "agree": 15,
+            "of": 15
+          },
+          "context_has_answer": {
+            "agree": 15,
+            "of": 15
+          },
+          "defect": {
+            "agree": 15,
+            "of": 15
+          },
+          "reference_counts": {
+            "agree": 0,
+            "of": 0
+          }
+        }
+      }
+    }
+  },
+  "input_sha256": {
+    "reports/stage4-final/stage5/2057ad0/record.json": "6ae0d6e1a48b468ceb6fc5cade58bd961a41ea5e8e1c379467ce9dde354f3c1b",
+    "reports/stage4-final/stage5/2057ad0/stage5-wixqa-m1.json": "4b7a0cd04ca057f442e7416c5dc8f377cc8e54a8b471e115e99741df20a629a8",
+    "reports/stage4-final/stage5/2057ad0/stage5-wixqa-m1.cases.jsonl": "40888f0500e1be401bbf28ce1d3776bb06bb1ba066d5a98ea36e304336d9f71e",
+    "reports/stage4-final/stage5/2057ad0/stage5-wixqa-m2.json": "b5f0611281d4a3cf486ab17d51d2bfa5c1c397f8a3119d1868cd8d4fd968028d",
+    "reports/stage4-final/stage5/2057ad0/stage5-wixqa-m2.cases.jsonl": "d30f87c84d53c662cbbe18b338891df13a8d1de4358e7787448d7e5d3168ac2f",
+    "reports/stage4-final/stage5/2057ad0/stage5-conditionalqa-m1.json": "2d4d19f0a98adddc55942a024161acf49ada34407fde0e511887b33f3906191a",
+    "reports/stage4-final/stage5/2057ad0/stage5-conditionalqa-m1.cases.jsonl": "c51985283b4b1d4cc4a5acec55b4821d679432c0f40e3baaed4b8d28b80550d2",
+    "reports/stage4-final/stage5/2057ad0/stage5-conditionalqa-m2.json": "093df6572eb6a1046b83f2fbab5216b852f00d60038127bf9a1daa787fcf2890",
+    "reports/stage4-final/stage5/2057ad0/stage5-conditionalqa-m2.cases.jsonl": "c32ad3b9a1d515aba2c11dc8fa714d9d810856860cc180b9acc0adc1f31ddcd9",
+    "reports/stage4-final/138f3b3/final-aircargo-m1.json": "b652921bd3a988e0bb9cc3bef4ec52f07043f543194a8c52f6694f2471628c83",
+    "reports/stage4-final/138f3b3/final-aircargo-m1.cases.jsonl": "232d605eee10b65320f3a6a52a5dd3ecd3fb297d4c442b639329d1b8383e779a",
+    "ceiling-wixqa-judge-m1.json": "7601f1aabe24dea7921601a3208da5694236a3f5b58e7c1b1e2b44a1b34745bf",
+    "ceiling-wixqa-judge-m1.cases.jsonl": "1a10696e5658284ee6e79638721f0ff6a6774fcbf18e5635e3d9324918eb5370",
+    "ceiling-bridge-wixqa.json": "a5a9a571596d3f4d431566f8b4be77f968fc729a7f19eb9573b31f7a519aea73",
+    "ceiling-wixqa-judge-m2.json": "3d8f9db1091da1bee83aebde300b62b8beb6a9f3ad2b5c9012e98f5ab6984d6e",
+    "ceiling-wixqa-judge-m2.cases.jsonl": "3918c121f6bb3f7fc14fc0c18fbfe19fe3478925d6d43b09ea9e361bfd772dde",
+    "ceiling-conditionalqa-judge-m1.json": "9d3c8e53ee4244283bbde70f5845ed21a6361cdb622c64c35fdaa3417bce82f7",
+    "ceiling-conditionalqa-judge-m1.cases.jsonl": "f5cffdbb76acdb641b923df593ed2260df42be8a8d92f79b2283dcfe628e72fd",
+    "ceiling-bridge-conditionalqa.json": "1675c76bf4b40fdd2d8c659a4a96666a19ce766425e3d4b8d4bc4b7af6803b45",
+    "ceiling-conditionalqa-judge-m2.json": "64b27a9e82195d74a17e9de1111c1542e4471f6abf859daf77957b1a0a1ae6de",
+    "ceiling-conditionalqa-judge-m2.cases.jsonl": "b049febffa895a0cabedd7fdb4eef93365fd3e7a612f94b9831d9d2189240b60",
+    "ceiling-aircargo-judge-m1.json": "dfd65c1ff0dd43e7b116e8b8d05d0aa0a05bdbbf089dd847cc228627d8fb4959",
+    "ceiling-aircargo-judge-m1.cases.jsonl": "376cea51f4e15d190c8d72d5badf7a377a50e75f225fffe0f1352a53c6aa7fd5",
+    "ceiling-bridge-aircargo.json": "4f487b7a9774168c9eda51c0f60adeb703543cb5051dba1d40e53c3f8733ad46"
+  },
+  "primary": {
+    "indicator": "good",
+    "n": 224,
+    "table": {
+      "a": 120,
+      "b": 0,
+      "c": 100,
+      "d": 4
+    },
+    "difference": 0.4464,
+    "clusters": 191,
+    "cluster95": [
+      0.3733,
+      0.5183
+    ],
+    "newcombe95": [
+      0.3796,
+      0.5115
+    ],
+    "read95": [
+      0.3733,
+      0.5183
+    ],
+    "detected": true,
+    "direction": "rises",
+    "package": 0.5357,
+    "codex": 0.9821
+  },
+  "corpora": {
+    "wixqa": {
+      "pairs": 100,
+      "bad": {
+        "n": 100,
+        "table": {
+          "a": 1,
+          "b": 58,
+          "c": 1,
+          "d": 40
+        },
+        "difference": -0.57,
+        "clusters": 77,
+        "cluster95": [
+          -0.6667,
+          -0.469
+        ],
+        "newcombe95": [
+          -0.6628,
+          -0.4588
+        ],
+        "read95": [
+          -0.6667,
+          -0.4588
+        ],
+        "detected": true,
+        "direction": "falls",
+        "package": 0.59,
+        "codex": 0.02
+      },
+      "good": {
+        "n": 100,
+        "table": {
+          "a": 28,
+          "b": 2,
+          "c": 64,
+          "d": 6
+        },
+        "difference": 0.62,
+        "clusters": 77,
+        "cluster95": [
+          0.5217,
+          0.7126
+        ],
+        "newcombe95": [
+          0.5013,
+          0.7099
+        ],
+        "read95": [
+          0.5013,
+          0.7126
+        ],
+        "detected": true,
+        "direction": "rises",
+        "package": 0.3,
+        "codex": 0.92
+      },
+      "transitions": {
+        "good": {
+          "good": 28,
+          "partial_ok": 1,
+          "bad": 1
+        },
+        "partial_ok": {
+          "good": 11,
+          "partial_ok": 0,
+          "bad": 0
+        },
+        "bad": {
+          "good": 53,
+          "partial_ok": 5,
+          "bad": 1
+        }
+      },
+      "diagnostics": {
+        "package": {
+          "answers_question": {
+            "full": 46,
+            "declined": 23,
+            "partial": 29,
+            "no": 2
+          },
+          "claims": {
+            "supported": 453,
+            "total": 512,
+            "share": 0.8848
+          },
+          "defects": {
+            "none": 100
+          },
+          "unsupported_claim_answers": 43,
+          "unsupported_claims": 59,
+          "marks_listed": 212,
+          "marks_unlisted": 0
+        },
+        "codex": {
+          "answers_question": {
+            "full": 88,
+            "declined": 5,
+            "partial": 7
+          },
+          "claims": {
+            "supported": 611,
+            "total": 612,
+            "share": 0.9984
+          },
+          "defects": {
+            "none": 100
+          },
+          "unsupported_claim_answers": 1,
+          "unsupported_claims": 1,
+          "marks_listed": 360,
+          "marks_unlisted": 0
+        }
+      },
+      "strata": {
+        "answer in context": {
+          "n": 67,
+          "good": {
+            "n": 67,
+            "table": {
+              "a": 19,
+              "b": 0,
+              "c": 45,
+              "d": 3
+            },
+            "difference": 0.6716,
+            "clusters": 56,
+            "cluster95": [
+              0.5469,
+              0.7903
+            ],
+            "newcombe95": [
+              0.534,
+              0.7684
+            ],
+            "read95": [
+              0.534,
+              0.7903
+            ],
+            "detected": true,
+            "direction": "rises",
+            "package": 0.2836,
+            "codex": 0.9552
+          },
+          "bad": {
+            "n": 67,
+            "table": {
+              "a": 1,
+              "b": 40,
+              "c": 0,
+              "d": 26
+            },
+            "difference": -0.597,
+            "clusters": 56,
+            "cluster95": [
+              -0.7222,
+              -0.4627
+            ],
+            "newcombe95": [
+              -0.7053,
+              -0.4608
+            ],
+            "read95": [
+              -0.7222,
+              -0.4608
+            ],
+            "detected": true,
+            "direction": "falls",
+            "package": 0.6119,
+            "codex": 0.0149
+          }
+        },
+        "not in context": {
+          "n": 33,
+          "good": {
+            "n": 33,
+            "table": {
+              "a": 9,
+              "b": 2,
+              "c": 19,
+              "d": 3
+            },
+            "difference": 0.5152,
+            "clusters": 27,
+            "cluster95": [
+              0.303,
+              0.7059
+            ],
+            "newcombe95": [
+              0.276,
+              0.6796
+            ],
+            "read95": [
+              0.276,
+              0.7059
+            ],
+            "detected": true,
+            "direction": "rises",
+            "package": 0.3333,
+            "codex": 0.8485
+          },
+          "bad": {
+            "n": 33,
+            "table": {
+              "a": 0,
+              "b": 18,
+              "c": 1,
+              "d": 14
+            },
+            "difference": -0.5152,
+            "clusters": 27,
+            "cluster95": [
+              -0.7097,
+              -0.3235
+            ],
+            "newcombe95": [
+              -0.6779,
+              -0.2906
+            ],
+            "read95": [
+              -0.7097,
+              -0.2906
+            ],
+            "detected": true,
+            "direction": "falls",
+            "package": 0.5455,
+            "codex": 0.0303
+          }
+        },
+        "no gold": {
+          "n": 0,
+          "good": {
+            "n": 0,
+            "table": {
+              "a": 0,
+              "b": 0,
+              "c": 0,
+              "d": 0
+            },
+            "difference": null,
+            "cluster95": null,
+            "newcombe95": null,
+            "read95": null,
+            "clusters": 0,
+            "detected": false,
+            "direction": "not detected",
+            "package": null,
+            "codex": null
+          },
+          "bad": {
+            "n": 0,
+            "table": {
+              "a": 0,
+              "b": 0,
+              "c": 0,
+              "d": 0
+            },
+            "difference": null,
+            "cluster95": null,
+            "newcombe95": null,
+            "read95": null,
+            "clusters": 0,
+            "detected": false,
+            "direction": "not detected",
+            "package": null,
+            "codex": null
+          }
+        }
+      },
+      "losses": {
+        "package_not_good": 70,
+        "generator_losses": {
+          "n": 45,
+          "ids": [
+            "wixqa-simulated-002",
+            "wixqa-simulated-011",
+            "wixqa-simulated-013",
+            "wixqa-simulated-024",
+            "wixqa-simulated-034",
+            "wixqa-simulated-038",
+            "wixqa-simulated-043",
+            "wixqa-simulated-057",
+            "wixqa-simulated-060",
+            "wixqa-simulated-069",
+            "wixqa-simulated-075",
+            "wixqa-simulated-076",
+            "wixqa-simulated-077",
+            "wixqa-simulated-084",
+            "wixqa-simulated-088",
+            "wixqa-simulated-089",
+            "wixqa-simulated-094",
+            "wixqa-simulated-096",
+            "wixqa-simulated-098",
+            "wixqa-simulated-100",
+            "wixqa-simulated-105",
+            "wixqa-simulated-111",
+            "wixqa-simulated-113",
+            "wixqa-simulated-128",
+            "wixqa-simulated-138",
+            "wixqa-simulated-149",
+            "wixqa-simulated-158",
+            "wixqa-simulated-159",
+            "wixqa-simulated-160",
+            "wixqa-simulated-161",
+            "wixqa-simulated-163",
+            "wixqa-simulated-165",
+            "wixqa-simulated-166",
+            "wixqa-simulated-170",
+            "wixqa-simulated-173",
+            "wixqa-simulated-174",
+            "wixqa-simulated-181",
+            "wixqa-simulated-184",
+            "wixqa-simulated-186",
+            "wixqa-simulated-188",
+            "wixqa-simulated-190",
+            "wixqa-simulated-194",
+            "wixqa-simulated-195",
+            "wixqa-simulated-198",
+            "wixqa-simulated-199"
+          ]
+        },
+        "retrieval_losses": {
+          "n": 3,
+          "ids": [
+            "wixqa-simulated-073",
+            "wixqa-simulated-099",
+            "wixqa-simulated-143"
+          ]
+        },
+        "neither": {
+          "n": 3,
+          "ids": [
+            "wixqa-simulated-001",
+            "wixqa-simulated-008",
+            "wixqa-simulated-035"
+          ]
+        },
+        "codex_good_without_gold_in_context": {
+          "n": 19,
+          "ids": [
+            "wixqa-simulated-025",
+            "wixqa-simulated-037",
+            "wixqa-simulated-040",
+            "wixqa-simulated-049",
+            "wixqa-simulated-056",
+            "wixqa-simulated-058",
+            "wixqa-simulated-087",
+            "wixqa-simulated-104",
+            "wixqa-simulated-114",
+            "wixqa-simulated-120",
+            "wixqa-simulated-127",
+            "wixqa-simulated-129",
+            "wixqa-simulated-136",
+            "wixqa-simulated-140",
+            "wixqa-simulated-141",
+            "wixqa-simulated-151",
+            "wixqa-simulated-167",
+            "wixqa-simulated-168",
+            "wixqa-simulated-185"
+          ]
+        },
+        "retained_good": {
+          "n": 28,
+          "ids": [
+            "wixqa-simulated-005",
+            "wixqa-simulated-014",
+            "wixqa-simulated-026",
+            "wixqa-simulated-033",
+            "wixqa-simulated-045",
+            "wixqa-simulated-047",
+            "wixqa-simulated-051",
+            "wixqa-simulated-053",
+            "wixqa-simulated-066",
+            "wixqa-simulated-071",
+            "wixqa-simulated-074",
+            "wixqa-simulated-079",
+            "wixqa-simulated-082",
+            "wixqa-simulated-083",
+            "wixqa-simulated-092",
+            "wixqa-simulated-093",
+            "wixqa-simulated-095",
+            "wixqa-simulated-101",
+            "wixqa-simulated-106",
+            "wixqa-simulated-119",
+            "wixqa-simulated-121",
+            "wixqa-simulated-122",
+            "wixqa-simulated-125",
+            "wixqa-simulated-154",
+            "wixqa-simulated-155",
+            "wixqa-simulated-157",
+            "wixqa-simulated-177",
+            "wixqa-simulated-183"
+          ]
+        },
+        "lost_good": {
+          "n": 2,
+          "ids": [
+            "wixqa-simulated-107",
+            "wixqa-simulated-187"
+          ]
+        }
+      },
+      "m2": {
+        "with_reference": {
+          "questions": 100,
+          "pairs": 100,
+          "unpaired": {
+            "count": 0,
+            "case_ids": []
+          },
+          "agrees": {
+            "n": 100,
+            "table": {
+              "a": 23,
+              "b": 11,
+              "c": 17,
+              "d": 49
+            },
+            "difference": 0.06,
+            "clusters": 77,
+            "cluster95": [
+              -0.0784,
+              0.2023
+            ],
+            "newcombe95": [
+              -0.0444,
+              0.1624
+            ],
+            "read95": [
+              -0.0784,
+              0.2023
+            ],
+            "detected": false,
+            "direction": "not detected",
+            "package": 0.34,
+            "codex": 0.4
+          }
+        },
+        "without_reference": {
+          "questions": 0,
+          "pairs": 0,
+          "unpaired": {
+            "count": 0,
+            "case_ids": []
+          },
+          "right": {
+            "package": 0,
+            "codex": 0
+          }
+        },
+        "strata": {
+          "answer in context": {
+            "n": 67,
+            "table": {
+              "a": 18,
+              "b": 7,
+              "c": 13,
+              "d": 29
+            },
+            "difference": 0.0896,
+            "clusters": 56,
+            "cluster95": [
+              -0.1026,
+              0.2698
+            ],
+            "newcombe95": [
+              -0.0421,
+              0.216
+            ],
+            "read95": [
+              -0.1026,
+              0.2698
+            ],
+            "detected": false,
+            "direction": "not detected",
+            "package": 0.3731,
+            "codex": 0.4627
+          },
+          "not in context": {
+            "n": 33,
+            "table": {
+              "a": 5,
+              "b": 4,
+              "c": 4,
+              "d": 20
+            },
+            "difference": 0.0,
+            "clusters": 27,
+            "cluster95": [
+              -0.1818,
+              0.1935
+            ],
+            "newcombe95": [
+              -0.1752,
+              0.1752
+            ],
+            "read95": [
+              -0.1818,
+              0.1935
+            ],
+            "detected": false,
+            "direction": "not detected",
+            "package": 0.2727,
+            "codex": 0.2727
+          },
+          "no gold": {
+            "n": 0,
+            "table": {
+              "a": 0,
+              "b": 0,
+              "c": 0,
+              "d": 0
+            },
+            "difference": null,
+            "cluster95": null,
+            "newcombe95": null,
+            "read95": null,
+            "clusters": 0,
+            "detected": false,
+            "direction": "not detected",
+            "package": null,
+            "codex": null
+          }
+        },
+        "unsupported_claim_defects": {
+          "package": {
+            "answers_question": {
+              "full": 46,
+              "declined": 24,
+              "partial": 28,
+              "no": 2
+            },
+            "claims": {
+              "supported": 469,
+              "total": 524,
+              "share": 0.895
+            },
+            "defects": {
+              "none": 99,
+              "other": 1
+            },
+            "unsupported_claim_answers": 41,
+            "unsupported_claims": 55,
+            "marks_listed": 212,
+            "marks_unlisted": 0
+          },
+          "codex": {
+            "answers_question": {
+              "full": 87,
+              "partial": 6,
+              "declined": 7
+            },
+            "claims": {
+              "supported": 602,
+              "total": 603,
+              "share": 0.9983
+            },
+            "defects": {
+              "none": 100
+            },
+            "unsupported_claim_answers": 1,
+            "unsupported_claims": 1,
+            "marks_listed": 360,
+            "marks_unlisted": 0
+          }
+        }
+      }
+    },
+    "conditionalqa": {
+      "pairs": 100,
+      "bad": {
+        "n": 100,
+        "table": {
+          "a": 0,
+          "b": 53,
+          "c": 0,
+          "d": 47
+        },
+        "difference": -0.53,
+        "clusters": 60,
+        "cluster95": [
+          -0.6327,
+          -0.4272
+        ],
+        "newcombe95": [
+          -0.6249,
+          -0.4261
+        ],
+        "read95": [
+          -0.6327,
+          -0.4261
+        ],
+        "detected": true,
+        "direction": "falls",
+        "package": 0.53,
+        "codex": 0.0
+      },
+      "good": {
+        "n": 100,
+        "table": {
+          "a": 37,
+          "b": 1,
+          "c": 55,
+          "d": 7
+        },
+        "difference": 0.54,
+        "clusters": 60,
+        "cluster95": [
+          0.4286,
+          0.6489
+        ],
+        "newcombe95": [
+          0.4265,
+          0.6329
+        ],
+        "read95": [
+          0.4265,
+          0.6489
+        ],
+        "detected": true,
+        "direction": "rises",
+        "package": 0.38,
+        "codex": 0.92
+      },
+      "transitions": {
+        "good": {
+          "good": 37,
+          "partial_ok": 1,
+          "bad": 0
+        },
+        "partial_ok": {
+          "good": 8,
+          "partial_ok": 1,
+          "bad": 0
+        },
+        "bad": {
+          "good": 47,
+          "partial_ok": 6,
+          "bad": 0
+        }
+      },
+      "diagnostics": {
+        "package": {
+          "answers_question": {
+            "partial": 37,
+            "full": 47,
+            "declined": 13,
+            "no": 3
+          },
+          "claims": {
+            "supported": 314,
+            "total": 384,
+            "share": 0.8177
+          },
+          "defects": {
+            "none": 94,
+            "other": 4,
+            "repetition": 2
+          },
+          "unsupported_claim_answers": 47,
+          "unsupported_claims": 70,
+          "marks_listed": 197,
+          "marks_unlisted": 0
+        },
+        "codex": {
+          "answers_question": {
+            "full": 81,
+            "declined": 11,
+            "partial": 8
+          },
+          "claims": {
+            "supported": 547,
+            "total": 547,
+            "share": 1.0
+          },
+          "defects": {
+            "none": 100
+          },
+          "unsupported_claim_answers": 0,
+          "unsupported_claims": 0,
+          "marks_listed": 365,
+          "marks_unlisted": 0
+        }
+      },
+      "strata": {
+        "answer in context": {
+          "n": 58,
+          "good": {
+            "n": 58,
+            "table": {
+              "a": 28,
+              "b": 0,
+              "c": 29,
+              "d": 1
+            },
+            "difference": 0.5,
+            "clusters": 36,
+            "cluster95": [
+              0.35,
+              0.6491
+            ],
+            "newcombe95": [
+              0.3541,
+              0.6243
+            ],
+            "read95": [
+              0.35,
+              0.6491
+            ],
+            "detected": true,
+            "direction": "rises",
+            "package": 0.4828,
+            "codex": 0.9828
+          },
+          "bad": {
+            "n": 58,
+            "table": {
+              "a": 0,
+              "b": 27,
+              "c": 0,
+              "d": 31
+            },
+            "difference": -0.4655,
+            "clusters": 36,
+            "cluster95": [
+              -0.614,
+              -0.3148
+            ],
+            "newcombe95": [
+              -0.592,
+              -0.3284
+            ],
+            "read95": [
+              -0.614,
+              -0.3148
+            ],
+            "detected": true,
+            "direction": "falls",
+            "package": 0.4655,
+            "codex": 0.0
+          }
+        },
+        "not in context": {
+          "n": 22,
+          "good": {
+            "n": 22,
+            "table": {
+              "a": 3,
+              "b": 1,
+              "c": 16,
+              "d": 2
+            },
+            "difference": 0.6818,
+            "clusters": 18,
+            "cluster95": [
+              0.4,
+              0.913
+            ],
+            "newcombe95": [
+              0.3774,
+              0.8326
+            ],
+            "read95": [
+              0.3774,
+              0.913
+            ],
+            "detected": true,
+            "direction": "rises",
+            "package": 0.1818,
+            "codex": 0.8636
+          },
+          "bad": {
+            "n": 22,
+            "table": {
+              "a": 0,
+              "b": 14,
+              "c": 0,
+              "d": 8
+            },
+            "difference": -0.6364,
+            "clusters": 18,
+            "cluster95": [
+              -0.85,
+              -0.4167
+            ],
+            "newcombe95": [
+              -0.8027,
+              -0.3816
+            ],
+            "read95": [
+              -0.85,
+              -0.3816
+            ],
+            "detected": true,
+            "direction": "falls",
+            "package": 0.6364,
+            "codex": 0.0
+          }
+        },
+        "no gold": {
+          "n": 20,
+          "good": {
+            "n": 20,
+            "table": {
+              "a": 6,
+              "b": 0,
+              "c": 10,
+              "d": 4
+            },
+            "difference": 0.5,
+            "clusters": 20,
+            "cluster95": [
+              0.3,
+              0.7
+            ],
+            "newcombe95": [
+              0.2233,
+              0.6763
+            ],
+            "read95": [
+              0.2233,
+              0.7
+            ],
+            "detected": true,
+            "direction": "rises",
+            "package": 0.3,
+            "codex": 0.8
+          },
+          "bad": {
+            "n": 20,
+            "table": {
+              "a": 0,
+              "b": 12,
+              "c": 0,
+              "d": 8
+            },
+            "difference": -0.6,
+            "clusters": 20,
+            "cluster95": [
+              -0.8,
+              -0.4
+            ],
+            "newcombe95": [
+              -0.7812,
+              -0.3326
+            ],
+            "read95": [
+              -0.8,
+              -0.3326
+            ],
+            "detected": true,
+            "direction": "falls",
+            "package": 0.6,
+            "codex": 0.0
+          }
+        }
+      },
+      "losses": {
+        "package_not_good": 62,
+        "generator_losses": {
+          "n": 29,
+          "ids": [
+            "conditionalqa-dev-58",
+            "conditionalqa-dev-68",
+            "conditionalqa-train-12",
+            "conditionalqa-train-1226",
+            "conditionalqa-train-125",
+            "conditionalqa-train-1284",
+            "conditionalqa-train-1309",
+            "conditionalqa-train-1559",
+            "conditionalqa-train-1648",
+            "conditionalqa-train-1659",
+            "conditionalqa-train-1716",
+            "conditionalqa-train-1759",
+            "conditionalqa-train-1925",
+            "conditionalqa-train-1975",
+            "conditionalqa-train-2077",
+            "conditionalqa-train-236",
+            "conditionalqa-train-315",
+            "conditionalqa-train-347",
+            "conditionalqa-train-46",
+            "conditionalqa-train-466",
+            "conditionalqa-train-470",
+            "conditionalqa-train-511",
+            "conditionalqa-train-57",
+            "conditionalqa-train-612",
+            "conditionalqa-train-629",
+            "conditionalqa-train-630",
+            "conditionalqa-train-795",
+            "conditionalqa-train-84",
+            "conditionalqa-train-871"
+          ]
+        },
+        "retrieval_losses": {
+          "n": 6,
+          "ids": [
+            "conditionalqa-dev-118",
+            "conditionalqa-dev-250",
+            "conditionalqa-train-143",
+            "conditionalqa-train-1580",
+            "conditionalqa-train-1995",
+            "conditionalqa-train-2057"
+          ]
+        },
+        "neither": {
+          "n": 1,
+          "ids": [
+            "conditionalqa-train-1310"
+          ]
+        },
+        "codex_good_without_gold_in_context": {
+          "n": 26,
+          "ids": [
+            "conditionalqa-dev-14",
+            "conditionalqa-dev-26",
+            "conditionalqa-dev-34",
+            "conditionalqa-dev-35",
+            "conditionalqa-dev-40",
+            "conditionalqa-dev-53",
+            "conditionalqa-train-1219",
+            "conditionalqa-train-1534",
+            "conditionalqa-train-1647",
+            "conditionalqa-train-1692",
+            "conditionalqa-train-1693",
+            "conditionalqa-train-1877",
+            "conditionalqa-train-197",
+            "conditionalqa-train-199",
+            "conditionalqa-train-2072",
+            "conditionalqa-train-322",
+            "conditionalqa-train-37",
+            "conditionalqa-train-370",
+            "conditionalqa-train-433",
+            "conditionalqa-train-587",
+            "conditionalqa-train-588",
+            "conditionalqa-train-608",
+            "conditionalqa-train-785",
+            "conditionalqa-train-815",
+            "conditionalqa-train-992",
+            "conditionalqa-train-999"
+          ]
+        },
+        "retained_good": {
+          "n": 37,
+          "ids": [
+            "conditionalqa-dev-150",
+            "conditionalqa-dev-161",
+            "conditionalqa-dev-242",
+            "conditionalqa-dev-249",
+            "conditionalqa-dev-69",
+            "conditionalqa-train-1236",
+            "conditionalqa-train-139",
+            "conditionalqa-train-1484",
+            "conditionalqa-train-1497",
+            "conditionalqa-train-1509",
+            "conditionalqa-train-1510",
+            "conditionalqa-train-1547",
+            "conditionalqa-train-1548",
+            "conditionalqa-train-1590",
+            "conditionalqa-train-1658",
+            "conditionalqa-train-1684",
+            "conditionalqa-train-1749",
+            "conditionalqa-train-1785",
+            "conditionalqa-train-1786",
+            "conditionalqa-train-1850",
+            "conditionalqa-train-1996",
+            "conditionalqa-train-2038",
+            "conditionalqa-train-2059",
+            "conditionalqa-train-2078",
+            "conditionalqa-train-2137",
+            "conditionalqa-train-2152",
+            "conditionalqa-train-2178",
+            "conditionalqa-train-2223",
+            "conditionalqa-train-2303",
+            "conditionalqa-train-31",
+            "conditionalqa-train-593",
+            "conditionalqa-train-658",
+            "conditionalqa-train-780",
+            "conditionalqa-train-851",
+            "conditionalqa-train-877",
+            "conditionalqa-train-884",
+            "conditionalqa-train-991"
+          ]
+        },
+        "lost_good": {
+          "n": 1,
+          "ids": [
+            "conditionalqa-train-1666"
+          ]
+        }
+      },
+      "m2": {
+        "with_reference": {
+          "questions": 80,
+          "pairs": 80,
+          "unpaired": {
+            "count": 0,
+            "case_ids": []
+          },
+          "agrees": {
+            "n": 80,
+            "table": {
+              "a": 40,
+              "b": 7,
+              "c": 19,
+              "d": 14
+            },
+            "difference": 0.15,
+            "clusters": 40,
+            "cluster95": [
+              0.0375,
+              0.2625
+            ],
+            "newcombe95": [
+              0.0256,
+              0.2679
+            ],
+            "read95": [
+              0.0256,
+              0.2679
+            ],
+            "detected": true,
+            "direction": "rises",
+            "package": 0.5875,
+            "codex": 0.7375
+          }
+        },
+        "without_reference": {
+          "questions": 20,
+          "pairs": 20,
+          "unpaired": {
+            "count": 0,
+            "case_ids": []
+          },
+          "right": {
+            "package": 5,
+            "codex": 5
+          }
+        },
+        "strata": {
+          "answer in context": {
+            "n": 58,
+            "table": {
+              "a": 32,
+              "b": 4,
+              "c": 15,
+              "d": 7
+            },
+            "difference": 0.1897,
+            "clusters": 36,
+            "cluster95": [
+              0.0363,
+              0.3333
+            ],
+            "newcombe95": [
+              0.0435,
+              0.3262
+            ],
+            "read95": [
+              0.0363,
+              0.3333
+            ],
+            "detected": true,
+            "direction": "rises",
+            "package": 0.6207,
+            "codex": 0.8103
+          },
+          "not in context": {
+            "n": 22,
+            "table": {
+              "a": 8,
+              "b": 3,
+              "c": 4,
+              "d": 7
+            },
+            "difference": 0.0455,
+            "clusters": 18,
+            "cluster95": [
+              -0.0909,
+              0.2105
+            ],
+            "newcombe95": [
+              -0.1906,
+              0.2734
+            ],
+            "read95": [
+              -0.1906,
+              0.2734
+            ],
+            "detected": false,
+            "direction": "not detected",
+            "package": 0.5,
+            "codex": 0.5455
+          },
+          "no gold": {
+            "n": 0,
+            "table": {
+              "a": 0,
+              "b": 0,
+              "c": 0,
+              "d": 0
+            },
+            "difference": null,
+            "cluster95": null,
+            "newcombe95": null,
+            "read95": null,
+            "clusters": 0,
+            "detected": false,
+            "direction": "not detected",
+            "package": null,
+            "codex": null
+          }
+        },
+        "unsupported_claim_defects": {
+          "package": {
+            "answers_question": {
+              "partial": 29,
+              "full": 54,
+              "declined": 14,
+              "no": 3
+            },
+            "claims": {
+              "supported": 324,
+              "total": 390,
+              "share": 0.8308
+            },
+            "defects": {
+              "none": 95,
+              "other": 4,
+              "repetition": 1
+            },
+            "unsupported_claim_answers": 43,
+            "unsupported_claims": 66,
+            "marks_listed": 197,
+            "marks_unlisted": 0
+          },
+          "codex": {
+            "answers_question": {
+              "full": 81,
+              "declined": 9,
+              "partial": 10
+            },
+            "claims": {
+              "supported": 536,
+              "total": 540,
+              "share": 0.9926
+            },
+            "defects": {
+              "none": 100
+            },
+            "unsupported_claim_answers": 1,
+            "unsupported_claims": 4,
+            "marks_listed": 365,
+            "marks_unlisted": 0
+          }
+        }
+      },
+      "right_declines": {
+        "n": 20,
+        "table": {
+          "a": 3,
+          "b": 2,
+          "c": 3,
+          "d": 12
+        },
+        "difference": 0.05,
+        "clusters": 20,
+        "cluster95": [
+          -0.15,
+          0.25
+        ],
+        "newcombe95": [
+          -0.1838,
+          0.2776
+        ],
+        "read95": [
+          -0.1838,
+          0.2776
+        ],
+        "detected": false,
+        "direction": "not detected",
+        "package": 0.25,
+        "codex": 0.3
+      }
+    },
+    "aircargo": {
+      "pairs": 100,
+      "bad": {
+        "n": 100,
+        "table": {
+          "a": 0,
+          "b": 13,
+          "c": 0,
+          "d": 87
+        },
+        "difference": -0.13,
+        "clusters": 100,
+        "cluster95": [
+          -0.2,
+          -0.07
+        ],
+        "newcombe95": [
+          -0.2098,
+          -0.0658
+        ],
+        "read95": [
+          -0.2098,
+          -0.0658
+        ],
+        "detected": true,
+        "direction": "falls",
+        "package": 0.13,
+        "codex": 0.0
+      },
+      "good": {
+        "n": 100,
+        "table": {
+          "a": 73,
+          "b": 0,
+          "c": 27,
+          "d": 0
+        },
+        "difference": 0.27,
+        "clusters": 100,
+        "cluster95": [
+          0.19,
+          0.36
+        ],
+        "newcombe95": [
+          0.1843,
+          0.3643
+        ],
+        "read95": [
+          0.1843,
+          0.3643
+        ],
+        "detected": true,
+        "direction": "rises",
+        "package": 0.73,
+        "codex": 1.0
+      },
+      "transitions": {
+        "good": {
+          "good": 73,
+          "partial_ok": 0,
+          "bad": 0
+        },
+        "partial_ok": {
+          "good": 14,
+          "partial_ok": 0,
+          "bad": 0
+        },
+        "bad": {
+          "good": 13,
+          "partial_ok": 0,
+          "bad": 0
+        }
+      },
+      "diagnostics": {
+        "package": {
+          "answers_question": {
+            "full": 77,
+            "partial": 21,
+            "no": 2
+          },
+          "claims": {
+            "supported": 468,
+            "total": 482,
+            "share": 0.971
+          },
+          "defects": {
+            "none": 97,
+            "copied_context": 2,
+            "other": 1
+          },
+          "unsupported_claim_answers": 10,
+          "unsupported_claims": 14,
+          "marks_listed": 217,
+          "marks_unlisted": 0
+        },
+        "codex": {
+          "answers_question": {
+            "full": 100
+          },
+          "claims": {
+            "supported": 561,
+            "total": 561,
+            "share": 1.0
+          },
+          "defects": {
+            "none": 100
+          },
+          "unsupported_claim_answers": 0,
+          "unsupported_claims": 0,
+          "marks_listed": 449,
+          "marks_unlisted": 0
+        }
+      },
+      "strata": {
+        "answer in context": {
+          "n": 99,
+          "good": {
+            "n": 99,
+            "table": {
+              "a": 73,
+              "b": 0,
+              "c": 26,
+              "d": 0
+            },
+            "difference": 0.2626,
+            "clusters": 99,
+            "cluster95": [
+              0.1818,
+              0.3535
+            ],
+            "newcombe95": [
+              0.1774,
+              0.357
+            ],
+            "read95": [
+              0.1774,
+              0.357
+            ],
+            "detected": true,
+            "direction": "rises",
+            "package": 0.7374,
+            "codex": 1.0
+          },
+          "bad": {
+            "n": 99,
+            "table": {
+              "a": 0,
+              "b": 12,
+              "c": 0,
+              "d": 87
+            },
+            "difference": -0.1212,
+            "clusters": 99,
+            "cluster95": [
+              -0.1919,
+              -0.0606
+            ],
+            "newcombe95": [
+              -0.2,
+              -0.0584
+            ],
+            "read95": [
+              -0.2,
+              -0.0584
+            ],
+            "detected": true,
+            "direction": "falls",
+            "package": 0.1212,
+            "codex": 0.0
+          }
+        },
+        "not in context": {
+          "n": 1,
+          "good": {
+            "n": 1,
+            "table": {
+              "a": 0,
+              "b": 0,
+              "c": 1,
+              "d": 0
+            },
+            "difference": 1.0,
+            "clusters": 1,
+            "cluster95": [
+              1.0,
+              1.0
+            ],
+            "newcombe95": [
+              -0.1221,
+              1.0
+            ],
+            "read95": [
+              -0.1221,
+              1.0
+            ],
+            "detected": false,
+            "direction": "not detected",
+            "package": 0.0,
+            "codex": 1.0
+          },
+          "bad": {
+            "n": 1,
+            "table": {
+              "a": 0,
+              "b": 1,
+              "c": 0,
+              "d": 0
+            },
+            "difference": -1.0,
+            "clusters": 1,
+            "cluster95": [
+              -1.0,
+              -1.0
+            ],
+            "newcombe95": [
+              -1.0,
+              0.1221
+            ],
+            "read95": [
+              -1.0,
+              0.1221
+            ],
+            "detected": false,
+            "direction": "not detected",
+            "package": 1.0,
+            "codex": 0.0
+          }
+        },
+        "no gold": {
+          "n": 0,
+          "good": {
+            "n": 0,
+            "table": {
+              "a": 0,
+              "b": 0,
+              "c": 0,
+              "d": 0
+            },
+            "difference": null,
+            "cluster95": null,
+            "newcombe95": null,
+            "read95": null,
+            "clusters": 0,
+            "detected": false,
+            "direction": "not detected",
+            "package": null,
+            "codex": null
+          },
+          "bad": {
+            "n": 0,
+            "table": {
+              "a": 0,
+              "b": 0,
+              "c": 0,
+              "d": 0
+            },
+            "difference": null,
+            "cluster95": null,
+            "newcombe95": null,
+            "read95": null,
+            "clusters": 0,
+            "detected": false,
+            "direction": "not detected",
+            "package": null,
+            "codex": null
+          }
+        }
+      },
+      "losses": {
+        "package_not_good": 27,
+        "generator_losses": {
+          "n": 26,
+          "ids": [
+            "aircargo-access-control-review",
+            "aircargo-business-trip-advance-report",
+            "aircargo-cargo-insurance-evidence",
+            "aircargo-cargo-insurance-operational-limits",
+            "aircargo-cargo-loss-required-fields",
+            "aircargo-contract-termination-open-awb",
+            "aircargo-cross-border-special-cargo",
+            "aircargo-customs-special-cargo-manual-check",
+            "aircargo-dangerous-goods-clearance",
+            "aircargo-dangerous-goods-fields",
+            "aircargo-data-retention-legal-hold",
+            "aircargo-fuel-supply-evidence",
+            "aircargo-incident-response-bridge",
+            "aircargo-oversized-manual-check",
+            "aircargo-oversized-permit-route",
+            "aircargo-overtime-limits",
+            "aircargo-perishable-special-cargo-evidence",
+            "aircargo-perishable-temperature-controls",
+            "aircargo-road-contract-aircargo-fields",
+            "aircargo-salary-bonus-conditions",
+            "aircargo-templates-checklist",
+            "aircargo-trade-compliance-hold",
+            "aircargo-warehouse-3pl-escalation",
+            "aircargo-waybill-escalation-events",
+            "aircargo-waybill-first-mile-fields",
+            "aircargo-weight-control-required-fields"
+          ]
+        },
+        "retrieval_losses": {
+          "n": 0,
+          "ids": []
+        },
+        "neither": {
+          "n": 0,
+          "ids": []
+        },
+        "codex_good_without_gold_in_context": {
+          "n": 1,
+          "ids": [
+            "aircargo-sick-leave-required-fields"
+          ]
+        },
+        "retained_good": {
+          "n": 73,
+          "ids": [
+            "aircargo-access-control-need-to-know",
+            "aircargo-breach-notification-participants",
+            "aircargo-breach-notification-required-fields",
+            "aircargo-business-trip-foreign-approval",
+            "aircargo-cargo-loss-evidence-bundle",
+            "aircargo-claims-damage",
+            "aircargo-claims-delay",
+            "aircargo-claims-forbidden",
+            "aircargo-claims-lawyer",
+            "aircargo-conflict-interest-disclosure",
+            "aircargo-conflict-interest-sanctions",
+            "aircargo-contract-termination-fields",
+            "aircargo-cross-border-pdn-no-transfer",
+            "aircargo-cross-border-pdn-required-fields",
+            "aircargo-cross-border-required-fields",
+            "aircargo-customs-broker-escalation",
+            "aircargo-customs-broker-evidence",
+            "aircargo-customs-clearance-fields",
+            "aircargo-data-retention-required-fields",
+            "aircargo-dismissal-check",
+            "aircargo-dismissal-lawyer",
+            "aircargo-dismissal-order",
+            "aircargo-driver-dangerous-goods-refusal",
+            "aircargo-driver-hours-required-fields",
+            "aircargo-driver-hours-terminal-discrepancy",
+            "aircargo-driver-job-documents",
+            "aircargo-employment-contract-essential-terms",
+            "aircargo-employment-contract-special-form",
+            "aircargo-expedition-mawb-hawb",
+            "aircargo-expedition-risks",
+            "aircargo-expedition-vs-carrier",
+            "aircargo-fuel-supply-required-fields",
+            "aircargo-gps-monitoring-required-fields",
+            "aircargo-gps-monitoring-scope",
+            "aircargo-harassment-complaint-data",
+            "aircargo-harassment-investigation-timeline",
+            "aircargo-incident-response-required-fields",
+            "aircargo-internal-transfer-consent",
+            "aircargo-internal-transfer-documents",
+            "aircargo-late-delivery-reply-evidence",
+            "aircargo-late-delivery-reply-no-admission",
+            "aircargo-leave-compensation",
+            "aircargo-leave-risk",
+            "aircargo-leave-sources",
+            "aircargo-maternity-dismissal-ban",
+            "aircargo-maternity-duration-normal",
+            "aircargo-matliab-check",
+            "aircargo-matliab-disputed",
+            "aircargo-overtime-protected-categories",
+            "aircargo-pdp-data",
+            "aircargo-pdp-scope",
+            "aircargo-pdp-uncertain",
+            "aircargo-probation-data",
+            "aircargo-probation-dismissal",
+            "aircargo-probation-extend",
+            "aircargo-remote-work-equipment-compensation",
+            "aircargo-remote-work-monitoring-limits",
+            "aircargo-road-cutoff",
+            "aircargo-road-driver-pdn",
+            "aircargo-road-penalty",
+            "aircargo-road-seal",
+            "aircargo-salary-payment-dates",
+            "aircargo-secret-check",
+            "aircargo-secret-disclosure",
+            "aircargo-secret-not-auto",
+            "aircargo-sick-leave-lawyer-escalation",
+            "aircargo-subject-rights-required-fields",
+            "aircargo-subject-rights-third-party-masking",
+            "aircargo-templates-choose",
+            "aircargo-templates-insufficient",
+            "aircargo-trade-compliance-screening",
+            "aircargo-warehouse-3pl-required-fields",
+            "aircargo-weight-control-discrepancy"
+          ]
+        },
+        "lost_good": {
+          "n": 0,
+          "ids": []
+        }
+      }
+    }
+  },
+  "m2": {
+    "n": 180,
+    "table": {
+      "a": 63,
+      "b": 18,
+      "c": 36,
+      "d": 63
+    },
+    "difference": 0.1,
+    "clusters": 117,
+    "cluster95": [
+      0.0,
+      0.1944
+    ],
+    "newcombe95": [
+      0.0203,
+      0.1775
+    ],
+    "read95": [
+      0.0,
+      0.1944
+    ],
+    "detected": false,
+    "direction": "not detected",
+    "package": 0.45,
+    "codex": 0.55
+  },
+  "decision": {
+    "row": 2,
+    "outcome": "the generator is the bottleneck",
+    "production_change": false,
+    "stop_fired": false
+  }
+}

@@ -1,0 +1,240 @@
+{
+  "status": "counted",
+  "retest": {
+    "planned": 15,
+    "scale": [
+      "bad",
+      "partial_ok",
+      "good"
+    ],
+    "pairs": 15,
+    "pairs_list": [
+      [
+        1,
+        1
+      ],
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        0,
+        0
+      ],
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        2,
+        2
+      ]
+    ],
+    "pairs_ids": [
+      "8d4dd4f44b430bb5",
+      "b1140c361d2484b4",
+      "cf95feb567203004",
+      "5c134cd850ae48d9",
+      "85791b42dca19aca",
+      "35fcdb8cecf0aaab",
+      "7ae5a5706aa275e3",
+      "c0b51e6a18741a3c",
+      "794b79fdf9fbde9f",
+      "340747f9395232c9",
+      "fc2a2db8b29f2f3c",
+      "ec96bbf66bf91b94",
+      "cbdd3fdaf4a076a3",
+      "e351d37b3c9e4748",
+      "65aeb6956a445ab4"
+    ],
+    "agree": 15,
+    "two_steps_apart": 0,
+    "quadratic_kappa": 1.0,
+    "ci95": [
+      1.0,
+      1.0
+    ],
+    "resamples_undefined": 25,
+    "passes_by_kappa": true,
+    "passes_by_agreement": true,
+    "enough_pairs": true,
+    "passed": true,
+    "field_agreement": {
+      "answers_question": {
+        "agree": 15,
+        "of": 15
+      },
+      "context_has_answer": {
+        "agree": 15,
+        "of": 15
+      },
+      "defect": {
+        "agree": 15,
+        "of": 15
+      },
+      "reference_counts": {
+        "agree": 0,
+        "of": 0
+      }
+    }
+  },
+  "source_plan_sha256": "84805c90506941a9880790b2b424cdbbcdb54b511bc3946c4522ba3160c1dcc1",
+  "source_verdicts_sha256": "a88dc88ec8e7bed98b78f7e3b7fe3552519a804caa53eba2abc519abbe567724",
+  "plan_sha256": "0c8d83ff2f6523c16c77d7e4bc48845b8d71f119967473ba1b0284fb88ba013b",
+  "verdicts_sha256": "28ca2d28eb48b2c3d5f3a4986ffcb3c8f37c258974131ce4b0dc36b4710e0df7",
+  "admitted_cli": {
+    "old": [
+      "2.1.312"
+    ],
+    "new": [
+      "2.1.312"
+    ]
+  },
+  "pairs": [
+    {
+      "case_id": "aircargo-trade-compliance-hold",
+      "first": "8d4dd4f44b430bb5",
+      "copy": "8d4dd4f44b430bb5-retest",
+      "old_cli": "2.1.312",
+      "new_cli": "2.1.312"
+    },
+    {
+      "case_id": "aircargo-customs-special-cargo-manual-check",
+      "first": "b1140c361d2484b4",
+      "copy": "b1140c361d2484b4-retest",
+      "old_cli": "2.1.312",
+      "new_cli": "2.1.312"
+    },
+    {
+      "case_id": "aircargo-conflict-interest-sanctions",
+      "first": "cf95feb567203004",
+      "copy": "cf95feb567203004-retest",
+      "old_cli": "2.1.312",
+      "new_cli": "2.1.312"
+    },
+    {
+      "case_id": "aircargo-breach-notification-required-fields",
+      "first": "5c134cd850ae48d9",
+      "copy": "5c134cd850ae48d9-retest",
+      "old_cli": "2.1.312",
+      "new_cli": "2.1.312"
+    },
+    {
+      "case_id": "aircargo-gps-monitoring-scope",
+      "first": "85791b42dca19aca",
+      "copy": "85791b42dca19aca-retest",
+      "old_cli": "2.1.312",
+      "new_cli": "2.1.312"
+    },
+    {
+      "case_id": "aircargo-employment-contract-special-form",
+      "first": "35fcdb8cecf0aaab",
+      "copy": "35fcdb8cecf0aaab-retest",
+      "old_cli": "2.1.312",
+      "new_cli": "2.1.312"
+    },
+    {
+      "case_id": "aircargo-customs-broker-escalation",
+      "first": "7ae5a5706aa275e3",
+      "copy": "7ae5a5706aa275e3-retest",
+      "old_cli": "2.1.312",
+      "new_cli": "2.1.312"
+    },
+    {
+      "case_id": "aircargo-warehouse-3pl-escalation",
+      "first": "c0b51e6a18741a3c",
+      "copy": "c0b51e6a18741a3c-retest",
+      "old_cli": "2.1.312",
+      "new_cli": "2.1.312"
+    },
+    {
+      "case_id": "aircargo-matliab-disputed",
+      "first": "794b79fdf9fbde9f",
+      "copy": "794b79fdf9fbde9f-retest",
+      "old_cli": "2.1.312",
+      "new_cli": "2.1.312"
+    },
+    {
+      "case_id": "aircargo-dismissal-order",
+      "first": "340747f9395232c9",
+      "copy": "340747f9395232c9-retest",
+      "old_cli": "2.1.312",
+      "new_cli": "2.1.312"
+    },
+    {
+      "case_id": "aircargo-road-penalty",
+      "first": "fc2a2db8b29f2f3c",
+      "copy": "fc2a2db8b29f2f3c-retest",
+      "old_cli": "2.1.312",
+      "new_cli": "2.1.312"
+    },
+    {
+      "case_id": "aircargo-dangerous-goods-clearance",
+      "first": "ec96bbf66bf91b94",
+      "copy": "ec96bbf66bf91b94-retest",
+      "old_cli": "2.1.312",
+      "new_cli": "2.1.312"
+    },
+    {
+      "case_id": "aircargo-access-control-review",
+      "first": "cbdd3fdaf4a076a3",
+      "copy": "cbdd3fdaf4a076a3-retest",
+      "old_cli": "2.1.312",
+      "new_cli": "2.1.312"
+    },
+    {
+      "case_id": "aircargo-maternity-dismissal-ban",
+      "first": "e351d37b3c9e4748",
+      "copy": "e351d37b3c9e4748-retest",
+      "old_cli": "2.1.312",
+      "new_cli": "2.1.312"
+    },
+    {
+      "case_id": "aircargo-remote-work-equipment-compensation",
+      "first": "65aeb6956a445ab4",
+      "copy": "65aeb6956a445ab4-retest",
+      "old_cli": "2.1.312",
+      "new_cli": "2.1.312"
+    }
+  ]
+}
