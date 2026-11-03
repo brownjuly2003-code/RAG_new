@@ -175,6 +175,12 @@ WixQA and ConditionalQA and with item 6's on aircargo. Registered 2026-11-02 in 
 its pre-request amendment 1 in `4a5c36e`; read 2026-11-02: not adopted — harm, the pooled M2
 agreement with the reference a detected fall; aircargo `NOT_EVIDENCE`; its
 [record](evidence/answer-prompt-v6-record.md).
+[Stage 5в, the generator's ceiling](specs/generator-ceiling.md) — one GPT-6-Astra answer by
+Codex to each of the package's 300 saved prompts, graded by stage 5's judge and split by M3:
+the generator's share of the losses against retrieval's. Registered 2026-11-02 in `54a46e2`,
+its amendment `f93508a` before the first corpus request; read 2026-11-03: the generator is the
+bottleneck — M1 good 120 → 220 of 224 with the answer in the context, detected; the pooled M2
+agreement not detected; its [record](evidence/generator-ceiling-record.md).
 [Stage 6, item 4](specs/stage6-throughput.md) — the
 service's questions an hour and what a second client sees: a draft, registered with its tools once
 the service is installed.
