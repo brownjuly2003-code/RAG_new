@@ -157,13 +157,20 @@ async def login(request: Request, body: LoginRequest, response: Response) -> Tok
         await _record_failure("bad_credentials_dev")
         raise HTTPException(status_code=401, detail="Invalid credentials")
 
-    from passlib.hash import bcrypt  # noqa: PLC0415
+    import bcrypt  # noqa: PLC0415
 
     if body.username != admin_user:
         await _record_failure("unknown_user")
         raise HTTPException(status_code=401, detail="Invalid credentials")
 
-    if not bcrypt.verify(body.password, admin_hash):
+    try:
+        password_bytes = body.password.encode("utf-8")
+        valid_password = len(password_bytes) <= 72 and bcrypt.checkpw(
+            password_bytes, admin_hash.encode("utf-8")
+        )
+    except (ValueError, UnicodeError):
+        valid_password = False
+    if not valid_password:
         await _record_failure("bad_password")
         raise HTTPException(status_code=401, detail="Invalid credentials")
 

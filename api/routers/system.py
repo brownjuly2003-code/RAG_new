@@ -9,6 +9,9 @@ from __future__ import annotations
 import asyncio
 import inspect
 import logging
+import os
+import shutil
+from pathlib import Path
 from typing import Any, Optional
 
 from fastapi import APIRouter, Depends
@@ -19,6 +22,7 @@ from api._shared import app_module as _app_module
 from api.correlation import get_current_tenant
 from auth.dependencies import require_role
 from config.provider_schema import load_provider_registry
+from llm.providers.codex import _windows_binary_exists
 
 logger = logging.getLogger(__name__)
 
@@ -89,6 +93,20 @@ async def health_check() -> JSONResponse:
 
     provider_probe_names: list[str] = []
     provider_probe_calls: list[Any] = []
+    if "codex" in active_provider_ids:
+        binary = str(getattr(settings, "codex_binary", "codex"))
+        binary_present = (
+            _windows_binary_exists(binary) if os.name == "nt" else shutil.which(binary) is not None
+        )
+        codex_home = getattr(settings, "codex_home", None)
+        home_present = bool(codex_home and Path(codex_home).is_dir())
+        provider_statuses["codex"] = ComponentStatus(
+            status="ok" if binary_present and home_present else "error",
+            detail=(
+                f"configured: binary_present={binary_present}, home_present={home_present}; "
+                "model availability not probed"
+            ),
+        )
     if "ollama" in active_provider_ids:
         provider_probe_names.append("ollama")
         provider_probe_calls.append(_app._probe_ollama(settings.ollama_base_url))

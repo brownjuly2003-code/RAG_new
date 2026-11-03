@@ -105,12 +105,21 @@ def resolve_model_identity(
         return f"{label}={provider.id}:{model.name}"
 
     routing_enabled = bool(getattr(settings, "model_routing_enabled", True))
+    answer_identity: tuple[str, ...] = ()
+    if profile.answer is not None:
+        answer_identity = (_slot("answer", profile.answer),)
+        if profile.answer.provider == "codex":
+            answer_identity += (
+                f"codex_model={getattr(settings, 'codex_model', 'gpt-6-astra')}",
+                f"codex_effort={getattr(settings, 'codex_reasoning_effort', 'xhigh')}",
+            )
     return "|".join(
         (
             f"profile={profile_name}",
             _slot("fast", profile.fast),
             _slot("strong", profile.strong),
             f"routing={int(routing_enabled)}",
+            *answer_identity,
         )
     )
 

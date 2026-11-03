@@ -27,6 +27,7 @@ from api.correlation import get_current_tenant, get_request_id
 from api.rate_limit import limiter
 from auth.dependencies import get_current_user
 from config.settings import TIME_LIMIT_CEILING_SEC, normalize_streaming_self_eval_mode
+from llm.providers.runtime import is_codex_only
 from monitoring import prometheus as prometheus_metrics
 from services.pipeline import pipeline_runner
 from utils.background_tasks import spawn_tracked
@@ -751,8 +752,9 @@ def _answer_stream_ollama(
     """The OllamaProvider of the server, model and num_ctx that streamed the answer.
 
     ``"provider"``: ``streaming_llm.generate_stream`` streamed it. An
-    OllamaProvider streams itself; a ProviderBackedLLM streams from its primary
-    provider alone (``stream_provider``), which must be an OllamaProvider.
+    OllamaProvider streams itself; native token streams use the primary
+    ``stream_provider``, which must be an OllamaProvider. A Codex whole-answer
+    wrapper has no reusable Ollama prefix here, including after failover.
     ``"raw"``: ``_stream_ollama`` posted to settings' server and model with
     num_ctx ``context_window``; a provider of those same values is that
     endpoint. None -- the classic self-eval instead -- for any other path, or
@@ -1071,6 +1073,8 @@ class Citation(BaseModel):
 
 class AskResponse(BaseModel):
     answer: str
+    answer_provider: str | None = None
+    answer_model: str | None = None
     quality_score: int = 50
     route: str = "auto"
     sources: list[SourceInfo] = Field(default_factory=list)
@@ -1486,6 +1490,8 @@ async def _answer_ask(
                 response = AskResponse(
                     answer=answer,
                     quality_score=int(cached_payload.get("quality_score") or 50),
+                    answer_provider=cached_payload.get("answer_provider"),
+                    answer_model=cached_payload.get("answer_model"),
                     route=str(cached_payload.get("route") or "auto"),
                     sources=cached_sources,
                     citations=cached_citations,
@@ -1655,6 +1661,8 @@ async def _answer_ask(
 
                     response = AskResponse(
                         answer=answer,
+                        answer_provider=result.get("answer_provider"),
+                        answer_model=result.get("answer_model"),
                         quality_score=quality,
                         route=route,
                         sources=sources_list,
@@ -1678,6 +1686,8 @@ async def _answer_ask(
                             llm_cache_key,
                             {
                                 "answer": response.answer,
+                                "answer_provider": response.answer_provider,
+                                "answer_model": response.answer_model,
                                 "quality_score": response.quality_score,
                                 "route": response.route,
                                 "sources": [source.model_dump() for source in response.sources],
@@ -1990,7 +2000,9 @@ async def ask_stream(
             # Plan §4.1–4.2: STREAMING_RAG_PARITY=true → single graph generation
             # (session.ask only). SSE tokens are UX chunks of the graph answer —
             # not a second LLM stream. Off by default keeps legacy direct stream.
-            graph_parity_enabled = bool(getattr(settings_pre, "streaming_rag_parity", False))
+            graph_parity_enabled = is_codex_only(settings_pre) or bool(
+                getattr(settings_pre, "streaming_rag_parity", False)
+            )
             graph_parity_timeout = float(
                 getattr(settings_pre, "request_timeout_sec", TIME_LIMIT_CEILING_SEC)
             )
@@ -2323,6 +2335,8 @@ async def ask_stream(
                             "answer_source": "graph",
                             "generation_source": "graph_only",
                             "events_source": "graph" if use_events else "ask",
+                            "answer_provider": graph_result.get("answer_provider"),
+                            "answer_model": graph_result.get("answer_model"),
                             "token_source": token_source_final,
                             "graph_nodes": graph_nodes,
                             "quality_score": quality,
@@ -2340,6 +2354,8 @@ async def ask_stream(
                 return
 
             # --- Legacy direct stream (parity off): single stream LLM path ---
+            if is_codex_only(settings):
+                raise RuntimeError("Codex-only requires the graph stream")
             if hasattr(session, "_retriever") and session._retriever is not None:
                 # Cooperative deadline (plan §3.1g): refuse stream retrieve after wall.
                 try:
@@ -2392,6 +2408,7 @@ async def ask_stream(
             settings = _app.get_settings()
             full_answer = ""
             streaming_llm: Any = getattr(session, "_llm", None)
+            auxiliary_llm: Any = None
             if (
                 not (
                     streaming_llm is not None
@@ -2404,7 +2421,10 @@ async def ask_stream(
                 except Exception as runtime_exc:
                     logger.warning("Streaming runtime unavailable: %s", runtime_exc)
                 else:
-                    for candidate in (runtime.strong, runtime.fast):
+                    answer_llm = getattr(runtime, "answer", None)
+                    if answer_llm is not None:
+                        auxiliary_llm = runtime.fast
+                    for candidate in (answer_llm, runtime.strong, runtime.fast):
                         if callable(getattr(candidate, "generate_stream", None)):
                             streaming_llm = candidate
                             break
@@ -2507,6 +2527,11 @@ async def ask_stream(
             if not full_answer:
                 raise RuntimeError("empty streaming answer")
 
+            # Capture before quality/suggestions can overwrite last_response.
+            answer_response = getattr(streaming_llm, "last_response", None)
+            answer_provider = getattr(answer_response, "provider", None)
+            answer_model = getattr(answer_response, "model", None)
+
             sources = []
             citations = []
             for idx, doc in enumerate(docs, start=1):
@@ -2590,7 +2615,7 @@ async def ask_stream(
                     )
                     from agent.prompts import build_self_eval_prompt  # noqa: PLC0415
 
-                    eval_llm = getattr(session, "_llm", None)
+                    eval_llm = auxiliary_llm or getattr(session, "_llm", None)
                     if eval_llm is None and callable(getattr(streaming_llm, "invoke", None)):
                         eval_llm = streaming_llm
                     if eval_llm is None:
@@ -2685,10 +2710,10 @@ async def ask_stream(
                 try:
                     from agent.prompts import build_suggested_questions_prompt  # noqa: PLC0415
 
-                    # The model that wrote the answer, as for the self-eval above:
-                    # OLLAMA_MODEL_NAME may name another, and loading a second
-                    # model per answer swaps an 8-GB host.
-                    question_llm = getattr(session, "_llm", None)
+                    # A separate answer route keeps suggestions on the local
+                    # auxiliary model, as for the self-evaluation above.
+                    # Otherwise retain the existing answer-model selection.
+                    question_llm = auxiliary_llm or getattr(session, "_llm", None)
                     if question_llm is None and callable(getattr(streaming_llm, "invoke", None)):
                         question_llm = streaming_llm
                     if question_llm is None:
@@ -2814,6 +2839,8 @@ async def ask_stream(
                 "answer": terminal_answer,
                 "answer_source": answer_source,
                 "generation_source": "stream",
+                "answer_provider": answer_provider,
+                "answer_model": answer_model,
                 "quality_score": quality,
                 "quality_source": quality_source,
                 "route": route,
@@ -2956,6 +2983,8 @@ async def ask_stream(
                         {
                             "type": "result",
                             "answer": answer,
+                            "answer_provider": (result or {}).get("answer_provider"),
+                            "answer_model": (result or {}).get("answer_model"),
                             "quality_score": quality,
                             "quality_source": quality_source,
                             "route": route,

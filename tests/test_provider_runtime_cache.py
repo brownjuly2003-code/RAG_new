@@ -189,9 +189,11 @@ def test_runtime_cache_reuses_providers_until_mtime_changes(
     calls: list[str] = []
     original_build = runtime_module._build_provider
 
-    def _counting_build(settings_arg, profile_name, provider_id, model_name, fallback=None):
+    def _counting_build(
+        settings_arg, profile_name, provider_id, model_name, fallback=None, target=None
+    ):
         calls.append(provider_id)
-        return original_build(settings_arg, profile_name, provider_id, model_name, fallback)
+        return original_build(settings_arg, profile_name, provider_id, model_name, fallback, target)
 
     monkeypatch.setattr(runtime_module, "_build_provider", _counting_build)
 
@@ -227,9 +229,11 @@ def test_daily_cost_limit_enforced_on_every_call_including_cache_hits(
     calls: list[str] = []
     original_build = runtime_module._build_provider
 
-    def _counting_build(settings_arg, profile_name, provider_id, model_name, fallback=None):
+    def _counting_build(
+        settings_arg, profile_name, provider_id, model_name, fallback=None, target=None
+    ):
         calls.append(provider_id)
-        return original_build(settings_arg, profile_name, provider_id, model_name, fallback)
+        return original_build(settings_arg, profile_name, provider_id, model_name, fallback, target)
 
     monkeypatch.setattr(runtime_module, "_build_provider", _counting_build)
 

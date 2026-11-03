@@ -18,6 +18,11 @@ measurement it waits for is [`stage6-throughput.md`](../specs/stage6-throughput.
   `RAG_RETRIEVAL_TOP_K=14`, `OLLAMA_CONTEXT_WINDOW=3584`, `RAG_RERANKER_RUNTIME=onnx`;
   the kept count stays 5. See [configuration](../CONFIGURATION.md) for the measurement records.
   `.ask100-runtime/env.json` pins qwen2.5:7b, so it is never read (item 2).
+- **The service's answer switch:** `service.env.example` selects `LLM_PROVIDER_PROFILE=codex-answer`.
+  GPT-6-Astra at `xhigh` writes the final V4 answer through the owner's ChatGPT subscription;
+  classification, transforms, grading, verification, quality scoring, suggestions and rewrites
+  stay on the local 4B. The same 3,584-token context fitting and the stage-5v wrapper apply.
+  The code default remains `local-first`; a fresh checkout needs no Codex.
 - **The environment:** start.py builds the API's environment from nothing. It holds the user's
   `HOME`, `USER`, `LOGNAME` and `TMPDIR`, the stands' `PYTHONPATH`, and the deployment keys of
   one file outside the repository, `~/.config/rag-new/chat-service.env`. No value of that file
@@ -37,6 +42,7 @@ measurement it waits for is [`stage6-throughput.md`](../specs/stage6-throughput.
 | `RAG_SERVICE_MEMORY_POLICY` is a policy the service can hold ([below](#the-memory-policy)) | refusal |
 | Port 8002 is free | refusal |
 | Every required key is set and no `<placeholder>` is left. `JWT_SECRET` and `SESSION_SECRET_KEY` have at least 32 characters and `DB_ENCRYPTION_KEY` at least 16, none of them a known dev default. `ADMIN_PASSWORD_HASH` is a bcrypt hash. The index directory holds `chroma.sqlite3` | refusal |
+| `LLM_PROVIDER_PROFILE` is `local-first` or `codex-answer`; any supplied `CODEX_BINARY` is an absolute executable file and `CODEX_HOME` an absolute existing directory. Both paths are required for `codex-answer` | refusal |
 | `RAG_RERANKER_ONNX` names a file whose SHA-256 matches the measured INT8 export; hashed in 1 MiB chunks before any API start | refusal |
 | PostgreSQL accepts the service's login (`SELECT 1`). The TCP wait is ≤ 120 s, and SQLSTATE `57P03` means starting up | not up yet; any other error is a refusal |
 | Ollama answers and has the code default's model (nothing is loaded) | not up yet; a missing model is a refusal |
@@ -125,6 +131,80 @@ The only measurement it stays up for is its own throughput measurement.
 
    **Keep `DB_ENCRYPTION_KEY` for the database's whole life.** Messages are stored encrypted with
    it (pgcrypto, `db/crypto.py`), and a new key leaves the old rows unreadable.
+
+## Codex answer model: one-time owner setup
+
+Use the standalone **x86_64-apple-darwin** Codex binary on this Intel Mac running macOS 13.
+Node and npm are not needed. The provider's command and event contract is CLI **0.166.0**.
+From the official [Codex releases](https://github.com/openai/codex/releases), obtain that
+version's `codex-x86_64-apple-darwin.tar.gz` and verify the release's published digest before
+installing it. Do not substitute the aarch64 binary or silently upgrade: compare `exec --help`
+and `features list` with the provider's flags and tool-disable list first.
+
+After downloading the archive to the Mac, as `julia`:
+
+```sh
+mkdir -p "$HOME/.local/bin"
+tar -xzf "$HOME/Downloads/codex-x86_64-apple-darwin.tar.gz" -C "$HOME/Downloads"
+install -m 755 "$HOME/Downloads/codex-x86_64-apple-darwin" "$HOME/.local/bin/codex"
+file "$HOME/.local/bin/codex"
+"$HOME/.local/bin/codex" --version
+"$HOME/.local/bin/codex" exec --help
+```
+
+`file` must report x86_64 and the binary must run on macOS 13. This has not been checked on
+the production Mac. If that release requires a newer macOS, obtain a macOS-13-compatible
+standalone build of the same CLI contract before switching the service. Keep `local-first`
+until it runs; do not install a Node runtime as a workaround.
+
+Create a **service-only CODEX_HOME on the Mac**, with no config, rules, skills or MCP servers.
+Never copy the laptop's Codex home, tokens or configuration. The owner performs this login:
+
+```sh
+mkdir -p "$HOME/.local/share/rag-new/chat-service/codex"
+chmod 700 "$HOME/.local/share/rag-new/chat-service/codex"
+CODEX_HOME="$HOME/.local/share/rag-new/chat-service/codex" "$HOME/.local/bin/codex" login --device-auth
+CODEX_HOME="$HOME/.local/share/rag-new/chat-service/codex" "$HOME/.local/bin/codex" login status
+```
+
+Complete the displayed device flow with the owner's ChatGPT subscription. There is no paid API
+key. Keep this directory private. In `chat-service.env`, set the three keys shown in the example:
+
+```ini
+LLM_PROVIDER_PROFILE=codex-answer
+CODEX_BINARY=/Users/julia/.local/bin/codex
+CODEX_HOME=/Users/julia/.local/share/rag-new/chat-service/codex
+```
+
+Restart the service after changing these keys. All existing refusal checks still apply.
+To return to local answers, set `LLM_PROVIDER_PROFILE=local-first`; omit the two Codex paths
+if removing the installation. Other profiles and model/effort tuning keys are refused by
+`start.py`. Outside this service launcher, Settings accepts `CODEX_MODEL` (default
+`gpt-6-astra`), `CODEX_REASONING_EFFORT` (`xhigh`), `CODEX_TIMEOUT_SEC` (`180`) and
+`CODEX_MAX_CONCURRENT_CALLS` (`1`), as well as `CODEX_BINARY` (`codex` on PATH) and
+`CODEX_HOME` (unset inherits the process's home selection).
+
+Each answer starts one ephemeral CLI process in a fresh empty directory. It gets only PATH,
+HOME, CODEX_HOME, LANG/LC_ALL and TMPDIR; tools are disabled and any tool event rejects the
+answer. The 180-second budget includes queue wait and kills the process group on expiry.
+A rejected answer falls back to `qwen3:4b-instruct-2507-q4_K_M`, using the existing outage
+cache (300 seconds by default). Both providers have zero API cost; subscription usage limits
+still apply. The answer arrives as one complete SSE token event, followed by the local quality
+score and suggestions. A Codex answer has no Ollama prefix cache to continue, so the stream
+uses the existing classic local self-evaluation when continuation mode is selected.
+
+`/api/ask` and the SSE `result` include `answer_provider` and `answer_model`: normally
+`codex` / `gpt-6-astra`, or `ollama` / `qwen3:4b-instruct-2507-q4_K_M` on failover. These
+describe the answer writer, not the later quality scorer. They are also preserved in cached
+`/api/ask` replies. Null means no recorded model answer (for example a deterministic refusal
+or an older cached response). Inspect the response in the browser's Network tab; `/api/chat`
+and `/api/chat/stream` delegate to the same handlers and the widget uses `/api/ask`.
+
+This profile selects the measured V4 RAG answer path even if optional agentic mode is enabled:
+the separate tool loop cannot author its own non-V4 model answer. Deterministic action
+confirmations and order-status replies remain deterministic. No other profile changes routes.
+After login, the owner still needs a real Mac question confirming answer attribution and the
+local fallback. No real Codex call or deployment was performed while implementing this switch.
 
 ## Install
 

@@ -154,6 +154,9 @@ class GraphState(TypedDict, total=False):
     citations: list[dict]
     provider_name: Optional[str]
     model_name: Optional[str]
+    # Final-answer attribution, preserved when auxiliary calls update usage.
+    answer_provider: Optional[str]
+    answer_model: Optional[str]
     prompt_tokens: Optional[int]
     completion_tokens: Optional[int]
     cost_usd: Optional[float]

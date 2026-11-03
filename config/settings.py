@@ -362,6 +362,18 @@ class Settings:
         )
     )
     # --- Настройки LLM provider routing ---
+    codex_binary: str = field(default_factory=lambda: os.getenv("CODEX_BINARY", "codex"))
+    codex_home: str | None = field(default_factory=lambda: os.getenv("CODEX_HOME") or None)
+    codex_model: str = field(default_factory=lambda: os.getenv("CODEX_MODEL", "gpt-6-astra"))
+    codex_reasoning_effort: str = field(
+        default_factory=lambda: os.getenv("CODEX_REASONING_EFFORT", "xhigh")
+    )
+    codex_timeout_sec: float = field(
+        default_factory=lambda: float(os.getenv("CODEX_TIMEOUT_SEC", "180"))
+    )
+    codex_max_concurrent_calls: int = field(
+        default_factory=lambda: int(os.getenv("CODEX_MAX_CONCURRENT_CALLS", "1"))
+    )
     llm_provider_profile: str = field(
         default_factory=lambda: os.getenv("LLM_PROVIDER_PROFILE", "local-first").strip()
         or "local-first"
@@ -1558,7 +1570,9 @@ class Settings:
 
         # Проверка Ollama
         active_provider_ids = {active_profile.fast.provider, active_profile.strong.provider}
-        if self.require_ollama or "ollama" in active_provider_ids:
+        if self.llm_provider_profile != "codex-only" and (
+            self.require_ollama or "ollama" in active_provider_ids
+        ):
             ollama_ok = False
             try:
                 # Scheme allowlist only (B310): never follow file:/ or custom schemes

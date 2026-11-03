@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import json
 import math
 import threading
@@ -405,11 +406,14 @@ class ProviderBackedLLM:
 
         check_request_deadline("provider.generate")
         self._budget_precheck(messages, phase="provider.generate")
-        if (
-            self._fallback_provider is not None
-            and self._fallback_cache_is_active is not None
-            and self._fallback_cache_is_active()
-        ):
+        self.last_response = None
+        if self._fallback_cache_is_active is not None and self._fallback_cache_is_active():
+            if self._fallback_provider is None:
+                raise ProviderUnavailable(
+                    "Provider outage cached",
+                    provider_id=self._provider.provider_id,
+                    reason="outage_cached",
+                )
             check_request_deadline("provider.generate.fallback_cache")
             self._budget_precheck(messages, phase="provider.generate.fallback_cache")
             response = self._fallback_provider.generate(messages, tools=tools, **kwargs)
@@ -421,6 +425,8 @@ class ProviderBackedLLM:
             response = self._provider.generate(messages, tools=tools, **kwargs)
         except ProviderUnavailable as exc:
             if self._fallback_provider is None:
+                if self._fallback_cache_activate is not None and self._fallback_cache_ttl_sec > 0:
+                    self._fallback_cache_activate(self._fallback_cache_ttl_sec)
                 raise
             check_request_deadline("provider.generate.fallback")
             self._budget_precheck(messages, phase="provider.generate.fallback")
@@ -574,6 +580,21 @@ class ProviderBackedLLM:
     ) -> AsyncIterator[str]:
         from llm.request_budget import charge_llm_request_budget
         from utils.request_deadline import check_request_deadline
+
+        if getattr(self._provider, "streams_whole_response", False):
+            # Codex emits a validated whole answer. Reuse normal failover,
+            # the outage cache and usage accounting, then retain attribution
+            # on the caller's thread (generate ran in a worker).
+            response = await asyncio.to_thread(self.generate, messages, **kwargs)
+            self.last_response = response
+            try:
+                yield response.text
+            finally:
+                # The SSE consumer can suspend after the chunk while another
+                # request uses this event-loop thread. Restore this answer's
+                # attribution when its stream finishes.
+                self.last_response = response
+            return
 
         check_request_deadline("provider.generate_stream")
         self._budget_precheck(messages, phase="provider.generate_stream")

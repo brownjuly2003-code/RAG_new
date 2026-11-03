@@ -64,6 +64,9 @@ DEPLOYMENT_KEYS = frozenset(
         "ADMIN_DEFAULT_TENANT",
         "CORS_ORIGINS",
         "AUTO_MIGRATE",
+        "LLM_PROVIDER_PROFILE",
+        "CODEX_BINARY",
+        "CODEX_HOME",
     }
 )
 REQUIRED_KEYS = (
@@ -243,6 +246,20 @@ def check_values(env: dict[str, str]) -> None:
     unfilled = sorted(key for key in DEPLOYMENT_KEYS if PLACEHOLDER.search(env.get(key, "")))
     if unfilled:
         raise Stop(REFUSE, "placeholders left in " + ", ".join(unfilled))
+    profile = env.get("LLM_PROVIDER_PROFILE", "local-first")
+    if profile not in {"local-first", "codex-answer"}:
+        raise Stop(REFUSE, "LLM_PROVIDER_PROFILE must be local-first or codex-answer")
+    for key in ("CODEX_BINARY", "CODEX_HOME"):
+        if key in env or profile == "codex-answer":
+            value = env.get(key, "")
+            if not value or not Path(value).is_absolute():
+                raise Stop(REFUSE, f"{key} must be an absolute path")
+    if "CODEX_BINARY" in env:
+        binary = Path(env["CODEX_BINARY"])
+        if not binary.is_file() or not os.access(binary, os.X_OK):
+            raise Stop(REFUSE, "CODEX_BINARY must name an executable file")
+    if "CODEX_HOME" in env and not Path(env["CODEX_HOME"]).is_dir():
+        raise Stop(REFUSE, "CODEX_HOME must name the service's own existing directory")
     secrets_rules = (("JWT_SECRET", 32), ("SESSION_SECRET_KEY", 32), ("DB_ENCRYPTION_KEY", 16))
     for key, minimum in secrets_rules:
         value = env.get(key) or (env["JWT_SECRET"] if key == "SESSION_SECRET_KEY" else "")

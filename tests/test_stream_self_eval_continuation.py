@@ -75,6 +75,8 @@ ENTRY_KEYS = {"score", "sec", "prompt_tokens", "prompt_sec", "eval_tokens", "eva
 RESULT_KEYS = {
     "type",
     "answer",
+    "answer_provider",
+    "answer_model",
     "answer_source",
     "generation_source",
     "quality_score",

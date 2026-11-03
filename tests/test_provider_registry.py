@@ -16,6 +16,7 @@ def test_load_provider_registry_from_yaml() -> None:
 
     assert registry.default_profile == "local-first"
     assert set(registry.provider_ids()) == {
+        "codex",
         "gracekelly",
         "mistral",
         "ollama",

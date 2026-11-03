@@ -1,6 +1,22 @@
 default_profile: local-first
 
 providers:
+  - id: codex
+    label: Codex ChatGPT subscription
+    kind: subscription
+    enabled: true
+    api_key_env: null
+    default_models:
+      fast: gpt-6-astra
+      strong: gpt-6-astra
+    capabilities:
+      supports_streaming: true
+    models:
+      - name: gpt-6-astra
+        aliases: []
+        input_price_per_1m_tokens: 0.0
+        output_price_per_1m_tokens: 0.0
+
   - id: ollama
     label: Ollama
     kind: local
@@ -129,6 +145,36 @@ providers:
         output_price_per_1m_tokens: 0.0
 
 routing_profiles:
+  codex-only:
+    description: All model calls use Codex; no local model or fallback.
+    fast:
+      provider: codex
+      model: gpt-6-astra
+      effort: low
+      timeout_sec: 60
+    strong:
+      provider: codex
+      model: gpt-6-astra
+      effort: low
+      timeout_sec: 60
+    answer:
+      provider: codex
+      model: gpt-6-astra
+  codex-answer:
+    description: Codex subscription for the final answer only; all auxiliary work and failover use the local 4B.
+    fast:
+      provider: ollama
+      model: qwen3:4b-instruct-2507-q4_K_M
+    strong:
+      provider: ollama
+      model: qwen3:4b-instruct-2507-q4_K_M
+    answer:
+      provider: codex
+      model: gpt-6-astra
+    fallback:
+      provider: ollama
+      model: qwen3:4b-instruct-2507-q4_K_M
+
   local-first:
     description: Explicit local-only Ollama routing, zero paid spend.
     fast:

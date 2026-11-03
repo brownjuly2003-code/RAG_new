@@ -101,6 +101,7 @@ from agent.prompts import (  # noqa: E402
 from agent.response_safety import apply_pre_response_safety  # noqa: E402
 from agent.state import GraphState, create_initial_state  # noqa: E402
 from llm.providers.base import ProviderUnavailable, estimate_tokens  # noqa: E402
+from llm.providers.runtime import is_codex_only  # noqa: E402
 from tracing.sqlite_trace import finish_trace, log_step, start_trace  # noqa: E402
 
 try:
@@ -557,10 +558,12 @@ _default_breaker: CircuitBreaker | None = None
 def get_default_breaker() -> CircuitBreaker | None:
     """Return the shared Ollama breaker, or None when disabled in settings."""
     global _default_breaker
+    from config.settings import get_settings
+
+    if is_codex_only(get_settings()):
+        return None
     if _default_breaker is not None:
         return _default_breaker
-
-    from config.settings import get_settings
     from utils.circuit_breaker import CircuitBreaker
 
     settings = get_settings()
@@ -920,6 +923,9 @@ def _apply_llm_usage(state: GraphState, usage: dict[str, Any]) -> GraphState:
 
 
 def _llm_supports_structured_output(llm: Any) -> bool:
+    declared = getattr(llm, "supports_structured_output", None)
+    if isinstance(declared, bool):
+        return declared
     return bool(
         getattr(llm, "supports_structured_output", False) is True
         or callable(inspect.getattr_static(llm, "generate_with_schema", None))
@@ -927,6 +933,9 @@ def _llm_supports_structured_output(llm: Any) -> bool:
 
 
 def _llm_supports_tool_use(llm: Any) -> bool:
+    declared = getattr(llm, "supports_tool_use", None)
+    if isinstance(declared, bool):
+        return declared
     return bool(
         getattr(llm, "supports_tool_use", False) is True
         or callable(inspect.getattr_static(llm, "generate_with_tools", None))
@@ -1119,6 +1128,7 @@ def _agentic_terminal_fields_with_eval(
 
     if (
         has_kb_context(kb_docs)
+        and not is_codex_only(settings)
         and agentic_quality_eval_enabled(settings)
         and q_source not in {"llm", "heuristic"}
     ):
@@ -1315,7 +1325,17 @@ def make_classify_complexity_node(
                     else ""
                 ).strip().upper()
             else:
-                raw = _invoke_llm(classifier_llm, prompt, role="classify").strip().upper()
+                raw = _invoke_llm(classifier_llm, prompt, role="classify").strip()
+                if is_codex_only(settings):
+                    # Codex returns the prompt's JSON as text, without a schema API.
+                    try:
+                        parsed = json.loads(raw)
+                    except ValueError:
+                        parsed = None
+                    if isinstance(parsed, dict):
+                        structured = parsed
+                        raw = str(parsed.get("complexity") or "")
+                raw = raw.upper()
             usage = _capture_llm_usage(classifier_llm, "classify_complexity")
             trace_llm_call(
                 trace_id=trace_id,
@@ -1870,7 +1890,8 @@ def make_grade_docs_node(llm: SupportsInvoke) -> Callable[[GraphState], GraphSta
                 span.set_attribute("rag.input_docs", len(context_docs))
                 batch_grades: list[tuple[bool, str]] | None = None
                 batch_views: list[dict[str, Any]] | None = None
-                if len(context_docs) > 1:
+                codex_only = is_codex_only(get_settings())
+                if len(context_docs) > 1 or codex_only:
                     try:
                         # Every document stays in the batch under its index,
                         # cut to its share of the grader's input window.
@@ -1942,6 +1963,10 @@ def make_grade_docs_node(llm: SupportsInvoke) -> Callable[[GraphState], GraphSta
                             graded.append(doc)
                         else:
                             filtered_count += 1
+                elif codex_only:
+                    # One batch only. Malformed/failed/oversized batches retain
+                    # the existing fail-closed grade result, without N retries.
+                    grader_errors = len(context_docs)
                 else:
                     for doc in context_docs:
                         # Outside the fail-closed try, like the batch prompt: a
@@ -2059,6 +2084,8 @@ def _generation_provider_fail_closed(
     new_state: GraphState = {
         **state,  # type: ignore[misc]
         "answer": _GENERATION_PROVIDER_FAILURE_ANSWER,
+        "answer_provider": None,
+        "answer_model": None,
         "claims": [],
         "quality_score": 0,
         "relevance_score": 0.0,
@@ -2079,6 +2106,7 @@ def _generation_provider_fail_closed(
 def make_generate_node(
     llm_fast: SupportsInvoke,
     llm_strong: SupportsInvoke,
+    llm_answer: SupportsInvoke | None = None,
 ) -> Callable[[GraphState], GraphState]:
     """Узел generate: формирует ответ. Level 3: учитывает chat_history."""
 
@@ -2100,7 +2128,7 @@ def make_generate_node(
             docs = resolve_generation_context_docs(state)
             chat_history = list(state.get("chat_history", []) or [])
             complexity = state.get("complexity", "unknown")
-            llm = llm_fast if complexity == "simple" else llm_strong
+            llm = llm_answer or (llm_fast if complexity == "simple" else llm_strong)
             model = _get_llm_model_name(llm) or ""
             usage = _new_llm_usage("generate")
             usage_recorded = False
@@ -2194,6 +2222,8 @@ def make_generate_node(
                 "generation_context_tokens": generation_context_tokens,
                 "generation_context_docs": list(docs),
                 "generation_error": None,
+                "answer_provider": usage.get("provider_name"),
+                "answer_model": usage.get("model_name"),
             }
             if complexity == "simple":
                 # Plan §5.1: simple path skips verify_facts — not a free 100.
@@ -2289,7 +2319,10 @@ def make_verify_facts_node(llm: SupportsInvoke) -> Callable[[GraphState], GraphS
             from config.settings import get_settings
 
             settings = get_settings()
-            if not getattr(settings, "fact_verification_enabled", True):
+            # Without the quality judge, this profile cannot promote to auto.
+            # Claim verification only adds telemetry to that terminal; it changes
+            # neither the answer nor its sources, so omit those calls.
+            if is_codex_only(settings) or not getattr(settings, "fact_verification_enabled", True):
                 g_status, g_score, g_skipped = status_for_skip(reason="disabled")
                 new_state: GraphState = {
                     **state,
@@ -2578,6 +2611,7 @@ def make_verify_facts_node(llm: SupportsInvoke) -> Callable[[GraphState], GraphS
 def make_evaluate_node(
     llm_fast: SupportsInvoke,
     llm_strong: SupportsInvoke,
+    llm_answer: SupportsInvoke | None = None,
 ) -> Callable[[GraphState], GraphState]:
     """Узел evaluate: quality judge (1-100), plan §6.3 independence policy.
 
@@ -2592,8 +2626,30 @@ def make_evaluate_node(
             return state
         trace_id = state.get("trace_id", "unknown-trace-id")
         complexity = state.get("complexity", "unknown")
+        if is_codex_only(get_settings()):
+            # No quality model is measured; preserve the conservative human route.
+            new_state = cast(
+                GraphState,
+                {
+                    **state,
+                    **judge_fail_closed_fields(reason="codex_only_disabled", status="unavailable"),
+                    "judge_independent": False,
+                },
+            )
+            new_state["knowledge_gap"] = _is_knowledge_gap(new_state)
+            log_step(trace_id, "evaluate", new_state)
+            return new_state
         # Same selection rule as generate: simple→fast, else→strong.
-        generator_llm = llm_fast if complexity == "simple" else llm_strong
+        generator_llm = llm_answer or (llm_fast if complexity == "simple" else llm_strong)
+        generator_identity: Any = generator_llm
+        if llm_answer is not None and state.get("answer_provider"):
+            from types import SimpleNamespace
+
+            # After failover the actual generator is the 4B; do not call its
+            # self-evaluation independent merely because Codex was configured.
+            generator_identity = SimpleNamespace(
+                provider_id=state.get("answer_provider"), model_name=state.get("answer_model")
+            )
         require_independence = False
         if get_settings is not None:
             try:
@@ -2605,7 +2661,7 @@ def make_evaluate_node(
         resolution = resolve_judge_llm(
             candidate_fast=llm_fast,
             candidate_strong=llm_strong,
-            generator_llm=generator_llm,
+            generator_llm=generator_identity,
             require_independence=require_independence,
         )
         model = resolution.judge_model or ""
@@ -2790,7 +2846,9 @@ def make_suggest_questions_node(llm: SupportsInvoke) -> Callable[[GraphState], G
             return {**state, "suggested_questions": []}
         if get_settings is not None:
             settings = get_settings()
-            if not getattr(settings, "suggested_questions_enabled", True):
+            if is_codex_only(settings) or not getattr(
+                settings, "suggested_questions_enabled", True
+            ):
                 return {**state, "suggested_questions": []}
 
         trace_id = state.get("trace_id", "unknown-trace-id")
@@ -2990,6 +3048,8 @@ def make_rewrite_query_node(llm: SupportsInvoke) -> Callable[[GraphState], Graph
                 "graded_docs": [],
                 "generation_context_docs": None,
                 "answer": None,
+                "answer_provider": None,
+                "answer_model": None,
                 "claims": [],
                 "factuality_score": 0,
                 "fact_verification_skipped": False,
@@ -3167,12 +3227,14 @@ def build_support_graph(
 
     llm_fast: SupportsInvoke
     llm_strong: SupportsInvoke
+    llm_answer: SupportsInvoke | None = None
     graph_cache_key: tuple[int, int, int, int, int] | None = None
     if llm is None:
         if build_provider_runtime is not None:
             runtime = build_provider_runtime(settings)
             llm_fast = runtime.fast
             llm_strong = runtime.strong
+            llm_answer = getattr(runtime, "answer", None)
             graph_cache_key = (
                 id(retriever),
                 id(llm_fast),
@@ -3186,6 +3248,8 @@ def build_support_graph(
                     _GRAPH_CACHE.move_to_end(graph_cache_key)
                     return cached[0]
         else:
+            if is_codex_only(settings):
+                raise ProviderUnavailable("Codex runtime unavailable", provider_id="codex")
             # Per-call LocalOllamaLLM instances have no stable identity — do
             # not cache a graph keyed on their ids.
             llm_strong = LocalOllamaLLM(model_name=settings.ollama_model_name)
@@ -3204,13 +3268,13 @@ def build_support_graph(
     workflow.add_node("transform_query", make_transform_query_node(llm_fast))
     workflow.add_node("retrieve", make_retrieve_node(retriever))
     workflow.add_node("grade_docs", make_grade_docs_node(llm_fast))
-    workflow.add_node("generate", make_generate_node(llm_fast, llm_strong))
+    workflow.add_node("generate", make_generate_node(llm_fast, llm_strong, llm_answer))
     workflow.add_node("verify_facts", make_verify_facts_node(llm_fast))
     # evaluate receives both LLMs: plan §6.3 resolves an independent judge
     # (prefer fast when generator is strong — keeps complex-path latency low;
     # when independence is required and generator is fast, uses strong).
     # suggest_questions is cosmetic follow-up text — fast is enough there too.
-    workflow.add_node("evaluate", make_evaluate_node(llm_fast, llm_strong))
+    workflow.add_node("evaluate", make_evaluate_node(llm_fast, llm_strong, llm_answer))
     route_min_relevance = (
         float(routing_thresholds.min_relevance)
         if routing_thresholds is not None
@@ -3486,6 +3550,7 @@ def run_qa_pipeline(
         finish_trace(trace_id, final_state)
         if (
             not retrieval_only
+            and not is_codex_only(settings)
             and getattr(settings, "online_evaluators_enabled", False)
             and run_online_evaluators is not None
             and persist_online_evaluations is not None
@@ -3856,6 +3921,11 @@ class ConversationSession:
             settings = get_settings()
             runtime = build_provider_runtime(settings)
         except Exception:
+            return None
+        if getattr(runtime, "answer", None) is not None:
+            # The tool loop writes a non-V4 final answer. An answer-only profile
+            # uses the fitted RAG generate node instead; deterministic action
+            # confirmations/status replies remain in _run_agentic_flow.
             return None
         for candidate in (runtime.strong, runtime.fast):
             if _llm_supports_tool_use(candidate):

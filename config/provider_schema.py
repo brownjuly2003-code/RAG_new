@@ -3,7 +3,7 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
-import yaml
+import yaml  # type: ignore[import-untyped]
 from pydantic import BaseModel, Field, ValidationError, model_validator
 
 _SNAPSHOT_DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
@@ -104,12 +104,16 @@ class ProviderConfig(BaseModel):
 class RoutingTarget(BaseModel):
     provider: str
     model: str
+    effort: str | None = None
+    timeout_sec: float | None = Field(default=None, gt=0)
 
 
 class RoutingProfile(BaseModel):
     description: str
     fast: RoutingTarget
     strong: RoutingTarget
+    # Optional final-answer route; all auxiliary calls keep the existing tiers.
+    answer: RoutingTarget | None = None
 
 
 class ProviderModelResolution(BaseModel):
@@ -138,6 +142,8 @@ class ProviderRegistry(BaseModel):
         for profile_name, profile in self.routing_profiles.items():
             self._validate_target(profile_name, "fast", profile.fast)
             self._validate_target(profile_name, "strong", profile.strong)
+            if profile.answer is not None:
+                self._validate_target(profile_name, "answer", profile.answer)
         return self
 
     def _validate_target(self, profile_name: str, slot: str, target: RoutingTarget) -> None:

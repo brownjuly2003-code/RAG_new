@@ -10,9 +10,10 @@ from typing import Any
 
 import yaml  # type: ignore[import-untyped]
 
-from config.provider_schema import load_provider_registry
+from config.provider_schema import RoutingTarget, load_provider_registry
 from config.settings import TIME_LIMIT_CEILING_SEC
 from llm.providers.base import ProviderBackedLLM
+from llm.providers.codex import CodexProvider
 from llm.providers.gracekelly import GraceKellyProvider
 from llm.providers.mistral import MistralProvider
 from llm.providers.ollama import OllamaProvider
@@ -31,9 +32,13 @@ class ProviderRuntime:
     profile_name: str
     fast: ProviderBackedLLM
     strong: ProviderBackedLLM
+    answer: ProviderBackedLLM | None = None
 
 
 def _active_profile_name(settings: Any) -> str:
+    # This deployment boundary also applies inside experiment contexts.
+    if getattr(settings, "llm_provider_profile", None) == "codex-only":
+        return "codex-only"
     if CURRENT_EXPERIMENT is not None:
         experiment = CURRENT_EXPERIMENT.get()
         if experiment is not None:
@@ -44,7 +49,18 @@ def _active_profile_name(settings: Any) -> str:
     return str(getattr(settings, "llm_provider_profile", "local-first") or "local-first")
 
 
-def _instantiate_provider(settings: Any, provider_id: str, model_name: str) -> Any:
+def is_codex_only(settings: Any) -> bool:
+    return _active_profile_name(settings) == "codex-only"
+
+
+def _instantiate_provider(
+    settings: Any,
+    provider_id: str,
+    model_name: str,
+    *,
+    effort: str | None = None,
+    target_timeout_sec: float | None = None,
+) -> Any:
     registry = load_provider_registry(settings.provider_registry_path)
     provider_config = registry.get_provider(provider_id)
     if provider_config is None:
@@ -57,6 +73,20 @@ def _instantiate_provider(settings: Any, provider_id: str, model_name: str) -> A
     model_pricing_name: str = str(model.name)
     input_price: float = float(model.input_price_per_1m_tokens)
     output_price: float = float(model.output_price_per_1m_tokens)
+    if provider_id == "codex":
+        return CodexProvider(
+            binary=str(getattr(settings, "codex_binary", "codex")),
+            codex_home=getattr(settings, "codex_home", None),
+            model_name=str(getattr(settings, "codex_model", model_pricing_name)),
+            effort=effort or str(getattr(settings, "codex_reasoning_effort", "xhigh")),
+            timeout_sec=(
+                target_timeout_sec
+                if target_timeout_sec is not None
+                else float(getattr(settings, "codex_timeout_sec", 180))
+            ),
+            max_concurrent_calls=int(getattr(settings, "codex_max_concurrent_calls", 1)),
+            context_window=int(getattr(settings, "ollama_context_window", 3584)),
+        )
     if provider_id == "ollama":
         ollama_provider = OllamaProvider(
             base_url=str(getattr(settings, "ollama_base_url", "http://localhost:11434")),
@@ -183,9 +213,31 @@ def _build_provider(
     provider_id: str,
     model_name: str,
     fallback_target: tuple[str, str] | None = None,
+    target: RoutingTarget | None = None,
 ) -> ProviderBackedLLM:
-    provider = _instantiate_provider(settings, provider_id, model_name)
-    if provider_id != "gracekelly" or fallback_target is None:
+    overrides: dict[str, Any] = {}
+    if target is not None and target.effort is not None:
+        overrides["effort"] = target.effort
+    if target is not None and target.timeout_sec is not None:
+        overrides["target_timeout_sec"] = target.timeout_sec
+    provider = _instantiate_provider(settings, provider_id, model_name, **overrides)
+    if profile_name == "codex-only":
+        # A short auxiliary timeout must not suppress the longer answer attempt.
+        cache_key = _failover_cache_key(
+            settings,
+            f"{profile_name}:{provider._effort}:{provider._timeout_sec}",
+            provider.provider_id,
+            provider.model_name,
+            "",
+            "",
+        )
+        return ProviderBackedLLM(
+            provider,
+            fallback_cache_is_active=lambda: _is_failover_cache_active(cache_key),
+            fallback_cache_activate=lambda ttl: _activate_failover_cache(cache_key, ttl),
+            fallback_cache_ttl_sec=300.0,
+        )
+    if provider_id not in {"gracekelly", "codex"} or fallback_target is None:
         return ProviderBackedLLM(provider)
 
     fallback_provider_id, fallback_model_name = fallback_target
@@ -307,8 +359,34 @@ def build_provider_runtime(settings: Any) -> ProviderRuntime:
     fallback_target = _load_profile_fallback(settings, profile_name)
     runtime = ProviderRuntime(
         profile_name=profile_name,
-        fast=_build_provider(settings, profile_name, profile.fast.provider, profile.fast.model, fallback_target),
-        strong=_build_provider(settings, profile_name, profile.strong.provider, profile.strong.model, fallback_target),
+        fast=_build_provider(
+            settings,
+            profile_name,
+            profile.fast.provider,
+            profile.fast.model,
+            fallback_target,
+            profile.fast,
+        ),
+        strong=_build_provider(
+            settings,
+            profile_name,
+            profile.strong.provider,
+            profile.strong.model,
+            fallback_target,
+            profile.strong,
+        ),
+        answer=(
+            _build_provider(
+                settings,
+                profile_name,
+                profile.answer.provider,
+                profile.answer.model,
+                fallback_target,
+                profile.answer,
+            )
+            if profile.answer is not None
+            else None
+        ),
     )
     if cache_key is not None:
         with _RUNTIME_CACHE_LOCK:
