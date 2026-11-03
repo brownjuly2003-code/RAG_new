@@ -182,6 +182,10 @@ the generator's share of the losses against retrieval's. Registered 2026-11-02 i
 its amendment `f93508a` before the first corpus request; read 2026-11-03: the generator is the
 bottleneck — M1 good 120 → 220 of 224 with the answer in the context, detected; the pooled M2
 agreement not detected; its [record](evidence/generator-ceiling-record.md).
+[Stage 6 item 0, the quality under `codex-only`](specs/codex-only-quality.md) — the product as it
+runs on her laptop, every model call through Codex, on stage 5в's 300 questions: gold in the
+captured context and M1 against stage 5в's Codex arm. A specification: registered with its tools'
+hashes before the first request.
 [Stage 6, item 4](specs/stage6-throughput.md) — the
 service's questions an hour and what a second client sees: a draft, registered with its tools once
 the service is installed.
@@ -215,9 +219,11 @@ P2 reference samples ([Astra](specs/p2-astra-reference-sample.md),
 
 - [`evidence/`](evidence/) — one write-up per measured slice; the register with provenance is
   [`EVIDENCE_INDEX.md`](../EVIDENCE_INDEX.md). The records themselves are in `../reports/`.
-- [Latest handoff: stage 5в answered whole, two keys graded, aircargo's judging paused](operations/session-handoff-2026-11-03-stage5v-arm-judge.md)
-  — the generator's ceiling: the arm's 300 answers, the cleanup amendment, the judge's state and how to
-  resume it, the outcome table. Before it:
+- [Latest handoff: `codex-only` live on her laptop, the route fixed, the install in the repository, the re-measurement specified](operations/session-handoff-2026-11-03-codex-only-live.md)
+  — stage 6 item 0: the live runs, the `auto` route under the handover line, the release clone,
+  the spec of the quality re-measurement and its cold read, the executor's procedure. Before it:
+  [stage 5в recorded, D5 decided: Codex on her laptop, `codex-only`, no Ollama](operations/session-handoff-2026-11-03-laptop-codex-only.md),
+  [stage 5в answered whole, two keys graded, aircargo's judging paused](operations/session-handoff-2026-11-03-stage5v-arm-judge.md),
   [stage 5 and V6 recorded (V6 not adopted, harm), RAG_new published](operations/session-handoff-2026-11-02-v6-record-publication.md)
   (procedure: the [stage 8 runbook](operations/stage8-publication-runbook.md)),
   [stage 5 read (holds), her «Да» to publish RAG_new with its history, V6 running](operations/session-handoff-2026-11-02-stage5-record-v6-judge.md),
