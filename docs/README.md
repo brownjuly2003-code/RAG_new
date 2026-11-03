@@ -32,6 +32,7 @@ History — superseded plans, audits, session handoffs, dated experiment logs �
 | Helm chart | [Helm lint](operations/helm-lint.md) |
 | A live GraceKelly smoke (explicit opt-in only) | [GraceKelly smoke](operations/gracekelly-smoke.md) |
 | The chat as a launchd service on the Mac (a draft; installed only on Julia's word) | [macOS service](operations/macos-service.md) |
+| The chat on Julia's Windows laptop: launcher, env file, the `codex-only` profile, no Ollama | [Windows service](operations/windows-service.md) |
 
 ## How it is built — `architecture/` and `adr/`
 

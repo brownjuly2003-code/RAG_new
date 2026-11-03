@@ -44,7 +44,10 @@ binds autopilot too.
   order of the tasks, not the tool.
 - **Nothing heavy on the Windows laptop.** No WSL, Docker or VM there. Tests,
   models and Docker run on the Mac (`deproject-mac`) or Colab; the laptop
-  keeps `ruff`, `mypy` and light scripts.
+  keeps `ruff`, `mypy` and light scripts. One exception (her word of
+  2026-11-03): the chat product runs on the laptop, profile `codex-only` —
+  its model calls go to Codex, never Ollama or a local LLM ([`PLAN.md`](PLAN.md)
+  stage 6 item 0).
 - **Pushes go to `origin/master`** (`brownjuly2003-code/RAG_new`, private),
   over HTTPS because the account's ssh has no key loaded:
   `git -c credential.helper='!gh auth git-credential' push origin master`.

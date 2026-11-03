@@ -39,7 +39,10 @@ The product measured and improved now is the web chat on the production Mac
 ## Machines
 
 - **Windows laptop:** editing, `ruff`, `mypy`, light scripts. No tests, models, WSL, Docker or
-  VMs (owner direction, 2026-09-12).
+  VMs (owner direction, 2026-09-12). One exception, her word of 2026-11-03 «нужно делать все,
+  значит, на этой машине»: the chat product and its Codex measurements run here, profile
+  `codex-only` — every model call goes to Codex, never Ollama or another local LLM
+  ([`PLAN.md`](PLAN.md) stage 6 item 0). Tests still run on the Mac.
 - **`deproject-mac`** (production, 8 GB): tests, models, Docker, measurements. Tests go through
   `.tmp/mf-mac/sync.py`, then `.tmp/mf-mac/remote.py`. One measurement at a time; no tests
   during a live run; time numbers only from an idle Mac.
