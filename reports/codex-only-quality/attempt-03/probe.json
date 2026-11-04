@@ -1,6 +1,19 @@
 {
-  "stops": [],
-  "resumes": [],
+  "stops": [
+    {
+      "id": "84d0be80173146d2bdf8ab65f2904743",
+      "code": 5,
+      "reason": "drain_timeout",
+      "utc": "2026-11-04T18:25:14.359045+00:00",
+      "resolved": "2026-11-04T18:32:55.068478+00:00"
+    }
+  ],
+  "resumes": [
+    {
+      "utc": "2026-11-04T18:32:55.068478+00:00",
+      "stop_id": "84d0be80173146d2bdf8ab65f2904743"
+    }
+  ],
   "chunks": [
     {
       "utc": "2026-11-04T15:11:19.389310+00:00",
@@ -137,11 +150,283 @@
         }
       ],
       "exit_code": 0
+    },
+    {
+      "utc": "2026-11-04T16:12:56.885953+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-04T16:12:57.914370+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-04T16:21:50.109261+00:00"
+        }
+      ],
+      "exit_code": 3
+    },
+    {
+      "utc": "2026-11-04T16:25:15.833282+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-04T16:25:16.865114+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-04T16:33:19.498201+00:00"
+        }
+      ],
+      "exit_code": 3
+    },
+    {
+      "utc": "2026-11-04T16:35:30.506101+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-04T16:35:31.544045+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-04T16:44:30.188854+00:00"
+        }
+      ],
+      "exit_code": 3
+    },
+    {
+      "utc": "2026-11-04T16:46:29.255914+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-04T16:46:30.283698+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-04T16:55:36.287804+00:00"
+        }
+      ],
+      "exit_code": 3
+    },
+    {
+      "utc": "2026-11-04T16:57:25.201143+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-04T16:57:26.236776+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-04T17:06:23.946952+00:00"
+        }
+      ],
+      "exit_code": 3
+    },
+    {
+      "utc": "2026-11-04T17:14:24.691931+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-04T17:14:25.732319+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-04T17:17:35.019538+00:00"
+        }
+      ],
+      "exit_code": 3
+    },
+    {
+      "utc": "2026-11-04T17:19:39.615530+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-04T17:19:40.650011+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-04T17:28:23.844586+00:00"
+        }
+      ],
+      "exit_code": 3
+    },
+    {
+      "utc": "2026-11-04T17:30:10.700559+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-04T17:30:11.745349+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-04T17:39:00.312501+00:00"
+        }
+      ],
+      "exit_code": 3
+    },
+    {
+      "utc": "2026-11-04T17:41:02.765558+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-04T17:41:03.802145+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-04T17:49:32.502340+00:00"
+        }
+      ],
+      "exit_code": 3
+    },
+    {
+      "utc": "2026-11-04T17:51:51.199526+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-04T17:51:52.242903+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-04T17:59:54.331635+00:00"
+        }
+      ],
+      "exit_code": 3
+    },
+    {
+      "utc": "2026-11-04T18:03:55.651176+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-04T18:03:56.690179+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-04T18:10:58.286116+00:00"
+        }
+      ],
+      "exit_code": 3
+    },
+    {
+      "utc": "2026-11-04T18:12:51.258391+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-04T18:12:52.286870+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-04T18:21:50.694309+00:00"
+        }
+      ],
+      "exit_code": 3
+    },
+    {
+      "utc": "2026-11-04T18:23:45.624773+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-04T18:23:46.660478+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-04T18:25:14.370044+00:00"
+        }
+      ],
+      "exit_code": 5
+    },
+    {
+      "utc": "2026-11-04T18:32:55.068478+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-04T18:32:56.126337+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-04T18:40:47.656835+00:00"
+        }
+      ],
+      "exit_code": 3
+    },
+    {
+      "utc": "2026-11-04T18:44:22.192421+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-04T18:44:23.235789+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-04T18:51:36.957312+00:00"
+        }
+      ],
+      "exit_code": 3
+    },
+    {
+      "utc": "2026-11-04T18:53:44.934457+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-04T18:53:45.980171+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-04T18:57:30.783094+00:00"
+        }
+      ],
+      "exit_code": 0
     }
   ],
   "retry_at": null,
   "pilot_seconds": 1566.8139999999985,
-  "remaining_seconds": 0.0,
+  "remaining_seconds": 6276.234000000011,
   "forecast_s": 60,
   "slow_threshold_s": 180,
   "key": "probe",
