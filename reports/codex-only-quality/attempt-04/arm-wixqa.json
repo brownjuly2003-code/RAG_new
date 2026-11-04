@@ -126,17 +126,34 @@
         }
       ],
       "exit_code": 0
+    },
+    {
+      "utc": "2026-11-04T21:36:18.944715+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-04T21:36:19.973214+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-04T21:38:04.373296+00:00"
+        }
+      ],
+      "exit_code": 3
     }
   ],
   "retry_at": null,
   "pilot_seconds": 1268.906999999992,
-  "remaining_seconds": 0.0,
+  "remaining_seconds": 66.18700000000536,
   "forecast_s": 60,
   "slow_threshold_s": 180,
   "key": "wixqa",
   "status_counts": {
-    "accepted": 7,
-    "pending": 93
+    "accepted": 8,
+    "pending": 92
   },
   "attempts": [
     {
@@ -362,12 +379,44 @@
       "session_sha256": "7d0e39b43e55c7668ddf1702325211f76957f85220f331c6af01d0a3253d0e9d",
       "ticket_sha256": [],
       "audited_absence": false
+    },
+    {
+      "id": "0672d342995d45929d920ded24ea7b87",
+      "case_id": "wixqa-simulated-074",
+      "classification": "accepted",
+      "elapsed_s": 66.18700000000536,
+      "cold": true,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 38,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 243,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "b6fc972a77fb14860174c5f865a7f84f86cd12cf6171aa9da9bf06ff26eafb00",
+      "ticket_sha256": [],
+      "audited_absence": false
     }
   ],
   "whole": false,
-  "accepted": 7,
+  "accepted": 8,
   "route_counts": {
-    "auto": 7
+    "auto": 8
   },
   "over_180": 0,
   "infrastructure_attempts": 0,

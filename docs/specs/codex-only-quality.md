@@ -55,7 +55,9 @@ Before any request verify corpus files against `corpus.manifest.json`, chunks/ca
 tenant, generation, embedding manifest and collection contents/counts against
 `index/index-receipt.json` and stage 5 pins. Match a source-snapshot file/hash inventory
 against the whole destination, including Chroma files, before opening the index. Later
-admission checks logical content, allowing recorded runtime bookkeeping. Missing evidence/
+admission checks logical content, allowing recorded runtime bookkeeping, and reuses a file's
+hash while its size, mtime and file id are unchanged (git's index rule; registration, copy
+verification and frozen work hash in full, registration seeding the cache). Missing evidence/
 mismatch refuses; never rebuild or substitute. Record pre/post inventories.
 Apply the same verification to all three copies; no stand opens the product's writable
 index. Base data stays outside the repository.
@@ -307,7 +309,7 @@ $py = '<RELEASE_VENV_PYTHON>'
 $tools = 'reports/codex-only-quality/tools'
 $config = '<PRIVATE_CONFIG_JSON>'
 $private = '<PRIVATE_ROOT>'
-$a = @('--config', $config, '--private', $private, '--series', 'attempt-04', '--records', 'reports/codex-only-quality')
+$a = @('--config', $config, '--private', $private, '--series', 'attempt-05', '--records', 'reports/codex-only-quality')
 & $py "$tools/copy_verify.py" --config $config --out '<PRIVATE_COPY_RECEIPT_JSON>'
 & '<CAPTURE_SHIM_EXE>' --configure --real-exe '<REAL_CODEX_EXE>' --capture-root '<PRIVATE_CAPTURE_ROOT>'
 & $py "$tools/quality_driver.py" register @a
@@ -352,9 +354,9 @@ After all keys, or a stop:
 
 ## SHA-256 registration
 
-Registered offline on 2026-11-04 as series `attempt-04`: every entry below is expanded to
+Registered offline on 2026-11-04 as series `attempt-05`: every entry below is expanded to
 individual files and their SHA-256 in
-[`registration.json`](../../reports/codex-only-quality/attempt-04/registration.json)
+[`registration.json`](../../reports/codex-only-quality/attempt-05/registration.json)
 (149 public files; release `19ecbbb7489f83121dbc3c817ee948a6115bed7d`, tree
 `841d85483016b8348c64f96b7405df3f97b1ebfd`, 2,373 files; private config, copy receipt,
 environment, shim, CLIs and stand env files by hash only). Missing files refuse. Recheck
@@ -362,7 +364,7 @@ committed bytes before every request, as stage 5в; amendments precede requests.
 receipt binds the final spec without a self-hash. The measurement tools at registration:
 
 - `reports/codex-only-quality/tools/copy_verify.py` `82c78014658226b3acf607c593546ee54f6e89ea4026909fdaeea6b1a84cd1fd`
-- `reports/codex-only-quality/tools/quality_driver.py` `7e153606f075d64936d4eb5006dbabcb24e958fcfdc13dd273d7c83c9eb5e66a`
+- `reports/codex-only-quality/tools/quality_driver.py` `465145be4273f4ba0bd60559f4735bde1728b8925f1cb0f7c922d732cd89eb10`
 - `reports/codex-only-quality/tools/quality_freeze.py` `c155cfebe0f7571f9070587be3838b3fc396862a14ce4206e10ac14f24d4d9a2`
 - `reports/codex-only-quality/tools/quality_read.py` `f6aa36fd05c5a4626b0edbfbc093285e66f6b4ad9a15f6d901e0162092d46185`
 - `reports/codex-only-quality/tools/stand_runtime.py` `e9d35c0997ad22638b39022bbf1c79e875d3c76cc47d6b690f69190fe1609f19`
@@ -411,6 +413,18 @@ exited launcher had the PID of an earlier shim, so the drain counted the chunk's
 shim's live family. A finished call's shim now owns only children created before its recorded end.
 `attempt-04` was prepared like `attempt-03`; its registration differs only in that tool, its test,
 the env files and the private bindings. No `attempt-03` answer is reused.
+
+Amendment, 2026-11-04, before any `attempt-05` request. Series
+[`attempt-04`](../../reports/codex-only-quality/attempt-04/) is retained and closed by the
+operator, with no stop: its probe and all 20 pilot questions were accepted, then one WixQA
+question. Its chunk admission took 691 s on the laptop, 505 s of it re-hashing the pinned release
+venv, while the owner's other session needed the machine; chunks fell to one or two questions.
+Admission now keeps each file's hash with its size, mtime and file id and re-hashes only a changed
+file (`e919df8`). The cache lives in `quality_driver.py` (`ef41caf`), because every private
+inventory binds `copy_verify.py`'s own bytes, which stay unchanged. Registration, copy
+verification and frozen work still hash in full; registration's final check seeds the cache
+for the first chunk. A changed registered tool needs a new series: `attempt-05` was prepared
+like `attempt-04`, and no `attempt-04` answer is reused.
 
 - This spec; stage 5в spec/record; every public input/instrument in stage 5в,
   §SHA-256 registration (historical pins still checked).

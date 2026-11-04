@@ -126,11 +126,28 @@
         }
       ],
       "exit_code": 0
+    },
+    {
+      "utc": "2026-11-04T21:36:18.944715+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-04T21:36:19.973214+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-04T21:38:04.373296+00:00"
+        }
+      ],
+      "exit_code": 3
     }
   ],
   "retry_at": null,
   "pilot_seconds": 1268.906999999992,
-  "remaining_seconds": 0.0,
+  "remaining_seconds": 66.18700000000536,
   "forecast_s": 60,
   "slow_threshold_s": 180,
   "selected": [
