@@ -876,9 +876,7 @@ def test_persisted_stops_and_resume():
     assert not state["stops"][1].get("resolved")
 
 
-@pytest.mark.parametrize(
-    "event,code", [("codex", 2), ("ollama", 2), ("suspend", 5), ("product", 2)]
-)
+@pytest.mark.parametrize("event,code", [("ollama", 2), ("suspend", 5), ("product", 2)])
 def test_native_watch_with_fake(event, code, tmp_path):
     system = FakeSystem()
     system.processes = [sr.Process(10, 1, "codex.exe", 100)]  # Pre-existing: never killed.
@@ -901,6 +899,41 @@ def test_native_watch_with_fake(event, code, tmp_path):
         watch.check()
     assert stopped.value.code == code
     assert not system.stopped
+
+
+def test_outside_codex_is_recorded_once_not_stopped(tmp_path):
+    # Amended after attempt-03: another session's Codex never passes the shim.
+    system = FakeSystem()
+    system.processes = [sr.Process(10, 1, "codex.exe", 100)]  # Pre-existing: baseline.
+    watch = sr.Watch(system, tmp_path / "processes.jsonl", lambda: [])
+    watch.tick()
+    system.processes.append(sr.Process(11, 1, "codex.exe", 101))
+    watch.tick()
+    watch.tick()
+    watch.check()
+    events = [e for e in watch.events if e["kind"] == "outside_codex"]
+    assert [(e["pid"], e["created"]) for e in events] == [(11, 101)]
+    assert not system.stopped
+
+
+@pytest.mark.parametrize("ender", ["shim", "driver", None])
+def test_finished_shim_does_not_claim_a_later_orphan_of_its_reused_pid(rig, ender):
+    # attempt-03: an exited process reused shim PID 42; its live orphan made drain time out.
+    start, finished = "2026-11-04T15:00:00.0000000Z", "2026-11-04T15:01:00.0000000Z"
+    runtime = sr.Runtime(rig.config, rig.private / "native", rig.system)
+    orphan = sr.Process(77, 42, "sh.exe", sr.filetime("2026-11-04T18:00:00.0000000Z"))
+    child = sr.Process(78, 42, "codex.exe", sr.filetime("2026-11-04T15:00:01.0000000Z"))
+    rig.system.processes = [orphan]
+    call = SimpleNamespace(
+        start={"shim_pid": 42, "process_start_utc": start},
+        process_started=True,
+        spawned=None,
+        end={"utc": finished} if ender == "shim" else None,
+        driver_end={"verified_exit_utc": finished} if ender == "driver" else None,
+    )
+    assert runtime.call_gone(call) is (ender is not None)
+    rig.system.processes = [orphan, child]  # A real child outliving its shim stays live.
+    assert not runtime.call_gone(call)
 
 
 @pytest.mark.parametrize("event", ["ollama", "product", "listener"])

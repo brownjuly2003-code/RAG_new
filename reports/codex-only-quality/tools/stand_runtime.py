@@ -352,6 +352,7 @@ class Watch:
         self.failure: Stop | None = None
         self.events: list[dict[str, Any]] = []
         self.ollama: set[tuple[int, int]] = set()
+        self.outside: set[tuple[int, int]] = set()
         self.done = threading.Event()
         self.mutex = threading.RLock()
         self.thread: threading.Thread | None = None
@@ -413,8 +414,19 @@ class Watch:
                         image == "codex.exe"
                         and identity not in (self.baseline or set())
                         and identity not in owned
+                        and identity not in self.outside
                     ):
-                        raise Stop(2, "outside_codex")
+                        # Recorded, not stopped: capture binds only the shim's calls,
+                        # and a shared account's usage limit is already infrastructure.
+                        self.outside.add(identity)
+                        self.events.append(
+                            {
+                                "kind": "outside_codex",
+                                "pid": p.pid,
+                                "created": p.created,
+                                "utc": utc(),
+                            }
+                        )
                     if (
                         image.startswith("python")
                         and identity not in owned
@@ -799,7 +811,16 @@ class Runtime:
                 )
             # All subsequent liveness/termination checks still use exact native ticks.
             shim = actual
-        family = descendants([*self.watch.observed.values(), *processes], [shim])
+        pool = [*self.watch.observed.values(), *processes]
+        family = descendants(pool, [shim])
+        end = getattr(call, "end", None) or {}
+        driver_end = getattr(call, "driver_end", None) or {}
+        finished = end.get("utc") or driver_end.get("verified_exit_utc")
+        if finished:
+            # A shim spawns nothing after its recorded end. A later process whose
+            # parent PID is the shim's (reused by an exited process) is not its child.
+            direct = [p for p in family if p.parent == shim.pid and p.created <= filetime(finished)]
+            family = direct + descendants(pool, direct)
         if self.system.alive(shim) or any(self.system.alive(p) for p in family):
             return False
         if call.spawned:
