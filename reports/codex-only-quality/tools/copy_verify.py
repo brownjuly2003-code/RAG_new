@@ -83,28 +83,6 @@ def sha(path: Path) -> str:
     return hasher.hexdigest()
 
 
-class StatCache:
-    """Request-chunk admission only: reuse a file's hash while its size, mtime and file id
-    are unchanged, as git's index does. Registration, copy verification and frozen/offline
-    checks always hash in full; the first chunk of a series fills the cache by hashing."""
-
-    def __init__(self, path: Path):
-        self.path = path
-        self.rows: dict[str, list[Any]] = read(path) if path.exists() else {}
-
-    def sha(self, path: Path, info: os.stat_result) -> str:
-        stamp = [info.st_size, info.st_mtime_ns, info.st_ino]
-        held = self.rows.get(str(path))
-        if held is not None and held[:3] == stamp:
-            return str(held[3])
-        hashed = sha(path)
-        self.rows[str(path)] = [*stamp, hashed]
-        return hashed
-
-    def save(self) -> None:
-        write(self.path, self.rows)
-
-
 def unique_object(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
     result: dict[str, Any] = {}
     for key, value in pairs:
@@ -208,7 +186,7 @@ def no_links(path: Path) -> None:
         )
 
 
-def tree_files(root: Path, cache: StatCache | None = None) -> list[dict[str, Any]]:
+def tree_files(root: Path) -> list[dict[str, Any]]:
     no_links(root)
     require(root.is_dir(), "input directory missing")
     result = []
@@ -229,7 +207,7 @@ def tree_files(root: Path, cache: StatCache | None = None) -> list[dict[str, Any
             else:
                 require(stat.S_ISREG(info.st_mode), "special file refused")
                 name = relative(path.relative_to(root).as_posix())
-                hashed = cache.sha(path, info) if cache else sha(path)
+                hashed = sha(path)
                 after = path.stat()
                 require(
                     (info.st_size, info.st_mtime_ns, info.st_ino)
@@ -320,9 +298,7 @@ def reference_files(config: dict[str, Any]) -> dict[str, str]:
     return {key: sha(root / (key + ".jsonl")) for key in KEYS[:2]}
 
 
-def logical_metadata(
-    repo: Path, key: str, folder: Path, cache: StatCache | None = None
-) -> tuple[dict[str, Any], list[Any]]:
+def logical_metadata(repo: Path, key: str, folder: Path) -> tuple[dict[str, Any], list[Any]]:
     """All non-database gates run before ANY Chroma client is opened."""
     pins = historical_pins(repo)
     if key == "aircargo":
@@ -356,7 +332,7 @@ def logical_metadata(
     require(names == sorted(set(names)), "corpus manifest duplicate/order mismatch")
     actual = [
         {"name": unicodedata.normalize("NFC", r["path"]), "bytes": r["size"], "sha256": r["sha256"]}
-        for r in tree_files(folder / "corpus", cache)
+        for r in tree_files(folder / "corpus")
         # corpus_manifest.py uses only non-hidden immediate files. The whole-tree
         # inventory above still covers hidden files and subdirectories in full.
         if not r["path"].startswith(".") and "/" not in r["path"]
@@ -554,13 +530,7 @@ def verify(
     }
 
 
-def admit_receipt(
-    config_path: Path,
-    repo: Path = ROOT,
-    *,
-    runtime: bool = False,
-    cache: StatCache | None = None,
-) -> dict[str, Any]:
+def admit_receipt(config_path: Path, repo: Path = ROOT, *, runtime: bool = False) -> dict[str, Any]:
     """Registration checks whole trees; request chunks allow Chroma bookkeeping.
 
     Runtime callers must additionally run logical_metadata/check_collection for
@@ -593,11 +563,7 @@ def admit_receipt(
             held["root_sha256"] == digest(str(folder.resolve()))
             and held["inventory_sha256"] == sha(inv)
             and held["pre"] == public_tree(inventory_entries(read(inv)))
-            and (
-                runtime
-                and name in KEYS
-                or held["post"] == public_tree(tree_files(folder, cache if runtime else None))
-            ),
+            and (runtime and name in KEYS or held["post"] == public_tree(tree_files(folder))),
             "copy receipt is stale",
         )
     for key in KEYS:

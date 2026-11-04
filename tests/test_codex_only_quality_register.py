@@ -977,33 +977,3 @@ def test_cli_preconditions_use_one_and_keep_legacy_errors_private(
         == 1
     )
     assert "external passage" not in capsys.readouterr().err
-
-
-def test_stat_cache_reuses_unchanged_hashes_and_rehashes_changed_files(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
-    root = tmp_path / "tree"
-    (root / "sub").mkdir(parents=True)
-    (root / "a.txt").write_bytes(b"first\n")
-    (root / "sub" / "b.txt").write_bytes(b"second\n")
-    full = cv.tree_files(root)
-    hashed: list[str] = []
-    original = cv.sha
-
-    def counting(path: Path) -> str:
-        hashed.append(path.name)
-        return original(path)
-
-    monkeypatch.setattr(cv, "sha", counting)
-    cache = cv.StatCache(tmp_path / "stat-cache.json")
-    assert cv.tree_files(root, cache) == full and sorted(hashed) == ["a.txt", "b.txt"]
-    cache.save()
-    hashed.clear()
-    again = cv.StatCache(tmp_path / "stat-cache.json")
-    assert cv.tree_files(root, again) == full and hashed == []
-    info = (root / "a.txt").stat()
-    (root / "a.txt").write_bytes(b"FIRST\n")  # Same size: the new mtime alone forces a hash.
-    os.utime(root / "a.txt", ns=(info.st_atime_ns, info.st_mtime_ns + 1_000_000))
-    changed = cv.tree_files(root, again)
-    assert hashed == ["a.txt"]
-    assert changed != full and changed == cv.tree_files(root)

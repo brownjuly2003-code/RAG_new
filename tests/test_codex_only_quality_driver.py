@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import copy
 import json
+import os
 import shutil
 import subprocess  # nosec B404 # Local synthetic Git repositories only.
 import sys
@@ -1361,3 +1362,43 @@ def test_python_exiting_during_its_command_read_is_skipped_live_one_refuses():
     with pytest.raises(sr.Stop) as error:
         sr.command_or_exit(unreadable, lambda: True)
     assert (error.value.code, error.value.reason) == (5, "python_command_unreadable")
+
+
+def test_stat_cache_reuses_unchanged_hashes_and_rehashes_changed_files(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    root = tmp_path / "tree"
+    put(root / "a.txt", b"first\n")
+    put(root / "sub" / "b.txt", b"second\n")
+    full = cv.tree_files(root)
+    hashed: list[str] = []
+    original = cv.sha
+
+    def counting(path: Path) -> str:
+        hashed.append(path.name)
+        return original(path)
+
+    monkeypatch.setattr(cv, "sha", counting)
+    cache = tmp_path / "series" / "stat-cache.json"
+    for _ in range(2):  # Registration hashes in full every time and seeds the cache.
+        hashed.clear()
+        with driver.stat_cache(cache, reuse=False):
+            assert cv.tree_files(root) == full
+        assert sorted(hashed) == ["a.txt", "b.txt"] and cv.sha is counting
+    hashed.clear()
+    with driver.stat_cache(cache, reuse=True):
+        assert cv.tree_files(root) == full
+    assert hashed == []
+    info = (root / "a.txt").stat()
+    (root / "a.txt").write_bytes(b"FIRST\n")  # Same size: the new mtime alone forces a hash.
+    os.utime(root / "a.txt", ns=(info.st_atime_ns, info.st_mtime_ns + 1_000_000))
+    with driver.stat_cache(cache, reuse=True):
+        changed = cv.tree_files(root)
+    assert hashed == ["a.txt"]
+    assert changed != full and changed == cv.tree_files(root)
+    # A refusal inside saves nothing and restores copy_verify's own hash.
+    other = tmp_path / "other" / "stat-cache.json"
+    with pytest.raises(cv.Refusal), driver.stat_cache(other, reuse=True):
+        cv.tree_files(root)
+        cv.require(False, "refused")
+    assert not other.exists() and cv.sha is counting

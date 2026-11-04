@@ -42,7 +42,7 @@ import sys
 import time
 import uuid
 from collections import Counter
-from collections.abc import Callable
+from collections.abc import Callable, Iterator
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
@@ -832,7 +832,8 @@ def register(
         all(final_hashes.get(k) == v for k, v in hashes.items()),
         "registered file changed during registration",
     )
-    cv.admit_receipt(config_path, repo)
+    with stat_cache(private / series / "stat-cache.json", reuse=False):
+        cv.admit_receipt(config_path, repo)
     cv.require(
         cv.sha(config_path) == config_hash and runtime == private_artifacts(config, repo),
         "runtime evidence changed during registration",
@@ -972,6 +973,35 @@ def committed_bytes(repo: Path, path: Path) -> bytes:
     return committed
 
 
+@contextlib.contextmanager
+def stat_cache(path: Path, *, reuse: bool) -> Iterator[None]:
+    """Reuse a file's hash while its size, mtime and file id are unchanged, as git's index
+    does. It wraps copy_verify's sha because every inventory binds copy_verify's own bytes.
+    Registration hashes in full (reuse=False) and seeds the series' cache; request chunks
+    reuse it; frozen/offline work never enters. A refusal inside saves nothing."""
+    rows: dict[str, list[Any]] = cv.read(path) if reuse and path.exists() else {}
+    full = cv.sha
+
+    def cached(file: Path) -> str:
+        before = file.stat()
+        stamp = [before.st_size, before.st_mtime_ns, before.st_ino]
+        held = rows.get(str(file))
+        if reuse and held is not None and held[:3] == stamp:
+            return str(held[3])
+        hashed = full(file)
+        after = file.stat()
+        if stamp == [after.st_size, after.st_mtime_ns, after.st_ino]:
+            rows[str(file)] = [*stamp, hashed]
+        return hashed
+
+    cv.sha = cached  # type: ignore[assignment]  # Same signature; restored below.
+    try:
+        yield
+    finally:
+        cv.sha = full
+    cv.write(path, rows)
+
+
 def admit_chunk(
     args: Any, repo: Path, *, offline: bool = False
 ) -> tuple[dict[str, Any], dict[str, Any]]:
@@ -1016,16 +1046,24 @@ def admit_chunk(
         cv.sha(Path(config["copy_receipt"])) == registration["copy_receipt_sha256"],
         "copy receipt changed",
     )
+    data = cv.absolute(config["private_data_root"])
     # Request chunks reuse unchanged files' hashes; frozen/offline work hashes in full.
-    cache = None if offline else cv.StatCache(args.private / args.series / "stat-cache.json")
-    receipt = cv.admit_receipt(args.config, repo, runtime=True, cache=cache)
+    hashes = (
+        contextlib.nullcontext()
+        if offline
+        else stat_cache(args.private / args.series / "stat-cache.json", reuse=True)
+    )
+    with hashes:
+        receipt = cv.admit_receipt(args.config, repo, runtime=True)
+        # Every key's non-database gates still run before any Chroma client opens.
+        logicals = {key: cv.logical_metadata(repo, key, data / key) for key in cv.KEYS}
     cv.require(
         registration["stage5_references"] == receipt["stage5_references"],
         "registered references differ",
     )
     for key in cv.KEYS:
-        folder = cv.absolute(config["private_data_root"]) / key
-        logical, chunks = cv.logical_metadata(repo, key, folder, cache)
+        folder = data / key
+        logical, chunks = logicals[key]
         if offline:
             # Frozen/offline work must never open Chroma. Immutable files are
             # still checked; only the admitted index runtime bookkeeping varies.
@@ -1063,8 +1101,6 @@ def admit_chunk(
             and cv.digest(str(artifact.resolve())) == held["path_sha256"],
             "private artifact differs",
         )
-    if cache:
-        cache.save()
     return config, registration
 
 
