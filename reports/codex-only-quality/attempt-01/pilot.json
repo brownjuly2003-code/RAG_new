@@ -1,0 +1,239 @@
+{
+  "stops": [
+    {
+      "id": "36415678d9d14ac7937005f97bb8f1c9",
+      "code": 5,
+      "reason": "python_command_unreadable",
+      "utc": "2026-11-04T14:19:53.388136+00:00",
+      "resolved": "2026-11-04T14:23:20.746804+00:00"
+    },
+    {
+      "id": "53fe445d294344c9a4cf4b1295dc1376",
+      "code": 5,
+      "reason": "python_command_unreadable",
+      "utc": "2026-11-04T14:29:01.424228+00:00"
+    },
+    {
+      "id": "2798558cf4f342fd9814e2b96fa468e5",
+      "code": 5,
+      "reason": "state_stop",
+      "utc": "2026-11-04T14:29:01.583835+00:00"
+    }
+  ],
+  "resumes": [
+    {
+      "utc": "2026-11-04T14:23:20.746804+00:00",
+      "stop_id": "36415678d9d14ac7937005f97bb8f1c9"
+    }
+  ],
+  "chunks": [
+    {
+      "utc": "2026-11-04T13:17:41.240788+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-04T13:17:42.269822+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-04T13:18:03.367825+00:00"
+        }
+      ],
+      "exit_code": 0
+    },
+    {
+      "utc": "2026-11-04T13:20:09.480619+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-04T13:20:10.512651+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-04T13:22:15.744177+00:00"
+        }
+      ],
+      "exit_code": 0
+    },
+    {
+      "utc": "2026-11-04T13:45:22.484469+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-04T13:45:22.540028+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-04T13:45:22.564871+00:00"
+        }
+      ],
+      "exit_code": 3
+    },
+    {
+      "utc": "2026-11-04T13:59:50.677540+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-04T13:59:51.703832+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-04T14:05:53.160598+00:00"
+        }
+      ],
+      "exit_code": 0
+    },
+    {
+      "utc": "2026-11-04T14:13:38.004463+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-04T14:13:39.037950+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-04T14:17:12.821869+00:00"
+        }
+      ],
+      "exit_code": 3
+    },
+    {
+      "utc": "2026-11-04T14:19:40.096046+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-04T14:19:41.122676+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-04T14:19:53.462013+00:00"
+        }
+      ],
+      "exit_code": 5
+    },
+    {
+      "utc": "2026-11-04T14:23:20.746804+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-04T14:23:21.776878+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-04T14:29:01.607888+00:00"
+        }
+      ],
+      "exit_code": 5
+    }
+  ],
+  "retry_at": null,
+  "pilot_seconds": 870.4220000000059,
+  "remaining_seconds": 0.0,
+  "forecast_s": 60,
+  "slow_threshold_s": 180,
+  "selected": [
+    {
+      "key": "wixqa",
+      "case_id": "wixqa-simulated-105"
+    },
+    {
+      "key": "wixqa",
+      "case_id": "wixqa-simulated-014"
+    },
+    {
+      "key": "wixqa",
+      "case_id": "wixqa-simulated-037"
+    },
+    {
+      "key": "wixqa",
+      "case_id": "wixqa-simulated-138"
+    },
+    {
+      "key": "wixqa",
+      "case_id": "wixqa-simulated-098"
+    },
+    {
+      "key": "wixqa",
+      "case_id": "wixqa-simulated-198"
+    },
+    {
+      "key": "wixqa",
+      "case_id": "wixqa-simulated-033"
+    },
+    {
+      "key": "conditionalqa",
+      "case_id": "conditionalqa-train-1284"
+    },
+    {
+      "key": "conditionalqa",
+      "case_id": "conditionalqa-dev-58"
+    },
+    {
+      "key": "conditionalqa",
+      "case_id": "conditionalqa-train-2038"
+    },
+    {
+      "key": "conditionalqa",
+      "case_id": "conditionalqa-train-12"
+    },
+    {
+      "key": "conditionalqa",
+      "case_id": "conditionalqa-train-1548"
+    },
+    {
+      "key": "conditionalqa",
+      "case_id": "conditionalqa-train-1236"
+    },
+    {
+      "key": "conditionalqa",
+      "case_id": "conditionalqa-train-608"
+    },
+    {
+      "key": "aircargo",
+      "case_id": "aircargo-access-control-need-to-know"
+    },
+    {
+      "key": "aircargo",
+      "case_id": "aircargo-dangerous-goods-fields"
+    },
+    {
+      "key": "aircargo",
+      "case_id": "aircargo-claims-lawyer"
+    },
+    {
+      "key": "aircargo",
+      "case_id": "aircargo-business-trip-advance-report"
+    },
+    {
+      "key": "aircargo",
+      "case_id": "aircargo-employment-contract-special-form"
+    },
+    {
+      "key": "aircargo",
+      "case_id": "aircargo-fuel-supply-required-fields"
+    }
+  ],
+  "step": 5,
+  "passed": false
+}

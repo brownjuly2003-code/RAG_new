@@ -305,7 +305,7 @@ $py = '<RELEASE_VENV_PYTHON>'
 $tools = 'reports/codex-only-quality/tools'
 $config = '<PRIVATE_CONFIG_JSON>'
 $private = '<PRIVATE_ROOT>'
-$a = @('--config', $config, '--private', $private, '--series', 'attempt-01', '--records', 'reports/codex-only-quality')
+$a = @('--config', $config, '--private', $private, '--series', 'attempt-02', '--records', 'reports/codex-only-quality')
 & $py "$tools/copy_verify.py" --config $config --out '<PRIVATE_COPY_RECEIPT_JSON>'
 & '<CAPTURE_SHIM_EXE>' --configure --real-exe '<REAL_CODEX_EXE>' --capture-root '<PRIVATE_CAPTURE_ROOT>'
 & $py "$tools/quality_driver.py" register @a
@@ -350,9 +350,9 @@ After all keys, or a stop:
 
 ## SHA-256 registration
 
-Registered offline on 2026-11-04 as series `attempt-01`: every entry below is expanded to
+Registered offline on 2026-11-04 as series `attempt-02`: every entry below is expanded to
 individual files and their SHA-256 in
-[`registration.json`](../../reports/codex-only-quality/attempt-01/registration.json)
+[`registration.json`](../../reports/codex-only-quality/attempt-02/registration.json)
 (149 public files; release `19ecbbb7489f83121dbc3c817ee948a6115bed7d`, tree
 `841d85483016b8348c64f96b7405df3f97b1ebfd`, 2,373 files; private config, copy receipt,
 environment, shim, CLIs and stand env files by hash only). Missing files refuse. Recheck
@@ -363,7 +363,7 @@ receipt binds the final spec without a self-hash. The measurement tools at regis
 - `reports/codex-only-quality/tools/quality_driver.py` `7e153606f075d64936d4eb5006dbabcb24e958fcfdc13dd273d7c83c9eb5e66a`
 - `reports/codex-only-quality/tools/quality_freeze.py` `c155cfebe0f7571f9070587be3838b3fc396862a14ce4206e10ac14f24d4d9a2`
 - `reports/codex-only-quality/tools/quality_read.py` `f6aa36fd05c5a4626b0edbfbc093285e66f6b4ad9a15f6d901e0162092d46185`
-- `reports/codex-only-quality/tools/stand_runtime.py` `13e9ae715d6e3778a75b88e69a35ea245c96e1c1e11e2bf32c9e0ddb66b37d36`
+- `reports/codex-only-quality/tools/stand_runtime.py` `640127cad83b72d302dda20d14f0b6765849696361b3a402b35e87b12088fccf`
 - `reports/codex-only-quality/tools/capture_journal.py` `f0e79e4a9038e27eae1d02cf2bf301f6ce48a958918dd6fdfc3453624ae7a4bc`
 - `reports/codex-only-quality/tools/shim/CaptureShim.cs` `70d7353fc8df48a431a984946bcfc316578e2fcc353d8a51e68e01ab64943646`
 - `deploy/windows/write_env.py` `2ee6503f77f6a44ded23fdd5dcb8fb488032bf4bde9d764e6866bc54836e13e7`
@@ -372,6 +372,22 @@ receipt binds the final spec without a self-hash. The measurement tools at regis
 The receipt's Q baseline, stage 5в's Codex arm by the rule above: answered good **268/300**
 (WixQA 87, ConditionalQA 81, aircargo 100). The R instrument gate reproduced `sent_cases`
 case for case: passed, **125/180** gold-bearing hits pooled.
+
+Amendment, 2026-11-04, before any `attempt-02` request. Series
+[`attempt-01`](../../reports/codex-only-quality/attempt-01/) is retained and stopped (code 5,
+unresolved). Its probe and 11 of 20 pilot questions were accepted. Its process watch then refused
+twice with `python_command_unreadable`: a concurrent session's short-lived python exited between
+`OpenProcess` and the command-line read. The first refusal came during stand startup; the second
+came mid-question and stopped the stand. `stand_runtime.py` now skips a python that has really
+exited and still refuses a live unreadable one (`559a54c`). Its Windows stress test gave 708
+refusals in 4,679 snapshots before the fix and 0 in 5,003 after. A changed registered file needs a
+new series, so `attempt-02` has its own databases, stand env files, config and copy receipt. Its
+base copies' `chroma.sqlite3` were restored to the admitted source bytes first, because each Chroma
+open rewrites bookkeeping. The registration differs from `attempt-01`'s only in that tool, its test,
+the three env files and those private bindings. Between chunks, the operator stops a kept stand
+with the driver's own `Runtime.stop`, under the series lock. A live stand left the laptop short of
+memory, and the next admission took 23 minutes instead of about 5. The next chunk starts a fresh
+stand and records its first question `cold`.
 
 - This spec; stage 5в spec/record; every public input/instrument in stage 5в,
   §SHA-256 registration (historical pins still checked).
