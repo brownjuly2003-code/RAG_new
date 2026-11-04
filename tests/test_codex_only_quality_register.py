@@ -183,6 +183,9 @@ def admission(tmp_path: Path) -> SimpleNamespace:
     for name in cv.PRIVATE_INPUTS:
         root, inv = private / name, private / f"inventory-{name}.json"
         put(root / "synthetic.json", {"fixture": True})
+        if name == "stage5_references":
+            for key in cv.KEYS[:2]:
+                jsonl(root / (key + ".jsonl"), [{"case_id": key + "-000"}])
         put(inv, cv.inventory(root))
         config["private_inputs"][name] = {"root": str(root), "inventory": str(inv)}
     config_path = put(private / "config.json", config)
@@ -258,12 +261,25 @@ def test_inventory_refuses_special_file_and_output_inside_root(tmp_path: Path) -
 def test_verify_exact_copy_and_receipt_is_hash_only(admission: SimpleNamespace) -> None:
     result = cv.verify(admission.config_path, admission.repo, collection_reader=fake_collection)
     assert result["passed"] is True
+    assert result["stage5_references"] == cv.reference_files(admission.config)
     assert all(result["logical"][key]["chunk_count"] == 2 for key in cv.KEYS)
     output = cv.encoded(result).decode()
     for private_text in (str(admission.private), "doc.md", "Alpha beta", "chroma.sqlite3"):
         assert private_text not in output
     put(Path(admission.config["copy_receipt"]), result)
     assert cv.admit_receipt(admission.config_path, admission.repo) == result
+
+
+def test_reference_receipt_rejects_changed_or_missing_file(admission: SimpleNamespace) -> None:
+    result = cv.verify(admission.config_path, admission.repo, collection_reader=fake_collection)
+    put(Path(admission.config["copy_receipt"]), result)
+    root = Path(admission.config["private_inputs"]["stage5_references"]["root"])
+    put(root / "wixqa.jsonl", b'{"case_id":"changed"}\n')
+    with pytest.raises(cv.Refusal, match="references receipt"):
+        cv.admit_receipt(admission.config_path, admission.repo)
+    (root / "conditionalqa.jsonl").unlink()
+    with pytest.raises((cv.Refusal, OSError)):
+        cv.verify(admission.config_path, admission.repo, collection_reader=fake_collection)
 
 
 @pytest.mark.parametrize(
@@ -910,11 +926,8 @@ def test_future_commands_refuse_without_reading_inputs(
         == 1
     )
     message = capsys.readouterr().err
-    assert (
-        "request refused"
-        if command in {"probe", "pilot", "run"}
-        else "not implemented in this task"
-    ) in message
+    assert ("request refused" if command in {"probe", "pilot", "run"} else "refused") in message
+    assert "not implemented" not in message
 
 
 def test_complete_registration_is_request_ready(registration, monkeypatch):

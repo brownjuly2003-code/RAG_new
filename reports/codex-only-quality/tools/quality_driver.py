@@ -6,7 +6,7 @@ Uses copy_verify's private config, plus:
   stands: {<key>: {app: absolute <private>/stands/<key>/app, env: absolute env file,
                   auth_file: absolute private JSON with admin_username/admin_password,
                   tenant: ext_wixqa|ext_conditionalqa|aircargo,
-                  database: codex_quality_<series>_<key>}}
+                  database: codex_quality_<series, '-' as '_'>_<key>}}
   capture_root: absolute private shim journal root (must match shim config)
   cw_home: absolute private Codex profile home (AGENTS.md hashed per chunk)
   artifacts: {<label>: absolute file} for every ARTIFACTS entry below
@@ -82,6 +82,7 @@ PUBLIC_FILES = (
     "reports/codex-only-quality/tools/copy_verify.py",
     "reports/codex-only-quality/tools/quality_driver.py",
     "reports/codex-only-quality/tools/quality_read.py",
+    "reports/codex-only-quality/tools/quality_freeze.py",
     "reports/codex-only-quality/tools/capture_journal.py",
     "reports/codex-only-quality/tools/build_shim.py",
     "reports/codex-only-quality/tools/shim_check.py",
@@ -89,6 +90,8 @@ PUBLIC_FILES = (
     "tests/test_codex_only_quality_register.py",
     "tests/test_codex_only_quality_capture.py",
     "tests/test_codex_only_quality_driver.py",
+    "tests/test_codex_only_quality_freeze.py",
+    "tests/test_codex_only_quality_read.py",
     "reports/codex-only-quality/tools/stand_runtime.py",
     "reports/codex-only-quality/tools/runtime_check.py",
     "tests/test_windows_deployment.py",
@@ -534,7 +537,7 @@ def canonical_import(repo: Path, module: str, directory: str) -> Any:
     if filename is None:
         raise cv.Refusal("instrument has no source file")
     cv.require(
-        Path(filename).resolve() == (path / (module + ".py")).resolve(),
+        Path(filename).resolve() == (path / (module.replace(".", "/") + ".py")).resolve(),
         "instrument import escaped canonical repository",
     )
     return loaded
@@ -851,6 +854,7 @@ def register(
         "graph_bound": bounds,
         "q_baseline": baseline,
         "r_gate": instrument_gate,
+        "stage5_references": cv.reference_files(config),
     }
     cv.write(target, result)
     return result
@@ -883,6 +887,11 @@ def instruments(repo: Path) -> tuple[Any, Any, Any, Any]:
     answer = canonical_import(repo, "ceiling_answer", directory)
     journal = canonical_import(repo, "capture_journal", "reports/codex-only-quality/tools")
     return common, route, answer, journal
+
+
+def stand_database(series: str, key: str) -> str:
+    # The deployment helper accepts [a-z0-9_] only: attempt-01 -> attempt_01.
+    return f"codex_quality_{series.replace('-', '_')}_{key}"
 
 
 def validate_runtime_config(config: dict[str, Any], private: Path, series: str, repo: Path) -> None:
@@ -923,7 +932,7 @@ def validate_runtime_config(config: dict[str, Any], private: Path, series: str, 
             )
         cv.require(
             stand["tenant"] == ("aircargo" if key == "aircargo" else "ext_" + key)
-            and stand["database"] == f"codex_quality_{series}_{key}",
+            and stand["database"] == stand_database(series, key),
             "stand identity differs",
         )
         auth = cv.read(Path(stand["auth_file"]))
@@ -963,7 +972,9 @@ def committed_bytes(repo: Path, path: Path) -> bytes:
     return committed
 
 
-def admit_chunk(args: Any, repo: Path) -> tuple[dict[str, Any], dict[str, Any]]:
+def admit_chunk(
+    args: Any, repo: Path, *, offline: bool = False
+) -> tuple[dict[str, Any], dict[str, Any]]:
     cv.require(type(args.budget) is int and 1 <= args.budget <= 1080, "budget must be 1..1080")
     cv.require(re.fullmatch(r"[A-Za-z0-9_-]+", args.series), "invalid series")
     cv.require(
@@ -1006,11 +1017,29 @@ def admit_chunk(args: Any, repo: Path) -> tuple[dict[str, Any], dict[str, Any]]:
         "copy receipt changed",
     )
     receipt = cv.admit_receipt(args.config, repo, runtime=True)
+    cv.require(
+        registration["stage5_references"] == receipt["stage5_references"],
+        "registered references differ",
+    )
     for key in cv.KEYS:
         folder = cv.absolute(config["private_data_root"]) / key
         logical, chunks = cv.logical_metadata(repo, key, folder)
-        logical["collection"] = cv.check_collection(folder, chunks)
-        cv.require(logical == receipt["logical"][key], "logical copy differs")
+        if offline:
+            # Frozen/offline work must never open Chroma. Immutable files are
+            # still checked; only the admitted index runtime bookkeeping varies.
+            expected = {k: v for k, v in receipt["logical"][key].items() if k != "collection"}
+            cv.require(logical == expected, "logical copy differs")
+            inventory = cv.inventory_entries(cv.read(Path(config["bases"][key]["inventory"])))
+
+            def immutable(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+                return [r for r in rows if not r["path"].startswith("index/chroma/")]
+
+            cv.require(
+                immutable(cv.tree_files(folder)) == immutable(inventory), "base input changed"
+            )
+        else:
+            logical["collection"] = cv.check_collection(folder, chunks)
+            cv.require(logical == receipt["logical"][key], "logical copy differs")
         app = cv.absolute(config["stands"][key]["app"])
         cv.require(
             git_bytes(app, "rev-parse", "HEAD").decode().strip()
@@ -1858,8 +1887,9 @@ def main(argv: list[str] | None = None) -> int:
         if args.command in {"probe", "pilot", "run"}:
             return request_chunk(args)
         if args.command != "register":
-            print("not implemented in this task", file=sys.stderr)
-            return 1
+            import quality_freeze
+
+            return quality_freeze.execute(args, ROOT)
         register(args.config, args.private, args.series, args.records)
     except (Exception, SystemExit):
         print("registration refused (missing, changed or invalid evidence)", file=sys.stderr)

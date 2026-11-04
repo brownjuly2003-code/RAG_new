@@ -3,7 +3,7 @@
 Private config, schema_version=1:
   private_data_root: absolute directory containing the three base directories
   bases: {<key>: {inventory: absolute source-inventory JSON}}
-  private_inputs: {stage5_runs, stage5_aircargo_runs, attempt02_runs,
+  private_inputs: {stage5_runs, stage5_aircargo_runs, stage5_references, attempt02_runs,
                    attempt02_journals: {root: absolute directory, inventory: absolute JSON}}
 The two stage5 roots directly contain final-answers-<key>-bNN directories.
 The attempt02 runs root contains <key>/runs/final-answers-<key>-bNN.
@@ -32,7 +32,13 @@ from pathlib import Path, PurePosixPath
 from typing import Any, NoReturn
 
 KEYS = ("wixqa", "conditionalqa", "aircargo")
-PRIVATE_INPUTS = ("stage5_runs", "stage5_aircargo_runs", "attempt02_runs", "attempt02_journals")
+PRIVATE_INPUTS = (
+    "stage5_runs",
+    "stage5_aircargo_runs",
+    "stage5_references",
+    "attempt02_runs",
+    "attempt02_journals",
+)
 SOURCE_FILES = ("corpus.manifest.json", "chunks-report.json", "index/index-receipt.json")
 STAGE5_RECORD = "reports/stage4-final/stage5/2057ad0/record.json"
 AIRCARGO_ANSWERS = "reports/stage4-final/138f3b3/final-answers.json"
@@ -276,12 +282,20 @@ def input_trees(config: dict[str, Any]) -> dict[str, tuple[Path, Path]]:
         result[name] = (absolute(item["root"]), absolute(item["inventory"]))
     for name, (folder, inv) in result.items():
         require(not inv.resolve().is_relative_to(folder.resolve()), "inventory is inside input")
-        for other, (target, _) in result.items():
+        for other, (target, target_inv) in result.items():
             require(
-                name == other or not folder.resolve().is_relative_to(target.resolve()),
+                name == other
+                or (folder.resolve(), inv.resolve()) == (target.resolve(), target_inv.resolve())
+                or not folder.resolve().is_relative_to(target.resolve()),
                 "input trees overlap",
             )
     return result
+
+
+def reference_files(config: dict[str, Any]) -> dict[str, str]:
+    """The references are a separate immutable tree, shared by M1 and the R reader."""
+    root = absolute(config["private_inputs"]["stage5_references"]["root"])
+    return {key: sha(root / (key + ".jsonl")) for key in KEYS[:2]}
 
 
 def logical_metadata(repo: Path, key: str, folder: Path) -> tuple[dict[str, Any], list[Any]]:
@@ -469,6 +483,7 @@ def verify(
             "pre": public_tree(actual),
             "post": public_tree(actual),
         }
+    references = reference_files(config)
     logical: dict[str, Any] = {}
     chunks_by_key = {}
     for key in KEYS:
@@ -511,6 +526,7 @@ def verify(
         "instruments": instruments,
         "trees": admitted,
         "logical": logical,
+        "stage5_references": references,
     }
 
 
@@ -534,6 +550,9 @@ def admit_receipt(config_path: Path, repo: Path = ROOT, *, runtime: bool = False
         "copy instrument receipt is stale",
     )
     trees = input_trees(config)
+    require(
+        receipt.get("stage5_references") == reference_files(config), "references receipt differs"
+    )
     require(
         set(receipt["trees"]) == set(trees) and set(receipt["logical"]) == set(KEYS),
         "copy receipt inputs differ",

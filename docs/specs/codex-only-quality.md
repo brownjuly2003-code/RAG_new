@@ -35,7 +35,8 @@ give separate `traces.db` files without an unsupported env override.
 
 Write each external UTF-8/LF, user-only-ACL env with `deploy/windows/write_env.py
 --env-file <stand env> --tenant <index tenant> --chroma-dir <copied index>
---database codex_quality_<series>_<key> --codex-exe <CAPTURE_SHIM_EXE> --codex-home <cw home>`.
+--database codex_quality_<series>_<key> --codex-exe <CAPTURE_SHIM_EXE> --codex-home <cw home>`
+(the helper accepts `[a-z0-9_]` only, so a series' `-` is written `_`: `attempt_01`).
 The later task adds/tests `--tenant`, `--chroma-dir`, `--database`, preserving defaults;
 `--codex-exe` already exists. Everything else is exactly what the writer supplies, validated
 by `start.py`'s checks: profile, reranker, HF cache, JWT/session/encryption secrets and admin

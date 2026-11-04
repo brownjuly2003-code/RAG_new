@@ -1212,6 +1212,7 @@ def admission(tmp_path, monkeypatch):
         "config_sha256": cv.sha(config_path),
         "private_root_sha256": cv.digest(str(private.resolve())),
         "copy_receipt_sha256": cv.sha(Path(config["copy_receipt"])),
+        "stage5_references": {k: "b" * 64 for k in cv.KEYS[:2]},
         "release": {"commit": "a" * 40},
         "private_artifacts": artifacts,
     }
@@ -1248,7 +1249,12 @@ def admission(tmp_path, monkeypatch):
     monkeypatch.setattr(driver, "validate_runtime_config", lambda *args: None)
     logical = {"passed": True, "collection": {"passed": True, "count": 1}}
     monkeypatch.setattr(
-        cv, "admit_receipt", lambda *args, **kwargs: {"logical": {k: logical for k in cv.KEYS}}
+        cv,
+        "admit_receipt",
+        lambda *args, **kwargs: {
+            "logical": {k: logical for k in cv.KEYS},
+            "stage5_references": registration["stage5_references"],
+        },
     )
     monkeypatch.setattr(cv, "logical_metadata", lambda *args: ({"passed": True}, []))
     monkeypatch.setattr(cv, "check_collection", lambda *args: {"passed": True, "count": 1})
@@ -1301,3 +1307,12 @@ def test_request_budget_refuses_before_runtime():
         ]
     )
     assert driver.request_chunk(args) == 1  # nosec B101 # Pytest contract assertion.
+
+
+@pytest.mark.parametrize("key", cv.KEYS)
+def test_stand_database_is_accepted_by_the_deployment_helper(key):
+    from deploy.windows import prepare_postgres
+
+    name = driver.stand_database("attempt-01", key)
+    assert name == "codex_quality_attempt_01_" + key
+    assert prepare_postgres.database_name(name) == name
