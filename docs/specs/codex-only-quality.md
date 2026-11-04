@@ -1,6 +1,6 @@
 # Stage 6, item 0: quality under codex-only
 
-Status: **specification; registration required before the first request**
+Status: **registered before the first request**
 
 ## Why
 
@@ -350,10 +350,28 @@ After all keys, or a stop:
 
 ## SHA-256 registration
 
-Every entry below: **`<to be filled at registration>`**, expanded to individual files in
-`registration.json`. Missing files refuse. Recheck committed bytes before every request,
-as stage 5в; amendments precede requests. The receipt binds the final spec without a
-self-hash. This task leaves everything uncommitted.
+Registered offline on 2026-11-04 as series `attempt-01`: every entry below is expanded to
+individual files and their SHA-256 in
+[`registration.json`](../../reports/codex-only-quality/attempt-01/registration.json)
+(149 public files; release `19ecbbb7489f83121dbc3c817ee948a6115bed7d`, tree
+`841d85483016b8348c64f96b7405df3f97b1ebfd`, 2,373 files; private config, copy receipt,
+environment, shim, CLIs and stand env files by hash only). Missing files refuse. Recheck
+committed bytes before every request, as stage 5в; amendments precede requests. The
+receipt binds the final spec without a self-hash. The measurement tools at registration:
+
+- `reports/codex-only-quality/tools/copy_verify.py` `82c78014658226b3acf607c593546ee54f6e89ea4026909fdaeea6b1a84cd1fd`
+- `reports/codex-only-quality/tools/quality_driver.py` `7e153606f075d64936d4eb5006dbabcb24e958fcfdc13dd273d7c83c9eb5e66a`
+- `reports/codex-only-quality/tools/quality_freeze.py` `c155cfebe0f7571f9070587be3838b3fc396862a14ce4206e10ac14f24d4d9a2`
+- `reports/codex-only-quality/tools/quality_read.py` `f6aa36fd05c5a4626b0edbfbc093285e66f6b4ad9a15f6d901e0162092d46185`
+- `reports/codex-only-quality/tools/stand_runtime.py` `13e9ae715d6e3778a75b88e69a35ea245c96e1c1e11e2bf32c9e0ddb66b37d36`
+- `reports/codex-only-quality/tools/capture_journal.py` `f0e79e4a9038e27eae1d02cf2bf301f6ce48a958918dd6fdfc3453624ae7a4bc`
+- `reports/codex-only-quality/tools/shim/CaptureShim.cs` `70d7353fc8df48a431a984946bcfc316578e2fcc353d8a51e68e01ab64943646`
+- `deploy/windows/write_env.py` `2ee6503f77f6a44ded23fdd5dcb8fb488032bf4bde9d764e6866bc54836e13e7`
+- `deploy/windows/prepare_postgres.py` `cd11345be50bc72a97fa3800976ec4eb0b3229c2a5457aca3fde59d3fbf49e64`
+
+The receipt's Q baseline, stage 5в's Codex arm by the rule above: answered good **268/300**
+(WixQA 87, ConditionalQA 81, aircargo 100). The R instrument gate reproduced `sent_cases`
+case for case: passed, **125/180** gold-bearing hits pooled.
 
 - This spec; stage 5в spec/record; every public input/instrument in stage 5в,
   §SHA-256 registration (historical pins still checked).
