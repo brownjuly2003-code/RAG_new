@@ -1,0 +1,126 @@
+{
+  "stops": [],
+  "resumes": [],
+  "chunks": [
+    {
+      "utc": "2026-11-04T22:42:40.284398+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-04T22:42:41.312255+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-04T22:42:58.758637+00:00"
+        }
+      ],
+      "exit_code": 0
+    },
+    {
+      "utc": "2026-11-04T22:43:56.468919+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-04T22:43:57.494798+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-04T22:46:06.837303+00:00"
+        }
+      ],
+      "exit_code": 0
+    },
+    {
+      "utc": "2026-11-04T22:47:07.210718+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-04T22:47:08.243994+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-04T22:51:41.003264+00:00"
+        }
+      ],
+      "exit_code": 0
+    },
+    {
+      "utc": "2026-11-04T22:52:37.608890+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-04T22:52:38.648781+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-04T23:02:02.754420+00:00"
+        }
+      ],
+      "exit_code": 3
+    },
+    {
+      "utc": "2026-11-04T23:03:02.690693+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-04T23:03:03.726455+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-04T23:11:09.575571+00:00"
+        }
+      ],
+      "exit_code": 0
+    }
+  ],
+  "retry_at": null,
+  "pilot_seconds": 1240.5620000000054,
+  "remaining_seconds": 0.0,
+  "forecast_s": 60,
+  "slow_threshold_s": 180,
+  "key": "probe",
+  "status_counts": {
+    "accepted": 1,
+    "pending": 0
+  },
+  "attempts": [
+    {
+      "id": "ffa95a265e354885a31f050746d4a4a3",
+      "case_id": "probe",
+      "classification": "accepted",
+      "elapsed_s": 17.312000000005355,
+      "cold": false,
+      "language": {},
+      "calls_by_effort": {
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": null,
+      "ticket_sha256": [],
+      "audited_absence": false
+    }
+  ],
+  "whole": true,
+  "accepted": true,
+  "route_counts": {
+    "other": 1
+  },
+  "over_180": 0,
+  "infrastructure_attempts": 0,
+  "language_mismatches": 0
+}

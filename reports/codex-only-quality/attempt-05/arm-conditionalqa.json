@@ -1,0 +1,335 @@
+{
+  "stops": [],
+  "resumes": [],
+  "chunks": [
+    {
+      "utc": "2026-11-04T22:42:40.284398+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-04T22:42:41.312255+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-04T22:42:58.758637+00:00"
+        }
+      ],
+      "exit_code": 0
+    },
+    {
+      "utc": "2026-11-04T22:43:56.468919+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-04T22:43:57.494798+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-04T22:46:06.837303+00:00"
+        }
+      ],
+      "exit_code": 0
+    },
+    {
+      "utc": "2026-11-04T22:47:07.210718+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-04T22:47:08.243994+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-04T22:51:41.003264+00:00"
+        }
+      ],
+      "exit_code": 0
+    },
+    {
+      "utc": "2026-11-04T22:52:37.608890+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-04T22:52:38.648781+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-04T23:02:02.754420+00:00"
+        }
+      ],
+      "exit_code": 3
+    },
+    {
+      "utc": "2026-11-04T23:03:02.690693+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-04T23:03:03.726455+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-04T23:11:09.575571+00:00"
+        }
+      ],
+      "exit_code": 0
+    }
+  ],
+  "retry_at": null,
+  "pilot_seconds": 1240.5620000000054,
+  "remaining_seconds": 0.0,
+  "forecast_s": 60,
+  "slow_threshold_s": 180,
+  "key": "conditionalqa",
+  "status_counts": {
+    "accepted": 7,
+    "pending": 93
+  },
+  "attempts": [
+    {
+      "id": "a0dd5de7c6b0495bbd46b1eed431b152",
+      "case_id": "conditionalqa-train-1284",
+      "classification": "accepted",
+      "elapsed_s": 59.8130000000092,
+      "cold": true,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 161,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 924,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "69993672a633bdb6acaf276cb7fff906c22afa00017f5924213fbdb83c51412c",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "c591937e850d409cad98aa17cda39e6f",
+      "case_id": "conditionalqa-dev-58",
+      "classification": "accepted",
+      "elapsed_s": 66.79699999999139,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 184,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 645,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "cdc586eb0467a0602125099ffdd9ac6ccc9ef4a437ad2dc765435f9b996866f7",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "53d65ae5d0a5469ca752209995b25f8a",
+      "case_id": "conditionalqa-train-2038",
+      "classification": "accepted",
+      "elapsed_s": 62.78100000000268,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 120,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 467,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "4a640ba3fbe3bc19150052c9df314d1b7f6d42e564229e1f47b11e7d8043c9f8",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "3d1aeb6c9db34b7caeea601953affaf1",
+      "case_id": "conditionalqa-train-12",
+      "classification": "accepted",
+      "elapsed_s": 54.40600000000268,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 164,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 775,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "713f2aa7897c6b7261d43febb0c427df8467a9e212f8478430e765f77f865c59",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "df57fff3a5834ef193619dc5d940b27a",
+      "case_id": "conditionalqa-train-1548",
+      "classification": "accepted",
+      "elapsed_s": 59.296999999991385,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 204,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 546,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "6950360f7cd70eaffc65157c71b091120dc6930d34c0b774aea2fd5cd5da17c4",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "8bf18902fcbf4884b61ff2cb4de4cdbb",
+      "case_id": "conditionalqa-train-1236",
+      "classification": "accepted",
+      "elapsed_s": 66.875,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 154,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 495,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "fc1fa5e39c9fa9660e5a325ee46d136957f1bf672e907610389344b37302a22c",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "b0968deb38714b4aa34fb0453099d885",
+      "case_id": "conditionalqa-train-608",
+      "classification": "accepted",
+      "elapsed_s": 59.40700000000652,
+      "cold": true,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 253,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 471,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "49f770489d21bc2b185cb68e34d04b85bf2ada211572a1837795614e4bf9875c",
+      "ticket_sha256": [],
+      "audited_absence": false
+    }
+  ],
+  "whole": false,
+  "accepted": 7,
+  "route_counts": {
+    "auto": 7
+  },
+  "over_180": 0,
+  "infrastructure_attempts": 0,
+  "language_mismatches": 0
+}

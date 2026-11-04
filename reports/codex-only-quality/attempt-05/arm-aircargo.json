@@ -1,0 +1,303 @@
+{
+  "stops": [],
+  "resumes": [],
+  "chunks": [
+    {
+      "utc": "2026-11-04T22:42:40.284398+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-04T22:42:41.312255+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-04T22:42:58.758637+00:00"
+        }
+      ],
+      "exit_code": 0
+    },
+    {
+      "utc": "2026-11-04T22:43:56.468919+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-04T22:43:57.494798+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-04T22:46:06.837303+00:00"
+        }
+      ],
+      "exit_code": 0
+    },
+    {
+      "utc": "2026-11-04T22:47:07.210718+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-04T22:47:08.243994+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-04T22:51:41.003264+00:00"
+        }
+      ],
+      "exit_code": 0
+    },
+    {
+      "utc": "2026-11-04T22:52:37.608890+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-04T22:52:38.648781+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-04T23:02:02.754420+00:00"
+        }
+      ],
+      "exit_code": 3
+    },
+    {
+      "utc": "2026-11-04T23:03:02.690693+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-04T23:03:03.726455+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-04T23:11:09.575571+00:00"
+        }
+      ],
+      "exit_code": 0
+    }
+  ],
+  "retry_at": null,
+  "pilot_seconds": 1240.5620000000054,
+  "remaining_seconds": 0.0,
+  "forecast_s": 60,
+  "slow_threshold_s": 180,
+  "key": "aircargo",
+  "status_counts": {
+    "accepted": 6,
+    "pending": 94
+  },
+  "attempts": [
+    {
+      "id": "6216f7d0d2864ef8b8b1e25c8362633a",
+      "case_id": "aircargo-access-control-need-to-know",
+      "classification": "accepted",
+      "elapsed_s": 56.13999999999942,
+      "cold": true,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 15,
+            "CYRILLIC": 31
+          },
+          "script": "CYRILLIC"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 25,
+            "CYRILLIC": 100
+          },
+          "script": "CYRILLIC"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "6ce563464d711d0983680452838f91f65f608eb4e9537fa2a68a3dfa9f191dda",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "794ee51c38664e5ab6974f4aca4a6891",
+      "case_id": "aircargo-dangerous-goods-fields",
+      "classification": "accepted",
+      "elapsed_s": 67.65600000000268,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 22,
+            "CYRILLIC": 30
+          },
+          "script": "CYRILLIC"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 310,
+            "CYRILLIC": 494
+          },
+          "script": "CYRILLIC"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "951903545c169006f20b2bf607e6b853427453869b21a8929308d575264b96e0",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "20a349bc0f2446009355f53f66049b78",
+      "case_id": "aircargo-claims-lawyer",
+      "classification": "accepted",
+      "elapsed_s": 70.95300000000861,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 10,
+            "CYRILLIC": 40
+          },
+          "script": "CYRILLIC"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 45,
+            "CYRILLIC": 511
+          },
+          "script": "CYRILLIC"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "79a6efbcaef4c48da443fdc050aa942a20537b4fc13ad2ba22606da2e4003ee8",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "a2ca212260c945458be81d4a7f5abed0",
+      "case_id": "aircargo-business-trip-advance-report",
+      "classification": "accepted",
+      "elapsed_s": 47.90600000000268,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 0,
+            "CYRILLIC": 51
+          },
+          "script": "CYRILLIC"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 0,
+            "CYRILLIC": 126
+          },
+          "script": "CYRILLIC"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "36b15b126f5911a2323ab09e2a61d9b82f2b07353af37a7dad891941b4d0f488",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "537b5e27a678433bb1927da50b598a0c",
+      "case_id": "aircargo-employment-contract-special-form",
+      "classification": "accepted",
+      "elapsed_s": 64.70299999999406,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 0,
+            "CYRILLIC": 49
+          },
+          "script": "CYRILLIC"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 0,
+            "CYRILLIC": 237
+          },
+          "script": "CYRILLIC"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "7f6a6a1d04c836a05c3f3d1edc733ae2c802f621e6a6dd6954cb55360b6575bf",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "718daa2c84ec4719a387e4427698c505",
+      "case_id": "aircargo-fuel-supply-required-fields",
+      "classification": "accepted",
+      "elapsed_s": 58.01600000000326,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 3,
+            "CYRILLIC": 41
+          },
+          "script": "CYRILLIC"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 236,
+            "CYRILLIC": 521
+          },
+          "script": "CYRILLIC"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "6ebef2722f4d69f006ae1374fe323de7a4d31358fd934a1c5309904b8e6796db",
+      "ticket_sha256": [],
+      "audited_absence": false
+    }
+  ],
+  "whole": false,
+  "accepted": 6,
+  "route_counts": {
+    "auto": 6
+  },
+  "over_180": 0,
+  "infrastructure_attempts": 0,
+  "language_mismatches": 0
+}
