@@ -305,7 +305,7 @@ $py = '<RELEASE_VENV_PYTHON>'
 $tools = 'reports/codex-only-quality/tools'
 $config = '<PRIVATE_CONFIG_JSON>'
 $private = '<PRIVATE_ROOT>'
-$a = @('--config', $config, '--private', $private, '--series', 'attempt-02', '--records', 'reports/codex-only-quality')
+$a = @('--config', $config, '--private', $private, '--series', 'attempt-03', '--records', 'reports/codex-only-quality')
 & $py "$tools/copy_verify.py" --config $config --out '<PRIVATE_COPY_RECEIPT_JSON>'
 & '<CAPTURE_SHIM_EXE>' --configure --real-exe '<REAL_CODEX_EXE>' --capture-root '<PRIVATE_CAPTURE_ROOT>'
 & $py "$tools/quality_driver.py" register @a
@@ -350,9 +350,9 @@ After all keys, or a stop:
 
 ## SHA-256 registration
 
-Registered offline on 2026-11-04 as series `attempt-02`: every entry below is expanded to
+Registered offline on 2026-11-04 as series `attempt-03`: every entry below is expanded to
 individual files and their SHA-256 in
-[`registration.json`](../../reports/codex-only-quality/attempt-02/registration.json)
+[`registration.json`](../../reports/codex-only-quality/attempt-03/registration.json)
 (149 public files; release `19ecbbb7489f83121dbc3c817ee948a6115bed7d`, tree
 `841d85483016b8348c64f96b7405df3f97b1ebfd`, 2,373 files; private config, copy receipt,
 environment, shim, CLIs and stand env files by hash only). Missing files refuse. Recheck
@@ -373,7 +373,7 @@ The receipt's Q baseline, stage 5в's Codex arm by the rule above: answered good
 (WixQA 87, ConditionalQA 81, aircargo 100). The R instrument gate reproduced `sent_cases`
 case for case: passed, **125/180** gold-bearing hits pooled.
 
-Amendment, 2026-11-04, before any `attempt-02` request. Series
+Amendment, 2026-11-04, before any `attempt-02` or `attempt-03` request. Series
 [`attempt-01`](../../reports/codex-only-quality/attempt-01/) is retained and stopped (code 5,
 unresolved). Its probe and 11 of 20 pilot questions were accepted. Its process watch then refused
 twice with `python_command_unreadable`: a concurrent session's short-lived python exited between
@@ -388,6 +388,13 @@ the three env files and those private bindings. Between chunks, the operator sto
 with the driver's own `Runtime.stop`, under the series lock. A live stand left the laptop short of
 memory, and the next admission took 23 minutes instead of about 5. The next chunk starts a fresh
 stand and records its first question `cold`.
+
+Series [`attempt-02`](../../reports/codex-only-quality/attempt-02/) is retained and stopped before
+its first request: code 2, `call_outside_question`. Its probe found `attempt-01`'s 34 Codex call
+records in the shared capture root and, correctly, refused to attribute them. Each series now
+starts with an empty `capture/calls`. `attempt-01`'s records moved to its own private folder,
+and the shim configuration is unchanged. `attempt-03` was prepared the same way as `attempt-02`,
+with its own databases, env files, config, copy receipt and restored `chroma.sqlite3`.
 
 - This spec; stage 5в spec/record; every public input/instrument in stage 5в,
   §SHA-256 registration (historical pins still checked).

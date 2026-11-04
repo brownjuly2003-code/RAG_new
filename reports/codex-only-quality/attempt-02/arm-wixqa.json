@@ -1,0 +1,46 @@
+{
+  "stops": [
+    {
+      "id": "398be562821b4825b64284bb5bc3b69d",
+      "code": 2,
+      "reason": "call_outside_question",
+      "utc": "2026-11-04T14:57:44.900826+00:00"
+    }
+  ],
+  "resumes": [],
+  "chunks": [
+    {
+      "utc": "2026-11-04T14:57:43.855941+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-04T14:57:44.884698+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-04T14:57:44.921608+00:00"
+        }
+      ],
+      "exit_code": 2
+    }
+  ],
+  "retry_at": null,
+  "pilot_seconds": 0.0,
+  "remaining_seconds": 0.0,
+  "forecast_s": 60,
+  "slow_threshold_s": 180,
+  "key": "wixqa",
+  "status_counts": {
+    "pending": 100
+  },
+  "attempts": [],
+  "whole": false,
+  "accepted": 0,
+  "route_counts": {},
+  "over_180": 0,
+  "infrastructure_attempts": 0,
+  "language_mismatches": 0
+}
