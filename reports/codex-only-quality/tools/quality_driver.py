@@ -1016,14 +1016,16 @@ def admit_chunk(
         cv.sha(Path(config["copy_receipt"])) == registration["copy_receipt_sha256"],
         "copy receipt changed",
     )
-    receipt = cv.admit_receipt(args.config, repo, runtime=True)
+    # Request chunks reuse unchanged files' hashes; frozen/offline work hashes in full.
+    cache = None if offline else cv.StatCache(args.private / args.series / "stat-cache.json")
+    receipt = cv.admit_receipt(args.config, repo, runtime=True, cache=cache)
     cv.require(
         registration["stage5_references"] == receipt["stage5_references"],
         "registered references differ",
     )
     for key in cv.KEYS:
         folder = cv.absolute(config["private_data_root"]) / key
-        logical, chunks = cv.logical_metadata(repo, key, folder)
+        logical, chunks = cv.logical_metadata(repo, key, folder, cache)
         if offline:
             # Frozen/offline work must never open Chroma. Immutable files are
             # still checked; only the admitted index runtime bookkeeping varies.
@@ -1061,6 +1063,8 @@ def admit_chunk(
             and cv.digest(str(artifact.resolve())) == held["path_sha256"],
             "private artifact differs",
         )
+    if cache:
+        cache.save()
     return config, registration
 
 
