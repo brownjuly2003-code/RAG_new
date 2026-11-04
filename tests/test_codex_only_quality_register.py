@@ -648,6 +648,7 @@ def registration(admission: SimpleNamespace, monkeypatch: pytest.MonkeyPatch) ->
     for name in (
         "config/providers.yml",
         "agent/graph.py",
+        "api/routers/conversation.py",
         "reports/stage4-final/tools/common.py",
         "reports/codex-only-quality/tools/shim/CaptureShim.cs",
         *driver.HELPER_FILES,
@@ -748,6 +749,9 @@ def registration(admission: SimpleNamespace, monkeypatch: pytest.MonkeyPatch) ->
         },
     )
     monkeypatch.setattr(driver, "load_packages", lambda *args: (f.packages, f.ids))
+    # Runtime path/env validation has separate driver tests; this fixture models
+    # offline registration instruments without a prepared Windows deployment.
+    monkeypatch.setattr(driver, "validate_runtime_config", lambda *args: None)
 
     def gate(repo: Path, config: dict[str, Any], packages: dict[str, Any]) -> dict[str, Any]:
         historical = cv.read(repo / driver.STAGE5)
@@ -905,7 +909,20 @@ def test_future_commands_refuse_without_reading_inputs(
         )
         == 1
     )
-    assert "not implemented in this task" in capsys.readouterr().err
+    message = capsys.readouterr().err
+    assert (
+        "request refused"
+        if command in {"probe", "pilot", "run"}
+        else "not implemented in this task"
+    ) in message
+
+
+def test_complete_registration_is_request_ready(registration, monkeypatch):
+    hashes, _ = driver.public_hashes(registration.repo)
+    monkeypatch.setattr(driver, "public_hashes", lambda repo: (hashes, []))
+    result = registration.invoke()
+    assert result["pending"] == []
+    assert result["request_ready"] is True
 
 
 def test_new_tools_never_use_dynamic_execution() -> None:

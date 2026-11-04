@@ -514,8 +514,12 @@ def verify(
     }
 
 
-def admit_receipt(config_path: Path, repo: Path = ROOT) -> dict[str, Any]:
-    """Registration rehashes post-verification bytes without reopening the index."""
+def admit_receipt(config_path: Path, repo: Path = ROOT, *, runtime: bool = False) -> dict[str, Any]:
+    """Registration checks whole trees; request chunks allow Chroma bookkeeping.
+
+    Runtime callers must additionally run logical_metadata/check_collection for
+    every base. Immutable private input trees remain pinned in both modes.
+    """
     config = read(config_path)
     receipt = read(absolute(config["copy_receipt"]))
     require(
@@ -540,7 +544,7 @@ def admit_receipt(config_path: Path, repo: Path = ROOT) -> dict[str, Any]:
             held["root_sha256"] == digest(str(folder.resolve()))
             and held["inventory_sha256"] == sha(inv)
             and held["pre"] == public_tree(inventory_entries(read(inv)))
-            and held["post"] == public_tree(tree_files(folder)),
+            and (runtime and name in KEYS or held["post"] == public_tree(tree_files(folder))),
             "copy receipt is stale",
         )
     for key in KEYS:
