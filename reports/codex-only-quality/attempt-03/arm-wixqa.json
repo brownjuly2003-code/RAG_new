@@ -6,6 +6,18 @@
       "reason": "drain_timeout",
       "utc": "2026-11-04T18:25:14.359045+00:00",
       "resolved": "2026-11-04T18:32:55.068478+00:00"
+    },
+    {
+      "id": "7f8b5c6d57d64f60a766dcfa53f0bf23",
+      "code": 2,
+      "reason": "outside_codex",
+      "utc": "2026-11-04T19:33:47.703945+00:00"
+    },
+    {
+      "id": "558d4106d3c14421ad4ff2c4061a16f7",
+      "code": 2,
+      "reason": "state_stop",
+      "utc": "2026-11-04T19:33:48.026945+00:00"
     }
   ],
   "resumes": [
@@ -422,11 +434,62 @@
         }
       ],
       "exit_code": 0
+    },
+    {
+      "utc": "2026-11-04T19:02:47.080177+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-04T19:02:48.124856+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-04T19:11:43.204259+00:00"
+        }
+      ],
+      "exit_code": 3
+    },
+    {
+      "utc": "2026-11-04T19:13:43.870901+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-04T19:13:44.903902+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-04T19:22:45.834437+00:00"
+        }
+      ],
+      "exit_code": 3
+    },
+    {
+      "utc": "2026-11-04T19:27:49.400349+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-04T19:27:50.510674+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-04T19:33:48.059316+00:00"
+        }
+      ],
+      "exit_code": 2
     }
   ],
   "retry_at": null,
   "pilot_seconds": 1566.8139999999985,
-  "remaining_seconds": 6276.234000000011,
+  "remaining_seconds": 7470.341000000059,
   "forecast_s": 60,
   "slow_threshold_s": 180,
   "key": "wixqa",

@@ -161,8 +161,10 @@ mismatches, preservation and amendment/new-series recovery are as stage 5в, §P
 stops; exclude empty/counted-out answers from language mismatch counts. No measurement-side
 answer redo. Poll the process list about every 2 s, with an initial snapshot per chunk;
 no elevated WMI start trace. Record pre-existing `codex.exe` processes (other projects'
-app-servers) without stopping them. Any new `codex.exe` outside the recorded stand tree is
-a rule stop, as are wrong profile/effort, overlapping service or Ollama. Record Ollama
+app-servers) without stopping them. A new `codex.exe` outside the recorded stand tree is
+recorded once in the chunk record (pid, creation, time), not stopped: capture binds only the
+shim's calls, and a shared account's usage limit is infrastructure. Wrong profile/effort,
+overlapping service or Ollama are rule stops. Record Ollama
 observations without killing by name. Restart cannot clear a stop; infrastructure recovery
 requires the explicit resume above and fresh admission checks.
 
@@ -297,15 +299,15 @@ Future orchestrator commands only. Prepare private copies, pinned releases/envs 
 isolated databases; stop the product API, keep its cluster, verify the free port.
 Populate the private config with the paths above. The repository's Codex executor shares
 profile cw's `CODEX_HOME`: during chunks run no executor, second-opinion or other Codex task
-of this repository. Existing other-project app-servers are only recorded; newly started
-outside-tree `codex.exe` processes stop the chunk. Keep mains connected and the lid open.
+of this repository. Other sessions' `codex.exe` processes, existing or new, are only
+recorded. Keep mains connected and the lid open.
 
 ```powershell
 $py = '<RELEASE_VENV_PYTHON>'
 $tools = 'reports/codex-only-quality/tools'
 $config = '<PRIVATE_CONFIG_JSON>'
 $private = '<PRIVATE_ROOT>'
-$a = @('--config', $config, '--private', $private, '--series', 'attempt-03', '--records', 'reports/codex-only-quality')
+$a = @('--config', $config, '--private', $private, '--series', 'attempt-04', '--records', 'reports/codex-only-quality')
 & $py "$tools/copy_verify.py" --config $config --out '<PRIVATE_COPY_RECEIPT_JSON>'
 & '<CAPTURE_SHIM_EXE>' --configure --real-exe '<REAL_CODEX_EXE>' --capture-root '<PRIVATE_CAPTURE_ROOT>'
 & $py "$tools/quality_driver.py" register @a
@@ -350,9 +352,9 @@ After all keys, or a stop:
 
 ## SHA-256 registration
 
-Registered offline on 2026-11-04 as series `attempt-03`: every entry below is expanded to
+Registered offline on 2026-11-04 as series `attempt-04`: every entry below is expanded to
 individual files and their SHA-256 in
-[`registration.json`](../../reports/codex-only-quality/attempt-03/registration.json)
+[`registration.json`](../../reports/codex-only-quality/attempt-04/registration.json)
 (149 public files; release `19ecbbb7489f83121dbc3c817ee948a6115bed7d`, tree
 `841d85483016b8348c64f96b7405df3f97b1ebfd`, 2,373 files; private config, copy receipt,
 environment, shim, CLIs and stand env files by hash only). Missing files refuse. Recheck
@@ -363,7 +365,7 @@ receipt binds the final spec without a self-hash. The measurement tools at regis
 - `reports/codex-only-quality/tools/quality_driver.py` `7e153606f075d64936d4eb5006dbabcb24e958fcfdc13dd273d7c83c9eb5e66a`
 - `reports/codex-only-quality/tools/quality_freeze.py` `c155cfebe0f7571f9070587be3838b3fc396862a14ce4206e10ac14f24d4d9a2`
 - `reports/codex-only-quality/tools/quality_read.py` `f6aa36fd05c5a4626b0edbfbc093285e66f6b4ad9a15f6d901e0162092d46185`
-- `reports/codex-only-quality/tools/stand_runtime.py` `640127cad83b72d302dda20d14f0b6765849696361b3a402b35e87b12088fccf`
+- `reports/codex-only-quality/tools/stand_runtime.py` `e9d35c0997ad22638b39022bbf1c79e875d3c76cc47d6b690f69190fe1609f19`
 - `reports/codex-only-quality/tools/capture_journal.py` `f0e79e4a9038e27eae1d02cf2bf301f6ce48a958918dd6fdfc3453624ae7a4bc`
 - `reports/codex-only-quality/tools/shim/CaptureShim.cs` `70d7353fc8df48a431a984946bcfc316578e2fcc353d8a51e68e01ab64943646`
 - `deploy/windows/write_env.py` `2ee6503f77f6a44ded23fdd5dcb8fb488032bf4bde9d764e6866bc54836e13e7`
@@ -395,6 +397,20 @@ records in the shared capture root and, correctly, refused to attribute them. Ea
 starts with an empty `capture/calls`. `attempt-01`'s records moved to its own private folder,
 and the shim configuration is unchanged. `attempt-03` was prepared the same way as `attempt-02`,
 with its own databases, env files, config, copy receipt and restored `chroma.sqlite3`.
+
+Amendment, 2026-11-04, before any `attempt-04` request. Series
+[`attempt-03`](../../reports/codex-only-quality/attempt-03/) is retained and stopped (code 2,
+`outside_codex`). Its probe and all 20 pilot questions were accepted; WixQA was whole and frozen
+(100/100 accepted), then 24 ConditionalQA and 6 aircargo questions were accepted. At 19:33:46 UTC
+a second Claude session of the owner started Codex in its own process tree, and the rule stopped
+the series mid-question. That rule protected nothing the measurement reads: capture binds only the
+shim's calls, and a usage-limit reply is infrastructure. An outside-tree `codex.exe` is now
+recorded in the chunk record, not stopped (`f3bcf3a`). The same commit fixes the series' one
+infrastructure stop, a resolved `drain_timeout`. The Bash tool's top shell is an orphan; its
+exited launcher had the PID of an earlier shim, so the drain counted the chunk's own tree as that
+shim's live family. A finished call's shim now owns only children created before its recorded end.
+`attempt-04` was prepared like `attempt-03`; its registration differs only in that tool, its test,
+the env files and the private bindings. No `attempt-03` answer is reused.
 
 - This spec; stage 5в spec/record; every public input/instrument in stage 5в,
   §SHA-256 registration (historical pins still checked).
