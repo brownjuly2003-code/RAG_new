@@ -1,0 +1,220 @@
+{
+  "stops": [],
+  "resumes": [],
+  "chunks": [
+    {
+      "utc": "2026-11-04T20:30:37.870053+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-04T20:30:38.911719+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-04T20:30:54.801695+00:00"
+        }
+      ],
+      "exit_code": 0
+    },
+    {
+      "utc": "2026-11-04T20:33:13.621224+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-04T20:33:14.649352+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-04T20:34:57.163410+00:00"
+        }
+      ],
+      "exit_code": 0
+    },
+    {
+      "utc": "2026-11-04T20:43:26.328109+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-04T20:43:27.358713+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-04T20:46:07.314293+00:00"
+        }
+      ],
+      "exit_code": 3
+    },
+    {
+      "utc": "2026-11-04T20:52:22.821896+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-04T20:52:23.865217+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-04T20:55:17.913322+00:00"
+        }
+      ],
+      "exit_code": 0
+    },
+    {
+      "utc": "2026-11-04T21:01:35.684334+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-04T21:01:36.714426+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-04T21:06:02.363635+00:00"
+        }
+      ],
+      "exit_code": 3
+    },
+    {
+      "utc": "2026-11-04T21:11:17.324753+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-04T21:11:18.354261+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-04T21:16:53.723348+00:00"
+        }
+      ],
+      "exit_code": 3
+    },
+    {
+      "utc": "2026-11-04T21:19:09.025513+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-04T21:19:10.069309+00:00"
+        },
+        {
+          "kind": "outside_codex",
+          "pid": 1580,
+          "created": 0,
+          "utc": "2026-11-04T21:24:04.799086+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-04T21:27:36.031183+00:00"
+        }
+      ],
+      "exit_code": 0
+    }
+  ],
+  "retry_at": null,
+  "pilot_seconds": 1268.906999999992,
+  "remaining_seconds": 0.0,
+  "forecast_s": 60,
+  "slow_threshold_s": 180,
+  "selected": [
+    {
+      "key": "wixqa",
+      "case_id": "wixqa-simulated-105"
+    },
+    {
+      "key": "wixqa",
+      "case_id": "wixqa-simulated-014"
+    },
+    {
+      "key": "wixqa",
+      "case_id": "wixqa-simulated-037"
+    },
+    {
+      "key": "wixqa",
+      "case_id": "wixqa-simulated-138"
+    },
+    {
+      "key": "wixqa",
+      "case_id": "wixqa-simulated-098"
+    },
+    {
+      "key": "wixqa",
+      "case_id": "wixqa-simulated-198"
+    },
+    {
+      "key": "wixqa",
+      "case_id": "wixqa-simulated-033"
+    },
+    {
+      "key": "conditionalqa",
+      "case_id": "conditionalqa-train-1284"
+    },
+    {
+      "key": "conditionalqa",
+      "case_id": "conditionalqa-dev-58"
+    },
+    {
+      "key": "conditionalqa",
+      "case_id": "conditionalqa-train-2038"
+    },
+    {
+      "key": "conditionalqa",
+      "case_id": "conditionalqa-train-12"
+    },
+    {
+      "key": "conditionalqa",
+      "case_id": "conditionalqa-train-1548"
+    },
+    {
+      "key": "conditionalqa",
+      "case_id": "conditionalqa-train-1236"
+    },
+    {
+      "key": "conditionalqa",
+      "case_id": "conditionalqa-train-608"
+    },
+    {
+      "key": "aircargo",
+      "case_id": "aircargo-access-control-need-to-know"
+    },
+    {
+      "key": "aircargo",
+      "case_id": "aircargo-dangerous-goods-fields"
+    },
+    {
+      "key": "aircargo",
+      "case_id": "aircargo-claims-lawyer"
+    },
+    {
+      "key": "aircargo",
+      "case_id": "aircargo-business-trip-advance-report"
+    },
+    {
+      "key": "aircargo",
+      "case_id": "aircargo-employment-contract-special-form"
+    },
+    {
+      "key": "aircargo",
+      "case_id": "aircargo-fuel-supply-required-fields"
+    }
+  ],
+  "step": 20,
+  "passed": true
+}
