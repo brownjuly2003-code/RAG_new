@@ -1,0 +1,386 @@
+{
+  "stops": [],
+  "resumes": [],
+  "chunks": [
+    {
+      "utc": "2026-11-04T15:11:19.389310+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-04T15:11:20.421901+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-04T15:11:41.327234+00:00"
+        }
+      ],
+      "exit_code": 0
+    },
+    {
+      "utc": "2026-11-04T15:14:04.554241+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-04T15:14:05.601175+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-04T15:16:09.826733+00:00"
+        }
+      ],
+      "exit_code": 0
+    },
+    {
+      "utc": "2026-11-04T15:22:13.969113+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-04T15:22:15.015092+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-04T15:26:25.302121+00:00"
+        }
+      ],
+      "exit_code": 3
+    },
+    {
+      "utc": "2026-11-04T15:28:42.183981+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-04T15:28:43.228980+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-04T15:30:41.316376+00:00"
+        }
+      ],
+      "exit_code": 0
+    },
+    {
+      "utc": "2026-11-04T15:32:55.333043+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-04T15:32:56.360171+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-04T15:41:31.615480+00:00"
+        }
+      ],
+      "exit_code": 3
+    },
+    {
+      "utc": "2026-11-04T15:49:31.663975+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-04T15:49:32.707241+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-04T15:52:40.145369+00:00"
+        }
+      ],
+      "exit_code": 3
+    },
+    {
+      "utc": "2026-11-04T15:54:49.072956+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-04T15:54:50.104087+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-04T16:03:49.265138+00:00"
+        }
+      ],
+      "exit_code": 3
+    },
+    {
+      "utc": "2026-11-04T16:09:05.158063+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-04T16:09:06.188106+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-04T16:10:56.158786+00:00"
+        }
+      ],
+      "exit_code": 0
+    }
+  ],
+  "retry_at": null,
+  "pilot_seconds": 1566.8139999999985,
+  "remaining_seconds": 0.0,
+  "forecast_s": 60,
+  "slow_threshold_s": 180,
+  "key": "conditionalqa",
+  "status_counts": {
+    "accepted": 7,
+    "pending": 93
+  },
+  "attempts": [
+    {
+      "id": "ed4c53dfc7654b9fbee346c14b0f03ed",
+      "case_id": "conditionalqa-train-1284",
+      "classification": "accepted",
+      "elapsed_s": 82.56299999999464,
+      "cold": true,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 161,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 881,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "2472415196110730cc27ee145cc943aaa8c597deca92e1b3db9035cb85afa76c",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "ae6d234f024941839ac1169e8a6e6da0",
+      "case_id": "conditionalqa-dev-58",
+      "classification": "accepted",
+      "elapsed_s": 76.35899999999674,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 184,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 710,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "162ac2ea4c90a46d382403c3b05f066cb517856cc7a076dd4a74e12fbeb5950c",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "6f12a4af82964f06b39bf1ac82965e49",
+      "case_id": "conditionalqa-train-2038",
+      "classification": "accepted",
+      "elapsed_s": 62.625,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 120,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 356,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "bcd4eb9d76b4dfcfcf48f20687cd60d55c9c4c8b86ef336e49989a486b198c00",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "8cffec99e01f4284a891c20eedf5c297",
+      "case_id": "conditionalqa-train-12",
+      "classification": "accepted",
+      "elapsed_s": 79.51499999999942,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 164,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 718,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "be97f98c32518798e47f6fd6b4bd80fbbbc2f52e222da0256bcf2cb4a0311510",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "d4752196ab7b4455be752979167a3097",
+      "case_id": "conditionalqa-train-1548",
+      "classification": "accepted",
+      "elapsed_s": 76.70299999999406,
+      "cold": true,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 204,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 624,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "8293326cc6aa26de90b2389c4ce1981d9516e829f5574ef82b5f25bcbdae3fd9",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "fc2ae646efc04c56b016f42e504d0aee",
+      "case_id": "conditionalqa-train-1236",
+      "classification": "accepted",
+      "elapsed_s": 84.64100000000326,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 154,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 467,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "1f5a4bb7134bb931701909d8e2c3f77a8b2e96ce0c572acd196c27508a9d2e44",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "e3bf60531ae24d1ea09b027f80b20d68",
+      "case_id": "conditionalqa-train-608",
+      "classification": "accepted",
+      "elapsed_s": 83.625,
+      "cold": true,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 253,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 627,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "14a6d1918151ac40003a3e7159b3443ef89213e1dfed56e277a4fa84732250a0",
+      "ticket_sha256": [],
+      "audited_absence": false
+    }
+  ],
+  "whole": false,
+  "accepted": 7,
+  "route_counts": {
+    "auto": 7
+  },
+  "over_180": 0,
+  "infrastructure_attempts": 0,
+  "language_mismatches": 0
+}
