@@ -138,6 +138,17 @@ def port_taken(port: int = 8002) -> bool:
         return connection.connect_ex(("127.0.0.1", port)) == 0
 
 
+def command_or_exit(read: Callable[[], str], running: Callable[[], bool]) -> str | None:
+    """A python may exit between OpenProcess and its command-line read (an outside
+    session's short-lived process): None only if it really exited; a live one refuses."""
+    try:
+        return read()
+    except Stop:
+        if running():
+            raise
+        return None
+
+
 class WindowsSystem:
     """Toolhelp + process handles, never WMI, taskkill or image-name termination."""
 
@@ -195,6 +206,12 @@ class WindowsSystem:
         value = UnicodeString.from_buffer(buffer)
         return ctypes.wstring_at(value.buffer, value.length // 2)
 
+    def _running(self, handle: Any) -> bool:
+        code = w.DWORD()
+        if not self.kernel.GetExitCodeProcess(handle, ctypes.byref(code)):
+            raise Stop(5, "process_exit_unreadable")
+        return code.value == 259
+
     def snapshot(self) -> list[Process]:
         class Entry(ctypes.Structure):
             _fields_ = [
@@ -221,19 +238,23 @@ class WindowsSystem:
             while more:
                 image = entry.image.lower()
                 handle = self.kernel.OpenProcess(0x1000, False, entry.pid)
-                created, command = 0, ""
+                created, command, gone = 0, "", False
                 if handle:
                     try:
                         created = self._created(handle)
                         if image.startswith("python"):
-                            command = self._command(handle)
+                            read = command_or_exit(
+                                lambda: self._command(handle), lambda: self._running(handle)
+                            )
+                            gone, command = read is None, read or ""
                     finally:
                         self.kernel.CloseHandle(handle)
                 elif image.startswith("python") or image == "codex.exe":
                     # A process may exit between the snapshot and OpenProcess.
                     if ctypes.get_last_error() != 87:
                         raise Stop(5, "watched_process_unreadable")
-                result.append(Process(entry.pid, entry.parent, entry.image, created, command))
+                if not gone:
+                    result.append(Process(entry.pid, entry.parent, entry.image, created, command))
                 more = self.kernel.Process32NextW(snapshot, ctypes.byref(entry))
             return result
         finally:

@@ -1316,3 +1316,15 @@ def test_stand_database_is_accepted_by_the_deployment_helper(key):
     name = driver.stand_database("attempt-01", key)
     assert name == "codex_quality_attempt_01_" + key
     assert prepare_postgres.database_name(name) == name
+
+
+def test_python_exiting_during_its_command_read_is_skipped_live_one_refuses():
+    def unreadable():
+        raise sr.Stop(5, "python_command_unreadable")
+
+    assert sr.command_or_exit(lambda: "python -m pytest", lambda: True) == "python -m pytest"
+    # An outside session's short-lived python exited between OpenProcess and the read.
+    assert sr.command_or_exit(unreadable, lambda: False) is None
+    with pytest.raises(sr.Stop) as error:
+        sr.command_or_exit(unreadable, lambda: True)
+    assert (error.value.code, error.value.reason) == (5, "python_command_unreadable")
