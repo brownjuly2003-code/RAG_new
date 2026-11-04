@@ -139,8 +139,10 @@ Foreground default/max `--budget 1080`: admit only if
 
 Bind records before classification. A captured stdout usage-limit marker is infrastructure,
 even behind HTTP 200 (the API's fixed failure text/null provider cannot identify it).
-Otherwise a start without a shim end whose elapsed reaches its configured timeout is the
-product's own timeout: terminal, bad without a judge request, printed as a product failure.
+Otherwise a start without a shim end is the product's own timeout when the shim's last
+1-s heartbeat (or start-record time if none) minus its process start reaches the configured
+timeout minus 5 s, allowing for the provider's clock starting before slot wait/spawn and
+the 1-s heartbeat period: terminal, bad without a judge request, printed as a product failure.
 Any other missing end/record, nonzero exit, capture failure, non-200 or broken SSE is
 infrastructure: leave the question pending, retain all attempts, report failures separately.
 Three consecutive infrastructure failures across questions stop with code 5; the hung-stand

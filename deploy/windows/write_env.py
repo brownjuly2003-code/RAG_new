@@ -16,6 +16,7 @@ if str(ROOT) not in sys.path:
 
 from deploy.windows import _support as support  # noqa: E402
 from deploy.windows import start  # noqa: E402
+from deploy.windows.prepare_postgres import database_name  # noqa: E402
 
 CODEX_GLOB = "**/codex.exe"
 
@@ -31,6 +32,17 @@ def parser() -> argparse.ArgumentParser:
         help="Native .exe, or discover exactly one under the npm Codex package",
     )
     result.add_argument("--codex-home", type=Path, help="Default: %%USERPROFILE%%/.codex-work")
+    result.add_argument(
+        "--tenant", default="aircargo", help="ADMIN_DEFAULT_TENANT (default: aircargo)"
+    )
+    result.add_argument(
+        "--chroma-dir", type=Path, help="VECTORDB_CHROMA_DIR (default: product index)"
+    )
+    result.add_argument(
+        "--database",
+        type=database_name,
+        help="DATABASE_URL database (default: stored product database)",
+    )
     result.add_argument(
         "--admin-username",
         help="Required when creating secrets/service.json; ignored if the store exists",
@@ -92,21 +104,26 @@ def deployment_values(
     binary: Path,
     home: Path,
     admin_hash: str,
+    *,
+    tenant: str = "aircargo",
+    chroma_dir: Path | None = None,
+    database: str | None = None,
 ) -> dict[str, str]:
+    selected_database = pg["database"] if database is None else database_name(database)
     return {
         "LLM_PROVIDER_PROFILE": "codex-only",
         "CODEX_BINARY": binary.as_posix(),
         "CODEX_HOME": home.as_posix(),
         "HF_HOME": paths.hf.as_posix(),
-        "DATABASE_URL": f"postgresql+asyncpg://{quote(pg['app_role'], safe='')}:{quote(pg['app_password'], safe='')}@127.0.0.1:{int(pg['port'])}/{quote(pg['database'], safe='')}",
-        "VECTORDB_CHROMA_DIR": paths.index.as_posix(),
+        "DATABASE_URL": f"postgresql+asyncpg://{quote(pg['app_role'], safe='')}:{quote(pg['app_password'], safe='')}@127.0.0.1:{int(pg['port'])}/{quote(selected_database, safe='')}",
+        "VECTORDB_CHROMA_DIR": (paths.index if chroma_dir is None else chroma_dir).as_posix(),
         "RAG_RERANKER_ONNX": paths.onnx.as_posix(),
         "JWT_SECRET": service["jwt_secret"],
         "SESSION_SECRET_KEY": service["session_secret_key"],
         "DB_ENCRYPTION_KEY": service["db_encryption_key"],
         "ADMIN_USERNAME": service["admin_username"],
         "ADMIN_PASSWORD_HASH": admin_hash,
-        "ADMIN_DEFAULT_TENANT": "aircargo",
+        "ADMIN_DEFAULT_TENANT": tenant,
         "CORS_ORIGINS": "http://127.0.0.1:8002",
     }
 
@@ -138,7 +155,17 @@ def main() -> int:
     admin_hash = bcrypt.hashpw(
         service["admin_password"].encode("utf-8"), bcrypt.gensalt(rounds=12)
     ).decode("ascii")
-    values = deployment_values(paths, pg, service, binary, home, admin_hash)
+    values = deployment_values(
+        paths,
+        pg,
+        service,
+        binary,
+        home,
+        admin_hash,
+        tenant=args.tenant,
+        chroma_dir=args.chroma_dir,
+        database=args.database,
+    )
     start.check_values(values)
     write_env_file(env_file, values)
     print("wrote env keys:", ", ".join(values))

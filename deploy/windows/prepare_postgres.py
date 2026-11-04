@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import os
+import re
 import sys
 import tempfile
 import time
@@ -20,7 +21,18 @@ from deploy.windows import _support as support  # noqa: E402
 def parser() -> argparse.ArgumentParser:
     result = support.parser(__doc__ or "")
     result.add_argument("--pg-bin", type=Path, default=Path("C:/Program Files/PostgreSQL/16/bin"))
+    result.add_argument(
+        "--database",
+        type=database_name,
+        help="Database to provision (default: stored product database, rag_new)",
+    )
     return result
+
+
+def database_name(value: str) -> str:
+    if re.fullmatch(r"[a-z][a-z0-9_]{0,62}", value) is None:
+        raise ValueError("database must match ^[a-z][a-z0-9_]{0,62}$")
+    return value
 
 
 def load_secrets(paths: support.Paths) -> dict[str, Any]:
@@ -41,7 +53,9 @@ def load_secrets(paths: support.Paths) -> dict[str, Any]:
     )
 
 
-def prepare(paths: support.Paths, pg_bin: Path) -> None:
+def prepare(paths: support.Paths, pg_bin: Path, *, database: str | None = None) -> None:
+    if database is not None:
+        database_name(database)
     stored = load_secrets(paths)
     version = paths.pgdata / "PG_VERSION"
     if version.exists() and version.read_text(encoding="utf-8").strip() != "16":
@@ -109,7 +123,7 @@ def prepare(paths: support.Paths, pg_bin: Path) -> None:
     def identifier(value: str) -> str:
         return '"' + value.replace('"', '""') + '"'
 
-    role, database = stored["app_role"], stored["database"]
+    role, database = stored["app_role"], stored["database"] if database is None else database
     if (
         support.run(
             psql, env=env, input=f"SELECT 1 FROM pg_roles WHERE rolname={literal(role)};\n"
@@ -159,7 +173,7 @@ def prepare(paths: support.Paths, pg_bin: Path) -> None:
 def main() -> int:
     args = parser().parse_args()
     support.require_windows()
-    prepare(support.Paths(args.root), args.pg_bin)
+    prepare(support.Paths(args.root), args.pg_bin, database=args.database)
     return 0
 
 

@@ -205,6 +205,126 @@ def test_admin_username_has_no_default():
     assert write_env.parser().parse_args([]).admin_username is None
 
 
+def test_measurement_options_leave_defaults_unchanged(paths, values):
+    args = write_env.parser().parse_args([])
+    assert args.tenant == "aircargo"
+    assert args.chroma_dir is None and args.database is None
+    assert prepare_postgres.parser().parse_args([]).database is None
+    assert values["ADMIN_DEFAULT_TENANT"] == "aircargo"
+    assert values["DATABASE_URL"].endswith("/rag_new")
+    assert values["VECTORDB_CHROMA_DIR"] == paths.index.as_posix()
+
+
+def test_measurement_values_override_only_three_keys(paths, values, tmp_path):
+    pg = {"app_role": "rag_app", "app_password": "p@ss:/word", "port": 55432, "database": "rag_new"}
+    service = {
+        "jwt_secret": values["JWT_SECRET"],
+        "session_secret_key": values["SESSION_SECRET_KEY"],
+        "db_encryption_key": values["DB_ENCRYPTION_KEY"],
+        "admin_username": values["ADMIN_USERNAME"],
+    }
+    changed = write_env.deployment_values(
+        paths,
+        pg,
+        service,
+        Path(values["CODEX_BINARY"]),
+        Path(values["CODEX_HOME"]),
+        values["ADMIN_PASSWORD_HASH"],
+        tenant="ext_wixqa",
+        chroma_dir=tmp_path / "copied index",
+        database="codex_quality_01_wixqa",
+    )
+    assert changed == {
+        **values,
+        "ADMIN_DEFAULT_TENANT": "ext_wixqa",
+        "VECTORDB_CHROMA_DIR": (tmp_path / "copied index").as_posix(),
+        "DATABASE_URL": values["DATABASE_URL"].removesuffix("rag_new") + "codex_quality_01_wixqa",
+    }
+    assert pg["database"] == "rag_new"
+
+
+@pytest.mark.parametrize("module", [write_env, prepare_postgres])
+@pytest.mark.parametrize("name", ["", "Upper", "1db", "a-b", "a/b", "x;DROP", "a\n", "a" * 64])
+def test_database_option_rejects_unsafe_names(module, name):
+    with pytest.raises(SystemExit) as error:
+        module.parser().parse_args(["--database", name])
+    assert error.value.code == 2
+
+
+@pytest.mark.parametrize("name", ["a", "a" * 63, "codex_quality_01_conditionalqa"])
+def test_database_option_accepts_safe_names(name):
+    assert prepare_postgres.parser().parse_args(["--database", name]).database == name
+    assert write_env.parser().parse_args(["--database", name]).database == name
+
+
+@pytest.mark.parametrize("reject_validation", [False, True])
+def test_measurement_env_uses_validation_acl_and_preserves_stores(
+    paths, tmp_path, monkeypatch, reject_validation
+):
+    monkeypatch.setattr(_support, "require_windows", lambda: None)
+    restricted = []
+    monkeypatch.setattr(_support, "restrict", restricted.append)
+    monkeypatch.setattr(start, "ROOT", paths.app)
+    prepare_postgres.load_secrets(paths)
+    write_env.load_secrets(paths, "owner")
+    before = [p.read_bytes() for p in (paths.pg_store, paths.service_store)]
+    binary = tmp_path / "capture.exe"
+    binary.touch()
+    env = tmp_path / "stand.env"
+    env.write_bytes(b"preserve existing\n")
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "write_env.py",
+            "--root",
+            str(paths.root),
+            "--env-file",
+            str(env),
+            "--codex-exe",
+            str(binary),
+            "--codex-home",
+            str(tmp_path),
+            "--tenant",
+            "ext_wixqa",
+            "--chroma-dir",
+            str(tmp_path / "copy"),
+            "--database",
+            "codex_quality_01_wixqa",
+        ],
+    )
+    monkeypatch.setitem(
+        sys.modules,
+        "bcrypt",
+        SimpleNamespace(
+            hashpw=lambda password, salt: ("$2b$12$" + "a" * 53).encode(),
+            gensalt=lambda rounds: b"salt",
+        ),
+    )
+    validated = []
+
+    def validate(values):
+        validated.append(values)
+        assert values["ADMIN_DEFAULT_TENANT"] == "ext_wixqa"
+        assert values["VECTORDB_CHROMA_DIR"] == (tmp_path / "copy").as_posix()
+        assert values["DATABASE_URL"].endswith("/codex_quality_01_wixqa")
+        if reject_validation:
+            raise start.Stop(start.REFUSE, "invalid copied index")
+
+    monkeypatch.setattr(start, "check_values", validate)
+    if reject_validation:
+        with pytest.raises(start.Stop, match="invalid copied index"):
+            write_env.main()
+        assert env.read_bytes() == b"preserve existing\n"
+        assert env not in restricted
+    else:
+        assert write_env.main() == 0
+        assert start.read_service_env(env) == validated[0]
+        assert env in restricted
+    assert len(validated) == 1
+    assert [p.read_bytes() for p in (paths.pg_store, paths.service_store)] == before
+
+
 @pytest.mark.parametrize("admin_username", [None, ""])
 def test_missing_admin_username_refuses_before_creating_secrets(paths, monkeypatch, admin_username):
     monkeypatch.setattr(
@@ -333,6 +453,57 @@ def test_postgres_create_or_reuse_cluster_role_and_database(paths, monkeypatch, 
         ]
     stored = json.loads(paths.pg_store.read_text(encoding="utf-8"))
     assert all(stored["app_password"] not in str(argv) for argv, _ in calls)
+
+
+def test_named_database_is_created_once_owned_by_app_and_store_unchanged(paths, monkeypatch):
+    monkeypatch.setattr(_support, "restrict", lambda _: None)
+    prepare_postgres.load_secrets(paths)
+    before = paths.pg_store.read_bytes()
+    paths.pgdata.mkdir(parents=True)
+    (paths.pgdata / "PG_VERSION").write_text("16\n", encoding="utf-8")
+    created, calls = set(), []
+    database = "codex_quality_01_wixqa"
+
+    def run(argv, **kwargs):
+        calls.append((argv, kwargs))
+        sql = kwargs.get("input", "")
+        if "FROM pg_database" in sql:
+            assert f"datname='{database}'" in sql
+            return SimpleNamespace(returncode=0, stdout="1\n" if database in created else "")
+        if "CREATE DATABASE" in sql:
+            assert sql == f'CREATE DATABASE "{database}" OWNER "rag_app" ENCODING \'UTF8\';\n'
+            assert database not in created
+            created.add(database)
+        return SimpleNamespace(returncode=0, stdout="1\n")
+
+    monkeypatch.setattr(_support, "run", run)
+    monkeypatch.setattr(_support, "detach", lambda *a, **kw: pytest.fail("cluster already running"))
+    for _ in range(2):
+        prepare_postgres.prepare(paths, Path("C:/PostgreSQL/16/bin"), database=database)
+    assert created == {database}
+    logins = [argv for argv, _ in calls if "-tAc" in argv]
+    assert len(logins) == 2 and all(argv[argv.index("-d") + 1] == database for argv in logins)
+    assert paths.pg_store.read_bytes() == before
+    assert json.loads(before)["database"] == "rag_new"
+
+
+def test_prepare_rejects_invalid_database_before_secrets_or_subprocess(paths, monkeypatch):
+    monkeypatch.setattr(prepare_postgres, "load_secrets", lambda _: pytest.fail("touched secrets"))
+    with pytest.raises(ValueError, match="database"):
+        prepare_postgres.prepare(paths, Path("unused"), database="bad-name")
+
+
+def test_prepare_cli_passes_database_option(paths, monkeypatch):
+    calls = []
+    monkeypatch.setattr(_support, "require_windows", lambda: None)
+    monkeypatch.setattr(prepare_postgres, "prepare", lambda *a, **kw: calls.append((a, kw)))
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["prepare_postgres.py", "--root", str(paths.root), "--database", "codex_quality_01_wixqa"],
+    )
+    assert prepare_postgres.main() == 0
+    assert calls[0][1] == {"database": "codex_quality_01_wixqa"}
 
 
 def test_command_failures_do_not_disclose_passwords(monkeypatch, capsys):

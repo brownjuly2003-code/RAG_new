@@ -101,8 +101,13 @@ before the probe.
    (`write_env.py --tenant --chroma-dir --database`, `prepare_postgres.py --database`), defaults
    unchanged. The provider calls `codex exec --json --ephemeral`
    with an environment allow-list, so no rollout persists and env variables do not reach a
-   shim: build the shim as a console-script entry point of a small package in its own venv
-   (pip's native `Scripts\<name>.exe` needs no environment), its configuration beside it.
+   shim, its configuration beside it. **Done after this handoff, 2026-11-04 (task 19b-1):** the
+   shim is a single C# program built by the Windows .NET Framework compiler, not a pip
+   console-script — that launcher starts python.exe before the provider's `job.assign`, so a
+   timeout could leave the real Codex running. It spawns Codex only after stdin EOF, inside the
+   provider's job, and writes a 1-s heartbeat that tells the product's timeout from a crash;
+   checked on the laptop (`shim_check.py`). Next: 19b-2 (copy and offline registration), 19b-3
+   (the driver), 19b-4 (freeze, grade, export, the reader).
 2. **Registration:** copy and verify the two bases, fill the hashes, commit, then the probe and
    the 20-question pilot, reading each gate. Her laptop must stay on; no Codex executor task
    during a series (one `CODEX_HOME`, her rate windows).
