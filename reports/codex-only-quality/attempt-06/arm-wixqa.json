@@ -86,17 +86,204 @@
         }
       ],
       "exit_code": 0
+    },
+    {
+      "utc": "2026-11-05T05:13:39.626686+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-05T05:13:40.651077+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-05T05:23:30.224762+00:00"
+        }
+      ],
+      "exit_code": 3
+    },
+    {
+      "utc": "2026-11-05T05:24:36.454964+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-05T05:24:37.482444+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-05T05:33:55.120510+00:00"
+        }
+      ],
+      "exit_code": 3
+    },
+    {
+      "utc": "2026-11-05T05:34:53.547893+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-05T05:34:54.586646+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-05T05:45:15.367778+00:00"
+        }
+      ],
+      "exit_code": 3
+    },
+    {
+      "utc": "2026-11-05T05:46:15.905226+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-05T05:46:16.930125+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-05T05:55:50.312470+00:00"
+        }
+      ],
+      "exit_code": 3
+    },
+    {
+      "utc": "2026-11-05T05:56:52.588983+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-05T05:56:53.616642+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-05T06:06:41.829505+00:00"
+        }
+      ],
+      "exit_code": 3
+    },
+    {
+      "utc": "2026-11-05T06:07:44.187961+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-05T06:07:45.221887+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-05T06:17:42.539262+00:00"
+        }
+      ],
+      "exit_code": 3
+    },
+    {
+      "utc": "2026-11-05T06:18:44.234984+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-05T06:18:45.273333+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-05T06:28:30.089597+00:00"
+        }
+      ],
+      "exit_code": 3
+    },
+    {
+      "utc": "2026-11-05T06:29:32.882914+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-05T06:29:33.922375+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-05T06:40:06.908548+00:00"
+        }
+      ],
+      "exit_code": 3
+    },
+    {
+      "utc": "2026-11-05T06:41:09.342959+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-05T06:41:10.388839+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-05T06:50:29.457102+00:00"
+        }
+      ],
+      "exit_code": 3
+    },
+    {
+      "utc": "2026-11-05T06:51:35.703056+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-05T06:51:36.746772+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-05T07:01:35.141316+00:00"
+        }
+      ],
+      "exit_code": 3
+    },
+    {
+      "utc": "2026-11-05T07:02:39.673516+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-05T07:02:40.713060+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-05T07:07:30.761630+00:00"
+        }
+      ],
+      "exit_code": 0
     }
   ],
   "retry_at": null,
   "pilot_seconds": 1237.091999999975,
-  "remaining_seconds": 0.0,
+  "remaining_seconds": 5643.872999999876,
   "forecast_s": 60,
   "slow_threshold_s": 180,
   "key": "wixqa",
   "status_counts": {
-    "accepted": 7,
-    "pending": 93
+    "accepted": 100,
+    "pending": 0
   },
   "attempts": [
     {
@@ -322,12 +509,2989 @@
       "session_sha256": "2596d3b7e04402e37f23a2a13e2cb8ca54d7b912b3138c4d62ebe1772bf0e90b",
       "ticket_sha256": [],
       "audited_absence": false
+    },
+    {
+      "id": "4777bb7becdb4cafa1fe6344e454ef14",
+      "case_id": "wixqa-simulated-074",
+      "classification": "accepted",
+      "elapsed_s": 54.640999999974156,
+      "cold": true,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 38,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 251,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "2e9d9d5d93cb700e0fa1bbabd2ebae668d1412fd2fb80f91afa0363c9879c9bb",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "bb8f4e9c472040a0ba39f23bb85b6e06",
+      "case_id": "wixqa-simulated-056",
+      "classification": "accepted",
+      "elapsed_s": 53.76600000000326,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 49,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 550,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "b2beeb6f1f04c9d9fa6720c2249c83e0d48ce69bc7e2b882b71bc7fdc687ec8d",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "07d224a09fc444e4ab698365ad544811",
+      "case_id": "wixqa-simulated-184",
+      "classification": "accepted",
+      "elapsed_s": 57.25,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 57,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 408,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "28a44ca5d98bfae1d2b92f313d56a3ea02fbf5b9c34d6defdf37bd422a8e889c",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "9a3f29b52d264be0bca3cb227ec021cc",
+      "case_id": "wixqa-simulated-083",
+      "classification": "accepted",
+      "elapsed_s": 51.25,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 49,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 193,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "033503e0d825b8d287315fff49a5eceb0bc4475c0c366c9b566109273f7d5a15",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "53a4d91b7cf649e99cbf56f8d5071d92",
+      "case_id": "wixqa-simulated-104",
+      "classification": "accepted",
+      "elapsed_s": 52.921999999991385,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 52,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 152,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "6dfc8dd08d8efadb7bc82b72bf7c45c43c9c27c12578928a81196755cdb0c898",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "e95e3a3d0b3b4bdc9d4c28d8ecb4b605",
+      "case_id": "wixqa-simulated-047",
+      "classification": "accepted",
+      "elapsed_s": 58.375,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 48,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 595,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "45f98669aaa3c4e4ed4a0ceffc2136f00ba6cf7214c41bbee68fd7152c85be3b",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "f1fe598d569745bd9c42ba96641171bf",
+      "case_id": "wixqa-simulated-111",
+      "classification": "accepted",
+      "elapsed_s": 46.71799999999348,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 55,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 89,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "2a79bc614d6c42924751ace7f983a322320c1c0d4450c0cad76007481d328a15",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "3b2b5b05302f4361acc9ef6baded9d21",
+      "case_id": "wixqa-simulated-045",
+      "classification": "accepted",
+      "elapsed_s": 54.89000000001397,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 40,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 329,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "51fb578f0fbb8dcad0bc2b25a7b59ade573006f6f48e1357e732c68c1b00b940",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "2a94785272fc424bba9b1183b817f391",
+      "case_id": "wixqa-simulated-122",
+      "classification": "accepted",
+      "elapsed_s": 65.56299999999464,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 43,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 744,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "d3f5c356bb046b9c5b01ce0bbdecd411375b9a5887e474a521c782f9726687b7",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "76e195dfeae443fe9697563d5fd344a0",
+      "case_id": "wixqa-simulated-107",
+      "classification": "accepted",
+      "elapsed_s": 57.139999999984866,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 72,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 360,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "182e08b43569b565b4736a5b8ef5f33be635ccd155d882a2d67cb48d48ef42cf",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "373c6c7f7cd8434aa9ab9899b6c7144a",
+      "case_id": "wixqa-simulated-185",
+      "classification": "accepted",
+      "elapsed_s": 75.53200000000652,
+      "cold": true,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 50,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 388,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "160c1b8a441ebb73467885bb3b2ace3d47865c83d5dc39b3542cfdd4705ee3a7",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "6b0588812f4747aeb417ca0f0031b02a",
+      "case_id": "wixqa-simulated-167",
+      "classification": "accepted",
+      "elapsed_s": 60.828000000008615,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 26,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 488,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "62e8a061eff3aa2f6f716678b9aff4f9a345e963f13681aeefbfdcd156043ecf",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "e9c159c435134f29b453f5564116c72c",
+      "case_id": "wixqa-simulated-035",
+      "classification": "accepted",
+      "elapsed_s": 60.25,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 39,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 392,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "535c8df2f25489de435bb8b4ed076c2d1876cb3bab3427503252d0562f7d0a7c",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "78115e562aea43d8ab46ca6f5c19d4d2",
+      "case_id": "wixqa-simulated-113",
+      "classification": "accepted",
+      "elapsed_s": 49.53200000000652,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 39,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 141,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "8a03d5823f57d5769ba03d38ea88c98a65f1869323241c8f2d592d6eb1660806",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "6c3a175941d54a81b5f0083bb1e523d1",
+      "case_id": "wixqa-simulated-088",
+      "classification": "accepted",
+      "elapsed_s": 63.078999999997905,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 60,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 548,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "655aed35710d9cbcab94ad1837202cb2a877e58879e66ba6e3cf9fa2f642000e",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "485f820eaa264815a625d74aff2a411d",
+      "case_id": "wixqa-simulated-008",
+      "classification": "accepted",
+      "elapsed_s": 48.89000000001397,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 44,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 69,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "eb67ea0504badbc5c42aac0569ba88764fcb5748194c63c92019335738f5d02a",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "81707b9715a84ce4a0ede38d0607e877",
+      "case_id": "wixqa-simulated-128",
+      "classification": "accepted",
+      "elapsed_s": 58.312999999994645,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 46,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 276,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "1426ae00b8f80bf672769f38b9b393f8c14584ee204a9ed1ef5f1b1e28acfa62",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "85be7c9fbc2f4f7d9422bd9d015cfc3d",
+      "case_id": "wixqa-simulated-160",
+      "classification": "accepted",
+      "elapsed_s": 48.5,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 49,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 84,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "248cec91200202c71d87c1186c87272e2afed45b104ee3b23207a33fdb56962d",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "87942b72babe4eb0ac25b34851b511ad",
+      "case_id": "wixqa-simulated-071",
+      "classification": "accepted",
+      "elapsed_s": 53.546999999991385,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 54,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 316,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "91f1ac0dace6944d8186e15882b399b68faed42dc4fb223f423dfac557147a86",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "c6d25943b9e54671a452752190f477d0",
+      "case_id": "wixqa-simulated-187",
+      "classification": "accepted",
+      "elapsed_s": 59.75,
+      "cold": true,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 62,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 101,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "0961274f84ee49c31c15780c45e672cb267264fa314e3be4c196888e31e37086",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "95157b9081d74fd690b5ae6d8c09fc7d",
+      "case_id": "wixqa-simulated-089",
+      "classification": "accepted",
+      "elapsed_s": 61.70299999997951,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 22,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 682,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "cb6ddc59b73f27ee870950d13ca899c69c2f48ded7e58ce85dea897d4b2d4ba2",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "040ef4dbc59d40d0bb2ac3501f06b6ee",
+      "case_id": "wixqa-simulated-025",
+      "classification": "accepted",
+      "elapsed_s": 49.85899999999674,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 31,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 135,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "f6c55a90c387083aeb3290bc78e343072171c2514aa0783be45effcd12500b28",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "dee4cef450c54f61b8e01f2504b9a222",
+      "case_id": "wixqa-simulated-040",
+      "classification": "accepted",
+      "elapsed_s": 54.062000000005355,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 42,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 440,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "08602c274a946264555563ab4834aed6defec79617eeee08fa960806042ad56c",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "277ea23f14414e32bb06c5611995250a",
+      "case_id": "wixqa-simulated-100",
+      "classification": "accepted",
+      "elapsed_s": 53.812000000005355,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 57,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 200,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "9d9fb520e89f92250f50b0db8cbc65bcbbc2fe616e3a759115412a6365cc5a6c",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "17460f6a562947a681b952cc6d5ba379",
+      "case_id": "wixqa-simulated-053",
+      "classification": "accepted",
+      "elapsed_s": 52.703000000008615,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 36,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 144,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "f860cd361e56099c899d67c0c0c46cda252613bddea83e2b61574c5454021901",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "75c704b03e7a48cb9f6dcad49df64296",
+      "case_id": "wixqa-simulated-194",
+      "classification": "accepted",
+      "elapsed_s": 66.84299999999348,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 56,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 613,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "53fba93abe9086ce7f2b3e2ccdb9c07a242ae1fe18a47cd2b978e35c2f80119e",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "a686e38aa5de4a61a27fb0ec1481388e",
+      "case_id": "wixqa-simulated-120",
+      "classification": "accepted",
+      "elapsed_s": 52.687000000005355,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 47,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 185,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "e1c033c4bb04aafd6ec5a250ce7a86088e1a6a9159520ab1bcf9cb0f2e4e0ae8",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "4e5a1dcf2d97400188ad2c2f92a0e89b",
+      "case_id": "wixqa-simulated-195",
+      "classification": "accepted",
+      "elapsed_s": 51.89000000001397,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 43,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 138,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "44922d878da0b37368a7fcc614d9cb3fba628d06f997d61c24dd8b6eed69eb72",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "62a00fc984d6488a8d0d1a7ae23bac87",
+      "case_id": "wixqa-simulated-076",
+      "classification": "accepted",
+      "elapsed_s": 72.0,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 42,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 517,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "736038fae93db5257090d9e15136aac56c543288a3e628439370c113815073cd",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "10928f69af6340c49e693ab7e0bb7798",
+      "case_id": "wixqa-simulated-181",
+      "classification": "accepted",
+      "elapsed_s": 62.937999999994645,
+      "cold": true,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 57,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 297,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "7db3d93da93b15d5eeb921716c74f309bb73bc34a2a0a019b2778f3dc2f47876",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "a8ca9ab1539c4b3786eb7b998b610b02",
+      "case_id": "wixqa-simulated-096",
+      "classification": "accepted",
+      "elapsed_s": 50.73399999999674,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 39,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 156,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "65f65ac6360254986d21c3814303751c8467697e8c980da63c3b42bf078543ee",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "516b6b0604ef48fa809234495c1c8614",
+      "case_id": "wixqa-simulated-129",
+      "classification": "accepted",
+      "elapsed_s": 64.71900000001187,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 60,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 431,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "0dacedbcad8bf81552b8be397db25e152cbb9e452adf95a139837ab5310e7c10",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "86ff3a80e96e431188d721e43eb2b48d",
+      "case_id": "wixqa-simulated-114",
+      "classification": "accepted",
+      "elapsed_s": 52.171999999991385,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 81,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 278,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "ea7258225e5ef84fe1a3aa2ee3857a1076567285e2478b2b9970ba784a33aea8",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "ba00ac5668854145a4025a4ed8ab9765",
+      "case_id": "wixqa-simulated-013",
+      "classification": "accepted",
+      "elapsed_s": 60.89000000001397,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 70,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 466,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "f5327a2d1b7b8f26cd71b822f9c2aa9dd2ad5f7207d2dca77c61bcde119cd08e",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "4a6fe9e3bc5f4b83a110d9c9d42c441c",
+      "case_id": "wixqa-simulated-121",
+      "classification": "accepted",
+      "elapsed_s": 53.703000000008615,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 49,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 384,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "a413082c4ed12e3141bf7603c7c863c0a846ca80b86a58b41710b3d801ab515e",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "1885d011f2824f90b635b09f2c164fff",
+      "case_id": "wixqa-simulated-149",
+      "classification": "accepted",
+      "elapsed_s": 60.53200000000652,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 52,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 253,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "83acdf84d49e49174db4c03cf92bc063a8eab2545f1ab352965f729e6be17eb8",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "a849258db7be47cfb928ed130de775bf",
+      "case_id": "wixqa-simulated-170",
+      "classification": "accepted",
+      "elapsed_s": 62.64000000001397,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 69,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 490,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "73d0aacc0010ffea6784ab99e05081f7f55f21d85455e3814a41327b3c85dfe0",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "c5beb79f422d4dcb87dd8b392863c8ec",
+      "case_id": "wixqa-simulated-038",
+      "classification": "accepted",
+      "elapsed_s": 58.23399999999674,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 74,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 296,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "b7360c3aa110e4896e1a18711b52bc03139404c5edaac5d0b369675f5ed74f78",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "90eb2f10a0f648f7a859be5c463cea0a",
+      "case_id": "wixqa-simulated-069",
+      "classification": "accepted",
+      "elapsed_s": 62.796999999991385,
+      "cold": true,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 67,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 636,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "5b63c65b225c6b66a25590a78993a6c5f8cd4dd8094b10a83ea7ec36f2050c51",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "7e9e59f803e74ac18597315dd84a4028",
+      "case_id": "wixqa-simulated-066",
+      "classification": "accepted",
+      "elapsed_s": 68.54699999999139,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 29,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 594,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "679b9070ab77574d597f858304c82724a40ae86ca04c71bb0e479c7ed20e847e",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "5d076aa059ed4e0386d6b472f3335fe4",
+      "case_id": "wixqa-simulated-119",
+      "classification": "accepted",
+      "elapsed_s": 60.98399999999674,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 50,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 658,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "b28cec8037767a5858ab9e04e25edbc6ae3f4e74a0b544f38eaff9c5861a03b0",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "74aa55f5171a45898592ca72ae6264fb",
+      "case_id": "wixqa-simulated-163",
+      "classification": "accepted",
+      "elapsed_s": 61.32799999997951,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 61,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 678,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "c7964bdada79db29fce1afabcffe631b113678cbac22d0a64da2b53cd8af388a",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "c7dd4baabdb542ef85cf4b1cefccbe09",
+      "case_id": "wixqa-simulated-026",
+      "classification": "accepted",
+      "elapsed_s": 61.655999999988126,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 21,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 397,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "b9512fb1799c7891ddd867c8f5f09b16f12381840b2d24c50b314f13d24a7255",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "4c8c75f381bd49ecbd71c309a6b6b688",
+      "case_id": "wixqa-simulated-106",
+      "classification": "accepted",
+      "elapsed_s": 53.796999999991385,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 70,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 96,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "e36bfe116c2b87573894f51f977e3b1d8af18a109fec5c49429eb8e9926cd6eb",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "a97e03794bef4fd9b7b825476d07f5c9",
+      "case_id": "wixqa-simulated-168",
+      "classification": "accepted",
+      "elapsed_s": 61.187999999994645,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 64,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 374,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "41b7b637a891c8582c00e8869a6b04c48b635383264e418a7c0d46e4a8e81713",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "8c299e75681c469c9951caf15e0a7e4d",
+      "case_id": "wixqa-simulated-127",
+      "classification": "accepted",
+      "elapsed_s": 53.90700000000652,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 61,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 218,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "872c20a46f87f0ef5c706f9e3b24d3592d5780a865c9da030758509221758a04",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "91328709b218450ab7ede721936c26cd",
+      "case_id": "wixqa-simulated-155",
+      "classification": "accepted",
+      "elapsed_s": 54.280999999988126,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 43,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 261,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "0fd5ad2c080cc7a967f598b2bad18074afd389a29d68e73cdafdaf6f9109f250",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "4addf2ed93bf4f67abf3d1f46a7b6b4f",
+      "case_id": "wixqa-simulated-166",
+      "classification": "accepted",
+      "elapsed_s": 65.95299999997951,
+      "cold": true,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 52,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 436,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "05a96d4b56e38e951e70c6a0a64e2b5e50b50b51c3aa7c3ce055b10420b1b9ad",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "d01066ab2eb54e79938cee96f51eb051",
+      "case_id": "wixqa-simulated-151",
+      "classification": "accepted",
+      "elapsed_s": 59.76600000000326,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 22,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 374,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "bc89ac9d901722bb7c3c12209272211a58960b0dc60b34515c40eecd25cc0944",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "2fbb22521ddb40f398476a197e95f9d7",
+      "case_id": "wixqa-simulated-157",
+      "classification": "accepted",
+      "elapsed_s": 58.546999999991385,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 38,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 466,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "8242909d329e46d2899686b1972ed1f1e2699c06183fc6636d2fe9b035009070",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "35624097d8a24b5c8cc921332033ce38",
+      "case_id": "wixqa-simulated-043",
+      "classification": "accepted",
+      "elapsed_s": 65.92199999999139,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 38,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 750,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "78de26dffad0c14edac4fbcfcd3ce69d8da4da673bfaf6dcaa900fce3bddca36",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "5261a4502b2747a0aac822581369b9e6",
+      "case_id": "wixqa-simulated-190",
+      "classification": "accepted",
+      "elapsed_s": 55.45299999997951,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 25,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 131,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "afbe36685db745ba500245c387ea36a00586d006a59dcbb8bc14f2cafd215f93",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "520754ea282d41a79af2378868bb2050",
+      "case_id": "wixqa-simulated-159",
+      "classification": "accepted",
+      "elapsed_s": 68.40700000000652,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 47,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 830,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "a4ff33aa97946af82567821920ce984b1bd319ff0bdaee2557892bb70f152b12",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "c6b9aba26dce40b8b9a2415a89146944",
+      "case_id": "wixqa-simulated-141",
+      "classification": "accepted",
+      "elapsed_s": 54.937999999994645,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 67,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 415,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "11a9f11e137547b72e6b21679d42e0a4461a891f9f3647771d3ba9b29355be01",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "19516a9e4b6c4fc5838e462cb106d93c",
+      "case_id": "wixqa-simulated-082",
+      "classification": "accepted",
+      "elapsed_s": 52.15700000000652,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 94,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 165,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "1497e853769058ea961386e1c893aa8195bfb56a420407735145bfd17891e02f",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "3a2480bb0f5c48b3a971322ee97e8f34",
+      "case_id": "wixqa-simulated-154",
+      "classification": "accepted",
+      "elapsed_s": 62.57799999997951,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 57,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 174,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "535468c65c70eb55c481af9284247abe365f050e91f8668211a3d6c3e9a91a68",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "074def21ab8a4538bb00606830983b61",
+      "case_id": "wixqa-simulated-186",
+      "classification": "accepted",
+      "elapsed_s": 77.7039999999979,
+      "cold": true,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 81,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 628,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "58f4ec3cbce2b8a73df2ff2fc61787b5e30e685fdb10fb16db46613c9a88ee9a",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "d498c76726324d45bfae6343428f700a",
+      "case_id": "wixqa-simulated-183",
+      "classification": "accepted",
+      "elapsed_s": 62.125,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 40,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 376,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "e82d6df1181e684abb00642545c62fcb3f6bc85e6807a2192d7b6a65319bb3c0",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "a72a6ed98dfb49668621b59614ed3a9e",
+      "case_id": "wixqa-simulated-143",
+      "classification": "accepted",
+      "elapsed_s": 73.60899999999674,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 39,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 407,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "b43d167dcc2002c2f015789abe42552546dde0e0a2c6f24dccb0b503607ba044",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "489c80b2931c47e0817427a0c10084e1",
+      "case_id": "wixqa-simulated-101",
+      "classification": "accepted",
+      "elapsed_s": 66.92199999999139,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 57,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 587,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "1ae1b5ac994dd9ee97a061b10d45fb14f9f661168414fadaf43ad0483d26c6c5",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "941f0a833c8844919086e2be952e53b5",
+      "case_id": "wixqa-simulated-011",
+      "classification": "accepted",
+      "elapsed_s": 66.57800000000861,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 47,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 640,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "5b2016b617faf5563aed195a22bdb51a4d74817096003c97c951c8ac7f43f215",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "7326ebde831241a8a8841ee33ca58353",
+      "case_id": "wixqa-simulated-049",
+      "classification": "accepted",
+      "elapsed_s": 65.78099999998813,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 69,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 747,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "1f6319a66efad6cabac5acddf70a5e735841a741982123d6fa5073668f19e83d",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "7a9d78a584e3483cac8ece96a24ef282",
+      "case_id": "wixqa-simulated-057",
+      "classification": "accepted",
+      "elapsed_s": 61.90600000001723,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 45,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 353,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "f9acb296269e2d7d37983e564efb1c2a896d9c4e28d27283939a21d2d7908a7f",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "45391de952cc4c0886723d4e1d862e56",
+      "case_id": "wixqa-simulated-136",
+      "classification": "accepted",
+      "elapsed_s": 57.23399999999674,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 38,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 286,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "aecf054d134a040bdc9473321595dfc8846259e1b2ac7f10676088696cfa142e",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "5c14352ba3af4ff48b6708d64fe01945",
+      "case_id": "wixqa-simulated-093",
+      "classification": "accepted",
+      "elapsed_s": 68.98499999998603,
+      "cold": true,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 36,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 388,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "8d2d3c8d79a891a0e6cc401b4fad1d0a52ad9a6b01d782a3526cdbbb7ce50d47",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "ca18c754c727437e88085904b8825504",
+      "case_id": "wixqa-simulated-079",
+      "classification": "accepted",
+      "elapsed_s": 74.34400000001187,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 59,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 711,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "edbfdad2d3a1a18f4938d3c5367fc1c62c0d8efeb053fd4cb18f05492f5693f2",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "9117582a56dd459f8a41364d53baf69b",
+      "case_id": "wixqa-simulated-060",
+      "classification": "accepted",
+      "elapsed_s": 60.046000000002095,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 37,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 228,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "5d6763c8bb76583be9cc07a832182dc61864db6a00c946e3fe390473d0f0b21a",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "65e339b1d0fb4db2bc26cd8e39101c76",
+      "case_id": "wixqa-simulated-199",
+      "classification": "accepted",
+      "elapsed_s": 52.78100000001723,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 26,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 189,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "a950804da211d705411218578affa73d505768a31dd2a5d314550b013170078d",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "f492909063c2454eb79582ee4cddbd92",
+      "case_id": "wixqa-simulated-002",
+      "classification": "accepted",
+      "elapsed_s": 64.39100000000326,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 69,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 327,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "aace5d8f78e477089e3ffd28e1197c6446e67b2229df0199470db188f3b30a45",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "80d1faa3d35e48e0952fa8aa9327d25d",
+      "case_id": "wixqa-simulated-125",
+      "classification": "accepted",
+      "elapsed_s": 60.796999999991385,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 63,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 285,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "eca2ab59886f0e5179fb1ce684d70504d686bbcc260e032ea0dcce63eb19a6c2",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "b8bb22a5900b49d2bf167e7c2e40e87b",
+      "case_id": "wixqa-simulated-158",
+      "classification": "accepted",
+      "elapsed_s": 61.60899999999674,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 30,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 320,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "a61d7f26e4236850524c28b862c45a070b8aefe94092e324ed685d6d4cfd7e82",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "a22b06c7c1d545349689373b537be84f",
+      "case_id": "wixqa-simulated-051",
+      "classification": "accepted",
+      "elapsed_s": 53.703000000008615,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 36,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 453,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "1e5bc4c6bb5d6abb231f315cb3a2d05434ffeea06cedd71ad727ac580113d665",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "24cf3728ed69410698068e16ee90ee2e",
+      "case_id": "wixqa-simulated-099",
+      "classification": "accepted",
+      "elapsed_s": 76.23399999999674,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 61,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 564,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "c2a5d6d5bbfdbf8f8f0ac5889853f3a8647c0af7df46e710f22e8aed0d871f8d",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "7834973b7063401090bb87980ea08783",
+      "case_id": "wixqa-simulated-001",
+      "classification": "accepted",
+      "elapsed_s": 67.85900000002584,
+      "cold": true,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 36,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 250,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "ec95a328e0938748bf66ce8c1adc3d3bc78e06ff0a9bb573eab0ac618f687527",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "0204ffe3cd41408597902207e479f266",
+      "case_id": "wixqa-simulated-161",
+      "classification": "accepted",
+      "elapsed_s": 53.796999999991385,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 25,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 319,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "ad7328c48ced1edda91f75b44b17244d80ee92db4ab72a2412b0d9cfd2074e35",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "a92eba8102964a4b9205d25065f48789",
+      "case_id": "wixqa-simulated-095",
+      "classification": "accepted",
+      "elapsed_s": 55.21799999999348,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 73,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 114,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "d3ed94653dc2aeab357dba451c09886f9c6332fc83294fcc37ab04a9285df599",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "7866977b90414c6aa5251735e18801b4",
+      "case_id": "wixqa-simulated-005",
+      "classification": "accepted",
+      "elapsed_s": 54.76600000000326,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 45,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 202,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "cf10d90b877bad7157bafc0f20b9385d9892a27fa08855db06661ce821818eba",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "a28425818a8e4a6e8fe3510a7f78f6d9",
+      "case_id": "wixqa-simulated-092",
+      "classification": "accepted",
+      "elapsed_s": 61.328000000008615,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 26,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 159,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "d09d7c75317fc695238e75bd65d063d47bccb35e4e381e5f4f2fd8315e373a6d",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "e204a7ba793a4ae5ba6aef6d8a1f5ec8",
+      "case_id": "wixqa-simulated-087",
+      "classification": "accepted",
+      "elapsed_s": 60.453000000008615,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 53,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 671,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "ab4361c6e44924ecc49587bb6365c38f263f9387662555da7b2625414ad1a786",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "dc1bc719d3034934b8961353516d487e",
+      "case_id": "wixqa-simulated-075",
+      "classification": "accepted",
+      "elapsed_s": 68.64099999997416,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 55,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 863,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "6c6a522e55945bee449846ab32fdfd523d33ff8768e30499fe69bc9e850d42e4",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "f0155ac3f1c44a3fbf4b893c8768f7dd",
+      "case_id": "wixqa-simulated-188",
+      "classification": "accepted",
+      "elapsed_s": 78.53099999998813,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 58,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 712,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "5d9510098d047f2a1684ece0c7b11d7610995c23ec0f0600d5f9f3c89603d67a",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "cc8b904a3ec64dc8bdfb03d2c01cd67e",
+      "case_id": "wixqa-simulated-034",
+      "classification": "accepted",
+      "elapsed_s": 76.42199999999139,
+      "cold": true,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 41,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 348,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "7339d43ae9c8b8228c24a3038f4b853b94c2a39875db40de5db248fc9b507d1b",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "d01e403fa7d44549b28264e95ed8343a",
+      "case_id": "wixqa-simulated-024",
+      "classification": "accepted",
+      "elapsed_s": 55.437999999994645,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 45,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 380,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "aff3b796f45270f666177804e655968315c73751c2920fd958d3b70047363571",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "f9660b64159743b29d37428da65701e2",
+      "case_id": "wixqa-simulated-094",
+      "classification": "accepted",
+      "elapsed_s": 58.76600000000326,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 91,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 447,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "eb833f19e4d9e9a98c0fc8380f831ab503330abf7014278128276dcaaad34cba",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "58a5272b2f944e2f85082d9a947be053",
+      "case_id": "wixqa-simulated-173",
+      "classification": "accepted",
+      "elapsed_s": 77.29700000002049,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 51,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 431,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "b8dd121ad30c824b9202f29b276273f9105a76806ee448ce2350a7f3a24904c3",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "3b51da4232fe4817a1655227db9c7770",
+      "case_id": "wixqa-simulated-058",
+      "classification": "accepted",
+      "elapsed_s": 71.7960000000021,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 41,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 574,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "232659284860e8ecdaaa2ecf20794ce4a20e44c1ee40d365c427c2f66dfeaf82",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "d673e418855e4a4b8d720138eaa37ab9",
+      "case_id": "wixqa-simulated-084",
+      "classification": "accepted",
+      "elapsed_s": 58.46799999999348,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 98,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 502,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "e980f7931b9a8086996bd4879b73f7eea9e4aa9dae960883b0c4df73f58502ef",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "16c2dfdaf4b44642956b940c27f6cb70",
+      "case_id": "wixqa-simulated-077",
+      "classification": "accepted",
+      "elapsed_s": 63.89100000000326,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 53,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 536,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "cbe8955defe0937590ce06554361de6bf7894cbe4920799f3491a1fca8cfa83d",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "a396342ff5334f6dafea2aa1db7018f3",
+      "case_id": "wixqa-simulated-073",
+      "classification": "accepted",
+      "elapsed_s": 74.54699999999139,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 36,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 396,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "f9941f7c7d39c2e16b5897660495bbf04a329c3bd5a14e7efb23da9085949558",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "2929af5ba72f4916a9857332f28cd91a",
+      "case_id": "wixqa-simulated-165",
+      "classification": "accepted",
+      "elapsed_s": 66.40599999998813,
+      "cold": true,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 77,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 275,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "85ced823f8544c5b3d76bdedbb78ff1a75166fa95c8f00c518a0e96df61559f1",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "882ebf1f9a484f658d17b54552fc4de9",
+      "case_id": "wixqa-simulated-174",
+      "classification": "accepted",
+      "elapsed_s": 62.73399999999674,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 99,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 580,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "82fac51c87ab01f34b3ec814211b679cec7ec8cfa7e287c140910d11efe0fb39",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "0e6147f81fb74651acf562aa097fc365",
+      "case_id": "wixqa-simulated-177",
+      "classification": "accepted",
+      "elapsed_s": 56.89000000001397,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 54,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 253,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "c649aafbdc4b6087fa8c547ab219980a17f151ed303e631da5922e9d174e51be",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "e35aeaedf11b49a59222638457ad7f1f",
+      "case_id": "wixqa-simulated-140",
+      "classification": "accepted",
+      "elapsed_s": 60.812999999994645,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 65,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 201,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "ea12503d44dd08c61633898867582f36d8cc29611c370499312c85bf7aaa23b4",
+      "ticket_sha256": [],
+      "audited_absence": false
     }
   ],
-  "whole": false,
-  "accepted": 7,
+  "whole": true,
+  "accepted": 100,
   "route_counts": {
-    "auto": 7
+    "auto": 96,
+    "human": 4
   },
   "over_180": 0,
   "infrastructure_attempts": 0,
