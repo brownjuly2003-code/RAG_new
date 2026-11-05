@@ -136,6 +136,10 @@ process for the stand is alive. Wait at most **60 s**; otherwise stop the record
 PIDs, infrastructure/code 5. A killed shim cannot write its end: after classifying the
 missing shim end below, the driver appends a separately labelled end proving verified
 process exit, preserving the missing-end flag and never inventing stdout or exit status.
+That end is the kernel's exit time: the process watch holds a handle on every observed stand
+process, which also keeps its PID from reuse, and the end records the latest exit of the shim and
+its observed descendants plus 15.625 ms, the coarsest Windows clock interval. If any member's exit
+is unknown, the end records the time of the check, a later bound.
 Two open call records at once mean overlapping Codex calls: attribution broken, rule/code 2.
 Foreground default/max `--budget 1080`: admit only if
 `elapsed + registered ceiling + 60 s drain <= budget`; stand startup is inside this budget.
@@ -309,7 +313,7 @@ $py = '<RELEASE_VENV_PYTHON>'
 $tools = 'reports/codex-only-quality/tools'
 $config = '<PRIVATE_CONFIG_JSON>'
 $private = '<PRIVATE_ROOT>'
-$a = @('--config', $config, '--private', $private, '--series', 'attempt-05', '--records', 'reports/codex-only-quality')
+$a = @('--config', $config, '--private', $private, '--series', 'attempt-06', '--records', 'reports/codex-only-quality')
 & $py "$tools/copy_verify.py" --config $config --out '<PRIVATE_COPY_RECEIPT_JSON>'
 & '<CAPTURE_SHIM_EXE>' --configure --real-exe '<REAL_CODEX_EXE>' --capture-root '<PRIVATE_CAPTURE_ROOT>'
 & $py "$tools/quality_driver.py" register @a
@@ -354,9 +358,9 @@ After all keys, or a stop:
 
 ## SHA-256 registration
 
-Registered offline on 2026-11-04 as series `attempt-05`: every entry below is expanded to
+Registered offline on 2026-11-05 as series `attempt-06`: every entry below is expanded to
 individual files and their SHA-256 in
-[`registration.json`](../../reports/codex-only-quality/attempt-05/registration.json)
+[`registration.json`](../../reports/codex-only-quality/attempt-06/registration.json)
 (149 public files; release `19ecbbb7489f83121dbc3c817ee948a6115bed7d`, tree
 `841d85483016b8348c64f96b7405df3f97b1ebfd`, 2,373 files; private config, copy receipt,
 environment, shim, CLIs and stand env files by hash only). Missing files refuse. Recheck
@@ -364,10 +368,10 @@ committed bytes before every request, as stage 5в; amendments precede requests.
 receipt binds the final spec without a self-hash. The measurement tools at registration:
 
 - `reports/codex-only-quality/tools/copy_verify.py` `82c78014658226b3acf607c593546ee54f6e89ea4026909fdaeea6b1a84cd1fd`
-- `reports/codex-only-quality/tools/quality_driver.py` `465145be4273f4ba0bd60559f4735bde1728b8925f1cb0f7c922d732cd89eb10`
+- `reports/codex-only-quality/tools/quality_driver.py` `841e07bb0223d0eb6d61034240795c7313be62e5a7e1189178fe4ff0718cdd90`
 - `reports/codex-only-quality/tools/quality_freeze.py` `c155cfebe0f7571f9070587be3838b3fc396862a14ce4206e10ac14f24d4d9a2`
 - `reports/codex-only-quality/tools/quality_read.py` `f6aa36fd05c5a4626b0edbfbc093285e66f6b4ad9a15f6d901e0162092d46185`
-- `reports/codex-only-quality/tools/stand_runtime.py` `e9d35c0997ad22638b39022bbf1c79e875d3c76cc47d6b690f69190fe1609f19`
+- `reports/codex-only-quality/tools/stand_runtime.py` `8d8544185b6b3729fc159768d1444697cb30fd596bf45055d2acc64946d77bdc`
 - `reports/codex-only-quality/tools/capture_journal.py` `f0e79e4a9038e27eae1d02cf2bf301f6ce48a958918dd6fdfc3453624ae7a4bc`
 - `reports/codex-only-quality/tools/shim/CaptureShim.cs` `70d7353fc8df48a431a984946bcfc316578e2fcc353d8a51e68e01ab64943646`
 - `deploy/windows/write_env.py` `2ee6503f77f6a44ded23fdd5dcb8fb488032bf4bde9d764e6866bc54836e13e7`
@@ -425,6 +429,19 @@ inventory binds `copy_verify.py`'s own bytes, which stay unchanged. Registration
 verification and frozen work still hash in full; registration's final check seeds the cache
 for the first chunk. A changed registered tool needs a new series: `attempt-05` was prepared
 like `attempt-04`, and no `attempt-04` answer is reused.
+
+Amendment, 2026-11-05, before any `attempt-06` request. Series
+[`attempt-05`](../../reports/codex-only-quality/attempt-05/) is retained and stopped (code 2,
+capture overlap at 03:36:31 UTC). Its probe and all 20 pilot questions were accepted; WixQA was
+whole and frozen (100/100 accepted), then 78 ConditionalQA and 6 aircargo questions were accepted.
+On ConditionalQA a low-effort transform call reached the product's 60-s Codex timeout. The
+product terminated the call's job object, which held the shim, its `codex.exe` and their console
+host, and waited for the shim's exit; its answer call started 0.3 s after the killed call's last
+heartbeat. The driver recorded the killed call's end at its drain, 44 s later, so the journal saw
+two open calls at once. The 2-s process log has the killed tree gone and the answer call's tree
+present in the same snapshot, so the log alone cannot order them. The driver now records the
+kernel's exit time, as the drain paragraph says; the overlap rule is unchanged. `attempt-06` was
+prepared like `attempt-05`, and no `attempt-05` answer is reused.
 
 - This spec; stage 5в spec/record; every public input/instrument in stage 5в,
   §SHA-256 registration (historical pins still checked).
