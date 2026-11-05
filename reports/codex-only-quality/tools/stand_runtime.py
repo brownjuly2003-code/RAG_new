@@ -21,7 +21,7 @@ import time
 from collections.abc import Callable, Sequence
 from ctypes import wintypes as w
 from dataclasses import asdict, dataclass
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Protocol
 from urllib.parse import unquote, urlsplit
@@ -60,6 +60,17 @@ def filetime(value: str) -> int:
     fraction = value.split(".", 1)[1][:7] if "." in value else ""
     extra = int(fraction[6]) if len(fraction) == 7 and fraction[6].isdigit() else 0
     return (delta.days * 86400 + delta.seconds) * 10_000_000 + delta.microseconds * 10 + extra
+
+
+def iso(value: int) -> str:
+    """FILETIME ticks to ISO UTC, rounded up to a whole microsecond: a bound never moves early."""
+    epoch = datetime(1601, 1, 1, tzinfo=timezone.utc)
+    return (epoch + timedelta(microseconds=-(-value // 10))).isoformat()
+
+
+# The kernel stamps a process exit at its last clock interrupt; the coarsest Windows
+# interval (15.625 ms) keeps a recorded exit at or after the real one.
+CLOCK_INTERVAL = 156_250
 
 
 @dataclass(frozen=True)
@@ -287,6 +298,33 @@ class WindowsSystem:
         finally:
             self.kernel.CloseHandle(handle)
 
+    def hold(self, process: Process) -> Any | None:
+        """A handle on this exact identity: its PID cannot be reused while held, and its
+        kernel exit time stays readable after it exits. None if it cannot be held."""
+        if not process.created:
+            return None
+        handle = self.kernel.OpenProcess(0x1000 | 0x100000, False, process.pid)
+        if not handle:
+            return None
+        try:
+            if self._created(handle) == process.created:
+                return handle
+        except Stop:
+            pass
+        self.kernel.CloseHandle(handle)
+        return None
+
+    def exit_time(self, handle: Any) -> int | None:
+        if self.kernel.WaitForSingleObject(handle, 0) != 0:
+            return None
+        stamps = [w.FILETIME() for _ in range(4)]
+        if not self.kernel.GetProcessTimes(handle, *(ctypes.byref(v) for v in stamps)):
+            return None
+        return (stamps[1].dwHighDateTime << 32) | stamps[1].dwLowDateTime
+
+    def release(self, handle: Any) -> None:
+        self.kernel.CloseHandle(handle)
+
     def clock_pair(self) -> tuple[float, float]:
         unbiased = ctypes.c_ulonglong()
         if not self.kernel.QueryUnbiasedInterruptTime(ctypes.byref(unbiased)):
@@ -348,6 +386,7 @@ class Watch:
         self.baseline: set[tuple[int, int]] | None = None
         self.previous: dict[int, dict[str, Any]] = {}
         self.observed: dict[tuple[int, int], Process] = {}
+        self.handles: dict[tuple[int, int], Any] = {}
         self.pair: tuple[float, float] | None = None
         self.failure: Stop | None = None
         self.events: list[dict[str, Any]] = []
@@ -395,6 +434,10 @@ class Watch:
                 roots = self.roots()
                 family = descendants([*self.observed.values(), *processes], roots)
                 self.observed.update({(p.pid, p.created): p for p in [*roots, *family]})
+                hold = getattr(self.system, "hold", None)
+                for identity, process in self.observed.items():
+                    if hold is not None and identity not in self.handles:
+                        self.handles[identity] = hold(process)
                 owned = set(self.observed)
                 self.ollama.update(
                     (p.pid, p.created)
@@ -454,12 +497,25 @@ class Watch:
         self.thread = threading.Thread(target=worker, daemon=True)
         self.thread.start()
 
+    def exit_time(self, identity: tuple[int, int]) -> int | None:
+        """Kernel exit FILETIME of a held identity; None while it runs or if never held."""
+        with self.mutex:
+            handle = self.handles.get(identity)
+            read = getattr(self.system, "exit_time", None)
+            return read(handle) if handle is not None and read is not None else None
+
     def close(self) -> None:
         self.done.set()
         if self.thread:
             self.thread.join(timeout=10)
             if self.thread.is_alive():
                 self.failure = self.failure or Stop(5, "watch_join_failed")
+        with self.mutex:
+            release = getattr(self.system, "release", None)
+            for handle in self.handles.values():
+                if handle is not None and release is not None:
+                    release(handle)
+            self.handles.clear()
 
 
 class HTTP:
@@ -831,6 +887,33 @@ class Runtime:
                     if p.created <= filetime(call.spawned["utc"]):
                         return False
         return True
+
+    def exit_utc(self, call: Any) -> str | None:
+        """When a killed call's tree exited, by the kernel: the latest exit of its shim and
+        every observed descendant, plus the coarsest clock interval. None when any member's
+        exit is unknown; the driver then records its own verification time instead."""
+        if not call.start or not call.process_started:
+            return None
+        recorded = filetime(call.start["process_start_utc"])
+        with self.watch.mutex:
+            observed = list(self.watch.observed.values())
+            shims = [
+                p
+                for p in observed
+                if p.pid == call.start["shim_pid"] and abs(p.created - recorded) <= 10_000
+            ]
+            if len(shims) != 1:
+                return None
+            family = [*shims, *descendants(observed, shims)]
+            exits = [self.watch.exit_time((p.pid, p.created)) for p in family]
+        known = [e for e in exits if e is not None]
+        if len(known) != len(family):
+            return None
+        exited = max(known) + CLOCK_INTERVAL
+        floors = [call.start["utc"], *([call.spawned["utc"]] if call.spawned else [])]
+        if any(exited < filetime(value) for value in floors):
+            return None
+        return iso(exited)
 
     def tickets(self, key: str, session_id: str | None) -> dict[str, Any]:
         if not session_id:

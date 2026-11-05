@@ -156,9 +156,24 @@ class FakeSystem:
         self.sleep: list[bool] = []
         self.sleep_ok = True
         self.owners: list[int] = []
+        self.exits: dict[tuple[int, int], int] = {}
+        self.held: list[tuple[int, int]] = []
+        self.released: list[tuple[int, int]] = []
 
     def snapshot(self):
         return self.processes.copy()
+
+    def hold(self, process):
+        if not self.alive(process):
+            return None
+        self.held.append((process.pid, process.created))
+        return (process.pid, process.created)
+
+    def exit_time(self, handle):
+        return self.exits.get(handle)
+
+    def release(self, handle):
+        self.released.append(handle)
 
     def alive(self, process):
         return any(p.pid == process.pid and p.created == process.created for p in self.processes)
@@ -798,6 +813,87 @@ def test_drain_timeout_writes_driver_end(rig):
     assert stopped.value.code == 5
     assert list(rig.capture.glob("calls/*/end.driver.json"))
     assert not chunk.runtime.stand
+
+
+@pytest.mark.parametrize("held", ["all", "partly"])
+def test_killed_call_ends_at_its_kernel_exit_not_at_the_drain(rig, held):
+    # attempt-05: a 60-s product timeout killed a call's tree; its end, recorded at the
+    # drain 44 s later, overlapped the answer call that started in between.
+    journal = driver.instruments(ROOT)[3]
+    case = {"key": "wixqa", "case_id": "synthetic"}
+    chunk = rig.chunk()
+    put(rig.capture / "active_case.json", case)
+    killed = make_call(rig.capture, 1, effort="low", scenario="timeout")
+    start = cv.read(rig.capture / "calls" / killed / "start.json")
+    shim = sr.Process(
+        start["shim_pid"], 1, "capture_shim.exe", sr.filetime(start["process_start_utc"])
+    )
+    child = sr.Process(shim.pid + 1, shim.pid, "codex.exe", shim.created + 1)
+    console = sr.Process(shim.pid + 2, child.pid, "conhost.exe", shim.created + 2)
+    family = [shim, child, console]
+    rig.system.processes = family.copy()
+    chunk.runtime.watch.observed.update({(p.pid, p.created): p for p in family})
+    chunk.runtime.watch.tick()
+    assert rig.system.held == [(p.pid, p.created) for p in family]
+    rig.system.processes = []
+    exit_ticks = shim.created + 60 * 10_000_000
+    members = family if held == "all" else family[:2]
+    rig.system.exits = {(p.pid, p.created): exit_ticks + n for n, p in enumerate(members)}
+    following = make_call(rig.capture, 2, offset=61)
+    chunk.drain({killed})
+    driver_end = cv.read(rig.capture / "calls" / killed / "end.driver.json")
+    calls = [journal.read_call(rig.capture / "calls" / name) for name in (killed, following)]
+    overlaps = [s for s in journal.bind_calls(calls, case) if s.startswith("overlap")]
+    if held == "all":
+        assert driver_end["reason"] == "kernel_exit_time; verified_process_tree_exit"
+        assert driver_end["verified_exit_utc"] == sr.iso(exit_ticks + 2 + sr.CLOCK_INTERVAL)
+        assert not overlaps
+    else:  # One member's exit is unknown: the check's own time, a late but safe bound.
+        assert driver_end["reason"] == "verified_process_tree_exit"
+        assert overlaps
+    chunk.runtime.watch.close()
+    assert rig.system.released == rig.system.held and not chunk.runtime.watch.handles
+
+
+def test_kernel_exit_bound_rounds_up_and_never_precedes_the_start(rig):
+    assert sr.iso(sr.filetime("2026-11-05T03:35:47.4000001Z")) == (
+        "2026-11-05T03:35:47.400001+00:00"
+    )
+    stamp = "2026-11-05T03:35:47.0000000Z"
+    runtime = sr.Runtime(rig.config, rig.private / "native", rig.system)
+    shim = sr.Process(42, 1, "capture_shim.exe", sr.filetime(stamp))
+    rig.system.processes = [shim]
+    runtime.watch.observed[(shim.pid, shim.created)] = shim
+    runtime.watch.tick()
+    call = SimpleNamespace(
+        start={"shim_pid": 42, "process_start_utc": stamp, "utc": "2026-11-05T03:35:48.5Z"},
+        process_started=True,
+        spawned=None,
+    )
+    assert runtime.exit_utc(call) is None  # Still running.
+    rig.system.processes = []
+    rig.system.exits = {(shim.pid, shim.created): shim.created + 10_000_000}
+    assert runtime.exit_utc(call) is None  # The kernel bound precedes the shim's own start.
+    rig.system.exits = {(shim.pid, shim.created): shim.created + 20_000_000}
+    assert runtime.exit_utc(call) == sr.iso(shim.created + 20_000_000 + sr.CLOCK_INTERVAL)
+
+
+@pytest.mark.skipif(sys.platform != "win32", reason="Native Windows process handles")
+def test_native_held_process_yields_its_kernel_exit_time():
+    system = sr.WindowsSystem(lambda *a, **k: None)
+    child = subprocess.Popen(  # nosec B603 # The test's own interpreter, fixed arguments.
+        [sys.executable, "-c", "import time; time.sleep(0.5)"]
+    )
+    process = next(p for p in system.snapshot() if p.pid == child.pid)
+    handle = system.hold(process)
+    assert handle is not None and system.exit_time(handle) is None
+    assert system.hold(replace(process, created=process.created + 1)) is None
+    child.wait(timeout=30)
+    after = sr.filetime(sr.utc())  # Python's clock may lag a tick behind the kernel's.
+    exited = system.exit_time(handle)
+    assert exited is not None and process.created < exited <= after + sr.CLOCK_INTERVAL
+    assert all(p.pid != child.pid for p in system.snapshot())  # A held exit is not listed.
+    system.release(handle)
 
 
 def test_budget_leaves_stand_and_key_switch_stops(rig):

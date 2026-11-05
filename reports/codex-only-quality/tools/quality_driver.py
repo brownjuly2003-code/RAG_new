@@ -1323,9 +1323,7 @@ class Chunk:
                 call = self.journal.read_call(self.capture / "calls" / name)
                 gone = self.runtime.call_gone(call)
                 if gone and call.missing_end and call.start and not call.driver_end:
-                    self.journal.write_driver_end(
-                        call.folder, sr.utc(), "verified_process_tree_exit"
-                    )
+                    self.end_killed(call, "verified_process_tree_exit")
                 if not gone:
                     clean = False
             if clean:
@@ -1341,11 +1339,18 @@ class Chunk:
                         and not call.driver_end
                         and self.runtime.call_gone(call)
                     ):
-                        self.journal.write_driver_end(
-                            call.folder, sr.utc(), "verified_exit_after_drain_timeout"
-                        )
+                        self.end_killed(call, "verified_exit_after_drain_timeout")
                 raise sr.Stop(5, "drain_timeout")
             time.sleep(0.05)
+
+    def end_killed(self, call: Any, reason: str) -> None:
+        # A killed shim's end: the kernel's exit time of its held tree, else this check's
+        # time. Overlap is judged on it; the late check time made attempt-05 a false overlap.
+        exited = self.runtime.exit_utc(call)
+        if exited:
+            self.journal.write_driver_end(call.folder, exited, "kernel_exit_time; " + reason)
+        else:
+            self.journal.write_driver_end(call.folder, sr.utc(), reason)
 
     def before_question(self) -> set[str]:
         names = self.names()
