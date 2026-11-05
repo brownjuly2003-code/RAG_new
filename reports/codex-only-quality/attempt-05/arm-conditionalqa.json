@@ -1,5 +1,18 @@
 {
-  "stops": [],
+  "stops": [
+    {
+      "id": "abe3431124ac440d803ba7f8e2562009",
+      "code": 2,
+      "reason": "capture_binding_or_profile",
+      "utc": "2026-11-05T03:36:31.950353+00:00"
+    },
+    {
+      "id": "ca5a21417b8d4bea9755459b6467f40f",
+      "code": 2,
+      "reason": "state_stop",
+      "utc": "2026-11-05T03:36:31.997765+00:00"
+    }
+  ],
   "resumes": [],
   "chunks": [
     {
@@ -322,17 +335,187 @@
         }
       ],
       "exit_code": 0
+    },
+    {
+      "utc": "2026-11-05T01:49:17.919175+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-05T01:49:18.981781+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-05T01:58:23.570944+00:00"
+        }
+      ],
+      "exit_code": 3
+    },
+    {
+      "utc": "2026-11-05T01:59:54.841474+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-05T01:59:55.887953+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-05T02:09:44.958043+00:00"
+        }
+      ],
+      "exit_code": 3
+    },
+    {
+      "utc": "2026-11-05T02:11:06.921221+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-05T02:11:07.964775+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-05T02:20:29.770697+00:00"
+        }
+      ],
+      "exit_code": 3
+    },
+    {
+      "utc": "2026-11-05T02:21:51.836498+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-05T02:21:52.884784+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-05T02:31:21.037194+00:00"
+        }
+      ],
+      "exit_code": 3
+    },
+    {
+      "utc": "2026-11-05T02:32:45.311015+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-05T02:32:46.354599+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-05T02:42:02.454466+00:00"
+        }
+      ],
+      "exit_code": 3
+    },
+    {
+      "utc": "2026-11-05T02:43:29.027958+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-05T02:43:30.072707+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-05T02:52:57.582190+00:00"
+        }
+      ],
+      "exit_code": 3
+    },
+    {
+      "utc": "2026-11-05T02:54:28.192801+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-05T02:54:29.241352+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-05T03:03:36.976009+00:00"
+        }
+      ],
+      "exit_code": 3
+    },
+    {
+      "utc": "2026-11-05T03:05:06.488664+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-05T03:05:07.541360+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-05T03:15:15.924155+00:00"
+        }
+      ],
+      "exit_code": 3
+    },
+    {
+      "utc": "2026-11-05T03:16:45.467082+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-05T03:16:46.506789+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-05T03:26:53.586530+00:00"
+        }
+      ],
+      "exit_code": 3
+    },
+    {
+      "utc": "2026-11-05T03:28:26.090578+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-05T03:28:27.139223+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-05T03:36:32.511158+00:00"
+        }
+      ],
+      "exit_code": 2
     }
   ],
   "retry_at": "2026-11-05T01:28:38.089791+00:00",
   "pilot_seconds": 1240.5620000000054,
-  "remaining_seconds": 5498.934000000081,
+  "remaining_seconds": 10220.23200000015,
   "forecast_s": 60,
   "slow_threshold_s": 180,
   "key": "conditionalqa",
   "status_counts": {
-    "accepted": 7,
-    "pending": 93
+    "accepted": 78,
+    "pending": 22
   },
   "attempts": [
     {
@@ -558,12 +741,2301 @@
       "session_sha256": "49f770489d21bc2b185cb68e34d04b85bf2ada211572a1837795614e4bf9875c",
       "ticket_sha256": [],
       "audited_absence": false
+    },
+    {
+      "id": "6102a520ab944bde81727f94c14cb0fb",
+      "case_id": "conditionalqa-train-1484",
+      "classification": "accepted",
+      "elapsed_s": 70.125,
+      "cold": true,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 145,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 143,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "779ac0168022405088684e4f99aa2e4f6cd07a250bdc1a5b4773afe1dc02c701",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "3f28d9b4eddb4f729fc629b6f93a8320",
+      "case_id": "conditionalqa-train-1509",
+      "classification": "accepted",
+      "elapsed_s": 61.703000000008615,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 148,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 366,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "341dc6bfc9d743b89161cef086dc707494dbfadd26cea13b152ad8655b2d63f0",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "b8883913d5f548f2994e45c0b14782cd",
+      "case_id": "conditionalqa-dev-53",
+      "classification": "accepted",
+      "elapsed_s": 60.14000000001397,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 235,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 580,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "bd446ffde2a511e2c951e265e1fed74475e13a2c2c1eaa93d2543e2b0312f824",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "42b7b50852a24342acc2c79e287e24e4",
+      "case_id": "conditionalqa-dev-35",
+      "classification": "accepted",
+      "elapsed_s": 66.90599999998813,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 275,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 588,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "1f2d077d679e15e09fb2e87c18d8e5a38078bc9fffd3dd11897095b1c51490ed",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "de1538b8d9e941559d2f13692bde0c1f",
+      "case_id": "conditionalqa-dev-69",
+      "classification": "accepted",
+      "elapsed_s": 59.64100000000326,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 189,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 303,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "6e21d79abcffecb4ac45bde133aaee365873a0cce17ec36baf9b0a0afd8f3623",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "db33543162234aa899aa6971c19b8d66",
+      "case_id": "conditionalqa-dev-68",
+      "classification": "accepted",
+      "elapsed_s": 57.640999999974156,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 156,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 475,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "c756b459d02d21c7b0e3d96e4afbe0283624a59903c928f1fcc7cb6e0e866612",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "8fc697b54cc443b38a556f4de5f2f442",
+      "case_id": "conditionalqa-train-2078",
+      "classification": "accepted",
+      "elapsed_s": 80.82800000000861,
+      "cold": true,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 130,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 493,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "a20eeef6c126db2d802fc5291713d8d31e8d4073dcb2dad7eac67a381dd180bc",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "a2887b463fa449be882d1a141190ce93",
+      "case_id": "conditionalqa-train-2077",
+      "classification": "accepted",
+      "elapsed_s": 51.421999999991385,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 159,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 104,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "b12f08fb90b4a5d0bfcd650608673111a79c470f4925d768e17e54d94bc98f83",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "3e89c311c5f648c08031bd3a95799807",
+      "case_id": "conditionalqa-train-236",
+      "classification": "accepted",
+      "elapsed_s": 69.73400000002584,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 222,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 543,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "17392274f0f52bfd0cb0eaad2dadee9421364564776182b7ef8bb68cc08c4a86",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "712a450950c448078eb1c319c14b2f17",
+      "case_id": "conditionalqa-train-197",
+      "classification": "accepted",
+      "elapsed_s": 63.078000000008615,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 205,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 674,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "5d23dc6dc361a8cc3979b2cc88f78d2db1e246d1962bb66d4d318eaae21fcb5a",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "8e2866d79d404a7f87f3fff5914fe339",
+      "case_id": "conditionalqa-train-2057",
+      "classification": "accepted",
+      "elapsed_s": 65.03099999998813,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 248,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 803,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "d491e7549bde522fdb0baa29f7bcd671c97f7be1e900906ba96ce174a07b8de0",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "91a37408db0041b8a422a2c1e2b624c4",
+      "case_id": "conditionalqa-train-2059",
+      "classification": "accepted",
+      "elapsed_s": 66.78200000000652,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 233,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 684,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "a8b8633b0460dabf7bbcf1ab38930412c20f37721af4556600c955f1797dc498",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "b62382b8c6584c11b990d29e13b6e203",
+      "case_id": "conditionalqa-train-629",
+      "classification": "accepted",
+      "elapsed_s": 63.01500000001397,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 139,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 328,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "7a10b5bd64e607b51c4df54ca53157a8d02849da2063fc8f876e860a9bc6fa40",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "6b44946088544728a567123c7064c00b",
+      "case_id": "conditionalqa-train-630",
+      "classification": "accepted",
+      "elapsed_s": 55.469000000011874,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 257,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 100,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "c1962f58e3d71a8aa7e8ff9e73e5c496d83156e90abd6262f39492d90261e971",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "e51fb184cab64d73b41b847cc3cd5446",
+      "case_id": "conditionalqa-train-1996",
+      "classification": "accepted",
+      "elapsed_s": 61.23399999999674,
+      "cold": true,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 267,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 273,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "91c987b60f9213cc0c880b71828c72a570017e53af42d584a05da0ae1ec2761c",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "a9c9f217aff04719a31533152ee6df82",
+      "case_id": "conditionalqa-train-1975",
+      "classification": "accepted",
+      "elapsed_s": 68.73499999998603,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 196,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 913,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "687a27e471a24b20b43c08dfdb75df269cb8c505deeaef193ca7e9e722690aa9",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "ec1b780cde8c4e9eb6d3a47bdf02e6d7",
+      "case_id": "conditionalqa-train-1925",
+      "classification": "accepted",
+      "elapsed_s": 52.687999999994645,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 135,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 108,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "d781163d5efff77a230322cbffedb88b67716b88377169d6ee21da86cfb81478",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "9b421c6de7534927b4d866f1243631e6",
+      "case_id": "conditionalqa-train-1759",
+      "classification": "accepted",
+      "elapsed_s": 46.969000000011874,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 237,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 115,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "10bb14875c37fcce19b2e379a4c2e299e7f4deb671021e6b9b45ef5e3c496422",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "0e61c110192147f1ac73ac6f7d79f5f3",
+      "case_id": "conditionalqa-train-466",
+      "classification": "accepted",
+      "elapsed_s": 64.67199999999139,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 150,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 592,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "b3b61aabbc21267a425bfbeaf120bf42b075fd9108cb35816974a5433c9b4837",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "7a442a1ea7624fb69be294cf37cedecf",
+      "case_id": "conditionalqa-train-871",
+      "classification": "accepted",
+      "elapsed_s": 58.828000000008615,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 144,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 447,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "495eaee71164a2c22fd97591ee05a263f9e19cd2beb08ed3d670a76bf6878329",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "13aad73b0bbf49c6b7c6a5e24e71438a",
+      "case_id": "conditionalqa-train-884",
+      "classification": "accepted",
+      "elapsed_s": 71.40599999998813,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 170,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 461,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "484e8686283b48f29a70bc8901c3ab45e5e7478f3fbc90489c9b0591eadf9f48",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "aed0eec61045401d9a7acd3a76aa98f9",
+      "case_id": "conditionalqa-train-470",
+      "classification": "accepted",
+      "elapsed_s": 62.046999999991385,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 142,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 617,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "8874a7c8d14f039d1d8409511416eb753b86bf3e8dfed971ce983349c11e8fb8",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "79e963067d4e4a07a990bbc3ee06b383",
+      "case_id": "conditionalqa-train-511",
+      "classification": "accepted",
+      "elapsed_s": 67.79699999999139,
+      "cold": true,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 149,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 512,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "92c0bfdece44123610bde9a643a48187da2af9a900bb7fd66fad5d5b67561b65",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "64accff0545149cc9c31acebfe945462",
+      "case_id": "conditionalqa-train-1497",
+      "classification": "accepted",
+      "elapsed_s": 61.562999999994645,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 138,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 393,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "cb3f3bbcc1c27b0fedcdec53d4c7f01d6481a0cab836a7bf2dd5952edb5b8cdf",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "0cdd5001d447416681acaae3f6c35f54",
+      "case_id": "conditionalqa-train-1580",
+      "classification": "accepted",
+      "elapsed_s": 68.71900000001187,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 163,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 531,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "9f0751aa0d1378c2535052f4a4eabe9391f8e8821351ee1394b14d8581b178c5",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "a20278b5a57440e29b298ec36f0b1565",
+      "case_id": "conditionalqa-train-999",
+      "classification": "accepted",
+      "elapsed_s": 53.453000000008615,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 208,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 299,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "35fd6de6859df36e8f2682ce03ff4c568b54f2ea0a2e985a5ff6205ebda87f7d",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "13638cadf9c44be5a8839b1d36cacb8f",
+      "case_id": "conditionalqa-train-991",
+      "classification": "accepted",
+      "elapsed_s": 52.48399999999674,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 208,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 178,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "95c0ec5c5fcbb9558ac715f1681d97ce46be08a227b39bf6c9b74d8bfb81a448",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "a0f52a4a92c8468fbe8aec561e22671c",
+      "case_id": "conditionalqa-train-1219",
+      "classification": "accepted",
+      "elapsed_s": 67.63999999998487,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 125,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 711,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "9eb9a6a4dbf06817a564719549f8630c35f40e7717d370621701ec8e3a024038",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "44518dca9bbf43b5861222f317b5ee50",
+      "case_id": "conditionalqa-dev-40",
+      "classification": "accepted",
+      "elapsed_s": 58.01600000000326,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 176,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 379,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "856a285393942dcc9dc193d5bee0b57424fa6e895697599692525deb3f9f96f2",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "195b511cbebd4a32b24fff2f595e9fc7",
+      "case_id": "conditionalqa-train-433",
+      "classification": "accepted",
+      "elapsed_s": 58.937000000005355,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 134,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 240,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "95cbc86b43d2917ab227086332baaee5b94a83beab8adfaa11e431ea5d60d361",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "410e1b0977b346389a8e2c849fd498e4",
+      "case_id": "conditionalqa-train-1749",
+      "classification": "accepted",
+      "elapsed_s": 54.0,
+      "cold": true,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 259,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 148,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "0c1c8d33b24be52563a868bca69dd9a9f07a04ba1ed3b4312668eff5a831e41c",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "be7943e1e6df4b1ba33ca5d53be01d32",
+      "case_id": "conditionalqa-train-593",
+      "classification": "accepted",
+      "elapsed_s": 53.828000000008615,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 153,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 106,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "be7e07651bd83c5bd44d87b909b7c771c8c171125749d0ede517f25902652f35",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "c99efcbe020c42ed8b20b88dfc52375b",
+      "case_id": "conditionalqa-train-2137",
+      "classification": "accepted",
+      "elapsed_s": 48.34399999998277,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 268,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 135,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "5467f7c5f49d841a7658711f29ddff138e9a9dc4c4fca215a057b0c070b9f4a4",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "5a6a2bc3a04445398c7eb739b5368a25",
+      "case_id": "conditionalqa-train-815",
+      "classification": "accepted",
+      "elapsed_s": 68.75,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 268,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 433,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "ff4858a9ddbc87765da125a8d76a1ccd78e927c70f81a122ba7d6e4ce0f524e4",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "6ff519118dae403c8b69078e2c7108fa",
+      "case_id": "conditionalqa-train-2303",
+      "classification": "accepted",
+      "elapsed_s": 48.875,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 208,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 181,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "2a3ee99feda7e9fb76cd25d29d4e226a05483f1087da66567f781973be7f3687",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "b55ea300120b4365a87a2f566f286795",
+      "case_id": "conditionalqa-train-588",
+      "classification": "accepted",
+      "elapsed_s": 83.90600000001723,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 214,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 520,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "30adffa47e18b4bd6b697785df9db80d5a0d7ae6361371bcd2655e766c7af50b",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "b75bbe5c6ece4c9884099171d74fcb40",
+      "case_id": "conditionalqa-train-587",
+      "classification": "accepted",
+      "elapsed_s": 53.51600000000326,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 207,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 229,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "c3c112d66dc76f350d4e9de34fe9f18a66a4b0a8751017bd02ba9134702a9a71",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "57612792afe74081a24e11827c10f373",
+      "case_id": "conditionalqa-train-1684",
+      "classification": "accepted",
+      "elapsed_s": 61.405999999988126,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 204,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 428,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "d08371f7f36e4fe511b161d19ca866ab2974f8e93e7cb74f44906d96b04acc49",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "3c90679138af4a5692d32c2dcc6fa0e0",
+      "case_id": "conditionalqa-train-1659",
+      "classification": "accepted",
+      "elapsed_s": 90.03100000001723,
+      "cold": true,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 116,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 762,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "cadaf67058070cea6ebb236280e7499d991d994f65b2842c64cad2b459bc7483",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "403152d404fa400b93767116e1085cc5",
+      "case_id": "conditionalqa-train-877",
+      "classification": "accepted",
+      "elapsed_s": 54.953000000008615,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 145,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 339,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "0b794599552b4bc1adb165d7d5280bebcb60b7d2eae07c1834d5c112e514d134",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "d6023e70cdff4ded93769f1f00fb3b10",
+      "case_id": "conditionalqa-train-851",
+      "classification": "accepted",
+      "elapsed_s": 50.76600000000326,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 161,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 567,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "e78b66806436e3e0ec47a5857c9e4a79fb41edda2e89a8ee51c6347f818bb29b",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "dc9ba0d2406e4e93be52a0ed3749c59d",
+      "case_id": "conditionalqa-dev-249",
+      "classification": "accepted",
+      "elapsed_s": 66.59400000001187,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 247,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 494,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "ac223e78e57bc827a4f0865ebea899a4a3610f6f2026fb152489abd9d8e88e07",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "d7fb09a763a448deb4b49fd3a5f7254e",
+      "case_id": "conditionalqa-dev-242",
+      "classification": "accepted",
+      "elapsed_s": 42.98499999998603,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 139,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 161,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "d8edb539902680ede8fcd8a133036dfe229eee17ab4595aba9691d2789091e83",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "4a898fbccbca4fa188b391be3554c243",
+      "case_id": "conditionalqa-train-1559",
+      "classification": "accepted",
+      "elapsed_s": 55.046000000002095,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 245,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 199,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "124f815fbd87fb8d82dd003ea5467294035f240a9bd3aaf69f7f18b791608df7",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "60050b94d1c34b57bc8d6cb2cbc899a6",
+      "case_id": "conditionalqa-train-1590",
+      "classification": "accepted",
+      "elapsed_s": 55.98399999999674,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 233,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 176,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "3ff5e5ddb3597201eefe6d5e45450891cfb70f55b9405d8188e51a60d9ecdacd",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "ac382a27987b46f18c09700a695f6784",
+      "case_id": "conditionalqa-dev-150",
+      "classification": "accepted",
+      "elapsed_s": 60.953000000008615,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 225,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 347,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "f91021eb94b84b4c2520adf9b6a0dd5cb659e011f5c0dee253266cc794174f36",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "d1fb5011d77c4bbdbc7d6cf0f93cbe63",
+      "case_id": "conditionalqa-dev-161",
+      "classification": "accepted",
+      "elapsed_s": 49.73399999999674,
+      "cold": true,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 175,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 297,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "ba745dfb8fdf308a5e390e45eee7b74b38f73ca9985a218ff8cb7a06691c0ed8",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "67a62dd70d864083b096e694d9a7722f",
+      "case_id": "conditionalqa-train-31",
+      "classification": "accepted",
+      "elapsed_s": 65.46799999999348,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 131,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 289,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "1ced1b85c45bc27cf5777ef4e7b3de12ebea823dc838c0bcc32af60627de1b53",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "287033c48cf94db1805106c62c6a8845",
+      "case_id": "conditionalqa-train-57",
+      "classification": "accepted",
+      "elapsed_s": 78.75,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 145,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 924,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "7dd097d2c0db676f360723efe3e7e0cb536b962b6dd018309abfcacba8c8fc92",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "fd40ea2b919a4c42b0a2326e3460baf5",
+      "case_id": "conditionalqa-train-2223",
+      "classification": "accepted",
+      "elapsed_s": 66.51600000000326,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 223,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 287,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "5c78bf00ade8e765a224634b9d1a1a43b27b6303dafb3f836cbd6d45cc31a79e",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "40c20b00a6c84957a3ff25633478a60a",
+      "case_id": "conditionalqa-train-139",
+      "classification": "accepted",
+      "elapsed_s": 62.312000000005355,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 202,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 464,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "9a3011d5b0c49717c7c5c252b5573fb30e5bc1459d88f1d9440b6641c73132a3",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "cb1a8445f2c14ec2ba9babb23afeb6a2",
+      "case_id": "conditionalqa-train-2178",
+      "classification": "accepted",
+      "elapsed_s": 52.25,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 223,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 236,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "1159a0368882d18b4634e2593b7adf964bfb46bad6ec09a353db7ca7a0fd9845",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "62afb33f7b8a40959cf5c5df03a3545d",
+      "case_id": "conditionalqa-train-84",
+      "classification": "accepted",
+      "elapsed_s": 64.15599999998813,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 131,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 641,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "b477ec5d4905fc0cf0712a4a179271306947488e9c88bc16c92135ab62f91de4",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "09a0a54fc0bf48c3851c1a2648a1d475",
+      "case_id": "conditionalqa-train-795",
+      "classification": "accepted",
+      "elapsed_s": 71.73499999998603,
+      "cold": true,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 266,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 660,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "396cc630eab920670e6c558ad9c8e796a38471bda076d3b7de7186328a45966b",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "67eac4c0b97a4e51a6190981daf2ae04",
+      "case_id": "conditionalqa-train-612",
+      "classification": "accepted",
+      "elapsed_s": 68.03100000001723,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 190,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 544,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "8b9576af4e70629edc31caccbaa89081ac4723adabbb92a44bcf6133cdeff9ea",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "993b74ba1f454c068d6a40bc72bb0b8b",
+      "case_id": "conditionalqa-train-1786",
+      "classification": "accepted",
+      "elapsed_s": 51.40700000000652,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 314,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 199,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "d14ef6bb523b9daf664f99092443b9bf87e9b12ee3b07783fcd2462c619aaa0a",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "8b0b7e5a2c29424abc2119fe129c0b79",
+      "case_id": "conditionalqa-train-1785",
+      "classification": "accepted",
+      "elapsed_s": 50.04700000002049,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 323,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 187,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "c591970062a9c4a51684f85ac3c0f4becf12aaaf531eeb1cfd1543b3a3e7ca19",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "872d19ba945e4172bcbb5cfb5548c5b3",
+      "case_id": "conditionalqa-train-315",
+      "classification": "accepted",
+      "elapsed_s": 64.625,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 259,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 543,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "6b5dec7a62fbd030e982fdd481f031e6a5b12ad3df41d6c993d2c64c4e65a6f3",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "5ced3b67578c4db7bed59e241850c15f",
+      "case_id": "conditionalqa-train-347",
+      "classification": "accepted",
+      "elapsed_s": 68.84299999999348,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 120,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 458,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "28e3e96b5706f5d6aee351fa2d5cadfcbb3dfb597c4b3a4716d08e02608f80a3",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "6016cec5e8c84f45a0bf6e598cfd9b84",
+      "case_id": "conditionalqa-train-1226",
+      "classification": "accepted",
+      "elapsed_s": 74.93799999999464,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 226,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 1296,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "2bcf5f4797b3aec0ba07e0f5c62507bf6bc15f8055dc8f15d88becf0cb0576ea",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "d772457b6f5544cfb7cb0184e6507feb",
+      "case_id": "conditionalqa-dev-14",
+      "classification": "accepted",
+      "elapsed_s": 63.03200000000652,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 552,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 598,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "2e67be9c5ff54f0bbb3ff55c001f15cd1dc2f95f348fd8f126062b08da68757a",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "ac677ac49e214e04aa2cc9f6a17563ac",
+      "case_id": "conditionalqa-dev-26",
+      "classification": "accepted",
+      "elapsed_s": 79.54699999999139,
+      "cold": true,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 143,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 557,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "224aa5c843c84e6085cf6586f944e9cbefe4183e4be0a6b224bbbe9809beb67c",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "0ab6f2ec29954726aea592e6d67bc0f7",
+      "case_id": "conditionalqa-train-1309",
+      "classification": "accepted",
+      "elapsed_s": 53.437999999994645,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 182,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 533,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "7d825ff0705771c80643e28554954e21160268d4796d6c2d178e65036d539fe5",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "13fef9e241f9434499c7842c76d4aa3b",
+      "case_id": "conditionalqa-train-1310",
+      "classification": "accepted",
+      "elapsed_s": 52.812000000005355,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 187,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 233,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "033b1a1c49cffdcd225fb4905504151ce5bcb12cf8615f27a54f01fb53494b80",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "1321d1364b824930badfde00d3674456",
+      "case_id": "conditionalqa-train-1877",
+      "classification": "accepted",
+      "elapsed_s": 83.56200000000536,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 149,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 433,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "205e8380a72d77e914a95b02ab2f2170a17f7054ce99ad37cd90d6a7d26ee7ad",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "598736bb9f3340cd87cc16552f2ebe4b",
+      "case_id": "conditionalqa-train-1850",
+      "classification": "accepted",
+      "elapsed_s": 83.03200000000652,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 225,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 331,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "0c1ae312650816cf7e31cad7abc4fe89a59b0340c5952adca54911ff3ecfd880",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "56ffc3a3989d47f6952560112f3130e4",
+      "case_id": "conditionalqa-train-1716",
+      "classification": "accepted",
+      "elapsed_s": 73.45300000000861,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 138,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 299,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "7cc49edaec08ce0a96273f68b45abbefc9729e4a3711d2d3b3c3ec68ffd86983",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "16d0ff10746e4e3e9ba94a4ebdd6b711",
+      "case_id": "conditionalqa-train-1666",
+      "classification": "accepted",
+      "elapsed_s": 98.65700000000652,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 155,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 543,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "5fd56908e3fc65c285a1025ac1f1e1bcac02b9b5a5f13c763880138715c29d60",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "b908f659407548e6ada0356fa253b6ca",
+      "case_id": "conditionalqa-train-199",
+      "classification": "accepted",
+      "elapsed_s": 87.5,
+      "cold": true,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 121,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 432,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "aa8fe63bef8ea248b68244206a1be998146e3abe0d23ccef2823fbc52406cdf4",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "e1ae2add96b8471c9b686d91af66e18d",
+      "case_id": "conditionalqa-train-125",
+      "classification": "accepted",
+      "elapsed_s": 108.93799999999464,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 154,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 392,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "4e444883945a0d464be999e580ba3c3c606179ee56454a2f79235dc10f000585",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "e4a154cac0d941e7beae1f2e2a53002d",
+      "case_id": "conditionalqa-train-46",
+      "classification": "accepted",
+      "elapsed_s": 94.34400000001187,
+      "cold": false,
+      "language": {
+        "question_script": {
+          "counts": {
+            "LATIN": 179,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "answer_script": {
+          "counts": {
+            "LATIN": 362,
+            "CYRILLIC": 0
+          },
+          "script": "LATIN"
+        },
+        "match": true
+      },
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "bce6adbfe3275cc3acc71ca8b29a82ac2ff77e3c7c7b494f0d66f4e5283cc0e1",
+      "ticket_sha256": [],
+      "audited_absence": false
+    },
+    {
+      "id": "14e58b783b94415a87d87ca3e49c88c3",
+      "case_id": "conditionalqa-train-322",
+      "classification": "rule_stop",
+      "elapsed_s": 137.53099999998813,
+      "cold": false,
+      "language": {},
+      "calls_by_effort": {
+        "low": 2,
+        "xhigh": 1
+      },
+      "ticket_count": 0,
+      "session_sha256": "58d3eb4385e4b054fad835cc781f403368df321e196bec4655ffc51f8486a8f6",
+      "ticket_sha256": [],
+      "audited_absence": false
     }
   ],
   "whole": false,
-  "accepted": 7,
+  "accepted": 78,
   "route_counts": {
-    "auto": 7
+    "auto": 74,
+    "human": 5
   },
   "over_180": 0,
   "infrastructure_attempts": 0,
