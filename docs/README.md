@@ -219,9 +219,10 @@ P2 reference samples ([Astra](specs/p2-astra-reference-sample.md),
 
 - [`evidence/`](evidence/) — one write-up per measured slice; the register with provenance is
   [`EVIDENCE_INDEX.md`](../EVIDENCE_INDEX.md). The records themselves are in `../reports/`.
-- [Latest handoff: `codex-only` live on her laptop, the route fixed, the install in the repository, the re-measurement specified](operations/session-handoff-2026-11-03-codex-only-live.md)
-  — stage 6 item 0: the live runs, the `auto` route under the handover line, the release clone,
-  the spec of the quality re-measurement and its cold read, the executor's procedure. Before it:
+- [Latest handoff: the `codex-only` measurement answered whole (attempt-06, 300/300), judging next](operations/session-handoff-2026-11-05-codex-only-measurement.md)
+  — stage 6 item 0: six series and why five retired, the in-series fixes, the judging
+  procedure and its traps. Before it:
+  [`codex-only` live on her laptop, the route fixed, the install in the repository, the re-measurement specified](operations/session-handoff-2026-11-03-codex-only-live.md),
   [stage 5в recorded, D5 decided: Codex on her laptop, `codex-only`, no Ollama](operations/session-handoff-2026-11-03-laptop-codex-only.md),
   [stage 5в answered whole, two keys graded, aircargo's judging paused](operations/session-handoff-2026-11-03-stage5v-arm-judge.md),
   [stage 5 and V6 recorded (V6 not adopted, harm), RAG_new published](operations/session-handoff-2026-11-02-v6-record-publication.md)
