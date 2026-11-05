@@ -86,11 +86,247 @@
         }
       ],
       "exit_code": 0
+    },
+    {
+      "utc": "2026-11-04T23:13:00.305078+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-04T23:13:01.349488+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-04T23:23:16.695819+00:00"
+        }
+      ],
+      "exit_code": 3
+    },
+    {
+      "utc": "2026-11-04T23:25:32.688572+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-04T23:25:33.734654+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-04T23:34:52.271382+00:00"
+        }
+      ],
+      "exit_code": 3
+    },
+    {
+      "utc": "2026-11-04T23:36:14.981946+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-04T23:36:16.018570+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-04T23:45:55.812407+00:00"
+        }
+      ],
+      "exit_code": 3
+    },
+    {
+      "utc": "2026-11-04T23:47:23.016427+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-04T23:47:24.059890+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-04T23:56:38.298983+00:00"
+        }
+      ],
+      "exit_code": 3
+    },
+    {
+      "utc": "2026-11-04T23:58:08.801970+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-04T23:58:09.848101+00:00"
+        },
+        {
+          "kind": "outside_codex",
+          "pid": 3176,
+          "created": 134383107298992935,
+          "utc": "2026-11-05T00:05:30.288547+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-05T00:07:39.257444+00:00"
+        }
+      ],
+      "exit_code": 3
+    },
+    {
+      "utc": "2026-11-05T00:09:28.524390+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-05T00:09:29.569084+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-05T00:18:47.433531+00:00"
+        }
+      ],
+      "exit_code": 3
+    },
+    {
+      "utc": "2026-11-05T00:20:09.462395+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-05T00:20:10.503148+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-05T00:29:36.786902+00:00"
+        }
+      ],
+      "exit_code": 3
+    },
+    {
+      "utc": "2026-11-05T00:30:52.823050+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-05T00:30:53.855605+00:00"
+        },
+        {
+          "kind": "outside_codex",
+          "pid": 12396,
+          "created": 0,
+          "utc": "2026-11-05T00:40:02.156409+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-05T00:43:40.860756+00:00"
+        }
+      ],
+      "exit_code": 3
+    },
+    {
+      "utc": "2026-11-05T00:58:09.241926+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-05T00:58:10.286779+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-05T01:07:36.092400+00:00"
+        }
+      ],
+      "exit_code": 3
+    },
+    {
+      "utc": "2026-11-05T01:09:54.887212+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-05T01:09:55.949940+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-05T01:18:58.488107+00:00"
+        }
+      ],
+      "exit_code": 3
+    },
+    {
+      "utc": "2026-11-05T01:20:17.279207+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-05T01:20:18.323105+00:00"
+        },
+        {
+          "kind": "outside_codex",
+          "pid": 14168,
+          "created": 134383152269512027,
+          "utc": "2026-11-05T01:20:26.966951+00:00"
+        },
+        {
+          "kind": "outside_codex",
+          "pid": 7528,
+          "created": 134383152288347868,
+          "utc": "2026-11-05T01:20:29.067407+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-05T01:23:38.348167+00:00"
+        }
+      ],
+      "exit_code": 3
+    },
+    {
+      "utc": "2026-11-05T01:27:11.385450+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [],
+      "exit_code": 3
+    },
+    {
+      "utc": "2026-11-05T01:29:49.220364+00:00",
+      "agents_sha256": "89e340ed2c29d4c6e2834fe1b4d4caabc32f0e2af02c5dcff96b1821ecfab546",
+      "changed": false,
+      "ollama_observations": 0,
+      "sleep_suspend_events": [
+        {
+          "kind": "sleep_held",
+          "utc": "2026-11-05T01:29:50.262774+00:00"
+        },
+        {
+          "kind": "sleep_cleared",
+          "utc": "2026-11-05T01:34:23.693868+00:00"
+        }
+      ],
+      "exit_code": 0
     }
   ],
-  "retry_at": null,
+  "retry_at": "2026-11-05T01:28:38.089791+00:00",
   "pilot_seconds": 1240.5620000000054,
-  "remaining_seconds": 0.0,
+  "remaining_seconds": 5498.934000000081,
   "forecast_s": 60,
   "slow_threshold_s": 180,
   "key": "aircargo",
