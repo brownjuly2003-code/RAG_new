@@ -191,6 +191,10 @@ a detected rise; gold in the sent context 125 → 116 of 180, not detected; its
 [Stage 6, item 4](specs/stage6-throughput.md) — the
 service's questions an hour and what a second client sees: a draft, registered with its tools once
 the service is installed.
+[Bundle 0](specs/bundle0-reranker-threshold.md) — the reranker's scores in place of the
+document grader, offline: a fixed threshold grid, the largest-gap rule and the grader's own
+decisions against H at «sent» on stage 7's saved INT8 journal, by an exact McNemar per deciding
+base, a rule failing only on a detected loss; registered 2026-11-06 before the run.
 
 **Contracts the code keeps** — what the code must do, with tests behind each:
 
