@@ -36,6 +36,10 @@ SLUG = re.compile(r"[a-z0-9_-]{1,32}")
 MODEL = re.compile(r"[a-z0-9.\-]{1,40}")
 LABEL = re.compile(r"[A-Za-z0-9 _.-]{1,40}")
 ISO = re.compile(r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?Z")
+# Observed reset-time jitter is seconds to about a minute within the same window.
+RESET_TIME_TOLERANCE = timedelta(minutes=30)
+# Concurrent reports can differ through sub-point rounding of used percentages.
+USED_PERCENT_DROP_TOLERANCE = 1.0
 CAPTURE_COLUMNS = (
     "series",
     "base",
@@ -275,7 +279,9 @@ class Windows:
                 bisect_left(self.times, before.time) : bisect_right(self.times, after.time)
             ]
             reset = any(
-                b.reset > a.reset or b.used < a.used
+                b.minutes != a.minutes
+                or b.reset - a.reset > RESET_TIME_TOLERANCE
+                or b.used < a.used - USED_PERCENT_DROP_TOLERANCE
                 for a, b in zip(between, between[1:], strict=False)
             )
             if not reset:

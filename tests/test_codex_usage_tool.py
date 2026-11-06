@@ -247,6 +247,54 @@ def test_window_reset_inside_bracketing_snapshots(tree, pct, reset):
     assert share["difference_pct"] is None and share["difference_per_question_pct"] is None
 
 
+def test_window_reset_jitter_preserves_share(tree):
+    rollout(
+        tree,
+        "rollout-jitter.jsonl",
+        "C:/unlisted",
+        [
+            token("10:00:10", 15, reset="15:00:41"),
+            token("10:01:10", 20, reset="15:00:11"),
+        ],
+    )
+    assert run(tree).returncode == 0
+    share = json.loads((tree / "out/summary.json").read_bytes())["capture_series"][0][
+        "window_share"
+    ]
+    assert share["reset_between"] is False
+    assert share["difference_pct"] == share["difference_per_question_pct"] == 15
+
+
+@pytest.mark.parametrize(
+    "reset_shift,minutes,pct,reset_between",
+    [
+        (3 * 24 * 60 * 60, 300, 15, True),
+        (0, 10080, 15, True),
+        (0, 43200, 15, True),
+        (0, 300, 8, True),
+        (0, 300, 9.5, False),
+        (30 * 60, 300, 15, False),
+        (30 * 60 + 1, 300, 15, True),
+        (0, 300, 9, False),
+    ],
+)
+def test_window_reset_thresholds_inside_bracketing_snapshots(
+    tree, reset_shift, minutes, pct, reset_between
+):
+    snapshot = token("10:00:10", pct)
+    primary = snapshot["payload"]["rate_limits"]["primary"]
+    primary["resets_at"] += reset_shift
+    primary["window_minutes"] = minutes
+    rollout(tree, "rollout-threshold.jsonl", "C:/unlisted", [snapshot])
+    assert run(tree).returncode == 0
+    share = json.loads((tree / "out/summary.json").read_bytes())["capture_series"][0][
+        "window_share"
+    ]
+    assert share["reset_between"] is reset_between
+    expected = None if reset_between else 15
+    assert share["difference_pct"] == share["difference_per_question_pct"] == expected
+
+
 @pytest.mark.parametrize("unsafe", ["C:/private", "name@example", "Users\\private"])
 @pytest.mark.parametrize("field", ["series", "class"])
 def test_guard_refuses_before_any_write(tree, unsafe, field):
