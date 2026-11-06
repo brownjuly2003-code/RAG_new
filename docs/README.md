@@ -184,8 +184,10 @@ bottleneck — M1 good 120 → 220 of 224 with the answer in the context, detect
 agreement not detected; its [record](evidence/generator-ceiling-record.md).
 [Stage 6 item 0, the quality under `codex-only`](specs/codex-only-quality.md) — the product as it
 runs on her laptop, every model call through Codex, on stage 5в's 300 questions: gold in the
-captured context and M1 against stage 5в's Codex arm. A specification: registered with its tools'
-hashes before the first request.
+captured context and M1 against stage 5в's Codex arm. Registered 2026-11-05 in `5a2d2fe` with its
+tools' hashes before the first request; read 2026-11-06: holds — answered good 268 → 279 of 300,
+a detected rise; gold in the sent context 125 → 116 of 180, not detected; its
+[record](evidence/codex-only-quality-record.md).
 [Stage 6, item 4](specs/stage6-throughput.md) — the
 service's questions an hour and what a second client sees: a draft, registered with its tools once
 the service is installed.
@@ -219,7 +221,7 @@ P2 reference samples ([Astra](specs/p2-astra-reference-sample.md),
 
 - [`evidence/`](evidence/) — one write-up per measured slice; the register with provenance is
   [`EVIDENCE_INDEX.md`](../EVIDENCE_INDEX.md). The records themselves are in `../reports/`.
-- [Latest handoff: the `codex-only` measurement answered whole (attempt-06, 300/300), judging next](operations/session-handoff-2026-11-05-codex-only-measurement.md)
+- [Latest handoff: the `codex-only` measurement answered whole (attempt-06, 300/300)](operations/session-handoff-2026-11-05-codex-only-measurement.md); judged and read 2026-11-06 after it, its [record](evidence/codex-only-quality-record.md)
   — stage 6 item 0: six series and why five retired, the in-series fixes, the judging
   procedure and its traps. Before it:
   [`codex-only` live on her laptop, the route fixed, the install in the repository, the re-measurement specified](operations/session-handoff-2026-11-03-codex-only-live.md),

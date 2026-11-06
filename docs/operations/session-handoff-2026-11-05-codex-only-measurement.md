@@ -6,6 +6,11 @@ which this file gives as 10:06. The session's first part, up to the spec and the
 [its earlier handoff](session-handoff-2026-11-03-codex-only-live.md). This file covers
 the run that came after it.
 
+**Closed 2026-11-06.** The session that took this handoff did its Next actions 1–6: the
+judge route (`e2845c9`), the three keys graded and exported (`557c2d0`, `cd1223d`,
+`8c0014e`), the reading (`090dcd1`: row 3, holds) and the
+[record](../evidence/codex-only-quality-record.md). Step 7, the push, waits for her word.
+
 ## Read this first
 
 - **What this is.** This is stage 6 item 0's quality re-measurement under `codex-only`,
