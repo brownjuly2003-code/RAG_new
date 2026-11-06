@@ -1,0 +1,459 @@
+{
+  "capture_series": [
+    {
+      "calls_by_role": {
+        "answer": 12,
+        "helper": 22,
+        "other": 0
+      },
+      "completed_calls": 33,
+      "distinct_questions": 12,
+      "first_call_utc": "2026-11-04T13:17:43.970777Z",
+      "last_call_utc": "2026-11-04T14:28:31.637564Z",
+      "roles": {
+        "answer": {
+          "duration_median_s": 32.723,
+          "duration_p90_s": 41.476,
+          "usage_median": {
+            "cache_write_input_tokens": 0,
+            "cached_input_tokens": 0,
+            "input_tokens": 16933,
+            "output_tokens": 414,
+            "reasoning_output_tokens": 290
+          },
+          "usage_sum": {
+            "cache_write_input_tokens": 0,
+            "cached_input_tokens": 33024,
+            "input_tokens": 183503,
+            "output_tokens": 4588,
+            "reasoning_output_tokens": 3037
+          }
+        },
+        "helper": {
+          "duration_median_s": 18.916,
+          "duration_p90_s": 23.772,
+          "usage_median": {
+            "cache_write_input_tokens": 0.000,
+            "cached_input_tokens": 9984.000,
+            "input_tokens": 15990.500,
+            "output_tokens": 79.500,
+            "reasoning_output_tokens": 0.000
+          },
+          "usage_sum": {
+            "cache_write_input_tokens": 0,
+            "cached_input_tokens": 196096,
+            "input_tokens": 357290,
+            "output_tokens": 1781,
+            "reasoning_output_tokens": 0
+          }
+        },
+        "other": {
+          "duration_median_s": null,
+          "duration_p90_s": null,
+          "usage_median": {
+            "cache_write_input_tokens": null,
+            "cached_input_tokens": null,
+            "input_tokens": null,
+            "output_tokens": null,
+            "reasoning_output_tokens": null
+          },
+          "usage_sum": {
+            "cache_write_input_tokens": 0,
+            "cached_input_tokens": 0,
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "reasoning_output_tokens": 0
+          }
+        }
+      },
+      "series": "attempt-01",
+      "window_share": {
+        "after_pct": 94.000,
+        "after_utc": "2026-11-04T19:33:57.979000Z",
+        "before_pct": 86.000,
+        "before_utc": "2026-11-04T13:17:39.551000Z",
+        "difference_pct": 8.000,
+        "difference_per_question_pct": 0.667,
+        "reset_between": false,
+        "upper_bound": true
+      }
+    },
+    {
+      "calls_by_role": {
+        "answer": 131,
+        "helper": 262,
+        "other": 0
+      },
+      "completed_calls": 392,
+      "distinct_questions": 132,
+      "first_call_utc": "2026-11-04T15:11:22.046549Z",
+      "last_call_utc": "2026-11-04T19:33:46.919753Z",
+      "roles": {
+        "answer": {
+          "duration_median_s": 27.767,
+          "duration_p90_s": 35.582,
+          "usage_median": {
+            "cache_write_input_tokens": 0,
+            "cached_input_tokens": 12288,
+            "input_tokens": 16772,
+            "output_tokens": 416,
+            "reasoning_output_tokens": 278
+          },
+          "usage_sum": {
+            "cache_write_input_tokens": 0,
+            "cached_input_tokens": 1323008,
+            "input_tokens": 2182955,
+            "output_tokens": 53451,
+            "reasoning_output_tokens": 36477
+          }
+        },
+        "helper": {
+          "duration_median_s": 17.141,
+          "duration_p90_s": 22.240,
+          "usage_median": {
+            "cache_write_input_tokens": 0,
+            "cached_input_tokens": 12288,
+            "input_tokens": 15522,
+            "output_tokens": 71,
+            "reasoning_output_tokens": 0
+          },
+          "usage_sum": {
+            "cache_write_input_tokens": 0,
+            "cached_input_tokens": 2969088,
+            "input_tokens": 4231887,
+            "output_tokens": 21916,
+            "reasoning_output_tokens": 290
+          }
+        },
+        "other": {
+          "duration_median_s": null,
+          "duration_p90_s": null,
+          "usage_median": {
+            "cache_write_input_tokens": null,
+            "cached_input_tokens": null,
+            "input_tokens": null,
+            "output_tokens": null,
+            "reasoning_output_tokens": null
+          },
+          "usage_sum": {
+            "cache_write_input_tokens": 0,
+            "cached_input_tokens": 0,
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "reasoning_output_tokens": 0
+          }
+        }
+      },
+      "series": "attempt-03",
+      "window_share": {
+        "after_pct": 94.000,
+        "after_utc": "2026-11-04T19:33:57.979000Z",
+        "before_pct": 89.000,
+        "before_utc": "2026-11-04T14:27:39.195000Z",
+        "difference_pct": 5.000,
+        "difference_per_question_pct": 0.038,
+        "reset_between": false,
+        "upper_bound": true
+      }
+    },
+    {
+      "calls_by_role": {
+        "answer": 22,
+        "helper": 42,
+        "other": 0
+      },
+      "completed_calls": 64,
+      "distinct_questions": 22,
+      "first_call_utc": "2026-11-04T20:30:40.913512Z",
+      "last_call_utc": "2026-11-04T21:38:03.893342Z",
+      "roles": {
+        "answer": {
+          "duration_median_s": 24.915,
+          "duration_p90_s": 32.166,
+          "usage_median": {
+            "cache_write_input_tokens": 0.000,
+            "cached_input_tokens": 12288.000,
+            "input_tokens": 16856.000,
+            "output_tokens": 428.500,
+            "reasoning_output_tokens": 289.000
+          },
+          "usage_sum": {
+            "cache_write_input_tokens": 0,
+            "cached_input_tokens": 258048,
+            "input_tokens": 367586,
+            "output_tokens": 9991,
+            "reasoning_output_tokens": 6701
+          }
+        },
+        "helper": {
+          "duration_median_s": 14.722,
+          "duration_p90_s": 19.123,
+          "usage_median": {
+            "cache_write_input_tokens": 0.000,
+            "cached_input_tokens": 12288.000,
+            "input_tokens": 16068.500,
+            "output_tokens": 82.500,
+            "reasoning_output_tokens": 0.000
+          },
+          "usage_sum": {
+            "cache_write_input_tokens": 0,
+            "cached_input_tokens": 479232,
+            "input_tokens": 682423,
+            "output_tokens": 3939,
+            "reasoning_output_tokens": 85
+          }
+        },
+        "other": {
+          "duration_median_s": null,
+          "duration_p90_s": null,
+          "usage_median": {
+            "cache_write_input_tokens": null,
+            "cached_input_tokens": null,
+            "input_tokens": null,
+            "output_tokens": null,
+            "reasoning_output_tokens": null
+          },
+          "usage_sum": {
+            "cache_write_input_tokens": 0,
+            "cached_input_tokens": 0,
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "reasoning_output_tokens": 0
+          }
+        }
+      },
+      "series": "attempt-04",
+      "window_share": {
+        "after_pct": 99.000,
+        "after_utc": "2026-11-05T01:20:44.881000Z",
+        "before_pct": 95.000,
+        "before_utc": "2026-11-04T20:28:57.374000Z",
+        "difference_pct": 4.000,
+        "difference_per_question_pct": 0.182,
+        "reset_between": false,
+        "upper_bound": true
+      }
+    },
+    {
+      "calls_by_role": {
+        "answer": 187,
+        "helper": 372,
+        "other": 0
+      },
+      "completed_calls": 558,
+      "distinct_questions": 187,
+      "first_call_utc": "2026-11-04T22:42:43.103677Z",
+      "last_call_utc": "2026-11-05T03:36:31.609340Z",
+      "roles": {
+        "answer": {
+          "duration_median_s": 23.418,
+          "duration_p90_s": 34.643,
+          "usage_median": {
+            "cache_write_input_tokens": 0.000,
+            "cached_input_tokens": 12288.000,
+            "input_tokens": 16719.500,
+            "output_tokens": 403.000,
+            "reasoning_output_tokens": 263.500
+          },
+          "usage_sum": {
+            "cache_write_input_tokens": 0,
+            "cached_input_tokens": 2001408,
+            "input_tokens": 3088224,
+            "output_tokens": 75616,
+            "reasoning_output_tokens": 52667
+          }
+        },
+        "helper": {
+          "duration_median_s": 14.245,
+          "duration_p90_s": 19.162,
+          "usage_median": {
+            "cache_write_input_tokens": 0.000,
+            "cached_input_tokens": 12288.000,
+            "input_tokens": 15843.000,
+            "output_tokens": 96.000,
+            "reasoning_output_tokens": 0.000
+          },
+          "usage_sum": {
+            "cache_write_input_tokens": 0,
+            "cached_input_tokens": 4396800,
+            "input_tokens": 6037292,
+            "output_tokens": 31635,
+            "reasoning_output_tokens": 108
+          }
+        },
+        "other": {
+          "duration_median_s": null,
+          "duration_p90_s": null,
+          "usage_median": {
+            "cache_write_input_tokens": null,
+            "cached_input_tokens": null,
+            "input_tokens": null,
+            "output_tokens": null,
+            "reasoning_output_tokens": null
+          },
+          "usage_sum": {
+            "cache_write_input_tokens": 0,
+            "cached_input_tokens": 0,
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "reasoning_output_tokens": 0
+          }
+        }
+      },
+      "series": "attempt-05",
+      "window_share": {
+        "after_pct": 17.000,
+        "after_utc": "2026-11-05T14:56:09.224000Z",
+        "before_pct": 95.000,
+        "before_utc": "2026-11-04T20:43:47.378000Z",
+        "difference_pct": null,
+        "difference_per_question_pct": null,
+        "reset_between": true,
+        "upper_bound": true
+      }
+    },
+    {
+      "calls_by_role": {
+        "answer": 301,
+        "helper": 601,
+        "other": 0
+      },
+      "completed_calls": 902,
+      "distinct_questions": 302,
+      "first_call_utc": "2026-11-05T04:45:30.211406Z",
+      "last_call_utc": "2026-11-05T13:39:58.953451Z",
+      "roles": {
+        "answer": {
+          "duration_median_s": 28.413,
+          "duration_p90_s": 40.518,
+          "usage_median": {
+            "cache_write_input_tokens": 0,
+            "cached_input_tokens": 12288,
+            "input_tokens": 16784,
+            "output_tokens": 396,
+            "reasoning_output_tokens": 266
+          },
+          "usage_sum": {
+            "cache_write_input_tokens": 0,
+            "cached_input_tokens": 3458304,
+            "input_tokens": 5022029,
+            "output_tokens": 122416,
+            "reasoning_output_tokens": 82158
+          }
+        },
+        "helper": {
+          "duration_median_s": 16.288,
+          "duration_p90_s": 21.160,
+          "usage_median": {
+            "cache_write_input_tokens": 0,
+            "cached_input_tokens": 12288,
+            "input_tokens": 15591,
+            "output_tokens": 52,
+            "reasoning_output_tokens": 0
+          },
+          "usage_sum": {
+            "cache_write_input_tokens": 0,
+            "cached_input_tokens": 7178496,
+            "input_tokens": 9759679,
+            "output_tokens": 55900,
+            "reasoning_output_tokens": 236
+          }
+        },
+        "other": {
+          "duration_median_s": null,
+          "duration_p90_s": null,
+          "usage_median": {
+            "cache_write_input_tokens": null,
+            "cached_input_tokens": null,
+            "input_tokens": null,
+            "output_tokens": null,
+            "reasoning_output_tokens": null
+          },
+          "usage_sum": {
+            "cache_write_input_tokens": 0,
+            "cached_input_tokens": 0,
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "reasoning_output_tokens": 0
+          }
+        }
+      },
+      "series": "attempt-06",
+      "window_share": {
+        "after_pct": 17.000,
+        "after_utc": "2026-11-05T14:56:09.224000Z",
+        "before_pct": 7.000,
+        "before_utc": "2026-11-05T03:13:46.407000Z",
+        "difference_pct": 10.000,
+        "difference_per_question_pct": 0.033,
+        "reset_between": false,
+        "upper_bound": true
+      }
+    }
+  ],
+  "rollout_classes": [
+    {
+      "class": "executor",
+      "duration_median_s": 928.853,
+      "duration_p90_s": 2196.723,
+      "responses": 1888,
+      "tasks": 41,
+      "token_sums": {
+        "cache_write_input_tokens": 0,
+        "cached_input_tokens": 152805888,
+        "input_tokens": 160097172,
+        "output_tokens": 1810509,
+        "reasoning_output_tokens": 445596,
+        "total_tokens": 161907681
+      },
+      "turns": 91
+    },
+    {
+      "class": "rag_new_session",
+      "duration_median_s": 932.518,
+      "duration_p90_s": 6776.141,
+      "responses": 9998,
+      "tasks": 206,
+      "token_sums": {
+        "cache_write_input_tokens": 0,
+        "cached_input_tokens": 752210176,
+        "input_tokens": 796993015,
+        "output_tokens": 6252411,
+        "reasoning_output_tokens": 2972403,
+        "total_tokens": 803245426
+      },
+      "turns": 457
+    },
+    {
+      "class": "stage5v",
+      "duration_median_s": 20.700,
+      "duration_p90_s": 29.731,
+      "responses": 306,
+      "tasks": 306,
+      "token_sums": {
+        "cache_write_input_tokens": 0,
+        "cached_input_tokens": 2824192,
+        "input_tokens": 5534061,
+        "output_tokens": 125104,
+        "reasoning_output_tokens": 85302,
+        "total_tokens": 5659165
+      },
+      "turns": 306
+    }
+  ],
+  "window": {
+    "reached_hours": [
+      "2026-09-30T21:00:00Z",
+      "2026-10-02T17:00:00Z",
+      "2026-10-09T20:00:00Z",
+      "2026-10-17T20:00:00Z",
+      "2026-11-01T23:00:00Z",
+      "2026-11-05T01:00:00Z"
+    ],
+    "window_minutes": [
+      300,
+      10080,
+      43200
+    ]
+  }
+}
