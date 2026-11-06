@@ -221,9 +221,13 @@ P2 reference samples ([Astra](specs/p2-astra-reference-sample.md),
 
 - [`evidence/`](evidence/) — one write-up per measured slice; the register with provenance is
   [`EVIDENCE_INDEX.md`](../EVIDENCE_INDEX.md). The records themselves are in `../reports/`.
-- [Latest handoff: the `codex-only` measurement answered whole (attempt-06, 300/300)](operations/session-handoff-2026-11-05-codex-only-measurement.md); judged and read 2026-11-06 after it, its [record](evidence/codex-only-quality-record.md)
-  — stage 6 item 0: six series and why five retired, the in-series fixes, the judging
-  procedure and its traps. Before it:
+- [Latest handoff: the `codex-only` record, a push held by two failing tests, Codex's limit, a small model for her laptop, graph search on](operations/session-handoff-2026-11-06-push-local-model.md)
+  — stage 6 item 0's measurement closed with its [record](evidence/codex-only-quality-record.md),
+  her «пуш» held by two unit tests that ci_local found failing, Codex's weekly window measured from the rollouts, her 2026-11-06
+  words on a local model, on accounts, on graph search and on recording Codex's runs, ci_local's
+  leftovers. Before it:
+  [the `codex-only` measurement answered whole (attempt-06, 300/300)](operations/session-handoff-2026-11-05-codex-only-measurement.md)
+  — six series and why five retired, the in-series fixes, the judging procedure and its traps,
   [`codex-only` live on her laptop, the route fixed, the install in the repository, the re-measurement specified](operations/session-handoff-2026-11-03-codex-only-live.md),
   [stage 5в recorded, D5 decided: Codex on her laptop, `codex-only`, no Ollama](operations/session-handoff-2026-11-03-laptop-codex-only.md),
   [stage 5в answered whole, two keys graded, aircargo's judging paused](operations/session-handoff-2026-11-03-stage5v-arm-judge.md),
@@ -256,6 +260,10 @@ P2 reference samples ([Astra](specs/p2-astra-reference-sample.md),
   Ollama 0.33.2 and its llama-server, read from the sources by Codex and partly checked: what
   `/api/ps` reports, cancellation on a closed connection, unloading, `LLAMA_ARG_CACHE_RAM`
   and the extraction output's bound; for the stage 7 probe, the host-cache cap and step 2.
+- [Web research of 2026-11-06](operations/research-2026-11-06/README.md) — a small model on
+  Julia's laptop (Core Ultra 5 125H, Arc iGPU, NPU, 15.5 GB): runtimes, models, the helper
+  roles, a reranker threshold instead of document grading, and a safe first test; one run by
+  a subagent on the session's model, literature, not our measurement.
 - [Project audit of 2026-10-18](operations/audit_fable_18_10_26.md) (Fable 5.1) — the state
   against the plan, the status files' claims checked, findings F-1…F-10; kept in `operations/`
   because `docs/audits/` is publishable (earlier audits: `../archive/docs/audits/`).
