@@ -72,8 +72,8 @@ VECTOR = [2, 7, 0, 9, 10, 11, 12]
 BM25 = [2, 4, 8, 13, 14]
 FILLERS = {m: (m - 8) / 100 for m in range(9, 15)}
 # "one": a steep five, of which P1b keeps three; "two": a flat five, all kept, P is H;
-# "three": a flat five without chunk 4, where S's section run of chunk 2 reaches chunk 5 and
-# H's expansion, two chunks a side, stops at chunk 4; i.md stays second in reranker order.
+# "three": a flat five without chunk 4, where H and S's parent expansion, two chunks a side,
+# stops at chunk 4, before chunk 5's gold; i.md stays second in reranker order.
 # 2026-11-06: preserve the reranker's five and order after S's loss of 2026-10-31.
 SCORES = {
     "one": {2: 0.95, 7: 0.6, 4: 0.5, 0: 0.15, 8: 0.12, **FILLERS},
@@ -154,7 +154,7 @@ class Spans:
 def gold_case(base, case_id):
     """WixQA's gold: the article i.md, chunk 0, which the steep five's P leaves out.
     ConditionalQA's: a span of chunk 5, which every arm sends. MultiHop-RAG's: one of chunk 6,
-    the Fees chunk that only the hybrid expansion joins."""
+    the Fees chunk that parent expansion joins in every arm."""
     if base == "wixqa":
         return {"case_id": case_id, "gold_sources": ["i.md"], "stratum": "s"}
     at = 5 if base == "conditionalqa" else 6
@@ -412,7 +412,7 @@ def test_a_candidate_without_a_recorded_finite_score_breaks_the_stand_ins(tmp_pa
     assert row["breaks"] == ["stand_ins"] and h is None
 
 
-def test_s_reads_hs_pool_keeps_the_reranked_five_and_joins_each_section_run_once():
+def test_s_reads_hs_pool_keeps_the_reranked_five_and_matches_hs_parent_expansion():
     from ingestion.entity_graph_loading import ENTITY_GRAPH_NO_DATABASE
 
     replay = machine()
@@ -427,14 +427,16 @@ def test_s_reads_hs_pool_keeps_the_reranked_five_and_joins_each_section_run_once
     assert [d.metadata["chunk_index"] for d in docs] == [2, 7, 4, 0, 8]
     assert path["dropped"] == []
     assert docs[0].page_content == RUN_123
-    # Chunk 6 is another section's: S's run ends at chunk 5, where H's expansion goes on.
-    assert docs[2].page_content == SECTION_45
+    # S'' of 2026-11-06 joins chunk 6 across the section boundary, exactly as H does.
+    assert docs[2].page_content == HYBRID_456
+    assert docs == replay.h(record)[0]
     assert path["expanded_contexts"] == 2
-    assert ar.members_of("S", docs, CHUNKS, SETTINGS) == [[1, 2, 3], [7], [4, 5], [0], [8]]
+    assert ar.members_of("S", docs, CHUNKS, SETTINGS) == [[1, 2, 3], [7], [4, 5, 6], [0], [8]]
     flat_five = recorded(replay, "c-2", 2, "Which note holds?", "two")
     docs, path, _ = replay.s(flat_five)
     # Section membership also leaves the flat five in reranker order.
     assert [d.metadata["chunk_index"] for d in docs] == [7, 0, 2, 4, 8]
+    assert docs == replay.h(flat_five)[0]
 
 
 @pytest.mark.parametrize(
@@ -1501,9 +1503,27 @@ def test_without_a_detected_gain_the_replay_plans_no_judge_and_h_stays(tmp_path,
         ar.main(["judged", "--plan", str(tmp_path / "private" / "judge"), "--record", str(out)])
 
 
-# S's section run of chunk 2 reaches chunk 5, ConditionalQA's gold, where H's expansion stops at
-# chunk 4: S gains all eight ConditionalQA questions; on WixQA every arm sends i.md.
-GAINS = {"p2-wixqa": ("three",) * 4, "p2-conditionalqa": ("three",) * 8}
+# Chunk 5's gold is beyond H and S's parent window; the old section expansion reached it.
+# On WixQA every arm sends i.md.
+SECTION_TAIL_CASES = {"p2-wixqa": ("three",) * 4, "p2-conditionalqa": ("three",) * 8}
+
+
+def _use_s_prime_section_expansion(monkeypatch):
+    # Reproduce S' (the lane before Amendment 3) only in these tool tests to keep
+    # the gain and aircargo stop paths covered. H retains its parent expansion.
+    from vectordb._base_manager import HybridRetriever
+
+    original = HybridRetriever.get_graph_documents_with_path
+
+    def with_section_expansion(self, *args, **kwargs):
+        parent_expansion = self._parent_expansion
+        self._parent_expansion = False
+        try:
+            return original(self, *args, **kwargs)
+        finally:
+            self._parent_expansion = parent_expansion
+
+    monkeypatch.setattr(HybridRetriever, "get_graph_documents_with_path", with_section_expansion)
 
 
 def _judge(private, out, level_of):
@@ -1516,10 +1536,45 @@ def _judge(private, out, level_of):
     return json.loads((out / "judged.json").read_text(encoding="utf-8"))
 
 
+def test_a_section_tail_beyond_hs_window_gives_s_no_gain_and_plans_no_judge(
+    tmp_path, monkeypatch
+):
+    _fake_runs(monkeypatch, tmp_path, SECTION_TAIL_CASES)
+    out, private = tmp_path / "out", tmp_path / "private"
+    assert ar.main(_replay_args(tmp_path)) == 0
+    record = json.loads((out / "record.json").read_text(encoding="utf-8"))
+    s = record["external"]["S"]["per_base"]
+    for point in ("sent", "expanded"):
+        got = s["conditionalqa"][point]
+        assert (got["n"], got["b_h_only"], got["c_arm_only"], got["reading"]) == (
+            8, 0, 0, "no detected difference"
+        )
+        assert s["wixqa"][point]["reading"] == "no detected difference"
+    pooled = record["stops"]["S"]["pooled_deciding"]
+    assert (pooled["n"], pooled["b_h_only"], pooled["c_arm_only"], pooled["reading"]) == (
+        12,
+        0,
+        0,
+        "no detected difference",
+    )
+    assert record["stops"]["P"]["pooled_deciding"]["reading"] == "no detected difference"
+    assert record["judge"] is None and not private.exists()
+    assert record["changed_on_v4"]["S"] == 0
+    assert record["decision"] == {
+        "standings": {"S": "open", "P": "open"},
+        "gains": {"S": [], "P": []},
+        "arm": None,
+        "reading": "H stays",
+    }
+    with pytest.raises(SystemExit, match="planned no judge"):
+        ar.main(["judged", "--plan", str(private / "judge"), "--record", str(out)])
+
+
 def test_a_true_gain_plans_the_judge_for_that_arm_alone_and_judged_opens_answers_to_it(
     tmp_path, monkeypatch
 ):
-    _fake_runs(monkeypatch, tmp_path, GAINS)
+    _use_s_prime_section_expansion(monkeypatch)
+    _fake_runs(monkeypatch, tmp_path, SECTION_TAIL_CASES)
     out, private = tmp_path / "out", tmp_path / "private"
     assert ar.main(_replay_args(tmp_path)) == 0
     record = json.loads((out / "record.json").read_text(encoding="utf-8"))
@@ -1563,7 +1618,8 @@ def test_a_true_gain_plans_the_judge_for_that_arm_alone_and_judged_opens_answers
 def test_s_without_a_graph_of_aircargo_is_not_planned_and_the_replay_reads_not_evidence(
     tmp_path, monkeypatch
 ):
-    runs = _fake_runs(monkeypatch, tmp_path, GAINS)
+    _use_s_prime_section_expansion(monkeypatch)
+    runs = _fake_runs(monkeypatch, tmp_path, SECTION_TAIL_CASES)
     for label in ar.AIRCARGO:
         runs[label]["tenant"] = "unsectioned"
     real = ar.structural_projection
@@ -1624,7 +1680,8 @@ def test_v4s_questions_are_all_read_or_the_replay_stops(tmp_path, monkeypatch):
 
 
 def test_a_record_refused_after_the_plan_is_built_leaves_no_plan(tmp_path, monkeypatch):
-    runs = _fake_runs(monkeypatch, tmp_path, GAINS)
+    _use_s_prime_section_expansion(monkeypatch)
+    runs = _fake_runs(monkeypatch, tmp_path, SECTION_TAIL_CASES)
     # A document named like the replay's decision: the record alone would carry it.
     runs["p2-wixqa"]["names"] = NAMES | {"pending the aircargo context judge"}
     with pytest.raises(SystemExit, match="refused"):
@@ -1637,6 +1694,7 @@ def test_a_record_refused_after_the_plan_is_built_leaves_no_plan(tmp_path, monke
 def test_the_replay_writes_numbers_and_one_frozen_plan_and_judged_completes_gate_g1(
     tmp_path, monkeypatch
 ):
+    _use_s_prime_section_expansion(monkeypatch)
     _fake_runs(monkeypatch, tmp_path)
     out, private = tmp_path / "out", tmp_path / "private"
     assert _replay_judging_open_arms(tmp_path) == 0

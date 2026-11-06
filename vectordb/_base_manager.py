@@ -850,7 +850,12 @@ class HybridRetriever:
         coherent, dropped = self._graph_coherence_split(merged)
         # dropped = coherence drops first, duplicate-key drops after them.
         dropped = dropped + duplicate_drops
-        expanded = self._expand_graph_sections(coherent)
+        # S' of 2026-11-06 lost context at section boundaries; match the hybrid expansion.
+        expanded = (
+            self._expand_parents(coherent)
+            if self._parent_expansion
+            else self._expand_graph_sections(coherent)
+        )
         finished = time.perf_counter()
         sections = sorted({
             self._graph_chunk_sections[key]
@@ -861,7 +866,10 @@ class HybridRetriever:
             "kind": "structural_entity" if entity_docs else "structural", "prefilter_applied": sources is not None,
             "sections": sections, "entities": matched, "hops": hops,
             "retrieved_contexts": len(merged), "retained_contexts": len(coherent),
-            "expanded_contexts": sum(bool(doc.metadata.get("graph_section_expanded")) for doc in expanded),
+            "expanded_contexts": sum(
+                bool(doc.metadata.get("parent_expanded") or doc.metadata.get("graph_section_expanded"))
+                for doc in expanded
+            ),
             # Observability added 2026-09-30 (audit F3/F5/F7): what each source
             # contributed, what the filter removed, what the reranker said, how
             # long each stage took, and which graph answered.

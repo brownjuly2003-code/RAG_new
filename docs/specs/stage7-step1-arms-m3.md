@@ -10,7 +10,7 @@ No answer generation or new index search. Amendment 1 adds one live INT8 scoring
 **Read 2026-10-31:** parity 415 of 415, V4's prompts byte-equal 300 of 300; S stopped by a
 detected loss, P no detected difference, so stage 7 closes with H
 ([the record](../evidence/stage7-step1-arms-record.md)).
-Status 2026-11-06: Amendment 2 registers S', the fixed structural lane, before its new run; the graph is to be turned on by the owner's word.
+Status 2026-11-06: S' detected a loss; Amendment 3 registers S'', the structural lane with the product's parent expansion, before its new run; the graph is to be turned on by the owner's word.
 
 A cold read of Amendment 1 (docs/operations/audit_opus55_31_10_26_stage7_amendment1.md) found 1 blocking, 2 should fix and 4 minor; each is applied (its Disposition says how).
 
@@ -155,6 +155,68 @@ only a qualifying arm. S' changed aircargo prompts are printed; they do not open
 
 S' sends H_new's five, so b and c at «sent» can differ from 0 only through the section
 expansion and the window's cut. This is the code's selection rule, not a forecast of results.
+
+## Amendment 3, 2026-11-06: S'' — the structural lane with the product's parent expansion
+
+Amendment 2 ran on the Mac on 2026-11-06, after `98e5bf0`; its record is
+`reports/stage7/98e5bf0-a2/`. At «sent», ConditionalQA read H 58, S' 45 of 80,
+b 13, c 0, exact two-sided McNemar p 0.000244, a detected loss; «expanded» read the same.
+WixQA read H 67, S' 68 of 100, b 0, c 1, p 1.0. The deciding bases pooled read
+H 125, S' 113 of 180, b 13, c 1, p 0.001831, a loss. S of 2026-10-31 had read
+125 → 99, b 26, c 0. S' kept H_new's five in H_new's order on all 415 questions:
+no document was dropped or reordered.
+
+The median chunks in a question's context, H against S', were ConditionalQA 17 / 5,
+WixQA 17 / 6, aircargo 21 / 6 and MultiHop-RAG 18 / 25. ConditionalQA's median
+estimated tokens sent were 1,673.5 / 677. The remaining loss came from assembling the
+kept documents: `get_graph_documents_with_path` called only `_expand_graph_sections`,
+which grows the seed along its own section's run and stops at the first chunk of another
+section. Hybrid step 5 calls `_expand_parents`: up to `parent_expansion_window` neighbours
+on each side in the same source, whatever their section. With short sections, S' sent the
+bare seed where H sent its neighbours too.
+
+Amendment 2's sentence «S' sends H_new's five, so b and c at «sent» can differ from 0 only
+through the section expansion and the window's cut» did not account for that missing
+cross-section parent context. It described the same five seeds, not the same assembled
+documents. Amendment 2's text remains as registered; this amendment corrects its reading.
+By Amendment 2, the detected loss is a defect of the lane to fix before answers.
+
+The product fix is to assemble the kept documents exactly as hybrid does:
+`self._expand_parents(coherent)` when `self._parent_expansion` is on, the product default
+(`RAG_PARENT_EXPANSION=true`). Only when it is off does the lane keep
+`_expand_graph_sections`. The two expansions are not united: H's context already meets
+the input limit's cut on about half the questions, and more text per document would push
+later documents out at «sent». Selection, order, drops, the prefilter and entity lane stay
+as they are. The path keeps `expanded_contexts`, counting returned documents marked
+`parent_expanded` or `graph_section_expanded`; every other path field stays as it is.
+The replay tool is unchanged. This is **S''**.
+
+Run the same two phases, `score` then `replay`, with Amendment 1's recipe, environment,
+inputs, parity gate and stops, at the HEAD that registers this amendment. The score
+journal binds HEAD, so all scores run anew. Run from a dedicated clean clone of the gate
+checkout at the registering overlay commit, `/Users/julia/RAG_new_a3_gate`, so
+`/Users/julia/RAG_new_mf_gate` stays free for tests during score. Both commands run from
+that clone with
+`PYTHONPATH=/Users/julia/RAG_new_a3_gate:/Users/julia/RAG_new_mf_gate_site`:
+the clone replaces the first path, and the site folder is unchanged. In both commands pass
+`--out /Users/julia/RAG_new_stage7/out-a3 --private /Users/julia/RAG_new_stage7/private-a3`;
+create out-a3 and direct the logs to `out-a3/score.out` and `out-a3/replay.out` there.
+Nothing else of Amendment 1's recipe changes. The record goes to
+`reports/stage7/<registering short sha>-a3/`; its name is filled in with the evidence commit.
+`reports/stage7/5e308fe/` and `reports/stage7/98e5bf0-a2/` stay untouched.
+
+Readings keep Amendment 2's meaning: per base and pooled, the exact two-sided McNemar
+at «sent», «expanded» beside, publishes the lane's effect on context under rule (c).
+A detected loss at a stop reading is a defect to find and fix before answers. The owner's
+word turns the graph on; the tool's G1 field is advisory for S''. P keeps Amendment 1's
+meaning. There is no aircargo context-judge plan for S''; printed changed prompts do not
+open a judge run.
+
+The replay's structural retriever is built with parent expansion on and the replay passes
+no categories and no entities. It therefore keeps H_new's five in the same order and
+expands them by the same function: S'' sends H_new's documents, b = c = 0 at both «sent»
+and «expanded». This is the code's selection rule, not a forecast; any difference is a
+defect to find.
 
 ## Why
 
@@ -366,7 +428,7 @@ No elapsed-time claim includes an interrupted, unfinished model call.
   writes `judged.json`. Ids, flags and numbers: `stage2_common.without_text` refuses a text.
 - `tests/test_stage7_arms_replay.py`: the arms through the product's code on a synthetic
   archive, the gate refusing one byte, the pairs at their edges, G1, the plan and its
-  read-back, and a true gain of S from the replay through `judged`.
+  read-back, and S/H context parity from the replay through `judged`.
 - The record goes to `reports/stage7/5e308fe/` with its artifact test, a capsule in
   `docs/evidence/` and a row in [`EVIDENCE_INDEX.md`](../../EVIDENCE_INDEX.md).
 
@@ -387,6 +449,11 @@ Amendment 2's run:
 
 - `reports/stage7/tools/arms_replay.py` `6ca8b723841d08dfd6f5d084bdc0883264c889eb495dc4d3728ac0a2ea623689`
 - `tests/test_stage7_arms_replay.py` `4deb3db4e3f258af9c8851d824dc126df5399be1face1dcbe0dbed4267627e03`
+
+Amendment 3's run:
+
+- `reports/stage7/tools/arms_replay.py` `6ca8b723841d08dfd6f5d084bdc0883264c889eb495dc4d3728ac0a2ea623689`
+- `tests/test_stage7_arms_replay.py` `84eb8de05ae553f220e8a006ada19d3eb9a65060c5912516b4d73ad9aa40def3`
 
 ## What it does not say
 

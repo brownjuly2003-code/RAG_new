@@ -138,6 +138,70 @@ def test_graph_lane_prefilters_keeps_order_and_expands_only_its_section() -> Non
     assert graph_docs[3] is weak_shipping
 
 
+@pytest.mark.parametrize("parent_expansion", [True, False])
+def test_graph_lane_uses_parent_expansion_across_sections_or_section_fallback(
+    parent_expansion: bool,
+) -> None:
+    chunks = [
+        _chunk(text, source=source, chunk_index=index, section=section, category="shipping")
+        for index, (text, source, section) in enumerate(
+            [
+                ("seed policy", "policy.md", "Rules"),
+                ("Required neighbour: café.", "policy.md", "Fees"),
+                ("second seed", "returns.md", "Returns"),
+                ("same-section neighbour", "returns.md", "Returns"),
+                ("section tail beyond the parent window", "returns.md", "Returns"),
+                ("standalone c", "c.md", "Notes"),
+                ("standalone d", "d.md", "Notes"),
+                ("standalone e", "e.md", "Notes"),
+            ]
+        )
+    ]
+    ranked = [chunks[index] for index in (6, 0, 5, 2, 7)]
+    projection = project_structure_graph(build_structural_graph(chunks, tenant_id="acme"))
+
+    class _VectorStore:
+        def similarity_search(self, query: str, k: int) -> list[manager.Document]:
+            assert query == "policy question"
+            return ranked[:k]
+
+    retriever = manager.HybridRetriever(
+        _VectorStore(),
+        chunks=chunks,
+        use_bm25=False,
+        rerank_k=5,
+        parent_expansion=parent_expansion,
+        parent_expansion_window=1,
+        graph_projection=projection,
+    )
+    hybrid_docs = retriever.get_relevant_documents("policy question")
+    graph_docs, path = retriever.get_graph_documents_with_path("policy question")
+
+    assert [doc.metadata["chunk_index"] for doc in graph_docs] == [6, 0, 5, 2, 7]
+    assert path["prefilter_applied"] is False and path["categories"] == []
+    assert path["entities"] == [] and path["candidates"]["entity"] == 0
+    assert path["dropped"] == [] and path["retained_contexts"] == 5
+    if parent_expansion:
+        assert graph_docs == hybrid_docs
+        assert [doc.page_content.encode("utf-8") for doc in graph_docs] == [
+            doc.page_content.encode("utf-8") for doc in hybrid_docs
+        ]
+        assert graph_docs[1].page_content == "seed policy\n\nRequired neighbour: café."
+        assert graph_docs[3].page_content == "second seed\n\nsame-section neighbour"
+        assert path["expanded_contexts"] == 2
+        assert all(graph_docs[index].metadata["parent_expanded"] for index in (1, 3))
+        assert all(not doc.metadata.get("graph_section_expanded") for doc in graph_docs)
+    else:
+        assert hybrid_docs == ranked
+        assert graph_docs[1] is chunks[0]
+        assert graph_docs[3].page_content == (
+            "second seed\n\nsame-section neighbour\n\nsection tail beyond the parent window"
+        )
+        assert graph_docs[3].metadata["graph_section_expanded"] is True
+        assert all(not doc.metadata.get("parent_expanded") for doc in graph_docs)
+        assert path["expanded_contexts"] == 1
+
+
 def test_graph_lane_masks_bm25_to_prefiltered_sources(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
