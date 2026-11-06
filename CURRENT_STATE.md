@@ -110,8 +110,8 @@ on 2026-10-23 Julia: «Да, запускай судью». No replacement judge
 ## Open for Julia
 
 [`PLAN.md`](PLAN.md) §8.3, by stage: fixes of the widget's R1 (confirmed) and of its retry's call budget (stage 3); the
-SLO — item 7's proposal 270 s to the first word, 360 s to the whole answer, or the session's 270 s / 420 s for 9 of 10, on the package now that V6 is not adopted (stage 4); the service on her Mac and whether it counts as a
-deployment, the first release's composition and the share of bad `auto` answers a pilot accepts, with stages 4–5's numbers (stage 6); publication — done 2026-11-02 (stage 8) — the locked parts wait, stage 7 closed with H. Decided 2026-10-28:
+SLO — item 7's proposal 270 s to the first word, 360 s to the whole answer, or the session's 270 s / 420 s for 9 of 10, on the package now that V6 is not adopted; on the laptop under `codex-only`, the session's 90 s for 9 of 10 (2026-11-06, unanswered) (stage 4); the service on her Mac and whether it counts as a
+deployment, the first release's composition and the share of bad `auto` answers a pilot accepts, with stages 4–5's numbers (stage 6); publication — done 2026-11-02 (stage 8) — stage 7 closed with H on 2026-10-31 and reopened 2026-11-06 by her word «графовый поиск нужно включить», so the locked parts wait for the graph's step 3. Decided 2026-10-28:
 the «Качество: N» badge stays, made faster (stage 4, step 2); stage 7 keeps P1b and the graph. Any time: GitHub billing; Q2b (`PLAN.md` writes Q2б) — 100 real shipment-bound
 requests (without them phase B stays blocked); Mac hours a day for runs; frozen items whose condition is formally met ([`PLAN.md`](PLAN.md) §9).
 
