@@ -22,6 +22,7 @@ from scripts.gr1b_stage_replay import (
     POOL,
     build_stage_report,
     legacy_expand_graph_sections,
+    legacy_graph_coherence,
     recover_ranked_docs,
 )
 from vectordb._base_manager import Document, HybridRetriever
@@ -65,7 +66,9 @@ def build_seed_report():
     variants = {name: [] for name in ("seed_reserved_top5", "seed_reserved_coherent")}
     for pool, source, before in zip(pools, archived, baseline, strict=True):
         ranked = recover_ranked_docs(pool, source)[:5]
-        for name, docs in zip(variants, (ranked, retriever._apply_graph_coherence(ranked)), strict=True):
+        for name, docs in zip(
+            variants, (ranked, legacy_graph_coherence(retriever, ranked)), strict=True
+        ):
             seeds = [doc.page_content for doc in docs]
             expanded = [doc.page_content for doc in legacy_expand_graph_sections(retriever, docs)]
             texts = reserve_seed_contexts(seeds, expanded, 6000)

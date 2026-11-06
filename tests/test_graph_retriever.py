@@ -31,7 +31,7 @@ def _chunk(
     )
 
 
-def test_graph_lane_prefilters_promotes_and_expands_only_its_section() -> None:
+def test_graph_lane_prefilters_keeps_order_and_expands_only_its_section() -> None:
     section_first = _chunk(
         "first supported chunk",
         source="shipping.md",
@@ -127,12 +127,15 @@ def test_graph_lane_prefilters_promotes_and_expands_only_its_section() -> None:
     assert store.filters == [None, {"source": {"$in": ["shipping.md", "weak.md"]}}]
     # Chunk 1 is another section's, so chunk 0's run ends at once, and chunk 3 joins
     # chunk 2, the chunk before it (until stage 7 it joined chunk 0 across the gap).
-    assert graph_docs[0] is section_first
-    assert graph_docs[1].page_content == "second supported chunk\n\ntail from the same section"
-    assert graph_docs[1].metadata["graph_section_expanded"] is True
+    # 2026-11-06: fix S's loss of 2026-10-31 by keeping the reranker's first k in order.
+    assert len(graph_docs) == 4
+    assert graph_docs[0] is adjacent_other_section
+    assert graph_docs[1] is section_first
+    assert graph_docs[2].page_content == "second supported chunk\n\ntail from the same section"
+    assert graph_docs[2].metadata["graph_section_expanded"] is True
     assert all("returns-only" not in doc.page_content for doc in graph_docs)
-    assert all("adjacent but different" not in doc.page_content for doc in graph_docs[:2])
-    assert all("weak isolated" not in doc.page_content for doc in graph_docs)
+    assert all("adjacent but different" not in doc.page_content for doc in graph_docs[1:3])
+    assert graph_docs[3] is weak_shipping
 
 
 def test_graph_lane_masks_bm25_to_prefiltered_sources(

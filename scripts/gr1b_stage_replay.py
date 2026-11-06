@@ -27,6 +27,40 @@ CHUNKS = PROJECT_ROOT / "evaluation/gr1b-4436d61-graph-chunks.json.gz"
 DEFAULT_REPORT = PROJECT_ROOT / "reports/gr/gr1b-stage-replay.json"
 
 
+def legacy_graph_coherence(retriever: HybridRetriever, docs: list[Document]) -> list[Document]:
+    """Keep the rule removed on 2026-11-06 so published GR-1b replays reproduce their results."""
+    groups: dict[str, list[int]] = {}
+    unmapped: set[int] = set()
+    for rank, doc in enumerate(docs):
+        section = retriever._graph_chunk_sections.get(
+            _rrf_document_key(doc, retriever._doc_key_chars)
+        )
+        if section is None:
+            unmapped.add(rank)
+            continue
+        groups.setdefault(section, []).append(rank)
+
+    scores = {section: sum(1.0 / (rank + 1) for rank in ranks) for section, ranks in groups.items()}
+    strongest = max(scores.values(), default=0.0)
+    ordered: list[tuple[int, int]] = []
+    for rank, doc in enumerate(docs):
+        if rank in unmapped:
+            ordered.append((1, rank))
+            continue
+        section = retriever._graph_chunk_sections[_rrf_document_key(doc, retriever._doc_key_chars)]
+        if len(groups[section]) > 1:
+            ordered.append((0, rank))
+            continue
+        strength = scores[section] / strongest if strongest else 0.0
+        if strength <= 0.25 and scores[section] < strongest:
+            continue
+        ordered.append((2, rank))
+
+    ordered.sort()
+    kept_ranks = [rank for _, rank in ordered[: retriever._rerank_k]]
+    return [docs[rank] for rank in kept_ranks]
+
+
 def legacy_expand_graph_sections(retriever: HybridRetriever, docs: list[Document]) -> list[Document]:
     """The section expansion GR-1b ran and archived: HybridRetriever._expand_graph_sections as it
     stood until stage 7's fix (PLAN.md stage 7), each side taking every sibling of the section
@@ -104,7 +138,7 @@ def build_stage_report():
         if source["rerank_k"] != 5 or source["case_id"] != before["case_id"]:
             raise ValueError("case identity or rerank limit differs")
         ranked = recover_ranked_docs(pool, source)[:5]
-        coherent = retriever._apply_graph_coherence(ranked)
+        coherent = legacy_graph_coherence(retriever, ranked)
         replay = legacy_expand_graph_sections(retriever, coherent)
         if ([doc.page_content for doc in replay] != source["cands"]
                 or [doc.metadata for doc in replay] != source["cand_metadata"]

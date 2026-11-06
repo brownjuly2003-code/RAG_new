@@ -10,6 +10,7 @@ No answer generation or new index search. Amendment 1 adds one live INT8 scoring
 **Read 2026-10-31:** parity 415 of 415, V4's prompts byte-equal 300 of 300; S stopped by a
 detected loss, P no detected difference, so stage 7 closes with H
 ([the record](../evidence/stage7-step1-arms-record.md)).
+Status 2026-11-06: Amendment 2 registers S', the fixed structural lane, before its new run; the graph is to be turned on by the owner's word.
 
 A cold read of Amendment 1 (docs/operations/audit_opus55_31_10_26_stage7_amendment1.md) found 1 blocking, 2 should fix and 4 minor; each is applied (its Disposition says how).
 
@@ -125,6 +126,35 @@ replay ≈ 10 minutes, stopped at 30. The idle-Mac record measured PyTorch at 28
 INT8 at ≈ 16 s; the K-14 pool is ≈ 30% smaller. These are planning estimates, not new results.
 This amendment says nothing about generated answers or fresh approximate-index searches;
 the limitations below still apply.
+
+## Amendment 2, 2026-11-06: S' — the structural lane after the coherence fix
+
+The owner's word of 2026-11-06 is «графовый поиск нужно включить» (PLAN.md stage 7,
+«Правка 06.11»). S's loss of 2026-10-31, 125 → 99 of 180 at sent, b 26, c 0, came from
+the coherence rule: it kept 3 of 5 on 90/100 WixQA, 90/100 ConditionalQA and 102/115
+aircargo questions. All 35 changed-point questions on the deciding bases had a drop.
+The fix is the product's: `reports/stage7/tools/arms_replay.py` is unchanged and S now
+reads the fixed lane, H_new's five in H_new's order, then the section expansion. This is **S'**.
+
+Run the same two phases, `score` then `replay`, with Amendment 1's recipe, environment,
+inputs, parity gate and stops, at the HEAD that registers this amendment. The score journal's
+header binds HEAD, so all scores run anew. In both commands pass
+`--out /Users/julia/RAG_new_stage7/out-a2 --private /Users/julia/RAG_new_stage7/private-a2`;
+create out-a2 and direct the score and replay logs there too. The record goes to a new folder,
+`reports/stage7/<registering short sha>-a2/`; its name is filled in with the evidence commit.
+`reports/stage7/5e308fe/` stays untouched.
+
+The tool's readings stay the same: per base and pooled, H against S' and P by the exact
+two-sided McNemar at «sent», «expanded» beside. Their meaning changes for the graph only.
+The owner's word turns the graph on; S' readings no longer decide whether it is turned on.
+They publish the lane's effect on context, rule (c). A detected loss at a stop reading is a
+defect of the lane to find and fix before answers, not a reason to keep it off. The tool's
+G1 decision field is printed and read as advisory for S'. P keeps Amendment 1's meaning.
+There is no aircargo context-judge plan for S' in this amendment: the unchanged tool plans
+only a qualifying arm. S' changed aircargo prompts are printed; they do not open a judge run.
+
+S' sends H_new's five, so b and c at «sent» can differ from 0 only through the section
+expansion and the window's cut. This is the code's selection rule, not a forecast of results.
 
 ## Why
 
@@ -352,6 +382,11 @@ plan's, written in with the evidence commit.
 Written in with the evidence commit: `reports/stage7/5e308fe/record.json` SHA-256
 `b9db1434a6091536540112591e29cb3f02f373660dd06469e6abebc3780b55e4`; no plan, as no arm
 qualified ([the record](../evidence/stage7-step1-arms-record.md)).
+
+Amendment 2's run:
+
+- `reports/stage7/tools/arms_replay.py` `6ca8b723841d08dfd6f5d084bdc0883264c889eb495dc4d3728ac0a2ea623689`
+- `tests/test_stage7_arms_replay.py` `4deb3db4e3f258af9c8851d824dc126df5399be1face1dcbe0dbed4267627e03`
 
 ## What it does not say
 

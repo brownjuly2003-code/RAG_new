@@ -73,7 +73,8 @@ BM25 = [2, 4, 8, 13, 14]
 FILLERS = {m: (m - 8) / 100 for m in range(9, 15)}
 # "one": a steep five, of which P1b keeps three; "two": a flat five, all kept, P is H;
 # "three": a flat five without chunk 4, where S's section run of chunk 2 reaches chunk 5 and
-# H's expansion, two chunks a side, stops at chunk 4; i.md second, so S's coherence keeps it.
+# H's expansion, two chunks a side, stops at chunk 4; i.md stays second in reranker order.
+# 2026-11-06: preserve the reranker's five and order after S's loss of 2026-10-31.
 SCORES = {
     "one": {2: 0.95, 7: 0.6, 4: 0.5, 0: 0.15, 8: 0.12, **FILLERS},
     "two": {7: 0.9, 0: 0.8, 2: 0.7, 4: 0.6, 8: 0.5, **FILLERS},
@@ -151,7 +152,7 @@ class Spans:
 
 
 def gold_case(base, case_id):
-    """WixQA's gold: the article i.md, chunk 0, which the steep five's P and S leave out.
+    """WixQA's gold: the article i.md, chunk 0, which the steep five's P leaves out.
     ConditionalQA's: a span of chunk 5, which every arm sends. MultiHop-RAG's: one of chunk 6,
     the Fees chunk that only the hybrid expansion joins."""
     if base == "wixqa":
@@ -411,7 +412,7 @@ def test_a_candidate_without_a_recorded_finite_score_breaks_the_stand_ins(tmp_pa
     assert row["breaks"] == ["stand_ins"] and h is None
 
 
-def test_s_reads_hs_pool_keeps_the_coherent_five_and_joins_each_section_run_once():
+def test_s_reads_hs_pool_keeps_the_reranked_five_and_joins_each_section_run_once():
     from ingestion.entity_graph_loading import ENTITY_GRAPH_NO_DATABASE
 
     replay = machine()
@@ -422,18 +423,18 @@ def test_s_reads_hs_pool_keeps_the_coherent_five_and_joins_each_section_run_once
     docs, path, clean = replay.s(record)
     assert clean and path["kind"] == "structural" and path["rerank_status"] == "ok"
     assert path["candidates"] == {**record["path"]["candidates"], "entity": 0}
-    # i.md's lone chunk is a weak section of its own: coherence drops it.
-    assert [d.metadata["chunk_index"] for d in docs] == [2, 7, 4, 8]
-    assert [d["reason"] for d in path["dropped"]] == ["weak_singleton_section"]
+    # 2026-11-06: preserve the reranker's five and order after S's loss of 2026-10-31.
+    assert [d.metadata["chunk_index"] for d in docs] == [2, 7, 4, 0, 8]
+    assert path["dropped"] == []
     assert docs[0].page_content == RUN_123
     # Chunk 6 is another section's: S's run ends at chunk 5, where H's expansion goes on.
     assert docs[2].page_content == SECTION_45
     assert path["expanded_contexts"] == 2
-    assert ar.members_of("S", docs, CHUNKS, SETTINGS) == [[1, 2, 3], [7], [4, 5], [8]]
+    assert ar.members_of("S", docs, CHUNKS, SETTINGS) == [[1, 2, 3], [7], [4, 5], [0], [8]]
     flat_five = recorded(replay, "c-2", 2, "Which note holds?", "two")
     docs, path, _ = replay.s(flat_five)
-    # A singleton that is not weak stays, after the sections holding more of the five.
-    assert [d.metadata["chunk_index"] for d in docs] == [7, 2, 4, 8, 0]
+    # Section membership also leaves the flat five in reranker order.
+    assert [d.metadata["chunk_index"] for d in docs] == [7, 0, 2, 4, 8]
 
 
 @pytest.mark.parametrize(
@@ -1649,11 +1650,11 @@ def test_the_replay_writes_numbers_and_one_frozen_plan_and_judged_completes_gate
         "breaks": {},
     }
     assert len(rows) == 20 and len(_lines(out / "parity.jsonl")) == 20
-    # WixQA: the steep fives' S and P leave i.md out; ConditionalQA: every arm sends chunk 5.
+    # WixQA: only the steep fives' P leaves i.md out; ConditionalQA: every arm sends chunk 5.
     wixqa = record["external"]["S"]["per_base"]["wixqa"]["sent"]
     assert (wixqa["n"], wixqa["b_h_only"], wixqa["c_arm_only"], wixqa["reading"]) == (
         4,
-        2,
+        0,
         0,
         "no detected difference",
     )
@@ -1662,7 +1663,7 @@ def test_the_replay_writes_numbers_and_one_frozen_plan_and_judged_completes_gate
     assert record["external"]["P"]["pooled"]["deciding"]["sent"]["n"] == 8
     assert record["changed_on_v4"] == {"S": 12, "P": 6}
     assert record["labels"]["p2-aircargo"]["P"]["kept"] == {"3": 2, "5": 2}
-    assert record["labels"]["p2-aircargo"]["S"]["seeds"] == {"4": 2, "5": 2}
+    assert record["labels"]["p2-aircargo"]["S"]["seeds"] == {"5": 4}
     assert record["decision"] == "pending the aircargo context judge"
     judge = record["judge"]
     assert (judge["arms"], judge["requests"], judge["first_requests"], judge["retests"]) == (

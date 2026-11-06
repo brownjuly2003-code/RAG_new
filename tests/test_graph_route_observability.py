@@ -64,25 +64,67 @@ def test_path_reports_candidates_scores_drops_timings_and_graph_provenance():
     )
     docs, path = retriever.get_graph_documents_with_path("rules", question_class="single_hop")
 
-    assert [doc.page_content for doc in docs] == ["rule one", "rule two"]
+    assert [doc.page_content for doc in docs] == ["rule one", "rule two", "lone appendix fact"]
     assert path["candidates"] == {"vector": 3, "bm25": 0, "entity": 0, "merged": 3}
-    assert path["retrieved_contexts"] == 3 and path["retained_contexts"] == 2
+    assert path["retrieved_contexts"] == 3 and path["retained_contexts"] == 3
     assert path["rerank_status"] == "ok"
-    assert path["rerank_scores"] == [0.9, 0.8]
+    assert path["rerank_scores"] == [0.9, 0.8, 0.1]
     assert reranker.batch_sizes == [None]
     assert path["categories"] == []
-    # The weak singleton appendix section is dropped, and the drop says so.
-    assert len(path["dropped"]) == 1
-    drop = path["dropped"][0]
-    assert drop["rank"] == 2 and drop["source"] == "appendix.md" and drop["chunk_index"] == 0
-    assert drop["reason"] == "weak_singleton_section"
-    assert drop["relative_strength"] == pytest.approx(0.2222, abs=1e-4)
-    assert isinstance(drop["section"], str) and drop["section"]
-    assert drop["section"] not in path["sections"]
+    # 2026-11-06: keep the reranker's order and singletons after S's loss of 2026-10-31.
+    assert path["dropped"] == []
+    assert len(path["sections"]) == 2
+    assert all(isinstance(section, str) and section for section in path["sections"])
     assert set(path["timings_ms"]) == {"pools", "rerank", "coherence_expand", "total"}
     assert all(value >= 0 for value in path["timings_ms"].values())
     assert path["graph_version"] == "a" * 64
     assert path["entity_graph_status"] == "absent"
+
+
+def test_five_reranked_documents_from_five_sections_keep_reranker_order():
+    chunks = [
+        _chunk(
+            f"fact {index}",
+            source=f"document-{index}.md",
+            chunk_index=0,
+            section=f"Section {index}",
+            category="shipping",
+        )
+        for index in range(5)
+    ]
+    retriever = manager.HybridRetriever(
+        vector_store=SimpleNamespace(similarity_search=lambda query, k: chunks),
+        chunks=chunks,
+        use_bm25=False,
+        reranker=_Reranker([0.2, 0.9, 0.3, 0.8, 0.7]),
+        rerank_k=5,
+        graph_projection=_projection(chunks),
+    )
+    docs, path = retriever.get_graph_documents_with_path("facts")
+    # 2026-11-06: keep the reranker's five after S's loss of 2026-10-31.
+    assert [doc.page_content for doc in docs] == ["fact 1", "fact 3", "fact 4", "fact 2", "fact 0"]
+    assert path["rerank_scores"] == [0.9, 0.8, 0.7, 0.3, 0.2]
+    assert path["retained_contexts"] == len(path["sections"]) == 5
+    assert path["dropped"] == []
+
+
+def test_graph_coherence_records_each_document_beyond_rerank_k():
+    chunks = list(_corpus())
+    retriever = manager.HybridRetriever(
+        vector_store=None,
+        chunks=chunks,
+        use_bm25=False,
+        rerank_k=1,
+        graph_projection=_projection(chunks),
+    )
+    kept, dropped = retriever._graph_coherence_split(chunks)
+    assert kept == chunks[:1]
+    assert [drop["rank"] for drop in dropped] == [1, 2]
+    assert [drop["source"] for drop in dropped] == ["policy.md", "appendix.md"]
+    assert [drop["chunk_index"] for drop in dropped] == [1, 0]
+    assert all(drop["section"] for drop in dropped)
+    assert all(drop["reason"] == "beyond_rerank_k" for drop in dropped)
+    assert all(drop["relative_strength"] is None for drop in dropped)
 
 
 def test_reranker_error_is_a_named_fallback_not_a_silent_success():
@@ -94,9 +136,9 @@ def test_reranker_error_is_a_named_fallback_not_a_silent_success():
         graph_projection=_projection(chunks),
     )
     docs, path = retriever.get_graph_documents_with_path("rules")
-    assert [doc.page_content for doc in docs] == ["rule one", "rule two"]
+    assert [doc.page_content for doc in docs] == ["rule one", "rule two", "lone appendix fact"]
     assert path["rerank_status"] == "fallback:reranker_error"
-    assert path["rerank_scores"] == [None, None]
+    assert path["rerank_scores"] == [None, None, None]
     assert path["graph_version"] is None and path["entity_graph_status"] is None
 
 

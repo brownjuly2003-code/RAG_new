@@ -687,57 +687,13 @@ class HybridRetriever:
     def _graph_coherence_split(
         self, docs: list[Document]
     ) -> tuple[list[Document], list[dict[str, Any]]]:
-        """Section coherence: kept documents plus a record of every drop.
+        """Keep the reranker's first k documents in order and record the rest.
 
-        The drop record names the rank, source, chunk and section of each
-        document the filter removed and why, so a lost singleton source is
-        visible in the trace rather than inferred (audit 2026-09-30, F5).
+        Section membership does not change selection or order; section expansion
+        still runs on the kept documents. Drop metadata stays available to traces.
         """
-        groups: dict[str, list[int]] = {}
-        unmapped: set[int] = set()
-        for rank, doc in enumerate(docs):
-            section = self._graph_chunk_sections.get(
-                _rrf_document_key(doc, self._doc_key_chars)
-            )
-            if section is None:
-                unmapped.add(rank)
-                continue
-            groups.setdefault(section, []).append(rank)
-
-        scores = {
-            section: sum(1.0 / (rank + 1) for rank in ranks)
-            for section, ranks in groups.items()
-        }
-        strongest = max(scores.values(), default=0.0)
-        ordered: list[tuple[int, int]] = []
         dropped: list[dict[str, Any]] = []
-        for rank, doc in enumerate(docs):
-            if rank in unmapped:
-                ordered.append((1, rank))
-                continue
-            section = self._graph_chunk_sections[
-                _rrf_document_key(doc, self._doc_key_chars)
-            ]
-            if len(groups[section]) > 1:
-                ordered.append((0, rank))
-                continue
-            strength = scores[section] / strongest if strongest else 0.0
-            if strength <= 0.25 and scores[section] < strongest:
-                metadata = doc.metadata or {}
-                dropped.append({
-                    "rank": rank,
-                    "source": metadata.get("source"),
-                    "chunk_index": metadata.get("chunk_index"),
-                    "section": section,
-                    "reason": "weak_singleton_section",
-                    "relative_strength": round(strength, 4),
-                })
-                continue
-            ordered.append((2, rank))
-
-        ordered.sort()
-        kept_ranks = [rank for _, rank in ordered[: self._rerank_k]]
-        for _, rank in ordered[self._rerank_k:]:
+        for rank in range(self._rerank_k, len(docs)):
             metadata = docs[rank].metadata or {}
             dropped.append({
                 "rank": rank,
@@ -749,7 +705,7 @@ class HybridRetriever:
                 "reason": "beyond_rerank_k",
                 "relative_strength": None,
             })
-        return [docs[rank] for rank in kept_ranks], dropped
+        return docs[: self._rerank_k], dropped
 
     def _expand_graph_sections(self, docs: list[Document]) -> list[Document]:
         """Each document with the chunks of its section that follow on from it.

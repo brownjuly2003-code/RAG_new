@@ -155,8 +155,11 @@ def test_g1_rerank_applies_coherence_then_expands_from_graph_sidecar(
     assert remote.stage_rerank("G1", tmp_path) == 0
 
     rows = json.loads((tmp_path / "ab_candidates_phase2_G1.json").read_text(encoding="utf-8"))
-    assert rows[0]["cands"][0] == ("first supported chunk\n\ntail from the same section")
-    assert rows[0]["cands"][1] == "second supported chunk"
-    assert all("adjacent but different section" not in text for text in rows[0]["cands"][:2])
-    assert all("weak isolated" not in text for text in rows[0]["cands"])
+    # 2026-11-06: fix S's loss of 2026-10-31 by keeping the reranker's first k in order.
+    assert rows[0]["cands"] == [
+        "adjacent but different section",
+        "first supported chunk\n\ntail from the same section",
+        "second supported chunk",
+        "weak isolated shipping hit",
+    ]
     assert rows[0]["graph_postprocessed"] is True
