@@ -1,0 +1,5660 @@
+{
+ "schema": "bundle0/1",
+ "head": "41d5f45192a08b79e9d4d462691c6c7b1b2f1912",
+ "head_parent": "9672502480afa34898c5fe4eb8ba02ef0a0c969d",
+ "spec_sha256": "ddc7fe4fbf5bed7d3089ba3d29587ae04d40b6fd7f611e10f971e56c9afabf1a",
+ "tool_sha256": "8a1d31439421808c041f6872d2b19afcdc17a2f92a9234ab8b37575a5d5b374a",
+ "test_sha256": "992ef18ee559b1d2e3d837332bbdc53b9fb427666f62b6bbb93eab335fe1dccc",
+ "inputs_sha256": {
+  "reports/stage7/tools/arms_replay.py": "6ca8b723841d08dfd6f5d084bdc0883264c889eb495dc4d3728ac0a2ea623689",
+  "reports/stage7/5e308fe/record.json": "b9db1434a6091536540112591e29cb3f02f373660dd06469e6abebc3780b55e4",
+  "reports/stage7/5e308fe/int8_scores.jsonl": "5c4d2bbcc42fe17afb516c877fdeacf7bc3bd05beb8557870b7d1f7bedb156a6",
+  "reports/stage7/5e308fe/rows.jsonl": "2d87859ecfd5e2442eefadcc5dafb471e5a80d13d8227907d59e568010109627"
+ },
+ "measure_code_sha256": {
+  "vectordb/_base_manager.py": "bd0535a680c18e3f9f6500f4acd9113cc5185fac2af30fa88758dca01731d5bc",
+  "vectordb/parent_join.py": "e1266f8658951f718e399bb6f41d84fd1e4cc04c6ff2f4ce03bbd82720e54a0f",
+  "vectordb/contextual_header.py": "1336bf0914b2882150426f4f16c09ed3ed79092ae4dd8ccf59f51f2cb01896be",
+  "scripts/external_pilot.py": "407a493b699c6d27050c974f3513209a44e16199fe7e917c2cf038db2985715f",
+  "scripts/external_base.py": "e0525f5659f59286f25ecea438d36ed6d64aaac9f5faabb7f15be50fb36bcd92",
+  "evaluation/external_gold.py": "fa15dc1ef84c58b524ee276382794dacfcf9cf4a7c7a459698e1152ccb741e61",
+  "evaluation/external_parts.py": "10e101f5e880a8448ff3fc45e27207d672a82bf7e9e478d2f0bbe53b662104de",
+  "evaluation/external_bases.py": "27adea919a40386a9ac9da3ad1d536ab191157aaeed19fde1fb993a5030031b1",
+  "reports/stage2/tools/retrieval_summary.py": "c5848ae81d9ed2ab1bcade119793d544fd2b0e2991e043e4c87a319b69c9219c",
+  "reports/stage2/tools/stage2_common.py": "4d5241560ab5425faa0a1fe6c5b856454b3f8ee47e59187f0da6644b1bad48da",
+  "reports/no-rerank/tools/no_rerank_point.py": "29dec584179f92b7a9fe3f196f5674960ea207c9d13cde604a80761ce0f71c70",
+  "reports/answer-prompt-v4/tools/v4_record.py": "b518daf26ea36d2ecb753e22029c4ab780a56b39d1e174d01650b4050659bd6d",
+  "reports/stage2/tools/judge_export.py": "d2a69975de960791c2b1aca8d93d58f75ef01c92c16686e12646473aea069193",
+  "utils/request_deadline.py": "ce8f1fcaf20eeb5c389b82577719f10438293a7b8af35e2e37baa8b2cd27453d",
+  "agent/context_window.py": "9fe51ce62e15ae0e18b9e0466e1c35b5a92677088091b6f97f3195578a9a1e15",
+  "agent/prompts.py": "eb33d17e5891fa792e1576569a8fbd06084669de2ec0dcc8bbba17dffbd4444b",
+  "agent/prompt_registry.py": "731ccc75900284a850e63c9723e2a7f5ee8180f992d08a7f41df4e62387badba",
+  "api/routers/conversation.py": "5b0156ed43b5a60b5927a24a17b8f745dea2637931442983fac339aa3838f093",
+  "llm/providers/base.py": "1c34d280c2a83353d6a171400e6374d3b558f52eabaf8cfd01246352ae9466b0",
+  "llm/role_params.py": "1179bd8be75c30d2e4b2d5dfb163d26a8a3eb14d80f60b899f8b273e3f54f155",
+  "config/settings.py": "ba1e3b970df9ef3c2545f6cd8783d33625d94cc8745a48d790012e543966f3b7",
+  "ingestion/structure_graph.py": "2ba6d606f3dbee759d78f4766c7ad43160dc3b047d5f98ba7245c033da8937fc",
+  "ingestion/structure_graph_projection.py": "0ed54c99a552cc79dae834f7ff31c583b477ffb82073a8a4fe2b74caa9635641",
+  "ingestion/entity_retrieval.py": "2c2007ebfaa68180cd4fea2295c3f451faf39901c925ce9b59ffa00a41444ad1",
+  "ingestion/entity_graph_loading.py": "a0a39b2cf5f0a4336fa1dfa03d44943783261ac1391659266ac424fb4b44a69d",
+  "vectordb/table_header.py": "b3a26da5b93e75b0ad2db081ef9323696e05b64d7e7318245a328acd4857b61c",
+  "vectordb/manager.py": "e01031928728a866e571649bfeb80b4548e717fd335d5636310c32d29c1d90c8",
+  "vectordb/onnx_reranker.py": "569b2caf17ce700e1d5f72b46e8487e30de81a951b41487d38d6ec6d81d47e3e",
+  "scripts/p1_adaptive_k.py": "514ebc125f44ea24c86cc4e861b2c7e24601b022d3d40bc16c52ef539b125148",
+  "scripts/context_judge.py": "c93744c25148313ec50e1a6120aebcb702a177cf8def88e49d128260c1e93cd6",
+  "scripts/chat_answer_judge.py": "cdb2be82d3341afe0b1aba4e560f56eac4e2dec9cce69d0e038a18da4f2c7788",
+  "evaluation/isolated_request.py": "8d488f4feb303fe4ad73d96b4174f2ffa1d10133a11ac3f8c5974e2fff2db244"
+ },
+ "grader_code_sha256": {
+  "agent/graph.py": "6b504f4dcb7ee2a7b8d05e88fc03293d2d1dd9d766fbda67fbbdebbe707d0727",
+  "agent/prompts.py": "eb33d17e5891fa792e1576569a8fbd06084669de2ec0dcc8bbba17dffbd4444b",
+  "reports/codex-only-quality/tools/capture_journal.py": "f0e79e4a9038e27eae1d02cf2bf301f6ce48a958918dd6fdfc3453624ae7a4bc",
+  "llm/providers/codex.py": "c537802baf357b079f4728caa7f93d32137697482ffca88aaa38a17f7bd29a7b"
+ },
+ "environment": {
+  "executable": "/Users/julia/RAG_Support_Assistant/.venv/bin/python",
+  "versions": {
+   "transformers": "4.44.2",
+   "tokenizers": "0.19.1",
+   "numpy": "1.26.4",
+   "chromadb": "1.5.9",
+   "sentence-transformers": "2.7.0",
+   "langchain-ollama": "1.1.0",
+   "langchain-community": "0.4.1",
+   "onnxruntime": "1.23.2"
+  },
+  "offline": {
+   "HF_HUB_OFFLINE": "1",
+   "TRANSFORMERS_OFFLINE": "1"
+  },
+  "tokenizer_snapshot": "953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e",
+  "ort_version": "1.23.2",
+  "ort_module": "/Users/julia/RAG_new_mf_gate_site/onnxruntime/__init__.py",
+  "ort_intra_op_num_threads": 0
+ },
+ "control": {
+  "retrieval_top_k": 14,
+  "ollama_context_window": 3584,
+  "reranker_runtime": "onnx",
+  "reranker_onnx_sha256": "57335a9f061fe31378c160ddd0861711a0fbdfa20f70aa2640d473dfc4bc1343"
+ },
+ "score_head": "f59169310a026f8962cfdfed01b573be28b9becc",
+ "capture_sha256": "a4eb14fed0f25d97f0bd7981718498cec10867d8b82709b69865279643670dd3",
+ "grader_counts": {
+  "matched": 2,
+  "unmatched": 413,
+  "ambiguous": 0,
+  "incomplete": 0
+ },
+ "frozen": {
+  "thresholds": {
+   "T00": 0.0,
+   "T01": 0.05,
+   "T02": 0.1,
+   "T03": 0.15,
+   "T04": 0.2,
+   "T05": 0.25,
+   "T06": 0.3,
+   "T07": 0.35,
+   "T08": 0.4,
+   "T09": 0.45,
+   "T10": 0.5,
+   "T11": 0.55,
+   "T12": 0.6,
+   "T13": 0.65,
+   "T14": 0.7,
+   "T15": 0.75,
+   "T16": 0.8,
+   "T17": 0.85,
+   "T18": 0.9,
+   "T19": 0.95,
+   "T20": 1.0
+  },
+  "shape": "largest_gap_longest_tie",
+  "alpha": 0.05,
+  "zero_fraction": 0.05,
+  "input_limit": 2176
+ },
+ "parity": {
+  "checked": 415,
+  "passed": 415
+ },
+ "H_usage": {
+  "wixqa": {
+   "questions": 100,
+   "observed": 100,
+   "zero_kept": 0,
+   "zero_sent": 0,
+   "documents": {
+    "mean": 5,
+    "median": 5.0
+   },
+   "sent_documents": {
+    "mean": 4.75,
+    "median": 5.0
+   },
+   "sent_est_tokens": {
+    "mean": 1633.87,
+    "median": 1729.5
+   }
+  },
+  "conditionalqa": {
+   "questions": 100,
+   "observed": 100,
+   "zero_kept": 0,
+   "zero_sent": 0,
+   "documents": {
+    "mean": 5,
+    "median": 5.0
+   },
+   "sent_documents": {
+    "mean": 4.74,
+    "median": 5.0
+   },
+   "sent_est_tokens": {
+    "mean": 1544.52,
+    "median": 1673.5
+   }
+  },
+  "multihoprag": {
+   "questions": 100,
+   "observed": 100,
+   "zero_kept": 0,
+   "zero_sent": 0,
+   "documents": {
+    "mean": 5,
+    "median": 5.0
+   },
+   "sent_documents": {
+    "mean": 3.51,
+    "median": 3.0
+   },
+   "sent_est_tokens": {
+    "mean": 1682.93,
+    "median": 1711.0
+   }
+  },
+  "aircargo": {
+   "questions": 115,
+   "observed": 115,
+   "zero_kept": 0,
+   "zero_sent": 0,
+   "documents": {
+    "mean": 5,
+    "median": 5
+   },
+   "sent_documents": {
+    "mean": 3,
+    "median": 3
+   },
+   "sent_est_tokens": {
+    "mean": 1757.591304347826,
+    "median": 1784
+   }
+  }
+ },
+ "H_usage_pooled_deciding": {
+  "questions": 200,
+  "observed": 200,
+  "zero_kept": 0,
+  "zero_sent": 0,
+  "documents": {
+   "mean": 5,
+   "median": 5.0
+  },
+  "sent_documents": {
+   "mean": 4.745,
+   "median": 5.0
+  },
+  "sent_est_tokens": {
+   "mean": 1589.195,
+   "median": 1706.5
+  }
+ },
+ "readings": {
+  "T00": {
+   "per_base": {
+    "wixqa": {
+     "with_gold": 100,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 100,
+      "observed": 100,
+      "zero_kept": 0,
+      "zero_sent": 0,
+      "documents": {
+       "mean": 5,
+       "median": 5.0
+      },
+      "sent_documents": {
+       "mean": 4.75,
+       "median": 5.0
+      },
+      "sent_est_tokens": {
+       "mean": 1633.87,
+       "median": 1729.5
+      }
+     },
+     "sent": {
+      "n": 100,
+      "hits": {
+       "H": 67,
+       "T00": 67
+      },
+      "b_h_only": 0,
+      "c_arm_only": 0,
+      "p": 1.0,
+      "reading": "no detected difference",
+      "gold_articles": {
+       "H": 0.6317,
+       "T00": 0.6317
+      }
+     },
+     "expanded": {
+      "n": 100,
+      "hits": {
+       "H": 68,
+       "T00": 68
+      },
+      "b_h_only": 0,
+      "c_arm_only": 0,
+      "p": 1.0,
+      "reading": "no detected difference",
+      "gold_articles": {
+       "H": 0.6417,
+       "T00": 0.6417
+      }
+     }
+    },
+    "conditionalqa": {
+     "with_gold": 80,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 100,
+      "observed": 100,
+      "zero_kept": 0,
+      "zero_sent": 0,
+      "documents": {
+       "mean": 5,
+       "median": 5.0
+      },
+      "sent_documents": {
+       "mean": 4.74,
+       "median": 5.0
+      },
+      "sent_est_tokens": {
+       "mean": 1544.52,
+       "median": 1673.5
+      }
+     },
+     "sent": {
+      "n": 80,
+      "hits": {
+       "H": 58,
+       "T00": 58
+      },
+      "b_h_only": 0,
+      "c_arm_only": 0,
+      "p": 1.0,
+      "reading": "no detected difference",
+      "evidence_recall": {
+       "H": 0.8064,
+       "T00": 0.8064
+      }
+     },
+     "expanded": {
+      "n": 80,
+      "hits": {
+       "H": 58,
+       "T00": 58
+      },
+      "b_h_only": 0,
+      "c_arm_only": 0,
+      "p": 1.0,
+      "reading": "no detected difference",
+      "evidence_recall": {
+       "H": 0.8064,
+       "T00": 0.8064
+      }
+     }
+    },
+    "multihoprag": {
+     "with_gold": 70,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 100,
+      "observed": 100,
+      "zero_kept": 0,
+      "zero_sent": 0,
+      "documents": {
+       "mean": 5,
+       "median": 5.0
+      },
+      "sent_documents": {
+       "mean": 3.51,
+       "median": 3.0
+      },
+      "sent_est_tokens": {
+       "mean": 1682.93,
+       "median": 1711.0
+      }
+     },
+     "sent": {
+      "n": 70,
+      "hits": {
+       "H": 4,
+       "T00": 4
+      },
+      "b_h_only": 0,
+      "c_arm_only": 0,
+      "p": 1.0,
+      "reading": "no detected difference",
+      "evidence_recall": {
+       "H": 0.4321,
+       "T00": 0.4321
+      }
+     },
+     "expanded": {
+      "n": 70,
+      "hits": {
+       "H": 11,
+       "T00": 11
+      },
+      "b_h_only": 0,
+      "c_arm_only": 0,
+      "p": 1.0,
+      "reading": "no detected difference",
+      "evidence_recall": {
+       "H": 0.5179,
+       "T00": 0.5179
+      }
+     }
+    },
+    "aircargo": {
+     "with_gold": 0,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 115,
+      "observed": 115,
+      "zero_kept": 0,
+      "zero_sent": 0,
+      "documents": {
+       "mean": 5,
+       "median": 5
+      },
+      "sent_documents": {
+       "mean": 3,
+       "median": 3
+      },
+      "sent_est_tokens": {
+       "mean": 1757.591304347826,
+       "median": 1784
+      }
+     },
+     "sent": "NOT_EVIDENCE",
+     "expanded": "NOT_EVIDENCE"
+    }
+   },
+   "pooled_deciding": {
+    "with_gold": 180,
+    "unread": 0,
+    "missing": 0,
+    "usage": {
+     "questions": 200,
+     "observed": 200,
+     "zero_kept": 0,
+     "zero_sent": 0,
+     "documents": {
+      "mean": 5,
+      "median": 5.0
+     },
+     "sent_documents": {
+      "mean": 4.745,
+      "median": 5.0
+     },
+     "sent_est_tokens": {
+      "mean": 1589.195,
+      "median": 1706.5
+     }
+    },
+    "sent": {
+     "n": 180,
+     "hits": {
+      "H": 125,
+      "T00": 125
+     },
+     "b_h_only": 0,
+     "c_arm_only": 0,
+     "p": 1.0,
+     "reading": "no detected difference"
+    },
+    "expanded": {
+     "n": 180,
+     "hits": {
+      "H": 126,
+      "T00": 126
+     },
+     "b_h_only": 0,
+     "c_arm_only": 0,
+     "p": 1.0,
+     "reading": "no detected difference"
+    }
+   }
+  },
+  "T01": {
+   "per_base": {
+    "wixqa": {
+     "with_gold": 100,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 100,
+      "observed": 100,
+      "zero_kept": 3,
+      "zero_sent": 3,
+      "documents": {
+       "mean": 4.65,
+       "median": 5.0
+      },
+      "sent_documents": {
+       "mean": 4.42,
+       "median": 5.0
+      },
+      "sent_est_tokens": {
+       "mean": 1528.67,
+       "median": 1713.0
+      }
+     },
+     "sent": {
+      "n": 100,
+      "hits": {
+       "H": 67,
+       "T01": 65
+      },
+      "b_h_only": 2,
+      "c_arm_only": 0,
+      "p": 0.5,
+      "reading": "no detected difference",
+      "gold_articles": {
+       "H": 0.6317,
+       "T01": 0.6117
+      }
+     },
+     "expanded": {
+      "n": 100,
+      "hits": {
+       "H": 68,
+       "T01": 66
+      },
+      "b_h_only": 2,
+      "c_arm_only": 0,
+      "p": 0.5,
+      "reading": "no detected difference",
+      "gold_articles": {
+       "H": 0.6417,
+       "T01": 0.6217
+      }
+     }
+    },
+    "conditionalqa": {
+     "with_gold": 80,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 100,
+      "observed": 100,
+      "zero_kept": 9,
+      "zero_sent": 9,
+      "documents": {
+       "mean": 3.84,
+       "median": 5.0
+      },
+      "sent_documents": {
+       "mean": 3.69,
+       "median": 5.0
+      },
+      "sent_est_tokens": {
+       "mean": 1210.52,
+       "median": 1468.0
+      }
+     },
+     "sent": {
+      "n": 80,
+      "hits": {
+       "H": 58,
+       "T01": 53
+      },
+      "b_h_only": 5,
+      "c_arm_only": 0,
+      "p": 0.0625,
+      "reading": "no detected difference",
+      "evidence_recall": {
+       "H": 0.8064,
+       "T01": 0.7637
+      }
+     },
+     "expanded": {
+      "n": 80,
+      "hits": {
+       "H": 58,
+       "T01": 53
+      },
+      "b_h_only": 5,
+      "c_arm_only": 0,
+      "p": 0.0625,
+      "reading": "no detected difference",
+      "evidence_recall": {
+       "H": 0.8064,
+       "T01": 0.7637
+      }
+     }
+    },
+    "multihoprag": {
+     "with_gold": 70,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 100,
+      "observed": 100,
+      "zero_kept": 23,
+      "zero_sent": 23,
+      "documents": {
+       "mean": 3.61,
+       "median": 5.0
+      },
+      "sent_documents": {
+       "mean": 2.65,
+       "median": 3.0
+      },
+      "sent_est_tokens": {
+       "mean": 1254.52,
+       "median": 1649.0
+      }
+     },
+     "sent": {
+      "n": 70,
+      "hits": {
+       "H": 4,
+       "T01": 4
+      },
+      "b_h_only": 0,
+      "c_arm_only": 0,
+      "p": 1.0,
+      "reading": "no detected difference",
+      "evidence_recall": {
+       "H": 0.4321,
+       "T01": 0.4274
+      }
+     },
+     "expanded": {
+      "n": 70,
+      "hits": {
+       "H": 11,
+       "T01": 11
+      },
+      "b_h_only": 0,
+      "c_arm_only": 0,
+      "p": 1.0,
+      "reading": "no detected difference",
+      "evidence_recall": {
+       "H": 0.5179,
+       "T01": 0.5131
+      }
+     }
+    },
+    "aircargo": {
+     "with_gold": 0,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 115,
+      "observed": 115,
+      "zero_kept": 0,
+      "zero_sent": 0,
+      "documents": {
+       "mean": 4.826086956521739,
+       "median": 5
+      },
+      "sent_documents": {
+       "mean": 2.9391304347826086,
+       "median": 3
+      },
+      "sent_est_tokens": {
+       "mean": 1734.0782608695652,
+       "median": 1782
+      }
+     },
+     "sent": "NOT_EVIDENCE",
+     "expanded": "NOT_EVIDENCE"
+    }
+   },
+   "pooled_deciding": {
+    "with_gold": 180,
+    "unread": 0,
+    "missing": 0,
+    "usage": {
+     "questions": 200,
+     "observed": 200,
+     "zero_kept": 12,
+     "zero_sent": 12,
+     "documents": {
+      "mean": 4.245,
+      "median": 5.0
+     },
+     "sent_documents": {
+      "mean": 4.055,
+      "median": 5.0
+     },
+     "sent_est_tokens": {
+      "mean": 1369.595,
+      "median": 1640.0
+     }
+    },
+    "sent": {
+     "n": 180,
+     "hits": {
+      "H": 125,
+      "T01": 118
+     },
+     "b_h_only": 7,
+     "c_arm_only": 0,
+     "p": 0.015625,
+     "reading": "loss"
+    },
+    "expanded": {
+     "n": 180,
+     "hits": {
+      "H": 126,
+      "T01": 119
+     },
+     "b_h_only": 7,
+     "c_arm_only": 0,
+     "p": 0.015625,
+     "reading": "loss"
+    }
+   }
+  },
+  "T02": {
+   "per_base": {
+    "wixqa": {
+     "with_gold": 100,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 100,
+      "observed": 100,
+      "zero_kept": 6,
+      "zero_sent": 6,
+      "documents": {
+       "mean": 4.41,
+       "median": 5.0
+      },
+      "sent_documents": {
+       "mean": 4.2,
+       "median": 5.0
+      },
+      "sent_est_tokens": {
+       "mean": 1451.51,
+       "median": 1683.0
+      }
+     },
+     "sent": {
+      "n": 100,
+      "hits": {
+       "H": 67,
+       "T02": 63
+      },
+      "b_h_only": 4,
+      "c_arm_only": 0,
+      "p": 0.125,
+      "reading": "no detected difference",
+      "gold_articles": {
+       "H": 0.6317,
+       "T02": 0.5917
+      }
+     },
+     "expanded": {
+      "n": 100,
+      "hits": {
+       "H": 68,
+       "T02": 64
+      },
+      "b_h_only": 4,
+      "c_arm_only": 0,
+      "p": 0.125,
+      "reading": "no detected difference",
+      "gold_articles": {
+       "H": 0.6417,
+       "T02": 0.6017
+      }
+     }
+    },
+    "conditionalqa": {
+     "with_gold": 80,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 100,
+      "observed": 100,
+      "zero_kept": 13,
+      "zero_sent": 13,
+      "documents": {
+       "mean": 3.46,
+       "median": 5.0
+      },
+      "sent_documents": {
+       "mean": 3.32,
+       "median": 4.0
+      },
+      "sent_est_tokens": {
+       "mean": 1098.9,
+       "median": 1300.0
+      }
+     },
+     "sent": {
+      "n": 80,
+      "hits": {
+       "H": 58,
+       "T02": 50
+      },
+      "b_h_only": 8,
+      "c_arm_only": 0,
+      "p": 0.0078125,
+      "reading": "loss",
+      "evidence_recall": {
+       "H": 0.8064,
+       "T02": 0.7171
+      }
+     },
+     "expanded": {
+      "n": 80,
+      "hits": {
+       "H": 58,
+       "T02": 50
+      },
+      "b_h_only": 8,
+      "c_arm_only": 0,
+      "p": 0.0078125,
+      "reading": "loss",
+      "evidence_recall": {
+       "H": 0.8064,
+       "T02": 0.7171
+      }
+     }
+    },
+    "multihoprag": {
+     "with_gold": 70,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 100,
+      "observed": 100,
+      "zero_kept": 25,
+      "zero_sent": 25,
+      "documents": {
+       "mean": 3.43,
+       "median": 5.0
+      },
+      "sent_documents": {
+       "mean": 2.52,
+       "median": 3.0
+      },
+      "sent_est_tokens": {
+       "mean": 1194.62,
+       "median": 1644.0
+      }
+     },
+     "sent": {
+      "n": 70,
+      "hits": {
+       "H": 4,
+       "T02": 4
+      },
+      "b_h_only": 0,
+      "c_arm_only": 0,
+      "p": 1.0,
+      "reading": "no detected difference",
+      "evidence_recall": {
+       "H": 0.4321,
+       "T02": 0.4274
+      }
+     },
+     "expanded": {
+      "n": 70,
+      "hits": {
+       "H": 11,
+       "T02": 11
+      },
+      "b_h_only": 0,
+      "c_arm_only": 0,
+      "p": 1.0,
+      "reading": "no detected difference",
+      "evidence_recall": {
+       "H": 0.5179,
+       "T02": 0.5083
+      }
+     }
+    },
+    "aircargo": {
+     "with_gold": 0,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 115,
+      "observed": 115,
+      "zero_kept": 0,
+      "zero_sent": 0,
+      "documents": {
+       "mean": 4.660869565217391,
+       "median": 5
+      },
+      "sent_documents": {
+       "mean": 2.878260869565217,
+       "median": 3
+      },
+      "sent_est_tokens": {
+       "mean": 1709.6,
+       "median": 1780
+      }
+     },
+     "sent": "NOT_EVIDENCE",
+     "expanded": "NOT_EVIDENCE"
+    }
+   },
+   "pooled_deciding": {
+    "with_gold": 180,
+    "unread": 0,
+    "missing": 0,
+    "usage": {
+     "questions": 200,
+     "observed": 200,
+     "zero_kept": 19,
+     "zero_sent": 19,
+     "documents": {
+      "mean": 3.935,
+      "median": 5.0
+     },
+     "sent_documents": {
+      "mean": 3.76,
+      "median": 5.0
+     },
+     "sent_est_tokens": {
+      "mean": 1275.205,
+      "median": 1579.5
+     }
+    },
+    "sent": {
+     "n": 180,
+     "hits": {
+      "H": 125,
+      "T02": 113
+     },
+     "b_h_only": 12,
+     "c_arm_only": 0,
+     "p": 0.00048828125,
+     "reading": "loss"
+    },
+    "expanded": {
+     "n": 180,
+     "hits": {
+      "H": 126,
+      "T02": 114
+     },
+     "b_h_only": 12,
+     "c_arm_only": 0,
+     "p": 0.00048828125,
+     "reading": "loss"
+    }
+   }
+  },
+  "T03": {
+   "per_base": {
+    "wixqa": {
+     "with_gold": 100,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 100,
+      "observed": 100,
+      "zero_kept": 8,
+      "zero_sent": 8,
+      "documents": {
+       "mean": 4.17,
+       "median": 5.0
+      },
+      "sent_documents": {
+       "mean": 3.99,
+       "median": 5.0
+      },
+      "sent_est_tokens": {
+       "mean": 1380.48,
+       "median": 1649.0
+      }
+     },
+     "sent": {
+      "n": 100,
+      "hits": {
+       "H": 67,
+       "T03": 60
+      },
+      "b_h_only": 7,
+      "c_arm_only": 0,
+      "p": 0.015625,
+      "reading": "loss",
+      "gold_articles": {
+       "H": 0.6317,
+       "T03": 0.5617
+      }
+     },
+     "expanded": {
+      "n": 100,
+      "hits": {
+       "H": 68,
+       "T03": 61
+      },
+      "b_h_only": 7,
+      "c_arm_only": 0,
+      "p": 0.015625,
+      "reading": "loss",
+      "gold_articles": {
+       "H": 0.6417,
+       "T03": 0.5717
+      }
+     }
+    },
+    "conditionalqa": {
+     "with_gold": 80,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 100,
+      "observed": 100,
+      "zero_kept": 15,
+      "zero_sent": 15,
+      "documents": {
+       "mean": 3.12,
+       "median": 3.5
+      },
+      "sent_documents": {
+       "mean": 3.02,
+       "median": 3.5
+      },
+      "sent_est_tokens": {
+       "mean": 1012.63,
+       "median": 1117.0
+      }
+     },
+     "sent": {
+      "n": 80,
+      "hits": {
+       "H": 58,
+       "T03": 47
+      },
+      "b_h_only": 11,
+      "c_arm_only": 0,
+      "p": 0.0009765625,
+      "reading": "loss",
+      "evidence_recall": {
+       "H": 0.8064,
+       "T03": 0.6971
+      }
+     },
+     "expanded": {
+      "n": 80,
+      "hits": {
+       "H": 58,
+       "T03": 47
+      },
+      "b_h_only": 11,
+      "c_arm_only": 0,
+      "p": 0.0009765625,
+      "reading": "loss",
+      "evidence_recall": {
+       "H": 0.8064,
+       "T03": 0.6971
+      }
+     }
+    },
+    "multihoprag": {
+     "with_gold": 70,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 100,
+      "observed": 100,
+      "zero_kept": 26,
+      "zero_sent": 26,
+      "documents": {
+       "mean": 3.36,
+       "median": 5.0
+      },
+      "sent_documents": {
+       "mean": 2.49,
+       "median": 3.0
+      },
+      "sent_est_tokens": {
+       "mean": 1179.47,
+       "median": 1641.5
+      }
+     },
+     "sent": {
+      "n": 70,
+      "hits": {
+       "H": 4,
+       "T03": 4
+      },
+      "b_h_only": 0,
+      "c_arm_only": 0,
+      "p": 1.0,
+      "reading": "no detected difference",
+      "evidence_recall": {
+       "H": 0.4321,
+       "T03": 0.4274
+      }
+     },
+     "expanded": {
+      "n": 70,
+      "hits": {
+       "H": 11,
+       "T03": 11
+      },
+      "b_h_only": 0,
+      "c_arm_only": 0,
+      "p": 1.0,
+      "reading": "no detected difference",
+      "evidence_recall": {
+       "H": 0.5179,
+       "T03": 0.5048
+      }
+     }
+    },
+    "aircargo": {
+     "with_gold": 0,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 115,
+      "observed": 115,
+      "zero_kept": 0,
+      "zero_sent": 0,
+      "documents": {
+       "mean": 4.547826086956522,
+       "median": 5
+      },
+      "sent_documents": {
+       "mean": 2.860869565217391,
+       "median": 3
+      },
+      "sent_est_tokens": {
+       "mean": 1698.6695652173912,
+       "median": 1780
+      }
+     },
+     "sent": "NOT_EVIDENCE",
+     "expanded": "NOT_EVIDENCE"
+    }
+   },
+   "pooled_deciding": {
+    "with_gold": 180,
+    "unread": 0,
+    "missing": 0,
+    "usage": {
+     "questions": 200,
+     "observed": 200,
+     "zero_kept": 23,
+     "zero_sent": 23,
+     "documents": {
+      "mean": 3.645,
+      "median": 5.0
+     },
+     "sent_documents": {
+      "mean": 3.505,
+      "median": 4.0
+     },
+     "sent_est_tokens": {
+      "mean": 1196.555,
+      "median": 1467.0
+     }
+    },
+    "sent": {
+     "n": 180,
+     "hits": {
+      "H": 125,
+      "T03": 107
+     },
+     "b_h_only": 18,
+     "c_arm_only": 0,
+     "p": 7.62939453125e-06,
+     "reading": "loss"
+    },
+    "expanded": {
+     "n": 180,
+     "hits": {
+      "H": 126,
+      "T03": 108
+     },
+     "b_h_only": 18,
+     "c_arm_only": 0,
+     "p": 7.62939453125e-06,
+     "reading": "loss"
+    }
+   }
+  },
+  "T04": {
+   "per_base": {
+    "wixqa": {
+     "with_gold": 100,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 100,
+      "observed": 100,
+      "zero_kept": 10,
+      "zero_sent": 10,
+      "documents": {
+       "mean": 4.03,
+       "median": 5.0
+      },
+      "sent_documents": {
+       "mean": 3.86,
+       "median": 5.0
+      },
+      "sent_est_tokens": {
+       "mean": 1333.24,
+       "median": 1622.5
+      }
+     },
+     "sent": {
+      "n": 100,
+      "hits": {
+       "H": 67,
+       "T04": 60
+      },
+      "b_h_only": 7,
+      "c_arm_only": 0,
+      "p": 0.015625,
+      "reading": "loss",
+      "gold_articles": {
+       "H": 0.6317,
+       "T04": 0.5617
+      }
+     },
+     "expanded": {
+      "n": 100,
+      "hits": {
+       "H": 68,
+       "T04": 61
+      },
+      "b_h_only": 7,
+      "c_arm_only": 0,
+      "p": 0.015625,
+      "reading": "loss",
+      "gold_articles": {
+       "H": 0.6417,
+       "T04": 0.5717
+      }
+     }
+    },
+    "conditionalqa": {
+     "with_gold": 80,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 100,
+      "observed": 100,
+      "zero_kept": 16,
+      "zero_sent": 16,
+      "documents": {
+       "mean": 2.93,
+       "median": 3.0
+      },
+      "sent_documents": {
+       "mean": 2.84,
+       "median": 3.0
+      },
+      "sent_est_tokens": {
+       "mean": 945.13,
+       "median": 976.0
+      }
+     },
+     "sent": {
+      "n": 80,
+      "hits": {
+       "H": 58,
+       "T04": 46
+      },
+      "b_h_only": 12,
+      "c_arm_only": 0,
+      "p": 0.00048828125,
+      "reading": "loss",
+      "evidence_recall": {
+       "H": 0.8064,
+       "T04": 0.6825
+      }
+     },
+     "expanded": {
+      "n": 80,
+      "hits": {
+       "H": 58,
+       "T04": 46
+      },
+      "b_h_only": 12,
+      "c_arm_only": 0,
+      "p": 0.00048828125,
+      "reading": "loss",
+      "evidence_recall": {
+       "H": 0.8064,
+       "T04": 0.6825
+      }
+     }
+    },
+    "multihoprag": {
+     "with_gold": 70,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 100,
+      "observed": 100,
+      "zero_kept": 28,
+      "zero_sent": 28,
+      "documents": {
+       "mean": 3.28,
+       "median": 5.0
+      },
+      "sent_documents": {
+       "mean": 2.44,
+       "median": 3.0
+      },
+      "sent_est_tokens": {
+       "mean": 1159.8,
+       "median": 1639.5
+      }
+     },
+     "sent": {
+      "n": 70,
+      "hits": {
+       "H": 4,
+       "T04": 4
+      },
+      "b_h_only": 0,
+      "c_arm_only": 0,
+      "p": 1.0,
+      "reading": "no detected difference",
+      "evidence_recall": {
+       "H": 0.4321,
+       "T04": 0.4274
+      }
+     },
+     "expanded": {
+      "n": 70,
+      "hits": {
+       "H": 11,
+       "T04": 11
+      },
+      "b_h_only": 0,
+      "c_arm_only": 0,
+      "p": 1.0,
+      "reading": "no detected difference",
+      "evidence_recall": {
+       "H": 0.5179,
+       "T04": 0.5048
+      }
+     }
+    },
+    "aircargo": {
+     "with_gold": 0,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 115,
+      "observed": 115,
+      "zero_kept": 0,
+      "zero_sent": 0,
+      "documents": {
+       "mean": 4.48695652173913,
+       "median": 5
+      },
+      "sent_documents": {
+       "mean": 2.8347826086956522,
+       "median": 3
+      },
+      "sent_est_tokens": {
+       "mean": 1687.9478260869564,
+       "median": 1776
+      }
+     },
+     "sent": "NOT_EVIDENCE",
+     "expanded": "NOT_EVIDENCE"
+    }
+   },
+   "pooled_deciding": {
+    "with_gold": 180,
+    "unread": 0,
+    "missing": 0,
+    "usage": {
+     "questions": 200,
+     "observed": 200,
+     "zero_kept": 26,
+     "zero_sent": 26,
+     "documents": {
+      "mean": 3.48,
+      "median": 5.0
+     },
+     "sent_documents": {
+      "mean": 3.35,
+      "median": 4.0
+     },
+     "sent_est_tokens": {
+      "mean": 1139.185,
+      "median": 1379.5
+     }
+    },
+    "sent": {
+     "n": 180,
+     "hits": {
+      "H": 125,
+      "T04": 106
+     },
+     "b_h_only": 19,
+     "c_arm_only": 0,
+     "p": 3.814697265625e-06,
+     "reading": "loss"
+    },
+    "expanded": {
+     "n": 180,
+     "hits": {
+      "H": 126,
+      "T04": 107
+     },
+     "b_h_only": 19,
+     "c_arm_only": 0,
+     "p": 3.814697265625e-06,
+     "reading": "loss"
+    }
+   }
+  },
+  "T05": {
+   "per_base": {
+    "wixqa": {
+     "with_gold": 100,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 100,
+      "observed": 100,
+      "zero_kept": 15,
+      "zero_sent": 15,
+      "documents": {
+       "mean": 3.79,
+       "median": 5.0
+      },
+      "sent_documents": {
+       "mean": 3.65,
+       "median": 5.0
+      },
+      "sent_est_tokens": {
+       "mean": 1254.23,
+       "median": 1592.0
+      }
+     },
+     "sent": {
+      "n": 100,
+      "hits": {
+       "H": 67,
+       "T05": 55
+      },
+      "b_h_only": 12,
+      "c_arm_only": 0,
+      "p": 0.00048828125,
+      "reading": "loss",
+      "gold_articles": {
+       "H": 0.6317,
+       "T05": 0.515
+      }
+     },
+     "expanded": {
+      "n": 100,
+      "hits": {
+       "H": 68,
+       "T05": 55
+      },
+      "b_h_only": 13,
+      "c_arm_only": 0,
+      "p": 0.000244140625,
+      "reading": "loss",
+      "gold_articles": {
+       "H": 0.6417,
+       "T05": 0.515
+      }
+     }
+    },
+    "conditionalqa": {
+     "with_gold": 80,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 100,
+      "observed": 100,
+      "zero_kept": 20,
+      "zero_sent": 20,
+      "documents": {
+       "mean": 2.71,
+       "median": 3.0
+      },
+      "sent_documents": {
+       "mean": 2.64,
+       "median": 3.0
+      },
+      "sent_est_tokens": {
+       "mean": 892.49,
+       "median": 766.0
+      }
+     },
+     "sent": {
+      "n": 80,
+      "hits": {
+       "H": 58,
+       "T05": 44
+      },
+      "b_h_only": 14,
+      "c_arm_only": 0,
+      "p": 0.0001220703125,
+      "reading": "loss",
+      "evidence_recall": {
+       "H": 0.8064,
+       "T05": 0.6638
+      }
+     },
+     "expanded": {
+      "n": 80,
+      "hits": {
+       "H": 58,
+       "T05": 44
+      },
+      "b_h_only": 14,
+      "c_arm_only": 0,
+      "p": 0.0001220703125,
+      "reading": "loss",
+      "evidence_recall": {
+       "H": 0.8064,
+       "T05": 0.6638
+      }
+     }
+    },
+    "multihoprag": {
+     "with_gold": 70,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 100,
+      "observed": 100,
+      "zero_kept": 29,
+      "zero_sent": 29,
+      "documents": {
+       "mean": 3.23,
+       "median": 5.0
+      },
+      "sent_documents": {
+       "mean": 2.39,
+       "median": 3.0
+      },
+      "sent_est_tokens": {
+       "mean": 1128.78,
+       "median": 1639.5
+      }
+     },
+     "sent": {
+      "n": 70,
+      "hits": {
+       "H": 4,
+       "T05": 4
+      },
+      "b_h_only": 0,
+      "c_arm_only": 0,
+      "p": 1.0,
+      "reading": "no detected difference",
+      "evidence_recall": {
+       "H": 0.4321,
+       "T05": 0.4274
+      }
+     },
+     "expanded": {
+      "n": 70,
+      "hits": {
+       "H": 11,
+       "T05": 11
+      },
+      "b_h_only": 0,
+      "c_arm_only": 0,
+      "p": 1.0,
+      "reading": "no detected difference",
+      "evidence_recall": {
+       "H": 0.5179,
+       "T05": 0.5048
+      }
+     }
+    },
+    "aircargo": {
+     "with_gold": 0,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 115,
+      "observed": 115,
+      "zero_kept": 0,
+      "zero_sent": 0,
+      "documents": {
+       "mean": 4.3826086956521735,
+       "median": 5
+      },
+      "sent_documents": {
+       "mean": 2.8086956521739133,
+       "median": 3
+      },
+      "sent_est_tokens": {
+       "mean": 1674.0521739130436,
+       "median": 1776
+      }
+     },
+     "sent": "NOT_EVIDENCE",
+     "expanded": "NOT_EVIDENCE"
+    }
+   },
+   "pooled_deciding": {
+    "with_gold": 180,
+    "unread": 0,
+    "missing": 0,
+    "usage": {
+     "questions": 200,
+     "observed": 200,
+     "zero_kept": 35,
+     "zero_sent": 35,
+     "documents": {
+      "mean": 3.25,
+      "median": 5.0
+     },
+     "sent_documents": {
+      "mean": 3.145,
+      "median": 4.0
+     },
+     "sent_est_tokens": {
+      "mean": 1073.36,
+      "median": 1299.0
+     }
+    },
+    "sent": {
+     "n": 180,
+     "hits": {
+      "H": 125,
+      "T05": 99
+     },
+     "b_h_only": 26,
+     "c_arm_only": 0,
+     "p": 2.9802322387695312e-08,
+     "reading": "loss"
+    },
+    "expanded": {
+     "n": 180,
+     "hits": {
+      "H": 126,
+      "T05": 99
+     },
+     "b_h_only": 27,
+     "c_arm_only": 0,
+     "p": 1.4901161193847656e-08,
+     "reading": "loss"
+    }
+   }
+  },
+  "T06": {
+   "per_base": {
+    "wixqa": {
+     "with_gold": 100,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 100,
+      "observed": 100,
+      "zero_kept": 18,
+      "zero_sent": 18,
+      "documents": {
+       "mean": 3.63,
+       "median": 5.0
+      },
+      "sent_documents": {
+       "mean": 3.5,
+       "median": 5.0
+      },
+      "sent_est_tokens": {
+       "mean": 1197.33,
+       "median": 1524.5
+      }
+     },
+     "sent": {
+      "n": 100,
+      "hits": {
+       "H": 67,
+       "T06": 53
+      },
+      "b_h_only": 14,
+      "c_arm_only": 0,
+      "p": 0.0001220703125,
+      "reading": "loss",
+      "gold_articles": {
+       "H": 0.6317,
+       "T06": 0.495
+      }
+     },
+     "expanded": {
+      "n": 100,
+      "hits": {
+       "H": 68,
+       "T06": 53
+      },
+      "b_h_only": 15,
+      "c_arm_only": 0,
+      "p": 6.103515625e-05,
+      "reading": "loss",
+      "gold_articles": {
+       "H": 0.6417,
+       "T06": 0.495
+      }
+     }
+    },
+    "conditionalqa": {
+     "with_gold": 80,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 100,
+      "observed": 100,
+      "zero_kept": 24,
+      "zero_sent": 24,
+      "documents": {
+       "mean": 2.58,
+       "median": 2.0
+      },
+      "sent_documents": {
+       "mean": 2.51,
+       "median": 2.0
+      },
+      "sent_est_tokens": {
+       "mean": 838.62,
+       "median": 726.0
+      }
+     },
+     "sent": {
+      "n": 80,
+      "hits": {
+       "H": 58,
+       "T06": 42
+      },
+      "b_h_only": 16,
+      "c_arm_only": 0,
+      "p": 3.0517578125e-05,
+      "reading": "loss",
+      "evidence_recall": {
+       "H": 0.8064,
+       "T06": 0.63
+      }
+     },
+     "expanded": {
+      "n": 80,
+      "hits": {
+       "H": 58,
+       "T06": 42
+      },
+      "b_h_only": 16,
+      "c_arm_only": 0,
+      "p": 3.0517578125e-05,
+      "reading": "loss",
+      "evidence_recall": {
+       "H": 0.8064,
+       "T06": 0.63
+      }
+     }
+    },
+    "multihoprag": {
+     "with_gold": 70,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 100,
+      "observed": 100,
+      "zero_kept": 29,
+      "zero_sent": 29,
+      "documents": {
+       "mean": 3.19,
+       "median": 5.0
+      },
+      "sent_documents": {
+       "mean": 2.38,
+       "median": 3.0
+      },
+      "sent_est_tokens": {
+       "mean": 1119.76,
+       "median": 1639.5
+      }
+     },
+     "sent": {
+      "n": 70,
+      "hits": {
+       "H": 4,
+       "T06": 4
+      },
+      "b_h_only": 0,
+      "c_arm_only": 0,
+      "p": 1.0,
+      "reading": "no detected difference",
+      "evidence_recall": {
+       "H": 0.4321,
+       "T06": 0.4274
+      }
+     },
+     "expanded": {
+      "n": 70,
+      "hits": {
+       "H": 11,
+       "T06": 11
+      },
+      "b_h_only": 0,
+      "c_arm_only": 0,
+      "p": 1.0,
+      "reading": "no detected difference",
+      "evidence_recall": {
+       "H": 0.5179,
+       "T06": 0.5012
+      }
+     }
+    },
+    "aircargo": {
+     "with_gold": 0,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 115,
+      "observed": 115,
+      "zero_kept": 0,
+      "zero_sent": 0,
+      "documents": {
+       "mean": 4.269565217391304,
+       "median": 5
+      },
+      "sent_documents": {
+       "mean": 2.739130434782609,
+       "median": 3
+      },
+      "sent_est_tokens": {
+       "mean": 1634.6782608695653,
+       "median": 1756
+      }
+     },
+     "sent": "NOT_EVIDENCE",
+     "expanded": "NOT_EVIDENCE"
+    }
+   },
+   "pooled_deciding": {
+    "with_gold": 180,
+    "unread": 0,
+    "missing": 0,
+    "usage": {
+     "questions": 200,
+     "observed": 200,
+     "zero_kept": 42,
+     "zero_sent": 42,
+     "documents": {
+      "mean": 3.105,
+      "median": 4.5
+     },
+     "sent_documents": {
+      "mean": 3.005,
+      "median": 4.0
+     },
+     "sent_est_tokens": {
+      "mean": 1017.975,
+      "median": 1173.5
+     }
+    },
+    "sent": {
+     "n": 180,
+     "hits": {
+      "H": 125,
+      "T06": 95
+     },
+     "b_h_only": 30,
+     "c_arm_only": 0,
+     "p": 1.862645149230957e-09,
+     "reading": "loss"
+    },
+    "expanded": {
+     "n": 180,
+     "hits": {
+      "H": 126,
+      "T06": 95
+     },
+     "b_h_only": 31,
+     "c_arm_only": 0,
+     "p": 9.313225746154785e-10,
+     "reading": "loss"
+    }
+   }
+  },
+  "T07": {
+   "per_base": {
+    "wixqa": {
+     "with_gold": 100,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 100,
+      "observed": 100,
+      "zero_kept": 20,
+      "zero_sent": 20,
+      "documents": {
+       "mean": 3.47,
+       "median": 5.0
+      },
+      "sent_documents": {
+       "mean": 3.34,
+       "median": 4.0
+      },
+      "sent_est_tokens": {
+       "mean": 1133.27,
+       "median": 1466.5
+      }
+     },
+     "sent": {
+      "n": 100,
+      "hits": {
+       "H": 67,
+       "T07": 53
+      },
+      "b_h_only": 14,
+      "c_arm_only": 0,
+      "p": 0.0001220703125,
+      "reading": "loss",
+      "gold_articles": {
+       "H": 0.6317,
+       "T07": 0.495
+      }
+     },
+     "expanded": {
+      "n": 100,
+      "hits": {
+       "H": 68,
+       "T07": 53
+      },
+      "b_h_only": 15,
+      "c_arm_only": 0,
+      "p": 6.103515625e-05,
+      "reading": "loss",
+      "gold_articles": {
+       "H": 0.6417,
+       "T07": 0.495
+      }
+     }
+    },
+    "conditionalqa": {
+     "with_gold": 80,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 100,
+      "observed": 100,
+      "zero_kept": 26,
+      "zero_sent": 26,
+      "documents": {
+       "mean": 2.36,
+       "median": 2.0
+      },
+      "sent_documents": {
+       "mean": 2.31,
+       "median": 2.0
+      },
+      "sent_est_tokens": {
+       "mean": 785.56,
+       "median": 627.5
+      }
+     },
+     "sent": {
+      "n": 80,
+      "hits": {
+       "H": 58,
+       "T07": 39
+      },
+      "b_h_only": 19,
+      "c_arm_only": 0,
+      "p": 3.814697265625e-06,
+      "reading": "loss",
+      "evidence_recall": {
+       "H": 0.8064,
+       "T07": 0.6044
+      }
+     },
+     "expanded": {
+      "n": 80,
+      "hits": {
+       "H": 58,
+       "T07": 39
+      },
+      "b_h_only": 19,
+      "c_arm_only": 0,
+      "p": 3.814697265625e-06,
+      "reading": "loss",
+      "evidence_recall": {
+       "H": 0.8064,
+       "T07": 0.6044
+      }
+     }
+    },
+    "multihoprag": {
+     "with_gold": 70,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 100,
+      "observed": 100,
+      "zero_kept": 30,
+      "zero_sent": 30,
+      "documents": {
+       "mean": 3.15,
+       "median": 5.0
+      },
+      "sent_documents": {
+       "mean": 2.36,
+       "median": 3.0
+      },
+      "sent_est_tokens": {
+       "mean": 1110.95,
+       "median": 1631.5
+      }
+     },
+     "sent": {
+      "n": 70,
+      "hits": {
+       "H": 4,
+       "T07": 4
+      },
+      "b_h_only": 0,
+      "c_arm_only": 0,
+      "p": 1.0,
+      "reading": "no detected difference",
+      "evidence_recall": {
+       "H": 0.4321,
+       "T07": 0.4238
+      }
+     },
+     "expanded": {
+      "n": 70,
+      "hits": {
+       "H": 11,
+       "T07": 11
+      },
+      "b_h_only": 0,
+      "c_arm_only": 0,
+      "p": 1.0,
+      "reading": "no detected difference",
+      "evidence_recall": {
+       "H": 0.5179,
+       "T07": 0.4976
+      }
+     }
+    },
+    "aircargo": {
+     "with_gold": 0,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 115,
+      "observed": 115,
+      "zero_kept": 0,
+      "zero_sent": 0,
+      "documents": {
+       "mean": 4.173913043478261,
+       "median": 5
+      },
+      "sent_documents": {
+       "mean": 2.6956521739130435,
+       "median": 3
+      },
+      "sent_est_tokens": {
+       "mean": 1611.5391304347827,
+       "median": 1756
+      }
+     },
+     "sent": "NOT_EVIDENCE",
+     "expanded": "NOT_EVIDENCE"
+    }
+   },
+   "pooled_deciding": {
+    "with_gold": 180,
+    "unread": 0,
+    "missing": 0,
+    "usage": {
+     "questions": 200,
+     "observed": 200,
+     "zero_kept": 46,
+     "zero_sent": 46,
+     "documents": {
+      "mean": 2.915,
+      "median": 3.5
+     },
+     "sent_documents": {
+      "mean": 2.825,
+      "median": 3.0
+     },
+     "sent_est_tokens": {
+      "mean": 959.415,
+      "median": 1091.0
+     }
+    },
+    "sent": {
+     "n": 180,
+     "hits": {
+      "H": 125,
+      "T07": 92
+     },
+     "b_h_only": 33,
+     "c_arm_only": 0,
+     "p": 2.3283064365386963e-10,
+     "reading": "loss"
+    },
+    "expanded": {
+     "n": 180,
+     "hits": {
+      "H": 126,
+      "T07": 92
+     },
+     "b_h_only": 34,
+     "c_arm_only": 0,
+     "p": 1.1641532182693481e-10,
+     "reading": "loss"
+    }
+   }
+  },
+  "T08": {
+   "per_base": {
+    "wixqa": {
+     "with_gold": 100,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 100,
+      "observed": 100,
+      "zero_kept": 21,
+      "zero_sent": 21,
+      "documents": {
+       "mean": 3.39,
+       "median": 5.0
+      },
+      "sent_documents": {
+       "mean": 3.27,
+       "median": 4.0
+      },
+      "sent_est_tokens": {
+       "mean": 1109.66,
+       "median": 1444.0
+      }
+     },
+     "sent": {
+      "n": 100,
+      "hits": {
+       "H": 67,
+       "T08": 53
+      },
+      "b_h_only": 14,
+      "c_arm_only": 0,
+      "p": 0.0001220703125,
+      "reading": "loss",
+      "gold_articles": {
+       "H": 0.6317,
+       "T08": 0.495
+      }
+     },
+     "expanded": {
+      "n": 100,
+      "hits": {
+       "H": 68,
+       "T08": 53
+      },
+      "b_h_only": 15,
+      "c_arm_only": 0,
+      "p": 6.103515625e-05,
+      "reading": "loss",
+      "gold_articles": {
+       "H": 0.6417,
+       "T08": 0.495
+      }
+     }
+    },
+    "conditionalqa": {
+     "with_gold": 80,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 100,
+      "observed": 100,
+      "zero_kept": 28,
+      "zero_sent": 28,
+      "documents": {
+       "mean": 2.15,
+       "median": 2.0
+      },
+      "sent_documents": {
+       "mean": 2.1,
+       "median": 2.0
+      },
+      "sent_est_tokens": {
+       "mean": 720.16,
+       "median": 617.5
+      }
+     },
+     "sent": {
+      "n": 80,
+      "hits": {
+       "H": 58,
+       "T08": 36
+      },
+      "b_h_only": 22,
+      "c_arm_only": 0,
+      "p": 4.76837158203125e-07,
+      "reading": "loss",
+      "evidence_recall": {
+       "H": 0.8064,
+       "T08": 0.5773
+      }
+     },
+     "expanded": {
+      "n": 80,
+      "hits": {
+       "H": 58,
+       "T08": 36
+      },
+      "b_h_only": 22,
+      "c_arm_only": 0,
+      "p": 4.76837158203125e-07,
+      "reading": "loss",
+      "evidence_recall": {
+       "H": 0.8064,
+       "T08": 0.5773
+      }
+     }
+    },
+    "multihoprag": {
+     "with_gold": 70,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 100,
+      "observed": 100,
+      "zero_kept": 30,
+      "zero_sent": 30,
+      "documents": {
+       "mean": 3.09,
+       "median": 5.0
+      },
+      "sent_documents": {
+       "mean": 2.33,
+       "median": 3.0
+      },
+      "sent_est_tokens": {
+       "mean": 1098.77,
+       "median": 1609.5
+      }
+     },
+     "sent": {
+      "n": 70,
+      "hits": {
+       "H": 4,
+       "T08": 4
+      },
+      "b_h_only": 0,
+      "c_arm_only": 0,
+      "p": 1.0,
+      "reading": "no detected difference",
+      "evidence_recall": {
+       "H": 0.4321,
+       "T08": 0.4238
+      }
+     },
+     "expanded": {
+      "n": 70,
+      "hits": {
+       "H": 11,
+       "T08": 11
+      },
+      "b_h_only": 0,
+      "c_arm_only": 0,
+      "p": 1.0,
+      "reading": "no detected difference",
+      "evidence_recall": {
+       "H": 0.5179,
+       "T08": 0.494
+      }
+     }
+    },
+    "aircargo": {
+     "with_gold": 0,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 115,
+      "observed": 115,
+      "zero_kept": 1,
+      "zero_sent": 1,
+      "documents": {
+       "mean": 4.078260869565217,
+       "median": 5
+      },
+      "sent_documents": {
+       "mean": 2.634782608695652,
+       "median": 3
+      },
+      "sent_est_tokens": {
+       "mean": 1591.7478260869566,
+       "median": 1746
+      }
+     },
+     "sent": "NOT_EVIDENCE",
+     "expanded": "NOT_EVIDENCE"
+    }
+   },
+   "pooled_deciding": {
+    "with_gold": 180,
+    "unread": 0,
+    "missing": 0,
+    "usage": {
+     "questions": 200,
+     "observed": 200,
+     "zero_kept": 49,
+     "zero_sent": 49,
+     "documents": {
+      "mean": 2.77,
+      "median": 3.0
+     },
+     "sent_documents": {
+      "mean": 2.685,
+      "median": 3.0
+     },
+     "sent_est_tokens": {
+      "mean": 914.91,
+      "median": 993.0
+     }
+    },
+    "sent": {
+     "n": 180,
+     "hits": {
+      "H": 125,
+      "T08": 89
+     },
+     "b_h_only": 36,
+     "c_arm_only": 0,
+     "p": 2.9103830456733704e-11,
+     "reading": "loss"
+    },
+    "expanded": {
+     "n": 180,
+     "hits": {
+      "H": 126,
+      "T08": 89
+     },
+     "b_h_only": 37,
+     "c_arm_only": 0,
+     "p": 1.4551915228366852e-11,
+     "reading": "loss"
+    }
+   }
+  },
+  "T09": {
+   "per_base": {
+    "wixqa": {
+     "with_gold": 100,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 100,
+      "observed": 100,
+      "zero_kept": 22,
+      "zero_sent": 22,
+      "documents": {
+       "mean": 3.33,
+       "median": 5.0
+      },
+      "sent_documents": {
+       "mean": 3.21,
+       "median": 4.0
+      },
+      "sent_est_tokens": {
+       "mean": 1090.09,
+       "median": 1426.0
+      }
+     },
+     "sent": {
+      "n": 100,
+      "hits": {
+       "H": 67,
+       "T09": 53
+      },
+      "b_h_only": 14,
+      "c_arm_only": 0,
+      "p": 0.0001220703125,
+      "reading": "loss",
+      "gold_articles": {
+       "H": 0.6317,
+       "T09": 0.495
+      }
+     },
+     "expanded": {
+      "n": 100,
+      "hits": {
+       "H": 68,
+       "T09": 53
+      },
+      "b_h_only": 15,
+      "c_arm_only": 0,
+      "p": 6.103515625e-05,
+      "reading": "loss",
+      "gold_articles": {
+       "H": 0.6417,
+       "T09": 0.495
+      }
+     }
+    },
+    "conditionalqa": {
+     "with_gold": 80,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 100,
+      "observed": 100,
+      "zero_kept": 33,
+      "zero_sent": 33,
+      "documents": {
+       "mean": 1.91,
+       "median": 1.0
+      },
+      "sent_documents": {
+       "mean": 1.86,
+       "median": 1.0
+      },
+      "sent_est_tokens": {
+       "mean": 634.32,
+       "median": 452.5
+      }
+     },
+     "sent": {
+      "n": 80,
+      "hits": {
+       "H": 58,
+       "T09": 33
+      },
+      "b_h_only": 25,
+      "c_arm_only": 0,
+      "p": 5.960464477539063e-08,
+      "reading": "loss",
+      "evidence_recall": {
+       "H": 0.8064,
+       "T09": 0.5327
+      }
+     },
+     "expanded": {
+      "n": 80,
+      "hits": {
+       "H": 58,
+       "T09": 33
+      },
+      "b_h_only": 25,
+      "c_arm_only": 0,
+      "p": 5.960464477539063e-08,
+      "reading": "loss",
+      "evidence_recall": {
+       "H": 0.8064,
+       "T09": 0.5327
+      }
+     }
+    },
+    "multihoprag": {
+     "with_gold": 70,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 100,
+      "observed": 100,
+      "zero_kept": 31,
+      "zero_sent": 31,
+      "documents": {
+       "mean": 2.99,
+       "median": 5.0
+      },
+      "sent_documents": {
+       "mean": 2.27,
+       "median": 3.0
+      },
+      "sent_est_tokens": {
+       "mean": 1075.28,
+       "median": 1583.5
+      }
+     },
+     "sent": {
+      "n": 70,
+      "hits": {
+       "H": 4,
+       "T09": 4
+      },
+      "b_h_only": 0,
+      "c_arm_only": 0,
+      "p": 1.0,
+      "reading": "no detected difference",
+      "evidence_recall": {
+       "H": 0.4321,
+       "T09": 0.4202
+      }
+     },
+     "expanded": {
+      "n": 70,
+      "hits": {
+       "H": 11,
+       "T09": 11
+      },
+      "b_h_only": 0,
+      "c_arm_only": 0,
+      "p": 1.0,
+      "reading": "no detected difference",
+      "evidence_recall": {
+       "H": 0.5179,
+       "T09": 0.4857
+      }
+     }
+    },
+    "aircargo": {
+     "with_gold": 0,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 115,
+      "observed": 115,
+      "zero_kept": 1,
+      "zero_sent": 1,
+      "documents": {
+       "mean": 3.9217391304347826,
+       "median": 5
+      },
+      "sent_documents": {
+       "mean": 2.5565217391304347,
+       "median": 3
+      },
+      "sent_est_tokens": {
+       "mean": 1542.1565217391305,
+       "median": 1725
+      }
+     },
+     "sent": "NOT_EVIDENCE",
+     "expanded": "NOT_EVIDENCE"
+    }
+   },
+   "pooled_deciding": {
+    "with_gold": 180,
+    "unread": 0,
+    "missing": 0,
+    "usage": {
+     "questions": 200,
+     "observed": 200,
+     "zero_kept": 55,
+     "zero_sent": 55,
+     "documents": {
+      "mean": 2.62,
+      "median": 2.5
+     },
+     "sent_documents": {
+      "mean": 2.535,
+      "median": 2.5
+     },
+     "sent_est_tokens": {
+      "mean": 862.205,
+      "median": 893.0
+     }
+    },
+    "sent": {
+     "n": 180,
+     "hits": {
+      "H": 125,
+      "T09": 86
+     },
+     "b_h_only": 39,
+     "c_arm_only": 0,
+     "p": 3.637978807091713e-12,
+     "reading": "loss"
+    },
+    "expanded": {
+     "n": 180,
+     "hits": {
+      "H": 126,
+      "T09": 86
+     },
+     "b_h_only": 40,
+     "c_arm_only": 0,
+     "p": 1.8189894035458565e-12,
+     "reading": "loss"
+    }
+   }
+  },
+  "T10": {
+   "per_base": {
+    "wixqa": {
+     "with_gold": 100,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 100,
+      "observed": 100,
+      "zero_kept": 22,
+      "zero_sent": 22,
+      "documents": {
+       "mean": 3.21,
+       "median": 5.0
+      },
+      "sent_documents": {
+       "mean": 3.1,
+       "median": 4.0
+      },
+      "sent_est_tokens": {
+       "mean": 1051.52,
+       "median": 1337.5
+      }
+     },
+     "sent": {
+      "n": 100,
+      "hits": {
+       "H": 67,
+       "T10": 52
+      },
+      "b_h_only": 15,
+      "c_arm_only": 0,
+      "p": 6.103515625e-05,
+      "reading": "loss",
+      "gold_articles": {
+       "H": 0.6317,
+       "T10": 0.485
+      }
+     },
+     "expanded": {
+      "n": 100,
+      "hits": {
+       "H": 68,
+       "T10": 52
+      },
+      "b_h_only": 16,
+      "c_arm_only": 0,
+      "p": 3.0517578125e-05,
+      "reading": "loss",
+      "gold_articles": {
+       "H": 0.6417,
+       "T10": 0.485
+      }
+     }
+    },
+    "conditionalqa": {
+     "with_gold": 80,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 100,
+      "observed": 100,
+      "zero_kept": 37,
+      "zero_sent": 37,
+      "documents": {
+       "mean": 1.75,
+       "median": 1.0
+      },
+      "sent_documents": {
+       "mean": 1.71,
+       "median": 1.0
+      },
+      "sent_est_tokens": {
+       "mean": 580.77,
+       "median": 370.0
+      }
+     },
+     "sent": {
+      "n": 80,
+      "hits": {
+       "H": 58,
+       "T10": 33
+      },
+      "b_h_only": 25,
+      "c_arm_only": 0,
+      "p": 5.960464477539063e-08,
+      "reading": "loss",
+      "evidence_recall": {
+       "H": 0.8064,
+       "T10": 0.5307
+      }
+     },
+     "expanded": {
+      "n": 80,
+      "hits": {
+       "H": 58,
+       "T10": 33
+      },
+      "b_h_only": 25,
+      "c_arm_only": 0,
+      "p": 5.960464477539063e-08,
+      "reading": "loss",
+      "evidence_recall": {
+       "H": 0.8064,
+       "T10": 0.5307
+      }
+     }
+    },
+    "multihoprag": {
+     "with_gold": 70,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 100,
+      "observed": 100,
+      "zero_kept": 33,
+      "zero_sent": 33,
+      "documents": {
+       "mean": 2.87,
+       "median": 4.0
+      },
+      "sent_documents": {
+       "mean": 2.18,
+       "median": 3.0
+      },
+      "sent_est_tokens": {
+       "mean": 1042.85,
+       "median": 1557.5
+      }
+     },
+     "sent": {
+      "n": 70,
+      "hits": {
+       "H": 4,
+       "T10": 4
+      },
+      "b_h_only": 0,
+      "c_arm_only": 0,
+      "p": 1.0,
+      "reading": "no detected difference",
+      "evidence_recall": {
+       "H": 0.4321,
+       "T10": 0.4202
+      }
+     },
+     "expanded": {
+      "n": 70,
+      "hits": {
+       "H": 11,
+       "T10": 11
+      },
+      "b_h_only": 0,
+      "c_arm_only": 0,
+      "p": 1.0,
+      "reading": "no detected difference",
+      "evidence_recall": {
+       "H": 0.5179,
+       "T10": 0.4786
+      }
+     }
+    },
+    "aircargo": {
+     "with_gold": 0,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 115,
+      "observed": 115,
+      "zero_kept": 1,
+      "zero_sent": 1,
+      "documents": {
+       "mean": 3.8434782608695652,
+       "median": 5
+      },
+      "sent_documents": {
+       "mean": 2.5304347826086957,
+       "median": 3
+      },
+      "sent_est_tokens": {
+       "mean": 1523.4608695652173,
+       "median": 1720
+      }
+     },
+     "sent": "NOT_EVIDENCE",
+     "expanded": "NOT_EVIDENCE"
+    }
+   },
+   "pooled_deciding": {
+    "with_gold": 180,
+    "unread": 0,
+    "missing": 0,
+    "usage": {
+     "questions": 200,
+     "observed": 200,
+     "zero_kept": 59,
+     "zero_sent": 59,
+     "documents": {
+      "mean": 2.48,
+      "median": 2.0
+     },
+     "sent_documents": {
+      "mean": 2.405,
+      "median": 2.0
+     },
+     "sent_est_tokens": {
+      "mean": 816.145,
+      "median": 745.5
+     }
+    },
+    "sent": {
+     "n": 180,
+     "hits": {
+      "H": 125,
+      "T10": 85
+     },
+     "b_h_only": 40,
+     "c_arm_only": 0,
+     "p": 1.8189894035458565e-12,
+     "reading": "loss"
+    },
+    "expanded": {
+     "n": 180,
+     "hits": {
+      "H": 126,
+      "T10": 85
+     },
+     "b_h_only": 41,
+     "c_arm_only": 0,
+     "p": 9.094947017729282e-13,
+     "reading": "loss"
+    }
+   }
+  },
+  "T11": {
+   "per_base": {
+    "wixqa": {
+     "with_gold": 100,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 100,
+      "observed": 100,
+      "zero_kept": 25,
+      "zero_sent": 25,
+      "documents": {
+       "mean": 3.11,
+       "median": 5.0
+      },
+      "sent_documents": {
+       "mean": 3,
+       "median": 4.0
+      },
+      "sent_est_tokens": {
+       "mean": 1019.96,
+       "median": 1242.5
+      }
+     },
+     "sent": {
+      "n": 100,
+      "hits": {
+       "H": 67,
+       "T11": 51
+      },
+      "b_h_only": 16,
+      "c_arm_only": 0,
+      "p": 3.0517578125e-05,
+      "reading": "loss",
+      "gold_articles": {
+       "H": 0.6317,
+       "T11": 0.475
+      }
+     },
+     "expanded": {
+      "n": 100,
+      "hits": {
+       "H": 68,
+       "T11": 51
+      },
+      "b_h_only": 17,
+      "c_arm_only": 0,
+      "p": 1.52587890625e-05,
+      "reading": "loss",
+      "gold_articles": {
+       "H": 0.6417,
+       "T11": 0.475
+      }
+     }
+    },
+    "conditionalqa": {
+     "with_gold": 80,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 100,
+      "observed": 100,
+      "zero_kept": 46,
+      "zero_sent": 46,
+      "documents": {
+       "mean": 1.57,
+       "median": 1.0
+      },
+      "sent_documents": {
+       "mean": 1.53,
+       "median": 1.0
+      },
+      "sent_est_tokens": {
+       "mean": 515.36,
+       "median": 338.5
+      }
+     },
+     "sent": {
+      "n": 80,
+      "hits": {
+       "H": 58,
+       "T11": 29
+      },
+      "b_h_only": 29,
+      "c_arm_only": 0,
+      "p": 3.725290298461914e-09,
+      "reading": "loss",
+      "evidence_recall": {
+       "H": 0.8064,
+       "T11": 0.4519
+      }
+     },
+     "expanded": {
+      "n": 80,
+      "hits": {
+       "H": 58,
+       "T11": 29
+      },
+      "b_h_only": 29,
+      "c_arm_only": 0,
+      "p": 3.725290298461914e-09,
+      "reading": "loss",
+      "evidence_recall": {
+       "H": 0.8064,
+       "T11": 0.4519
+      }
+     }
+    },
+    "multihoprag": {
+     "with_gold": 70,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 100,
+      "observed": 100,
+      "zero_kept": 33,
+      "zero_sent": 33,
+      "documents": {
+       "mean": 2.84,
+       "median": 3.5
+      },
+      "sent_documents": {
+       "mean": 2.16,
+       "median": 3.0
+      },
+      "sent_est_tokens": {
+       "mean": 1036.81,
+       "median": 1536.0
+      }
+     },
+     "sent": {
+      "n": 70,
+      "hits": {
+       "H": 4,
+       "T11": 3
+      },
+      "b_h_only": 1,
+      "c_arm_only": 0,
+      "p": 1.0,
+      "reading": "no detected difference",
+      "evidence_recall": {
+       "H": 0.4321,
+       "T11": 0.4155
+      }
+     },
+     "expanded": {
+      "n": 70,
+      "hits": {
+       "H": 11,
+       "T11": 10
+      },
+      "b_h_only": 1,
+      "c_arm_only": 0,
+      "p": 1.0,
+      "reading": "no detected difference",
+      "evidence_recall": {
+       "H": 0.5179,
+       "T11": 0.4738
+      }
+     }
+    },
+    "aircargo": {
+     "with_gold": 0,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 115,
+      "observed": 115,
+      "zero_kept": 1,
+      "zero_sent": 1,
+      "documents": {
+       "mean": 3.7217391304347824,
+       "median": 5
+      },
+      "sent_documents": {
+       "mean": 2.4782608695652173,
+       "median": 3
+      },
+      "sent_est_tokens": {
+       "mean": 1502.9913043478261,
+       "median": 1708
+      }
+     },
+     "sent": "NOT_EVIDENCE",
+     "expanded": "NOT_EVIDENCE"
+    }
+   },
+   "pooled_deciding": {
+    "with_gold": 180,
+    "unread": 0,
+    "missing": 0,
+    "usage": {
+     "questions": 200,
+     "observed": 200,
+     "zero_kept": 71,
+     "zero_sent": 71,
+     "documents": {
+      "mean": 2.34,
+      "median": 2.0
+     },
+     "sent_documents": {
+      "mean": 2.265,
+      "median": 2.0
+     },
+     "sent_est_tokens": {
+      "mean": 767.66,
+      "median": 630.0
+     }
+    },
+    "sent": {
+     "n": 180,
+     "hits": {
+      "H": 125,
+      "T11": 80
+     },
+     "b_h_only": 45,
+     "c_arm_only": 0,
+     "p": 5.684341886080802e-14,
+     "reading": "loss"
+    },
+    "expanded": {
+     "n": 180,
+     "hits": {
+      "H": 126,
+      "T11": 80
+     },
+     "b_h_only": 46,
+     "c_arm_only": 0,
+     "p": 2.842170943040401e-14,
+     "reading": "loss"
+    }
+   }
+  },
+  "T12": {
+   "per_base": {
+    "wixqa": {
+     "with_gold": 100,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 100,
+      "observed": 100,
+      "zero_kept": 25,
+      "zero_sent": 25,
+      "documents": {
+       "mean": 2.98,
+       "median": 4.0
+      },
+      "sent_documents": {
+       "mean": 2.87,
+       "median": 4.0
+      },
+      "sent_est_tokens": {
+       "mean": 970.79,
+       "median": 1137.0
+      }
+     },
+     "sent": {
+      "n": 100,
+      "hits": {
+       "H": 67,
+       "T12": 51
+      },
+      "b_h_only": 16,
+      "c_arm_only": 0,
+      "p": 3.0517578125e-05,
+      "reading": "loss",
+      "gold_articles": {
+       "H": 0.6317,
+       "T12": 0.475
+      }
+     },
+     "expanded": {
+      "n": 100,
+      "hits": {
+       "H": 68,
+       "T12": 51
+      },
+      "b_h_only": 17,
+      "c_arm_only": 0,
+      "p": 1.52587890625e-05,
+      "reading": "loss",
+      "gold_articles": {
+       "H": 0.6417,
+       "T12": 0.475
+      }
+     }
+    },
+    "conditionalqa": {
+     "with_gold": 80,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 100,
+      "observed": 100,
+      "zero_kept": 48,
+      "zero_sent": 48,
+      "documents": {
+       "mean": 1.43,
+       "median": 1.0
+      },
+      "sent_documents": {
+       "mean": 1.39,
+       "median": 1.0
+      },
+      "sent_est_tokens": {
+       "mean": 473.42,
+       "median": 202.0
+      }
+     },
+     "sent": {
+      "n": 80,
+      "hits": {
+       "H": 58,
+       "T12": 29
+      },
+      "b_h_only": 29,
+      "c_arm_only": 0,
+      "p": 3.725290298461914e-09,
+      "reading": "loss",
+      "evidence_recall": {
+       "H": 0.8064,
+       "T12": 0.4519
+      }
+     },
+     "expanded": {
+      "n": 80,
+      "hits": {
+       "H": 58,
+       "T12": 29
+      },
+      "b_h_only": 29,
+      "c_arm_only": 0,
+      "p": 3.725290298461914e-09,
+      "reading": "loss",
+      "evidence_recall": {
+       "H": 0.8064,
+       "T12": 0.4519
+      }
+     }
+    },
+    "multihoprag": {
+     "with_gold": 70,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 100,
+      "observed": 100,
+      "zero_kept": 33,
+      "zero_sent": 33,
+      "documents": {
+       "mean": 2.74,
+       "median": 3.0
+      },
+      "sent_documents": {
+       "mean": 2.09,
+       "median": 3.0
+      },
+      "sent_est_tokens": {
+       "mean": 1008.25,
+       "median": 1488.0
+      }
+     },
+     "sent": {
+      "n": 70,
+      "hits": {
+       "H": 4,
+       "T12": 2
+      },
+      "b_h_only": 2,
+      "c_arm_only": 0,
+      "p": 0.5,
+      "reading": "no detected difference",
+      "evidence_recall": {
+       "H": 0.4321,
+       "T12": 0.4012
+      }
+     },
+     "expanded": {
+      "n": 70,
+      "hits": {
+       "H": 11,
+       "T12": 8
+      },
+      "b_h_only": 3,
+      "c_arm_only": 0,
+      "p": 0.25,
+      "reading": "no detected difference",
+      "evidence_recall": {
+       "H": 0.5179,
+       "T12": 0.456
+      }
+     }
+    },
+    "aircargo": {
+     "with_gold": 0,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 115,
+      "observed": 115,
+      "zero_kept": 2,
+      "zero_sent": 2,
+      "documents": {
+       "mean": 3.5478260869565217,
+       "median": 5
+      },
+      "sent_documents": {
+       "mean": 2.382608695652174,
+       "median": 3
+      },
+      "sent_est_tokens": {
+       "mean": 1455.9217391304348,
+       "median": 1708
+      }
+     },
+     "sent": "NOT_EVIDENCE",
+     "expanded": "NOT_EVIDENCE"
+    }
+   },
+   "pooled_deciding": {
+    "with_gold": 180,
+    "unread": 0,
+    "missing": 0,
+    "usage": {
+     "questions": 200,
+     "observed": 200,
+     "zero_kept": 73,
+     "zero_sent": 73,
+     "documents": {
+      "mean": 2.205,
+      "median": 2.0
+     },
+     "sent_documents": {
+      "mean": 2.13,
+      "median": 2.0
+     },
+     "sent_est_tokens": {
+      "mean": 722.105,
+      "median": 552.0
+     }
+    },
+    "sent": {
+     "n": 180,
+     "hits": {
+      "H": 125,
+      "T12": 80
+     },
+     "b_h_only": 45,
+     "c_arm_only": 0,
+     "p": 5.684341886080802e-14,
+     "reading": "loss"
+    },
+    "expanded": {
+     "n": 180,
+     "hits": {
+      "H": 126,
+      "T12": 80
+     },
+     "b_h_only": 46,
+     "c_arm_only": 0,
+     "p": 2.842170943040401e-14,
+     "reading": "loss"
+    }
+   }
+  },
+  "T13": {
+   "per_base": {
+    "wixqa": {
+     "with_gold": 100,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 100,
+      "observed": 100,
+      "zero_kept": 26,
+      "zero_sent": 26,
+      "documents": {
+       "mean": 2.87,
+       "median": 3.5
+      },
+      "sent_documents": {
+       "mean": 2.77,
+       "median": 3.0
+      },
+      "sent_est_tokens": {
+       "mean": 943.57,
+       "median": 1137.0
+      }
+     },
+     "sent": {
+      "n": 100,
+      "hits": {
+       "H": 67,
+       "T13": 51
+      },
+      "b_h_only": 16,
+      "c_arm_only": 0,
+      "p": 3.0517578125e-05,
+      "reading": "loss",
+      "gold_articles": {
+       "H": 0.6317,
+       "T13": 0.475
+      }
+     },
+     "expanded": {
+      "n": 100,
+      "hits": {
+       "H": 68,
+       "T13": 51
+      },
+      "b_h_only": 17,
+      "c_arm_only": 0,
+      "p": 1.52587890625e-05,
+      "reading": "loss",
+      "gold_articles": {
+       "H": 0.6417,
+       "T13": 0.475
+      }
+     }
+    },
+    "conditionalqa": {
+     "with_gold": 80,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 100,
+      "observed": 100,
+      "zero_kept": 49,
+      "zero_sent": 49,
+      "documents": {
+       "mean": 1.28,
+       "median": 1.0
+      },
+      "sent_documents": {
+       "mean": 1.25,
+       "median": 1.0
+      },
+      "sent_est_tokens": {
+       "mean": 421.49,
+       "median": 117.0
+      }
+     },
+     "sent": {
+      "n": 80,
+      "hits": {
+       "H": 58,
+       "T13": 27
+      },
+      "b_h_only": 31,
+      "c_arm_only": 0,
+      "p": 9.313225746154785e-10,
+      "reading": "loss",
+      "evidence_recall": {
+       "H": 0.8064,
+       "T13": 0.4283
+      }
+     },
+     "expanded": {
+      "n": 80,
+      "hits": {
+       "H": 58,
+       "T13": 27
+      },
+      "b_h_only": 31,
+      "c_arm_only": 0,
+      "p": 9.313225746154785e-10,
+      "reading": "loss",
+      "evidence_recall": {
+       "H": 0.8064,
+       "T13": 0.4283
+      }
+     }
+    },
+    "multihoprag": {
+     "with_gold": 70,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 100,
+      "observed": 100,
+      "zero_kept": 33,
+      "zero_sent": 33,
+      "documents": {
+       "mean": 2.68,
+       "median": 3.0
+      },
+      "sent_documents": {
+       "mean": 2.06,
+       "median": 2.5
+      },
+      "sent_est_tokens": {
+       "mean": 993.92,
+       "median": 1428.0
+      }
+     },
+     "sent": {
+      "n": 70,
+      "hits": {
+       "H": 4,
+       "T13": 2
+      },
+      "b_h_only": 2,
+      "c_arm_only": 0,
+      "p": 0.5,
+      "reading": "no detected difference",
+      "evidence_recall": {
+       "H": 0.4321,
+       "T13": 0.4012
+      }
+     },
+     "expanded": {
+      "n": 70,
+      "hits": {
+       "H": 11,
+       "T13": 7
+      },
+      "b_h_only": 4,
+      "c_arm_only": 0,
+      "p": 0.125,
+      "reading": "no detected difference",
+      "evidence_recall": {
+       "H": 0.5179,
+       "T13": 0.4512
+      }
+     }
+    },
+    "aircargo": {
+     "with_gold": 0,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 115,
+      "observed": 115,
+      "zero_kept": 2,
+      "zero_sent": 2,
+      "documents": {
+       "mean": 3.4260869565217393,
+       "median": 4
+      },
+      "sent_documents": {
+       "mean": 2.347826086956522,
+       "median": 3
+      },
+      "sent_est_tokens": {
+       "mean": 1431.2521739130434,
+       "median": 1702
+      }
+     },
+     "sent": "NOT_EVIDENCE",
+     "expanded": "NOT_EVIDENCE"
+    }
+   },
+   "pooled_deciding": {
+    "with_gold": 180,
+    "unread": 0,
+    "missing": 0,
+    "usage": {
+     "questions": 200,
+     "observed": 200,
+     "zero_kept": 75,
+     "zero_sent": 75,
+     "documents": {
+      "mean": 2.075,
+      "median": 1.0
+     },
+     "sent_documents": {
+      "mean": 2.01,
+      "median": 1.0
+     },
+     "sent_est_tokens": {
+      "mean": 682.53,
+      "median": 439.0
+     }
+    },
+    "sent": {
+     "n": 180,
+     "hits": {
+      "H": 125,
+      "T13": 78
+     },
+     "b_h_only": 47,
+     "c_arm_only": 0,
+     "p": 1.4210854715202004e-14,
+     "reading": "loss"
+    },
+    "expanded": {
+     "n": 180,
+     "hits": {
+      "H": 126,
+      "T13": 78
+     },
+     "b_h_only": 48,
+     "c_arm_only": 0,
+     "p": 7.105427357601002e-15,
+     "reading": "loss"
+    }
+   }
+  },
+  "T14": {
+   "per_base": {
+    "wixqa": {
+     "with_gold": 100,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 100,
+      "observed": 100,
+      "zero_kept": 30,
+      "zero_sent": 30,
+      "documents": {
+       "mean": 2.73,
+       "median": 3.0
+      },
+      "sent_documents": {
+       "mean": 2.65,
+       "median": 3.0
+      },
+      "sent_est_tokens": {
+       "mean": 904.08,
+       "median": 1062.5
+      }
+     },
+     "sent": {
+      "n": 100,
+      "hits": {
+       "H": 67,
+       "T14": 48
+      },
+      "b_h_only": 19,
+      "c_arm_only": 0,
+      "p": 3.814697265625e-06,
+      "reading": "loss",
+      "gold_articles": {
+       "H": 0.6317,
+       "T14": 0.45
+      }
+     },
+     "expanded": {
+      "n": 100,
+      "hits": {
+       "H": 68,
+       "T14": 48
+      },
+      "b_h_only": 20,
+      "c_arm_only": 0,
+      "p": 1.9073486328125e-06,
+      "reading": "loss",
+      "gold_articles": {
+       "H": 0.6417,
+       "T14": 0.45
+      }
+     }
+    },
+    "conditionalqa": {
+     "with_gold": 80,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 100,
+      "observed": 100,
+      "zero_kept": 55,
+      "zero_sent": 55,
+      "documents": {
+       "mean": 1.14,
+       "median": 0.0
+      },
+      "sent_documents": {
+       "mean": 1.11,
+       "median": 0.0
+      },
+      "sent_est_tokens": {
+       "mean": 374.3,
+       "median": 0.0
+      }
+     },
+     "sent": {
+      "n": 80,
+      "hits": {
+       "H": 58,
+       "T14": 26
+      },
+      "b_h_only": 32,
+      "c_arm_only": 0,
+      "p": 4.656612873077393e-10,
+      "reading": "loss",
+      "evidence_recall": {
+       "H": 0.8064,
+       "T14": 0.4096
+      }
+     },
+     "expanded": {
+      "n": 80,
+      "hits": {
+       "H": 58,
+       "T14": 26
+      },
+      "b_h_only": 32,
+      "c_arm_only": 0,
+      "p": 4.656612873077393e-10,
+      "reading": "loss",
+      "evidence_recall": {
+       "H": 0.8064,
+       "T14": 0.4096
+      }
+     }
+    },
+    "multihoprag": {
+     "with_gold": 70,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 100,
+      "observed": 100,
+      "zero_kept": 35,
+      "zero_sent": 35,
+      "documents": {
+       "mean": 2.56,
+       "median": 2.0
+      },
+      "sent_documents": {
+       "mean": 1.97,
+       "median": 2.0
+      },
+      "sent_est_tokens": {
+       "mean": 948.83,
+       "median": 1224.5
+      }
+     },
+     "sent": {
+      "n": 70,
+      "hits": {
+       "H": 4,
+       "T14": 2
+      },
+      "b_h_only": 2,
+      "c_arm_only": 0,
+      "p": 0.5,
+      "reading": "no detected difference",
+      "evidence_recall": {
+       "H": 0.4321,
+       "T14": 0.3893
+      }
+     },
+     "expanded": {
+      "n": 70,
+      "hits": {
+       "H": 11,
+       "T14": 7
+      },
+      "b_h_only": 4,
+      "c_arm_only": 0,
+      "p": 0.125,
+      "reading": "no detected difference",
+      "evidence_recall": {
+       "H": 0.5179,
+       "T14": 0.4357
+      }
+     }
+    },
+    "aircargo": {
+     "with_gold": 0,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 115,
+      "observed": 115,
+      "zero_kept": 5,
+      "zero_sent": 5,
+      "documents": {
+       "mean": 3.234782608695652,
+       "median": 3
+      },
+      "sent_documents": {
+       "mean": 2.234782608695652,
+       "median": 2
+      },
+      "sent_est_tokens": {
+       "mean": 1371.3739130434783,
+       "median": 1682
+      }
+     },
+     "sent": "NOT_EVIDENCE",
+     "expanded": "NOT_EVIDENCE"
+    }
+   },
+   "pooled_deciding": {
+    "with_gold": 180,
+    "unread": 0,
+    "missing": 0,
+    "usage": {
+     "questions": 200,
+     "observed": 200,
+     "zero_kept": 85,
+     "zero_sent": 85,
+     "documents": {
+      "mean": 1.935,
+      "median": 1.0
+     },
+     "sent_documents": {
+      "mean": 1.88,
+      "median": 1.0
+     },
+     "sent_est_tokens": {
+      "mean": 639.19,
+      "median": 362.5
+     }
+    },
+    "sent": {
+     "n": 180,
+     "hits": {
+      "H": 125,
+      "T14": 74
+     },
+     "b_h_only": 51,
+     "c_arm_only": 0,
+     "p": 8.881784197001252e-16,
+     "reading": "loss"
+    },
+    "expanded": {
+     "n": 180,
+     "hits": {
+      "H": 126,
+      "T14": 74
+     },
+     "b_h_only": 52,
+     "c_arm_only": 0,
+     "p": 4.440892098500626e-16,
+     "reading": "loss"
+    }
+   }
+  },
+  "T15": {
+   "per_base": {
+    "wixqa": {
+     "with_gold": 100,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 100,
+      "observed": 100,
+      "zero_kept": 34,
+      "zero_sent": 34,
+      "documents": {
+       "mean": 2.6,
+       "median": 3.0
+      },
+      "sent_documents": {
+       "mean": 2.52,
+       "median": 3.0
+      },
+      "sent_est_tokens": {
+       "mean": 859.77,
+       "median": 954.0
+      }
+     },
+     "sent": {
+      "n": 100,
+      "hits": {
+       "H": 67,
+       "T15": 44
+      },
+      "b_h_only": 23,
+      "c_arm_only": 0,
+      "p": 2.384185791015625e-07,
+      "reading": "loss",
+      "gold_articles": {
+       "H": 0.6317,
+       "T15": 0.415
+      }
+     },
+     "expanded": {
+      "n": 100,
+      "hits": {
+       "H": 68,
+       "T15": 44
+      },
+      "b_h_only": 24,
+      "c_arm_only": 0,
+      "p": 1.1920928955078125e-07,
+      "reading": "loss",
+      "gold_articles": {
+       "H": 0.6417,
+       "T15": 0.415
+      }
+     }
+    },
+    "conditionalqa": {
+     "with_gold": 80,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 100,
+      "observed": 100,
+      "zero_kept": 58,
+      "zero_sent": 58,
+      "documents": {
+       "mean": 1.02,
+       "median": 0.0
+      },
+      "sent_documents": {
+       "mean": 0.99,
+       "median": 0.0
+      },
+      "sent_est_tokens": {
+       "mean": 331.65,
+       "median": 0.0
+      }
+     },
+     "sent": {
+      "n": 80,
+      "hits": {
+       "H": 58,
+       "T15": 23
+      },
+      "b_h_only": 35,
+      "c_arm_only": 0,
+      "p": 5.820766091346741e-11,
+      "reading": "loss",
+      "evidence_recall": {
+       "H": 0.8064,
+       "T15": 0.3721
+      }
+     },
+     "expanded": {
+      "n": 80,
+      "hits": {
+       "H": 58,
+       "T15": 23
+      },
+      "b_h_only": 35,
+      "c_arm_only": 0,
+      "p": 5.820766091346741e-11,
+      "reading": "loss",
+      "evidence_recall": {
+       "H": 0.8064,
+       "T15": 0.3721
+      }
+     }
+    },
+    "multihoprag": {
+     "with_gold": 70,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 100,
+      "observed": 100,
+      "zero_kept": 38,
+      "zero_sent": 38,
+      "documents": {
+       "mean": 2.44,
+       "median": 2.0
+      },
+      "sent_documents": {
+       "mean": 1.9,
+       "median": 2.0
+      },
+      "sent_est_tokens": {
+       "mean": 919.28,
+       "median": 1169.0
+      }
+     },
+     "sent": {
+      "n": 70,
+      "hits": {
+       "H": 4,
+       "T15": 2
+      },
+      "b_h_only": 2,
+      "c_arm_only": 0,
+      "p": 0.5,
+      "reading": "no detected difference",
+      "evidence_recall": {
+       "H": 0.4321,
+       "T15": 0.3726
+      }
+     },
+     "expanded": {
+      "n": 70,
+      "hits": {
+       "H": 11,
+       "T15": 7
+      },
+      "b_h_only": 4,
+      "c_arm_only": 0,
+      "p": 0.125,
+      "reading": "no detected difference",
+      "evidence_recall": {
+       "H": 0.5179,
+       "T15": 0.4155
+      }
+     }
+    },
+    "aircargo": {
+     "with_gold": 0,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 115,
+      "observed": 115,
+      "zero_kept": 10,
+      "zero_sent": 10,
+      "documents": {
+       "mean": 3.034782608695652,
+       "median": 3
+      },
+      "sent_documents": {
+       "mean": 2.121739130434783,
+       "median": 2
+      },
+      "sent_est_tokens": {
+       "mean": 1301.0869565217392,
+       "median": 1670
+      }
+     },
+     "sent": "NOT_EVIDENCE",
+     "expanded": "NOT_EVIDENCE"
+    }
+   },
+   "pooled_deciding": {
+    "with_gold": 180,
+    "unread": 0,
+    "missing": 0,
+    "usage": {
+     "questions": 200,
+     "observed": 200,
+     "zero_kept": 92,
+     "zero_sent": 92,
+     "documents": {
+      "mean": 1.81,
+      "median": 1.0
+     },
+     "sent_documents": {
+      "mean": 1.755,
+      "median": 1.0
+     },
+     "sent_est_tokens": {
+      "mean": 595.71,
+      "median": 317.5
+     }
+    },
+    "sent": {
+     "n": 180,
+     "hits": {
+      "H": 125,
+      "T15": 67
+     },
+     "b_h_only": 58,
+     "c_arm_only": 0,
+     "p": 6.938893903907228e-18,
+     "reading": "loss"
+    },
+    "expanded": {
+     "n": 180,
+     "hits": {
+      "H": 126,
+      "T15": 67
+     },
+     "b_h_only": 59,
+     "c_arm_only": 0,
+     "p": 3.469446951953614e-18,
+     "reading": "loss"
+    }
+   }
+  },
+  "T16": {
+   "per_base": {
+    "wixqa": {
+     "with_gold": 100,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 100,
+      "observed": 100,
+      "zero_kept": 36,
+      "zero_sent": 36,
+      "documents": {
+       "mean": 2.47,
+       "median": 2.5
+      },
+      "sent_documents": {
+       "mean": 2.4,
+       "median": 2.5
+      },
+      "sent_est_tokens": {
+       "mean": 817.38,
+       "median": 793.5
+      }
+     },
+     "sent": {
+      "n": 100,
+      "hits": {
+       "H": 67,
+       "T16": 43
+      },
+      "b_h_only": 24,
+      "c_arm_only": 0,
+      "p": 1.1920928955078125e-07,
+      "reading": "loss",
+      "gold_articles": {
+       "H": 0.6317,
+       "T16": 0.405
+      }
+     },
+     "expanded": {
+      "n": 100,
+      "hits": {
+       "H": 68,
+       "T16": 43
+      },
+      "b_h_only": 25,
+      "c_arm_only": 0,
+      "p": 5.960464477539063e-08,
+      "reading": "loss",
+      "gold_articles": {
+       "H": 0.6417,
+       "T16": 0.405
+      }
+     }
+    },
+    "conditionalqa": {
+     "with_gold": 80,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 100,
+      "observed": 100,
+      "zero_kept": 63,
+      "zero_sent": 63,
+      "documents": {
+       "mean": 0.88,
+       "median": 0.0
+      },
+      "sent_documents": {
+       "mean": 0.86,
+       "median": 0.0
+      },
+      "sent_est_tokens": {
+       "mean": 282.41,
+       "median": 0.0
+      }
+     },
+     "sent": {
+      "n": 80,
+      "hits": {
+       "H": 58,
+       "T16": 20
+      },
+      "b_h_only": 38,
+      "c_arm_only": 0,
+      "p": 7.275957614183426e-12,
+      "reading": "loss",
+      "evidence_recall": {
+       "H": 0.8064,
+       "T16": 0.3346
+      }
+     },
+     "expanded": {
+      "n": 80,
+      "hits": {
+       "H": 58,
+       "T16": 20
+      },
+      "b_h_only": 38,
+      "c_arm_only": 0,
+      "p": 7.275957614183426e-12,
+      "reading": "loss",
+      "evidence_recall": {
+       "H": 0.8064,
+       "T16": 0.3346
+      }
+     }
+    },
+    "multihoprag": {
+     "with_gold": 70,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 100,
+      "observed": 100,
+      "zero_kept": 40,
+      "zero_sent": 40,
+      "documents": {
+       "mean": 2.32,
+       "median": 2.0
+      },
+      "sent_documents": {
+       "mean": 1.81,
+       "median": 2.0
+      },
+      "sent_est_tokens": {
+       "mean": 881.35,
+       "median": 1032.0
+      }
+     },
+     "sent": {
+      "n": 70,
+      "hits": {
+       "H": 4,
+       "T16": 2
+      },
+      "b_h_only": 2,
+      "c_arm_only": 0,
+      "p": 0.5,
+      "reading": "no detected difference",
+      "evidence_recall": {
+       "H": 0.4321,
+       "T16": 0.3524
+      }
+     },
+     "expanded": {
+      "n": 70,
+      "hits": {
+       "H": 11,
+       "T16": 7
+      },
+      "b_h_only": 4,
+      "c_arm_only": 0,
+      "p": 0.125,
+      "reading": "no detected difference",
+      "evidence_recall": {
+       "H": 0.5179,
+       "T16": 0.3952
+      }
+     }
+    },
+    "aircargo": {
+     "with_gold": 0,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 115,
+      "observed": 115,
+      "zero_kept": 12,
+      "zero_sent": 12,
+      "documents": {
+       "mean": 2.8173913043478263,
+       "median": 3
+      },
+      "sent_documents": {
+       "mean": 2.008695652173913,
+       "median": 2
+      },
+      "sent_est_tokens": {
+       "mean": 1231.2347826086957,
+       "median": 1631
+      }
+     },
+     "sent": "NOT_EVIDENCE",
+     "expanded": "NOT_EVIDENCE"
+    }
+   },
+   "pooled_deciding": {
+    "with_gold": 180,
+    "unread": 0,
+    "missing": 0,
+    "usage": {
+     "questions": 200,
+     "observed": 200,
+     "zero_kept": 99,
+     "zero_sent": 99,
+     "documents": {
+      "mean": 1.675,
+      "median": 1.0
+     },
+     "sent_documents": {
+      "mean": 1.63,
+      "median": 1.0
+     },
+     "sent_est_tokens": {
+      "mean": 549.895,
+      "median": 148.5
+     }
+    },
+    "sent": {
+     "n": 180,
+     "hits": {
+      "H": 125,
+      "T16": 63
+     },
+     "b_h_only": 62,
+     "c_arm_only": 0,
+     "p": 4.336808689942018e-19,
+     "reading": "loss"
+    },
+    "expanded": {
+     "n": 180,
+     "hits": {
+      "H": 126,
+      "T16": 63
+     },
+     "b_h_only": 63,
+     "c_arm_only": 0,
+     "p": 2.168404344971009e-19,
+     "reading": "loss"
+    }
+   }
+  },
+  "T17": {
+   "per_base": {
+    "wixqa": {
+     "with_gold": 100,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 100,
+      "observed": 100,
+      "zero_kept": 42,
+      "zero_sent": 42,
+      "documents": {
+       "mean": 2.26,
+       "median": 2.0
+      },
+      "sent_documents": {
+       "mean": 2.19,
+       "median": 2.0
+      },
+      "sent_est_tokens": {
+       "mean": 746.52,
+       "median": 629.0
+      }
+     },
+     "sent": {
+      "n": 100,
+      "hits": {
+       "H": 67,
+       "T17": 39
+      },
+      "b_h_only": 28,
+      "c_arm_only": 0,
+      "p": 7.450580596923828e-09,
+      "reading": "loss",
+      "gold_articles": {
+       "H": 0.6317,
+       "T17": 0.37
+      }
+     },
+     "expanded": {
+      "n": 100,
+      "hits": {
+       "H": 68,
+       "T17": 39
+      },
+      "b_h_only": 29,
+      "c_arm_only": 0,
+      "p": 3.725290298461914e-09,
+      "reading": "loss",
+      "gold_articles": {
+       "H": 0.6417,
+       "T17": 0.37
+      }
+     }
+    },
+    "conditionalqa": {
+     "with_gold": 80,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 100,
+      "observed": 100,
+      "zero_kept": 68,
+      "zero_sent": 68,
+      "documents": {
+       "mean": 0.73,
+       "median": 0.0
+      },
+      "sent_documents": {
+       "mean": 0.72,
+       "median": 0.0
+      },
+      "sent_est_tokens": {
+       "mean": 239.26,
+       "median": 0.0
+      }
+     },
+     "sent": {
+      "n": 80,
+      "hits": {
+       "H": 58,
+       "T17": 20
+      },
+      "b_h_only": 38,
+      "c_arm_only": 0,
+      "p": 7.275957614183426e-12,
+      "reading": "loss",
+      "evidence_recall": {
+       "H": 0.8064,
+       "T17": 0.3139
+      }
+     },
+     "expanded": {
+      "n": 80,
+      "hits": {
+       "H": 58,
+       "T17": 20
+      },
+      "b_h_only": 38,
+      "c_arm_only": 0,
+      "p": 7.275957614183426e-12,
+      "reading": "loss",
+      "evidence_recall": {
+       "H": 0.8064,
+       "T17": 0.3139
+      }
+     }
+    },
+    "multihoprag": {
+     "with_gold": 70,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 100,
+      "observed": 100,
+      "zero_kept": 42,
+      "zero_sent": 42,
+      "documents": {
+       "mean": 2.12,
+       "median": 1.0
+      },
+      "sent_documents": {
+       "mean": 1.67,
+       "median": 1.0
+      },
+      "sent_est_tokens": {
+       "mean": 821.31,
+       "median": 778.5
+      }
+     },
+     "sent": {
+      "n": 70,
+      "hits": {
+       "H": 4,
+       "T17": 2
+      },
+      "b_h_only": 2,
+      "c_arm_only": 0,
+      "p": 0.5,
+      "reading": "no detected difference",
+      "evidence_recall": {
+       "H": 0.4321,
+       "T17": 0.3369
+      }
+     },
+     "expanded": {
+      "n": 70,
+      "hits": {
+       "H": 11,
+       "T17": 7
+      },
+      "b_h_only": 4,
+      "c_arm_only": 0,
+      "p": 0.125,
+      "reading": "no detected difference",
+      "evidence_recall": {
+       "H": 0.5179,
+       "T17": 0.3762
+      }
+     }
+    },
+    "aircargo": {
+     "with_gold": 0,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 115,
+      "observed": 115,
+      "zero_kept": 13,
+      "zero_sent": 13,
+      "documents": {
+       "mean": 2.626086956521739,
+       "median": 2
+      },
+      "sent_documents": {
+       "mean": 1.8956521739130434,
+       "median": 2
+      },
+      "sent_est_tokens": {
+       "mean": 1155.391304347826,
+       "median": 1377
+      }
+     },
+     "sent": "NOT_EVIDENCE",
+     "expanded": "NOT_EVIDENCE"
+    }
+   },
+   "pooled_deciding": {
+    "with_gold": 180,
+    "unread": 0,
+    "missing": 0,
+    "usage": {
+     "questions": 200,
+     "observed": 200,
+     "zero_kept": 110,
+     "zero_sent": 110,
+     "documents": {
+      "mean": 1.495,
+      "median": 0.0
+     },
+     "sent_documents": {
+      "mean": 1.455,
+      "median": 0.0
+     },
+     "sent_est_tokens": {
+      "mean": 492.89,
+      "median": 0.0
+     }
+    },
+    "sent": {
+     "n": 180,
+     "hits": {
+      "H": 125,
+      "T17": 59
+     },
+     "b_h_only": 66,
+     "c_arm_only": 0,
+     "p": 2.710505431213761e-20,
+     "reading": "loss"
+    },
+    "expanded": {
+     "n": 180,
+     "hits": {
+      "H": 126,
+      "T17": 59
+     },
+     "b_h_only": 67,
+     "c_arm_only": 0,
+     "p": 1.3552527156068805e-20,
+     "reading": "loss"
+    }
+   }
+  },
+  "T18": {
+   "per_base": {
+    "wixqa": {
+     "with_gold": 100,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 100,
+      "observed": 100,
+      "zero_kept": 44,
+      "zero_sent": 44,
+      "documents": {
+       "mean": 2.06,
+       "median": 1.0
+      },
+      "sent_documents": {
+       "mean": 2,
+       "median": 1.0
+      },
+      "sent_est_tokens": {
+       "mean": 697.8,
+       "median": 448.5
+      }
+     },
+     "sent": {
+      "n": 100,
+      "hits": {
+       "H": 67,
+       "T18": 38
+      },
+      "b_h_only": 29,
+      "c_arm_only": 0,
+      "p": 3.725290298461914e-09,
+      "reading": "loss",
+      "gold_articles": {
+       "H": 0.6317,
+       "T18": 0.36
+      }
+     },
+     "expanded": {
+      "n": 100,
+      "hits": {
+       "H": 68,
+       "T18": 38
+      },
+      "b_h_only": 30,
+      "c_arm_only": 0,
+      "p": 1.862645149230957e-09,
+      "reading": "loss",
+      "gold_articles": {
+       "H": 0.6417,
+       "T18": 0.36
+      }
+     }
+    },
+    "conditionalqa": {
+     "with_gold": 80,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 100,
+      "observed": 100,
+      "zero_kept": 74,
+      "zero_sent": 74,
+      "documents": {
+       "mean": 0.52,
+       "median": 0.0
+      },
+      "sent_documents": {
+       "mean": 0.52,
+       "median": 0.0
+      },
+      "sent_est_tokens": {
+       "mean": 172.23,
+       "median": 0.0
+      }
+     },
+     "sent": {
+      "n": 80,
+      "hits": {
+       "H": 58,
+       "T18": 15
+      },
+      "b_h_only": 43,
+      "c_arm_only": 0,
+      "p": 2.2737367544323206e-13,
+      "reading": "loss",
+      "evidence_recall": {
+       "H": 0.8064,
+       "T18": 0.2347
+      }
+     },
+     "expanded": {
+      "n": 80,
+      "hits": {
+       "H": 58,
+       "T18": 15
+      },
+      "b_h_only": 43,
+      "c_arm_only": 0,
+      "p": 2.2737367544323206e-13,
+      "reading": "loss",
+      "evidence_recall": {
+       "H": 0.8064,
+       "T18": 0.2347
+      }
+     }
+    },
+    "multihoprag": {
+     "with_gold": 70,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 100,
+      "observed": 100,
+      "zero_kept": 45,
+      "zero_sent": 45,
+      "documents": {
+       "mean": 1.8,
+       "median": 1.0
+      },
+      "sent_documents": {
+       "mean": 1.48,
+       "median": 1.0
+      },
+      "sent_est_tokens": {
+       "mean": 742.8,
+       "median": 551.5
+      }
+     },
+     "sent": {
+      "n": 70,
+      "hits": {
+       "H": 4,
+       "T18": 2
+      },
+      "b_h_only": 2,
+      "c_arm_only": 0,
+      "p": 0.5,
+      "reading": "no detected difference",
+      "evidence_recall": {
+       "H": 0.4321,
+       "T18": 0.3083
+      }
+     },
+     "expanded": {
+      "n": 70,
+      "hits": {
+       "H": 11,
+       "T18": 7
+      },
+      "b_h_only": 4,
+      "c_arm_only": 0,
+      "p": 0.125,
+      "reading": "no detected difference",
+      "evidence_recall": {
+       "H": 0.5179,
+       "T18": 0.3393
+      }
+     }
+    },
+    "aircargo": {
+     "with_gold": 0,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 115,
+      "observed": 115,
+      "zero_kept": 16,
+      "zero_sent": 16,
+      "documents": {
+       "mean": 2.2869565217391306,
+       "median": 1
+      },
+      "sent_documents": {
+       "mean": 1.7130434782608697,
+       "median": 1
+      },
+      "sent_est_tokens": {
+       "mean": 1060.1739130434783,
+       "median": 963
+      }
+     },
+     "sent": "NOT_EVIDENCE",
+     "expanded": "NOT_EVIDENCE"
+    }
+   },
+   "pooled_deciding": {
+    "with_gold": 180,
+    "unread": 0,
+    "missing": 0,
+    "usage": {
+     "questions": 200,
+     "observed": 200,
+     "zero_kept": 118,
+     "zero_sent": 118,
+     "documents": {
+      "mean": 1.29,
+      "median": 0.0
+     },
+     "sent_documents": {
+      "mean": 1.26,
+      "median": 0.0
+     },
+     "sent_est_tokens": {
+      "mean": 435.015,
+      "median": 0.0
+     }
+    },
+    "sent": {
+     "n": 180,
+     "hits": {
+      "H": 125,
+      "T18": 53
+     },
+     "b_h_only": 72,
+     "c_arm_only": 0,
+     "p": 4.235164736271502e-22,
+     "reading": "loss"
+    },
+    "expanded": {
+     "n": 180,
+     "hits": {
+      "H": 126,
+      "T18": 53
+     },
+     "b_h_only": 73,
+     "c_arm_only": 0,
+     "p": 2.117582368135751e-22,
+     "reading": "loss"
+    }
+   }
+  },
+  "T19": {
+   "per_base": {
+    "wixqa": {
+     "with_gold": 100,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 100,
+      "observed": 100,
+      "zero_kept": 49,
+      "zero_sent": 49,
+      "documents": {
+       "mean": 1.63,
+       "median": 1.0
+      },
+      "sent_documents": {
+       "mean": 1.58,
+       "median": 1.0
+      },
+      "sent_est_tokens": {
+       "mean": 553.15,
+       "median": 103.5
+      }
+     },
+     "sent": {
+      "n": 100,
+      "hits": {
+       "H": 67,
+       "T19": 31
+      },
+      "b_h_only": 36,
+      "c_arm_only": 0,
+      "p": 2.9103830456733704e-11,
+      "reading": "loss",
+      "gold_articles": {
+       "H": 0.6317,
+       "T19": 0.295
+      }
+     },
+     "expanded": {
+      "n": 100,
+      "hits": {
+       "H": 68,
+       "T19": 31
+      },
+      "b_h_only": 37,
+      "c_arm_only": 0,
+      "p": 1.4551915228366852e-11,
+      "reading": "loss",
+      "gold_articles": {
+       "H": 0.6417,
+       "T19": 0.295
+      }
+     }
+    },
+    "conditionalqa": {
+     "with_gold": 80,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 100,
+      "observed": 100,
+      "zero_kept": 80,
+      "zero_sent": 80,
+      "documents": {
+       "mean": 0.35,
+       "median": 0.0
+      },
+      "sent_documents": {
+       "mean": 0.35,
+       "median": 0.0
+      },
+      "sent_est_tokens": {
+       "mean": 110.95,
+       "median": 0.0
+      }
+     },
+     "sent": {
+      "n": 80,
+      "hits": {
+       "H": 58,
+       "T19": 11
+      },
+      "b_h_only": 47,
+      "c_arm_only": 0,
+      "p": 1.4210854715202004e-14,
+      "reading": "loss",
+      "evidence_recall": {
+       "H": 0.8064,
+       "T19": 0.1779
+      }
+     },
+     "expanded": {
+      "n": 80,
+      "hits": {
+       "H": 58,
+       "T19": 11
+      },
+      "b_h_only": 47,
+      "c_arm_only": 0,
+      "p": 1.4210854715202004e-14,
+      "reading": "loss",
+      "evidence_recall": {
+       "H": 0.8064,
+       "T19": 0.1779
+      }
+     }
+    },
+    "multihoprag": {
+     "with_gold": 70,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 100,
+      "observed": 100,
+      "zero_kept": 51,
+      "zero_sent": 51,
+      "documents": {
+       "mean": 1.27,
+       "median": 0.0
+      },
+      "sent_documents": {
+       "mean": 1.1,
+       "median": 0.0
+      },
+      "sent_est_tokens": {
+       "mean": 570.51,
+       "median": 0.0
+      }
+     },
+     "sent": {
+      "n": 70,
+      "hits": {
+       "H": 4,
+       "T19": 2
+      },
+      "b_h_only": 2,
+      "c_arm_only": 0,
+      "p": 0.5,
+      "reading": "no detected difference",
+      "evidence_recall": {
+       "H": 0.4321,
+       "T19": 0.2655
+      }
+     },
+     "expanded": {
+      "n": 70,
+      "hits": {
+       "H": 11,
+       "T19": 5
+      },
+      "b_h_only": 6,
+      "c_arm_only": 0,
+      "p": 0.03125,
+      "reading": "loss",
+      "evidence_recall": {
+       "H": 0.5179,
+       "T19": 0.2821
+      }
+     }
+    },
+    "aircargo": {
+     "with_gold": 0,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 115,
+      "observed": 115,
+      "zero_kept": 28,
+      "zero_sent": 28,
+      "documents": {
+       "mean": 1.7217391304347827,
+       "median": 1
+      },
+      "sent_documents": {
+       "mean": 1.382608695652174,
+       "median": 1
+      },
+      "sent_est_tokens": {
+       "mean": 850.2,
+       "median": 685
+      }
+     },
+     "sent": "NOT_EVIDENCE",
+     "expanded": "NOT_EVIDENCE"
+    }
+   },
+   "pooled_deciding": {
+    "with_gold": 180,
+    "unread": 0,
+    "missing": 0,
+    "usage": {
+     "questions": 200,
+     "observed": 200,
+     "zero_kept": 129,
+     "zero_sent": 129,
+     "documents": {
+      "mean": 0.99,
+      "median": 0.0
+     },
+     "sent_documents": {
+      "mean": 0.965,
+      "median": 0.0
+     },
+     "sent_est_tokens": {
+      "mean": 332.05,
+      "median": 0.0
+     }
+    },
+    "sent": {
+     "n": 180,
+     "hits": {
+      "H": 125,
+      "T19": 42
+     },
+     "b_h_only": 83,
+     "c_arm_only": 0,
+     "p": 2.0679515313825692e-25,
+     "reading": "loss"
+    },
+    "expanded": {
+     "n": 180,
+     "hits": {
+      "H": 126,
+      "T19": 42
+     },
+     "b_h_only": 84,
+     "c_arm_only": 0,
+     "p": 1.0339757656912846e-25,
+     "reading": "loss"
+    }
+   }
+  },
+  "T20": {
+   "per_base": {
+    "wixqa": {
+     "with_gold": 100,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 100,
+      "observed": 100,
+      "zero_kept": 100,
+      "zero_sent": 100,
+      "documents": {
+       "mean": 0,
+       "median": 0.0
+      },
+      "sent_documents": {
+       "mean": 0,
+       "median": 0.0
+      },
+      "sent_est_tokens": {
+       "mean": 0,
+       "median": 0.0
+      }
+     },
+     "sent": {
+      "n": 100,
+      "hits": {
+       "H": 67,
+       "T20": 0
+      },
+      "b_h_only": 67,
+      "c_arm_only": 0,
+      "p": 1.3552527156068805e-20,
+      "reading": "loss",
+      "gold_articles": {
+       "H": 0.6317,
+       "T20": 0.0
+      }
+     },
+     "expanded": {
+      "n": 100,
+      "hits": {
+       "H": 68,
+       "T20": 0
+      },
+      "b_h_only": 68,
+      "c_arm_only": 0,
+      "p": 6.776263578034403e-21,
+      "reading": "loss",
+      "gold_articles": {
+       "H": 0.6417,
+       "T20": 0.0
+      }
+     }
+    },
+    "conditionalqa": {
+     "with_gold": 80,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 100,
+      "observed": 100,
+      "zero_kept": 100,
+      "zero_sent": 100,
+      "documents": {
+       "mean": 0,
+       "median": 0.0
+      },
+      "sent_documents": {
+       "mean": 0,
+       "median": 0.0
+      },
+      "sent_est_tokens": {
+       "mean": 0,
+       "median": 0.0
+      }
+     },
+     "sent": {
+      "n": 80,
+      "hits": {
+       "H": 58,
+       "T20": 0
+      },
+      "b_h_only": 58,
+      "c_arm_only": 0,
+      "p": 6.938893903907228e-18,
+      "reading": "loss",
+      "evidence_recall": {
+       "H": 0.8064,
+       "T20": 0.0
+      }
+     },
+     "expanded": {
+      "n": 80,
+      "hits": {
+       "H": 58,
+       "T20": 0
+      },
+      "b_h_only": 58,
+      "c_arm_only": 0,
+      "p": 6.938893903907228e-18,
+      "reading": "loss",
+      "evidence_recall": {
+       "H": 0.8064,
+       "T20": 0.0
+      }
+     }
+    },
+    "multihoprag": {
+     "with_gold": 70,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 100,
+      "observed": 100,
+      "zero_kept": 100,
+      "zero_sent": 100,
+      "documents": {
+       "mean": 0,
+       "median": 0.0
+      },
+      "sent_documents": {
+       "mean": 0,
+       "median": 0.0
+      },
+      "sent_est_tokens": {
+       "mean": 0,
+       "median": 0.0
+      }
+     },
+     "sent": {
+      "n": 70,
+      "hits": {
+       "H": 4,
+       "T20": 0
+      },
+      "b_h_only": 4,
+      "c_arm_only": 0,
+      "p": 0.125,
+      "reading": "no detected difference",
+      "evidence_recall": {
+       "H": 0.4321,
+       "T20": 0.0
+      }
+     },
+     "expanded": {
+      "n": 70,
+      "hits": {
+       "H": 11,
+       "T20": 0
+      },
+      "b_h_only": 11,
+      "c_arm_only": 0,
+      "p": 0.0009765625,
+      "reading": "loss",
+      "evidence_recall": {
+       "H": 0.5179,
+       "T20": 0.0
+      }
+     }
+    },
+    "aircargo": {
+     "with_gold": 0,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 115,
+      "observed": 115,
+      "zero_kept": 115,
+      "zero_sent": 115,
+      "documents": {
+       "mean": 0,
+       "median": 0
+      },
+      "sent_documents": {
+       "mean": 0,
+       "median": 0
+      },
+      "sent_est_tokens": {
+       "mean": 0,
+       "median": 0
+      }
+     },
+     "sent": "NOT_EVIDENCE",
+     "expanded": "NOT_EVIDENCE"
+    }
+   },
+   "pooled_deciding": {
+    "with_gold": 180,
+    "unread": 0,
+    "missing": 0,
+    "usage": {
+     "questions": 200,
+     "observed": 200,
+     "zero_kept": 200,
+     "zero_sent": 200,
+     "documents": {
+      "mean": 0,
+      "median": 0.0
+     },
+     "sent_documents": {
+      "mean": 0,
+      "median": 0.0
+     },
+     "sent_est_tokens": {
+      "mean": 0,
+      "median": 0.0
+     }
+    },
+    "sent": {
+     "n": 180,
+     "hits": {
+      "H": 125,
+      "T20": 0
+     },
+     "b_h_only": 125,
+     "c_arm_only": 0,
+     "p": 4.70197740328915e-38,
+     "reading": "loss"
+    },
+    "expanded": {
+     "n": 180,
+     "hits": {
+      "H": 126,
+      "T20": 0
+     },
+     "b_h_only": 126,
+     "c_arm_only": 0,
+     "p": 2.350988701644575e-38,
+     "reading": "loss"
+    }
+   }
+  },
+  "A": {
+   "per_base": {
+    "wixqa": {
+     "with_gold": 100,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 100,
+      "observed": 100,
+      "zero_kept": 0,
+      "zero_sent": 0,
+      "documents": {
+       "mean": 2.46,
+       "median": 2.0
+      },
+      "sent_documents": {
+       "mean": 2.45,
+       "median": 2.0
+      },
+      "sent_est_tokens": {
+       "mean": 897.08,
+       "median": 933.0
+      }
+     },
+     "sent": {
+      "n": 100,
+      "hits": {
+       "H": 67,
+       "A": 52
+      },
+      "b_h_only": 15,
+      "c_arm_only": 0,
+      "p": 6.103515625e-05,
+      "reading": "loss",
+      "gold_articles": {
+       "H": 0.6317,
+       "A": 0.48
+      }
+     },
+     "expanded": {
+      "n": 100,
+      "hits": {
+       "H": 68,
+       "A": 52
+      },
+      "b_h_only": 16,
+      "c_arm_only": 0,
+      "p": 3.0517578125e-05,
+      "reading": "loss",
+      "gold_articles": {
+       "H": 0.6417,
+       "A": 0.48
+      }
+     }
+    },
+    "conditionalqa": {
+     "with_gold": 80,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 100,
+      "observed": 100,
+      "zero_kept": 0,
+      "zero_sent": 0,
+      "documents": {
+       "mean": 1.75,
+       "median": 1.0
+      },
+      "sent_documents": {
+       "mean": 1.75,
+       "median": 1.0
+      },
+      "sent_est_tokens": {
+       "mean": 616.54,
+       "median": 557.0
+      }
+     },
+     "sent": {
+      "n": 80,
+      "hits": {
+       "H": 58,
+       "A": 38
+      },
+      "b_h_only": 20,
+      "c_arm_only": 0,
+      "p": 1.9073486328125e-06,
+      "reading": "loss",
+      "evidence_recall": {
+       "H": 0.8064,
+       "A": 0.6508
+      }
+     },
+     "expanded": {
+      "n": 80,
+      "hits": {
+       "H": 58,
+       "A": 38
+      },
+      "b_h_only": 20,
+      "c_arm_only": 0,
+      "p": 1.9073486328125e-06,
+      "reading": "loss",
+      "evidence_recall": {
+       "H": 0.8064,
+       "A": 0.6508
+      }
+     }
+    },
+    "multihoprag": {
+     "with_gold": 70,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 100,
+      "observed": 100,
+      "zero_kept": 0,
+      "zero_sent": 0,
+      "documents": {
+       "mean": 2.04,
+       "median": 2.0
+      },
+      "sent_documents": {
+       "mean": 1.95,
+       "median": 2.0
+      },
+      "sent_est_tokens": {
+       "mean": 1078.24,
+       "median": 980.5
+      }
+     },
+     "sent": {
+      "n": 70,
+      "hits": {
+       "H": 4,
+       "A": 2
+      },
+      "b_h_only": 2,
+      "c_arm_only": 0,
+      "p": 0.5,
+      "reading": "no detected difference",
+      "evidence_recall": {
+       "H": 0.4321,
+       "A": 0.381
+      }
+     },
+     "expanded": {
+      "n": 70,
+      "hits": {
+       "H": 11,
+       "A": 2
+      },
+      "b_h_only": 9,
+      "c_arm_only": 0,
+      "p": 0.00390625,
+      "reading": "loss",
+      "evidence_recall": {
+       "H": 0.5179,
+       "A": 0.3845
+      }
+     }
+    },
+    "aircargo": {
+     "with_gold": 0,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 115,
+      "observed": 115,
+      "zero_kept": 0,
+      "zero_sent": 0,
+      "documents": {
+       "mean": 2.1043478260869564,
+       "median": 2
+      },
+      "sent_documents": {
+       "mean": 1.9043478260869566,
+       "median": 2
+      },
+      "sent_est_tokens": {
+       "mean": 1241.9565217391305,
+       "median": 1264
+      }
+     },
+     "sent": "NOT_EVIDENCE",
+     "expanded": "NOT_EVIDENCE"
+    }
+   },
+   "pooled_deciding": {
+    "with_gold": 180,
+    "unread": 0,
+    "missing": 0,
+    "usage": {
+     "questions": 200,
+     "observed": 200,
+     "zero_kept": 0,
+     "zero_sent": 0,
+     "documents": {
+      "mean": 2.105,
+      "median": 2.0
+     },
+     "sent_documents": {
+      "mean": 2.1,
+      "median": 2.0
+     },
+     "sent_est_tokens": {
+      "mean": 756.81,
+      "median": 631.5
+     }
+    },
+    "sent": {
+     "n": 180,
+     "hits": {
+      "H": 125,
+      "A": 90
+     },
+     "b_h_only": 35,
+     "c_arm_only": 0,
+     "p": 5.820766091346741e-11,
+     "reading": "loss"
+    },
+    "expanded": {
+     "n": 180,
+     "hits": {
+      "H": 126,
+      "A": 90
+     },
+     "b_h_only": 36,
+     "c_arm_only": 0,
+     "p": 2.9103830456733704e-11,
+     "reading": "loss"
+    }
+   }
+  },
+  "G": {
+   "per_base": {
+    "wixqa": {
+     "with_gold": 100,
+     "unread": 99,
+     "missing": 99,
+     "usage": {
+      "questions": 100,
+      "observed": 1,
+      "zero_kept": 0,
+      "zero_sent": 0,
+      "documents": {
+       "mean": 5,
+       "median": 5
+      },
+      "sent_documents": {
+       "mean": 5,
+       "median": 5
+      },
+      "sent_est_tokens": {
+       "mean": 1434,
+       "median": 1434
+      }
+     },
+     "sent": "NOT_EVIDENCE",
+     "expanded": "NOT_EVIDENCE"
+    },
+    "conditionalqa": {
+     "with_gold": 80,
+     "unread": 80,
+     "missing": 100,
+     "usage": {
+      "questions": 100,
+      "observed": 0,
+      "zero_kept": 0,
+      "zero_sent": 0,
+      "documents": {
+       "mean": null,
+       "median": null
+      },
+      "sent_documents": {
+       "mean": null,
+       "median": null
+      },
+      "sent_est_tokens": {
+       "mean": null,
+       "median": null
+      }
+     },
+     "sent": "NOT_EVIDENCE",
+     "expanded": "NOT_EVIDENCE"
+    },
+    "multihoprag": {
+     "with_gold": 70,
+     "unread": 70,
+     "missing": 100,
+     "usage": {
+      "questions": 100,
+      "observed": 0,
+      "zero_kept": 0,
+      "zero_sent": 0,
+      "documents": {
+       "mean": null,
+       "median": null
+      },
+      "sent_documents": {
+       "mean": null,
+       "median": null
+      },
+      "sent_est_tokens": {
+       "mean": null,
+       "median": null
+      }
+     },
+     "sent": "NOT_EVIDENCE",
+     "expanded": "NOT_EVIDENCE"
+    },
+    "aircargo": {
+     "with_gold": 0,
+     "unread": 0,
+     "missing": 114,
+     "usage": {
+      "questions": 115,
+      "observed": 1,
+      "zero_kept": 0,
+      "zero_sent": 0,
+      "documents": {
+       "mean": 4,
+       "median": 4
+      },
+      "sent_documents": {
+       "mean": 4,
+       "median": 4
+      },
+      "sent_est_tokens": {
+       "mean": 1642,
+       "median": 1642
+      }
+     },
+     "sent": "NOT_EVIDENCE",
+     "expanded": "NOT_EVIDENCE"
+    }
+   },
+   "pooled_deciding": {
+    "with_gold": 180,
+    "unread": 179,
+    "missing": 199,
+    "usage": {
+     "questions": 200,
+     "observed": 1,
+     "zero_kept": 0,
+     "zero_sent": 0,
+     "documents": {
+      "mean": 5,
+      "median": 5
+     },
+     "sent_documents": {
+      "mean": 5,
+      "median": 5
+     },
+     "sent_est_tokens": {
+      "mean": 1434,
+      "median": 1434
+     }
+    },
+    "sent": "NOT_EVIDENCE",
+    "expanded": "NOT_EVIDENCE"
+   },
+   "matched_per_base": {
+    "wixqa": {
+     "with_gold": 1,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 1,
+      "observed": 1,
+      "zero_kept": 0,
+      "zero_sent": 0,
+      "documents": {
+       "mean": 5,
+       "median": 5
+      },
+      "sent_documents": {
+       "mean": 5,
+       "median": 5
+      },
+      "sent_est_tokens": {
+       "mean": 1434,
+       "median": 1434
+      }
+     },
+     "sent": {
+      "n": 1,
+      "hits": {
+       "H": 1,
+       "G": 1
+      },
+      "b_h_only": 0,
+      "c_arm_only": 0,
+      "p": 1.0,
+      "reading": "no detected difference",
+      "gold_articles": {
+       "H": 1.0,
+       "G": 1.0
+      }
+     },
+     "expanded": {
+      "n": 1,
+      "hits": {
+       "H": 1,
+       "G": 1
+      },
+      "b_h_only": 0,
+      "c_arm_only": 0,
+      "p": 1.0,
+      "reading": "no detected difference",
+      "gold_articles": {
+       "H": 1.0,
+       "G": 1.0
+      }
+     }
+    },
+    "conditionalqa": {
+     "with_gold": 0,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 0,
+      "observed": 0,
+      "zero_kept": 0,
+      "zero_sent": 0,
+      "documents": {
+       "mean": null,
+       "median": null
+      },
+      "sent_documents": {
+       "mean": null,
+       "median": null
+      },
+      "sent_est_tokens": {
+       "mean": null,
+       "median": null
+      }
+     },
+     "sent": "NOT_EVIDENCE",
+     "expanded": "NOT_EVIDENCE"
+    },
+    "multihoprag": {
+     "with_gold": 0,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 0,
+      "observed": 0,
+      "zero_kept": 0,
+      "zero_sent": 0,
+      "documents": {
+       "mean": null,
+       "median": null
+      },
+      "sent_documents": {
+       "mean": null,
+       "median": null
+      },
+      "sent_est_tokens": {
+       "mean": null,
+       "median": null
+      }
+     },
+     "sent": "NOT_EVIDENCE",
+     "expanded": "NOT_EVIDENCE"
+    },
+    "aircargo": {
+     "with_gold": 0,
+     "unread": 0,
+     "missing": 0,
+     "usage": {
+      "questions": 1,
+      "observed": 1,
+      "zero_kept": 0,
+      "zero_sent": 0,
+      "documents": {
+       "mean": 4,
+       "median": 4
+      },
+      "sent_documents": {
+       "mean": 4,
+       "median": 4
+      },
+      "sent_est_tokens": {
+       "mean": 1642,
+       "median": 1642
+      }
+     },
+     "sent": "NOT_EVIDENCE",
+     "expanded": "NOT_EVIDENCE"
+    }
+   },
+   "matched_pooled_deciding": {
+    "with_gold": 1,
+    "unread": 0,
+    "missing": 0,
+    "usage": {
+     "questions": 1,
+     "observed": 1,
+     "zero_kept": 0,
+     "zero_sent": 0,
+     "documents": {
+      "mean": 5,
+      "median": 5
+     },
+     "sent_documents": {
+      "mean": 5,
+      "median": 5
+     },
+     "sent_est_tokens": {
+      "mean": 1434,
+      "median": 1434
+     }
+    },
+    "sent": {
+     "n": 1,
+     "hits": {
+      "H": 1,
+      "G": 1
+     },
+     "b_h_only": 0,
+     "c_arm_only": 0,
+     "p": 1.0,
+     "reading": "no detected difference",
+     "gold_articles": {
+      "H": 1.0,
+      "G": 1.0
+     }
+    },
+    "expanded": {
+     "n": 1,
+     "hits": {
+      "H": 1,
+      "G": 1
+     },
+     "b_h_only": 0,
+     "c_arm_only": 0,
+     "p": 1.0,
+     "reading": "no detected difference",
+     "gold_articles": {
+      "H": 1.0,
+      "G": 1.0
+     }
+    }
+   }
+  }
+ },
+ "selection": {
+  "arm": "T00",
+  "threshold": 0.0,
+  "A_eligible": false,
+  "in_sample": true
+ }
+}
