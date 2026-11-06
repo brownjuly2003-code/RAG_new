@@ -2,14 +2,20 @@
 
 RAG assistant (the `RAG_new` repository) is a support answering service that
 answers questions from a company's documents, cites its sources, and offers a
-hand-off to an operator. It runs on one iMac with 8 GB of memory, using
-Qwen3-4B-Instruct-2507 (`q4_K_M`) on the CPU through Ollama.
+hand-off to an operator. It runs on the owner's Windows laptop under the
+`codex-only` profile: every language-model call goes to OpenAI's GPT-6-Astra
+through Codex, so questions and retrieved passages leave the machine; only
+embedding and ONNX reranking run locally, without Ollama. Until 2026-11-03 it
+ran on one iMac with 8 GB of memory, using Qwen3-4B-Instruct-2507 (`q4_K_M`)
+on the CPU through Ollama.
 
 Retrieval combines BM25 and BGE-M3, with 14 candidates each, reciprocal rank
 fusion (RRF), and `bge-reranker-v2-m3` as INT8 in ONNX Runtime on the CPU,
 keeping five chunks. The V4 answer prompt uses a 3,584-token window. This is
 the measured **package**, including a 1,024 MiB host prompt-cache cap; the
-retrieval and window settings are code defaults since `6c52b06`. See
+retrieval and window settings are code defaults since `6c52b06`. Under
+`codex-only`, a query transformation and one batched document grade run at
+`low` effort and the answer at `xhigh`. See
 [`CURRENT_STATE.md`](CURRENT_STATE.md) for the runtime and records.
 
 An optional shipment-status journey records the source facts,
@@ -27,6 +33,30 @@ stale-data escalation; the [recording notes](demo/phase-e-screencast.md)
 describe the sequence and its limits.
 
 ## Measured results
+
+### The product under `codex-only`
+
+The web chat (`/api/ask/stream`) on the owner's laptop answered stage 5в's
+300 questions, 100 each from WixQA, ConditionalQA and aircargo. Its answers
+are paired with GPT-6-Astra's answers to the package's saved contexts on the
+same ids (stage 5в's Codex arm). "Answered good" counts answers the judge
+rates good (M1, without reference answers) whose sent context holds the
+answer. "Gold in the sent context" needs no judge; it covers the 180
+questions with gold evidence, WixQA's 100 and ConditionalQA's 80 answerable.
+
+| Measurement | Stage 5в's Codex arm → the product | Reading | Record (date) |
+|---|---|---|---|
+| Answered good (n = 300) | 268/300 → 279/300 | Rise detected; registered decision: holds | [Stage 6 item 0](docs/evidence/codex-only-quality-record.md), 2026-11-06 |
+| Answered good per base (n = 100 each) | WixQA 87 → 89; ConditionalQA 81 → 92; aircargo 100 → 98 | ConditionalQA's rise detected; the others not | [Stage 6 item 0](docs/evidence/codex-only-quality-record.md), 2026-11-06 |
+| Gold in the sent context (n = 180) | 125/180 → 116/180 | Change not detected | [Stage 6 item 0](docs/evidence/codex-only-quality-record.md), 2026-11-06 |
+| Whole answer on the laptop (n = 300) | Median 66.0 s; p90 83.3 s; none over 180 s | Under the owner's own load | [Stage 6 item 0](docs/evidence/codex-only-quality-record.md), 2026-11-06 |
+
+The registered outcome is **holds: publish these numbers as product quality
+under `codex-only`**. The comparison is in-sample. Contexts, release code and
+the call framing change together, so neither reading isolates a cause, and
+"no detected fall" does not establish equivalence.
+
+### The package on the iMac
 
 These measurements cover the web chat (`/api/ask/stream`) on the package.
 M1 is the judge's answer-quality rating without reference answers: good,
@@ -129,7 +159,8 @@ The full design, invariants, and decision register are in
 - No service is kept running between measurement runs yet; see
   [`CURRENT_STATE.md`](CURRENT_STATE.md).
 
-Answer V6 (stage 5b) is [registered and running](CURRENT_STATE.md).
+Answer V6 (stage 5b) was not adopted: the pooled M2 agreement with the
+reference fell, a detected harm ([record](docs/evidence/answer-prompt-v6-record.md)).
 
 ## Quick start
 
