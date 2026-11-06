@@ -199,6 +199,9 @@ def test_direct_cli_resolves_project_imports(tmp_path: Path) -> None:
     )
     script = Path(__file__).resolve().parent.parent / "scripts" / "lightweight_gracekelly_smoke.py"
 
+    # Cold imports of chromadb and the project after a checkout or in a small
+    # CI VM have taken over 15 s; warm runs take about 2 s. The timeout only
+    # guards against a hang.
     completed = subprocess.run(
         [
             sys.executable,
@@ -219,7 +222,7 @@ def test_direct_cli_resolves_project_imports(tmp_path: Path) -> None:
         cwd=tmp_path,
         capture_output=True,
         text=True,
-        timeout=15,
+        timeout=60,
         check=False,
     )
 

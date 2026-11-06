@@ -97,6 +97,8 @@ def test_cached_response_returns_without_pipeline(
         captured["key"] = key
         return {
             "answer": "Reset it in Settings > Security.",
+            "answer_provider": "codex",
+            "answer_model": "gpt-6-astra",
             "quality_score": 91,
             "route": "auto",
             "sources": [{"source": "faq.md", "page_content": "Reset password article"}],
@@ -111,6 +113,8 @@ def test_cached_response_returns_without_pipeline(
 
     assert response.status_code == 200
     assert response.json()["answer"] == "Reset it in Settings > Security."
+    assert response.json()["answer_provider"] == "codex"
+    assert response.json()["answer_model"] == "gpt-6-astra"
     assert response.json()["cached"] is True
     assert captured["key"] == api_app._cache_key("default", "  HOW TO RESET PASSWORD?  ")
     assert session_holder["session"]._history == [
@@ -152,6 +156,8 @@ def test_cache_miss_invokes_pipeline_and_stores(
             captured["ask_tenant"] = tenant_id
             return {
                 "answer": "Download it from the customer portal.",
+                "answer_provider": "codex",
+                "answer_model": "gpt-6-astra",
                 "quality_score": 84,
                 "route": "auto",
                 "graded_docs": [
@@ -196,6 +202,8 @@ def test_cache_miss_invokes_pipeline_and_stores(
     assert captured["set_ttl"] == 123
     assert captured["set_value"] == {
         "answer": "Download it from the customer portal.",
+        "answer_provider": "codex",
+        "answer_model": "gpt-6-astra",
         "quality_score": 84,
         "route": "auto",
         "sources": [

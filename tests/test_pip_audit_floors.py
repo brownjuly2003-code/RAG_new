@@ -1,5 +1,6 @@
 """Guard the pip-audit floors (six raised on 2026-10-03, three on 2026-10-15, six on
-2026-10-25, one on 2026-10-28, two on 2026-11-02) and the caps below major lines nothing here has run on."""
+2026-10-25, one on 2026-10-28, two on 2026-11-02, one on 2026-11-06) and the caps below
+major lines nothing here has run on."""
 
 from __future__ import annotations
 
@@ -29,7 +30,7 @@ FIXED_IN = {
     "pyjwt": (Version("2.15.0"), ("PYSEC-2026-4140..4152",)),
     "sentence-transformers": (Version("5.6.0"), ("PYSEC-2026-4164",)),
     "anyio": (Version("4.14.2"), ("PYSEC-2026-4024/4025",)),
-    "oauthlib": (Version("4.0.0"), ("PYSEC-2026-4114",)),
+    "oauthlib": (Version("4.0.1"), ("CVE-2026-49272", "PYSEC-2026-4114")),
     "fsspec": (Version("2026.6.0"), ("CVE-2026-104851",)),
     "langgraph-sdk": (Version("0.4.4"), ("CVE-2026-104873",)),
     "multidict": (Version("6.9.1"), ("CVE-2026-104874",)),

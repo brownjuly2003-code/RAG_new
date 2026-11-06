@@ -89,9 +89,10 @@ urllib3>=2.8.0
 # anyio: floor at 4.14.2 clears PYSEC-2026-4024/4025 (2026-10-03). Transitive via
 # httpx/starlette/langsmith, pinned here so the lock is reproducible.
 anyio>=4.14.2
-# oauthlib: floor at 4.0.0 clears PYSEC-2026-4114 (2026-10-03). Transitive via
-# kubernetes -> requests-oauthlib (a chromadb dependency); the app never imports it.
-oauthlib>=4.0.0
+# oauthlib: floor at 4.0.1 clears CVE-2026-49272 (2026-11-06); the earlier floor
+# 4.0.0 cleared PYSEC-2026-4114 (2026-10-03). Transitive via kubernetes ->
+# requests-oauthlib (a chromadb dependency); the app never imports it.
+oauthlib>=4.0.1
 # fsspec: floor at 2026.6.0 clears CVE-2026-104851 (2026-10-15). Transitive via
 # huggingface-hub/torch.
 fsspec>=2026.6.0
