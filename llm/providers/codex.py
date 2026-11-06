@@ -213,6 +213,13 @@ def _parse_answer(stdout: bytes, returncode: int, model: str) -> LLMResponse:
         output_tokens=counts[1],
         cost_usd=0.0,
         finish_reason="stop",
+        metadata={
+            "usage": {
+                key: value
+                for key, value in usage.items()
+                if isinstance(value, int) and not isinstance(value, bool) and value >= 0
+            }
+        },
     )
 
 

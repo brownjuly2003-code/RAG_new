@@ -12,7 +12,7 @@ from pathlib import Path
 import pytest
 
 from llm.providers.base import ProviderUnavailable, flatten_messages
-from llm.providers.codex import CodexProvider
+from llm.providers.codex import CodexProvider, _parse_answer
 from tests._fake_codex import ANSWER, FIXTURES
 from tests._fake_codex import fake_codex as fake_codex
 
@@ -32,6 +32,49 @@ DISABLED = (
 
 def provider(fake, **kwargs):
     return CodexProvider(binary=str(fake.binary), **kwargs)
+
+
+@pytest.mark.parametrize("missing", [False, True])
+def test_usage_metadata_keeps_all_nonnegative_integers(missing):
+    usage = {
+        "input_tokens": 17,
+        "output_tokens": 5,
+        "cached_input_tokens": 11,
+        "cache_write_input_tokens": 2,
+        "reasoning_output_tokens": 3,
+        "future_tokens": 0,
+    }
+    complete = {"type": "turn.completed"}
+    if not missing:
+        complete["usage"] = {
+            **usage,
+            "text": "Synthetic diagnostic",
+            "fraction": 1.5,
+            "flag": True,
+            "negative": -1,
+            "null": None,
+        }
+    raw = "\n".join(
+        json.dumps(event)
+        for event in (
+            {"type": "item.completed", "item": {"type": "agent_message", "text": "OK"}},
+            complete,
+        )
+    ).encode()
+    result = _parse_answer(raw, 0, "synthetic")
+    assert result.metadata == {"usage": {} if missing else usage}
+    assert (result.input_tokens, result.output_tokens) == ((0, 0) if missing else (17, 5))
+
+
+@pytest.mark.parametrize("key", ["input_tokens", "output_tokens"])
+@pytest.mark.parametrize("value", [True, -1, 1.5, "1", None])
+def test_required_usage_validation_is_unchanged(key, value):
+    events = [
+        {"type": "item.completed", "item": {"type": "agent_message", "text": "OK"}},
+        {"type": "turn.completed", "usage": {key: value}},
+    ]
+    with pytest.raises(ProviderUnavailable, match="^codex_json$"):
+        _parse_answer("\n".join(map(json.dumps, events)).encode(), 0, "synthetic")
 
 
 def test_wrapper_pin():
