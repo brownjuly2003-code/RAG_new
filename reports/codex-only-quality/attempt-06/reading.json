@@ -1,0 +1,5644 @@
+{
+  "schema": "codex-quality-reading/1",
+  "series": "attempt-06",
+  "q": {
+    "per_key": {
+      "wixqa": {
+        "n": 100,
+        "table": {
+          "a": 83,
+          "b": 4,
+          "c": 6,
+          "d": 7
+        },
+        "difference": 0.02,
+        "clusters": 77,
+        "cluster95": [
+          -0.0408,
+          0.0825
+        ],
+        "newcombe95": [
+          -0.0487,
+          0.0905
+        ],
+        "read95": [
+          -0.0487,
+          0.0905
+        ],
+        "detected": false,
+        "direction": "not detected",
+        "baseline_share": 0.87,
+        "product_share": 0.89,
+        "baseline_count": 87,
+        "product_count": 89,
+        "seed": 20261001,
+        "resamples": 10000
+      },
+      "conditionalqa": {
+        "n": 100,
+        "table": {
+          "a": 78,
+          "b": 3,
+          "c": 14,
+          "d": 5
+        },
+        "difference": 0.11,
+        "clusters": 60,
+        "cluster95": [
+          0.0396,
+          0.1828
+        ],
+        "newcombe95": [
+          0.029,
+          0.1955
+        ],
+        "read95": [
+          0.029,
+          0.1955
+        ],
+        "detected": true,
+        "direction": "rises",
+        "baseline_share": 0.81,
+        "product_share": 0.92,
+        "baseline_count": 81,
+        "product_count": 92,
+        "seed": 20261001,
+        "resamples": 10000
+      },
+      "aircargo": {
+        "n": 100,
+        "table": {
+          "a": 98,
+          "b": 2,
+          "c": 0,
+          "d": 0
+        },
+        "difference": -0.02,
+        "clusters": 100,
+        "cluster95": [
+          -0.05,
+          0.0
+        ],
+        "newcombe95": [
+          -0.07,
+          0.0197
+        ],
+        "read95": [
+          -0.07,
+          0.0197
+        ],
+        "detected": false,
+        "direction": "not detected",
+        "baseline_share": 1.0,
+        "product_share": 0.98,
+        "baseline_count": 100,
+        "product_count": 98,
+        "seed": 20261001,
+        "resamples": 10000
+      }
+    },
+    "pooled": {
+      "n": 300,
+      "table": {
+        "a": 259,
+        "b": 9,
+        "c": 20,
+        "d": 12
+      },
+      "difference": 0.0367,
+      "clusters": 237,
+      "cluster95": [
+        0.0034,
+        0.0706
+      ],
+      "newcombe95": [
+        0.0008,
+        0.0744
+      ],
+      "read95": [
+        0.0008,
+        0.0744
+      ],
+      "detected": true,
+      "direction": "rises",
+      "baseline_share": 0.8933,
+      "product_share": 0.93,
+      "baseline_count": 268,
+      "product_count": 279,
+      "seed": 20261001,
+      "resamples": 10000
+    }
+  },
+  "r": {
+    "per_key": {
+      "wixqa": {
+        "n": 100,
+        "table": {
+          "a": 50,
+          "b": 17,
+          "c": 10,
+          "d": 23
+        },
+        "difference": -0.07,
+        "clusters": 77,
+        "cluster95": [
+          -0.181,
+          0.0357
+        ],
+        "newcombe95": [
+          -0.1702,
+          0.0325
+        ],
+        "read95": [
+          -0.181,
+          0.0357
+        ],
+        "detected": false,
+        "direction": "not detected",
+        "baseline_share": 0.67,
+        "product_share": 0.6,
+        "baseline_count": 67,
+        "product_count": 60,
+        "seed": 20261001,
+        "resamples": 10000,
+        "hit_transitions": {
+          "both_hit": 50,
+          "lost": 17,
+          "gained": 10,
+          "neither_hit": 23
+        }
+      },
+      "conditionalqa": {
+        "n": 80,
+        "table": {
+          "a": 47,
+          "b": 11,
+          "c": 9,
+          "d": 13
+        },
+        "difference": -0.025,
+        "clusters": 40,
+        "cluster95": [
+          -0.1375,
+          0.0875
+        ],
+        "newcombe95": [
+          -0.1359,
+          0.0866
+        ],
+        "read95": [
+          -0.1375,
+          0.0875
+        ],
+        "detected": false,
+        "direction": "not detected",
+        "baseline_share": 0.725,
+        "product_share": 0.7,
+        "baseline_count": 58,
+        "product_count": 56,
+        "seed": 20261001,
+        "resamples": 10000,
+        "hit_transitions": {
+          "both_hit": 47,
+          "lost": 11,
+          "gained": 9,
+          "neither_hit": 13
+        }
+      }
+    },
+    "cases": {
+      "wixqa": [
+        {
+          "case_id": "wixqa-simulated-045",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "03fa7726f6b9e2933c7e7bf437eb16ef1ccf33b7213ca63670e5974555bc9d7f"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "bcf3cd86b320df754e961a29d63cfb25ec3f3724ba26da6b6a88041706fd7a50",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-047",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "e2266a645f2801465e79fe64767bab3689f51031f5749a9332bfa5b7ace66f63"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "1daf264bf64f0e15e64969fc9022073f977d28d23adead134c016aaf52d8c19c",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-056",
+          "baseline": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "948dbaaa575f8500ee35f763b2622c20a247e54656b47c3956ab6a0d95aa9c49"
+          },
+          "product": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "8efce0788987eb6c0e9961322a90b71f372c20ec3994d1b964679562299a35f6",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-074",
+          "baseline": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "e7fd223c4f7834c5299e8e32e2ad6acad9e5d03ebd8f7cc35c137043a5bf646f"
+          },
+          "product": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "e20a78a63d4cd802835c36d6143066ec71bab304cac16e55bb009849c50992bb",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-083",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "4a5e9d00753e389e42d2ccbd7d1314c56c7c024cb8856cb2a9d46966739d6817"
+          },
+          "product": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "8572cb5698a555e4fce17f567a49f3887511381d33ad2e443f5975613f7244e6",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-104",
+          "baseline": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "b30c692de80ce1246f0116ac2ce55670c63b52f30ad2c2eba5693d5c02e6fe48"
+          },
+          "product": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "cc2fa5380b5efcce3f13d8a3b7905bdb2ac0de2bf1c7887410e80b0c4eef430a",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-107",
+          "baseline": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "04dab09b47f406cf9740134759c014a00c937302263016ab3eab2ce908d97581"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "2a75fcac95f33030b9cfd0109b22238b16d0a9372571b3ea72703c52cbe2e013",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-111",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "a09e03878516b54d047df6e51b7fd67b6dbbd5a28764e6c6aebe6e2cbcd8b1d6"
+          },
+          "product": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "72afd968d248cfdb9c93ab89a44d2089ae556315f41663a818f5765e0fab3357",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-122",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "6434f45d0eb94346ef025ef67cd72b1ff3c8c81f9b937b2aa55a94425578f9e5"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "e94b9b2693ea29d9a6781cc3a043fe259da1ebded9e6d36e67d567727755259b",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-184",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "8d0ea8893b74a3dec59ab165c1b612fd905ae618d345e6fb0d4df3bdd461e442"
+          },
+          "product": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "53403993b89c28ebea9ef59b9117bfdefd1cd8c4cb0655b68d47c152b175934b",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-008",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "147a9fc33dc32aa3d0f61a035a7cbcaf8ee2189c5b93acc712e724accf472847"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "d7fff569b737193df97aa3f2e8f3dc65d2be70b4efee03bc31756064d5e979d9",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-035",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "9afd91d69dab8437d408fa95817f186b4532bea52b58edd65541edea8f03b227"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "fcf62c1aad6fb34663280819b6f07d77bf70663b084a69f8adc4d19293faf64c",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-071",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "8a4e101bed075c8ec3f3f6839adc83f5857a9ac8704fc7d2156000e6bdee5d3a"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "8ac87675ec2e4e49a8ee860a5a4c00c1923d406228d7d9da47fea642c52e02c9",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-088",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 0.5,
+            "prompt_sha256": "1cc9ae8a443e0b75213937cdc0847e1a2a4c86eadc1eec96f09c98f654a63155"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 0.5,
+            "prompt_sha256": "04a7590525e3e435fd3490bbaffc0cc422731866837ca42e35aca814ce3d6039",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-105",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "8b5faf1f0e9ffe4fbceb27f66b65f39407c7744e5eb9046b39b8aba72a231387"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "4cbe171d6379bed23e3ea28154a1a2a8d192235d14a741ec9e51aeee1d81c155",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-113",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "3703d71a3e43e474774afcb84e17585491942d71498000778a03b765a3166306"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "2697e89522f73a9be5e2870d6ff325927ff630731dd5c13886a757fc5e9eb3bb",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-128",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "3c8bf2d8dc6011ec38a7432c489e80d7b5f1d31e22c104ab0fb7113bbfea0976"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "2a1cc8ca8c0b364fe1c0566c23fb69e756cce6c8fce95c0514c3f44ab8eed4f9",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-160",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 0.5,
+            "prompt_sha256": "82f8164db2662c3a45e769cff61079793f5fd2a81a5d37bd85a705a7df70a927"
+          },
+          "product": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "a1af8b92179df4cdfe9ba1f0b66ad3bd0d98887353945d4ebc3b01ed20adceb6",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-167",
+          "baseline": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "2b686adf00b0a94b819fb88e4b987ebfb38037e7c492e5ff57d3793a025f7d65"
+          },
+          "product": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "69a045f4be54d67a9604693cafab2fdd804e8b42026f098c3786c38f5f9a8392",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-185",
+          "baseline": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "f6a69a575a85f37f9f893f54c048305955bba83efb9e8cdc21cbdafae05546ad"
+          },
+          "product": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "d0498a702348d386e58d96b75d6ca6c3ad9e26c3bb70634f5cfd47ba59696301",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-025",
+          "baseline": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "c63ff9729e1390f0fa5f0f12b0c778c9df4b8a73296d797c79c6dc9fe29d81d0"
+          },
+          "product": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "f22a5de3d07dcb4ae1f718c127590860b76c5699c19b32347248b5270856e0d0",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-040",
+          "baseline": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "b4c62af88ad0c16a6d29402746193910053221f0e111907d3b7add1e874b9b7c"
+          },
+          "product": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "8f4834e0fabb6155a5ff22145ded5b016b6da50431b201d76671ec9af83bc607",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-053",
+          "baseline": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "bec0ac30ce10c5fc145d4d11cc0c32e384f83e8eb230d81283adda8ffd84acf5"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "3a13ba77b0499e33df9f293d77a54012889432a74316e84f46fd722143f58d36",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-076",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "062cb5547fa430b6fbff13925130a3e4ae13ba22fe7f0c1338a213ac52be0015"
+          },
+          "product": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "e651550b1da6928bffdae3b88a501d94aec3668c305f4b080d53beabfc86f41a",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-089",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "bed55a6bf5d456b3991031554b10f54d624b5768a2c77411e6b36206559bdba5"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "e7d6c428b3038ddfd7e2773cb6b7090da37787ecd149eca79e41104dc8e52147",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-100",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "d51349ede4f16bd8af4a6eea0fe0b85959cc56e38ac5216117e818e76d09fe7e"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "eb051dbad515f7149dc001b9efa4e2202e130515f70dfbf72cd73c2931a65497",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-120",
+          "baseline": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "839d7541127c50c6d57eb6a99a1fee3bf9527938735513646cc3bdf512d3d0ae"
+          },
+          "product": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "332418e714639325070e34c530c46aff826e24e6c691e719e3c06a484d27e784",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-187",
+          "baseline": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "e60bf9a00d722752a3817815edd9ef0616b7b23e8e600e448aba495add37a820"
+          },
+          "product": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "ca7c29c76568d7e20a0d2056f3410145830e52cc75f4704d25154a53853dcb1c",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-194",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "88c52d748c3559dc51d5ee00d4817dd840e00d6769cbef8bf983adb8c329c561"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 0.5,
+            "prompt_sha256": "d12b3cfe5bc275f2303b8bd71976dd1f068de2f0d5884d57cda0467d175f8852",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-195",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "a8e8aff6683a1236d988ef77c64ed276f63182a2453e1716d9f2bbe627abdc95"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "2457c36caa61dcc26ae8096a86a02636b5f52b3bcacce7946a34d7c9df9f406d",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-013",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 0.6666666666666666,
+            "prompt_sha256": "8be17971d07ca82aacd5aa023ab24d4dba7add5ad069fdad75b8ad437086bee6"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 0.3333333333333333,
+            "prompt_sha256": "7dc5e39e1ade4043598ab103de39751cbcdcc09f1b9ca7cd909b4701b2ff7c39",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-038",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "245a19ec2ce8e1df43ca54b0dc679788f9b85d568c1d5d8c556b5612b22cc3c3"
+          },
+          "product": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "ea10951c49e8baddf48ebd82839d7ebc7778bad33093bfb3b78e8fb57157c1b4",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-096",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "4a2cbabc8ca66b9d45cd132831c93f7be6b9930c8fe45850c5a8aeb1bc65dfc1"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "a68649790b904856ec4bcf4047dde6c7053195a810c1a182ee22c5368713ab98",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-098",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "58fb18f0328d6590571140268733534d0087ab85a844cc4245b34b4df9c2daf6"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "defdc5425bb6f23b70592564e03097e4ad2c769956ec57ed58675c8071e0619f",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-114",
+          "baseline": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "f47e51fb9834f70db53d74858282beb8676c5c1a8a9ddca648b1bc2c9a8527b7"
+          },
+          "product": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "7b4e02b326f2808c899f8c68f35b6841e3890f5ec0de7ab4eea5d1579844ec5d",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-121",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 0.5,
+            "prompt_sha256": "beb8d05a2ee44f0cb080ffa1ab88d50c193e428358adb0e15d53d6a35671a251"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 0.5,
+            "prompt_sha256": "49c52579924e9cf3f9a05077d3eb88da533014ce52a1eb9b2e98185a567ea51a",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-129",
+          "baseline": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "1815f9366e051565c267f864a4fd7d9a2f8077d8c710d9bfdc544a3b701e76c2"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "09b8485c16f61889bb5aebb99a8ef9adaafc7cdfbb0b93129e3b779811e050b2",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-149",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 0.5,
+            "prompt_sha256": "5bd823374cae12988a73680740e3003388c5ab02cc26bb84767aadc8a2c291ee"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 0.5,
+            "prompt_sha256": "18c5c09cc5be6c082ed7727af51ceb3aeca3a5336f55729cc60ea4a150ea8b7a",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-170",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "65e7c4b8755e3d6af63cccf26a0149d70e9f66e57129adede25254de31518ce9"
+          },
+          "product": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "febb9c3379e29d3d096351268889d86554f008a7f385f6d80d26ef154698a701",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-181",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "eb71e7207133d9671dcd038e517323d83b29e38a78b0e8e3dd1dc0e861e92107"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "30c628a1a3d157b04972b890c70e3cbed8c7070e8335afd7e44f4ee53dfa719c",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-026",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 0.5,
+            "prompt_sha256": "638e6aeafe9cb569ee9987b60dc2435ddc4e935d5971dd201a8515fc4fe331c1"
+          },
+          "product": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "43d0979e4e27e155766241701b3e823720cccc97e637fa861dd818d83f003a15",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-066",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "b1b876fe6eb48eeca1a976aa03e0c4401807ac3369b2a88b1b21f2a20ec3cb69"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "77f99b89d4f3a235ff59ecc0271d06285d4ce638bfae45737c0ca8ab1bd4d551",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-069",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "6889f7b2454e622b80db8f355b0b2df9c22cb35d5868753a7ad0f3da7dec21ba"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "b5ffd81f40f2d20197beff01507d406a93c451b7834a53260490c03dfe2833e1",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-106",
+          "baseline": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "b54c1a734da1c4335a3d1643a41067e997c66634805b993d7399e40b947e784c"
+          },
+          "product": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "5c491d8c74b2c5ab9620ae8725753fdc1d20a60ae8f8e83b49c5686e0ca125ba",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-119",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "e2d59b60db987583f6bb1271250d3a3731cc0e79f1447b77d54b30e2156d9cb5"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "5e0e20488e36f1b9fb0b87c089d8be3021c2c5973d693f3bdd5a723c36c1e297",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-127",
+          "baseline": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "aca09032eb5eb244fa3a4e06a6efb9f0b608d6e15d26d8b71ee3b0ab97950030"
+          },
+          "product": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "604b265a6a11d6f2548226c8d3e8f7b4d4e748626ff0a0dac4c5d603b0fe2860",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-155",
+          "baseline": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "565575386ec2f1c840b97f20d8547cf0a668dcd722d594d3285300b60dda1ad2"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "82d65dbec2807a3fb6daad4e629e43d57bc5d9ec4b0083fcce2883f6847ad76b",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-163",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "dcbe80502f8e2c72615891da38e2512b1aba7b64f5ceb10242b57c0a2e297ea0"
+          },
+          "product": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "c805db4654e0df1a1c717f05fdfec2d5bfb2b4cebf72eb455e025f29ab3a4984",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-166",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "944fd4dce4901f787d7fd4d15a245cf64d3d4bc0ea48c24401d15470391d3fcd"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "97ef1ccd78abd29b4f2eebab88982d1e5031db51adcab64177a7f23b2cd69bae",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-168",
+          "baseline": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "713b869f8e90ef1e00fb2feb265e2c99f7f9c4b937af4b09ff48a7525a584282"
+          },
+          "product": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "20ccd38c4ae7eda612b37ca37eb2f2927e0230f015e94510132c3a8c1ffac298",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-033",
+          "baseline": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "c17941bfc163ae5d098a397275ddf46b4c3c999eefce644ec7bac2d24f4c3d88"
+          },
+          "product": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "df7eb4b7c141722796becc3acdab74ce66f47676b051b2f0ef4e9e2ce6d22af0",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-037",
+          "baseline": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "76a3a8bc403248669e3049eaed22dc7db4ae520e6ceeebb84128191120f46a8f"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "b3736ee7b475475f17a3bc8caed44d4ed7a8483509afe599dcbf0bfe80c3b55c",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-043",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "5c731ef1f51102e678bd9a8d6c63c94d686755d613968e3745ced131cceb37f3"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "a6777b8f5c561efd04062fb9a71c40fc325810e9fdeb0778b85cfc6015139662",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-082",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "f75f65dc870b728e6a2781c4e42cb1199cc4e507e6d76bce32b9b906fd80ffec"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "4de988fb19733d40feb130423750f59c3a146b559aaa6dfc6340070024b1ca6d",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-141",
+          "baseline": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "4df91e5c3194a2321b60053e5e9c0b231a499197acf9eb9364a44c745487c990"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "d160f58e0af3b9585ef25e62f8311a1d4b16564b80f28b57a17462c5219685d9",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-151",
+          "baseline": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "1b2281e4e8469955d367a26a5a7135e7b9dc94d8568ed6ad5b535055e9af4547"
+          },
+          "product": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "696311bf994821baab36dd27317bf734b75141338c08b258170a7935d6b408a9",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-154",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "9bb236696e91c6128703dbcf1acd1bc3d988e445f41202c2cb3af4a1eb78402c"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "f512bd9842257fa52cf702126895a5cf2ce79348686d2dc908bf7d29ed3e9cab",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-157",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "7792628962aacffbe34fc81b4dc17bb4cc14e61076750aca501fb9d124ab0758"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "7645f829dbc65a7ce109aad0a03ea1b1e6c54260e4f5171bb8be6416f852a1cd",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-159",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 0.5,
+            "prompt_sha256": "f75ae43bb3b7f0789ceea9752c52e644c2d8fb5036903865393df3e5c1118742"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "81bc9b7607deb2604b3f3d9abd6833bbed46e3af45918ab8ff4270350ac0f1ba",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-190",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "028a3f56a19fe3adb74b7e9afd6894d354ceb3fef9d03eab0724d10b39ab6130"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "65850b17bf144e1f3c8944e70630c6261aa05ec70b07028dd9ecd77a54aaa395",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-011",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "e67f80b7fbc580a03b1e06096173317fb343cdc97dabd0f18b47b382469220be"
+          },
+          "product": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "834d0e533454343550cc5e6e49de0efb0b31a8a0d7755ad7332fc5efa8a20974",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-049",
+          "baseline": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "7c290ffb731787e9bc4b66ce7f3707e4795d8f20c684daa2d3db6909a7b9e1d8"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 0.5,
+            "prompt_sha256": "4d8591ce35228b20050737cc5e9c8681c562ce225ce543fa66d645fca9dc101b",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-057",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "8098a4a9efa59da4d1e01826b65c15995ccf0b8d5f13d8795857b144c7b28bbf"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "9cf9fe9379614eba0b444d3024afd3c4fe7985a56e9ab4ab950f6ddd954aa963",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-101",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "6012d23453737d071c8001000516f3a609c10ea065f8967f6f787a8c4c990d81"
+          },
+          "product": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "9d9d626bbb5708181539beb7fa83af44acb01276ef382b949177a67ab0970c9c",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-136",
+          "baseline": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "b5ca4bcaf31d924e834c251734ac2116c25fa3fd376e9344c9487edda742eff6"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "49b64aecd7b3b100ff932874f3f5be51389a5944d36346148e5c21832e449b4d",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-138",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "85741db90c95825fc5c4ddc91752aa288f84d6a6e234774ee97e9fdabd7097da"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "8812c99a72896161342a3f3bbc7b2c64a9c815b2343613644a1618fafa162494",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-143",
+          "baseline": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "bbd2a075873587e96693d5c90b1ca33eec12137a3892fd20edf8c1178cb475c8"
+          },
+          "product": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "d9c1b43812e2cbbadf321f7cd57024a1d25586499be8294185b6bf0e99aeda58",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-183",
+          "baseline": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "5ec4781349a58b6419846cc1b601953ef50a5f2ed41513ab4884cf3e6e132dc2"
+          },
+          "product": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "c678ca63c8eabf43f34d72ff91decc35eb731c23e8e33f2813a71cacfd24de73",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-186",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "62574294284920871b396d09701acbf9086df0cebb6eb6f29735ceb09aa746e9"
+          },
+          "product": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "bb2f5055881dee787ac5bbe3377f7f494a15d9e9cdae99f0a07adebac188659b",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-198",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "49fcca44d9a2faf2f2e1080e59e096b87f11232d03c656badc283ddd66a024e5"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "3fc8716cabd8542e5f165318af7c2bb94426dfa14578def266f122ae7d43b271",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-002",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 0.5,
+            "prompt_sha256": "0c041c4adcbf96676db6a971a70597f46f0f4ef912356df83fa512e2934e8057"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 0.5,
+            "prompt_sha256": "4e77da3f32c27fa81be66170be53b7aa0ffac41f259b7cb9d6ca9b36e6d0d0ea",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-014",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "aad66a57aebf9d6708bc071c3a4a7fc1ad0bf9643967f17d4afaf236d26fe401"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "3afe8fa3fb5217c979112d4d23cee34a3d503c5599c470258c2bf2b942585fe2",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-051",
+          "baseline": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "f7f6f66f69ec1ca42157167c37defb29f2060edaa1bb0c3cd0c09e7b7e8b5967"
+          },
+          "product": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "d00bac216e6d6b7490c3cf3ea3e3b09e1628c19b524978128602712c97642571",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-060",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "9b94ecef509313b8d42838051679bd83064470ad9b13972a2f4a1e7a05bdf939"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "98d4acffff2f4647aeceb5b46a70d19b5b8ef61fa846cf52644d76ffddabedb5",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-079",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "d7ced4e20061fed753aff41700a629143e896a22930c76ac6a4bd7c8967f26dd"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "351d10db617e8c846beb96efdc561a8288662ade34341929d0d27aa69051b49e",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-093",
+          "baseline": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "7a948922fbcd3405144643322374ae89df2024eba8e4d00bf727f3b7b8ef7a9d"
+          },
+          "product": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "245473f1f212446097ac83f544f924cbf0cd02b6d52ca29f7d756f620245979f",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-099",
+          "baseline": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "32cfc3abe369277d2c731b0c60bbf4d50684bb798013fd29d0b1338b379f2c4e"
+          },
+          "product": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "a38374b2d4f6088f828382422398b1415dc71657b38818f090f3b65e169ddabe",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-125",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "1c824939063491806a33a418c555ff27c38c814582fabd602b0c42f68bf810cb"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "20a71918dfcf6c074b204d493a82f144c915aa3551b4addd9e75e88d7d80461a",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-158",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "0ebcbb037e994d459300e97d4a5d3eaaf84b50356d4c226ae72c90855523397e"
+          },
+          "product": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "4ba8d0fc371dd585243d6858db19b70c9fd8cbc06dd67d90dd56444711f48979",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-199",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "c479fb38d90e08b1d94f810fd939c03df68d947bb7070c53985001e7174beb4a"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "bf64e5793d8b74b1659bcc4ce266e488814a4b4ebf358c6336f7c95b0aef8fe2",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-001",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "6646a8fac71b8bf434884138ab8fad770c541f23ecfb6a1c90645893bdf2dfc1"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "36e0158b4002818a4580ced6a013afad20e114f859ba725e37c3aff807d13e62",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-005",
+          "baseline": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "4b9efc48ce41aa2200ab4303e7d8afc3285acc3c4cb6cef4524bdc66e36cb3e2"
+          },
+          "product": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "9d220cfe60e641241294d8ecb8d298ffdbe04166cbbee18b2efd38ba668b447e",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-024",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "06a32aa10c9f126e3293e8fefbafa282674fc3a3cf39b3bd7fa48be53e3b473c"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "6d739201f8272754d1daed9f8c11a58af413d17dfe07ab11ad44149bf6fc7b03",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-034",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "eaf38638ed3f7cdfe66b23c8954f2ba199e844ef80efe3d4eba293b58597dad2"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "bb531c9103c4e5b6a66ef473d02b439acf735ec0c9c4691c5c7601a9aadb6a59",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-075",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "4b4a16278ef65d4a5a9c3722d251b749724be919b3c5d6f476cef5bac9fa8a2f"
+          },
+          "product": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "26add882c42d4f2e17175339ff2cce36b126e6cb3dc10e7705d3db9220be4f8d",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-087",
+          "baseline": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "78c6aaf8269cacb2b80a8e0a5bbfe5797aebde84cdb891bd4b1265a7b15ff638"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "0bd0c7f4a2b48e5b2ded8525e77565f06d37cb35360f22f99f7fa980f9cee5cf",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-092",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "09046d0574a71c9cdd94ba4840c3a9e1202d784d84218e048d89a1e3b0b70710"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "795ab32d5cea51f59903468d9ce472fa1c551f231f3ae68bda8fc39b2d43e976",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-095",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "bd162009e4e43d862571404761d43ab4e4fb0cc81995314792e9344d7e9ba1ab"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "49c71117685a40f835f633a503388dad1cd3e52c5793a5ef1eef4608a496eff3",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-161",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "2dd8b33d82bfc48ea0e4644cc467ff54974d89bdd19ce274a8faeee4748b526b"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "63365a04ac64d5295b91f853ad997b13e0491ea2b2d6ee04006a66df3d8c9da3",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-188",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "97f89c1712e1b36d3b0031bd40f91a95e6d760a81ef7cf0910d4271838445328"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "05ae6d5c66e76b7c2715c67c7e78c3e8f36f88d72cabfd1e0afef6a3cd6b95f0",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-058",
+          "baseline": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "dc2146f8cf3405eed2e9a97c0df41d65e8cb4c2422442b0bb1ade5337d6e1785"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "af5f8dcae8d3262b01efe9f564c8dc250e9c2e21a1be1b0d3446138d62b9c2a2",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-073",
+          "baseline": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "3dc78c4dd2aaf5c267e5bfc873567a72117483cd4cdd8f717034d71054d90b76"
+          },
+          "product": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "32764cb7572600f4cdd5831a8f08ddef4fa890cb4302bed0edc3f78921647ea0",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-077",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "7a1514c9de9789c6f009edb661fe8ef906d5de7ffc3aeb59df7e8fa52bf293e8"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "7f5b7cce116b808766d7f0bb773c763cdc65aa86e0acae3b5241c84461c0df85",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-084",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "ed55067871b9e7de925eff7e210c34f731a599eebad4a81def20ef096f1d954c"
+          },
+          "product": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "ade022059b98b2a2de6001fe297527b5594dd7c19d064ef66580539a55d88340",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-094",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "0cb3ed0179bbfedc29adc272bd72f5cc9d7effffdfc6fb1c8d7314c9d83b27e0"
+          },
+          "product": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "e3b256094ca30a1163d07d0a5bcfe987fdad711970fa3606a847eca39b055733",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-140",
+          "baseline": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "0b0b9fc4648c34350f66edc999c3cb7d2b63e1d9c94d99e5d8f64a0f4229e203"
+          },
+          "product": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "eebecff26c0122427a0016f6d8c192cef1ae7b4f6f6d147628d0c8329e0dbff3",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-165",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "b5503c7408c2360dd1363143156def1ec4a078b669a5e9aa1d24715ec7631c86"
+          },
+          "product": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "6483383ab3950afb03ddb8805ac9199db87dbf4916a29a8ade54102f9b35f80d",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-173",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "163546f84ce861fb3d5efeed8298179b21fb9cfb8db19162cafb4faa8b5833ac"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "756e2240dbbc502cd09ca014a66fd4f045a6e2668b03d8f83508279a61a768e6",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-174",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "2a3fbca158c4c376a9646f07ae9d71b42b32e4ce69c371e023c4678ff1b2e9b9"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "cb15c2201d5632ff149f70285fcd2cac0bd1c683d694a0532a446dac65751228",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "wixqa-simulated-177",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "ee3d0b96ff0a2d59aa892a08cf8ef59146f4b154179d8e79215253797362e181"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "6935f7cd8d27e85b1c66e5cab038cc66da361d8c319665d3a4d8525814d9a8bb",
+            "derived": false
+          }
+        }
+      ],
+      "conditionalqa": [
+        {
+          "case_id": "conditionalqa-dev-35",
+          "baseline": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.3333333333333333,
+            "prompt_sha256": "eea8149b044513a500a0d73f5ea9f78d187a0dc1978473f7ab3b2a50cf65abc8"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "c99bc0ee65ba8395712a3db5434752407e5fb57fb7482e6f576a8abfabd2a2b4",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-dev-53",
+          "baseline": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.6666666666666666,
+            "prompt_sha256": "5241bb4a0287ef891cf87f467493b4cc59fd7665b1b4ac21e91c2d41cfb1394b"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "c2a1e510f0e95c8cf4cac0389a1b9093cf9e173ef85559feeaffe318b8f56431",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-dev-68",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "926671d3ca22f71f8734681735ecff27748e6371abe07f0748d9c7932b05fc52"
+          },
+          "product": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.6666666666666666,
+            "prompt_sha256": "4b9ca2e5ecf850ffc3e9e5465e3c1b38fe8a1ff3dcde3a3848fde438ab73f396",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-dev-69",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "396f0d88f719ab38720935eb18bf1d5546ef51837328ddf9e63dac9b7a71f39c"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "32aa38367601ce40c90e05be0daa3a1b9c054a4a56de136768490379e13fda66",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-1484",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "7dea9a9e13df9d4138ac911c17156f390ed14a8772fd05a0450a01f7bea3f781"
+          },
+          "product": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.8,
+            "prompt_sha256": "cd231eee5c0d23badddd66fecf2f2d52ead0f303b6d701f17dbd4e868b096527",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-1509",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "ba8ed8868eafaa98ab85bcabda6fef7014ad4cfffb95f4a834d136730bab29d4"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "6302703a4d1203aaf06dd5288aaad7f9bb8dfaa4dcf7d29a224e87f80a33fc7b",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-197",
+          "baseline": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "6148d530e5f0b285d09ca0bad922c0892e183607e3475025a6e1cdde7cb81202"
+          },
+          "product": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "2958912045927c2d07be7dac58ba7ff62bc3494f1363bf9c7399c9d871562530",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-2077",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "f32a12916a4eb2df96a373161dcd980859cc3c00d6044057cba5833e43fbb6df"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "f47d8933f0fc9b67115baacbd1d077cd1c64f2592b7d9e1f9aa3545f062a1e07",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-2078",
+          "baseline": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "446a2c6838e2b67fd05e8d65371c4ee182d12947486df24b240dd74157cf56bb"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "503df63075fb8597dcc11038094593d84d6d42b241d6caf09edbd38f64035a5c",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-236",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "1b7ba62dca644b20b0550d914480622e91c225ea2de5ee715c8dbc829bb897be"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "d64de32aefeba5e4fe194b014e45861529a4596552c6b7805a3815a5457f174e",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-1759",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "caf287cbbabb8eee747119bdbb7dff48227bbdfe55b2326c6c5b20da67a3e962"
+          },
+          "product": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "2680fe2d440b865d3e45f720a7e514f07c0c754cecd88f8da8a9ec33fcbb9003",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-1925",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "0d77f72bf3b7eeb8d8f5477a0ddc990478164ee910d4db2f681cc682bbad8ee4"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "2a4d75c2b59ccef832b0b9dec7d7d108a9898fea9237b29f7abf441d87d870be",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-1975",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "141e2a80f3927c1a13390f444159615f118719ce5489d5213fb9e387de6c9ea7"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "4a55011fb8030811fd9c2a9ce75a1b55992ef75f79b33358a2e0ca9323caebe2",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-1996",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "d5b705add4417e228acfdb5b305e50163076d325154481bde407c3c242c188a4"
+          },
+          "product": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "53cbc486f192e45d441d402881b495c8d40cf7550647f48e2c6f3508eee081d4",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-2038",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "a15dff6599aac0c9fe2e1da5be72fd84870447fe21c5c3248289abb0e89201f4"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "2adf65b11d82c65bc6dcacfde020cc4bd47e6567cf47bc5218645a0efae10da1",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-2057",
+          "baseline": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "00ed346b766f7cf7737d8246ca845adb010d8a80b0eab68dd627f9d34b8a78f9"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "47c87d5fbc1ade2b88da7ac384273708b7b1af88a5a9fade883b4a0f0b9acc7a",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-2059",
+          "baseline": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.6666666666666666,
+            "prompt_sha256": "22c028f6acf2d47695bd016dbf03d66935aff80769caa1d933e62871b67347ac"
+          },
+          "product": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.6666666666666666,
+            "prompt_sha256": "c191cf6b05bbc597a28ceb045e8bf5d9eb8a91f38c5c8afbb5dda7fef6a489a2",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-466",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "011cbeb164a054f76f7fc1545205dc5a836555f006f264688547e3037b72d195"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "7cfb0372961dbc843cbaffb63e0375306aac5eb4db2340cb6346a79523ee42e7",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-629",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "cf20f3f0926406ea6602c20f870533e8a6b2149c8f5e788564dbfd46d9d8f1d2"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "1fb76c54fdafa0b6e0aab7f63894368e419953d912745a6800f1cf7a34cd6d95",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-630",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "b83d1972685d154a9ba230cb22e96a7aef48a1e7338184e0ef71a12ca8b65763"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "8cb60a5aa80ccb5c87d354d466e4f41f7e3b03437430b7937ddeb215152fde78",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-1219",
+          "baseline": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.26666666666666666,
+            "prompt_sha256": "e771483a7b2d967ecd0de46c110d52b4a228608acac1c1a71647dc2eab4a90f2"
+          },
+          "product": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.8666666666666667,
+            "prompt_sha256": "d7bec1c8df3cd6c7002d360fbf0cbe724eba164cd9c81acc090011926a44038d",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-1236",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "f44392d4ae10b487377279a4a100af3d51e823204deb67a945b33907887ef51a"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "4ed43b973a1f858a1c84773f414270e8790d7a55f2f810439bbdf594c814c179",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-1497",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "36547b6b9f1ecef1680cf33e390481769b81922b6c72f62b25a29068447a4085"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "29061b8a6b26f989203f788a335d5673610fa374fa21bbd0d9034f37dfe9f2f1",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-1580",
+          "baseline": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.6666666666666666,
+            "prompt_sha256": "fdc20b8202ec9b4e5e4aa38f2f328d7252313877aab45e388e116dcf433bf7c6"
+          },
+          "product": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "ff26ffcd5a60e0a36befed8dce6a262d32ea0e19f66bf696c5864a0b624ff897",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-470",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "fb7368d75abf034968f86394369e7df35439c4350de4e380904fa504a3543ca9"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "189e441274ac27a1939aa2c878b50b3bfc9d39f13c2d6be39e7c3337e0da3655",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-511",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "20d1224fbe2d2d5d69c8c8c11426074ea95871d0b563766168786c7870f42d36"
+          },
+          "product": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.8333333333333334,
+            "prompt_sha256": "2439e83287f6b7605d654e05dc57adec0cbd909c76b1a1ffa805a78427705833",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-871",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "49e79c6a142c85160892422befa05c917018306252020217b4901f5192db48cf"
+          },
+          "product": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.8333333333333334,
+            "prompt_sha256": "dad5c14a8f6de8db4eac5fbe19e37b6d414be765875a615f9aac2aef98497e78",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-884",
+          "baseline": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "c0f46075b601c0b24ccb8e5f8727988b3a168f667adcf2109a9e9619b3d63351"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "8893e9fc71dd2200524068a93a3a23785c53ca3624e5e26bcc2202197b999b10",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-991",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "39568c27a0725af7d6600d86be6c96ad9c937a29b88a2dd829e6510ddd366eb7"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "78cb9fb57e45d8cce4bac1b9f58c7cefd05839ebfd8d8cf87c86def6da489026",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-999",
+          "baseline": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "5173eaa5231e46410f3aada8f13ac9fd8924fd01b4946860276ea78bc8b7aa4c"
+          },
+          "product": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "41c8785c4ce9b9fd33ae09ba02f8dfd90e97fc1b1de42908bbb814332768e323",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-dev-40",
+          "baseline": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "ef0c13e00009b26f12c9c8322bdbb61fa04e63a5f29c9305a9d5548e44862e03"
+          },
+          "product": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "fed6288496936119392e53b4f9e5e59ca8745581d1865807a4d9f479078305c2",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-dev-58",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "790d8894e11650c1a1a3381cfe50c80f2229485d3828fed569f3c3ab1a764de6"
+          },
+          "product": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "57ffc994a3a0b753811dde1b950ea04bcb0e9926dc47d0750c3b331b7c0773de",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-1749",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "167b22a94755f48359afc55785da0961a761e96660e6cf61b033e8f75c38a524"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "32f75688eac68c4041e7596d9ed020dc655a2a99c075e98e88cae9e959787d51",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-2137",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "aa2f4f7c6f2fe867ce096f839ad014d582e606dfaf5693d22d8288fd380cef30"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "82889297961d72b3f169dbe74dc6620a4e18657aed3448d8b60bd03d897818ca",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-2303",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "b7785f3834ed204d538f2466645a405134cdaa540eb9113688130b96eab0e203"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "60aa8d742ccd6fde69030b832ac2c5c4d3e32764939e67b3f3ec1d0845d7838c",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-433",
+          "baseline": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.7,
+            "prompt_sha256": "69c38c9f737fc6ad195da7d5d726f8ba2eb8f45ef048f49625273435a5d2786d"
+          },
+          "product": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.7,
+            "prompt_sha256": "9e827c5bbf1f4815a96546ae8305865e4c667e0720316dfb6163a7b568c84690",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-587",
+          "baseline": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "f34c1cddca214ea00f22105e84ffc23852327dfd6c0954cb601492de2faab8a3"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "362785313472f1592503832a9bdbbcf41a853e50108870da6139055a350524a1",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-588",
+          "baseline": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "f21dc3b45d8991e0d6ef62f12c682493cb8cb013052554f54db04864252fd811"
+          },
+          "product": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "afff89ae63e4a38d493ef2b0025dbf452ade0f9eeef0ece6b45a8b29fd6d8063",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-593",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "fad5b645570252889cdf146766ee8b6aaf3ae9700f5fb078745efb43eb0b5d8e"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "a8319654c144539eb04b4da29408a44f95380dd0e6fe425f0c2416595aeb77cd",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-815",
+          "baseline": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.6666666666666666,
+            "prompt_sha256": "667f0ee65fd9e7b6463dff53fb6f93ef47c549c3018ae1d3c473be153ae9fffd"
+          },
+          "product": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.6666666666666666,
+            "prompt_sha256": "a0d8f4aa2224f78e1123022cd1d1cf5543467e04e1e18a2a6e0f8dd14bd24c07",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-dev-150",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "9981b93902cc24c37798769e1661a82d4460020586ce1671b751e6b41c2ade32"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "960da820862f19a67c53b39c36d64c05469bd78e47d86580c6609a503c992142",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-dev-161",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "e365f8223f887ac8cae443849c4c746929c5cde749667fca693a353bd8091b32"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "4f37d87b59ec9bb924adfb3a8c1220efef7875638d31fc06d03c5e131244772c",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-dev-242",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "ad697a9213457ef05f5dbaff8a794e2cf202d448506d31bd424006815de4b841"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "177a9a4dd9563f9dd57e420506fbec81f35c4cba449e897439b85adf5f20a4ac",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-dev-249",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "543c7287a3457662a8865455c06e962c389b433a9ea45d71e4e4666ea351afb7"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "014c25b52bafe461efb441feb112b3ce798ee3b4e5d1b9cce27225cdfcb57801",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-1559",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "d5b819603e6ac83491572857c38f43062afd3f2ba9391aa73efcac857a605c1d"
+          },
+          "product": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.5,
+            "prompt_sha256": "a41ea89dda381f1ff82bb2529f50b87a85f3f7ca3e7b7e6f262338482fa6e733",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-1590",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "b6124d586f7e46b4177599f3ac77fe425f68ddd31a2ad1ead2d1d97cb7231007"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "27d7975de30e888673a9231e3f357f6bab542ff6720865fbfe3eb17d377514e8",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-1659",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "d6ef3ba7addd299c82b323a921376a3cdcaa4e84233c061bfc2fb10a0700b7ed"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "fda7e6b83ccb555f97aacc5637891c25f7d3efb3f9cd648de37a774ab9ec3281",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-1684",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "41495953a1ab446a0562e9ee0609f1b5837efe3ac79a3328f52911c206e024cf"
+          },
+          "product": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "2430116fda311eeeb5e97770570aad056e57bb0e05de02739d344562b4261619",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-851",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "10404fa8a810d8f7192948eb01a56a24de3ad569f0baf2b1f9d62391d3427219"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "603668e72144002567b6b58259f710fe12daffb3bcc11c9e84f87d52f12541d3",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-877",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "1d90439c09b990724e426e88200facc3478148e61436f9153fb530ab409b6a21"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "cde0019cfb1c1670342adac2ce418dea97410163c4cbe48562647b7b05e6a9b8",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-139",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "d7a9c9616d92bc1e03919af3fde057e6ae13403aaaedc38c77550d5d333b55f4"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "800ae3bd9a3f07eb3eb9b8d6ad7b55cbdd3b4c58600345bae35d3e3f37769c9e",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-1785",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "640c9966f0ba845804651737ee5520ab08f286c97c5168878d6a6bce44987ac6"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "3379b475cae34ba7fdd48b54c793378600cd3f6c8310d8b8706d2c1d6ea4f702",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-1786",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "0b0885c1b4263c0e81e17403d6aeaa27583fd78fe888841efab845c801e9b982"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "2a341db9e05c8497ae968f8c7b24187f5fbe25bbb602f47a12fa520f062150b1",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-2178",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "56e3305ab07b807df966932188e2f6fd70f02e1e067563febc5e8282fffd7c22"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "0840d9b73981b8a749f79360265bbe97125dbb0579feea00acf0bf538eb0ccad",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-2223",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "ab7659a8feee46522cc673e4c0bc08cf65f9406783af373f21f84a3b05b1a687"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "ddfc178fb791572921a97963896c4085e05a8e4cbd1e687b3ae83966924296bb",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-31",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "ae6387cd64cd8acc49aabc8e5b41417ae63e3236f1ea04106b11f22ea5f65ce2"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "1049ddc1a6b225ac1835d11b066bb90f14c9a8ce2d44cdfe9d89bd41b5a7af28",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-57",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "6e81ee2a187472c437f33ace939719133ac76fc614d2d76892d6165fb8e97d04"
+          },
+          "product": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.6666666666666666,
+            "prompt_sha256": "f0e2e81abc1009c67f95dea5d13746804044370fad25fa5f5ad0c7753b78948e",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-612",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "c87e6bdc9c131445fd8e1167ad9bb0828ca257ee79f809068a2d8c013f99ba55"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "5946721dee50f911346ef76cfcac099f146db4eb440565a09ba3d5573605df8e",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-795",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "e08207d0c02fca84441629f8612b3e4414aaa07b69f14c3b747c2b19c6870ecb"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "004bf9ecce889f5d7fcf2276f3477ea580a3da337f5cdd57e2e02d9afcbb6b18",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-84",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "d96e69e6e5c7fe5e98f3ef1cfcc15c810538e4f09c155e60f2d363c8ee642585"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "60835f420fb72c5516a51751da7388dda4789821f99efcf1a5064f2e5b158280",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-dev-14",
+          "baseline": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.5,
+            "prompt_sha256": "c1173c5b1eb6b4cd03779eaec338657a7957adc5de69f9bd3f3d0354c8c0abe0"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "2374b810d413534cab91d7aac8683ab590936644aecc1f3b6519c8777eaffff2",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-dev-26",
+          "baseline": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "868b775e73e934578874a9eaeeef33b16a1601c3ba3cce732ed0cfe6fa509620"
+          },
+          "product": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.375,
+            "prompt_sha256": "df20d941527e4c6866fa297616f274b1f9200f9a91be968aec10f79e359467a5",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-1226",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "2d6746e4896440e4ae8a217a1e7581446afe97461562fd0732556876a3540ba2"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "7bbe47cb8bad64527b239843d9f20e380b38105052dc7ac99912683bc803a01a",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-1284",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "c5c3a23ea1a5edb5a27fad831ddd7d4ea4db561a2bcfbac04dd0042fe99deae6"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "a20130109e7d409bd1d6eee0009a9c10fb5599d8ac5234fb32008f68dbcafeb6",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-1309",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "74153c07145f0b7fe3bea4b8178b51f3da96ef53be36dc2e9f1423a409644255"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "6ae886b8b9dc5b634ae0c2402bb0ffdf0f6343efe15c93aee51823ebc14c9b31",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-1310",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "c7837c9f98a5ae3b8a3db9834f52383052e7742f99f3243bc3cd60050bbb561b"
+          },
+          "product": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.16666666666666666,
+            "prompt_sha256": "539384882ac2133444f31a4e7f4a008feeb5076d01e2078e4fb58c17aeab555f",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-1850",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "97d0b02a52dd6d755b0eb86538287674c682cc0293544dea8e4715b14901c5eb"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "48dee227dfb41c101ac2336d987b2a844aaeaf6df6e8088bf38dac633e302a2f",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-1877",
+          "baseline": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "46c90df1dfcbb33da0e1790de75e28b0112b8739144ed2cec432914e73e85444"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "52913806aab443378cbc015c2a0399c142310dc6b603b1c6da18004b46d2ce44",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-315",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "fcdd163e9317d9f8e30144746e521c17520c87ff8d69fa896e43d79ea1a9e4f9"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "21aceb27c0f53e6d4ffd74824179e8cb9c78d31c410e9296129b3c37b74bb853",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-347",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "ee8b05058a1a0c68f55d1468420d5d116d4084cd4d3e89ee5551513e3487ef3a"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "a06b4e3713487d482918fe4dacc080616008a171761990841f3c97ec4523f0f2",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-12",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "654b3e7c032d404dfcd6f6ac40e28902c54cfec06700b54ec538e54ca31e846f"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "b53dde7d1b1ff78abab8cc7982226769b9533e5e19a71fcea3af5366b2984c5f",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-125",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "9905fd2e038b185365ae8e15d3ffbb2039b94bfcc1d3d6b416d1398d6083d557"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "1729f082fa714a19cbceb2c12be2242e0c4d27a5142e0857925860f4a9233a67",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-1647",
+          "baseline": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.6428571428571429,
+            "prompt_sha256": "2d1d10b721f37358e89e361d2271b961cf8d4beadd67ca9e0de68ab094018583"
+          },
+          "product": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.21428571428571427,
+            "prompt_sha256": "005b8589eec26a71a6b06fd3716dd4ff788247bc37ef723ca5a24342c6adefba",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-1648",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "d4ccedbf447590ad9afe8077aaafa462b4b1dc9cef6001493051adee0d25e706"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "141962c09d6c48240543dd747e89aaf86e41dcc37983c6425ff7c4f1913117ca",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-1666",
+          "baseline": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "a30de5e3ab62197af2c3f7892852cc1271c57634d69989fddd9a1dc5c0ff050c"
+          },
+          "product": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "0f029a888888084e73939cef0ceded29fff9769b63d51883984d6dba191576fc",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-1716",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "bea43f5771619a7ef63848273e192ee095fd2f385123633d119b7e7370685b0a"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "5a41e163304b9348f8d3ef17549a00fd07b0abda2bc9ee7a586598a54eb86081",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-199",
+          "baseline": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.6,
+            "prompt_sha256": "85c20a373d74697b04f62ce19e79bf45891a7b184bb2809ce7eb3475d1818c63"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "95a45d61fff3fafc73b16c86d1ec47b434d1744871f3bc8ea75b476b618980f6",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-2152",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "9271b13120a3453428d858080db47303aee1985bf5a600deac7657fdc98c7e36"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "e4634a7c5fed2582ca5dc18d3252625be2eba03d0eccf73093f1023b628d2670",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-322",
+          "baseline": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.8,
+            "prompt_sha256": "f7971fd37dce933cae529c6392ec1e6606eebded0004020b70c309c472464d6b"
+          },
+          "product": {
+            "gold": true,
+            "hit": 0,
+            "fraction": 0.0,
+            "prompt_sha256": "9ea0bb16defa51bf6983de6aa1d68b770a71ff247d4b963657434f7ba168afc7",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-46",
+          "baseline": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "93215894bdfba817d0af2e6f4e45cbb09d0c53f0a381dd034ea3b5a2c5ec5939"
+          },
+          "product": {
+            "gold": true,
+            "hit": 1,
+            "fraction": 1.0,
+            "prompt_sha256": "ee08f05b94b640adfeacff7090656e3765eb47cb84d76e9f198b07b6afd25cbf",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-dev-250",
+          "baseline": {
+            "gold": false,
+            "hit": null,
+            "fraction": null,
+            "prompt_sha256": "8d3fae921ef5dc9bd88f83152cfd4d6d70cc80aefd783fc0dee9312239bb7dda"
+          },
+          "product": {
+            "gold": false,
+            "hit": null,
+            "fraction": null,
+            "prompt_sha256": "250456e912611b549530b47aa0dc81246b5efc01b9e6b25b55a71b545c15308a",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-dev-34",
+          "baseline": {
+            "gold": false,
+            "hit": null,
+            "fraction": null,
+            "prompt_sha256": "5afd8965f956e6eddf63e3f083873bc8091e50a6d062aa39c8b0095d4ff62cd7"
+          },
+          "product": {
+            "gold": false,
+            "hit": null,
+            "fraction": null,
+            "prompt_sha256": "a505bc5e9459fbc00ed439db1510e1ca14dccf833880ab93933017c0f7806022",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-1510",
+          "baseline": {
+            "gold": false,
+            "hit": null,
+            "fraction": null,
+            "prompt_sha256": "bc7905d8ac9dde57faed2374bc7dec95ebb60324c55448dfd1b049060cb9fb56"
+          },
+          "product": {
+            "gold": false,
+            "hit": null,
+            "fraction": null,
+            "prompt_sha256": "05c273abb9f24ec64727a4bb64f2fe7b0a7bbe772a1429eec2c261bab3b8e483",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-1548",
+          "baseline": {
+            "gold": false,
+            "hit": null,
+            "fraction": null,
+            "prompt_sha256": "2f2690fd17e7f5169829c87d24ce7eef7be35a002c1c27baf0b58c33a94b08e9"
+          },
+          "product": {
+            "gold": false,
+            "hit": null,
+            "fraction": null,
+            "prompt_sha256": "adb05b99fad6b8444dffabd7f040ad6a974f82f1ac4fc447cccc1833ed4286ac",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-1658",
+          "baseline": {
+            "gold": false,
+            "hit": null,
+            "fraction": null,
+            "prompt_sha256": "68447dd52ee5ff81cab6e58e66f896d52be7fd1e20cf26646b619f54493f76cc"
+          },
+          "product": {
+            "gold": false,
+            "hit": null,
+            "fraction": null,
+            "prompt_sha256": "80237b8705c21a16b9933e6b498e91a80a332db754d213be858371ae34f3e141",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-1995",
+          "baseline": {
+            "gold": false,
+            "hit": null,
+            "fraction": null,
+            "prompt_sha256": "b34c665ef95d75454a7d50b9149f2b3f734d03d59a6e33409ee389e6b8a36f68"
+          },
+          "product": {
+            "gold": false,
+            "hit": null,
+            "fraction": null,
+            "prompt_sha256": "0b3e2951c3f937391e950b1bcd184db3d0d020789aa66499be8c0f178c7ff7b7",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-2072",
+          "baseline": {
+            "gold": false,
+            "hit": null,
+            "fraction": null,
+            "prompt_sha256": "b2e777204cbb3f38238cc0a0f0d6f8e5f4250e34d40cacc532af43c608f92418"
+          },
+          "product": {
+            "gold": false,
+            "hit": null,
+            "fraction": null,
+            "prompt_sha256": "a7d51623df526f3d9730a609613b00cbdb18d244a516717883f23144eaebbee9",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-658",
+          "baseline": {
+            "gold": false,
+            "hit": null,
+            "fraction": null,
+            "prompt_sha256": "6cae2fe26f34ac9f0f141b50275c7518cee566a444f7e324587c31cf197fc35a"
+          },
+          "product": {
+            "gold": false,
+            "hit": null,
+            "fraction": null,
+            "prompt_sha256": "623c4a5777c72fb7f022a2a92c3fd08c0b360420173cb966a832a2c5f345b9aa",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-785",
+          "baseline": {
+            "gold": false,
+            "hit": null,
+            "fraction": null,
+            "prompt_sha256": "5102ef4b996385aff57c1bd7bd3f81071f26c62b83bb92de7309a6be0b0c6457"
+          },
+          "product": {
+            "gold": false,
+            "hit": null,
+            "fraction": null,
+            "prompt_sha256": "ac5fd04505285a1931d54e8147f5f729c75f74789a48e8f89d813eb1b230e546",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-992",
+          "baseline": {
+            "gold": false,
+            "hit": null,
+            "fraction": null,
+            "prompt_sha256": "548a76444845c95db0581dd7801fcaa8ec0af803cf129df75e4ffbc9f2bcd82a"
+          },
+          "product": {
+            "gold": false,
+            "hit": null,
+            "fraction": null,
+            "prompt_sha256": "fab2f3616dd4a3fc62e22318fd04e01580515b9fc54cadd02420007d204b4332",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-dev-118",
+          "baseline": {
+            "gold": false,
+            "hit": null,
+            "fraction": null,
+            "prompt_sha256": "ee997e18c53239f4e29a0f6ebd17bded70eaa70b28125eb50b771445aaf504a7"
+          },
+          "product": {
+            "gold": false,
+            "hit": null,
+            "fraction": null,
+            "prompt_sha256": "82abb8f782fba0fd148e23cf6a8c0a57e27d610097128f5203e51ee9113c9d1f",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-143",
+          "baseline": {
+            "gold": false,
+            "hit": null,
+            "fraction": null,
+            "prompt_sha256": "9d0725af4e3ce50bf175e1620f2a5966ad6ababc733d116558f913f2d4aa2c73"
+          },
+          "product": {
+            "gold": false,
+            "hit": null,
+            "fraction": null,
+            "prompt_sha256": "ae9ae4c945559c259ec86a7b0fedff3bbbc103bbaa6cd8671cd94d20d198047a",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-1534",
+          "baseline": {
+            "gold": false,
+            "hit": null,
+            "fraction": null,
+            "prompt_sha256": "2235a2b1c9bdd020b7875346a85f4ae9deb4adde36271ae315e5ec1544b5467a"
+          },
+          "product": {
+            "gold": false,
+            "hit": null,
+            "fraction": null,
+            "prompt_sha256": "b954e0055b319a2ce2034636efa9ff6b7ed16ebbb7f2e7052e5c1d3330b3f8a6",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-1547",
+          "baseline": {
+            "gold": false,
+            "hit": null,
+            "fraction": null,
+            "prompt_sha256": "62585fcc5cbf95632bb93c6179f38b4eaac2691c763caecbf6d0cdec0e4aac59"
+          },
+          "product": {
+            "gold": false,
+            "hit": null,
+            "fraction": null,
+            "prompt_sha256": "00db7f066a96496c50ebbfdcf9aee6fabb269323ef4d94b6a62b4e182ce70c1e",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-1692",
+          "baseline": {
+            "gold": false,
+            "hit": null,
+            "fraction": null,
+            "prompt_sha256": "551c1fd14cb9e2d509651a4e02830eac094006f880f513f0d0027e38149b4b52"
+          },
+          "product": {
+            "gold": false,
+            "hit": null,
+            "fraction": null,
+            "prompt_sha256": "e66fc7996b3a771bd226e3d7f74fe055a9949715912f164e8017c42c22ef7907",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-1693",
+          "baseline": {
+            "gold": false,
+            "hit": null,
+            "fraction": null,
+            "prompt_sha256": "e33e69615dca27a54f2bac908898db2cedc20ca51fa7db809c20281f22333835"
+          },
+          "product": {
+            "gold": false,
+            "hit": null,
+            "fraction": null,
+            "prompt_sha256": "68e6302551b7427ece7bed394db37f394ee168f5bf72ddd770591ef505ce9d5e",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-37",
+          "baseline": {
+            "gold": false,
+            "hit": null,
+            "fraction": null,
+            "prompt_sha256": "4305f4dc6f13f2d8c8d0cf2f127453b73802e9fb68b501e86a1e9a7de666bd02"
+          },
+          "product": {
+            "gold": false,
+            "hit": null,
+            "fraction": null,
+            "prompt_sha256": "a85ef0e1ffae707efb5656761affc9ce5b1934a58c77c56439770b803f9aa741",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-370",
+          "baseline": {
+            "gold": false,
+            "hit": null,
+            "fraction": null,
+            "prompt_sha256": "f456f4db904117bcf62da89d8d2602083e108ac31c64e72bc8fe42b4a0b114a0"
+          },
+          "product": {
+            "gold": false,
+            "hit": null,
+            "fraction": null,
+            "prompt_sha256": "5c093fffde3f1307c2268229d5e60c7711b0da10a3435bdb8eb6fd179e8c84d8",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-608",
+          "baseline": {
+            "gold": false,
+            "hit": null,
+            "fraction": null,
+            "prompt_sha256": "510a6fff95e7d532e00d5ba3d1249bb5da244b46e9257b8a92e6f6722639b021"
+          },
+          "product": {
+            "gold": false,
+            "hit": null,
+            "fraction": null,
+            "prompt_sha256": "8729ef76383d50267ae6d73444598f1287ca0abcac7fe616182221217f162a70",
+            "derived": false
+          }
+        },
+        {
+          "case_id": "conditionalqa-train-780",
+          "baseline": {
+            "gold": false,
+            "hit": null,
+            "fraction": null,
+            "prompt_sha256": "85fd0ebcde30478fee94b2063e3aa1dd50dd25118df03ba65d5950a40dc9234c"
+          },
+          "product": {
+            "gold": false,
+            "hit": null,
+            "fraction": null,
+            "prompt_sha256": "719f503625e82ce021418b02e7436224b2cd31d781178b26c3cc78f332a96e1a",
+            "derived": false
+          }
+        }
+      ]
+    },
+    "pooled": {
+      "n": 180,
+      "table": {
+        "a": 97,
+        "b": 28,
+        "c": 19,
+        "d": 36
+      },
+      "difference": -0.05,
+      "clusters": 117,
+      "cluster95": [
+        -0.1257,
+        0.0259
+      ],
+      "newcombe95": [
+        -0.1242,
+        0.025
+      ],
+      "read95": [
+        -0.1257,
+        0.0259
+      ],
+      "detected": false,
+      "direction": "not detected",
+      "baseline_share": 0.6944,
+      "product_share": 0.6444,
+      "baseline_count": 125,
+      "product_count": 116,
+      "seed": 20261001,
+      "resamples": 10000,
+      "hit_transitions": {
+        "both_hit": 97,
+        "lost": 28,
+        "gained": 19,
+        "neither_hit": 36
+      }
+    }
+  },
+  "decision": {
+    "row": 3,
+    "outcome": "holds (no detected fall)",
+    "q_fell": false,
+    "r_fell": false,
+    "next_step": "Publish these numbers as product quality under codex-only."
+  },
+  "diagnostics": {
+    "per_key": {
+      "wixqa": {
+        "m1": {
+          "baseline": {
+            "good": 92,
+            "partial_ok": 6,
+            "bad": 2
+          },
+          "product": {
+            "good": 96,
+            "partial_ok": 3,
+            "bad": 1
+          }
+        },
+        "baseline_routes": {
+          "auto": 86,
+          "human": 14
+        },
+        "routes": {
+          "auto": 96,
+          "human": 4
+        },
+        "bad_per_auto": {
+          "numerator": 0,
+          "denominator": 96,
+          "share": 0.0
+        },
+        "tickets": 0,
+        "ticket_sha256": [],
+        "delivery_states": {},
+        "latency": {
+          "with_cold": {
+            "n": 100,
+            "median": 60.796999999991385,
+            "p90": 71.7960000000021
+          },
+          "without_cold": {
+            "n": 86,
+            "median": 59.76600000000326,
+            "p90": 68.64099999997416
+          },
+          "over_180": 0
+        },
+        "infrastructure_attempts": 0,
+        "pending": 0,
+        "product_failures": 0,
+        "counted_out": 0,
+        "calls_by_effort": {
+          "low": 200,
+          "xhigh": 100
+        },
+        "calls_per_question": {
+          "low": 2.0,
+          "xhigh": 1.0
+        },
+        "language_mismatches": 0
+      },
+      "conditionalqa": {
+        "m1": {
+          "baseline": {
+            "good": 92,
+            "partial_ok": 8,
+            "bad": 0
+          },
+          "product": {
+            "good": 97,
+            "partial_ok": 3,
+            "bad": 0
+          }
+        },
+        "baseline_routes": {
+          "human": 15,
+          "auto": 85
+        },
+        "routes": {
+          "auto": 93,
+          "human": 7
+        },
+        "bad_per_auto": {
+          "numerator": 0,
+          "denominator": 93,
+          "share": 0.0
+        },
+        "tickets": 0,
+        "ticket_sha256": [],
+        "delivery_states": {},
+        "latency": {
+          "with_cold": {
+            "n": 100,
+            "median": 70.84399999998277,
+            "p90": 83.46900000001187
+          },
+          "without_cold": {
+            "n": 85,
+            "median": 71.34400000001187,
+            "p90": 83.73400000002584
+          },
+          "over_180": 0
+        },
+        "infrastructure_attempts": 0,
+        "pending": 0,
+        "product_failures": 0,
+        "counted_out": 0,
+        "calls_by_effort": {
+          "low": 200,
+          "xhigh": 100
+        },
+        "calls_per_question": {
+          "low": 2.0,
+          "xhigh": 1.0
+        },
+        "language_mismatches": 0
+      },
+      "aircargo": {
+        "m1": {
+          "baseline": {
+            "good": 100,
+            "partial_ok": 0,
+            "bad": 0
+          },
+          "product": {
+            "good": 98,
+            "partial_ok": 0,
+            "bad": 2
+          }
+        },
+        "baseline_routes": {
+          "auto": 98,
+          "human": 2
+        },
+        "routes": {
+          "auto": 96,
+          "human": 4
+        },
+        "bad_per_auto": {
+          "numerator": 2,
+          "denominator": 96,
+          "share": 0.020833333333333332
+        },
+        "tickets": 0,
+        "ticket_sha256": [],
+        "delivery_states": {},
+        "latency": {
+          "with_cold": {
+            "n": 100,
+            "median": 69.46900000001187,
+            "p90": 88.07800000000861
+          },
+          "without_cold": {
+            "n": 83,
+            "median": 69.125,
+            "p90": 88.07800000000861
+          },
+          "over_180": 0
+        },
+        "infrastructure_attempts": 1,
+        "pending": 0,
+        "product_failures": 0,
+        "counted_out": 0,
+        "calls_by_effort": {
+          "low": 201,
+          "xhigh": 100
+        },
+        "calls_per_question": {
+          "low": 2.01,
+          "xhigh": 1.0
+        },
+        "language_mismatches": 3
+      },
+      "pooled": {
+        "m1": {
+          "baseline": {
+            "good": 284,
+            "partial_ok": 14,
+            "bad": 2
+          },
+          "product": {
+            "good": 291,
+            "partial_ok": 6,
+            "bad": 3
+          }
+        },
+        "baseline_routes": {
+          "auto": 269,
+          "human": 31
+        },
+        "routes": {
+          "auto": 285,
+          "human": 15
+        },
+        "bad_per_auto": {
+          "numerator": 2,
+          "denominator": 285,
+          "share": 0.007017543859649123
+        },
+        "tickets": 0,
+        "ticket_sha256": [],
+        "delivery_states": {},
+        "latency": {
+          "with_cold": {
+            "n": 300,
+            "median": 66.01600000000326,
+            "p90": 83.28099999998813
+          },
+          "without_cold": {
+            "n": 254,
+            "median": 65.70300000000861,
+            "p90": 83.28099999998813
+          },
+          "over_180": 0
+        },
+        "infrastructure_attempts": 1,
+        "pending": 0,
+        "product_failures": 0,
+        "counted_out": 0,
+        "calls_by_effort": {
+          "low": 601,
+          "xhigh": 300
+        },
+        "calls_per_question": {
+          "low": 2.0033333333333334,
+          "xhigh": 1.0
+        },
+        "language_mismatches": 3
+      }
+    },
+    "ollama_observations": 2,
+    "stop_reasons": [
+      {
+        "code": 5,
+        "reason": "verified_stop_failed",
+        "resolved": true
+      },
+      {
+        "code": 5,
+        "reason": "state_stop",
+        "resolved": true
+      }
+    ]
+  },
+  "plans": {
+    "wixqa": {
+      "m1": {
+        "status": "counted",
+        "retest": {
+          "planned": 15,
+          "scale": [
+            "bad",
+            "partial_ok",
+            "good"
+          ],
+          "pairs": 15,
+          "pairs_list": [
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              0,
+              0
+            ]
+          ],
+          "pairs_ids": [
+            "1d695eff92274338",
+            "c4a5af56b5b8a1b4",
+            "a7139eff52cdd929",
+            "74e26aa530f63953",
+            "0623d49e09367998",
+            "803c775a4d022b71",
+            "9268de5e67ed9821",
+            "d794b969eb602a74",
+            "af7ca5802b41cce0",
+            "e9ed46bd4cfd43dd",
+            "40fb0f8c5165c872",
+            "2025aa8e74cf1b90",
+            "1bd69fe5a40cf4f0",
+            "75ea09db97403fea",
+            "9dcc6d81142f5f82"
+          ],
+          "agree": 15,
+          "two_steps_apart": 0,
+          "quadratic_kappa": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ],
+          "resamples_undefined": 3509,
+          "passes_by_kappa": true,
+          "passes_by_agreement": true,
+          "enough_pairs": true,
+          "passed": true,
+          "field_agreement": {
+            "answers_question": {
+              "agree": 15,
+              "of": 15
+            },
+            "context_has_answer": {
+              "agree": 15,
+              "of": 15
+            },
+            "defect": {
+              "agree": 14,
+              "of": 15
+            },
+            "reference_counts": {
+              "agree": 0,
+              "of": 0
+            }
+          }
+        },
+        "missing": [],
+        "requests": 115
+      },
+      "bridge": {
+        "status": "counted",
+        "retest": {
+          "planned": 15,
+          "scale": [
+            "bad",
+            "partial_ok",
+            "good"
+          ],
+          "pairs": 15,
+          "pairs_list": [
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              1,
+              1
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              0,
+              0
+            ]
+          ],
+          "pairs_ids": [
+            "1d695eff92274338",
+            "c4a5af56b5b8a1b4",
+            "a7139eff52cdd929",
+            "74e26aa530f63953",
+            "0623d49e09367998",
+            "803c775a4d022b71",
+            "9268de5e67ed9821",
+            "d794b969eb602a74",
+            "af7ca5802b41cce0",
+            "e9ed46bd4cfd43dd",
+            "40fb0f8c5165c872",
+            "2025aa8e74cf1b90",
+            "1bd69fe5a40cf4f0",
+            "75ea09db97403fea",
+            "9dcc6d81142f5f82"
+          ],
+          "agree": 15,
+          "two_steps_apart": 0,
+          "quadratic_kappa": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ],
+          "resamples_undefined": 1194,
+          "passes_by_kappa": true,
+          "passes_by_agreement": true,
+          "enough_pairs": true,
+          "passed": true,
+          "field_agreement": {
+            "answers_question": {
+              "agree": 15,
+              "of": 15
+            },
+            "context_has_answer": {
+              "agree": 15,
+              "of": 15
+            },
+            "defect": {
+              "agree": 15,
+              "of": 15
+            },
+            "reference_counts": {
+              "agree": 0,
+              "of": 0
+            }
+          }
+        },
+        "missing": [],
+        "requests": 15
+      }
+    },
+    "conditionalqa": {
+      "m1": {
+        "status": "counted",
+        "retest": {
+          "planned": 15,
+          "scale": [
+            "bad",
+            "partial_ok",
+            "good"
+          ],
+          "pairs": 15,
+          "pairs_list": [
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ]
+          ],
+          "pairs_ids": [
+            "693118126ba6e326",
+            "139cc588039f75a7",
+            "bd617607d78c25d2",
+            "407ce6730a93eceb",
+            "65ccd4d1fa0b7fbb",
+            "47daab6830df7dae",
+            "37e93ed674eef5d8",
+            "84a93e8b64623d54",
+            "af6ae1fc745db645",
+            "be62c0f2fd379f72",
+            "a1e470cab547301b",
+            "b2710e1f7e44b2d6",
+            "1c6451acc95c2b9c",
+            "933d51f92af2bc43",
+            "bbe582125cbff301"
+          ],
+          "agree": 15,
+          "two_steps_apart": 0,
+          "quadratic_kappa": null,
+          "ci95": null,
+          "resamples_undefined": 10000,
+          "passes_by_kappa": false,
+          "passes_by_agreement": true,
+          "enough_pairs": true,
+          "passed": true,
+          "field_agreement": {
+            "answers_question": {
+              "agree": 15,
+              "of": 15
+            },
+            "context_has_answer": {
+              "agree": 15,
+              "of": 15
+            },
+            "defect": {
+              "agree": 15,
+              "of": 15
+            },
+            "reference_counts": {
+              "agree": 0,
+              "of": 0
+            }
+          }
+        },
+        "missing": [],
+        "requests": 115
+      },
+      "bridge": {
+        "status": "counted",
+        "retest": {
+          "planned": 15,
+          "scale": [
+            "bad",
+            "partial_ok",
+            "good"
+          ],
+          "pairs": 15,
+          "pairs_list": [
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              1,
+              1
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ]
+          ],
+          "pairs_ids": [
+            "693118126ba6e326",
+            "139cc588039f75a7",
+            "bd617607d78c25d2",
+            "407ce6730a93eceb",
+            "65ccd4d1fa0b7fbb",
+            "47daab6830df7dae",
+            "37e93ed674eef5d8",
+            "84a93e8b64623d54",
+            "af6ae1fc745db645",
+            "be62c0f2fd379f72",
+            "a1e470cab547301b",
+            "b2710e1f7e44b2d6",
+            "1c6451acc95c2b9c",
+            "933d51f92af2bc43",
+            "bbe582125cbff301"
+          ],
+          "agree": 15,
+          "two_steps_apart": 0,
+          "quadratic_kappa": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ],
+          "resamples_undefined": 3619,
+          "passes_by_kappa": true,
+          "passes_by_agreement": true,
+          "enough_pairs": true,
+          "passed": true,
+          "field_agreement": {
+            "answers_question": {
+              "agree": 15,
+              "of": 15
+            },
+            "context_has_answer": {
+              "agree": 15,
+              "of": 15
+            },
+            "defect": {
+              "agree": 15,
+              "of": 15
+            },
+            "reference_counts": {
+              "agree": 0,
+              "of": 0
+            }
+          }
+        },
+        "missing": [],
+        "requests": 15
+      }
+    },
+    "aircargo": {
+      "m1": {
+        "status": "counted",
+        "retest": {
+          "planned": 15,
+          "scale": [
+            "bad",
+            "partial_ok",
+            "good"
+          ],
+          "pairs": 15,
+          "pairs_list": [
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ]
+          ],
+          "pairs_ids": [
+            "8d4dd4f44b430bb5",
+            "b1140c361d2484b4",
+            "cf95feb567203004",
+            "5c134cd850ae48d9",
+            "85791b42dca19aca",
+            "35fcdb8cecf0aaab",
+            "7ae5a5706aa275e3",
+            "c0b51e6a18741a3c",
+            "794b79fdf9fbde9f",
+            "340747f9395232c9",
+            "fc2a2db8b29f2f3c",
+            "ec96bbf66bf91b94",
+            "cbdd3fdaf4a076a3",
+            "e351d37b3c9e4748",
+            "65aeb6956a445ab4"
+          ],
+          "agree": 15,
+          "two_steps_apart": 0,
+          "quadratic_kappa": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ],
+          "resamples_undefined": 3619,
+          "passes_by_kappa": true,
+          "passes_by_agreement": true,
+          "enough_pairs": true,
+          "passed": true,
+          "field_agreement": {
+            "answers_question": {
+              "agree": 15,
+              "of": 15
+            },
+            "context_has_answer": {
+              "agree": 15,
+              "of": 15
+            },
+            "defect": {
+              "agree": 15,
+              "of": 15
+            },
+            "reference_counts": {
+              "agree": 0,
+              "of": 0
+            }
+          }
+        },
+        "missing": [],
+        "requests": 115
+      },
+      "bridge": {
+        "status": "counted",
+        "retest": {
+          "planned": 15,
+          "scale": [
+            "bad",
+            "partial_ok",
+            "good"
+          ],
+          "pairs": 15,
+          "pairs_list": [
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ]
+          ],
+          "pairs_ids": [
+            "8d4dd4f44b430bb5",
+            "b1140c361d2484b4",
+            "cf95feb567203004",
+            "5c134cd850ae48d9",
+            "85791b42dca19aca",
+            "35fcdb8cecf0aaab",
+            "7ae5a5706aa275e3",
+            "c0b51e6a18741a3c",
+            "794b79fdf9fbde9f",
+            "340747f9395232c9",
+            "fc2a2db8b29f2f3c",
+            "ec96bbf66bf91b94",
+            "cbdd3fdaf4a076a3",
+            "e351d37b3c9e4748",
+            "65aeb6956a445ab4"
+          ],
+          "agree": 15,
+          "two_steps_apart": 0,
+          "quadratic_kappa": null,
+          "ci95": null,
+          "resamples_undefined": 10000,
+          "passes_by_kappa": false,
+          "passes_by_agreement": true,
+          "enough_pairs": true,
+          "passed": true,
+          "field_agreement": {
+            "answers_question": {
+              "agree": 15,
+              "of": 15
+            },
+            "context_has_answer": {
+              "agree": 15,
+              "of": 15
+            },
+            "defect": {
+              "agree": 15,
+              "of": 15
+            },
+            "reference_counts": {
+              "agree": 0,
+              "of": 0
+            }
+          }
+        },
+        "missing": [],
+        "requests": 15
+      }
+    }
+  },
+  "aircargo_document_identity": {
+    "same": 50,
+    "n": 100,
+    "cases": [
+      {
+        "case_id": "aircargo-probation-data",
+        "same": false,
+        "baseline_sources_sha256": [
+          "4b8f1b1c04877ac50ca3282b2a2fdec947473e303cdd6533d9748f3e07d71004",
+          "cf05bcb1291fb5852312d8923cbd6981592654c2d7ce8cf47eb83ea3e644e7e8"
+        ],
+        "product_sources_sha256": [
+          "810f8aca326ab254331188fbff86728d2915c8fcf44e74d98f02892bf707fd54",
+          "cf05bcb1291fb5852312d8923cbd6981592654c2d7ce8cf47eb83ea3e644e7e8"
+        ]
+      },
+      {
+        "case_id": "aircargo-probation-extend",
+        "same": true,
+        "baseline_sources_sha256": [
+          "15cf5b9518ffc294570ae62478c6c85bac59d86bdac41ae801cc3f35fe34d5c5",
+          "629b3a8d56c417b82cc3b58957a7fdfb538c5dba7611bc7e55cd06ffc12efc29",
+          "cf05bcb1291fb5852312d8923cbd6981592654c2d7ce8cf47eb83ea3e644e7e8"
+        ],
+        "product_sources_sha256": [
+          "15cf5b9518ffc294570ae62478c6c85bac59d86bdac41ae801cc3f35fe34d5c5",
+          "629b3a8d56c417b82cc3b58957a7fdfb538c5dba7611bc7e55cd06ffc12efc29",
+          "cf05bcb1291fb5852312d8923cbd6981592654c2d7ce8cf47eb83ea3e644e7e8"
+        ]
+      },
+      {
+        "case_id": "aircargo-probation-dismissal",
+        "same": false,
+        "baseline_sources_sha256": [
+          "629b3a8d56c417b82cc3b58957a7fdfb538c5dba7611bc7e55cd06ffc12efc29",
+          "cf05bcb1291fb5852312d8923cbd6981592654c2d7ce8cf47eb83ea3e644e7e8"
+        ],
+        "product_sources_sha256": [
+          "629b3a8d56c417b82cc3b58957a7fdfb538c5dba7611bc7e55cd06ffc12efc29",
+          "6895f11bc13d98e5e84c92149a4e197cd290d1b445a0d6abb8e5307599680a95",
+          "cf05bcb1291fb5852312d8923cbd6981592654c2d7ce8cf47eb83ea3e644e7e8"
+        ]
+      },
+      {
+        "case_id": "aircargo-dismissal-check",
+        "same": false,
+        "baseline_sources_sha256": [
+          "6c9c8795c6face8b565d8de43e7c25249131db4960eeeff48ca1c0acae093185",
+          "a1fc08c3a7735011e01d2f3e02967f960870498e5d23dc645f0d46a1acb4078f",
+          "f398a22bb75fca0bc40b33db364f9c1f13e9695399e64cc4bbe7c251d4a951c1"
+        ],
+        "product_sources_sha256": [
+          "6c9c8795c6face8b565d8de43e7c25249131db4960eeeff48ca1c0acae093185"
+        ]
+      },
+      {
+        "case_id": "aircargo-dismissal-lawyer",
+        "same": false,
+        "baseline_sources_sha256": [
+          "a1fc08c3a7735011e01d2f3e02967f960870498e5d23dc645f0d46a1acb4078f",
+          "afca8325b483b7b8d46b0ad11ec2c779f63f0c9789fe8c8b07fe05e587f394d4",
+          "ec434a3d53dea84e6c9ac2734d1bb6d8576ef99b8eb3af5d5d7dc30baf7ddc26"
+        ],
+        "product_sources_sha256": [
+          "343a13e9d9f10543d42e9dfc466e73f2e3edf4a7c19fd4d4724328f09c655509",
+          "a1fc08c3a7735011e01d2f3e02967f960870498e5d23dc645f0d46a1acb4078f"
+        ]
+      },
+      {
+        "case_id": "aircargo-dismissal-order",
+        "same": false,
+        "baseline_sources_sha256": [
+          "6895f11bc13d98e5e84c92149a4e197cd290d1b445a0d6abb8e5307599680a95",
+          "a1fc08c3a7735011e01d2f3e02967f960870498e5d23dc645f0d46a1acb4078f"
+        ],
+        "product_sources_sha256": [
+          "6895f11bc13d98e5e84c92149a4e197cd290d1b445a0d6abb8e5307599680a95"
+        ]
+      },
+      {
+        "case_id": "aircargo-leave-sources",
+        "same": false,
+        "baseline_sources_sha256": [
+          "0159a5c7e0cd6522b29d67dfd74e3c775ab9790ba868e7917214980a854502c6",
+          "1543dcc58de8496a020e69f619f98732cf1558be600c6e9c1b0375a7005e7352",
+          "8c06d20c2f70b80086d4bcb08987aefde74aac618fd5fec08adc36d42fd50d24"
+        ],
+        "product_sources_sha256": [
+          "1543dcc58de8496a020e69f619f98732cf1558be600c6e9c1b0375a7005e7352",
+          "8c06d20c2f70b80086d4bcb08987aefde74aac618fd5fec08adc36d42fd50d24"
+        ]
+      },
+      {
+        "case_id": "aircargo-leave-compensation",
+        "same": false,
+        "baseline_sources_sha256": [
+          "1543dcc58de8496a020e69f619f98732cf1558be600c6e9c1b0375a7005e7352",
+          "8c06d20c2f70b80086d4bcb08987aefde74aac618fd5fec08adc36d42fd50d24"
+        ],
+        "product_sources_sha256": [
+          "1543dcc58de8496a020e69f619f98732cf1558be600c6e9c1b0375a7005e7352",
+          "6c9c8795c6face8b565d8de43e7c25249131db4960eeeff48ca1c0acae093185",
+          "8c06d20c2f70b80086d4bcb08987aefde74aac618fd5fec08adc36d42fd50d24"
+        ]
+      },
+      {
+        "case_id": "aircargo-leave-risk",
+        "same": true,
+        "baseline_sources_sha256": [
+          "1543dcc58de8496a020e69f619f98732cf1558be600c6e9c1b0375a7005e7352",
+          "8c06d20c2f70b80086d4bcb08987aefde74aac618fd5fec08adc36d42fd50d24",
+          "c7a1861ca4ce103902b80172eb19cc5d6557bf17cfa90988c3c020db1880c32f"
+        ],
+        "product_sources_sha256": [
+          "1543dcc58de8496a020e69f619f98732cf1558be600c6e9c1b0375a7005e7352",
+          "8c06d20c2f70b80086d4bcb08987aefde74aac618fd5fec08adc36d42fd50d24",
+          "c7a1861ca4ce103902b80172eb19cc5d6557bf17cfa90988c3c020db1880c32f"
+        ]
+      },
+      {
+        "case_id": "aircargo-matliab-check",
+        "same": false,
+        "baseline_sources_sha256": [
+          "786d08ba3aec8a5e39f013ea7af033b15c6266d9a59ec2ba5283faaf8969f2b2"
+        ],
+        "product_sources_sha256": [
+          "11489cc62bf1bf68a6726be0f3287267f6f67096d284782dfec5198230a46219",
+          "786d08ba3aec8a5e39f013ea7af033b15c6266d9a59ec2ba5283faaf8969f2b2"
+        ]
+      },
+      {
+        "case_id": "aircargo-matliab-disputed",
+        "same": true,
+        "baseline_sources_sha256": [
+          "3ae98425e7b11c94601d3e9b78177fb84bf432513abed493f57a91cc8b0834cd",
+          "786d08ba3aec8a5e39f013ea7af033b15c6266d9a59ec2ba5283faaf8969f2b2"
+        ],
+        "product_sources_sha256": [
+          "3ae98425e7b11c94601d3e9b78177fb84bf432513abed493f57a91cc8b0834cd",
+          "786d08ba3aec8a5e39f013ea7af033b15c6266d9a59ec2ba5283faaf8969f2b2"
+        ]
+      },
+      {
+        "case_id": "aircargo-templates-choose",
+        "same": false,
+        "baseline_sources_sha256": [
+          "eff6750e8adb205aa614997764e412f81a1f1ac2a5390aacb6308f8b6699689b"
+        ],
+        "product_sources_sha256": [
+          "11489cc62bf1bf68a6726be0f3287267f6f67096d284782dfec5198230a46219",
+          "eff6750e8adb205aa614997764e412f81a1f1ac2a5390aacb6308f8b6699689b"
+        ]
+      },
+      {
+        "case_id": "aircargo-templates-checklist",
+        "same": false,
+        "baseline_sources_sha256": [
+          "5c83d71f2c74ac86862f776f2cb5dab59469e90d07c1e3f1945603a1300aea44",
+          "eff6750e8adb205aa614997764e412f81a1f1ac2a5390aacb6308f8b6699689b"
+        ],
+        "product_sources_sha256": [
+          "3ae98425e7b11c94601d3e9b78177fb84bf432513abed493f57a91cc8b0834cd",
+          "440a2cf7dcae31b1d9f466d78dd863e452e6af1ab2929af666b72e275185190d",
+          "eff6750e8adb205aa614997764e412f81a1f1ac2a5390aacb6308f8b6699689b"
+        ]
+      },
+      {
+        "case_id": "aircargo-templates-insufficient",
+        "same": true,
+        "baseline_sources_sha256": [
+          "11489cc62bf1bf68a6726be0f3287267f6f67096d284782dfec5198230a46219",
+          "eff6750e8adb205aa614997764e412f81a1f1ac2a5390aacb6308f8b6699689b"
+        ],
+        "product_sources_sha256": [
+          "11489cc62bf1bf68a6726be0f3287267f6f67096d284782dfec5198230a46219",
+          "eff6750e8adb205aa614997764e412f81a1f1ac2a5390aacb6308f8b6699689b"
+        ]
+      },
+      {
+        "case_id": "aircargo-secret-check",
+        "same": true,
+        "baseline_sources_sha256": [
+          "afe466af5c6011591403ec78f0f0f9f353b8099018b63fed2b1357738ddfa7e1",
+          "d43a141750bfe8e5ccbbe08692f43c10b5f9f874b3ec9dc25c5be872635de2af"
+        ],
+        "product_sources_sha256": [
+          "afe466af5c6011591403ec78f0f0f9f353b8099018b63fed2b1357738ddfa7e1",
+          "d43a141750bfe8e5ccbbe08692f43c10b5f9f874b3ec9dc25c5be872635de2af"
+        ]
+      },
+      {
+        "case_id": "aircargo-secret-not-auto",
+        "same": false,
+        "baseline_sources_sha256": [
+          "afe466af5c6011591403ec78f0f0f9f353b8099018b63fed2b1357738ddfa7e1",
+          "d43a141750bfe8e5ccbbe08692f43c10b5f9f874b3ec9dc25c5be872635de2af"
+        ],
+        "product_sources_sha256": [
+          "afe466af5c6011591403ec78f0f0f9f353b8099018b63fed2b1357738ddfa7e1",
+          "da2c5f2d989b6bf813cd5c5acfcf7e74e7c42b16d13630448fee8e3cef5dfe76"
+        ]
+      },
+      {
+        "case_id": "aircargo-secret-disclosure",
+        "same": false,
+        "baseline_sources_sha256": [
+          "afe466af5c6011591403ec78f0f0f9f353b8099018b63fed2b1357738ddfa7e1",
+          "d43a141750bfe8e5ccbbe08692f43c10b5f9f874b3ec9dc25c5be872635de2af"
+        ],
+        "product_sources_sha256": [
+          "afe466af5c6011591403ec78f0f0f9f353b8099018b63fed2b1357738ddfa7e1",
+          "d43a141750bfe8e5ccbbe08692f43c10b5f9f874b3ec9dc25c5be872635de2af",
+          "e2d3be911268f6c21bfc3d88e077c66ce509731080104b827c44180731f6dbcc"
+        ]
+      },
+      {
+        "case_id": "aircargo-pdp-scope",
+        "same": true,
+        "baseline_sources_sha256": [
+          "e8d24f8e33a56d6c39924fcbee6b9dc914fd20bf9038dedb1a638057c24a997d"
+        ],
+        "product_sources_sha256": [
+          "e8d24f8e33a56d6c39924fcbee6b9dc914fd20bf9038dedb1a638057c24a997d"
+        ]
+      },
+      {
+        "case_id": "aircargo-pdp-data",
+        "same": false,
+        "baseline_sources_sha256": [
+          "42aa43260e9ebb31b4efc5408eed7e60d8f20a49082996280013b16c114feebe",
+          "e8d24f8e33a56d6c39924fcbee6b9dc914fd20bf9038dedb1a638057c24a997d"
+        ],
+        "product_sources_sha256": [
+          "42aa43260e9ebb31b4efc5408eed7e60d8f20a49082996280013b16c114feebe",
+          "ff8bdf7b075b8e143d8261d16fa25f8b58e4bcfbcd4e26e563ec74eecf36525d"
+        ]
+      },
+      {
+        "case_id": "aircargo-pdp-uncertain",
+        "same": false,
+        "baseline_sources_sha256": [
+          "cf05bcb1291fb5852312d8923cbd6981592654c2d7ce8cf47eb83ea3e644e7e8",
+          "e8d24f8e33a56d6c39924fcbee6b9dc914fd20bf9038dedb1a638057c24a997d"
+        ],
+        "product_sources_sha256": [
+          "42aa43260e9ebb31b4efc5408eed7e60d8f20a49082996280013b16c114feebe",
+          "e8d24f8e33a56d6c39924fcbee6b9dc914fd20bf9038dedb1a638057c24a997d"
+        ]
+      },
+      {
+        "case_id": "aircargo-claims-delay",
+        "same": false,
+        "baseline_sources_sha256": [
+          "6edcad9cab538e7bf732d54c415d5f6efa512f6b8e14e8ab9450ba10b4ceeb75"
+        ],
+        "product_sources_sha256": [
+          "6edcad9cab538e7bf732d54c415d5f6efa512f6b8e14e8ab9450ba10b4ceeb75",
+          "8562328451931e9e60c13b6ffd11825c1f1e7f9bf5ff04286345968c1534b816",
+          "cd615210dc8b56dab94508a267977ca08b83548014c2a01a85e0a6d99746e5e9"
+        ]
+      },
+      {
+        "case_id": "aircargo-claims-damage",
+        "same": true,
+        "baseline_sources_sha256": [
+          "6edcad9cab538e7bf732d54c415d5f6efa512f6b8e14e8ab9450ba10b4ceeb75",
+          "ca8edc9d2a55ff796038843903609b6b8b71a411d8e3e8f5f7e1450a5e4dd175"
+        ],
+        "product_sources_sha256": [
+          "6edcad9cab538e7bf732d54c415d5f6efa512f6b8e14e8ab9450ba10b4ceeb75",
+          "ca8edc9d2a55ff796038843903609b6b8b71a411d8e3e8f5f7e1450a5e4dd175"
+        ]
+      },
+      {
+        "case_id": "aircargo-claims-lawyer",
+        "same": false,
+        "baseline_sources_sha256": [
+          "6edcad9cab538e7bf732d54c415d5f6efa512f6b8e14e8ab9450ba10b4ceeb75",
+          "98908624f30e34fcb249b4ddf9d0226f2c5d814db4882d4ed8f8220ca884fd17",
+          "b4d2466acdc03799c10f1d9fba87571853b60d1043f3b58f038b138997c92951"
+        ],
+        "product_sources_sha256": [
+          "440a2cf7dcae31b1d9f466d78dd863e452e6af1ab2929af666b72e275185190d",
+          "5c83d71f2c74ac86862f776f2cb5dab59469e90d07c1e3f1945603a1300aea44"
+        ]
+      },
+      {
+        "case_id": "aircargo-claims-forbidden",
+        "same": true,
+        "baseline_sources_sha256": [
+          "6edcad9cab538e7bf732d54c415d5f6efa512f6b8e14e8ab9450ba10b4ceeb75"
+        ],
+        "product_sources_sha256": [
+          "6edcad9cab538e7bf732d54c415d5f6efa512f6b8e14e8ab9450ba10b4ceeb75"
+        ]
+      },
+      {
+        "case_id": "aircargo-expedition-vs-carrier",
+        "same": false,
+        "baseline_sources_sha256": [
+          "3067c01ce8c828c740650dbe8862b81c608e2f1a6af58b4c9d3c94fa45eaa203",
+          "6ea056a455986c50f9ca71f2d3dcc1aa8132d37c25d954da4329d9de50881b26",
+          "c412261bc918a8084f45ba95b2aa0a088d2cbe74ea3e0b57fbf217998e86a37a"
+        ],
+        "product_sources_sha256": [
+          "6b70ddfa4f54bebc3e439698e779b49d7d0b1974b91d7ca2862c1e4a908032f4",
+          "6ea056a455986c50f9ca71f2d3dcc1aa8132d37c25d954da4329d9de50881b26",
+          "c412261bc918a8084f45ba95b2aa0a088d2cbe74ea3e0b57fbf217998e86a37a"
+        ]
+      },
+      {
+        "case_id": "aircargo-expedition-mawb-hawb",
+        "same": false,
+        "baseline_sources_sha256": [
+          "2e957bc34ee61bb5adca32da0d2ba18032d8de4720b6bd7669621cdef0371b5b",
+          "c412261bc918a8084f45ba95b2aa0a088d2cbe74ea3e0b57fbf217998e86a37a",
+          "e6d111d40b27558050493bbc0788cf5f2c551ff5437f296bdd0483f42355959d"
+        ],
+        "product_sources_sha256": [
+          "a51b7f5bc6fca6f3fa54960b1cf1c4f3245b1304f03365388bc09a445435825f",
+          "c412261bc918a8084f45ba95b2aa0a088d2cbe74ea3e0b57fbf217998e86a37a"
+        ]
+      },
+      {
+        "case_id": "aircargo-expedition-risks",
+        "same": false,
+        "baseline_sources_sha256": [
+          "a458eb543d63d7a276b1e030f15821ff0e481b671ea72093f0654e3c7b76e04b",
+          "c412261bc918a8084f45ba95b2aa0a088d2cbe74ea3e0b57fbf217998e86a37a"
+        ],
+        "product_sources_sha256": [
+          "6b70ddfa4f54bebc3e439698e779b49d7d0b1974b91d7ca2862c1e4a908032f4",
+          "c412261bc918a8084f45ba95b2aa0a088d2cbe74ea3e0b57fbf217998e86a37a"
+        ]
+      },
+      {
+        "case_id": "aircargo-road-cutoff",
+        "same": false,
+        "baseline_sources_sha256": [
+          "3e79f876d57499e81589ea7afe29d5af3c984b58bfc2f07afbe299c4016a1bd2",
+          "aacff36d2fe0e9a88f8485c4a5682a06127f957e393b278bb70f49bfead9fb74",
+          "e6d111d40b27558050493bbc0788cf5f2c551ff5437f296bdd0483f42355959d"
+        ],
+        "product_sources_sha256": [
+          "3e79f876d57499e81589ea7afe29d5af3c984b58bfc2f07afbe299c4016a1bd2",
+          "9f49ad18415eb953e0b91d57777785af3d7d5f7807457566bce6c28d0d31c718"
+        ]
+      },
+      {
+        "case_id": "aircargo-road-penalty",
+        "same": false,
+        "baseline_sources_sha256": [
+          "3e79f876d57499e81589ea7afe29d5af3c984b58bfc2f07afbe299c4016a1bd2",
+          "6edcad9cab538e7bf732d54c415d5f6efa512f6b8e14e8ab9450ba10b4ceeb75"
+        ],
+        "product_sources_sha256": [
+          "3e79f876d57499e81589ea7afe29d5af3c984b58bfc2f07afbe299c4016a1bd2",
+          "e8555864e9f3ded66e96f0f020651eb6f234e8ecaab72639ae636db244c593d5"
+        ]
+      },
+      {
+        "case_id": "aircargo-road-seal",
+        "same": false,
+        "baseline_sources_sha256": [
+          "3e79f876d57499e81589ea7afe29d5af3c984b58bfc2f07afbe299c4016a1bd2",
+          "8d7ab0d9e2fa4e96379fc82a5f03b12372154cc0530865fd77d3d256e7dd27ba",
+          "b1ae4a782c5a7546b3042462ad628cb92424c8297f0f4329a303907bbae51b9a"
+        ],
+        "product_sources_sha256": [
+          "3e79f876d57499e81589ea7afe29d5af3c984b58bfc2f07afbe299c4016a1bd2",
+          "aacff36d2fe0e9a88f8485c4a5682a06127f957e393b278bb70f49bfead9fb74"
+        ]
+      },
+      {
+        "case_id": "aircargo-road-driver-pdn",
+        "same": true,
+        "baseline_sources_sha256": [
+          "3e79f876d57499e81589ea7afe29d5af3c984b58bfc2f07afbe299c4016a1bd2"
+        ],
+        "product_sources_sha256": [
+          "3e79f876d57499e81589ea7afe29d5af3c984b58bfc2f07afbe299c4016a1bd2"
+        ]
+      },
+      {
+        "case_id": "aircargo-business-trip-advance-report",
+        "same": true,
+        "baseline_sources_sha256": [
+          "68823065c8db14168cb384d22b1476b6220cc35d630286981159f4c667ed7146",
+          "8c2b1b6d59c8b758339b52c1eb23f23cfb93301cfebda89c944e6c74c7da5074"
+        ],
+        "product_sources_sha256": [
+          "68823065c8db14168cb384d22b1476b6220cc35d630286981159f4c667ed7146",
+          "8c2b1b6d59c8b758339b52c1eb23f23cfb93301cfebda89c944e6c74c7da5074"
+        ]
+      },
+      {
+        "case_id": "aircargo-business-trip-foreign-approval",
+        "same": false,
+        "baseline_sources_sha256": [
+          "5f6b590569ac9db6607d36b3d4087fd6903cb3386e90f1175bdf232397a63960",
+          "6c8d5914f0b8b59ad76de377718497da1b8ca50dccc16fe8fc93169fd28f1978",
+          "8c2b1b6d59c8b758339b52c1eb23f23cfb93301cfebda89c944e6c74c7da5074"
+        ],
+        "product_sources_sha256": [
+          "68823065c8db14168cb384d22b1476b6220cc35d630286981159f4c667ed7146",
+          "8c2b1b6d59c8b758339b52c1eb23f23cfb93301cfebda89c944e6c74c7da5074"
+        ]
+      },
+      {
+        "case_id": "aircargo-remote-work-monitoring-limits",
+        "same": true,
+        "baseline_sources_sha256": [
+          "2c859fee02f4b49eb2f1d7259ee160c3960966a44f6a116e4e841da8b733d7fa",
+          "5f6b590569ac9db6607d36b3d4087fd6903cb3386e90f1175bdf232397a63960"
+        ],
+        "product_sources_sha256": [
+          "2c859fee02f4b49eb2f1d7259ee160c3960966a44f6a116e4e841da8b733d7fa",
+          "5f6b590569ac9db6607d36b3d4087fd6903cb3386e90f1175bdf232397a63960"
+        ]
+      },
+      {
+        "case_id": "aircargo-remote-work-equipment-compensation",
+        "same": true,
+        "baseline_sources_sha256": [
+          "5f6b590569ac9db6607d36b3d4087fd6903cb3386e90f1175bdf232397a63960",
+          "78a0ec96a0eebf315b6782512979aec64dd127ec1e78772643a2c6626925d8fc"
+        ],
+        "product_sources_sha256": [
+          "5f6b590569ac9db6607d36b3d4087fd6903cb3386e90f1175bdf232397a63960",
+          "78a0ec96a0eebf315b6782512979aec64dd127ec1e78772643a2c6626925d8fc"
+        ]
+      },
+      {
+        "case_id": "aircargo-maternity-duration-normal",
+        "same": true,
+        "baseline_sources_sha256": [
+          "1543dcc58de8496a020e69f619f98732cf1558be600c6e9c1b0375a7005e7352",
+          "e6f3f918d86ed946c6cd32a2b9707b1edf9fd634e8261781622b1d3e5a6f2e38"
+        ],
+        "product_sources_sha256": [
+          "1543dcc58de8496a020e69f619f98732cf1558be600c6e9c1b0375a7005e7352",
+          "e6f3f918d86ed946c6cd32a2b9707b1edf9fd634e8261781622b1d3e5a6f2e38"
+        ]
+      },
+      {
+        "case_id": "aircargo-maternity-dismissal-ban",
+        "same": false,
+        "baseline_sources_sha256": [
+          "236b58e8a8f2c9f6bea52f90e8983599f7ca1b9aa731ffc7baf0b29fee7549e8",
+          "6c9c8795c6face8b565d8de43e7c25249131db4960eeeff48ca1c0acae093185",
+          "e6f3f918d86ed946c6cd32a2b9707b1edf9fd634e8261781622b1d3e5a6f2e38"
+        ],
+        "product_sources_sha256": [
+          "6c9c8795c6face8b565d8de43e7c25249131db4960eeeff48ca1c0acae093185",
+          "e6f3f918d86ed946c6cd32a2b9707b1edf9fd634e8261781622b1d3e5a6f2e38"
+        ]
+      },
+      {
+        "case_id": "aircargo-internal-transfer-consent",
+        "same": true,
+        "baseline_sources_sha256": [
+          "7223a59d0b10c3f2a2473a65d860406659683a905e4bac6e061d16c13878f370"
+        ],
+        "product_sources_sha256": [
+          "7223a59d0b10c3f2a2473a65d860406659683a905e4bac6e061d16c13878f370"
+        ]
+      },
+      {
+        "case_id": "aircargo-internal-transfer-documents",
+        "same": true,
+        "baseline_sources_sha256": [
+          "7223a59d0b10c3f2a2473a65d860406659683a905e4bac6e061d16c13878f370",
+          "a05fe964e39fd7060acfa6b54da0cb10f407eba873cc377e1aa39f33f903ab44"
+        ],
+        "product_sources_sha256": [
+          "7223a59d0b10c3f2a2473a65d860406659683a905e4bac6e061d16c13878f370",
+          "a05fe964e39fd7060acfa6b54da0cb10f407eba873cc377e1aa39f33f903ab44"
+        ]
+      },
+      {
+        "case_id": "aircargo-contract-termination-open-awb",
+        "same": true,
+        "baseline_sources_sha256": [
+          "45dc99680ebed60714478dfe855f451ec51c29d59ec9c782544adb6262e920f6"
+        ],
+        "product_sources_sha256": [
+          "45dc99680ebed60714478dfe855f451ec51c29d59ec9c782544adb6262e920f6"
+        ]
+      },
+      {
+        "case_id": "aircargo-contract-termination-fields",
+        "same": true,
+        "baseline_sources_sha256": [
+          "45dc99680ebed60714478dfe855f451ec51c29d59ec9c782544adb6262e920f6"
+        ],
+        "product_sources_sha256": [
+          "45dc99680ebed60714478dfe855f451ec51c29d59ec9c782544adb6262e920f6"
+        ]
+      },
+      {
+        "case_id": "aircargo-road-contract-aircargo-fields",
+        "same": true,
+        "baseline_sources_sha256": [
+          "27548839ebc46da7824d1aeb94b86fc28150f04b219d7e0dc480b6f87ab9ca44",
+          "aacff36d2fe0e9a88f8485c4a5682a06127f957e393b278bb70f49bfead9fb74"
+        ],
+        "product_sources_sha256": [
+          "27548839ebc46da7824d1aeb94b86fc28150f04b219d7e0dc480b6f87ab9ca44",
+          "aacff36d2fe0e9a88f8485c4a5682a06127f957e393b278bb70f49bfead9fb74"
+        ]
+      },
+      {
+        "case_id": "aircargo-dangerous-goods-fields",
+        "same": false,
+        "baseline_sources_sha256": [
+          "5113da35bf7c787cf42586257412773fbe6dfc2593a6e72a427e06bc1d927fde",
+          "b291e2d09f2fe039513a6e062d41618e964e50d0389f6078f7de8decada7b0f1"
+        ],
+        "product_sources_sha256": [
+          "b291e2d09f2fe039513a6e062d41618e964e50d0389f6078f7de8decada7b0f1",
+          "c412261bc918a8084f45ba95b2aa0a088d2cbe74ea3e0b57fbf217998e86a37a"
+        ]
+      },
+      {
+        "case_id": "aircargo-dangerous-goods-clearance",
+        "same": false,
+        "baseline_sources_sha256": [
+          "b291e2d09f2fe039513a6e062d41618e964e50d0389f6078f7de8decada7b0f1",
+          "f67551ff4f0c3344cb7f46ba3d0fc006860da28ecf9432ac61b16772833bd9e1"
+        ],
+        "product_sources_sha256": [
+          "5113da35bf7c787cf42586257412773fbe6dfc2593a6e72a427e06bc1d927fde",
+          "b291e2d09f2fe039513a6e062d41618e964e50d0389f6078f7de8decada7b0f1"
+        ]
+      },
+      {
+        "case_id": "aircargo-customs-clearance-fields",
+        "same": false,
+        "baseline_sources_sha256": [
+          "142a3aad37d176e768f7ac1ff89bd1549314cd4b9c7cb150a3938404d2e50eb2"
+        ],
+        "product_sources_sha256": [
+          "142a3aad37d176e768f7ac1ff89bd1549314cd4b9c7cb150a3938404d2e50eb2",
+          "321a534be2ad56e4abcaa898175cbce6f5e0eac4c9f8cc5a24127d48210df1c7"
+        ]
+      },
+      {
+        "case_id": "aircargo-customs-special-cargo-manual-check",
+        "same": false,
+        "baseline_sources_sha256": [
+          "142a3aad37d176e768f7ac1ff89bd1549314cd4b9c7cb150a3938404d2e50eb2",
+          "33f08a17d07c828c151b3ca029d710670c7eafa7579fbf751573e0a756b0c178"
+        ],
+        "product_sources_sha256": [
+          "413d6e23d290923852dffe8ef536316c86236216ef736f9c637c6eb1b6472a8d",
+          "c412261bc918a8084f45ba95b2aa0a088d2cbe74ea3e0b57fbf217998e86a37a"
+        ]
+      },
+      {
+        "case_id": "aircargo-waybill-first-mile-fields",
+        "same": true,
+        "baseline_sources_sha256": [
+          "a51b7f5bc6fca6f3fa54960b1cf1c4f3245b1304f03365388bc09a445435825f"
+        ],
+        "product_sources_sha256": [
+          "a51b7f5bc6fca6f3fa54960b1cf1c4f3245b1304f03365388bc09a445435825f"
+        ]
+      },
+      {
+        "case_id": "aircargo-waybill-escalation-events",
+        "same": false,
+        "baseline_sources_sha256": [
+          "1aabbfec84d90b1d6eacb4f897e903585657a883bd6b6b157384cf4809af4c7d",
+          "b1ae4a782c5a7546b3042462ad628cb92424c8297f0f4329a303907bbae51b9a",
+          "f67551ff4f0c3344cb7f46ba3d0fc006860da28ecf9432ac61b16772833bd9e1"
+        ],
+        "product_sources_sha256": [
+          "3e79f876d57499e81589ea7afe29d5af3c984b58bfc2f07afbe299c4016a1bd2",
+          "6edcad9cab538e7bf732d54c415d5f6efa512f6b8e14e8ab9450ba10b4ceeb75"
+        ]
+      },
+      {
+        "case_id": "aircargo-trade-compliance-hold",
+        "same": false,
+        "baseline_sources_sha256": [
+          "560b86a73bbf96693a4824589827982c2a5ecf1235b918f646259854f363dabd"
+        ],
+        "product_sources_sha256": [
+          "440a2cf7dcae31b1d9f466d78dd863e452e6af1ab2929af666b72e275185190d",
+          "560b86a73bbf96693a4824589827982c2a5ecf1235b918f646259854f363dabd"
+        ]
+      },
+      {
+        "case_id": "aircargo-trade-compliance-screening",
+        "same": false,
+        "baseline_sources_sha256": [
+          "440a2cf7dcae31b1d9f466d78dd863e452e6af1ab2929af666b72e275185190d",
+          "560b86a73bbf96693a4824589827982c2a5ecf1235b918f646259854f363dabd",
+          "ab54ae54d5b00b01f560c4e7b079d782ec2d7d91da8c59a01341e2a4d2ee4454"
+        ],
+        "product_sources_sha256": [
+          "560b86a73bbf96693a4824589827982c2a5ecf1235b918f646259854f363dabd"
+        ]
+      },
+      {
+        "case_id": "aircargo-incident-response-bridge",
+        "same": false,
+        "baseline_sources_sha256": [
+          "42aa43260e9ebb31b4efc5408eed7e60d8f20a49082996280013b16c114feebe",
+          "9808803a9d5a45623bb7e23c2b202985b5017461ebb733093ca08e3972766422",
+          "afe466af5c6011591403ec78f0f0f9f353b8099018b63fed2b1357738ddfa7e1"
+        ],
+        "product_sources_sha256": [
+          "9808803a9d5a45623bb7e23c2b202985b5017461ebb733093ca08e3972766422",
+          "e2d3be911268f6c21bfc3d88e077c66ce509731080104b827c44180731f6dbcc"
+        ]
+      },
+      {
+        "case_id": "aircargo-incident-response-required-fields",
+        "same": true,
+        "baseline_sources_sha256": [
+          "9808803a9d5a45623bb7e23c2b202985b5017461ebb733093ca08e3972766422"
+        ],
+        "product_sources_sha256": [
+          "9808803a9d5a45623bb7e23c2b202985b5017461ebb733093ca08e3972766422"
+        ]
+      },
+      {
+        "case_id": "aircargo-access-control-need-to-know",
+        "same": false,
+        "baseline_sources_sha256": [
+          "39e322dda9e3cad272ef14d8e3dfca5dcbbbed2359efa175ea16cdb302ec9ba0",
+          "d170cc81502e40ba5f7a3015323156fabb1ef5195cc0ecc1d0f63ec9369f134f"
+        ],
+        "product_sources_sha256": [
+          "39e322dda9e3cad272ef14d8e3dfca5dcbbbed2359efa175ea16cdb302ec9ba0"
+        ]
+      },
+      {
+        "case_id": "aircargo-access-control-review",
+        "same": false,
+        "baseline_sources_sha256": [
+          "39e322dda9e3cad272ef14d8e3dfca5dcbbbed2359efa175ea16cdb302ec9ba0",
+          "42aa43260e9ebb31b4efc5408eed7e60d8f20a49082996280013b16c114feebe",
+          "d78e110e923f43490775ea3524d3e620154d7d44c6b038d05b6486d6ffb741ed"
+        ],
+        "product_sources_sha256": [
+          "39e322dda9e3cad272ef14d8e3dfca5dcbbbed2359efa175ea16cdb302ec9ba0"
+        ]
+      },
+      {
+        "case_id": "aircargo-employment-contract-essential-terms",
+        "same": false,
+        "baseline_sources_sha256": [
+          "11489cc62bf1bf68a6726be0f3287267f6f67096d284782dfec5198230a46219"
+        ],
+        "product_sources_sha256": [
+          "11489cc62bf1bf68a6726be0f3287267f6f67096d284782dfec5198230a46219",
+          "d03489f7df465795777d7ccc75d8db5dc76e74fbd6f83e45036c07abcd5f9fe9"
+        ]
+      },
+      {
+        "case_id": "aircargo-employment-contract-special-form",
+        "same": false,
+        "baseline_sources_sha256": [
+          "11489cc62bf1bf68a6726be0f3287267f6f67096d284782dfec5198230a46219",
+          "eff6750e8adb205aa614997764e412f81a1f1ac2a5390aacb6308f8b6699689b"
+        ],
+        "product_sources_sha256": [
+          "11489cc62bf1bf68a6726be0f3287267f6f67096d284782dfec5198230a46219"
+        ]
+      },
+      {
+        "case_id": "aircargo-driver-job-documents",
+        "same": true,
+        "baseline_sources_sha256": [
+          "a2c2a7b06201d1c8168cae54ae078cbe5169c6a68afe7cc0e8393fbdbb54e482"
+        ],
+        "product_sources_sha256": [
+          "a2c2a7b06201d1c8168cae54ae078cbe5169c6a68afe7cc0e8393fbdbb54e482"
+        ]
+      },
+      {
+        "case_id": "aircargo-driver-dangerous-goods-refusal",
+        "same": false,
+        "baseline_sources_sha256": [
+          "7bddb9f0076c957c3bc716ff5d1d078a7143e6591c155ad8c1a9d58fd19a0a1b",
+          "a2c2a7b06201d1c8168cae54ae078cbe5169c6a68afe7cc0e8393fbdbb54e482"
+        ],
+        "product_sources_sha256": [
+          "a2c2a7b06201d1c8168cae54ae078cbe5169c6a68afe7cc0e8393fbdbb54e482"
+        ]
+      },
+      {
+        "case_id": "aircargo-sick-leave-required-fields",
+        "same": true,
+        "baseline_sources_sha256": [
+          "afca8325b483b7b8d46b0ad11ec2c779f63f0c9789fe8c8b07fe05e587f394d4"
+        ],
+        "product_sources_sha256": [
+          "afca8325b483b7b8d46b0ad11ec2c779f63f0c9789fe8c8b07fe05e587f394d4"
+        ]
+      },
+      {
+        "case_id": "aircargo-sick-leave-lawyer-escalation",
+        "same": true,
+        "baseline_sources_sha256": [
+          "afca8325b483b7b8d46b0ad11ec2c779f63f0c9789fe8c8b07fe05e587f394d4"
+        ],
+        "product_sources_sha256": [
+          "afca8325b483b7b8d46b0ad11ec2c779f63f0c9789fe8c8b07fe05e587f394d4"
+        ]
+      },
+      {
+        "case_id": "aircargo-cargo-loss-evidence-bundle",
+        "same": true,
+        "baseline_sources_sha256": [
+          "07457f6f1f5d44dc50a2bca57f9e83f6420bbc6cb40349ad7b8780e5091c310f"
+        ],
+        "product_sources_sha256": [
+          "07457f6f1f5d44dc50a2bca57f9e83f6420bbc6cb40349ad7b8780e5091c310f"
+        ]
+      },
+      {
+        "case_id": "aircargo-cargo-loss-required-fields",
+        "same": true,
+        "baseline_sources_sha256": [
+          "07457f6f1f5d44dc50a2bca57f9e83f6420bbc6cb40349ad7b8780e5091c310f"
+        ],
+        "product_sources_sha256": [
+          "07457f6f1f5d44dc50a2bca57f9e83f6420bbc6cb40349ad7b8780e5091c310f"
+        ]
+      },
+      {
+        "case_id": "aircargo-late-delivery-reply-evidence",
+        "same": false,
+        "baseline_sources_sha256": [
+          "8562328451931e9e60c13b6ffd11825c1f1e7f9bf5ff04286345968c1534b816",
+          "cd615210dc8b56dab94508a267977ca08b83548014c2a01a85e0a6d99746e5e9"
+        ],
+        "product_sources_sha256": [
+          "8562328451931e9e60c13b6ffd11825c1f1e7f9bf5ff04286345968c1534b816"
+        ]
+      },
+      {
+        "case_id": "aircargo-late-delivery-reply-no-admission",
+        "same": false,
+        "baseline_sources_sha256": [
+          "8562328451931e9e60c13b6ffd11825c1f1e7f9bf5ff04286345968c1534b816"
+        ],
+        "product_sources_sha256": [
+          "8562328451931e9e60c13b6ffd11825c1f1e7f9bf5ff04286345968c1534b816",
+          "cd615210dc8b56dab94508a267977ca08b83548014c2a01a85e0a6d99746e5e9"
+        ]
+      },
+      {
+        "case_id": "aircargo-driver-hours-required-fields",
+        "same": true,
+        "baseline_sources_sha256": [
+          "e0aa57d69bb93662bc85825589695d86a72f85b84f39f1ff93ba837cef0b13d8"
+        ],
+        "product_sources_sha256": [
+          "e0aa57d69bb93662bc85825589695d86a72f85b84f39f1ff93ba837cef0b13d8"
+        ]
+      },
+      {
+        "case_id": "aircargo-driver-hours-terminal-discrepancy",
+        "same": false,
+        "baseline_sources_sha256": [
+          "8d7ab0d9e2fa4e96379fc82a5f03b12372154cc0530865fd77d3d256e7dd27ba",
+          "b291e2d09f2fe039513a6e062d41618e964e50d0389f6078f7de8decada7b0f1",
+          "e0aa57d69bb93662bc85825589695d86a72f85b84f39f1ff93ba837cef0b13d8"
+        ],
+        "product_sources_sha256": [
+          "4acab4a088585de8bf2eae70a2d64f4f4d2b2027a6bfff155331d4ea1266885f",
+          "8d7ab0d9e2fa4e96379fc82a5f03b12372154cc0530865fd77d3d256e7dd27ba",
+          "b291e2d09f2fe039513a6e062d41618e964e50d0389f6078f7de8decada7b0f1"
+        ]
+      },
+      {
+        "case_id": "aircargo-warehouse-3pl-required-fields",
+        "same": true,
+        "baseline_sources_sha256": [
+          "1aabbfec84d90b1d6eacb4f897e903585657a883bd6b6b157384cf4809af4c7d"
+        ],
+        "product_sources_sha256": [
+          "1aabbfec84d90b1d6eacb4f897e903585657a883bd6b6b157384cf4809af4c7d"
+        ]
+      },
+      {
+        "case_id": "aircargo-warehouse-3pl-escalation",
+        "same": true,
+        "baseline_sources_sha256": [
+          "1aabbfec84d90b1d6eacb4f897e903585657a883bd6b6b157384cf4809af4c7d"
+        ],
+        "product_sources_sha256": [
+          "1aabbfec84d90b1d6eacb4f897e903585657a883bd6b6b157384cf4809af4c7d"
+        ]
+      },
+      {
+        "case_id": "aircargo-perishable-temperature-controls",
+        "same": true,
+        "baseline_sources_sha256": [
+          "4acab4a088585de8bf2eae70a2d64f4f4d2b2027a6bfff155331d4ea1266885f"
+        ],
+        "product_sources_sha256": [
+          "4acab4a088585de8bf2eae70a2d64f4f4d2b2027a6bfff155331d4ea1266885f"
+        ]
+      },
+      {
+        "case_id": "aircargo-perishable-special-cargo-evidence",
+        "same": false,
+        "baseline_sources_sha256": [
+          "87636fd1a5cfb59848e03c7b16754203d4d8aebde4a4a7fb0746a726686b58fc",
+          "e4f6bb5622cf07584d76f1302e9f98f140e96ce439cc4304d1ff5057fe35b39d"
+        ],
+        "product_sources_sha256": [
+          "4acab4a088585de8bf2eae70a2d64f4f4d2b2027a6bfff155331d4ea1266885f",
+          "87636fd1a5cfb59848e03c7b16754203d4d8aebde4a4a7fb0746a726686b58fc"
+        ]
+      },
+      {
+        "case_id": "aircargo-oversized-permit-route",
+        "same": true,
+        "baseline_sources_sha256": [
+          "77e2eb5fbfa1ec12047eec1929be001e52219520ae0cb92b0f73ea804458f569"
+        ],
+        "product_sources_sha256": [
+          "77e2eb5fbfa1ec12047eec1929be001e52219520ae0cb92b0f73ea804458f569"
+        ]
+      },
+      {
+        "case_id": "aircargo-oversized-manual-check",
+        "same": true,
+        "baseline_sources_sha256": [
+          "77e2eb5fbfa1ec12047eec1929be001e52219520ae0cb92b0f73ea804458f569"
+        ],
+        "product_sources_sha256": [
+          "77e2eb5fbfa1ec12047eec1929be001e52219520ae0cb92b0f73ea804458f569"
+        ]
+      },
+      {
+        "case_id": "aircargo-data-retention-legal-hold",
+        "same": true,
+        "baseline_sources_sha256": [
+          "4256a70ed8c14f9cc7f6f086e4366767607465d0c8fe5f9fb80f7fdd7580995f"
+        ],
+        "product_sources_sha256": [
+          "4256a70ed8c14f9cc7f6f086e4366767607465d0c8fe5f9fb80f7fdd7580995f"
+        ]
+      },
+      {
+        "case_id": "aircargo-data-retention-required-fields",
+        "same": true,
+        "baseline_sources_sha256": [
+          "4256a70ed8c14f9cc7f6f086e4366767607465d0c8fe5f9fb80f7fdd7580995f"
+        ],
+        "product_sources_sha256": [
+          "4256a70ed8c14f9cc7f6f086e4366767607465d0c8fe5f9fb80f7fdd7580995f"
+        ]
+      },
+      {
+        "case_id": "aircargo-subject-rights-third-party-masking",
+        "same": true,
+        "baseline_sources_sha256": [
+          "e66d1cf160e5bcec5f39f9b49491fcda6af31b5af65c36a647986a3edeb1ccf4"
+        ],
+        "product_sources_sha256": [
+          "e66d1cf160e5bcec5f39f9b49491fcda6af31b5af65c36a647986a3edeb1ccf4"
+        ]
+      },
+      {
+        "case_id": "aircargo-subject-rights-required-fields",
+        "same": false,
+        "baseline_sources_sha256": [
+          "ccc2a9abe2b92d3260bc4f265e2b0da17bab2b57bcca22ea33a7c0eda3bf8b54",
+          "e66d1cf160e5bcec5f39f9b49491fcda6af31b5af65c36a647986a3edeb1ccf4"
+        ],
+        "product_sources_sha256": [
+          "42aa43260e9ebb31b4efc5408eed7e60d8f20a49082996280013b16c114feebe",
+          "e66d1cf160e5bcec5f39f9b49491fcda6af31b5af65c36a647986a3edeb1ccf4"
+        ]
+      },
+      {
+        "case_id": "aircargo-customs-broker-evidence",
+        "same": true,
+        "baseline_sources_sha256": [
+          "321a534be2ad56e4abcaa898175cbce6f5e0eac4c9f8cc5a24127d48210df1c7",
+          "413d6e23d290923852dffe8ef536316c86236216ef736f9c637c6eb1b6472a8d"
+        ],
+        "product_sources_sha256": [
+          "321a534be2ad56e4abcaa898175cbce6f5e0eac4c9f8cc5a24127d48210df1c7",
+          "413d6e23d290923852dffe8ef536316c86236216ef736f9c637c6eb1b6472a8d"
+        ]
+      },
+      {
+        "case_id": "aircargo-customs-broker-escalation",
+        "same": false,
+        "baseline_sources_sha256": [
+          "413d6e23d290923852dffe8ef536316c86236216ef736f9c637c6eb1b6472a8d",
+          "6e9a6edefb9cfa199c708d7767cc4fc6a50394596a3dae09c045dbbbc8bc7d9f"
+        ],
+        "product_sources_sha256": [
+          "413d6e23d290923852dffe8ef536316c86236216ef736f9c637c6eb1b6472a8d"
+        ]
+      },
+      {
+        "case_id": "aircargo-salary-payment-dates",
+        "same": false,
+        "baseline_sources_sha256": [
+          "534b5e2cfd923542127a855221951cfc7494401c736880fe91ca42719b604648",
+          "d66aa3b54450ddf1512869fe18caa6231f83a6002c0be140d2695b8d4f355610"
+        ],
+        "product_sources_sha256": [
+          "d66aa3b54450ddf1512869fe18caa6231f83a6002c0be140d2695b8d4f355610"
+        ]
+      },
+      {
+        "case_id": "aircargo-salary-bonus-conditions",
+        "same": true,
+        "baseline_sources_sha256": [
+          "534b5e2cfd923542127a855221951cfc7494401c736880fe91ca42719b604648",
+          "d66aa3b54450ddf1512869fe18caa6231f83a6002c0be140d2695b8d4f355610"
+        ],
+        "product_sources_sha256": [
+          "534b5e2cfd923542127a855221951cfc7494401c736880fe91ca42719b604648",
+          "d66aa3b54450ddf1512869fe18caa6231f83a6002c0be140d2695b8d4f355610"
+        ]
+      },
+      {
+        "case_id": "aircargo-overtime-limits",
+        "same": true,
+        "baseline_sources_sha256": [
+          "7739df5403b3cd7d1686c139c5a079d2c6bc913ba10626523c9c458efc192dc9"
+        ],
+        "product_sources_sha256": [
+          "7739df5403b3cd7d1686c139c5a079d2c6bc913ba10626523c9c458efc192dc9"
+        ]
+      },
+      {
+        "case_id": "aircargo-overtime-protected-categories",
+        "same": false,
+        "baseline_sources_sha256": [
+          "2c859fee02f4b49eb2f1d7259ee160c3960966a44f6a116e4e841da8b733d7fa",
+          "7739df5403b3cd7d1686c139c5a079d2c6bc913ba10626523c9c458efc192dc9"
+        ],
+        "product_sources_sha256": [
+          "7739df5403b3cd7d1686c139c5a079d2c6bc913ba10626523c9c458efc192dc9"
+        ]
+      },
+      {
+        "case_id": "aircargo-harassment-complaint-data",
+        "same": true,
+        "baseline_sources_sha256": [
+          "1c63299131d6f748abe1a34c4b2d00446c27d9588003a0e50e6b92bb1557c8ec"
+        ],
+        "product_sources_sha256": [
+          "1c63299131d6f748abe1a34c4b2d00446c27d9588003a0e50e6b92bb1557c8ec"
+        ]
+      },
+      {
+        "case_id": "aircargo-harassment-investigation-timeline",
+        "same": true,
+        "baseline_sources_sha256": [
+          "1c63299131d6f748abe1a34c4b2d00446c27d9588003a0e50e6b92bb1557c8ec"
+        ],
+        "product_sources_sha256": [
+          "1c63299131d6f748abe1a34c4b2d00446c27d9588003a0e50e6b92bb1557c8ec"
+        ]
+      },
+      {
+        "case_id": "aircargo-conflict-interest-disclosure",
+        "same": false,
+        "baseline_sources_sha256": [
+          "102c03c05b6e268ca5fc573a0795eaa8a5ee79370bbc5d0cf30e23732d2ad177",
+          "400270d5900193f2fd49c51f1aedcbf909f48774dd82b2b78b931bae4b599e11",
+          "96ef9b0fa12acc79ad81f1afcf8125e1d12788c8b82ae29d408ffa22b2ae6b04"
+        ],
+        "product_sources_sha256": [
+          "400270d5900193f2fd49c51f1aedcbf909f48774dd82b2b78b931bae4b599e11",
+          "96ef9b0fa12acc79ad81f1afcf8125e1d12788c8b82ae29d408ffa22b2ae6b04"
+        ]
+      },
+      {
+        "case_id": "aircargo-conflict-interest-sanctions",
+        "same": true,
+        "baseline_sources_sha256": [
+          "400270d5900193f2fd49c51f1aedcbf909f48774dd82b2b78b931bae4b599e11",
+          "96ef9b0fa12acc79ad81f1afcf8125e1d12788c8b82ae29d408ffa22b2ae6b04"
+        ],
+        "product_sources_sha256": [
+          "400270d5900193f2fd49c51f1aedcbf909f48774dd82b2b78b931bae4b599e11",
+          "96ef9b0fa12acc79ad81f1afcf8125e1d12788c8b82ae29d408ffa22b2ae6b04"
+        ]
+      },
+      {
+        "case_id": "aircargo-cargo-insurance-evidence",
+        "same": true,
+        "baseline_sources_sha256": [
+          "1fe5df1b8d935b7c939bfce6a18c7437aa2131bac40df77d805d16b027c74c4f",
+          "582c186dfc50b3e2ca3ba633fbaaf8a622eb1d41dacbcfa41012fca769191bdb"
+        ],
+        "product_sources_sha256": [
+          "1fe5df1b8d935b7c939bfce6a18c7437aa2131bac40df77d805d16b027c74c4f",
+          "582c186dfc50b3e2ca3ba633fbaaf8a622eb1d41dacbcfa41012fca769191bdb"
+        ]
+      },
+      {
+        "case_id": "aircargo-cargo-insurance-operational-limits",
+        "same": true,
+        "baseline_sources_sha256": [
+          "1fe5df1b8d935b7c939bfce6a18c7437aa2131bac40df77d805d16b027c74c4f",
+          "582c186dfc50b3e2ca3ba633fbaaf8a622eb1d41dacbcfa41012fca769191bdb"
+        ],
+        "product_sources_sha256": [
+          "1fe5df1b8d935b7c939bfce6a18c7437aa2131bac40df77d805d16b027c74c4f",
+          "582c186dfc50b3e2ca3ba633fbaaf8a622eb1d41dacbcfa41012fca769191bdb"
+        ]
+      },
+      {
+        "case_id": "aircargo-fuel-supply-evidence",
+        "same": true,
+        "baseline_sources_sha256": [
+          "7e1bde8cf6d98d5ed57227e439e2f4434113a64174610a32e7b5552b7cbeba77",
+          "9913883441605c9b0672ad43a7dca7cad25c9cad238fdda2a8768e35e8d29421"
+        ],
+        "product_sources_sha256": [
+          "7e1bde8cf6d98d5ed57227e439e2f4434113a64174610a32e7b5552b7cbeba77",
+          "9913883441605c9b0672ad43a7dca7cad25c9cad238fdda2a8768e35e8d29421"
+        ]
+      },
+      {
+        "case_id": "aircargo-fuel-supply-required-fields",
+        "same": true,
+        "baseline_sources_sha256": [
+          "9913883441605c9b0672ad43a7dca7cad25c9cad238fdda2a8768e35e8d29421"
+        ],
+        "product_sources_sha256": [
+          "9913883441605c9b0672ad43a7dca7cad25c9cad238fdda2a8768e35e8d29421"
+        ]
+      },
+      {
+        "case_id": "aircargo-gps-monitoring-required-fields",
+        "same": true,
+        "baseline_sources_sha256": [
+          "ea5d619e604a4f9af8bd21940ba42e3189df443ff8a3c4d46f245e0c0d58bb9a"
+        ],
+        "product_sources_sha256": [
+          "ea5d619e604a4f9af8bd21940ba42e3189df443ff8a3c4d46f245e0c0d58bb9a"
+        ]
+      },
+      {
+        "case_id": "aircargo-gps-monitoring-scope",
+        "same": true,
+        "baseline_sources_sha256": [
+          "47cf2c0bcf20426c3a262568a56ca447c06bbf517cb5695a93c213bbcac2824d",
+          "6782c6e62e5477fe4062485333be2a380840b53619945cf873de9be9fd6892d5",
+          "ea5d619e604a4f9af8bd21940ba42e3189df443ff8a3c4d46f245e0c0d58bb9a"
+        ],
+        "product_sources_sha256": [
+          "47cf2c0bcf20426c3a262568a56ca447c06bbf517cb5695a93c213bbcac2824d",
+          "6782c6e62e5477fe4062485333be2a380840b53619945cf873de9be9fd6892d5",
+          "ea5d619e604a4f9af8bd21940ba42e3189df443ff8a3c4d46f245e0c0d58bb9a"
+        ]
+      },
+      {
+        "case_id": "aircargo-weight-control-required-fields",
+        "same": false,
+        "baseline_sources_sha256": [
+          "3d92691f589e80c185a78858a5f3ed6b067db915278822d7c1b75fcc77c9c43d"
+        ],
+        "product_sources_sha256": [
+          "3d92691f589e80c185a78858a5f3ed6b067db915278822d7c1b75fcc77c9c43d",
+          "f67551ff4f0c3344cb7f46ba3d0fc006860da28ecf9432ac61b16772833bd9e1"
+        ]
+      },
+      {
+        "case_id": "aircargo-weight-control-discrepancy",
+        "same": false,
+        "baseline_sources_sha256": [
+          "3d92691f589e80c185a78858a5f3ed6b067db915278822d7c1b75fcc77c9c43d",
+          "b1ae4a782c5a7546b3042462ad628cb92424c8297f0f4329a303907bbae51b9a",
+          "f3544bf656027af3503d2588315226fb02ecae9ab1b5593f3e5565849eb9d023"
+        ],
+        "product_sources_sha256": [
+          "3d92691f589e80c185a78858a5f3ed6b067db915278822d7c1b75fcc77c9c43d",
+          "6782c6e62e5477fe4062485333be2a380840b53619945cf873de9be9fd6892d5",
+          "6b70ddfa4f54bebc3e439698e779b49d7d0b1974b91d7ca2862c1e4a908032f4"
+        ]
+      },
+      {
+        "case_id": "aircargo-cross-border-required-fields",
+        "same": false,
+        "baseline_sources_sha256": [
+          "b8e0c970a32ce926ef74987a2e235e2ab7e8d3abc5a14b81cb34c4f0903389e7"
+        ],
+        "product_sources_sha256": [
+          "142a3aad37d176e768f7ac1ff89bd1549314cd4b9c7cb150a3938404d2e50eb2",
+          "b8e0c970a32ce926ef74987a2e235e2ab7e8d3abc5a14b81cb34c4f0903389e7",
+          "f67551ff4f0c3344cb7f46ba3d0fc006860da28ecf9432ac61b16772833bd9e1"
+        ]
+      },
+      {
+        "case_id": "aircargo-cross-border-special-cargo",
+        "same": false,
+        "baseline_sources_sha256": [
+          "6782c6e62e5477fe4062485333be2a380840b53619945cf873de9be9fd6892d5",
+          "b8e0c970a32ce926ef74987a2e235e2ab7e8d3abc5a14b81cb34c4f0903389e7"
+        ],
+        "product_sources_sha256": [
+          "142a3aad37d176e768f7ac1ff89bd1549314cd4b9c7cb150a3938404d2e50eb2",
+          "b8e0c970a32ce926ef74987a2e235e2ab7e8d3abc5a14b81cb34c4f0903389e7"
+        ]
+      },
+      {
+        "case_id": "aircargo-breach-notification-required-fields",
+        "same": true,
+        "baseline_sources_sha256": [
+          "e2d3be911268f6c21bfc3d88e077c66ce509731080104b827c44180731f6dbcc"
+        ],
+        "product_sources_sha256": [
+          "e2d3be911268f6c21bfc3d88e077c66ce509731080104b827c44180731f6dbcc"
+        ]
+      },
+      {
+        "case_id": "aircargo-breach-notification-participants",
+        "same": true,
+        "baseline_sources_sha256": [
+          "afe466af5c6011591403ec78f0f0f9f353b8099018b63fed2b1357738ddfa7e1",
+          "e2d3be911268f6c21bfc3d88e077c66ce509731080104b827c44180731f6dbcc"
+        ],
+        "product_sources_sha256": [
+          "afe466af5c6011591403ec78f0f0f9f353b8099018b63fed2b1357738ddfa7e1",
+          "e2d3be911268f6c21bfc3d88e077c66ce509731080104b827c44180731f6dbcc"
+        ]
+      },
+      {
+        "case_id": "aircargo-cross-border-pdn-required-fields",
+        "same": true,
+        "baseline_sources_sha256": [
+          "31e675bf1b853fbdd1776776110f31544167ba13f7bdd3bc2666a613b4dcb9fc"
+        ],
+        "product_sources_sha256": [
+          "31e675bf1b853fbdd1776776110f31544167ba13f7bdd3bc2666a613b4dcb9fc"
+        ]
+      },
+      {
+        "case_id": "aircargo-cross-border-pdn-no-transfer",
+        "same": true,
+        "baseline_sources_sha256": [
+          "31e675bf1b853fbdd1776776110f31544167ba13f7bdd3bc2666a613b4dcb9fc"
+        ],
+        "product_sources_sha256": [
+          "31e675bf1b853fbdd1776776110f31544167ba13f7bdd3bc2666a613b4dcb9fc"
+        ]
+      }
+    ]
+  },
+  "input_sha256": {
+    "registration_sha256": "8d9e2d23dd81af885ea68389787866f8d44cdbc3a72215a75b5d8f7966f163c1",
+    "judge_route_sha256": "c3267d2fd526e37d00563c2184c34b243bd974de36a40beabeb349b8b603dd53",
+    "wixqa": {
+      "receipt_sha256": "6a014483c6c9d1185b7bb3dfeb994e40c5de3b1049bcbfaae635240851007ea5",
+      "plans": {
+        "m1": "1d038d5811be36e3d2c8fde3b273250e3f4955ddcb47387263bd1c281face53f",
+        "bridge": "39a7df7048ddf2b9b3ad69eb25bfb814cc7ee50bda9f6680b58a8f14c66fd245"
+      },
+      "m1_export_sha256": "ee781f7fe6cf5c085ab58f58c1c2e140021c1fc2bc3e64a0370ab0a9ad55e2e6",
+      "m1_cases_sha256": "ed0bed6d79c569988be67cce75a900de9e4c18136aecfae2de9478cf63cf6a21",
+      "m1_verdicts_sha256": "0399ffe8b9bcfc9afea943a55f8796db66b18892c676ac129a39819b988c5b5b",
+      "bridge_export_sha256": "3bced69edfdc70296154845fd0a5392e73c91ac47dbf6986c8a2018fc9a118a8",
+      "bridge_verdicts_sha256": "415e740b273b158d2a01ea1055bbc175a1dbcb53c2846e11c7d56cd94695144b"
+    },
+    "conditionalqa": {
+      "receipt_sha256": "6f45efef6f6c64f7bc818815444ba20609b28f790a3409898c51eb8f1c9a69e5",
+      "plans": {
+        "m1": "0a7b302b79acbad7b7218c1fa30d5a332751864da9f3a8386d24a0dbe8842a71",
+        "bridge": "ad1d03f3f91d7e6782bc274bcb1b1baa03a0e894bc48ec427f679c5c9381bac2"
+      },
+      "m1_export_sha256": "d787c8750aba74ad78c6b2396117d1adfc2fc80c381fb441a0bd057bcf9adc28",
+      "m1_cases_sha256": "8628c8f9aff69526f01710a7e5bea6a5fed45977e03f2c7b6bad161a904210f4",
+      "m1_verdicts_sha256": "063abd9548f5f2441a7aebf2a82329473b7108c0c2ac54bbfd9b2a6a6aa6582c",
+      "bridge_export_sha256": "3d1f066f6ef84503740c390b496899f5e324f797af2df037881e31d675ed8f64",
+      "bridge_verdicts_sha256": "394f17fa96ef4e6a95db9216fe57b33f4bc6dd11b7201faa4ac7de4860d3a350"
+    },
+    "aircargo": {
+      "receipt_sha256": "d63c3429baa8bef9156dec0ee83f661d451a584e00e2ac4dcc42c06126563361",
+      "plans": {
+        "m1": "93ca03b9ae6b9b3786b0a240e2c9a9ac88a84e454d57510d50154b187780e6b4",
+        "bridge": "c2ed648df9e2788497603da918ab6b2eda9e8225e4c2fc94d84eac4613a2f202"
+      },
+      "m1_export_sha256": "b417d7922c699a27ba5a1c9eae38bfa906629bd2c839de808fad3f0f680c5f69",
+      "m1_cases_sha256": "9c7f42c5de60e27c86337beb03b0017872bf82736c2861b66c66d443aafc93a3",
+      "m1_verdicts_sha256": "e939f9deb9d127781cce0943b4b9f435bc479b383bce7ef9dfe76e72621e4ba5",
+      "bridge_export_sha256": "6d590823f66c42d5bf3621bc27edeaa3b5ae35ec0dded3e9132fc6b5fd5282f9",
+      "bridge_verdicts_sha256": "7f34c050a4b5374e0957885bde3436f37e0e1d2a63dcae824e82f7fb3988706c"
+    }
+  },
+  "limits": [
+    "In-sample; one unseeded generation per side; one judge; no human grades (D11).",
+    "Contexts, release, Windows numerics and exec framing change together; no isolated auxiliary causal effect.",
+    "M2 absent; laptop under owner load; no detected fall does not establish equivalence."
+  ]
+}
