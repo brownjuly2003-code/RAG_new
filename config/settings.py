@@ -784,9 +784,8 @@ class Settings:
         default_factory=lambda: os.getenv("STREAMING_ENABLED", "false").strip().lower()
         in ("1", "true", "yes")
     )
-    # Streaming RAG parity is opt-in: enabling it doubles LLM cost per
-    # streamed request (stream tokens + full graph pass), so production
-    # operators must explicitly turn it on with STREAMING_RAG_PARITY=true.
+    # STREAMING_RAG_PARITY=true forces a single graph generation for streaming.
+    # SSE relays graph tokens or chunks its final answer; no second LLM stream.
     streaming_rag_parity: bool = field(
         default_factory=lambda: os.getenv("STREAMING_RAG_PARITY", "false").strip().lower()
         in ("1", "true", "yes")

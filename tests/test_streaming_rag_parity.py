@@ -12,6 +12,7 @@ from __future__ import annotations
 import importlib
 import json
 from types import SimpleNamespace
+from unittest.mock import Mock
 
 import pytest
 from fastapi.testclient import TestClient
@@ -158,14 +159,21 @@ def test_stream_uses_graph_citations_when_available(
     assert final["trace_id"] == "trace-graph-cite"
 
 
+@pytest.mark.parametrize("strategy", [None, "hybrid", " HyBrId ", "unknown-strategy"])
 def test_stream_falls_back_when_graph_disabled(
-    client: TestClient, monkeypatch: pytest.MonkeyPatch
+    client: TestClient, monkeypatch: pytest.MonkeyPatch, strategy: str | None
 ) -> None:
-    """STREAMING_RAG_PARITY=false возвращает прежнее эвристическое поведение."""
+    """Parity off keeps direct retrieval only for normalised hybrid without routing."""
 
     # conftest заменяет api_app.get_settings на лямбду, возвращающую
     # SimpleNamespace из settings_factory. Дописываем атрибут напрямую.
-    api_app.get_settings().streaming_rag_parity = False
+    settings = api_app.get_settings()
+    settings.streaming_rag_parity = False
+    monkeypatch.setattr(settings, "model_routing_enabled", False, raising=False)
+    if strategy is None:
+        monkeypatch.delattr(settings, "retrieval_strategy", raising=False)
+    else:
+        monkeypatch.setattr(settings, "retrieval_strategy", strategy, raising=False)
 
     ask_called = {"value": False}
 
@@ -185,7 +193,10 @@ def test_stream_falls_back_when_graph_disabled(
                 "trace_id": "trace-disabled",
             }
 
-    _install_session(monkeypatch, _Session())
+    session = _Session()
+    retrieve = Mock(wraps=session._retriever.get_relevant_documents)
+    monkeypatch.setattr(session._retriever, "get_relevant_documents", retrieve)
+    _install_session(monkeypatch, session)
 
     response = client.post(
         "/api/ask/stream",
@@ -197,11 +208,85 @@ def test_stream_falls_back_when_graph_disabled(
     events = _parse_events(response.text)
     final = next(event for event in events if event.get("type") == "result")
 
-    assert ask_called["value"] is False, "ask() must NOT run when parity disabled"
+    retrieve.assert_called_once_with("test")
+    assert ask_called["value"] is False, "hybrid without routing must keep the direct stream"
     assert final["trace_id"] == "", "trace_id stays empty without graph parity"
     assert final["quality_score"] == 70, "stream heuristic computes quality from len+sources"
     assert final["answer"] == "длинный ответ со многими токенами"
     assert final.get("answer_source") == "stream"
+
+
+@pytest.mark.parametrize(
+    ("strategy", "routing"),
+    [
+        ("graph", False),
+        ("vector", False),
+        ("factcard", False),
+        ("hybrid", True),
+        (" GrApH ", False),
+    ],
+)
+@pytest.mark.parametrize("graph_method", ["ask", "iter_ask_events"])
+def test_stream_uses_graph_for_lane_selection(
+    client: TestClient,
+    monkeypatch: pytest.MonkeyPatch,
+    strategy: str,
+    routing: bool,
+    graph_method: str,
+) -> None:
+    """Lane selection requires the graph even with explicit streaming parity off."""
+    settings = api_app.get_settings()
+    settings.streaming_rag_parity = False
+    monkeypatch.setattr(settings, "retrieval_strategy", strategy, raising=False)
+    monkeypatch.setattr(settings, "model_routing_enabled", routing, raising=False)
+    graph_calls: list[tuple[str, str]] = []
+    graph_result = {
+        "answer": "lane-selected answer",
+        "quality_score": 90,
+        "route": "auto",
+        "trace_id": "trace-lane-selection",
+        "citations": [],
+        "suggested_questions": [],
+    }
+
+    class _Session:
+        def __init__(self) -> None:
+            self._retriever = _retriever_with_doc()
+            self._llm = _StreamingLLM()
+            self.history: list[dict] = []
+
+        def ask(self, question, **kwargs):  # noqa: ANN003
+            graph_calls.append(("ask", question))
+            return graph_result
+
+    session = _Session()
+    retrieve = Mock(side_effect=AssertionError("router must delegate retrieval to the graph"))
+    monkeypatch.setattr(session._retriever, "get_relevant_documents", retrieve)
+    if graph_method == "iter_ask_events":
+
+        def iter_ask_events(question, **kwargs):  # noqa: ANN003
+            graph_calls.append(("iter_ask_events", question))
+            yield {"type": "status", "node": "classify_complexity", "source": "graph"}
+            yield {"type": "pipeline_result", "state": graph_result}
+
+        monkeypatch.setattr(session, "iter_ask_events", iter_ask_events, raising=False)
+    _install_session(monkeypatch, session)
+
+    response = client.post(
+        "/api/ask/stream",
+        json={"question": "lane selection"},
+        headers={"Accept": "text/event-stream"},
+    )
+    assert response.status_code == 200
+    events = _parse_events(response.text)
+    retrieve.assert_not_called()
+    assert graph_calls == [(graph_method, "lane selection")]
+    assert not any(event.get("type") == "error" for event in events)
+    final = next(event for event in events if event.get("type") == "result")
+    assert final["answer"] == graph_result["answer"]
+    assert final["answer_source"] == "graph"
+    assert final["generation_source"] == "graph_only"
+    assert final["events_source"] == ("graph" if graph_method == "iter_ask_events" else "ask")
 
 
 def test_stream_parity_single_history_mutation_uses_graph_answer(

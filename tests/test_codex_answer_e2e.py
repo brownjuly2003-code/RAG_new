@@ -87,7 +87,18 @@ def _documents():
     ]
 
 
-def _setup(monkeypatch, tmp_path, fake, profile, calls, complexity, parity, max_iterations=0):
+def _setup(
+    monkeypatch,
+    tmp_path,
+    fake,
+    profile,
+    calls,
+    complexity,
+    parity,
+    max_iterations=0,
+    *,
+    routing=True,
+):
     import api.app as api_app
     import config.settings
     from api.routers import conversation
@@ -103,7 +114,7 @@ def _setup(monkeypatch, tmp_path, fake, profile, calls, complexity, parity, max_
     settings.hyde = False
     settings.online_evaluators_enabled = False
     settings.fact_verification_enabled = True
-    settings.model_routing_enabled = True
+    settings.model_routing_enabled = routing
     settings.llm_cache_enabled = False
     settings.streaming_rag_parity = parity
     settings.streaming_quality_eval = True
@@ -162,7 +173,17 @@ def test_codex_answer_matches_local_prompt_and_keeps_auxiliary_calls_local(
 ):
     runtime._FAILOVER_CACHE_UNTIL.clear()
     local_calls = []
-    _setup(monkeypatch, tmp_path, fake_codex, "local-first", local_calls, complexity, parity)
+    # Since 2026-11-06: legacy stream needs hybrid without model routing; graph keeps routing on.
+    _setup(
+        monkeypatch,
+        tmp_path,
+        fake_codex,
+        "local-first",
+        local_calls,
+        complexity,
+        parity,
+        routing=endpoint == "/api/ask" or parity,
+    )
     baseline, _ = _request(client, endpoint)
     assert baseline["answer"] == LOCAL_ANSWER, baseline
     answer_prompts = [
@@ -172,7 +193,16 @@ def test_codex_answer_matches_local_prompt_and_keeps_auxiliary_calls_local(
     expected_prompt = answer_prompts[0].encode("utf-8")
 
     codex_calls = []
-    _setup(monkeypatch, tmp_path, fake_codex, "codex-answer", codex_calls, complexity, parity)
+    _setup(
+        monkeypatch,
+        tmp_path,
+        fake_codex,
+        "codex-answer",
+        codex_calls,
+        complexity,
+        parity,
+        routing=endpoint == "/api/ask" or parity,
+    )
     body, events = _request(client, endpoint)
     assert body["answer"] == ANSWER, body
     assert (body["answer_provider"], body["answer_model"]) == ("codex", "gpt-6-astra")
@@ -208,7 +238,16 @@ def test_failed_codex_uses_named_local_fallback_and_outage_cache(
     runtime._FAILOVER_CACHE_UNTIL.clear()
     fake_codex.configure(fixture="bad", exit_code=1)
     calls = []
-    _setup(monkeypatch, tmp_path, fake_codex, "codex-answer", calls, "complex", parity)
+    _setup(
+        monkeypatch,
+        tmp_path,
+        fake_codex,
+        "codex-answer",
+        calls,
+        "complex",
+        parity,
+        routing=endpoint == "/api/ask" or parity,
+    )
     body, _ = _request(client, endpoint)
     assert body["answer"] == LOCAL_ANSWER, body
     assert (body["answer_provider"], body["answer_model"]) == ("ollama", MODEL)
@@ -276,7 +315,9 @@ def test_stream_pipeline_recovery_preserves_codex_answer_attribution(
 
     runtime._FAILOVER_CACHE_UNTIL.clear()
     calls = []
-    _setup(monkeypatch, tmp_path, fake_codex, "codex-answer", calls, "complex", False)
+    _setup(
+        monkeypatch, tmp_path, fake_codex, "codex-answer", calls, "complex", False, routing=False
+    )
 
     def unavailable_stream_prompt(*args, **kwargs):
         raise RuntimeError("fixture stream path unavailable")

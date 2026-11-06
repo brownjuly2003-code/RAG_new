@@ -2014,11 +2014,22 @@ async def ask_stream(
             docs: list[Any] = []
             plain_docs: list[dict[str, Any]] = []
             chat_history: list[dict[str, str]] = []
+
+            def _requires_graph_lane_selection() -> bool:
+                from agent.graph import _normalize_retrieval_strategy
+
+                # The legacy stream cannot classify a question, so it cannot choose a lane.
+                return _normalize_retrieval_strategy(
+                    getattr(settings_pre, "retrieval_strategy", "hybrid")
+                ) != "hybrid" or bool(getattr(settings_pre, "model_routing_enabled", False))
+
             # Plan §4.1–4.2: STREAMING_RAG_PARITY=true → single graph generation
             # (session.ask only). SSE tokens are UX chunks of the graph answer —
-            # not a second LLM stream. Off by default keeps legacy direct stream.
-            graph_parity_enabled = is_codex_only(settings_pre) or bool(
-                getattr(settings_pre, "streaming_rag_parity", False)
+            # not a second LLM stream. Legacy remains for hybrid without routing.
+            graph_parity_enabled = (
+                is_codex_only(settings_pre)
+                or bool(getattr(settings_pre, "streaming_rag_parity", False))
+                or _requires_graph_lane_selection()
             )
             graph_parity_timeout = float(
                 getattr(settings_pre, "request_timeout_sec", TIME_LIMIT_CEILING_SEC)
