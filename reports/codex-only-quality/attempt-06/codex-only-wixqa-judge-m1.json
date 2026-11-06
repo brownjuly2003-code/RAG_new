@@ -1,0 +1,536 @@
+{
+  "plan": "codex-only-wixqa-judge-m1",
+  "status": "counted",
+  "judge": "answers",
+  "base": "wixqa",
+  "provenance": {
+    "plan_sha256": "1d038d5811be36e3d2c8fde3b273250e3f4955ddcb47387263bd1c281face53f",
+    "verdicts_sha256": "0399ffe8b9bcfc9afea943a55f8796db66b18892c676ac129a39819b988c5b5b",
+    "references_sha256": "56eb767302a3bcc61290d1fe13c3fd76019cbfe021aacbc8dbb3063f7a352312",
+    "references_withheld": true,
+    "salt": "chat-answer-judge-2026-10-18",
+    "prompt_id": "QA_PROMPT_V4",
+    "instructions_sha256": "fd015e742c835a17b17704ad629df90a34a61ac600762e8c74e52aababdcc9c2",
+    "route": {
+      "effort": "max",
+      "model": "claude-opus-5-5",
+      "session": "safe mode: no instruction file, memory, hook, skill, plugin or MCP server; no tools; an empty working directory; nothing stored; one turn",
+      "system_prompt_sha256": "5a0b99f2d4f3fc17efe27aa24440a3ec8ff7e9e45e9a299019ba4516f4fa5859",
+      "tools": "none"
+    },
+    "runs": {
+      "final-answers-wixqa-b01": {
+        "code_sha": "2057ad0e5733fbf18d6f199a0cfd94927aec85d8",
+        "model": "qwen3:4b-instruct-2507-q4_K_M",
+        "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+        "tenant": "ext_wixqa",
+        "chroma_dir_sha256": "ac17b6422d086cdbf1a37b11ce6ea71fbc288cc425ac103ee70cd4c746b3b801",
+        "cases_file_sha256": "e9f6177c779f9d9326a682c894747eaf374f873a6da6fe90d3323bab5a74fc4b"
+      },
+      "final-answers-wixqa-b02": {
+        "code_sha": "2057ad0e5733fbf18d6f199a0cfd94927aec85d8",
+        "model": "qwen3:4b-instruct-2507-q4_K_M",
+        "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+        "tenant": "ext_wixqa",
+        "chroma_dir_sha256": "87f0261129259d193be99010c49467b3f44147e7887300d2ea131de6d962a972",
+        "cases_file_sha256": "e9f6177c779f9d9326a682c894747eaf374f873a6da6fe90d3323bab5a74fc4b"
+      },
+      "final-answers-wixqa-b03": {
+        "code_sha": "2057ad0e5733fbf18d6f199a0cfd94927aec85d8",
+        "model": "qwen3:4b-instruct-2507-q4_K_M",
+        "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+        "tenant": "ext_wixqa",
+        "chroma_dir_sha256": "54b463fd9f6a51adc0a52083fe10317619ff2cb03d6f650aa3e83e7c87f66692",
+        "cases_file_sha256": "e9f6177c779f9d9326a682c894747eaf374f873a6da6fe90d3323bab5a74fc4b"
+      },
+      "final-answers-wixqa-b04": {
+        "code_sha": "2057ad0e5733fbf18d6f199a0cfd94927aec85d8",
+        "model": "qwen3:4b-instruct-2507-q4_K_M",
+        "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+        "tenant": "ext_wixqa",
+        "chroma_dir_sha256": "f8fdb456ff051bc681155a22ee8c37760e1d3f5d69cc07d9b7115f818b0465c5",
+        "cases_file_sha256": "e9f6177c779f9d9326a682c894747eaf374f873a6da6fe90d3323bab5a74fc4b"
+      },
+      "final-answers-wixqa-b05": {
+        "code_sha": "2057ad0e5733fbf18d6f199a0cfd94927aec85d8",
+        "model": "qwen3:4b-instruct-2507-q4_K_M",
+        "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+        "tenant": "ext_wixqa",
+        "chroma_dir_sha256": "d45c36e26caa844a1cc21117d48696fd7d0492008398a1b69af6a722c99739b6",
+        "cases_file_sha256": "e9f6177c779f9d9326a682c894747eaf374f873a6da6fe90d3323bab5a74fc4b"
+      },
+      "final-answers-wixqa-b06": {
+        "code_sha": "2057ad0e5733fbf18d6f199a0cfd94927aec85d8",
+        "model": "qwen3:4b-instruct-2507-q4_K_M",
+        "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+        "tenant": "ext_wixqa",
+        "chroma_dir_sha256": "0a2c79bfcad5038c78742006a257e2145c9dc8f437926ad00c74e240ffb315f9",
+        "cases_file_sha256": "e9f6177c779f9d9326a682c894747eaf374f873a6da6fe90d3323bab5a74fc4b"
+      },
+      "final-answers-wixqa-b07": {
+        "code_sha": "2057ad0e5733fbf18d6f199a0cfd94927aec85d8",
+        "model": "qwen3:4b-instruct-2507-q4_K_M",
+        "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+        "tenant": "ext_wixqa",
+        "chroma_dir_sha256": "f4e4a19c6762d9cf7fd9fd4a00acb94b5677e9425918ce7fe84ab89c4c0ce737",
+        "cases_file_sha256": "e9f6177c779f9d9326a682c894747eaf374f873a6da6fe90d3323bab5a74fc4b"
+      },
+      "final-answers-wixqa-b08": {
+        "code_sha": "2057ad0e5733fbf18d6f199a0cfd94927aec85d8",
+        "model": "qwen3:4b-instruct-2507-q4_K_M",
+        "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+        "tenant": "ext_wixqa",
+        "chroma_dir_sha256": "710d3ba9459234a677bb2ad4878b0e23b4410a9611eff2f0feff438ab3362d3d",
+        "cases_file_sha256": "e9f6177c779f9d9326a682c894747eaf374f873a6da6fe90d3323bab5a74fc4b"
+      },
+      "final-answers-wixqa-b09": {
+        "code_sha": "2057ad0e5733fbf18d6f199a0cfd94927aec85d8",
+        "model": "qwen3:4b-instruct-2507-q4_K_M",
+        "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+        "tenant": "ext_wixqa",
+        "chroma_dir_sha256": "aee7409394caf845f9a542713bbfd1e296e027b8bcaa6c6495fb61c19b3a158d",
+        "cases_file_sha256": "e9f6177c779f9d9326a682c894747eaf374f873a6da6fe90d3323bab5a74fc4b"
+      },
+      "final-answers-wixqa-b10": {
+        "code_sha": "2057ad0e5733fbf18d6f199a0cfd94927aec85d8",
+        "model": "qwen3:4b-instruct-2507-q4_K_M",
+        "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+        "tenant": "ext_wixqa",
+        "chroma_dir_sha256": "dac9e52954ff17a00c1ad01bef4d5a2039d71df133145aef66243704d9e84cf1",
+        "cases_file_sha256": "e9f6177c779f9d9326a682c894747eaf374f873a6da6fe90d3323bab5a74fc4b"
+      }
+    },
+    "adapter_sha256": "cdb2be82d3341afe0b1aba4e560f56eac4e2dec9cce69d0e038a18da4f2c7788",
+    "tool_sha256": "d2a69975de960791c2b1aca8d93d58f75ef01c92c16686e12646473aea069193",
+    "replies_counted_per_request": 6,
+    "reading_sha256": null
+  },
+  "replies": {
+    "rows": 116,
+    "statuses": {
+      "valid": 115,
+      "unavailable": 1
+    },
+    "past_the_limit": 0,
+    "models": {
+      "claude-opus-5-5": 115
+    },
+    "admitted_at_reply": {
+      "1": 115
+    },
+    "admitted_cli": {
+      "2.1.312": 115
+    },
+    "cost_usd": 14.9158
+  },
+  "questions": 100,
+  "requests_valid": 115,
+  "missing": [],
+  "per_run": {
+    "final-answers-wixqa-b01": {
+      "answers": 10,
+      "graded": 10,
+      "missing": 0,
+      "classes": {
+        "good": 9,
+        "partial_ok": 1,
+        "bad": 0
+      },
+      "routes": {
+        "auto": 10
+      },
+      "defects": {
+        "none": 10
+      },
+      "marks_listed": 36,
+      "marks_supported": 36,
+      "marks_unlisted": 0,
+      "context_has_answer": 7,
+      "answer_without_context": 0,
+      "reference_counts": {
+        "none": 10
+      }
+    },
+    "final-answers-wixqa-b02": {
+      "answers": 10,
+      "graded": 10,
+      "missing": 0,
+      "classes": {
+        "good": 10,
+        "partial_ok": 0,
+        "bad": 0
+      },
+      "routes": {
+        "auto": 10
+      },
+      "defects": {
+        "none": 10
+      },
+      "marks_listed": 28,
+      "marks_supported": 28,
+      "marks_unlisted": 0,
+      "context_has_answer": 9,
+      "answer_without_context": 0,
+      "reference_counts": {
+        "none": 10
+      }
+    },
+    "final-answers-wixqa-b03": {
+      "answers": 10,
+      "graded": 10,
+      "missing": 0,
+      "classes": {
+        "good": 10,
+        "partial_ok": 0,
+        "bad": 0
+      },
+      "routes": {
+        "auto": 10
+      },
+      "defects": {
+        "none": 10
+      },
+      "marks_listed": 27,
+      "marks_supported": 27,
+      "marks_unlisted": 0,
+      "context_has_answer": 9,
+      "answer_without_context": 0,
+      "reference_counts": {
+        "none": 10
+      }
+    },
+    "final-answers-wixqa-b04": {
+      "answers": 10,
+      "graded": 10,
+      "missing": 0,
+      "classes": {
+        "good": 10,
+        "partial_ok": 0,
+        "bad": 0
+      },
+      "routes": {
+        "auto": 10
+      },
+      "defects": {
+        "none": 10
+      },
+      "marks_listed": 32,
+      "marks_supported": 32,
+      "marks_unlisted": 0,
+      "context_has_answer": 10,
+      "answer_without_context": 0,
+      "reference_counts": {
+        "none": 10
+      }
+    },
+    "final-answers-wixqa-b05": {
+      "answers": 10,
+      "graded": 10,
+      "missing": 0,
+      "classes": {
+        "good": 9,
+        "partial_ok": 1,
+        "bad": 0
+      },
+      "routes": {
+        "auto": 9,
+        "human": 1
+      },
+      "defects": {
+        "none": 10
+      },
+      "marks_listed": 32,
+      "marks_supported": 32,
+      "marks_unlisted": 0,
+      "context_has_answer": 9,
+      "answer_without_context": 0,
+      "reference_counts": {
+        "none": 10
+      }
+    },
+    "final-answers-wixqa-b06": {
+      "answers": 10,
+      "graded": 10,
+      "missing": 0,
+      "classes": {
+        "good": 10,
+        "partial_ok": 0,
+        "bad": 0
+      },
+      "routes": {
+        "auto": 10
+      },
+      "defects": {
+        "none": 10
+      },
+      "marks_listed": 40,
+      "marks_supported": 40,
+      "marks_unlisted": 0,
+      "context_has_answer": 9,
+      "answer_without_context": 0,
+      "reference_counts": {
+        "none": 10
+      }
+    },
+    "final-answers-wixqa-b07": {
+      "answers": 10,
+      "graded": 10,
+      "missing": 0,
+      "classes": {
+        "good": 9,
+        "partial_ok": 1,
+        "bad": 0
+      },
+      "routes": {
+        "auto": 10
+      },
+      "defects": {
+        "none": 10
+      },
+      "marks_listed": 52,
+      "marks_supported": 52,
+      "marks_unlisted": 0,
+      "context_has_answer": 10,
+      "answer_without_context": 0,
+      "reference_counts": {
+        "none": 10
+      }
+    },
+    "final-answers-wixqa-b08": {
+      "answers": 10,
+      "graded": 10,
+      "missing": 0,
+      "classes": {
+        "good": 10,
+        "partial_ok": 0,
+        "bad": 0
+      },
+      "routes": {
+        "auto": 9,
+        "human": 1
+      },
+      "defects": {
+        "none": 10
+      },
+      "marks_listed": 39,
+      "marks_supported": 39,
+      "marks_unlisted": 0,
+      "context_has_answer": 10,
+      "answer_without_context": 0,
+      "reference_counts": {
+        "none": 10
+      }
+    },
+    "final-answers-wixqa-b09": {
+      "answers": 10,
+      "graded": 10,
+      "missing": 0,
+      "classes": {
+        "good": 9,
+        "partial_ok": 0,
+        "bad": 1
+      },
+      "routes": {
+        "human": 2,
+        "auto": 8
+      },
+      "defects": {
+        "none": 10
+      },
+      "marks_listed": 41,
+      "marks_supported": 40,
+      "marks_unlisted": 0,
+      "context_has_answer": 10,
+      "answer_without_context": 0,
+      "reference_counts": {
+        "none": 10
+      }
+    },
+    "final-answers-wixqa-b10": {
+      "answers": 10,
+      "graded": 10,
+      "missing": 0,
+      "classes": {
+        "good": 10,
+        "partial_ok": 0,
+        "bad": 0
+      },
+      "routes": {
+        "auto": 10
+      },
+      "defects": {
+        "none": 10
+      },
+      "marks_listed": 38,
+      "marks_supported": 38,
+      "marks_unlisted": 0,
+      "context_has_answer": 10,
+      "answer_without_context": 0,
+      "reference_counts": {
+        "none": 10
+      }
+    }
+  },
+  "shares": {
+    "bad": {
+      "n": 100,
+      "hits": 1,
+      "share": 0.01,
+      "wilson95": [
+        0.0018,
+        0.0545
+      ],
+      "clusters": 77,
+      "cluster95": [
+        0.0,
+        0.0333
+      ]
+    },
+    "partial_ok": {
+      "n": 100,
+      "hits": 3,
+      "share": 0.03,
+      "wilson95": [
+        0.0103,
+        0.0845
+      ],
+      "clusters": 77,
+      "cluster95": [
+        0.0,
+        0.0648
+      ]
+    },
+    "good": {
+      "n": 100,
+      "hits": 96,
+      "share": 0.96,
+      "wilson95": [
+        0.9016,
+        0.9843
+      ],
+      "clusters": 77,
+      "cluster95": [
+        0.9205,
+        0.9907
+      ]
+    }
+  },
+  "retest": {
+    "planned": 15,
+    "scale": [
+      "bad",
+      "partial_ok",
+      "good"
+    ],
+    "pairs": 15,
+    "pairs_list": [
+      [
+        2,
+        2
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        0,
+        0
+      ]
+    ],
+    "pairs_ids": [
+      "1d695eff92274338",
+      "c4a5af56b5b8a1b4",
+      "a7139eff52cdd929",
+      "74e26aa530f63953",
+      "0623d49e09367998",
+      "803c775a4d022b71",
+      "9268de5e67ed9821",
+      "d794b969eb602a74",
+      "af7ca5802b41cce0",
+      "e9ed46bd4cfd43dd",
+      "40fb0f8c5165c872",
+      "2025aa8e74cf1b90",
+      "1bd69fe5a40cf4f0",
+      "75ea09db97403fea",
+      "9dcc6d81142f5f82"
+    ],
+    "agree": 15,
+    "two_steps_apart": 0,
+    "quadratic_kappa": 1.0,
+    "ci95": [
+      1.0,
+      1.0
+    ],
+    "resamples_undefined": 3509,
+    "passes_by_kappa": true,
+    "passes_by_agreement": true,
+    "enough_pairs": true,
+    "passed": true,
+    "field_agreement": {
+      "answers_question": {
+        "agree": 15,
+        "of": 15
+      },
+      "context_has_answer": {
+        "agree": 15,
+        "of": 15
+      },
+      "defect": {
+        "agree": 14,
+        "of": 15
+      },
+      "reference_counts": {
+        "agree": 0,
+        "of": 0
+      }
+    }
+  }
+}
