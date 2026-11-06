@@ -1,0 +1,240 @@
+{
+  "status": "counted",
+  "retest": {
+    "planned": 15,
+    "scale": [
+      "bad",
+      "partial_ok",
+      "good"
+    ],
+    "pairs": 15,
+    "pairs_list": [
+      [
+        2,
+        2
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        2,
+        2
+      ]
+    ],
+    "pairs_ids": [
+      "693118126ba6e326",
+      "139cc588039f75a7",
+      "bd617607d78c25d2",
+      "407ce6730a93eceb",
+      "65ccd4d1fa0b7fbb",
+      "47daab6830df7dae",
+      "37e93ed674eef5d8",
+      "84a93e8b64623d54",
+      "af6ae1fc745db645",
+      "be62c0f2fd379f72",
+      "a1e470cab547301b",
+      "b2710e1f7e44b2d6",
+      "1c6451acc95c2b9c",
+      "933d51f92af2bc43",
+      "bbe582125cbff301"
+    ],
+    "agree": 15,
+    "two_steps_apart": 0,
+    "quadratic_kappa": 1.0,
+    "ci95": [
+      1.0,
+      1.0
+    ],
+    "resamples_undefined": 3619,
+    "passes_by_kappa": true,
+    "passes_by_agreement": true,
+    "enough_pairs": true,
+    "passed": true,
+    "field_agreement": {
+      "answers_question": {
+        "agree": 15,
+        "of": 15
+      },
+      "context_has_answer": {
+        "agree": 15,
+        "of": 15
+      },
+      "defect": {
+        "agree": 15,
+        "of": 15
+      },
+      "reference_counts": {
+        "agree": 0,
+        "of": 0
+      }
+    }
+  },
+  "source_plan_sha256": "66ff27a4feb3a6191dfb6faee7a7156f5e7e9dbac96150c7d037946fbb5fabca",
+  "source_verdicts_sha256": "db9e24328d14eb85e15fbdce5cada92c3467055f35279b159b8067870a75f6c5",
+  "plan_sha256": "ad1d03f3f91d7e6782bc274bcb1b1baa03a0e894bc48ec427f679c5c9381bac2",
+  "verdicts_sha256": "394f17fa96ef4e6a95db9216fe57b33f4bc6dd11b7201faa4ac7de4860d3a350",
+  "admitted_cli": {
+    "old": [
+      "2.1.312"
+    ],
+    "new": [
+      "2.1.312"
+    ]
+  },
+  "pairs": [
+    {
+      "case_id": "conditionalqa-dev-35",
+      "first": "693118126ba6e326",
+      "copy": "693118126ba6e326-retest",
+      "old_cli": "2.1.312",
+      "new_cli": "2.1.312"
+    },
+    {
+      "case_id": "conditionalqa-train-31",
+      "first": "139cc588039f75a7",
+      "copy": "139cc588039f75a7-retest",
+      "old_cli": "2.1.312",
+      "new_cli": "2.1.312"
+    },
+    {
+      "case_id": "conditionalqa-dev-161",
+      "first": "bd617607d78c25d2",
+      "copy": "bd617607d78c25d2-retest",
+      "old_cli": "2.1.312",
+      "new_cli": "2.1.312"
+    },
+    {
+      "case_id": "conditionalqa-train-143",
+      "first": "407ce6730a93eceb",
+      "copy": "407ce6730a93eceb-retest",
+      "old_cli": "2.1.312",
+      "new_cli": "2.1.312"
+    },
+    {
+      "case_id": "conditionalqa-train-1534",
+      "first": "65ccd4d1fa0b7fbb",
+      "copy": "65ccd4d1fa0b7fbb-retest",
+      "old_cli": "2.1.312",
+      "new_cli": "2.1.312"
+    },
+    {
+      "case_id": "conditionalqa-train-466",
+      "first": "47daab6830df7dae",
+      "copy": "47daab6830df7dae-retest",
+      "old_cli": "2.1.312",
+      "new_cli": "2.1.312"
+    },
+    {
+      "case_id": "conditionalqa-train-1497",
+      "first": "37e93ed674eef5d8",
+      "copy": "37e93ed674eef5d8-retest",
+      "old_cli": "2.1.312",
+      "new_cli": "2.1.312"
+    },
+    {
+      "case_id": "conditionalqa-train-1510",
+      "first": "84a93e8b64623d54",
+      "copy": "84a93e8b64623d54-retest",
+      "old_cli": "2.1.312",
+      "new_cli": "2.1.312"
+    },
+    {
+      "case_id": "conditionalqa-train-236",
+      "first": "af6ae1fc745db645",
+      "copy": "af6ae1fc745db645-retest",
+      "old_cli": "2.1.312",
+      "new_cli": "2.1.312"
+    },
+    {
+      "case_id": "conditionalqa-dev-26",
+      "first": "be62c0f2fd379f72",
+      "copy": "be62c0f2fd379f72-retest",
+      "old_cli": "2.1.312",
+      "new_cli": "2.1.312"
+    },
+    {
+      "case_id": "conditionalqa-train-815",
+      "first": "a1e470cab547301b",
+      "copy": "a1e470cab547301b-retest",
+      "old_cli": "2.1.312",
+      "new_cli": "2.1.312"
+    },
+    {
+      "case_id": "conditionalqa-train-2059",
+      "first": "b2710e1f7e44b2d6",
+      "copy": "b2710e1f7e44b2d6-retest",
+      "old_cli": "2.1.312",
+      "new_cli": "2.1.312"
+    },
+    {
+      "case_id": "conditionalqa-train-1547",
+      "first": "1c6451acc95c2b9c",
+      "copy": "1c6451acc95c2b9c-retest",
+      "old_cli": "2.1.312",
+      "new_cli": "2.1.312"
+    },
+    {
+      "case_id": "conditionalqa-dev-68",
+      "first": "933d51f92af2bc43",
+      "copy": "933d51f92af2bc43-retest",
+      "old_cli": "2.1.312",
+      "new_cli": "2.1.312"
+    },
+    {
+      "case_id": "conditionalqa-train-851",
+      "first": "bbe582125cbff301",
+      "copy": "bbe582125cbff301-retest",
+      "old_cli": "2.1.312",
+      "new_cli": "2.1.312"
+    }
+  ]
+}
