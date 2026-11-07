@@ -225,7 +225,12 @@ P2 reference samples ([Astra](specs/p2-astra-reference-sample.md),
 
 - [`evidence/`](evidence/) — one write-up per measured slice; the register with provenance is
   [`EVIDENCE_INDEX.md`](../EVIDENCE_INDEX.md). The records themselves are in `../reports/`.
-- [Latest handoff: the `codex-only` record, a push held by two failing tests, Codex's limit, a small model for her laptop, graph search on](operations/session-handoff-2026-11-06-push-local-model.md)
+- [Latest handoff: the push fix, Codex's runs recorded, S' lost and S'' fixed, bundle 0 negative, graph search on by default](operations/session-handoff-2026-11-07-graph-on.md)
+  — the graph lane's defects found and fixed on stage 7's replay ([S'](evidence/stage7-sprime-record.md),
+  [S''](evidence/stage7-sdoubleprime-record.md)), [bundle 0](evidence/bundle0-record.md) keeps the
+  document grader, [Codex's runs](evidence/codex-runs-record.md) recorded in full, graph search on by
+  default with no effect until an entity graph exists, the push waiting for her word. Before it:
+  [the `codex-only` record, a push held by two failing tests, Codex's limit, a small model for her laptop, graph search on](operations/session-handoff-2026-11-06-push-local-model.md)
   — stage 6 item 0's measurement closed with its [record](evidence/codex-only-quality-record.md),
   her «пуш» held by two unit tests that ci_local found failing, Codex's weekly window measured from the rollouts, her 2026-11-06
   words on a local model, on accounts, on graph search and on recording Codex's runs, ci_local's
