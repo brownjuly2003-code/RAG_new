@@ -1,0 +1,28 @@
+S conditionalqa: NOT_EVIDENCE
+S wixqa: NOT_EVIDENCE
+S pooled_deciding: NOT_EVIDENCE
+P conditionalqa: H 58, P 55 of 80, b 3, c 0, p 0.25, no detected difference
+P wixqa: H 67, P 66 of 100, b 1, c 0, p 1.0, no detected difference
+P pooled_deciding: H 125, P 121 of 180, b 4, c 0, p 0.125, no detected difference
+{
+ "parity": {
+  "questions": 415,
+  "passed": 415,
+  "v4_saved": 300,
+  "v4_byte_equal": 300,
+  "breaks": {}
+ },
+ "judge": null,
+ "decision": {
+  "standings": {
+   "S": "NOT_EVIDENCE",
+   "P": "open"
+  },
+  "gains": {
+   "S": [],
+   "P": []
+  },
+  "arm": null,
+  "reading": "NOT_EVIDENCE"
+ }
+}
