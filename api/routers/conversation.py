@@ -631,6 +631,25 @@ def _hold_capacity_until_future_done(
     )
 
 
+def _stream_requires_lane_selection(settings: Any, tenant: str) -> bool:
+    """Use workflow only when lane selection can choose more than hybrid; fail closed."""
+    try:
+        if bool(getattr(settings, "model_routing_enabled", False)):
+            return True
+        from agent.graph import _normalize_retrieval_strategy
+
+        strategy = _normalize_retrieval_strategy(getattr(settings, "retrieval_strategy", "hybrid"))
+        if strategy in ("vector", "factcard"):
+            return True
+        if strategy == "graph":
+            from vectordb.manager import has_cached_matched_entity_graph
+
+            return bool(has_cached_matched_entity_graph(tenant))
+    except Exception:
+        return False
+    return False
+
+
 def _resolve_stream_terminal(
     *,
     stream_answer: str,
@@ -2015,21 +2034,14 @@ async def ask_stream(
             plain_docs: list[dict[str, Any]] = []
             chat_history: list[dict[str, str]] = []
 
-            def _requires_graph_lane_selection() -> bool:
-                from agent.graph import _normalize_retrieval_strategy
-
-                # The legacy stream cannot classify a question, so it cannot choose a lane.
-                return _normalize_retrieval_strategy(
-                    getattr(settings_pre, "retrieval_strategy", "hybrid")
-                ) != "hybrid" or bool(getattr(settings_pre, "model_routing_enabled", False))
-
             # Plan §4.1–4.2: STREAMING_RAG_PARITY=true → single graph generation
             # (session.ask only). SSE tokens are UX chunks of the graph answer —
-            # not a second LLM stream. Legacy remains for hybrid without routing.
+            # not a second LLM stream. Otherwise direct streaming remains when
+            # lane selection can only choose hybrid (including graph without a match).
             graph_parity_enabled = (
                 is_codex_only(settings_pre)
                 or bool(getattr(settings_pre, "streaming_rag_parity", False))
-                or _requires_graph_lane_selection()
+                or _stream_requires_lane_selection(settings_pre, tenant)
             )
             graph_parity_timeout = float(
                 getattr(settings_pre, "request_timeout_sec", TIME_LIMIT_CEILING_SEC)

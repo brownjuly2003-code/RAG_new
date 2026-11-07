@@ -84,7 +84,8 @@ def test_stream_answer_slower_than_the_old_limits_arrives(
     # Suggested questions build their client from OLLAMA_HOST, not from the
     # settings' base URL; without it they would reach a real local Ollama.
     monkeypatch.setenv("OLLAMA_HOST", fake_ollama.url)
-    settings = Settings()
+    # This measures the legacy provider stream's deadlines and token arrival times.
+    settings = Settings(retrieval_strategy="hybrid")
     settings.tracing_db_path = tmp_path / "traces.db"
     settings.ollama_base_url = fake_ollama.url
     monkeypatch.setattr(config.settings, "get_settings", lambda: settings)

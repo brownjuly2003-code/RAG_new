@@ -84,7 +84,8 @@ def test_the_chat_model_reads_a_language_free_header_naming_the_section_once(
     for name in PATH_ENV:
         monkeypatch.delenv(name, raising=False)
     monkeypatch.setenv("OLLAMA_HOST", fake_ollama.url)
-    settings = Settings()
+    # Keep the legacy stream's English-only prompt and parent-context contract.
+    settings = Settings(retrieval_strategy="hybrid")
     settings.tracing_db_path = tmp_path / "traces.db"
     settings.ollama_base_url = fake_ollama.url
     settings.structural_chunking = True

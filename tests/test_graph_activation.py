@@ -1,9 +1,9 @@
 """Activation condition for the graph-retrieval lane (GraphRAG).
 
 Implements the gate from archive/docs/plans/2026-06-05-graph-retrieval-activation.md:
-RAG_GRAPH_RETRIEVAL=off|on|auto, default off; "auto" activates only when the
+RAG_GRAPH_RETRIEVAL=off|on|auto; "auto" activates only when the
 chunk threshold AND the connectivity gate (Phase-1 probe value) both hold.
-The lane itself is Phase 2 and not built yet — the condition is the contract.
+These tests retain the explicit off/auto probe contract; product defaults are tested in E2E.
 """
 
 from __future__ import annotations
@@ -26,9 +26,8 @@ def _settings(**overrides):
     return SimpleNamespace(**base)
 
 
-def test_graph_settings_defaults(monkeypatch) -> None:
-    # Pin the plan's contract: default off, thresholds 20000 / 0.15,
-    # probe value unset.
+def test_graph_settings_explicit_off_and_default_thresholds(monkeypatch) -> None:
+    # Retain the historical off contract explicitly; thresholds remain 20000 / 0.15.
     for var in (
         "RAG_GRAPH_RETRIEVAL",
         "RAG_GRAPH_MIN_CHUNKS",
@@ -37,6 +36,7 @@ def test_graph_settings_defaults(monkeypatch) -> None:
     ):
         monkeypatch.delenv(var, raising=False)
 
+    monkeypatch.setenv("RAG_GRAPH_RETRIEVAL", "off")
     settings = Settings()
 
     assert settings.graph_retrieval == "off"

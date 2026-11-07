@@ -80,7 +80,7 @@ def fake_ollama() -> Iterator[_fake_ollama.FakeOllama]:
 
 @pytest.fixture
 def served(monkeypatch, tmp_path, fake_ollama):
-    """The API on a real ``Settings()`` whose only change is where Ollama listens."""
+    """Real model/profile defaults with fixture Ollama and an explicit legacy hybrid stream."""
     return _serve(monkeypatch, tmp_path, fake_ollama)
 
 
@@ -102,7 +102,8 @@ def _serve(monkeypatch, tmp_path, fake_ollama, pinned: str | None = None):
         monkeypatch.setenv("OLLAMA_MODEL_NAME", pinned)
     # Suggested questions build their client from OLLAMA_HOST.
     monkeypatch.setenv("OLLAMA_HOST", fake_ollama.url)
-    settings = Settings()
+    # Pin the legacy three-call stream; the model/profile defaults remain under test.
+    settings = Settings(retrieval_strategy="hybrid")
     settings.tracing_db_path = tmp_path / "traces.db"
     settings.ollama_base_url = fake_ollama.url
     monkeypatch.setattr(config.settings, "get_settings", lambda: settings)

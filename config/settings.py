@@ -534,8 +534,9 @@ class Settings:
         in ("1", "true", "yes")
     )
     retrieval_strategy: str = field(
-        default_factory=lambda: os.getenv("RAG_RETRIEVAL_STRATEGY", "hybrid").strip().lower()
-        or "hybrid"
+        default_factory=lambda: (
+            os.getenv("RAG_RETRIEVAL_STRATEGY", "graph").strip().lower() or "hybrid"
+        )
     )
 
     # Retrieval parameters
@@ -844,14 +845,11 @@ class Settings:
     )
 
     # --- Graph retrieval (GraphRAG lane) activation gate ---
-    # Plan: archive/docs/plans/2026-06-05-graph-retrieval-activation.md. The lane
-    # itself is Phase 2 (not built yet); these settings implement the
-    # activation CONDITION, evaluated and logged on every ingestion
-    # (ingestion/graph_activation.py). "auto" activates only when the chunk
-    # threshold AND the connectivity gate (measured by the Phase-1 probe,
-    # value supplied via RAG_GRAPH_CROSSDOC_SHARE) both hold.
+    # Enabled by the owner's decision of 2026-11-06 (PLAN.md stage 7).
+    # "on" builds the structural projection and loads matching stored entities.
+    # The legacy "auto" ingestion probe still uses the thresholds below.
     graph_retrieval: str = field(
-        default_factory=lambda: os.getenv("RAG_GRAPH_RETRIEVAL", "off").strip().lower()
+        default_factory=lambda: os.getenv("RAG_GRAPH_RETRIEVAL", "on").strip().lower()
     )
     # Chunk-count threshold (~chars/800; fixed for the 800/200 chunking —
     # recompute as chars/800 if the chunking changes).

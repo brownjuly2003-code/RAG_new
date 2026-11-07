@@ -10,7 +10,7 @@ import copy
 import json
 import os
 import shutil
-import subprocess  # nosec B404 # Local synthetic Git repositories only.
+import subprocess  # nosec B404 # Local Git repositories only.
 import sys
 import threading
 import time
@@ -30,6 +30,19 @@ import quality_driver as driver  # noqa: E402
 import stand_runtime as sr  # noqa: E402
 
 cv = driver.cv
+
+
+def reviewed_source_bytes(name: str) -> bytes:
+    """Use attempt-06's registered release, independent of the live checkout."""
+    expected = {
+        "agent/graph.py": driver.GRAPH_SOURCE_SHA256,
+        "api/routers/conversation.py": driver.CONVERSATION_SOURCE_SHA256,
+    }[name]
+    registration = cv.read(ROOT / "reports/codex-only-quality/attempt-06/registration.json")
+    commit = registration["release"]["commit"]
+    source = subprocess.check_output(["git", "show", f"{commit}:{name}"], cwd=ROOT)  # nosec B603 B607
+    assert cv.digest(source) == expected, f"Registered release source pin differs: {name}"
+    return source
 
 
 def put(path: Path, value: Any) -> Path:
@@ -282,7 +295,7 @@ def rig(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
         "release": {"python": sys.executable, "root": str(folder / "release")},
     }
     for name in ("agent/graph.py", "api/routers/conversation.py"):
-        put(Path(config["release"]["root"]) / name, (ROOT / name).read_bytes())
+        put(Path(config["release"]["root"]) / name, reviewed_source_bytes(name))
     put(folder / "cw/AGENTS.md", b"Synthetic rules.\n")
     packages = {
         key: [
@@ -680,11 +693,27 @@ def test_product_timeout_with_failure_text_is_terminal_with_backoff(rig):
     )
 
 
-def test_reviewed_early_handover_contract_is_source_pinned():
-    driver.review_handover_sources(ROOT)
-    # The current graph always reaches generate even with zero/one document.
+def test_reviewed_early_handover_contract_is_source_pinned(tmp_path):
+    for name in ("agent/graph.py", "api/routers/conversation.py"):
+        put(tmp_path / name, reviewed_source_bytes(name))
+    driver.review_handover_sources(tmp_path)
+    # The registered graph always reaches generate even with zero/one document.
     assert not driver.EARLY_HANDOVER_PATHS
     assert set(driver.EARLY_HANDOVER_REVIEW) == {"no_context", "fewer_than_two_documents"}
+
+
+@pytest.mark.parametrize("name", ["agent/graph.py", "api/routers/conversation.py"])
+def test_reviewed_release_is_independent_of_live_checkout(tmp_path: Path, name: str) -> None:
+    release = tmp_path / "release"
+    for source_name in ("agent/graph.py", "api/routers/conversation.py"):
+        put(release / source_name, reviewed_source_bytes(source_name))
+    driver.review_handover_sources(release)
+
+    live_source = (ROOT / name).read_bytes()
+    if live_source != (release / name).read_bytes():
+        put(release / name, live_source)
+        with pytest.raises(cv.Refusal, match=f"early handover source needs renewed review: {name}"):
+            driver.review_handover_sources(release)
 
 
 @pytest.mark.parametrize("name", ["agent/graph.py", "api/routers/conversation.py"])
@@ -1317,7 +1346,7 @@ def admission(tmp_path, monkeypatch):
         "release": {"commit": "a" * 40, "root": str(private / "release")},
     }
     for name in ("agent/graph.py", "api/routers/conversation.py"):
-        put(private / "release" / name, (ROOT / name).read_bytes())
+        put(private / "release" / name, reviewed_source_bytes(name))
     artifacts = {}
     for label in (
         "shim_executable",

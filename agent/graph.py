@@ -1295,7 +1295,19 @@ def make_classify_complexity_node(
             from config.settings import get_settings
 
             settings = get_settings()
-            if not getattr(settings, "model_routing_enabled", False):
+            routing_enabled = bool(getattr(settings, "model_routing_enabled", False))
+            graph_classification = False
+            if (
+                not routing_enabled
+                and _normalize_retrieval_strategy(getattr(settings, "retrieval_strategy", "hybrid"))
+                == "graph"
+            ):
+                from vectordb.manager import has_cached_matched_entity_graph
+
+                graph_classification = has_cached_matched_entity_graph(
+                    str(state.get("tenant_id") or "default")
+                )
+            if not routing_enabled and not graph_classification:
                 new_state: GraphState = {
                     **state,
                     "complexity": "unknown",
@@ -1351,7 +1363,11 @@ def make_classify_complexity_node(
                 tool_calls=state.get("tool_calls") or None,
             )
             complexity: Literal["simple", "complex", "global", "unknown"]
-            if raw.startswith("SIMPLE"):
+            if not routing_enabled:
+                # Graph metadata must not enable vector-only retrieval, grader/
+                # verifier skips, or the fast generation model.
+                complexity = "unknown"
+            elif raw.startswith("SIMPLE"):
                 complexity = "simple"
             elif raw.startswith("GLOBAL") or raw.startswith("MULTI_HOP") or raw.startswith("MULTIHOP"):
                 complexity = "global"

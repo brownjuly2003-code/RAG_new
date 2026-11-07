@@ -30,13 +30,14 @@ HYBRID_C_CANDS = [
 HYBRID_C_SOURCES = ["booking.md", "customs.md", "cargo.md", "booking.md"]
 G1_POOL_CANDS = list(HYBRID_C_CANDS)
 G1_POOL_SOURCES = list(HYBRID_C_SOURCES)
+# FakeReranker scores are 0, -1, -2, -3; coherence keeps all four in that order (k=5).
 G1_RERANK_CANDS = [
     "Confirm the booking after the AWB is issued.",
-    "AWB booking rules cover the air waybill.",
     "AWB customs clearance uses the same air waybill.",
     "Customs cargo holds at the warehouse.",
+    "AWB booking rules cover the air waybill.",
 ]
-G1_RERANK_SOURCES = ["booking.md", "booking.md", "customs.md", "cargo.md"]
+G1_RERANK_SOURCES = ["booking.md", "customs.md", "cargo.md", "booking.md"]
 
 
 @pytest.fixture(autouse=True)

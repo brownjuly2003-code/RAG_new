@@ -102,6 +102,7 @@ def test_routing_disabled_skips_classification(monkeypatch) -> None:
     from agent.state import create_initial_state
 
     monkeypatch.setenv("MODEL_ROUTING_ENABLED", "false")
+    monkeypatch.setenv("RAG_RETRIEVAL_STRATEGY", "hybrid")
     settings_module._settings = None
 
     llm = MagicMock()

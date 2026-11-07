@@ -115,7 +115,8 @@ def test_the_chat_model_reads_the_documents_in_the_int8_files_order(
     monkeypatch.setenv("RAG_RERANKER_MODEL", MODEL)  # conftest empties it
     monkeypatch.setenv("RAG_RERANKER_RUNTIME", "onnx")
     monkeypatch.setenv("RAG_RERANKER_ONNX", str(ONNX))
-    settings = Settings()
+    # The fake transport serves the legacy hybrid answer stream, without graph nodes.
+    settings = Settings(retrieval_strategy="hybrid")
     settings.tracing_db_path = tmp_path / "traces.db"
     settings.ollama_base_url = fake_ollama.url
     settings.rerank_top_k = KEPT

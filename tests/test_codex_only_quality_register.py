@@ -24,6 +24,8 @@ from typing import Any
 
 import pytest
 
+from tests.test_codex_only_quality_driver import reviewed_source_bytes
+
 ROOT = Path(__file__).resolve().parents[1]
 TOOLS = ROOT / "reports/codex-only-quality/tools"
 sys.path.insert(0, str(TOOLS))
@@ -457,22 +459,20 @@ def test_all_settings_including_inactive_keys_are_compared() -> None:
             driver.compare_settings(changed, reference)
 
 
-def test_graph_call_table_and_maximum_match_reviewed_code() -> None:
+def test_graph_call_table_and_maximum_match_reviewed_code(tmp_path: Path) -> None:
     effective = settings()
     providers = driver.resolve_providers(ROOT / "config/providers.yml", effective)
-    bound = driver.graph_bound(ROOT / "agent/graph.py", effective, providers)
+    graph = put(tmp_path / "agent/graph.py", reviewed_source_bytes("agent/graph.py"))
+    bound = driver.graph_bound(graph, effective, providers)
     assert bound["maximum_calls"] == 3
     assert bound["ceiling_sec"] == 420
     assert [r["timeout_sec"] for r in bound["reachable"]] == [60, 60, 180]
-    assert (
-        driver.graph_sites((ROOT / "agent/graph.py").read_text(encoding="utf-8"))
-        == driver.CALL_SITES
-    )
+    assert driver.graph_sites(graph.read_text(encoding="utf-8")) == driver.CALL_SITES
 
 
 @pytest.mark.parametrize("mutation", ["call", "edge", "loop"])
 def test_graph_change_requires_new_review(tmp_path: Path, mutation: str) -> None:
-    source = (ROOT / "agent/graph.py").read_text(encoding="utf-8")
+    source = reviewed_source_bytes("agent/graph.py").decode("utf-8")
     if mutation == "call":
         source += '\ndef new_call(llm):\n    return _invoke_llm(llm, "synthetic")\n'
     elif mutation == "edge":
@@ -669,7 +669,12 @@ def registration(admission: SimpleNamespace, monkeypatch: pytest.MonkeyPatch) ->
         "reports/codex-only-quality/tools/shim/CaptureShim.cs",
         *driver.HELPER_FILES,
     ):
-        put(f.repo / name, (ROOT / name).read_bytes())
+        source = (
+            reviewed_source_bytes(name)
+            if name in {"agent/graph.py", "api/routers/conversation.py"}
+            else (ROOT / name).read_bytes()
+        )
+        put(f.repo / name, source)
     f.config["release"] = {"root": str(f.repo), "commit": "a" * 40, "python": sys.executable}
     f.config["stands"] = {
         key: {"env": str(put(f.private / f"{key}.env", b"LLM_PROVIDER_PROFILE=codex-only\n"))}

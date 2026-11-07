@@ -1,4 +1,4 @@
-"""The stage-4 package is the chat's code default, observed at retrieval and HTTP.
+"""Stage-4 window/rerank defaults, observed through the explicit legacy hybrid stream.
 
 Only the INT8 order test needs the Mac's export. The window and lane tests use
 real BM25, the product's retriever factory and ConversationSession, and the real
@@ -65,7 +65,8 @@ def settings(monkeypatch, tmp_path, fake_ollama, client):
     for name in DEFAULT_ENV:
         monkeypatch.delenv(name, raising=False)
     monkeypatch.setenv("OLLAMA_HOST", fake_ollama.url)
-    settings = Settings()
+    # The stage-4 transport assertions exercise the legacy hybrid stream.
+    settings = Settings(retrieval_strategy="hybrid")
     settings.ollama_base_url = fake_ollama.url
     settings.tracing_db_path = tmp_path / "traces.db"
     monkeypatch.setattr(config.settings, "get_settings", lambda: settings)

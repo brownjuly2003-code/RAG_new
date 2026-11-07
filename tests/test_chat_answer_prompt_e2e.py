@@ -67,7 +67,8 @@ def test_the_chat_model_is_told_to_answer_in_part_and_to_cite_by_number(
     for name in PATH_ENV:
         monkeypatch.delenv(name, raising=False)
     monkeypatch.setenv("OLLAMA_HOST", fake_ollama.url)
-    settings = Settings()
+    # This fixture serves answer/self-eval/suggestions on the legacy hybrid stream.
+    settings = Settings(retrieval_strategy="hybrid")
     settings.tracing_db_path = tmp_path / "traces.db"
     settings.ollama_base_url = fake_ollama.url
     monkeypatch.setattr(config.settings, "get_settings", lambda: settings)

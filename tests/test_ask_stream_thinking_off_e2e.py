@@ -71,7 +71,8 @@ def test_every_model_call_of_the_chat_stream_turns_thinking_off(
         monkeypatch.delenv(name, raising=False)
     # Suggested questions build their client from OLLAMA_HOST.
     monkeypatch.setenv("OLLAMA_HOST", fake_ollama.url)
-    settings = Settings()
+    # Keep the direct-stream three-call contract independent of graph-on defaults.
+    settings = Settings(retrieval_strategy="hybrid")
     settings.tracing_db_path = tmp_path / "traces.db"
     settings.ollama_base_url = fake_ollama.url
     monkeypatch.setattr(config.settings, "get_settings", lambda: settings)

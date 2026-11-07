@@ -134,7 +134,8 @@ def chat_stand(
         if codex is None:
             monkeypatch.setenv("OLLAMA_HOST", fake.url)
         settings_mod._settings = None
-        settings = Settings()
+        # The local-provider cases exercise the legacy stream and its timeout fallback.
+        settings = Settings(retrieval_strategy="hybrid")
         settings.tracing_db_path = tmp_path / "traces.db"
         if codex is None:
             settings.ollama_base_url = fake.url

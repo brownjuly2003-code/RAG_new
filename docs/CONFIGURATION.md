@@ -14,7 +14,7 @@ Copy `.env.example` to `.env`, then adjust only what your deployment needs.
 | `OLLAMA_MODEL_NAME` | `qwen3:4b-instruct-2507-q4_K_M` | Primary Ollama model when `LLM_PROVIDER_PROFILE=local-first` |
 | `OLLAMA_CONTEXT_WINDOW` | `3584` | Input window sent as `num_ctx`, including the answer and classic self-evaluation; measured in stage 4 ([step 4](evidence/stage4-step4-record.md), [step 4b](evidence/stage4-step4b-record.md)) |
 | `OLLAMA_FAST_MODEL_NAME` | `llama3.2:3b` | Faster Ollama model for local helper/tool flows |
-| `MODEL_ROUTING_ENABLED` | `false` | Enable structured query classification and simple/complex/global model routing |
+| `MODEL_ROUTING_ENABLED` | `false` | Enable simple/complex/global model routing, including the simple fast path. With routing off, `graph` still classifies question class/entities when the tenant's cached retriever has a matched entity graph; complexity stays `unknown`, with normal grading, verification and model selection (2026-11-06) |
 | `OLLAMA_REQUEST_TIMEOUT_SEC` | `3600` | Timeout for a single Ollama HTTP request: the longest silence between bytes, not the call's total time |
 | `REQUIRE_OLLAMA` | `false` | Fail fast at startup if Ollama/fallback validation requires Ollama |
 | `LANGFUSE_PUBLIC_KEY` | `-` | Optional Langfuse public key |
@@ -55,7 +55,7 @@ Copy `.env.example` to `.env`, then adjust only what your deployment needs.
 | `RAG_RERANKER_ONNX` | empty | Deployment path to the INT8 export made by `reports/stage4-step5a/tools/export_onnx.py`; the model file is not bundled. With a non-empty `RAG_RERANKER_MODEL` and runtime `onnx`, startup refuses an absent file. Set this path or explicitly set `RAG_RERANKER_RUNTIME=torch` outside the measured package. The macOS service also verifies the measured SHA-256 ([runbook](operations/macos-service.md)) |
 | `RAG_DEVICE` | `cpu` | Device of the embedder and the reranker: `cpu`, `auto` (cuda → mps → cpu), `cuda`, `cuda:0` or `mps`. `cpu` by default: on the production Mac's 4 GB GPU the reranker runs out of memory and answers are built on the unreranked order |
 | `RAG_HYBRID_SEARCH` | `true` | Combine BM25 with vector retrieval |
-| `RAG_RETRIEVAL_STRATEGY` | `hybrid` | Retrieval strategy: `vector`, `hybrid`, `graph`, or `factcard`; `graph` and `factcard` fall back to `hybrid` when their store is absent. `factcard` (opt-in) serves whole fact-cards for enumeration queries (fields/documents/conditions) — closes the `customs-clearance-fields` recall gap; build the collection with `scripts/build_factcards.py`. Auto-routing into `factcard` is intentionally NOT default (NO-SHIP pending Phase-5 offline-delta — see `archive/docs/operations/2026-06-14-adaptive-retrieval-closure.md`) |
+| `RAG_RETRIEVAL_STRATEGY` | `graph` | Product default since 2026-11-06 for `/api/ask` and `/api/ask/stream`. With routing off, a matched entity graph enables classification; `multi_hop`, `aggregation` and `global` select graph, otherwise hybrid. Alternatives: `vector`, `hybrid`, `factcard`; absent graph/card stores fall back to hybrid. `factcard` remains opt-in for enumeration queries; build with `scripts/build_factcards.py`. Auto-routing into factcard remains NO-SHIP pending Phase-5 offline delta ([record](../archive/docs/operations/2026-06-14-adaptive-retrieval-closure.md)) |
 | `RAG_RETRIEVAL_TOP_K` | `14` | Candidates per BM25/vector lane before RRF and reranking; smallest measured K without a detected gold loss ([K curve](evidence/k-curve-record.md)), median rerank 14.6 s faster ([step 3](evidence/stage4-step3-record.md)) |
 | `RAG_RERANK_TOP_K` | `5` | Final document count after reranking |
 | `RRF_K` | `60` | Reciprocal Rank Fusion smoothing constant |
@@ -82,7 +82,7 @@ Copy `.env.example` to `.env`, then adjust only what your deployment needs.
 | `RAG_PARENT_EXPANSION` | `true` | Post-rerank: supplement final chunks with neighbouring sections of their source |
 | `RAG_PARENT_EXPANSION_WINDOW` | `2` | Sections taken from each side of a selected chunk |
 | `RAG_PARENT_EXPANSION_MAX_CHARS` | `3600` | Cap on expanded chunk text (core + neighbours) |
-| `RAG_GRAPH_RETRIEVAL` | `off` | Graph-lane activation gate: `off`/`on`/`auto`; condition evaluated & logged at ingestion (lane itself = Phase 2, not built) |
+| `RAG_GRAPH_RETRIEVAL` | `on` | Build the structural projection at retriever startup and load stored entities only when they match the current tenant/corpus (2026-11-06). No online entity extraction. `off` disables construction; legacy `auto` only evaluates the ingestion probe thresholds |
 | `RAG_GRAPH_MIN_CHUNKS` | `20000` | `auto`: minimal chunk count to consider the graph lane |
 | `RAG_GRAPH_MIN_CROSSDOC_SHARE` | `0.15` | `auto`: minimal cross-doc entity share (connectivity gate) |
 | `RAG_GRAPH_CROSSDOC_SHARE` | unset | Measured probe value (`scripts/graph_probe.py`; 2026-06-06 corpus: **0.296**, gate passed); unset = probe not run, `auto` stays off |

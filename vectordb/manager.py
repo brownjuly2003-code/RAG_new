@@ -1079,6 +1079,25 @@ def get_retriever(
     return retriever
 
 
+def has_cached_matched_entity_graph(tenant_id: str = "default") -> bool:
+    """Read cached projection provenance only; never load/build, and fail closed."""
+    try:
+        from ingestion.entity_graph_loading import ENTITY_GRAPH_MATCHED
+
+        tenant = tenant_id or "default"
+        with _cache_lock:
+            retriever = _retriever_cache.get(tenant)
+        projection = getattr(retriever, "_graph_projection", None)
+        attrs = getattr(projection, "graph", None)
+        return (
+            isinstance(attrs, dict)
+            and attrs.get("tenant_id") == tenant
+            and attrs.get("entity_graph_status") == ENTITY_GRAPH_MATCHED
+        )
+    except Exception:
+        return False
+
+
 def get_index_manifest_status(tenant_id: str = "default") -> dict[str, Any] | None:
     with _cache_lock:
         return _index_manifest_status.get(tenant_id or "default")

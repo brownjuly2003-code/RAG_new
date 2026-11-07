@@ -88,6 +88,8 @@ def test_the_retired_thresholds_are_the_ones_of_the_settings(
 ) -> None:
     for name in ("RAG_GRAPH_RETRIEVAL", "RAG_GRAPH_MIN_CHUNKS", "RAG_GRAPH_MIN_CROSSDOC_SHARE"):
         monkeypatch.delenv(name, raising=False)
+    # This checks the retired off/auto policy, not the product's graph-on defaults.
+    monkeypatch.setenv("RAG_GRAPH_RETRIEVAL", "off")
     settings = Settings()
     assert settings.graph_retrieval == "off"
     assert settings.graph_min_chunks == 20000

@@ -17,6 +17,9 @@ from unittest.mock import Mock
 import pytest
 from fastapi.testclient import TestClient
 
+from api.routers import conversation
+from vectordb import manager
+
 api_app = importlib.import_module("api.app")
 
 
@@ -159,17 +162,20 @@ def test_stream_uses_graph_citations_when_available(
     assert final["trace_id"] == "trace-graph-cite"
 
 
-@pytest.mark.parametrize("strategy", [None, "hybrid", " HyBrId ", "unknown-strategy"])
+@pytest.mark.parametrize(
+    "strategy", [None, "hybrid", " HyBrId ", "unknown-strategy", "graph", " GrApH "]
+)
 def test_stream_falls_back_when_graph_disabled(
     client: TestClient, monkeypatch: pytest.MonkeyPatch, strategy: str | None
 ) -> None:
-    """Parity off keeps direct retrieval only for normalised hybrid without routing."""
+    """Parity off keeps direct retrieval when lane selection can only choose hybrid."""
 
     # conftest заменяет api_app.get_settings на лямбду, возвращающую
     # SimpleNamespace из settings_factory. Дописываем атрибут напрямую.
     settings = api_app.get_settings()
     settings.streaming_rag_parity = False
     monkeypatch.setattr(settings, "model_routing_enabled", False, raising=False)
+    monkeypatch.setattr(manager, "has_cached_matched_entity_graph", Mock(return_value=False))
     if strategy is None:
         monkeypatch.delattr(settings, "retrieval_strategy", raising=False)
     else:
@@ -209,7 +215,7 @@ def test_stream_falls_back_when_graph_disabled(
     final = next(event for event in events if event.get("type") == "result")
 
     retrieve.assert_called_once_with("test")
-    assert ask_called["value"] is False, "hybrid without routing must keep the direct stream"
+    assert ask_called["value"] is False, "hybrid-only lane selection must keep the direct stream"
     assert final["trace_id"] == "", "trace_id stays empty without graph parity"
     assert final["quality_score"] == 70, "stream heuristic computes quality from len+sources"
     assert final["answer"] == "длинный ответ со многими токенами"
@@ -239,6 +245,7 @@ def test_stream_uses_graph_for_lane_selection(
     settings.streaming_rag_parity = False
     monkeypatch.setattr(settings, "retrieval_strategy", strategy, raising=False)
     monkeypatch.setattr(settings, "model_routing_enabled", routing, raising=False)
+    monkeypatch.setattr(manager, "has_cached_matched_entity_graph", Mock(return_value=True))
     graph_calls: list[tuple[str, str]] = []
     graph_result = {
         "answer": "lane-selected answer",
@@ -287,6 +294,50 @@ def test_stream_uses_graph_for_lane_selection(
     assert final["answer_source"] == "graph"
     assert final["generation_source"] == "graph_only"
     assert final["events_source"] == ("graph" if graph_method == "iter_ask_events" else "ask")
+
+
+@pytest.mark.parametrize(
+    ("strategy", "routing", "matched", "expected"),
+    [
+        ("hybrid", True, False, True),
+        ("vector", False, False, True),
+        ("factcard", False, False, True),
+        ("graph", False, True, True),
+        (" GrApH ", False, True, True),
+        ("graph", False, False, False),
+        (" GrApH ", False, False, False),
+        ("hybrid", False, True, False),
+        ("unknown-strategy", False, True, False),
+        (None, False, False, False),
+    ],
+)
+def test_stream_requires_lane_selection(monkeypatch, strategy, routing, matched, expected):
+    settings = SimpleNamespace(retrieval_strategy=strategy, model_routing_enabled=routing)
+    has_graph = Mock(return_value=matched)
+    monkeypatch.setattr(manager, "has_cached_matched_entity_graph", has_graph)
+
+    assert conversation._stream_requires_lane_selection(settings, "request-tenant") is expected
+    if strategy in ("graph", " GrApH "):
+        has_graph.assert_called_once_with("request-tenant")
+    else:
+        has_graph.assert_not_called()
+
+
+def test_stream_requires_lane_selection_fails_closed(monkeypatch):
+    settings = SimpleNamespace(retrieval_strategy="graph", model_routing_enabled=False)
+    has_graph = Mock(side_effect=RuntimeError("cache unavailable"))
+    monkeypatch.setattr(manager, "has_cached_matched_entity_graph", has_graph)
+
+    assert conversation._stream_requires_lane_selection(settings, "request-tenant") is False
+    has_graph.assert_called_once_with("request-tenant")
+
+
+def test_stream_requires_lane_selection_with_unavailable_settings():
+    class UnavailableSettings:
+        def __getattr__(self, name):
+            raise RuntimeError("settings unavailable")
+
+    assert conversation._stream_requires_lane_selection(UnavailableSettings(), "tenant") is False
 
 
 def test_stream_parity_single_history_mutation_uses_graph_answer(
