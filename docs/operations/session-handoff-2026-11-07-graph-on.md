@@ -1,4 +1,4 @@
-# Session handoff — 2026-11-06 14:48 → 2026-11-07 ≈ TBD UTC: the push fix, Codex's runs recorded, S' lost and S'' fixed, bundle 0 negative, graph search on by default
+# Session handoff — 2026-11-06 14:48 → 2026-11-07 ≈ 03:00 UTC: the push fix, Codex's runs recorded, S' lost and S'' fixed, bundle 0 negative, graph search on by default
 
 Times are UTC. Git prints laptop-local time, UTC−5. The session took over from
 [the push and local-model handoff](session-handoff-2026-11-06-push-local-model.md) and did its Next
@@ -9,8 +9,9 @@ actions 0–5 as far as they go without her word. That file is closed.
 - **The push did not happen.** I asked her one yes/no: push `591481f..b912ce5`, that is the fix
   `4f3e7aa` (the cache test keeps the answer's provenance, oauthlib 4.0.1, the smoke CLI timeout
   60 s), the PLAN pass `b912ce5` and the 11-06 handoff, on ci_local run 4's stamp. She has not
-  answered. Every commit after `b912ce5` holds code and needs its own full ci_local, both scans
-  and her word ([Next action 0](#next-actions-in-order)).
+  answered. At the end I asked one yes/no for the whole range `591481f..master`, on ci_local
+  run 5's PASS and both scans clean ([State at the end](#state-at-the-end),
+  [Next action 0](#next-actions-in-order)).
 - **Graph search is on by default since 2026-11-07 00:41** (`29b9eed6`): `RAG_RETRIEVAL_STRATEGY=graph`,
   `RAG_GRAPH_RETRIEVAL=on`, `MODEL_ROUTING_ENABLED` still `false`. Its honest effect today:
   **none on her laptop**. The structural lane sends the hybrid's documents by construction
@@ -174,11 +175,30 @@ tests read the release's bytes with `git show`; the tool refuses the live files 
 
 ## State at the end
 
-- `origin/master` is `591481f`; master is 60 commits ahead, this file's commit on top, nothing
+- `origin/master` is `591481f`; master is 61 commits ahead, this file's last update on top, nothing
   pushed. Untracked: `demo/phase-e-raw.webm` and `reports/ask100/` only.
-- ci_local run 5 on the clean clone `D:/RAG_new_ci` at this file's commit: TBD.
-- The two scans over `b912ce5..master` (the range before it was scanned for the asked question):
-  TBD.
+- ci_local run 5 on the clean clone `D:/RAG_new_ci` at `2d8be8a` (this file's first commit),
+  01:23–02:42 UTC: **PASS**, 17 of 17 steps — lint, type-check, unit 3.11 (1,018 s), unit 3.13
+  with the coverage gate (1,929 s), integration 3.11 and 3.13, pre-commit, security (bandit,
+  pip-audit). Stamp `2a51a040…` (the tree of `2d8be8a`) copied into `D:/RAG_new/.git/ci_local/`;
+  later commits change only `.md`. The clone was on a detached HEAD, so the three jobs gated on
+  `refs/heads/master` were off; I ran two of them on branch `master` at the same commit:
+  migrations **PASS** (the round-trip audit); helm: lint and render PASS, the kind install
+  FAIL — «Cannot connect to the Docker daemon» inside the VM, an infrastructure failure. The
+  chart (`deploy/helm/`) did not change since `4f3e7aa`, where run 4 passed helm whole.
+  regression-eval did not run, as always (no curated dataset). Lesson: run ci_local on branch
+  `master` (`git checkout -B master <sha>` in the clone), not a detached HEAD.
+- The two scans over `b912ce5..2d8be8a` (the range before it was scanned for the asked
+  question), laptop, 01:25 UTC:
+  - gitleaks, 14 commits: 7 findings, all `generic-api-key` on `tokenizer_snapshot`, the
+    40-hex Hugging Face snapshot id that the stage 7 spec on `origin/master` already shows.
+  - The shingle scan, 85 text blobs: 18 hits, none a base's text: the product's own answer
+    prompt (in two E2E tests), a log line of `vectordb/manager.py`, Mac paths already public
+    (`/Users/julia` is in 326 files on `origin/master`; new is only `/Users/julia/RAG_new_a3_gate`,
+    named by Amendment 3) and aircargo case ids, all 415 already public in
+    `reports/stage7/5e308fe/rows.jsonl`.
+  - A trap: in Git Bash `git grep -F "/Users/…"` gets its argument rewritten to a Windows path
+    and finds nothing; set `MSYS_NO_PATHCONV=1`.
 - The Codex package `D:/RAG_new_cx/s1` is at `a886881` (s30) and clean; no Codex job runs. The
   zombie job `task-mvxxv35t-nh4i5m` is left alone.
 - The Mac: the clone `/Users/julia/RAG_new_a3_gate` and `/Users/julia/RAG_new_stage7/out-a3`,
